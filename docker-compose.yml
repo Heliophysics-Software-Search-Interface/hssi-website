@@ -2,48 +2,48 @@ version: '3'
 
 services:
 
-    emac:
-        build: ./EMAC/docker
-        image: emac
-        container_name: EMAC
-        logging:
-            options:
-                max-size: "100m"
-                max-file: "3"
-        depends_on:
-            - docker-gen
-            - hardcore
-            - lightkurve
-            - tools
-            - website_db
-        expose:
-            - "80"
-        volumes:
-            - ../data:/data
-            - ../logs/emac/nginx:/var/log/nginx
-            - ./shared/config/nginx/logrotate:/etc/logrotate.d/nginx
-            - ./EMAC/django:/django
-            - ./EMAC/django/static:/static
-            - ./shared/config/django:/config/django
-            - ./shared/config/nginx:/etc/nginx/conf.d
-            - ./shared/django/emac_base_template.html:/django/emac/templates/emac_base_template.html
-            - ./shared/django/registration:/django/emac/templates/registration
-            - ./shared/django/emac_context_processors.py:/django/emac/emac_context_processors.py
-            - ./shared/django/emac_secret_settings.py:/django/emac/emac_secret_settings.py
-            - ./shared/django/emac_utils.py:/django/emac/emac_utils.py
-            - ./shared/static/emac_apps:/static/emac_apps
-            - ./shared/pip-requirements:/extensions/pip-requirements
-            - ./shared/django/recaptcha_auth_forms.py:/django/emac/recaptcha_auth_forms.py
-        environment:
-            - EMAC_ADMIN_USERNAME=$EMAC_ADMIN_USERNAME
-            - EMAC_ADMIN_PASSWORD=$EMAC_ADMIN_PASSWORD
-            - PROJECT_NAME=emac
-            - APP_NAME=website
-            - GUNICORN_WORKERS=4
-            - GUNICORN_BACKLOG=4096
-            - GUNICORN_BIND=0.0.0.0:8000
-            - GUNICORN_TIMEOUT=3600
-            - VIRTUAL_HOST=$EMAC_DOMAIN
+    # emac:
+    #     build: ./EMAC/docker
+    #     image: emac
+    #     container_name: EMAC
+    #     logging:
+    #         options:
+    #             max-size: "100m"
+    #             max-file: "3"
+    #     depends_on:
+    #         - docker-gen
+    #         - hardcore
+    #         - lightkurve
+    #         - tools
+    #         - website_db
+    #     expose:
+    #         - "80"
+    #     volumes:
+    #         - ../data:/data
+    #         - ../logs/emac/nginx:/var/log/nginx
+    #         - ./shared/config/nginx/logrotate:/etc/logrotate.d/nginx
+    #         - ./EMAC/django:/django
+    #         - ./EMAC/django/static:/static
+    #         - ./shared/config/django:/config/django
+    #         - ./shared/config/nginx:/etc/nginx/conf.d
+    #         - ./shared/django/emac_base_template.html:/django/emac/templates/emac_base_template.html
+    #         - ./shared/django/registration:/django/emac/templates/registration
+    #         - ./shared/django/emac_context_processors.py:/django/emac/emac_context_processors.py
+    #         - ./shared/django/emac_secret_settings.py:/django/emac/emac_secret_settings.py
+    #         - ./shared/django/emac_utils.py:/django/emac/emac_utils.py
+    #         - ./shared/static/emac_apps:/static/emac_apps
+    #         - ./shared/pip-requirements:/extensions/pip-requirements
+    #         - ./shared/django/recaptcha_auth_forms.py:/django/emac/recaptcha_auth_forms.py
+    #     environment:
+    #         - EMAC_ADMIN_USERNAME=$EMAC_ADMIN_USERNAME
+    #         - EMAC_ADMIN_PASSWORD=$EMAC_ADMIN_PASSWORD
+    #         - PROJECT_NAME=emac
+    #         - APP_NAME=website
+    #         - GUNICORN_WORKERS=4
+    #         - GUNICORN_BACKLOG=4096
+    #         - GUNICORN_BIND=0.0.0.0:8000
+    #         - GUNICORN_TIMEOUT=3600
+    #         - VIRTUAL_HOST=$EMAC_DOMAIN
 
     hardcore:
         image: yosefmiller/hardcore-website
@@ -75,41 +75,41 @@ services:
         environment:
             - VIRTUAL_HOST=lightkurve.$EMAC_DOMAIN
 
-    tools:
-        build: ./Tools/docker
-        image: tools
-        container_name: Tools
-        logging:
-            options:
-                max-size: "100m"
-                max-file: "3"
-        depends_on:
-            - shared_db
-        expose:
-            - "80"
-        volumes:
-            - ../data:/data
-            - ../logs/tools/nginx:/var/log/nginx
-            - ./shared/config/nginx/logrotate:/etc/logrotate.d/nginx
-            - ./Tools/django:/django
-            - ./Tools/django/static:/static
-            - ./shared/config/django:/config/django
-            - ./shared/config/nginx:/etc/nginx/conf.d
-            - ./shared/django/emac_base_template.html:/django/tools/templates/emac_base_template.html
-            - ./shared/django/emac_context_processors.py:/django/tools/emac_context_processors.py
-            - ./shared/django/emac_secret_settings.py:/django/tools/emac_secret_settings.py
-            - ./shared/django/PyMultipolator.py:/django/tools/PyMultipolator.py
-            - ./shared/static/emac_apps:/static/emac_apps
-        environment:
-            - EMAC_ADMIN_USERNAME=$EMAC_ADMIN_USERNAME
-            - EMAC_ADMIN_PASSWORD=$EMAC_ADMIN_PASSWORD
-            - PROJECT_NAME=tools
-            - APP_NAME=tools
-            - GUNICORN_WORKERS=4
-            - GUNICORN_BACKLOG=4096
-            - GUNICORN_BIND=0.0.0.0:8000
-            - GUNICORN_TIMEOUT=3600
-            - VIRTUAL_HOST=tools.$EMAC_DOMAIN
+    # tools:
+    #     build: ./Tools/docker
+    #     image: tools
+    #     container_name: Tools
+    #     logging:
+    #         options:
+    #             max-size: "100m"
+    #             max-file: "3"
+    #     depends_on:
+    #         - shared_db
+    #     expose:
+    #         - "80"
+    #     volumes:
+    #         - ../data:/data
+    #         - ../logs/tools/nginx:/var/log/nginx
+    #         - ./shared/config/nginx/logrotate:/etc/logrotate.d/nginx
+    #         - ./Tools/django:/django
+    #         - ./Tools/django/static:/static
+    #         - ./shared/config/django:/config/django
+    #         - ./shared/config/nginx:/etc/nginx/conf.d
+    #         - ./shared/django/emac_base_template.html:/django/tools/templates/emac_base_template.html
+    #         - ./shared/django/emac_context_processors.py:/django/tools/emac_context_processors.py
+    #         - ./shared/django/emac_secret_settings.py:/django/tools/emac_secret_settings.py
+    #         - ./shared/django/PyMultipolator.py:/django/tools/PyMultipolator.py
+    #         - ./shared/static/emac_apps:/static/emac_apps
+    #     environment:
+    #         - EMAC_ADMIN_USERNAME=$EMAC_ADMIN_USERNAME
+    #         - EMAC_ADMIN_PASSWORD=$EMAC_ADMIN_PASSWORD
+    #         - PROJECT_NAME=tools
+    #         - APP_NAME=tools
+    #         - GUNICORN_WORKERS=4
+    #         - GUNICORN_BACKLOG=4096
+    #         - GUNICORN_BIND=0.0.0.0:8000
+    #         - GUNICORN_TIMEOUT=3600
+    #         - VIRTUAL_HOST=tools.$EMAC_DOMAIN
 
     nginx-proxy:
         image: owasp/modsecurity-crs:nginx

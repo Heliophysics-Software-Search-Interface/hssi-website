@@ -1,0 +1,29 @@
+{% extends 'emac_base_template.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block head %}
+
+	<link rel="stylesheet" href="{% static 'css/submissions.css' %}?v=2024-05-22" />
+    <script type="text/javascript" src="{% static 'js/categoryRendering.js' %}?v=2024-05-22"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            rerenderCategoriesHierarchically('{{ category_hierarchy_json|safe }}', '{{ category_names_by_id_json|safe }}', '{{ selected_category_ids_json|safe }}');
+        });
+    </script>
+  
+{% endblock %}
+
+{% block title %}EMAC Resource Version Update{% endblock %}
+
+{% block page_content %}
+
+    <div class="small-12 container submission_form">
+        <h3 class="page_title">Sending an update notification for the Resource: <b>{{ submission_name }}</b></h3>
+        <p class="submission-text">This page allows us to change the update message going out for this newly updated resource.</p>
+        {% crispy submission_form submission_form.helper %}
+    </div>
+
+{% endblock %}

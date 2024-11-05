@@ -1,0 +1,66 @@
+{% extends 'emac_base_template.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}EMAC Tool Curation{% endblock %}
+
+{% block head %}
+	<link rel="stylesheet" href="{% static 'css/submissions.css' %}?v=2024-09-05" />
+    <link rel="stylesheet" href="{% static 'css/curate.css' %}?v=2024-09-05" />
+
+    <script type="text/javascript">
+        var categoryHierarchy = JSON.parse('{{ category_hierarchy_json|safe }}')
+        var categoryNamesByID = JSON.parse('{{ category_names_by_id_json|safe }}');
+        var selectedCategoryIDs = JSON.parse('{{ selected_category_ids_json|safe }}');
+        var collectionHierarchy = JSON.parse('{{ collection_hierarchy_json|safe }}');
+        var collectionNamesByID = JSON.parse('{{ collection_names_by_id_json|safe }}');
+        var selectedCollectionIDs = JSON.parse('{{ selected_collection_ids_json|safe }}');
+        var locked = JSON.parse('{{ locked }}'.toLowerCase());
+    </script>
+    <script type="text/javascript" src="{% static 'js/categoryRendering.js' %}?v=2024-09-05"></script>
+    <script type="text/javascript" src="{% static 'js/collectionRendering.js' %}?v=2024-09-05"></script>
+    <script type="text/javascript" src="{% static 'js/curate.js' %}?v=2024-09-05"></script>
+{% endblock %}
+
+{% block page_content %}
+
+    <div class="small-12 container submission_form">
+        <h3 class="page_title">Resource Curation</h3>
+        
+        <div class="submission-links">
+            <!-- <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/submissions/{{ submission.id }}/" target="_blank">[Submission Form Link]</a> -->
+            <a class="hollow button"
+                href="https://github.com/GSFC-EMAC/EMAC-Curation-Program/issues?q=is%3Aissue+in%3Atitle+{{ submission.name }}"
+                target="_blank"
+                onclick="getOutboundLink('https://github.com/GSFC-EMAC/EMAC-Curation-Program/issues?q=is%3Aissue+in%3Atitle+{{ submission.name }}', 'curation_program_search_link', null, '{{ submission.name }}', { submission_id: '{{ submission.id }}' }); return false;"
+                data-tooltip data-position="bottom" data-alignment="right"
+                title="Search for an existing discussion about this resource on the EMAC Curator GitHub site."
+                >Find discussions</a>
+            <a class="hollow button" 
+                href="https://github.com/GSFC-EMAC/EMAC-Curation-Program/issues/new?title={{ submission.name }}" 
+                target="_blank" 
+                onclick="getOutboundLink('https://github.com/GSFC-EMAC/EMAC-Curation-Program/issues/new?title={{ submission.name }}', 'curation_program_new_link', null, '{{ submission.name }}', { submission_id: '{{ submission.id }}' }); return false;" 
+                data-tooltip data-position="bottom" data-alignment="right"
+                title="Start a new discussion about this resource on the EMAC Curator GitHub site. (Please check for existing first.)"
+                >New discussion</a>
+        </div>
+       
+        <div class="submission-info">
+            {% if locked %}
+                <div class="lock-message">
+                    We're sorry, this resource is locked, because another curator has submitted suggested edits that are awaiting approval.
+                </div>
+            {% endif %}
+            <div class="submission-name">
+                Submission: {{ submission.name }}
+            </div>
+            <div class="submission-description">
+                {{ submission.description }}
+            </div>
+        </div>
+        {% crispy curate_form curate_form.helper %}
+    </div>
+
+{% endblock %}

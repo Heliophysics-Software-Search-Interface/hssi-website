@@ -1,0 +1,1693 @@
+{% extends 'emac_base_template.html' %} 
+
+{% load static %}
+
+{% block head %}
+	<link rel="stylesheet" href="{% static 'css/seminars.css' %}?v=2024-09-05" />
+    <script type="text/javascript" src="{% static 'js/seminars.js' %}?v=2024-09-05"></script>
+{% endblock %}
+
+{% block page_content %}
+
+<div class="container">
+    
+    <div class="emaccordion-section expanded">
+        <div class="emaccordion-header-bar">
+            <h2 class="emaccordion-title">exoVAST: Virtual Exoplanet Software Talks</h2>
+            <div class="caret-container">
+                <span class="caret caret-flip"></span>
+            </div>
+        </div>
+        <div class="emaccordion-content" style="display: block;">
+            <div class="exovast-container">
+                <div class="exovast-info">
+                    <div class="detail vast">
+                        <div class="header"><h6>What is VAST?</h6></div>
+                        <div class="detail-text">
+                            The <a href="https://vast-seminars.github.io/" target="_blank">Virtual Astronomy Software Talks (VAST)</a> is a free, 
+                            monthly virtual seminar series held on the 3rd Wednesday (11am US Eastern time). Each month features 
+                            two 20-minute talks about astronomy-related software and topics, followed by an open discussion. The 
+                            goal of these talks is to connect astronomers and physicists to developers that are creating astronomy 
+                            software and databases.
+                        </div>
+                    </div>
+                    <div class="detail exovast">
+                        <div class="header"><h6>What is exoVAST?</h6></div>
+                        <div class="detail-text">
+                            exoVAST is a new series that is built off of the VAST model but focused on software specific to exoplanet 
+                            science. It is co-hosted by the VAST and EMAC teams. exoVASTs will be held on the <strong>first Wednesday 
+                            of each month at 11am</strong> (US Eastern) unless otherwise noted in the schedule below.
+                        </div>
+                    </div>
+                    <div class="detail attending">
+                        <div class="header"><h6>I am interested in attending</h6></div>
+                        <div class="detail-text">
+                            Join the VAST mailing list to receive the Zoom links: <a href="https://groups.google.com/g/virtual-astro-sw-talks/about?pli=1" target="_blank">VAST google group.</a>
+                        </div>
+                    </div>
+                    <div class="detail speaking">
+                        <div class="header"><h6>I am interested in speaking</h6></div>
+                        <div class="detail-text">
+                            The exoVAST organizing committee will select the talks for each monthly seminar. If you wish to propose a 
+                            talk, <a href="https://github.com/vast-seminars/talk-proposals/issues" target="_blank">fill an issue on the VAST Github page.</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="exovast-schedule">
+                    <div class="emaccordion-section expanded">
+                        <div class="emaccordion-header-bar">
+                            <h2 class="emaccordion-title">Schedule</h2>
+                            <div class="caret-container">
+                                <span class="caret caret-flip"></span>
+                            </div>
+                        </div>
+                        <div class="emaccordion-content" style="display: block;">
+                            <p class="schedule-update">Last updated on: Jun. 24, 2024</p>
+                            <p>exoVAST seminars are held on the first Wednesday of each month at 11am (US Eastern time) unless noted otherwise below.</p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Speaker</th>
+                                        <th>Topic</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td rowspan="2" class="date"></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="emaccordion-section">
+                        <div class="emaccordion-header-bar">
+                            <h2 class="emaccordion-title">Past Talks</h2>
+                            <div class="caret-container">
+                                <span class="caret"></span>
+                            </div>
+                        </div>
+                        <div class="emaccordion-content">
+                            <table class="schedule-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Speaker</th>
+                                        <th colspan="2">Topic</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td rowspan="2" class="date">Sept. 20th 2023</td>
+                                        <td>Joe Renaud (UMD / NASA Goddard)</td>
+                                        <td>NASA Goddard's Exoplanet Modeling & Analysis Center and exoVAST</td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/9Pu7prov9oY" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>David Rice (Open University of Israel)</td>
+                                        <td>Solving and visualizing planet interiors with MAGRATHEA</td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/gVZpt-_U724" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2" class="date">Nov. 1st 2023</td>
+                                        <td>Hanno Rein (University of Toronto)</td>
+                                        <td>Accelerating a single N-body simulation with 8 particles using AVX512 instructions</td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/xaC51s25T70" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Néstor Espinoza (STScI)</td>
+                                        <td>What can juliet do for your exoplanet science?</td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/IBaL4vlNNsA" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="date">Dec. 6th 2023</td>
+                                        <td>Giannina Guzman Caloca (UMD, College Park)</td>
+                                        <td>Eureka! An end-to-end pipeline for time-series observations</td>
+                                        <td class="icon">
+                                            <a href="https://www.youtube.com/watch?v=lYZ4qiV-pbc" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="date">Feb. 7th 2024</td>
+                                        <td>Vincent Kofman (American U. / NASA GSFC)</td>
+                                        <td>Using the Planetary Spectrum Generator to Study Exoplanets</td>
+                                        <td class="icon">
+                                            <a href="https://www.youtube.com/watch?v=cojqtJjBxQg" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="date">Jun. 12th 2024</td>
+                                        <td>Dr. Nicholas Wogan (NASA Ames)</td>
+                                        <td>Photochem: a 1D photochemical and climate model of planetary atmospheres</td>
+                                        <td class="icon">
+                                            <a href="https://www.youtube.com/watch?v=vy5QcfegeL4" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="emaccordion-section">
+        <div class="emaccordion-header-bar">
+            <h2 class="emaccordion-title">EMAC 2023 Workshop</h2>
+            <div class="caret-container">
+                <span class="caret"></span>
+            </div>
+        </div>
+        <div class="emaccordion-content emac">
+
+            <div class="page_title">
+                <div class="break-title">
+                    <span>First EMAC Workshop on&nbsp;</span>
+                    <span>Open-Access Exoplanet Modeling & Analysis Tools&nbsp;</span>
+                    <span>Feb 7-9 2023</span>
+                </div>
+            </div>
+            <div class="workshop-main-text">
+                <p></p>
+                <p>
+                    EMAC was excited to host our first virtual workshop focused on publicly available exoplanet modeling and analysis resources!
+                </p>
+                <p>
+                    Over the last few years, EMAC has built up a database of hundreds of codes and resources, with a categorization system curated by scientists at NASA Goddard. This workshop brought together our community of exoplanet model and analysis developers, in order to present and share open-source codes and expertise with the wider exoplanet community and highlight the exciting work being done with these software packages and resources.
+                </p>
+                <p>
+                    Thank you to all who attended! Links to recorded talks can be found in the schedule below.
+                </p>
+            </div>
+            <div class="tile-grid">
+                <div class="callout">
+                    <h5>Scientific Organizing Committee</h5>
+                    <p>Eric Lopez (GSFC), Chair</p>
+                    <p>Etienne Bachelet (Caltech/IPAC)</p>
+                    <p>Sally Dodson-Robinson (Delaware)</p>
+                    <p>Jason Eastman (CfA)</p>
+                    <p>Thomas Fauchez (AU/GSFC)</p>
+                    <p>Sam Hadden (Toronto)</p>
+                    <p>Nathan Hara (Geneva)</p>
+                    <p>Mercedes Lopez-Morales (CfA)</p>
+                    <p>Caroline Piaulet (Montreal)</p>
+                </div>
+                <div class="callout">
+                    <h5>Local Organizing Committee</h5>
+                    <p>Joe Renaud (UMCP/GSFC), Chair</p>
+                    <p>Avi Mandell (GSFC)</p>
+                    <p>Eric Lopez (GSFC)</p>
+                    <p>Ted Johnson (SURA/GSFC)</p>
+                    <p>Carl Hostetter (GSFC)</p>
+                    <p>Mike Moore (GSFC)</p>
+                    <p>Dylan Cristy (GSFC)</p>
+                </div>
+            </div>
+            <div class="emac-schedule-container">
+                <div class="page_title">Schedule</div>
+                <div class="time-zone-note">
+                    <span class="hide-for-small-only">All times listed as US Eastern Standard Time (GMT -05:00)</span>
+                    <span class="show-for-small-only">All times listed as US EST (GMT -05:00)</span>
+                </div>
+                <div class="schedule-grid-tabs">
+                    <div class="schedule-tab-container">
+                        <div class="schedule-tab open">
+                            <span class="hide-for-small-only">Tuesday, Feb 7th</span>
+                            <span class="show-for-small-only">Tue, Feb 7</span>
+                        </div>
+                        <div class="schedule-tab">
+                            <span class="hide-for-small-only">Wednesday, Feb 8th</span>
+                            <span class="show-for-small-only">Wed, Feb 8</span>
+                        </div>
+                        <div class="schedule-tab">
+                            <span class="hide-for-small-only">Thursday, Feb 9th</span>
+                            <span class="show-for-small-only">Thu, Feb 9</span>
+                        </div>
+                    </div>
+                    <div class="schedule-grids">
+                        <div class="schedule-day open"> <!-- Tues 2/7 -->
+                            <table class="schedule-table hover">
+                                <tbody>
+                                    <tr>
+                                        <td class="time">10:30 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Celestial mechanics with the celmech code</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Sam Hadden</span></div>
+                                            <div class="detail">I will introduce "celmech", a new publicly available open-source python package for performing 
+                                                celestial mechanics calculations by constructing, manipulating, and integrating perturbative models for planetary 
+                                                systems' dynamics. While direct numerical integrations with modern computers have largely replaced the need for highly 
+                                                precise perturbative calculations, classical perturbation theory still plays an important role in modern planetary 
+                                                dynamics by providing simplified models for a variety of complex phenomena including mean motion resonances, secular 
+                                                evolution, and dynamical chaos. Classical perturbation theories in planetary dynamics can be elegantly formulated using 
+                                                a Hamiltonian framework, but non-experts (and experts alike) can quickly get mired in the complexities of computing 
+                                                disturbing function expansions and Laplace coefficients. The celmech code automatically computes and evaluates disturbing 
+                                                function coefficients, allowing users to quickly and easily construct Hamiltonian models by adding disturbing function terms 
+                                                with any desired cosine arguments. The code also interfaces closely with the popular REBOUND N-body integrator so that users 
+                                                can easily compare perturbative models against direct N-body integrations. I will give an introductory tutorial and highlight 
+                                                some example applications of celmech. The code can be downloaded at <a href="https://github.com/shadden/celmech">github.com/shadden/celmech.</a>
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/E1bXFDZi9PQ" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">10:45 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">GENGA: A GPU N-body integrator for planet formation and planetary system evolution - new developments.</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Simon Grimm</span></div>
+                                            <div class="detail">GENGA is a GPU N-body code, optimized for simulating the late stage of terrestrial planet formation or planetary system 
+                                                evolution. It supports non-Newtonian forces such as GR corrections, tidal forces, rotational deformation forces, Yarkovsky effect or 
+                                                Poynting-Robertson effect. GENGA can simulate up to 100'000 fully gravitational interactive particles, semi-active test particles or pure 
+                                                test particles. GENGA runs on NVIDIA and AMD GPUs. This presentation shows the newest developments in GENGA and gives examples of future simulations.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/aamV-HLY-D0" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">11:00 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">The Exo-Striker exoplanet toolbox</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Trifon Trifonov</span></div>
+                                            <div class="detail">I will present the powerful, free, and fast GUI exoplanet toolbox called "Exo-Striker". The tool offers a broad range of tools 
+                                                for detailed analysis of transit and Doppler data, including power spectrum analysis for Doppler and transit data, as well astrometry and spectral 
+                                                line activity analysis; Keplerian and dynamical modeling of multi-planet systems; MCMC and nested sampling; Gaussian Processes modeling; and an 
+                                                N-body long-term stability check of multi-planet systems. The Exo-Striker can also perform Mean Motion Resonance (MMR) analysis, create fast fully 
+                                                interactive plots, and export ready-to-use LaTeX tables with best-fit parameters, errors, and statistics, and many more. The Exo-Striker also offers 
+                                                instant online access to the "RVBank" database with over 300,000 unique RVs and activity indices from HARPS and HIRES. It combines Fortran efficiency 
+                                                and Python flexibility and is cross-platform compatible (MAC OS, Linux, Windows).
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/EcryFKdjyVI" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">11:15 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">AnalyticLC: an accurate modeling tool for photometry, RV, and astrometry, incorporating 3D-dynamics</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Yair Judkovsky</span></div>
+                                            <div class="detail">AnalyticLC is a method and code implementation for accurate light-curve, radial velocity and astrometry modeling, elucidating the 
+                                                connection between exoplanets orbital dynamics and observable quantities. It is based on an analytic solution of the equations of motion in 3D, 
+                                                using a fourth order expansion of the Disturbing Function. AnalyticLC has been used to make estimates of the masses and orbital properties of more 
+                                                than a hundred exoplanets. The analytic approach of AnalyticLC offers advantages for analyzing observations with a long time span, a scenario 
+                                                becoming increasingly common in this era of multiple space missions.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/NrtRJYV6WtE" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">12:00 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">A new Monte Carlo code to simulate collisions between porous dust aggregates</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Belén Planes</span></div>
+                                            <div class="detail">In many astrophysical environments the collisional evolution from submillimeter-sized porous dust aggregates to large bodies is an 
+                                                important and complex process. We developed a Monte Carlo code that simulates collision chains in a population of dust aggregates. This population has 
+                                                an initial distribution of aggregate sizes and porosities, and assume some collision velocity distribution. Then a set of successive collisions between 
+                                                pairs of aggregates, choosing according to the probability given by cross section and velocity, form one collision chain. Each collision outcome between 
+                                                aggregate partners depends on their mass ratio, porosity and impact velocity, which are based on our numerous previous results from granular simulations, 
+                                                where adhesive and friction forces between individual grains were taken into account. We averaged up to hundreds of thousands of independent collision 
+                                                chains to obtain the final, average size, mass and porosity distributions of aggregates. The number of chains traveled depends on the statistical error 
+                                                asked in the input code. Alternatively, this code provides an array that interrelates quantities such as mass-porosity and size-porosity. We observe a large 
+                                                generation of monomers and small clusters, and also growth of very few very large clusters. Collisions lead to significant compaction of the dust population, 
+                                                as expected.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/nFf3uGlg5vI" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">12:15 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">DustPy: A Python Package for Dust Evolution in Protoplanetary Disks</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Sebastian Stammler</span></div>
+                                            <div class="detail">Many processes in protoplanetary disks and during planet formation are highly sensitive to the sizes of dust particles involved. 
+                                                One example is the accretion of dust pebbles onto planets and planetary embryos. Very small dust particles are being simply deflected around the 
+                                                planetary embryo and are not accreted at all. But for large dust pebbles the collisional cross section of an embryo is increased by orders of 
+                                                magnitude. It is therefore crucial to know the sizes of dust particles in protoplanetary disks for an accurate estimation of the delivery of 
+                                                volatiles onto protoplanets and into planetary atmospheres. DustPy is a Python package that simulates dust evolution in protoplanetary disks by 
+                                                solving the Smoluchowski equation and can be used to compute the dust size distribution to estimate the accretion flux of dust onto planetary 
+                                                embryos. I will give a brief introduction to the usage of DustPy and will highlight some research projects that have been achieved using the software.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/7PagMHhajU8" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">12:30 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">The online Extrasolar Solar Planets Encyclopedia: content, associated tools and near-future evolutions.</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Jean Schneider</span></div>
+                                            <div class="detail">The Extrasolar Planets Encyclopedia tells you everything you want to know about exoplanets: a complete catalogue 
+                                                with 8,000 confirmed or candidate planets and several associated tools, an exhaustive bibliography (25,000 references), a list 
+                                                of search ground-based and space instruments, a list of conferences, a tutorial, and other. It is updated every day.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/ZW4dkc3HbBI" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">12:45 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">NASA's Exoplanet Archive and ExoFOP: a community resource</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Aurora Kesseli</span></div>
+                                            <div class="detail">The NASA Exoplanet Archive and ExoFOP provides to the community data and services oriented around published 
+                                                exoplanets and their stellar hosts, and a series of services connected to these data. The ExoFOP is a free-form data and 
+                                                information sharing environment designed to support the community in their follow-up and characterization of exoplanets and 
+                                                stars. The Exoplanet Archive also serves several community contributed datasets and is developing an exoplanet atmosphere 
+                                                spectroscopic visualization environment. Many of these data and services are used by both other tools and services - some of 
+                                                which are located at EMAC. This talk gives a summary of the Exoplanet Archive and ExoFOP how its services and data may be 
+                                                relevant to the content and mission of EMAC.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/EqpWMwYAwtE" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">1:00 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">ExoplAn3T, the SSDC webtool for study of exoplanetary systems</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Angelo Zinzi</span></div>
+                                            <div class="detail">ExoplAn3T is the SSDC webtool devoted to exoplanetary science. Differently from other exoplanetary tools it allows to 
+                                                search inside different dataset looking for whole systems with specified characteristics. This peculiarity would help the user to 
+                                                classify exoplanetary systems in a more systematic way.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/bnftz9u9jDQ" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">1:45 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">Invited Talk: "<a href="#talk-abstract" class="open-abstract" title="See talk abstract"><span class="event-title">Adventures in Open-Source Software Development and Exoplanet Orbit Modeling</span></a>"</div>
+                                            <div class="speaker"><span class="speaker">Sarah Blunt</span></div>
+                                            <div class="detail">In this talk, I'll take you through my graduate school journey of understanding exoplanet orbits by developing (and using!) open-source software. I'll 
+                                                present the science and implementation behind the two major orbit analysis packages I've worked on, <a href="https://radvel.readthedocs.io/en/latest/">RadVel</a> and 
+                                                <a href="https://orbitize.readthedocs.io/en/latest/">orbitize!</a>. I'll also talk about the decisions involved in open-sourcing our projects and the lessons I've learned 
+                                                since then. Finally, I'll advertise <a href="https://semaphorep.github.io/codeastro/">Code/Astro</a>, a workshop on open-source software for astronomers, and discuss how my 
+                                                experiences as a software development intern at Google have influenced my astronomy code.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/EwHh0Uxt0r8" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">2:15 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Panel #1: Best Development Practices for Open-Access Resources</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker"></span>Coding, Hosting, Documentation, and More</div>
+                                            <div class="detail">
+                                                Panelists:
+                                                <ul class="panelist-list">
+                                                    <li>GSFC/AU - Thomas Fauchez</li>
+                                                    <li>Caltech - Sarah Blunt</li>
+                                                    <li>STScI - Néstor Espinoza</li>
+                                                    <li>CfA - Jason Eastman</li>
+                                                    <li>ASCL - Alice Allen</li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/TDLYS6Hr_nE" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">3:45 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">NWelch: Coherence and power spectrum estimates for Doppler planet searches</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Sally Dodson-Robinson</span></div>
+                                            <div class="detail">NWelch uses Welch's method to estimate the power spectra, complex cross-spectrum, magnitude-squared coherence, and 
+                                                phase spectrum of bivariate time series with nonuniform observing cadence. For univariate time series, users can apply the Welch's 
+                                                power spectrum estimator or compute a nonuniform fast Fourier transform-based periodogram. Options include tapering in the time domain 
+                                                and computing bootstrap false alarm levels. Users may choose standard 50%-overlapping Welch's segments or apply a custom-made segmentation 
+                                                scheme constructed around seasonal gaps in the time series. NWelch was designed for Doppler planet searches but may be applied to any type 
+                                                of time series.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/V29Gx4dPK1E" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">4:00 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">ExoVista: A Suite of Planetary System Models for Exoplanet Studies</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Chris Stark</span></div>
+                                            <div class="detail">Studies of future space- and ground-based exoplanet surveys often rely on models of planetary systems to simulate 
+                                                instrument response, estimate scientific yields, perform trade analyses, and study efficient observation strategies. In this talk 
+                                                I will describe a new suite of planetary system models that contain all of the basic physics necessary to enable study with all 
+                                                major exoplanet detection methods. This software tool, exoVista, quickly generates thousands of models of quasi-self-consistent 
+                                                planetary systems around known nearby stars at scattered light wavelengths and efficiently records the position, velocity, 
+                                                spectrum, and physical parameters of all bodies as functions of time. The modeled planetary systems can be used to simulate surveys 
+                                                using the direct imaging, transit, astrometric, and radial velocity techniques, as well as the overlap of these different methods.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <!-- <a href="" class="youtube-link" title="Watch on YouTube"> -->
+                                                <i class="fa fa-youtube-play"></i>
+                                            <!-- </a> -->
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="schedule-day"> <!-- Weds 2/8 -->
+                            <table class="schedule-table hover">
+                                <tbody>
+                                    <tr>
+                                        <td class="time">10:00 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">MulensModel: microlensing software for Roman Space Telescope era</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Radek Poleski</span></div>
+                                            <div class="detail">The Roman Space Telescope (formerly WFIRST) is a NASA flagship mission currently under construction. One of its primary 
+                                                goals is to conduct a search for exoplanets using microlensing technique. This search will discover thousands of exoplanets with parameters 
+                                                that were not achivable for Kepler satellite. I will present a package that is aimed to be used for analysis of Roman microlensing data - 
+                                                MulensModel. This package is already allows deriving main parameters of exoplanets from simulated Roman data. Further MulensModel development 
+                                                will be discussed.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/T5rnCslnV18" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">10:15 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Microlensing computations with VBBinaryLensing</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Valerio Bozza</span></div>
+                                            <div class="detail">VBBinaryLensing is a library written in C++ and importable in Python for computation of microlensing light curves and 
+                                                astrometric shifts generated by single and binary/planetary lenses. It is based on contour integration optimized with several advanced 
+                                                methods. Higher order effects such as parallax, orbital motion and xallarap are also included. VBBinaryLensing has been adopted by several 
+                                                user-friendly microlensing modeling platforms and in the pipeline of the future Roman mission.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/N04VPEZxXdA" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">10:30 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">spaceKLIP: a high-contrast imaging pipeline for JWST</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Jens Kammerer</span></div>
+                                            <div class="detail">JWST offers high-contrast coronagraphic imaging in the near-IR (with NIRCam) and in the mid-IR (with MIRI) for the detection 
+                                                and characterization of exoplanets and circumstellar disks. spaceKLIP applies PCA-based PSF subtraction techniques based on the popular pyKLIP 
+                                                package to JWST coronagraphy data. It provides routines to compute contrast curves and forward model companion PSFs based on contemporary 
+                                                wavefront maps (obtained from MAST) for deriving accurate companion photometry and astrometry. spaceKLIP also enables reducing the raw (uncal) 
+                                                JWST data using the official JWST data reduction pipeline with several custom modifications to improve the quality of high-contrast imaging 
+                                                reductions and to better prepare the data for the KLIP workflow. Future upgrades will include the processing of non-coronagraphic imaging 
+                                                data, e.g., from NIRCam or NIRISS.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/D48MdHPDh1Y" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">10:45 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">VIP: a package for high-contrast imaging</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Valentin Christiaens</span></div>
+                                            <div class="detail">VIP (Vortex Image Processing) is a Python package providing the tools to reduce, post-process and analyze 
+                                                high-contrast imaging datasets, enabling the detection and characterization of directly imaged exoplanets, circumstellar disks, 
+                                                and stellar environments. It is a collaborative project which started at the University of Liège, aiming to integrate open-source, 
+                                                efficient, easy-to-use and well-documented implementations of state-of-the-art algorithms used in the context of high-contrast 
+                                                imaging. Since the first publication of the package (Gomez Gonzalez et al. 2017), a number of changes (new algorithms, new options, 
+                                                tutorials, etc.) have been made to the package, which will be summarized in this presentation (see also Christiaens et al. 2023).
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/YZrlQ3zx-So" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">11:00 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Reproducible, Open-Source Science with EXOSIMS</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Dmitry Savransky</span></div>
+                                            <div class="detail">EXOSIMS is an open source software framework for the simulation and analysis of space-based exoplanet imaging 
+                                                missions, which has been in active development since 2015. We present EXOSIMS's design philosophy and capabilities, as well as 
+                                                future development plans.  We also discuss the particular challenges associated with maintaining this type of software, explicitly 
+                                                designed to serve multiple different external projects and communities, and the strategies the EXOSIMS team has adopted to ensure 
+                                                the project's continued success.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/FVkk07Svj54" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">11:15 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Eureka!: An End-to-End Pipeline for JWST Time-Series Observations</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Giannina Guzman Caloca</span></div>
+                                            <div class="detail">Eureka! is a data reduction and analysis pipeline for exoplanet time-series observations, with a particular focus on 
+                                                James Webb Space Telescope (JWST) data. The goal of Eureka! is to provide an end-to-end pipeline that starts with raw, uncalibrated FITS 
+                                                files and ultimately yields precise exoplanet transmission and/or emission spectra. The pipeline has a modular structure with six stages, 
+                                                and each stage uses a "Eureka! Control File" (ECF; these files use the .ecf file extension) to allow for easy control of the pipeline's 
+                                                behavior. We provide template ECFs for the MIRI, NIRCam, NIRISS, and NIRSpec instruments on JWST and the WFC3 instrument on the Hubble Space 
+                                                Telescope (HST). These templates give users a good starting point for their analyses, but Eureka! is not intended to be used as a black-box 
+                                                tool, and users should expect to fine-tune some settings for each observation in order to achieve optimal results. At each stage, the pipeline 
+                                                creates intermediate figures and outputs that allow users to compare Eureka!'s performance using different parameter settings or to compare 
+                                                Eureka! with an independent pipeline. Here we present a stage-by-stage breakdown of the Eureka! pipeline and its basic functionalities as well 
+                                                as the resources available to the community so they may further familiarize themselves with Eureka! and its uses.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/9dPyMDUyN8Q" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">12:00 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">New opacities for hazes formed in different C/O environments</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Lia Corrales</span></div>
+                                            <div class="detail">In a recent ApJL by Corrales & Gavilan et al. (2023), we showcase opacities for three sets of  lab-grown tholins formed in 
+                                                different C/O ratio environments. The optical constants and resulting cross-sections are publicly available on Zenodo in ascii and FITS 
+                                                formats. I will present the general spectroscopic properties of the tholins and their effects on a model GJ 1214b transmission spectrum. 
+                                                These optical properties provide a necessary advancement over the templates available from Khare et al. 1984, and are particularly well-suited 
+                                                for modeling the observable properties of terrestrial planetary atmospheres. I will discuss the format of our data products and invite community 
+                                                feedback for making the data products most useful for incorporation into open source simulation tools.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/6xBdM0ryQ4Y" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">12:15 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Exoplanet Model Atmospheres for JWST Spectroscopy</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Anna Gagnebin</span></div>
+                                            <div class="detail">In Cycle 1, JWST will be taking spectra for over 70 different transiting planets at a variety of sizes and temperatures, in 
+                                                transit and at secondary eclipse. In order to simplify the process of knowledge extraction and initial comparison to models, I have been 
+                                                working to create a variety of atmosphere models and spectra for each of the exoplanets that are set to be observed in cycle 1. For each 
+                                                planet, I use the Planetary Intensity Code for Atmospheric Spectroscopy Observations (PICASO) code, an open-source 1D python model, to create 
+                                                a mini-grid of model atmospheres and spectra. I examine the role of changing metallicity, C/O ratio, energy redistribution, and other factors. 
+                                                These simulations will serve an important baseline, both for the initial comparison to JWST spectra, and as a starting point to more detailed 
+                                                models, which may include non-equilibrium chemistry or dynamics. These models will be posted online as a community resource for the initial 
+                                                comparison to JWST spectra.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/RCA8d22-5jM" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">12:30 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Pytmosph3R: a tool to compute transmission &amp; emission spectra from 3D simulations</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Aurélien Falco</span></div>
+                                            <div class="detail">The recent progress in observational capabilities of exoplanets has increased the requirements of theoretical models in terms of 
+                                                accuracy and robustness. A number of models are thus turning to multi-dimensional simulations to that aim. Pytmosph3R is an open-source Python 
+                                                package that can generate synthetic emission and transmission spectra using 3D atmospheric simulations (such as GCMs). It is designed as a post-process 
+                                                tool which offers the possibility of changing atmospheric properties (temperature, composition) before the computation of the spectrum. Pytmosph3R 
+                                                has been used in a number of studies (Caldas et al. 2019, Falco et al. 2022, Pluriel et al. 2022, McDonald et al. 2022) and in hands-on sessions or 
+                                                summer schools (ARES school, tutorials). Future developments include the computation of lightcurves, phasecurves, with the inclusion of rotation 
+                                                effects such as the Doppler shift, and limb darkening.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/6c55XijY4dg" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">12:45 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">The Importance of Opacities Across Several Measurement Techniques</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Ehsan Gharib-Nezhad</span></div>
+                                            <div class="detail">Over the past two decades, atmospheric characterization of exoplanets and brown dwarfs has been dramatically increasing - particularly, 
+                                                observations with HST, Spitzer, and various ground-based telescopes both with low to moderate-resolution spectroscopy and high-resolution 
+                                                cross-correlation approaches. Additionally, with the Transiting Exoplanet Survey Satellite (TESS), in conjunction with the launch of the James Webb 
+                                                Space Telescope (JWST), we can expect hundreds of planet detections followed by detailed spectroscopic characterization of their atmospheres. The 
+                                                compositional and temperature diversity of these worlds provide a unique opportunity to gain insight into planetary atmospheric chemical processes 
+                                                and formation pathways. One of NASA's primary goals is to observationally characterize exoplanet atmospheres, understand the chemical and physical 
+                                                processes of exoplanets and improve the understanding of the origins of exoplanetary systems. In the coming decade, starting with JWST, we will work 
+                                                towards achieving these goals by interpreting a diverse set of exoplanet atmosphere observations, ranging from hot gas giants to small temperate 
+                                                rocky worlds. Our understanding and interpretation of this full gamut of data will hinge on our ability to link observations to theoretical models, 
+                                                and then our ability to link those models to fundamental molecular and atomic opacities. Opacities serve as a fundamental input to all models used 
+                                                for exoplanet atmospheric characterization. The limitation of pressure-broadening data in the current opacities for HST/JWST resolutions, as well 
+                                                as the critical need for accurate spectral line position for cross-correlation technique could lead to serious uncertainties and biases on the 
+                                                observables including uncertainty in the C/O ratio, thermal structure, and atmospheric composition. Hence, a thorough assessment of opacities is 
+                                                instrumental to achieving a full understanding of exo-atmospheres across several measurement techniques. In this talk, we will give an overview of 
+                                                the current status of a set of key atmospheric absorbers relevant to late-type stellar, brown dwarf, and planetary atmospheres, to give the community 
+                                                intuition for selecting line lists for different measurement techniques. For example, H2O has four different "current" opacities which have different 
+                                                line positions, intensities, and transitions. We will discuss their impact on low-to-medium resolution HST/JWST spectroscopy and cross-correlation 
+                                                functions to illustrate the importance of opacity choices. We will focus on molecules that have been the subject of recent observation campaigns. 
+                                                This includes the noticeable disagreements between different TiO and VO line lists and their impact on synthetic emission/transmission spectra, as 
+                                                well as CH4 and FeH. In sum, an overview of the current challenges in opacity data and their practical influence on radiative transfer modeling will 
+                                                be outlined, and motivated. Lastly, our team's endeavors at NASA Ames research center to leverage these disagreements and concerns on opacity data 
+                                                and the lack of sufficient pre-computed and evaluated datasets will be addressed. Our comprehensive opacity database, MAESTRO, will be introduced 
+                                                as a means to alleviate community access to opacities.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/BkuFkVcBmFo" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">1:00 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">ROCKE-3D 2.0: An updated general circulation model for simulating the climates of rocky planets</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Kostas Tsigaridis</span></div>
+                                            <div class="detail">We present the second generation of ROCKE-3D (Resolving Orbital and Climate Keys of Earth and Extraterrestrial Environments with Dynamics), 
+                                                a generalized 3-dimensional General Circulation Model (GCM) for use in Solar System and exoplanetary simulations of rocky planet climates. ROCKE-3D version 
+                                                2.0 is a descendant of ModelE2.1, the flagship GCM of the NASA Goddard Institute for Space Studies (GISS) used in the most recent Intergovernmental Panel 
+                                                for Climate Change (IPCC) assessments. ROCKE-3D is a continuous effort to expand the capabilities of GISS ModelE to handle a broader range of atmospheric 
+                                                conditions, including different atmospheric planet sizes, gravities, pressures, rotation rates, more diverse chemistries and atmospheric compositions, 
+                                                diverse ocean and land distributions and topographies, and potential basic biosphere functions. In this release we present updated physics, and many more 
+                                                supported configurations which can serve as starting points to simulate the atmospheres of rocky terrestrial planets of interest. Two different radiation 
+                                                schemes are supported, the GISS radiation, valid only for atmospheres similar to that of modern Earth, and SOCRATES, which is more generalized but more 
+                                                computationally expensive. Three different atmospheric composition options are supported (preindustrial Earth, the atmosphere used in ROCKE-3D 1.0, and 
+                                                an anoxic atmosphere with no aerosols), three ocean configurations (prescribed, Q-flux, and dynamic), and two resolutions: the medium resolution (4x5 
+                                                degrees in latitude and longitude, previously used in ROCKE-3D 1.0), and the fine resolution, which has double the resolution in the atmosphere and 4 times 
+                                                the horizontal and 3 times the vertical resolution in the ocean. Finally, for the land surface hydrology, we have introduced generalized physics for 
+                                                arbitrary topography in the pooling and evaporation of water and river transport of water between grid cells, and for the vertical stratification of 
+                                                temperature in dynamic lakes. We quantify how the different component choices affect model results, and discuss strengths and limitations of using each 
+                                                component, together with how one can select which component to use. ROCKE-3D is publicly available and tutorial sessions are available for the community, 
+                                                greatly facilitating its use by any interested group.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/5sOPXB0gbd0" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">1:45 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">TauREx2D: Towards multi-dimensional retrievals</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Tiziano Zingales</span></div>
+                                            <div class="detail">New-generation spectrographs dedicated to the study of exoplanetary atmospheres, require a higher precision in the atmospheric models to 
+                                                better interpret the new spectra. Thanks to future space missions like JWST, ARIEL and Twinkle, indeed, the observed spectra will be precise enough to 
+                                                reveal features which cannot be modeled with a one-dimensional plane parallel atmosphere, especially in the case of Ultra Hot Jupiters. Bayesian frameworks 
+                                                are computationally intensive and prevent us from using complete three-dimensional self-consistent models to retrieve an exoplanetary atmosphere, and, 
+                                                they constrain us to use simplified models to converge to a set of atmospheric parameters. We propose the TauREx2D retrieval code, which uses two-dimensional 
+                                                atmospheric models as a good compromise between computational power and model precision to better infer exoplanetary atmospheres. Finally, we apply such a 
+                                                model on synthetic spectrum computed from a GCM simulation of WASP-121b and show the parameters retrieved bythe new TauREx 2D retrieval code.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/7womttr2P2Y" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">2:00 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">Invited Talk: "<a href="#talk-abstract" class="open-abstract" title="See talk abstract"><span class="event-title">Open Science at the Onset of Next-Generation Telescopes</span></a>"</div>
+                                            <div class="speaker"><span class="speaker">Natasha Batalha</span></div>
+                                            <div class="detail">The characterization of a diverse set of atmospheres, ranging from brown dwarfs to hot gas giants to small temperate rocky worlds will be part of the 
+                                                legacy of JWST and future NASA missions. These technological innovations will enable a plethora of discoveries, unveiling a variety of new chemical and physical 
+                                                regimes that could even point to the first detection of life beyond Earth. However, our ability to fully interpret these results hinge on how well we can link 
+                                                observations to complex theoretical models that describe, for example, the chemistry and climate. These kinds of models have immense potential to enable transformative 
+                                                discoveries, but only if the broader community has unfettered access to them, as well as the data they rely on. Here, I will talk about the developments we have made 
+                                                to model the climate, clouds, and spectra of exoplanets and brown dwarfs. I will also talk about the steps we have taken to ensure our software supports the principles 
+                                                of findability, accessibility, interoperability, and reusability.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/z8_uj7BJZrA" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">2:30 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">rfast: A Tool for Fast Explorations of Atmospheric Retrievals</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Tyler D. Robinson</span></div>
+                                            <div class="detail">Mission development studies often need rapid assessments of detection feasibility, especially as related to proposed instrument 
+                                                specifications. Originally designed to enable the HabEx and LUVOIR concept studies, rfast is a publicly-available, Python-based tool for rapidly 
+                                                exploring planetary spectra and atmospheric retrievals. Using a simple collection of commands, users can simulated a noise-free spectrum of a world, 
+                                                add instrument noise to generate a faux observations, and perform inverse analysis to understand how the spectral and noise properties map to 
+                                                atmospheric and planetary constraints. The rfast tool can be applied to transit, emission, and reflected-light spectra, and can be run on a personal 
+                                                laptop or small number of cluster cores.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/thwObo6YQVs" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">2:45 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">ExoCAM: A 3D Climate Model for Exoplanet Atmospheres</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Eric Wolf</span></div>
+                                            <div class="detail">ExoCAM is an independently curated exoplanet branch of the National Center for Atmospheric Research Community 
+                                                Earth System Model (CESM), version 1.2.1. ExoCAM has been used for studying the Earth through time, and the atmospheres of 
+                                                terrestrial extrasolar planets around a variety of stars. Here we describe ExoCAM and what makes it unique from standard 
+                                                configurations of CESM. In this presentation I will briefly review how the code is structured, supported configurations, 
+                                                metrics on community use, as well in progress model development efforts as we blaze on towards an ExoCAM 2.0.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/Nr3iccb0Sug" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">3:30 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">ExoCcycleGeo: A code to simulate carbon cycling on planets of variable sizes and chemical compositions</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Marc Neveu</span></div>
+                                            <div class="detail">Observations of extrasolar planetary systems have revealed a wide diversity of properties. This makes it necessary to understand 
+                                                how the processes thought to shape Earth's atmospheric composition might operate on exo-Earths (here defined as terrestrial planets with surface 
+                                                liquid water) whose size and bulk composition may differ. As a first step, the ExoCcycleGeo code allows investigation of how variations in planet 
+                                                size and the chemical (mineral) composition of its upper mantle and surface affects key processes involved in the carbonate-silicate cycle, which 
+                                                is thought to have regulated the composition of Earth's atmosphere and its surface temperature over its geological history. ExoCcycleGeo couples a 
+                                                simple model of thermal evolution with widely used geochemical codes, called as subroutines, that compute solid-melt equilibria for silicate rocks 
+                                                (MELTS) and equilibria and kinetics of water-rock interactions (PHREEQC). Outputs include, as a function of geologic time: reservoirs and fluxes of 
+                                                carbon; mantle temperature and convective velocity; lithospheric heat flux and thickness; surface pressure, temperature, and mixing ratios of CO2, 
+                                                N2, H2O, CH4, and O2; rainwater, river, and ocean pH; ocean redox; and detailed river and ocean compositions such as abundances of key soluble 
+                                                species (Na, Mg, Ca, Cl, sulfate, Fe, Si, oxidized and reduced carbon species, etc.). The code's calculations of outgassing and weathering fluxes 
+                                                are validated against modern and Archean Earth conditions. The source in C language is available at <a href="https://github.com/MarcNeveu/ExoCcycleGeo">https://github.com/MarcNeveu/ExoCcycleGeo</a>.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/bIZMOdBo7bU" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">3:45 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Solving and visualizing planet interiors with MAGRATHEA</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">David Rice</span></div>
+                                            <div class="detail">The community uses a variety of models to characterize the interior structure of small planets. Underlying these models are multiple 
+                                                computational techniques, numerous experimental measurements and theoretical estimates of the equations of state for planet-building materials, and 
+                                                differing treatments of temperature. MAGRATHEA is an open-source interior structure solver which can be customized to user-defined planet models. Our 
+                                                code features adaptable phase diagrams for the core, mantle, hydrosphere, and atmosphere and transparent storage for equations of state. I will 
+                                                demonstrate how the community can use and contribute to the code.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/Kpjvmwx3JrI" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">4:00 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Magma ocean depth on lava planets simulations using 2D model</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Yanhong Lai</span></div>
+                                            <div class="detail">Magma ocean might exist in the dayside of tidally-locked planets where the temperature could exceed the melting temperature of solid 
+                                                silicates. Many previous studies suggest that the magma ocean depth can reach tens of to hundreds of kilometers by assuming adiabatic or vertically 
+                                                constant temperature profiles. The effect of ocean dynamics has not been considered yet. In our study, we try to simulate the magma ocean depth 
+                                                using a 2D(x-z) Matlab model written by ourselves. Our simulation results show that the magma ocean depth considering ocean dynamics is much shallower 
+                                                than that not considering within-pool ocean overturning circulation. Consistent to the scaling theory, the magma ocean depth is strongly determined 
+                                                by the magnitude of vertical diffusivity. The effect of wind stress is evident only when the wind stress is hundreds to thousands of times that on 
+                                                Earth, which could make the magma ocean depth even shallower.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/TPpJgx04MT4" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="schedule-day"> <!-- Thu 2/9 -->
+                            <table class="schedule-table hover">
+                                <tbody>
+                                    <tr>
+                                        <td class="time">10:00 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">An efficient Monte Carlo model for the slowing down of photoelectrons</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Antonio García Muñoz</span></div>
+                                            <div class="detail">The extreme ultraviolet photons incident on an exoplanet become deposited in its upper atmosphere. The most energetic 
+                                                of these photons eject one or more electrons from the heavy particles in the gas. The nascent photoelectrons carry away as kinetic energy 
+                                                the excess of the photon energy over the ionization threshold, and can induce transformations in the gas that are often inhibited for 
+                                                thermal electrons. The transformations include excitation and ionization of atoms and molecules, which affect the detectability of these 
+                                                gases and constrain the fraction of incident stellar radiation that transforms into heat and may therefore affect the long-term stability 
+                                                of the atmosphere. We have built a Monte Carlo model that solves the slowing down of photoelectrons in a gas with arbitrary amounts of H, 
+                                                He and O atoms, and thermal electrons. The novel multi-score scheme differs from other Monte Carlo approaches in that it efficiently handles 
+                                                rare collisional channels, as in the case of low-abundance excited atoms that undergo superelastic and inelastic collisions. The Monte Carlo 
+                                                model, which is freely available, has been extensively demonstrated in a recent paper (<a href="https://doi.org/10.1016/j.icarus.2022.115373">https://doi.org/10.1016/j.icarus.2022.115373</a>). The 
+                                                presentation will focus on the working principles of the Monte Carlo model and its possibilities to investigate the atmospheres of exoplanets.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/LLBwXza9lWM" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">10:15 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Testing exoplanet evaporation with multitransiting systems with EvapMass</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Beatriz Campos Estrada</span></div>
+                                            <div class="detail">The photoevaporation model is one of the leading explanations for the evolution of small, close-in planets and the origin of the 
+                                                radius-valley. However, without planet mass measurements, it is challenging to test the photoevaporation scenario. EvapMass predicts the minimum 
+                                                masses of planets in multi-planet systems using the photoevaporation-driven evolution model. The planetary system requires both a planet above 
+                                                and below the radius gap to be useful for this test. EvapMass can be used to identify transiting systems that warrant radial-velocity follow-up 
+                                                to further test the photoevaporation model. In this talk, I will walk you through the physics of the problem and how you can use EvapMass to test 
+                                                any multitransiting system for photoevaporation.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/N3J5DjIenXY" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">10:30 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">A universal advection-diffusion equation solver based on stochastic differential equation method</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Liheng Zheng</span></div>
+                                            <div class="detail">In planetary magnetospheres, charged particle distributions are often solved from kinetic equations in the form of a diffusion 
+                                                equation (Fokker-Planck equation) or an advection-diffusion equation using various curvilinear coordinates of physical convenience. Solving 
+                                                these equations is usually not a trivial task. In this presentation, we introduce a numerical solver that can solve the general form of an 
+                                                advection-diffusion equation in arbitrarily provided coordinate systems in multiple dimensions, with user-specified boundary geometry, boundary 
+                                                conditions, and equation terms. The solver is based upon the mathematical theory of stochastic differential equations, whose computational accuracy 
+                                                and efficiency are greatly enhanced by specially designed adaptive algorithms and variance reduction technique. The solver also applies to problems 
+                                                with jumping particle transport. Versatility and robustness of the solver is exhibited in example problems. The solver is an open-source software, 
+                                                and is publicly available from GitHub and GSFC-EMAC repository.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/YN511KcTWDs" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">10:45 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">The MESA Project</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Frank Timmes</span></div>
+                                            <div class="detail">Software is an integral enabler of observation, experiment, theory, and computation and a primary modality for realizing discoveries 
+                                                and innovations. The ongoing explosion of activity in multi-messenger astronomy powers theoretical and computational developments, in particular the 
+                                                evolution of the community-driven software instrument Modules for Experiments in Stellar Astrophysics (MESA) for research and education. We will share 
+                                                how and why MESA established a dominant international market position, probable future directions for the MESA project, and the more general 
+                                                relationship between money and sustainability for community-driven, open-knowledge software instruments that enable transformative research.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/y-IsiNAalOM" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">11:00 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">PyLightcurve: A python tool to model light-curves of transiting exoplanets</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Angelos Tsiaras</span></div>
+                                            <div class="detail">PyLightcurve is an open-source python package dedicated to the modelling of exoplanet transit and eclipse light-curves. The aim of 
+                                                the package it to provide an integrated and user-friendly framework to analyse light-curves of exoplanets. It offers flexible fitting of multi-epoch 
+                                                and multi-colour light-curves, allowing for custom de-trending. Moreover, PyLightcurve includes wrappers for: ExoTETHyS (for easy calculation of 
+                                                limb-darkening coefficients for photometric and spectroscopic instruments); the Exoplanet Characterisation Catalogue, developed and maintained by the 
+                                                ExoClock project (for easy access to validated and up-to-date transit parameters); and SIMBAD (for easy access to stellar parameters). In PyLightcurve, 
+                                                the integration of the planetary orbit and of the stellar flux are performed in a fully vectorised way, allowing for efficient scaling-up even for more 
+                                                complex limb-darkening law (4-coefficient). With this implementation, the transit model can also be used in deep learning applications, through the 
+                                                pylightcurve-torch package, developed in Pytorch, which also offers GPU compatibility.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/OdlKijKCM_w" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">11:15 AM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">ExoAtmospheres: Exoplanet Atmospheres Database</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Monika Stangret</span></div>
+                                            <div class="detail">In recent years the number of planets, in which atmospheric signatures were detected using space and ground-based telescopes, 
+                                                grew significantly. I would like to present ExoAtmospheres - IAC community database for exoplanet atmospheric observations. The Exoplanet 
+                                                Atmospheres Database is built for the community and maintained by the community. Exoplanet atmospheres is an exciting and vibrant field of 
+                                                research, where new discoveries and publications occur at a very fast pace, and it is easy to miss many interesting results. The main purpose 
+                                                of ExoAtmospheres is to become an easy tool to quickly find out how many planets of a given type have had their atmospheres characterized. It 
+                                                is also a great tool to easily explore the bibliography on your specific research subject. The main purpose of this database is to become a 
+                                                quick and useful repository of all available exoplanet atmospheres observations, and also to help in the gathering of useful references for 
+                                                a given planet or planet types.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/8oYYN5_UOLw" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">12:00 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">prose: A Python package to build astronomical image processing pipelines</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Lionel Garcia</span></div>
+                                            <div class="detail">In the field of exoplanetary science, observations often lead to 2D images, reduced into photometric and spectroscopic 
+                                                time-series later analysed to characterise exoplanetary systems. To process these images, scientists generally make use of pipelines: a 
+                                                set of processing units sequentially executed on each image before being combined into exploitable products. While requiring a large effort, 
+                                                pipelines developed by scientists are usually instrument-specific, poorly maintainable, and yield products suffering from a low-level of 
+                                                reproducibility and portability. In this talk I present prose, a Python package allowing scientists to build robust, modular and transparent 
+                                                pipelines, focusing on what matters. By providing a set of pre-implemented blocks, one can easily assemble and test processing sequences, 
+                                                and only develop the blocks they need. This approach not only yields reproducible tools, it allows for rapid iteration towards pipelines with 
+                                                optimal scientific products. I will present the main concepts behind prose, and its use in various projects, among which are the TESS 
+                                                follow-up effort from the TRAPPIST telescope, the photometric pipeline of the ASTEP telescope (searching for transits from Antartcica), and 
+                                                the measurement of a planetary transmission spectrum from Hubble spectroscopic observations.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/2iMjP4unvU4" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">12:15 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Transit light curve modeling with PyTransit</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Hannu Parviainen</span></div>
+                                            <div class="detail">PyTransit is a transit modeling library aiming to make modeling complex heterogeneous light curve data sets in CPU and GPU 
+                                                fast and easy. The package has been under continuous development since 2009 and in “production” use since 2010. Some of its recent new features 
+                                                include a transit model capable of using any radially symmetric function to model stellar limb darkening while still being faster to evaluate 
+                                                than the analytical transit model for quadratic limb darkening, and significantly accelerated orbit computation routines. In this presentation 
+                                                I briefly introduce PyTransit, some of its more advanced features, and new features that will be added in the near future.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/bLnxkFNrMDQ" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">12:30 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Exoplanet detection in radial velocities with kima</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">João Faria</span></div>
+                                            <div class="detail">I will describe the kima package, and how it has been used to detect some of the lightest exoplanets in high-precision 
+                                                data from the ESPRESSO spectrograph. The code allows for a principled and robust statistical analysis of radial velocity datasets. In 
+                                                particular, it estimates the posterior distribution for the number of detected planets and allows for stellar activity models based on 
+                                                Gaussian processes, including the use of activity indicators for additional information.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/q2rb3LvDfrw" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">12:45 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">EXOTIC: the EXOplanet Transit Interpretation Code</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Rob Zellem</span></div>
+                                            <div class="detail">Exoplanet Watch's EXOplanet Transit Interpretation Code (EXOTIC) is a Python 3 package for analyzing photometric data of 
+                                                transiting exoplanets into lightcurves and retrieving transit epochs and planetary radii. EXOTIC relies upon the transit method for exoplanet 
+                                                detection. This method detects exoplanets by measuring the dimming of a star as an orbiting planet transits, which is when it passes between 
+                                                its host star and the Earth. If we record the host star's emitted light, known as the flux, and observe how it changes as a function of time, 
+                                                we should observe a small dip in the brightness when a transit event occurs. A graph of host star flux vs. time is known as a lightcurve, and 
+                                                it holds the key to determining how large the planet is, and how long it will be until it transits again.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/i3rLy9xADpM" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">1:00 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">The power of wavelets in transit and phase curve parameter determination</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Szilárd Csizmadia</span></div>
+                                            <div class="detail">Stellar photometric variability and instrumental effects, like cosmic ray hits, data discontinuities, data leaks, 
+                                                instrument aging etc. cause difficulties in the characterization of exoplanets and have an impact on the accuracy and precision of 
+                                                the modelling and detectability of transits, occultations and phase curves. This work aims to make an attempt to improve the transit, 
+                                                occultation and phase-curve modelling in the presence of strong stellar variability and instrumental noise. We invoke the 
+                                                wavelet-formulation to reach this goal. We explore the capabilities of the software package Transit and Light Curve Modeller (TLCM). 
+                                                It models the RV-curve + light curve: transit, occultation, beaming, ellipsoidal and reflection effects in the light curves (including 
+                                                the gravity darkening effect, too). The red-noise, the stellar variability and instrumental effects are modelled via wavelets. The 
+                                                wavelet-fit is constrained by prescribing that the final white noise level must be equal to the average of the uncertainties of the 
+                                                photometric data points. This helps to avoid the overfit and regularizes the noise model. The approach was tested by injecting synthetic 
+                                                light curves into Kepler's short cadence data and then modelling them. We give limits in terms of signal-to-noise ratio for every studied 
+                                                system parameter which is needed to accurate parameter retrieval. The wavelet-approach is able to manage and to remove the impacts of 
+                                                data discontinuities, cosmic ray events, long-term stellar variability and instrument ageing, short term stellar variability and 
+                                                pulsation and flares among others. Precise light curve models combined with the wavelet-method and with well prescribed constraints on 
+                                                the white noise are able to retrieve the planetary system parameters, even when strong stellar variability and instrumental noise 
+                                                including data discontinuities are present.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/_W2sd9WpRyQ" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">1:45 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Using the Planetary Spectrum Generator to study Exoplanets</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Vincent Kofman</span></div>
+                                            <div class="detail">The Planetary Spectrum Generator is a free-to-use tool that can synthesize exoplanet's transmission and emission spectra. It 
+                                                includes a 3D ephemeris calculator that interfaces with NASAs Exoplanet Archive to obtain geometric parameters to compute spectroscopic fluxes. 
+                                                The atmospheric and surface compositions can be specified or adopted from templates. Finally, the noise calculator enables realistic simulations 
+                                                of different observatories and instruments. In this talk, we explain the different modules of PSG and highlight some of the work that has been 
+                                                done using the tool.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/y1v5gt6o_hU" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">2:00 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Atmos: A versatile 1D photochemical/climate model of planetary atmospheres</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Shawn Domagal-Goldman</span></div>
+                                            <div class="detail">In this talk we will introduce the atmos model, explain its capabilities, and discuss exciting new improvements coming soon.</div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/dpWeHRFTpKQ" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">2:15 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Panel #2: Funding and Community Support</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker"></span>What is Available, and What Else Do we Need from NASA, NSF, and Beyond?</div>
+                                            <div class="detail">
+                                                Panelists:
+                                                <ul class="panelist-list">
+                                                    <li>NASA HQ - Steve Crawford</li>
+                                                    <li>NSF - Martin Still</li>
+                                                    <li>CUNY - Kelle Cruz</li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/qoOOLwDGDEQ" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">3:30 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Reducing Detection Confusion in Directly Imaged Multi-Planet Systems</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Samantha Hasler</span></div>
+                                            <div class="detail">Future direct imaging missions aiming to detect and characterize Earth-like planets around Sun-like stars may encounter a "confusion" 
+                                                problem when imaging a multi-planet system. Previous work has shown that planets in multi-planet systems can be “confused” in direct images taken over 
+                                                multiple epochs due to lack of prior knowledge about the planet's orbital parameters or planetary characteristics. Here, we consider a system to be 
+                                                confused when it has multiple possible orbit combinations for the planets that describe the data equally well and it's not obvious which detection 
+                                                belongs to which planet. We address the confusion problem with a publicly available "deconfusion" algorithm, which leverages astrometric information to 
+                                                fit orbits to planets and help differentiate between multiple planets in an image. The deconfusion algorithm accepts unlabeled planet detections with 
+                                                astrometric information and generates orbit matches. The matches are ranked based on their consistency with the presented data and the number of matched 
+                                                observations. We also introduce the inclusion of photometric considerations in the deconfusion algorithm to help differentiate between possible orbits. 
+                                                We are investigating the utility of orbital phase information for each planet in simulated planetary systems to reduce the rate of confusion in a 
+                                                multi-planet system. We aim to ultimately provide updated estimated confusion rates for planetary systems and a useful tool for direct imaging surveys.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/aK_A-PJse_0" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">3:45 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">EXOFASTv2: the value of global modeling</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Jason Eastman</span></div>
+                                            <div class="detail">I will give an overview of EXOFASTv2 and detail one of its major advantages: the simultaneous modeling of the star and planet(s). It has 
+                                                long been understood that the light curve of a transiting planet constrains the density of its host star. That fact is routinely used to improve measurements 
+                                                of the stellar surface gravity and has been argued to be an independent check on the stellar mass. I'll discuss how the stellar density from a transit light 
+                                                curve can also provide meaningful constraints on the radius and effective temperature of the star. This additional constraint is especially significant when 
+                                                we account for systematic errors in stellar modeling, but only when the planet, star, and systematic floors are simultaneously modeled.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <!-- <a href="" class="youtube-link" title="Watch on YouTube"> -->
+                                                <i class="fa fa-youtube-play"></i>
+                                            <!-- </a> -->
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="time">4:00 PM</td>
+                                        <td class="event">
+                                            <div class="event-title">
+                                                <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                    <span class="event-title">Exoplanetology with allesfitter in the next decade</span>
+                                                </a>
+                                            </div>
+                                            <div class="speaker"><span class="speaker">Tansu Daylan</span></div>
+                                            <div class="detail">We present allesfitter: an open-source astronomical software for modeling photometric and radial velocity 
+                                                data that can be used to characterize a gravitationally bound system of stars and planets including phenomena such as transits, 
+                                                flares, and spots. We highlight the capabilities of allesfitter and benchmark its performance by illustrating its use on a few 
+                                                confirmed exoplanetary systems. Given some time-series data, allesfitter takes fair samples from the posterior and enables 
+                                                robust model selection via Bayesian evidence. As the field of transiting exoplanets enters an era of detailed characterization 
+                                                following the successful Kepler and TESS surveys, allesfitter will remain a versatile community tool for modeling high-precision 
+                                                photometry from missions such as JWST, CHEOPS, and Pandora as well as all ongoing and upcoming precise radial velocity surveys.
+                                            </div>
+                                        </td>
+                                        <td class="icon">
+                                            <a href="https://youtu.be/EAUT8r9_0tk" class="youtube-link" title="Watch on YouTube">
+                                                <i class="fa fa-youtube-play"></i>
+                                            </a>
+                                        </td>                           
+                                        <td class="icon">
+                                            <a href="#talk-abstract" class="open-abstract" title="See talk abstract">
+                                                <i class="fa fa-external-link"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="reveal" id="detail-modal" data-reveal>
+                <button class="close-button" data-close aria-label="Close modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="date-time"></div>
+                <div class="detail-title"></div>
+                <div class="detail-speaker"></div>
+                <div class="detail-description"></div>
+            </div>
+
+        </div>
+    </div>
+
+    
+</div>
+{% endblock %}

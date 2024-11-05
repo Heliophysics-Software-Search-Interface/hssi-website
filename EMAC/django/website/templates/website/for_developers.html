@@ -1,0 +1,169 @@
+{% extends 'emac_base_template.html' %}
+
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/categories.css' %}?v=2024-09-05" />
+<link rel="stylesheet" href="{% static 'css/for_developers.css' %}?v=2024-09-05" />
+<script type="text/javascript" src="{% static 'js/forDevelopers.js' %}?v=2024-09-05"></script>
+{% endblock %}
+
+{% block page_content %}
+
+<div id="main-grid-layout" class="main-grid-layout">
+    <div id="sidebar" class="sidebar">
+        <div class="dev-navigation hide-for-small-only">
+            <ul class="vertical menu">
+                <li>
+                    <a href="#best-practices"><strong>Software Best Practices and Challenges</strong></a>
+                    <ul class="nested vertical menu">
+                        <li><a href="#storage">Safe code storage</a></li>
+                        <li><a href="#citation">Getting your code cited</a></li>
+                        <!-- <li><a href="#comparisons">Inter-code Comparisons</a></li> -->
+                        <li><a href="#style">Style and Documentation</a></li>
+                        <!-- <li><a href="#testing">Testing your code</a></li> -->
+                        <!-- <li><a href="#licensing">Licensing your code</a></li> -->
+                        <!-- <li><a href="#friendly">Making your code user-friendly</a></li> -->
+                        <!-- <li><a href="#workshops">Workshops</a></li> -->
+                    </ul>
+                </li>
+                <!-- <li><a href="#funding"><strong>Funding Sources for Open-Access Resource Development</strong></a></li> -->
+            </ul>
+        </div>
+    </div>
+    <div class="main-content developers">
+
+        <a class="section-anchor" name="best-practices"></a>
+        <div class="page_title">Software Best Practices and Challenges</div>
+
+        <a class="section-anchor" name="storage"></a>
+        <div class="callout resource-info">
+            <h5>Safe code storage</h5>
+            <ul>
+                <li>
+                    In addition to storing your code locally, it should consistently be backed up to a remote
+                    repository. Here are some popular options:
+                    <ul>
+                        <li><a href="https://docs.github.com/en">Github Docs</a></li>
+                        <li><a href="https://bitbucket.org/product/guides">Bitbucket Guide</a></li>
+                    </ul>
+                </li>
+                <li>
+                    Stable versions (i.e. releases) of your code can be additionally backed up to a number of static
+                    repositories. Not only does this add another layer of protection, but it also helps make the science
+                    you use your code for more reproducible. Here are some commonly-used options:
+                    <ul>
+                        <li><a href="http://ascl.net/">The Astrophysics Source Code Library</a></li>
+                        <li><a href="https://zenodo.org/">zenodo</a></li>
+                        <li><a href="https://archive.softwareheritage.org/">Software Heritage</a></li>
+                    </ul>
+                </li>
+                <li>
+                    If your code has online documentation (e.g. <a href="https://readthedocs.org/">Read the Docs</a>),
+                    save them with the Internet Archive's <a href="https://web.archive.org/">Wayback Machine</a>
+                </li>
+            </ul>
+        </div>
+
+        <a class="section-anchor" name="citation"></a>
+        <div class="callout resource-info">
+            <h5>Getting your code cited</h5>
+            <ul>
+                <li>
+                    Code citations can be an important metric when deciding what resources to dedicate to a code's
+                    maintenance. Here are some ways to make your code citable without a traditional journal article:
+                    <ul>
+                        <li><a href="https://joss.theoj.org/">The Journal of Open Source Software (JOSS)</a>, a free,
+                            open-access journal that also provides code review.</li>
+                        <li><a href="http://ascl.net/">The Astrophysics Source Code Library (ASCL)</a>, a free code
+                            registry for the astrophysics community.</li>
+                        <li><a href="https://zenodo.org">zenodo</a>, a free code and data registry maintained by the
+                            CERN Data Centre</li>
+                    </ul>
+                </li>
+                <li>
+                    Additionally, you can help point people to the correct citation for your code. Along with your
+                    repository's README, include a <a href="https://citation-file-format.github.io/">CITATION.cff</a>
+                    file or a <a href="https://codemeta.github.io/">codemeta.json</a> file that tells your users exactly
+                    what to cite.
+                </li>
+                <li>
+                    NOTE: Code that is stored in multiple places (as it should be) often has multiple Digital Object
+                    Identifiers (DOIs) minted for a single version of software. The ASCL and NASA Astrophysics Data
+                    System (ADS) are currently working on coordinating between DOI creators so that there is a
+                    one-to-one relationship between DOIs and unique pieces of software.
+                </li>
+            </ul>
+        </div>
+
+        <!-- <a class="section-anchor" name="comparisons"></a>
+        <div class="callout resource-info">
+            <h5>Inter-code Comparisons</h5>
+        </div> -->
+
+        <a class="section-anchor" name="style"></a>
+        <div class="callout resource-info">
+            <h5>Style and Documentation</h5>
+            <ul>
+                <li>Documenting your code can have a dramatic positive effect on your users. It makes your code more
+                    usable and much easier to maintain.</li>
+                <li>
+                    A common way to quickly publish documentation is to use <a
+                        href="https://www.sphinx-doc.org/en/master/index.html">Sphinx</a> to auto-generate a website
+                    based on the docstrings in your code. This website can be uploaded to <a
+                        href="https://readthedocs.org/">Read the Docs</a> for free to be accessible to the public.
+                    <ul>
+                        <li><a href="https://sphinx-rtd-tutorial.readthedocs.io/en/latest/index.html">Sphinx/Read the
+                                Docs Tutorial</a></li>
+                        <li><a href="https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html">Sphinx
+                                Extension for Google and Numpy Docstrings</a></li>
+                        <li><a href="https://numpydoc.readthedocs.io/en/latest/format.html#notes">numpydoc Style
+                                Guide</a></li>
+                        <li><a href="https://google.github.io/styleguide/pyguide.html">Google Docstring Style Guide</a>
+                        </li>
+                        <li><a href="https://marketplace.visualstudio.com/items?itemName=njpwerner.autodocstring">autoDocstring
+                                Exension for VScode</a></li>
+                    </ul>
+                </li>
+                <li>
+                    To make your source code more readable, it is best practice to follow the <a
+                        href="https://peps.python.org/pep-0008/">PEP-8 Style Guidelines</a>. This is made easier by
+                    using linters and formatters such as:
+                    <ul>
+                        <li>autopep8</li>
+                        <li>pylint</li>
+                        <li>black</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <!-- <a class="section-anchor" name="testing"></a>
+        <div class="callout resource-info">
+            <h5>Testing your code</h5>
+        </div> -->
+
+        <!-- <a class="section-anchor" name="licensing"></a>
+        <div class="callout resource-info">
+            <h5>Licensing your code</h5>
+        </div> -->
+
+        <!-- <a class="section-anchor" name="friendly"></a>
+        <div class="callout resource-info">
+            <h5>Making your code user-friendly</h5>
+        </div> -->
+
+        <!-- <a class="section-anchor" name="workshops"></a>
+        <div class="callout resource-info">
+            <h5>Workshops</h5>
+        </div> -->
+
+        <!-- <a class="section-anchor" name="funding"></a>
+        <div class="page_title">Funding Sources for Open-Access Resource Development</div>
+        <div class="callout resource-info">
+        </div> -->
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'emac_base_template.html' %}
+
+{% load static %}
+
+{% block title %}
+EMAC Logout Success Page
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'emac_apps/css/accounts.css' %}?v=2024-09-05" />
+    <link rel="stylesheet" href="{% static 'emac_apps/css/media.css' %}?v=2024-09-05" />	
+{% endblock %}
+
+{% block page_content %}
+    <div class="container">
+        <p>You have logged out!</p>
+        <p>
+            <a href="{% url 'login' %}">Log in again?</a>
+        </p>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+	{{ block.super }}
+{% endblock %}

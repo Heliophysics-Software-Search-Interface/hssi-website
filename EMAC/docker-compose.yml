@@ -1,0 +1,106 @@
+version: '3'
+
+services:
+            
+    emac: &emac
+        build: ./docker
+        image: emac
+        container_name: EMAC
+        depends_on:
+            - shared_db
+            - website_db
+        ports:
+            - "80:80"
+        volumes:
+            - ./django:/django
+            - ./django/static:/static
+            - ../../logs/nginx:/var/log/nginx
+            - ../shared/config/nginx/logrotate:/etc/logrotate.d/nginx
+            - ../shared/config/django:/config/django
+            - ../shared/config/nginx:/etc/nginx/conf.d
+            - ../shared/django/emac_base_template.html:/django/emac/templates/emac_base_template.html
+            - ../shared/django/registration:/django/emac/templates/registration
+            - ../shared/django/emac_context_processors.py:/django/emac/emac_context_processors.py
+            - ../shared/django/emac_secret_settings.py:/django/emac/emac_secret_settings.py
+            - ../shared/django/emac_utils.py:/django/emac/emac_utils.py
+            - ../shared/static/emac_apps:/static/emac_apps
+            - ../../data:/data
+            - ../shared/pip-requirements:/extensions/pip-requirements
+            - ../shared/django/recaptcha_auth_forms.py:/django/emac/recaptcha_auth_forms.py
+        environment:
+            - EMAC_ADMIN_USERNAME=$EMAC_ADMIN_USERNAME
+            - EMAC_ADMIN_PASSWORD=$EMAC_ADMIN_PASSWORD
+            - PROJECT_NAME=emac
+            - APP_NAME=website
+            - GUNICORN_WORKERS=4
+            - GUNICORN_BACKLOG=4096
+            - GUNICORN_BIND=0.0.0.0:8000
+            - GUNICORN_TIMEOUT=3600
+         
+    shared_db:
+        image: postgres
+        container_name: shared_db
+        environment: 
+            - POSTGRES_PASSWORD=$EMAC_ADMIN_PASSWORD
+        # To persist db data, uncomment the following volumes statement, and see the outer 
+        # volumes section below:
+        volumes:
+            - shared_db_data:/var/lib/postgresql/data
+
+    website_db:
+        image: postgres
+        container_name: website_db
+        environment: 
+            - POSTGRES_PASSWORD=$EMAC_ADMIN_PASSWORD
+        # To persist db data, uncomment the following volumes statement, and see the outer 
+        # volumes section below:
+        volumes:
+            - website_db_data:/var/lib/postgresql/data
+
+#
+# To debug, uncomment the following section and bring up the container by using "docker-compose up debug"
+#
+# To return to non-debug operation, ensure that the section is commented out again before "docker-compose up"
+#
+    # debug:
+    #     << : *emac
+    #     ports:
+    #         - "80:80"
+    #         - "5678:5678"
+    #     volumes:
+    #         - ./launch.sh:/launch.sh
+    #         - ./django:/django
+    #         - ./django/static:/static
+    #         - ../../logs/nginx:/var/log/nginx
+    #         - ../shared/config/nginx/logrotate:/etc/logrotate.d/nginx
+    #         - ../shared/config/django:/config/django
+    #         - ../shared/config/nginx:/etc/nginx/conf.d
+    #         - ../shared/django/emac_base_template.html:/django/emac/templates/emac_base_template.html
+    #         - ../shared/django/emac_context_processors.py:/django/emac/emac_context_processors.py
+    #         - ../shared/django/emac_secret_settings.py:/django/emac/emac_secret_settings.py
+    #         - ../shared/django/emac_utils.py:/django/emac/emac_utils.py
+    #         - ../shared/static/emac_apps:/static/emac_apps
+    #         - ../../data:/data
+
+
+# To persist db data, uncomment at least the next two lines, and see the further note below
+volumes:
+    shared_db_data:  # NOTE that this statement alone persists data in Docker's volume storage 
+                # area. To clear this data entirely, use: docker volume rm emac_shared_db_data
+                # To persist elsewhere, uncomment the following, and make sure a directory 
+                # exists at the desired location as specified by "device:"
+        # driver_opts:
+        #     type: none
+        #     device: data/db
+        #     o: bind   
+    website_db_data:  # NOTE that this statement alone persists data in Docker's volume storage 
+                # area. To clear this data entirely, use: docker volume rm emac_website_db_data
+                # To persist elsewhere, uncomment the following, and make sure a directory 
+                # exists at the desired location as specified by "device:"
+        # driver_opts:
+        #     type: none
+        #     device: data/db
+        #     o: bind   
+    nginx-proxy-conf:
+    nginx-proxy-shared-html:
+    nginx-proxy-vhosts:

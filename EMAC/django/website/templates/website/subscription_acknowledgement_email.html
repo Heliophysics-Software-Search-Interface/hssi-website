@@ -1,0 +1,12 @@
+{% extends 'website/emac_email_template.html' %}
+
+{% block email_content %}
+
+<h1>Your <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}">EMAC</a> Subscription</h1>
+<p>{{ intro }}</p>
+<p><b>Categories:</b> {{ categories }}</p>
+<p><b>Notification Frequency:</b> {{ notification_frequency }}</p>
+<p><b>Subscriber Email:</b> {{ subscriber_email }}</p>
+<p>If you would like to revise your subscription settings you may do so by <a href="{{subscription_edit}}"> clicking here.</a></p>
+
+{% endblock %}

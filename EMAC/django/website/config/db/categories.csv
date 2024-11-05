@@ -1,0 +1,46 @@
+id,name,abbreviation,theme_color,text_color,description,children,index
+db27ccf0-69c2-4286-b747-7050ff01ad5e,1D Atm Models,,#000000,#ffffff,,,
+318eea9a-f43c-42b1-a330-f3ba819e9fb1,2D/3D Atm Models,,#000000,#ffffff,,,
+0695a903-9eed-433e-9835-1d1b817b196e,Astrometry Fitting,,#000000,#ffffff,,,0
+f27e2892-66a6-4df8-a7be-7ac72c89cc5c,Astrometry Inst. Models,,#000000,#ffffff,,,
+8d53f732-df4f-460d-af29-c9e3d66b9733,Atm Chemistry Models,,#000000,#ffffff,,,
+18e31bc4-33cf-47bf-a67a-a4667b6021a7,Atm Escape,,#000000,#ffffff,,,
+e8b4f3a9-6d97-41eb-a155-139f2aa4f0fc,Atmosphere Models,Atm,#ffae00,#ffffff,"Models of planetary atmospheres, including 1D and 3D structure and dynamics models, chemistry, cloud models, etc.","db27ccf0-69c2-4286-b747-7050ff01ad5e,318eea9a-f43c-42b1-a330-f3ba819e9fb1,8d53f732-df4f-460d-af29-c9e3d66b9733,18e31bc4-33cf-47bf-a67a-a4667b6021a7,513ef532-23d3-4a86-9df4-942b59856d7d,db291c59-85a4-45e0-97e4-d8551b43519d,dbae53bb-415c-4f59-b335-e3f217d8f656",1
+513ef532-23d3-4a86-9df4-942b59856d7d,Atm Retrieval Codes,,#000000,#ffffff,,,
+db291c59-85a4-45e0-97e4-d8551b43519d,Cloud Physics Models,,#000000,#ffffff,,,
+538f8741-2d13-489a-9fbe-b2c28f273867,Data Reduction Tools,Data,#ff99cc,#ffffff,"Tools to reduce primary data products (e.g. images) to secondary data products, including time series, photometry/spectra, etc.","a67162ad-5673-40cb-bb00-c62096023ed8,fc30b68b-60fb-4142-8c8d-7dc5a6a972b4,a80b9940-ea32-4bb4-a6f9-bca9c80eb266",6
+e2848c9c-a95d-41b6-9b8c-d5bc39b56d4c,Data Visualization Tools,Vis,#7b219f,#ffffff,"Tools to visualize planetary data. Includes elements such as graphs, charts, and maps.","299ab6be-b661-40ed-ba05-9e15d85b3f6c,dc32870b-8644-4a88-a944-42ecf114712b",9
+a67162ad-5673-40cb-bb00-c62096023ed8,Direct Imaging Data Red.,,#000000,#ffffff,,,
+00ce5921-7233-475f-ab59-ac93098698e5,Direct Imaging Inst. Models,,#000000,#ffffff,,,
+c2ebe86b-ed8b-4380-8bce-aa80b45cad3c,Direct Imaging RT,,#000000,#ffffff,,,
+95d818af-f5f6-4ff0-9225-4307e5ceffee,Exoplanet Observation Catalogs,,#000000,#ffffff,,,
+dec96835-8a74-4bdb-bfe4-97a8c4094535,Formation and Dynamics Tools,Dyn,#99ccff,#ffffff,"Tools and models to determine the orbital architecture and behavior of planetary systems e.g. orbital integrators, astrometric/RV orbit determinations, transit-timing variations.","86a75289-4748-4755-93af-fc96aee6d617,e9e47387-d864-4e0f-9135-1c819a31bf02",7
+9e049de0-81c1-4b28-8c8f-911c73cbd2b5,Hardware Control & Optimization,Hard,#0e319a,#ffffff,"Tools that model and control hardware performance. For example, algorithms that perform adaptive optics optimization, wavefront sensing and control, segment phasing, etc.",25b2759b-acdd-4d40-8efd-463defcb2c22,10
+a94648a9-d164-4510-b459-133f79a4e821,Host Star Catalogs,,#000000,#ffffff,,,
+9559482f-3d84-42e3-af6a-15e64aee02fd,Imaging Survey Predictions,,#000000,#ffffff,,,
+81edf180-3631-46a6-864a-d4e4e8932319,Interior Constraints Fitting,,#000000,#ffffff,,,
+92f35cfc-6448-4715-bddd-4e30f9f4de8d,Interior Models,Int,#e7f62b,#000000,"Models of planetary interiors, including mass/radius, interior thermochemistry, interior/surface evolution, etc.","81edf180-3631-46a6-864a-d4e4e8932319,cdda4cb1-f016-4a65-b93f-79a28595c704",2
+cdda4cb1-f016-4a65-b93f-79a28595c704,Interior Structure Models,,#000000,#ffffff,,,
+fbe59b7c-caa3-4199-99a6-5a248c82fdbd,Lightcurve Fitting,,#000000,#ffffff,,,
+299ab6be-b661-40ed-ba05-9e15d85b3f6c,Lightcurve Visualization,,#000000,#ffffff,,,
+19ccc457-e339-4f5f-9e58-eafe04332362,Microlensing Event Fitting,,#000000,#ffffff,,,
+5b3a1092-b18b-4de6-9c38-e13d1537b076,Model-Fitting Tools,Fit,#9585bf,#ffffff,"Tools to fit models to data products, including light-curve fitting, spectral retrieval, etc.","0695a903-9eed-433e-9835-1d1b817b196e,513ef532-23d3-4a86-9df4-942b59856d7d,81edf180-3631-46a6-864a-d4e4e8932319,fbe59b7c-caa3-4199-99a6-5a248c82fdbd,19ccc457-e339-4f5f-9e58-eafe04332362,52b7d3d8-270f-450a-9538-202a6ca85ca2,676eea53-e8b8-4ec1-996c-9a2dcdf02d68,45e64876-9a6e-427b-bd99-8678d35c6468",5
+21dabf68-cb1d-415e-addb-5c49a3ae7b3f,Observatory/Instrument Models,Obs,#1779ba,#ffffff,"Models of simulated output for specific observatories or instruments, including observatory science yields, simulated data from specific instruments, etc. (occurrence rates)","f27e2892-66a6-4df8-a7be-7ac72c89cc5c,00ce5921-7233-475f-ab59-ac93098698e5,ffbb735c-1411-4754-94d6-9cbf00b89122,dd9f5985-9df5-4eaf-b453-91445db9afd8",4
+86a75289-4748-4755-93af-fc96aee6d617,Orbit Evolution (N-body),,#000000,#ffffff,,,
+e9e47387-d864-4e0f-9135-1c819a31bf02,Orbit Evolution (Semi-Analytic),OrbE,#6eddad,#ffffff,,,
+52b7d3d8-270f-450a-9538-202a6ca85ca2,Orbit Fitting,,#000000,#ffffff,,,
+fc30b68b-60fb-4142-8c8d-7dc5a6a972b4,Photometry Data Red.,,#000000,#ffffff,,,
+ffbb735c-1411-4754-94d6-9cbf00b89122,Photometry Instr. Models,,#000000,#ffffff,,,
+dc32870b-8644-4a88-a944-42ecf114712b,Planet Population Visualization,,#000000,#ffffff,,,
+dbae53bb-415c-4f59-b335-e3f217d8f656,Plan. Magnetosphere Models,,#000000,#ffffff,,,
+adf8c3a8-525f-4937-af5f-099421f3872b,Population Simulations and Catalogs,Pop,#993200,#ffffff,"Tools and models to simulate and fit exoplanet populations, occurrence rates, and system architectures.","95d818af-f5f6-4ff0-9225-4307e5ceffee,9559482f-3d84-42e3-af6a-15e64aee02fd,f40e66f6-5513-4e46-8518-91a3cc62fc95",8
+dfe5fae2-440b-4574-b392-024f6f4df7c9,Radiative Transfer Tools,RT,#82af00,#ffffff,"Tools used to produce simulated observations, including opacity information, spectral simulators, etc.","c2ebe86b-ed8b-4380-8bce-aa80b45cad3c,12a6a5a9-4806-46a3-ad7a-8a0913c0d4ef",3
+676eea53-e8b8-4ec1-996c-9a2dcdf02d68,RV Fitting,,#000000,#ffffff,,,
+a80b9940-ea32-4bb4-a6f9-bca9c80eb266,Spectroscopy Data Red.,,#000000,#ffffff,,,
+dd9f5985-9df5-4eaf-b453-91445db9afd8,Spectroscopy Instr. Models,,#000000,#ffffff,,,
+6c0d9e44-04a8-4612-ac1d-119316c9c4ab,Stellar Models and Catalogs,Star,#cc4b37,#ffffff,"Models of stellar output, including radiation, particles, and time-dependent models.","a94648a9-d164-4510-b459-133f79a4e821,8372cff6-c49b-41dd-88ef-6d7c96ae46d3",0
+8372cff6-c49b-41dd-88ef-6d7c96ae46d3,Stellar Models and Spectra,,#000000,#ffffff,,,
+45e64876-9a6e-427b-bd99-8678d35c6468,Stellar Parameter Fitting,,#000000,#ffffff,,,
+12a6a5a9-4806-46a3-ad7a-8a0913c0d4ef,Transit/Eclipse RT,,#000000,#ffffff,,,
+f40e66f6-5513-4e46-8518-91a3cc62fc95,Transit Survey Predictions,,#000000,#ffffff,,,
+25b2759b-acdd-4d40-8efd-463defcb2c22,Wavefront Control,,#000000,#ffffff,,,

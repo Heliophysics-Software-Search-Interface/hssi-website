@@ -1,0 +1,31 @@
+{% extends 'emac_base_template.html' %}
+{% load static %}
+{% block head %}
+
+    <link rel="stylesheet" href="{% static 'emac_apps/css/app.css' %}?v=2024-09-05" />
+
+{% endblock %}
+<!-- END HEAD -->
+
+<!-- PAGE CONTENT -->
+{% block page_content %}
+
+    <div class="container">               
+        <div>
+            {% for resource in updated %}
+                <div>
+                    Updated {{resource.name}} citation id to {{resource.citation_id}}
+                 </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+
+{% endblock %}
+<!-- END PAGE CONTENT -->
+
+<!-- SCRIPTS -->
+{% block scripts %}
+	{{ block.super }}
+{% endblock %}
+<!-- END SCRIPTS -->

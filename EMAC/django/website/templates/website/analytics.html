@@ -1,0 +1,330 @@
+{% extends 'emac_base_template.html' %}
+
+{% load static %}
+{% load static %}
+
+{% block head %}
+
+<link rel="stylesheet" href="{% static 'css/team.css' %}?v=2024-09-05" />
+
+<head>
+    <style>
+      .outer-div {
+        margin: auto;
+        width: 60%;
+        border: 5px solid #323232;
+        padding: 10px;
+      }
+      .inner-div {
+        display: inline-block;
+        margin: 0 auto;
+        padding: 3px;
+        text-align: center;
+      }
+      code {
+          font-family: Consolas,"courier new";
+          color: crimson;
+          background-color: #f1f1f1;
+          padding: 2px;
+          font-size: 105%;
+        }
+        .scrollable-image {
+            width: 100%; /* Set the width you want to display */
+            height: 600px; /* Set the height you want to display */
+            overflow: auto; /* Enable scrolling if the content is larger */
+            border: 1px solid #ccc; /* Optional: Add a border for clarity */
+        }
+        .scrollable-image img {
+            width: 100%; /* Ensure the image fits within the container's width */
+        }
+    </style>
+</head>
+
+{% endblock %}
+
+{% block page_content %}
+
+{% get_static_prefix as STATIC_PREFIX %}
+{% autoescape off %}
+
+<!--<form method="post">-->
+<!--  {% csrf_token %}-->
+<!--  <table>-->
+<!--      {{ form.as_table }}-->
+<!--  </table>-->
+
+<!--</form>-->
+
+<!--<table border="1">-->
+<!--{% for field in form.visible_fields %}-->
+<!--  <tr>-->
+<!--    <th>{{ field.label_tag }}</th>-->
+<!--    <td>-->
+<!--      {{ field }}-->
+<!--    </td>-->
+<!--  </tr>-->
+<!--    hi-->
+<!--{% endfor %}-->
+<!--</table>-->
+
+<!--<button type="submit">Update</button>-->
+
+<div class="outer-div">
+    <p>Click the "Remake All" button below to remake all plots. There is an identical button at the bottom of this page. You may need to clear your cache and refresh your page after clicking a button. The Youtube plots have to be remade separately.</p>
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.remake_all.label_tag }} {{ form.remake_all }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" name="remake_all" value="Remake All">
+        </form>
+    </div>
+    <div>
+        Glossary
+        <ul>
+            <li>
+                GA Terms
+                <ul>
+                    <li><b>Users</b> represent individuals that visit your site. If that same User leaves your site and comes back later, Google Analytics will remember them, and their second visit won’t increase the number of Users (since they have already been accounted for in the past).</li>
+                    <li><b>Sessions</b> represent a single visit to your website. Whether a User lands on one of your web pages and leaves a few seconds later, or spends an hour reading every blog post on your site, it still counts as a single Session. If that User leaves and then comes back later, it wouldn’t count as a new User (see above), but it would count as a new Session.</li>
+                    <li><b>Pageviews</b> represent each individual time a page on your website is loaded by a User. A single Session can include many Pageviews, if a User navigates to any other web pages on your website without leaving. (unique pageviews combine the pageviews that are from the user, on the same page, in the same session, and just count them as one.)</li>
+                </ul>
+            </li>
+            <li>
+                Twitter Terms
+                <ul>
+                    <li><b>Impressions</b>: number of times a tweet appears to users in either their timeline or search results.</li>
+                    <li><b>Engagements</b>: the total number of times a user interacted with the tweet; interactions include retweets, replies, follows, likes and clicks on links, cards, hashtags, embedded media, username, profile photo or tweet expansion.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="outer-div">
+    <img src="{% static 'analytics_plots/visits_over_time.png' %}">
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.visits_over_time.label_tag }} {{ form.visits_over_time }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <p>Visits to EMAC from people outside of our team.</p>
+    </div>
+</div>
+
+<div class="outer-div">
+    <img src="{% static 'analytics_plots/weekly_visits.png' %}">
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.weekly_visits.label_tag }} {{ form.weekly_visits }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <p>Visits to EMAC from people outside of our team, aggregated by week.</p>
+    </div>
+</div>
+
+<div class="outer-div">
+    <img src="{% static 'analytics_plots/new_visitors_over_time.png' %}">
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.new_visitors_over_time.label_tag }} {{ form.new_visitors_over_time }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <p>Blue: cumulative new users per week; red: new users per week (does not include EMAC team members).</p>
+    </div>
+</div>
+
+<div class="outer-div">
+    <img src="{% static 'analytics_plots/weekly_new_user_fraction.png' %}">
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.new_user_fraction.label_tag }} {{ form.new_user_fraction }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <p>Fraction of sessions that were from new users, by week. If someone visits EMAC for the first time then reloads the page, that would add one to the numerator fo this fraction and 2 to the denominator of this fraction. Does not count EMAC team members.</p>
+    </div>
+</div>
+
+<div class="outer-div">
+    <div class="scrollable-image">
+        <img src="{% static 'analytics_plots/clicks_per_tool.png' %}" alt="Scrollable Image">
+    </div>
+    <!-- <img src="{% static 'analytics_plots/top_10_clicks_per_tool.png' %}"> -->
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.clicks_per_tool.label_tag }} {{ form.clicks_per_tool }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <p>Number of clicks on any of the links for each tool.</p>
+    </div>
+</div>
+
+<div class="outer-div">
+    <img src="{% static 'analytics_plots/clicks_per_button.png' %}">
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.clicks_per_tool.label_tag }} {{ form.clicks_per_tool }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <p>Number of people (outside of the EMAC team) who have clicked each tool tile button.</p>
+    </div>
+</div>
+
+<div class="outer-div">
+    <img src="{% static 'analytics_plots/exit_clicks_by_category.png' %}">
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.exit_clicks_by_category.label_tag }} {{ form.exit_clicks_by_category }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <p>Number of people (outside of the EMAC team) who have clicked on any of the links for any tool at least once per category.</p>
+    </div>
+</div>
+
+<div class="outer-div">
+    <img src="{% static 'analytics_plots/n_tools.png' %}">
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.n_tools.label_tag }} {{ form.n_tools }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <p>Number of published resources on EMAC.</p>
+    </div>
+</div>
+
+<div class="outer-div">
+    <img src="{% static 'analytics_plots/tools_per_category.png' %}">
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.tools_per_category.label_tag }} {{ form.tools_per_category }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <p>Tools in each category (tools can have multiple categories).</p>
+    </div>
+</div>
+
+<div class="outer-div">
+    <img src="{% static 'analytics_plots/tools_per_coding_language.png' %}">
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.tools_per_coding_language.label_tag }} {{ form.tools_per_coding_language }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <p>Tools per each coding languages (tools can have multiple coding languages).</p>
+    </div>
+</div>
+
+<div class="outer-div">
+    <img src="{% static 'analytics_plots/n_subs.png' %}">
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.n_tools.label_tag }} {{ form.n_tools }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <p>Number of subscribers to various categories on EMAC.</p>
+    </div>
+</div>
+
+<div class="outer-div">
+    <img src="{% static 'analytics_plots/social_traffic.png' %}">
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.social_traffic.label_tag }} {{ form.social_traffic }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <p>Visits from outside of EMAC that originate from our main social media channels.</p>
+    </div>
+</div>
+
+<div class="outer-div">
+    <img src="{% static 'analytics_plots/RSS_report.png' %}">
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.RSS_report.label_tag }} {{ form.RSS_report }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <p>Times each RSS story was seen.</p>
+    </div>
+</div>
+
+<div class="outer-div">
+    <img src="{% static 'analytics_plots/tweet_impressions.png' %}">
+    <p>Number of times people saw the tweet.</p>
+    <img src="{% static 'analytics_plots/tweet_engagements.png' %}">
+    <p>Number of times people interacted with the tweet.</p>
+    <div class="inner-div">
+        <p>Impressions/Engagements for each tweet, by date the tweet was sent. Days when multiple tweets were sent show the sum total of all tweets on that day (which were rare). Numbers are  over the lifetime of the tweet, so older may be biased towards higher numbers if users frequently check our backlog of tweets (no indication as of 3/17/22).</p>
+
+        <p><b>Top Engagement Tweets</b></p>
+        {% for text, time, engagements in top_tweets %}
+            <p> <b>Tweet text:</b> {{text}} <br> <b>Date:</b> {{time}}  <br> <b>Engagements:</b> {{engagements}} </p>
+        {% endfor %}
+
+        <p><b>Bottom Engagement Tweets</b></p>
+        {% for text, time, engagements in bot_tweets %}
+            <p> <b>Tweet text:</b> {{text}} <br> <b>Date:</b> {{time}}  <br> <b>Engagements:</b> {{engagements}} </p>
+        {% endfor %}
+    </div>
+    <p>Data has to be updated manually. To do so, go to the <a href="https://analytics.twitter.com/user/ExoplanetModels/tweets">Twitter analytics site</a>, select a month in the upper right, then export the data by tweet.
+        Finally, copy the data from the new .csv and paste it into the <a href="https://docs.google.com/spreadsheets/d/114dgnnWoSKyIJgtzOtBaBWH6IKwwXW8gZXnS9zFQfxc/edit#gid=0">Twitter data Google Sheet</a>.
+    </p>
+</div>
+
+<!-- JPR 2023-04-24: Disabling YouTube analytics due to problem in the analytix package.-->
+<!-- <div class="outer-div">
+    <img src="{% static 'analytics_plots/yt_channel_stats.png' %}">
+    <div class="inner-div"> -->
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.youtube_analytics.label_tag }} {{ form.youtube_analytics }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <!-- <p>Channel-wide stats.</p>
+    </div>
+    The Youtube analytics tokens file has to be refreshed every seven days. To do so, run this code in a terminal:
+    <p style="font-family: Consolas,'courier new';
+          color: crimson;
+          background-color: #f1f1f1;
+          padding: 2px;
+          font-size: 105%;">
+        from analytix import Analytics <br>
+        import analytix <br>
+        analytix.setup_logging() <br>
+        client = Analytics.with_secrets("./secrets.json") <br>
+        report = client.retrieve(dimensions=("day",), metrics=("views",))
+    </p>
+    The terminal output will display a link and a prompt to enter a code. Follow the link, log in with emacscience@gmail.com, click continue, check both boxes, then click continue again. This should lead you to hte local EMAC site if it is running on your machine or an error page if not. Look in the URL for a portion that says "code=" and copy everything from the "=" to "&scope" (exclusive). Paste this code into your terminal to create a new tokens.json file. Copy this file into EMAC/django/website/analytics, replacing the old version.
+    <img src="{% static 'analytics_plots/yt_video_stats.png' %}">
+    <div class="inner-div">
+
+        <p>video-specific stats.</p>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <p>{{ form.youtube_analytics.label_tag }} {{ form.youtube_analytics }} <input class="button-primary" type="submit" value="Update" /></p>
+    </form>
+</div> -->
+
+<div class="outer-div">
+    <div class="inner-div">
+<!--        <form method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <p>{{ form.remake_all.label_tag }} {{ form.remake_all }} <input class="button-primary" type="submit" value="Update" /></p>-->
+<!--        </form>-->
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" name="remake_all" value="Remake All">
+        </form>
+        {{ error_string }}
+    </div>
+</div>
+
+
+<!--&lt;!&ndash;<img src="{% static 'analytics_plots/yt_views_video.png' %}">&ndash;&gt;-->
+<!--&lt;!&ndash;<img src="{% static 'analytics_plots/yt_views_date.png' %}">&ndash;&gt;-->
+
+
+{% endautoescape %}
+
+{% endblock %}

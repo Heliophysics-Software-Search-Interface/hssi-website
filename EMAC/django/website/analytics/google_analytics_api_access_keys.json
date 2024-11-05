@@ -1,0 +1,14 @@
+{
+    "type": "service_account",
+    "project_id": "REDACTED # JPR Redacted Oct. 2024",
+    "private_key_id": "REDACTED # JPR Redacted Oct. 2024",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nREDACTED # JPR Redacted Oct. 2024\n-----END PRIVATE KEY-----\n",
+    "client_email": "REDACTED # JPR Redacted Oct. 2024",
+    "client_id": "REDACTED # JPR Redacted Oct. 2024",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "REDACTED # JPR Redacted Oct. 2024",
+    "universe_domain": "googleapis.com"
+  }
+  

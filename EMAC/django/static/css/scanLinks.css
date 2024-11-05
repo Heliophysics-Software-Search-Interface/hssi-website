@@ -1,0 +1,94 @@
+.container {
+    margin: 0 auto;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 11px;
+    border-radius: 4px;
+    width: 80%;
+    background: linear-gradient(to right,#fcfcfd, #ececec);
+}
+.scan-container {
+    min-height: 50vh;
+}
+
+button#scan-all-links {
+    vertical-align: top;
+}
+
+div.scan-results {
+    display: inline-block;
+    vertical-align: top;
+}
+
+div.error-list {
+    display: inline-block;
+    vertical-align: top;
+}
+
+table.links-table tr.not-ok {
+    background-color: rgba(200, 0, 0, 0.2);
+}
+
+table.links-table tr td:first-of-type {
+    width: 8rem;
+    border-right: 1px solid rgba(211, 211, 211, 0.5);
+}
+
+table.links-table tr td:nth-child(2) {
+    width: 3rem;
+    border-right: 1px solid rgba(211, 211, 211, 0.5);
+}
+
+div.resource-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #4d4d4d;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.callout.resource-links {
+    background: linear-gradient(to left,#fcfcfd, #ececec);
+    border-radius: 5px;
+}
+
+.callout.resource-links button.secondary {
+    float: right;
+    margin-bottom: 0.5rem;
+}
+
+#loading_modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(254,254,254,0);
+    visibility: hidden;
+    z-index: 1000;
+}
+#loading_modal > div.spinner {
+    opacity: 0;
+}
+#loading_modal.visible {
+    background-color: rgba(254,254,254,0.6);
+    visibility: visible;
+}
+#loading_modal.visible > div.spinner {
+    opacity: 0.6;
+}
+#loading_modal > div#scan_message {
+    opacity: 0;
+}
+#loading_modal.visible > div#scan_message {
+    opacity: 1;
+    display: inline;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 110%);
+    background-color: rgb(90, 90, 90);
+    color: white;
+    font-weight: bold;
+    padding: 0.5rem 0.7rem;
+}

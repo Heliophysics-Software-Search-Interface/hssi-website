@@ -1,0 +1,43 @@
+{% extends 'emac_base_template.html' %}
+
+{% block page_content %}
+
+<div class="small-6 medium-12 large-12 container">
+    <div>
+        <h1 class="page_title"> NASA ADS Scraper </h1>
+    </div>
+    <div>
+        <h2>Narrow Results : {{ date }}</h2>
+        <table>
+            <tr>
+            {% for column in columns %}
+                <td>{{ column }}</td>
+            {% endfor %}
+            </tr>
+            {% for row in narrow_results_rows %}
+            <tr>
+            {% for value in row %}
+                <td>{{ value }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+        </table>
+        <h2>Broad Results : {{ date }}</h2>
+        <table>
+            <tr>
+            {% for column in columns %}
+                <td>{{ column }}</td>
+            {% endfor %}
+            </tr>
+            {% for row in broad_results_rows %}
+            <tr>
+            {% for value in row %}
+                <td>{{ value }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+</div>
+
+{% endblock %} 

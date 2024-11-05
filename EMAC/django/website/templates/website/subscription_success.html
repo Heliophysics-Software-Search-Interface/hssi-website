@@ -1,0 +1,28 @@
+{% extends 'emac_base_template.html' %}
+
+{% load static %}
+
+{% block head %}
+
+	<link rel="stylesheet" href="{% static 'css/submissions.css' %}?v=2024-09-05" />
+	
+{% endblock %}
+
+{% block page_content %}
+
+	<h1 class="submission_title">Your subscription has been received.</h1>
+
+	<div class="submission-summary">
+		Please use this link to edit your subscriptions at any time:
+		<div class="submission-link">
+			<a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/subscriptions/{{id}}/">{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/subscriptions/{{id}}/</a>
+		</div>
+		This link will be included in all future subscription related emails.
+		<br/>
+		Contact <a href="mailto:REDACTED@nasa.gov">REDACTED@nasa.gov</a> for additional help.
+		<br/>
+		<br/>
+	</div>
+
+{% endblock %}
+

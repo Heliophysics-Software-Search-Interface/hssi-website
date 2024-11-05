@@ -1,0 +1,64 @@
+html, body {
+    height: 100%;
+}
+
+body > footer {
+    position: sticky;
+    top: 100vh;
+}
+
+.subcollection {
+    margin-left: 3em;
+}
+
+.submission-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+
+    a.hollow.button {
+        margin-left: 0.5rem;
+        cursor: pointer;
+        color: darkslategray;
+        border: 1px solid darkslategray;
+    }
+}
+
+.submission-info {
+    margin-bottom: 1.5rem;
+
+    & .submission-name {
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    & .submission-description {
+        padding: 0 1rem;
+    }
+}
+
+.lock-message {
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 0.8rem;
+    text-align: center;
+}
+
+form {
+    & div.control-group {
+        margin-bottom: 1rem;
+        & .control-label {
+            font-weight: bold;
+        }
+    }
+
+    & div.control-group:has(+ .sync-list) {
+        margin-bottom: 1.5rem;
+    }
+
+    & div.sync-list {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+}

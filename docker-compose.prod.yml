@@ -1,0 +1,54 @@
+# To run this file for the prodction server use:
+# docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+version: '3'
+
+services:
+
+    nginx-letsencrypt:
+        image: nginxproxy/acme-companion # jrcs/letsencrypt-nginx-proxy-companion
+        container_name: nginx-letsencrypt
+        depends_on: 
+            - docker-gen
+            - nginx-proxy
+        volumes:
+            - ../certs:/etc/nginx/certs
+            - nginx-proxy-vhosts:/etc/nginx/vhost.d
+            - nginx-proxy-shared-html:/usr/share/nginx/html
+            - acme:/etc/acme.sh
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+        environment: 
+            - NGINX_DOCKER_GEN_CONTAINER=docker-gen
+            - NGINX_PROXY_CONTAINER=nginx-proxy
+
+    emac:
+        environment:
+            - LETSENCRYPT_HOST=$EMAC_DOMAIN
+            - LETSENCRYPT_EMAIL=Carl.F.Hostetter@nasa.gov
+            - ACME_PREFERRED_CHAIN=ISRG
+
+    hardcore:
+        environment:
+            - LETSENCRYPT_HOST=hardcore.$EMAC_DOMAIN
+            - LETSENCRYPT_EMAIL=Carl.F.Hostetter@nasa.gov
+            - ACME_PREFERRED_CHAIN=ISRG
+
+    tools:
+        environment:
+            - LETSENCRYPT_HOST=tools.$EMAC_DOMAIN
+            - LETSENCRYPT_EMAIL=Carl.F.Hostetter@nasa.gov
+            - ACME_PREFERRED_CHAIN=ISRG
+
+    nginx-proxy:
+        environment:
+            - LETSENCRYPT_HOST=thai.$EMAC_DOMAIN,thai-files.$EMAC_DOMAIN,ckan.$EMAC_DOMAIN,ckan-files.$EMAC_DOMAIN,je.$EMAC_DOMAIN
+            - LETSENCRYPT_SINGLE_DOMAIN_CERTS=true
+            - LETSENCRYPT_EMAIL=Carl.F.Hostetter@nasa.gov
+            - ACME_PREFERRED_CHAIN=ISRG
+        volumes:
+            - ./THAI/config/nginx/thai-uploads.conf:/etc/nginx/conf.d/thai-uploads.conf
+            - ./THAI/config/nginx/.htpasswd:/etc/nginx/conf.d/.htpasswd
+            - ./THAI/config/nginx/thai.conf:/etc/nginx/conf.d/thai.conf
+
+volumes:
+    acme:

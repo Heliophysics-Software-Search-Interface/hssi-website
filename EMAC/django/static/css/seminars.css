@@ -1,0 +1,371 @@
+.container {
+    margin: 0 auto;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 11px;
+    border-radius: 4px;
+    width: 80%;
+    background: linear-gradient(to right, #fcfcfd, #ececec);
+}
+
+/* main seminar expandable container section */
+
+.emaccordion-section {
+    border-bottom: solid 1px #ebebeb;
+    margin-bottom: 0.5rem;
+}
+
+.emaccordion-header-bar {
+    cursor: pointer;
+    padding: 1.2rem;
+    background-color: #e7e7e7;
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 1fr min-content;
+    grid-template-columns: 1fr min-content;
+    -ms-grid-rows: auto;
+    grid-template-rows: auto;
+    align-items: center;
+}
+
+.emaccordion-title {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: #010508d7;
+    -ms-grid-column: 1;
+    grid-column: 1;
+    -ms-grid-row: 1;
+    grid-row: 1;
+    margin: 0;
+}
+
+.caret-container {
+    margin-left: 0.5rem;
+    -ms-grid-column: 2;
+    grid-column: 2;
+    -ms-grid-row: 1;
+    grid-row: 1;
+}
+
+.caret {
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: transparent;
+    border-left: 2px solid #888;
+    border-bottom: 2px solid #888;
+    transition: all .3s ease-in-out;
+}
+
+.caret-flip {
+    -moz-transform: rotate(-224deg);
+    -ms-transform: rotate(-224deg);
+    -webkit-transform: rotate(-224deg);
+    transform: rotate(-224deg);
+}
+
+.emaccordion-content {
+    display: none;
+}
+
+.expanded {
+    transition: all .3s ease-in-out;
+}
+
+/* exovast section */
+
+.exovast-container {
+    max-width: 85%;
+    margin: 0 auto;
+}
+
+.exovast-info {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 3fr 1fr;
+    grid-template-columns: 3fr 1fr;
+    -ms-grid-rows: auto;
+    grid-template-rows: auto;
+    /* padding: 1.5em 0; */
+}
+
+.exovast-info .detail.vast {
+    -ms-grid-column: 1;
+    grid-column: 1;
+    -ms-grid-row: 1;
+    grid-row: 1;
+}
+
+.exovast-info .detail.exovast {
+    -ms-grid-column: 1;
+    grid-column: 1;
+    -ms-grid-row: 2;
+    grid-row: 2;
+}
+
+.exovast-info .detail.attending {
+    -ms-grid-column: 2;
+    grid-column: 2;
+    -ms-grid-row: 1;
+    grid-row: 1;
+}
+
+.exovast-info .detail.speaking {
+    -ms-grid-column: 2;
+    grid-column: 2;
+    -ms-grid-row: 2;
+    grid-row: 2;
+}
+
+.exovast-info .detail {
+    padding: 1rem 0.5rem;
+}
+
+.exovast-info .detail .header h6 {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.exovast-info .detail .detail-text {
+    font-size: 1.0833rem
+}
+
+.exovast-schedule p {
+    margin-left: 0.5rem;
+}
+
+.exovast-schedule p.schedule-update {
+    font-style: italic;
+}
+
+.exovast-schedule .emaccordion-content p:nth-child(1) {
+    margin-top: 0.7rem;
+}
+
+.exovast-schedule td.date {
+    border-bottom: 1px solid #e7e7e7;
+    width: 1%;
+    white-space: nowrap;
+    padding: 1rem;
+}
+
+/* emac workshop section */
+
+.emac .page_title {
+    font-size: 24px;
+    padding: 0.5rem 1.5rem;
+}
+
+.break-title {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.workshop-main-text {
+    font-size: 1.0833rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0.7rem
+}
+.workshop-main-text p {
+    max-width: 85%;
+}
+
+.tile-grid {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-template-rows: auto;
+    grid-auto-flow: row;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.tile-grid .callout {
+    font-size: 1.0833rem;
+    text-align: center;
+    width: 345px;
+    margin-bottom: 0;
+}
+
+.tile-grid .callout h5 {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.tile-grid .callout p {
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.emac-schedule-container .time-zone-note {
+    margin: 1rem 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+.emac-schedule-container .schedule-grid-tabs {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.emac-schedule-container .schedule-tab-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    background-color: #cfcfd1;
+    border-top: 1px solid #2f2c2c;
+}
+
+.emac-schedule-container .schedule-tab {
+    background-color: #cfcfd1;
+    cursor: pointer;
+    padding: 0.6rem 0.3rem;
+    font-weight: bold;
+    font-size: 11pt;
+    flex: 1 1 0px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.emac-schedule-container .schedule-tab:hover {
+    background-color: #b7b7b7;
+}
+
+.emac-schedule-container .schedule-tab.open {
+    background-color: #ECECEC;
+}
+
+.schedule-tab:not(:last-child) {
+    border-right: 1px solid #b7b7b7;
+}
+
+.emac-schedule-container .schedule-day {
+    display: none;
+}
+
+.emac-schedule-container .schedule-day.open {
+    display: block;
+}
+
+.emac-schedule-container .schedule-table tr:not(.continued) {
+    border-top: 1px solid lightgray;
+}
+
+.emac-schedule-container .schedule-table tbody td {
+    padding-bottom: 0.825rem;
+    vertical-align: top;
+}
+
+.emac-schedule-container .schedule-table td.time {
+    font-weight: bold;
+    font-size: small;
+    white-space: nowrap;
+}
+
+.emac-schedule-container .schedule-table .event div.event-title {
+    margin-bottom: 0.2rem;
+}
+
+.emac-schedule-container .schedule-table tr.has-detail a.open-abstract,
+.schedule-table tr.has-video a.youtube-link,
+#detail-modal .detail-title a.youtube-link,
+.emac-schedule-container .schedule-table tr.has-detail a.open-abstract:visited,
+.schedule-table tr.has-video a.youtube-link:visited,
+#detail-modal .detail-title a.youtube-link:visited {
+    color: rgb(10, 10, 10);
+}
+
+.emac-schedule-container .schedule-table .event div.speaker {
+    font-size: small;
+}
+
+.emac-schedule-container .schedule-table .event div.detail,
+.emac-schedule-container .schedule-table .event div.youtube-link {
+    display: none;
+}
+
+#detail-modal .hidden {
+    display: none;
+}
+
+#detail-modal div {
+    padding: 0.5rem 0;
+}
+
+#detail-modal div:not(:last-child) {
+    border-bottom: 1px solid lightgray;
+}
+
+#detail-modal .detail-title {
+    font-weight: bold;
+}
+
+#detail-modal .detail-title.with-icon {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#detail-modal .detail-title a.youtube-link {
+    margin-right: 0.5rem;
+}
+
+#detail-modal .panelist-list {
+    margin-top: 0.5em;
+}
+
+@media screen and (max-width: 1024px) {
+    .container {
+        width: 95%;
+    }
+    .workshop-main-text p {
+        max-width: 95%;
+    }
+    .emac-schedule-container .schedule-grid-tabs {
+        width: 95%
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .tile-grid {
+        grid-template-columns: max-content;
+    }
+}
+
+/* max-width 40em is the show-for-small-only/hide-for-small-only breakpoint */
+@media screen and (max-width: 40em) {
+    .container {
+        width: 100%;
+        margin: 0 auto;
+    }
+}
+
+/* media queries to determine hoverability */
+
+/* first, styles we want for touch devices */
+/* additional info icon should be hidden when there is no additional info */
+.emac-schedule-container .schedule-table td.icon i {
+    display: none;
+}
+.emac-schedule-container .schedule-table tr.has-detail td.icon i.fa-external-link,
+.emac-schedule-container .schedule-table tr.has-video td.icon i.fa-youtube-play {
+    display: inline-block;
+}
+
+/* override styles we want for hoverable devices */
+@media (hover: hover) and (pointer: fine) {
+    .emac-schedule-container .schedule-table tr.has-detail span.event-title:hover {
+        text-decoration: underline;
+    }
+}

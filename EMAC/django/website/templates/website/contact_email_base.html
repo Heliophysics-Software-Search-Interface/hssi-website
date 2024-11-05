@@ -1,0 +1,53 @@
+{% extends 'website/emac_email_template.html' %}
+
+{% block email_content %}
+
+<h1> Listing {{ tool_name }} on <a href="https://emac.gsfc.nasa.gov/">EMAC</a> </h1>
+<p>Dear {{ submitter_first_name }},<br>
+<br>
+    {% block contactcount %}
+    {% endblock %}
+<br>
+<br>We think {{tool_name }} would be a valuable resource for the exoplanet scientist community to have 
+    access to on EMAC and have already filled in some basic information we could find on it. But the more 
+    info we have, the more likely that other scientists in the field will be able to find your resource. 
+    Please consider adding (or correcting) the information found 
+    <a href="https://emac.gsfc.nasa.gov/submissions/{{ tool_id }}">here</a>.<br>
+<br>
+    {% block inlitelig %}
+    {% endblock %}
+<br>
+<br>If you have another resource, or know a colleague who might be interested, you can create a new submission 
+    (<a href="https://www.youtube.com/watch?v=2psCryalCoE">Tutorial</a>) 
+    <a href="https://emac.gsfc.nasa.gov/submissions">here</a>. If you have questions or concerns please feel 
+    free to email us at: REDACTED@nasa.gov; we would love to hear from you!<br> 
+<br>
+<strong>What is EMAC and why host my resource on it?</strong>
+<br>
+<br>EMAC offers the exoplanet community a free <q>one-stop shop</q> to search and discover new exoplanet codes, 
+    model inputs/outputs, and data visualization tools. Resources listed on EMAC reach a larger and more 
+    diverse audience, but one that is still connected through a shared interest in exoplanet science. 
+    Our hope is that by listing many different resources alongside one another, the wider community will 
+    be able to more easily find and compare the latest models and more quickly achieve consensus on 
+    interpretation of the latest exoplanet findings.<br>
+<br>
+<strong>How can I learn more about EMAC and get involved?</strong>
+<ul>
+<li>Join our <a href="https://emac.gsfc.nasa.gov/subscriptions/">subscription service</a> to receive an email when 
+    new resources are posted in areas that interest you.</li>
+<li>Become a collection curator to ensure that EMAC is capturing all the important resources for your specific 
+    sub-field and/or mission and instrument (email us at: REDACTED@nasa.gov to learn more).</li>
+<li>Attend our monthly exoVAST talks (or consider giving a talk yourself) to learn more about the latest software 
+    helping push the frontiers of exoplanet science.</li>
+<li>Watch tutorials and demos on our <a href="https://www.youtube.com/channel/UCLRJnT1l6CGC8aU2o2MofXw">YouTube 
+    channel</a>.</li>
+<li>Follow our <a href="https://emac.gsfc.nasa.gov/news/">RSS alerts</a> and <a href="https://twitter.com/ExoplanetModels">
+    Twitter</a> where updates and news are regularly shared.</li>
+<li>Check out our webpage dedicated to developers and reach out to us if you have any suggestions for other tips and 
+    best practices.</li>
+</ul>
+<br>
+<br>Thank you,<br>
+<br>The EMAC Science Support Team at NASA Goddard</p>
+
+{% endblock %}

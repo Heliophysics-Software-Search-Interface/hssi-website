@@ -1,0 +1,73 @@
+{% extends 'emac_base_template.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block head %}
+
+	<link rel="stylesheet" href="{% static 'css/subscriptions.css' %}?v=2024-09-05" />
+  
+{% endblock %}
+
+{% block title %}EMAC Tool Category Subscription{% endblock %}
+
+{% block page_content %}
+
+    <div class="small-12 container submission_form">
+        <h3 class="page_title">Tool Category Subscription</h3>
+        <p class="submission-text">Here you can subscribe to be updated by email when a new tool is published to your chosen categories or subcategories on EMAC. After signing up using this form, you will receive emails on a weekly basis related only to the (sub)categories you have selected. You will have the opportunity to modify your selections, update your email address, and unsubscribe via a link which will be included in each email sent to you.</p>
+        {% if subscription_form.captcha.errors %}
+            {% for error in subscription_form.captcha.errors %}
+                <p class="submission-text"><strong>{{ error }}</strong></p>
+            {% endfor %}
+        {% endif %}
+        {% crispy subscription_form subscription_form.helper %}
+    </div>
+
+    <script type="text/javascript" src="{% static 'js/categoryRendering.js' %}?v=2024-09-05"></script>
+    <script type="text/javascript">
+        rerenderCategoriesHierarchically('{{ category_hierarchy_json|safe }}', '{{ category_names_by_id_json|safe }}', '{{ selected_category_ids_json|safe }}');
+    </script>
+
+{% endblock %}
+
+{% block scripts %}
+	{{ block.super }}
+
+	<script>
+
+        var unsaved = false;
+
+        $(":input").change(function(){ //triggers change in all input fields including text type
+            unsaved = true;
+        });
+
+        function unloadPage(){ 
+            if(unsaved){
+                return "You have unsaved changes on this page. Do you want to leave this page and discard your changes or stay on this page?";
+            }
+        }
+
+        window.onbeforeunload = unloadPage;
+
+        $(document)._submit = $(document).submit; 
+        $(document).on("submit", function () {
+            window.onbeforeunload = null;
+            this._submit();
+        });
+
+        $("input[name='categories']").change(function() {
+            if (this.checked) {
+                if ($(this).closest("div").hasClass("category")){
+                    $(this).closest("div").find("input[type='checkbox']").prop('checked', true);
+                }
+            }
+            else if ($(this).closest("div").hasClass("subcategory")){
+                $(this).closest("div").parent().find("input[type='checkbox']").first().prop('checked', false);
+            }
+        });
+    
+    </script>
+
+{% endblock %}

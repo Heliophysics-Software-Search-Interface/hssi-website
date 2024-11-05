@@ -1,0 +1,18 @@
+id,abbreviation,theme_color,text_color,description,children,name
+63dfcf33-c062-4d66-87c5-6ad520028b3c,CHEO,#266e2c,#ffffff,"Collection of tools related to data reduction, analysis,  and model fitting specifically for CHEOPS exoplanet-related data",,CHEOPS
+195c95b1-5b57-4862-96b3-dcf20cd1a13f,HWO,#266e00,#ffffff,Collection of tools related to simulations and modeling specifically for exoplanet-related data from the Habitable Worlds Observatory,"4e78313c-33c8-4a1e-9665-a1f6e5d13525,49d6aa99-3f56-4d4e-baa5-266eb19493df",Habitable Worlds Observatory
+3d8032ff-6b2f-48bb-a51b-b98d10ab77a0,HST,#266e2c,#ffffff,"Collection of tools related to data reduction, analysis,  and model fitting specifically for HST exoplanet-related data","1a09d6ca-f2c5-4b91-9e74-94d75a94a21d,4bee3c60-1dae-4688-bb79-633661655dfc",HST
+1a09d6ca-f2c5-4b91-9e74-94d75a94a21d,STIS,#000000,#ffffff,"Collection of tools related to data reduction, analysis,  and model fitting specifically for HST Space Telescope Imaging Spectragraph exoplanet data",,HST/STIS
+4bee3c60-1dae-4688-bb79-633661655dfc,WFC3,#000000,#ffffff,"Collection of tools related to data reduction, analysis,  and model fitting specifically for HST Wide Field Camera 3 (WFC3) exoplanet  data",,HST/WFC3
+4e78313c-33c8-4a1e-9665-a1f6e5d13525,HWCo,#000000,#ffffff,,,HWO Coronagraph
+49d6aa99-3f56-4d4e-baa5-266eb19493df,HWSp,#000000,#ffffff,,,HWO Transit Spectroscopy
+34a996b7-c5a9-45e3-8222-1d19ed128e92,JW,#236e2d,#ffffff,"Collection of tools related to data reduction, analysis,  and model fitting specifically for JWST exoplanet-related data","c6502eab-b9f3-4815-a324-25a162efc81d,c1537425-4a0a-4340-8b5d-9bfe67373e91,88a56605-6e86-44fe-be34-556dadbabadd",JWST
+c6502eab-b9f3-4815-a324-25a162efc81d,JWim,#000000,#ffffff,"Collection of tools related to data reduction, analysis,  and model fitting specifically for JWST exoplanet imaging data",,JWST Direct Imaging Data Reduction
+c1537425-4a0a-4340-8b5d-9bfe67373e91,JWtr,#000000,#ffffff,"Collection of tools related to data reduction, analysis,  and model fitting specifically for JWST exoplanet transit and eclipse data",c1537425-4a0a-4340-8b5d-9bfe67373e91,JWST Transit and Eclipse Data Analysis
+88a56605-6e86-44fe-be34-556dadbabadd,JtER,#000000,#ffffff,"Collection of tools used in the data reduction, analysis,  and model fitting specifically for the JWST Transiting Exoplanet Community Early Release Science Program",,JWST Transit ERS Program
+8c19f42f-8e7b-4ae4-a1be-5db18351001b,K2,#000000,#ffffff,"Collection of tools related to data reduction, analysis,  and model fitting specifically for K2 exoplanet-related data",,K2
+c7ac1251-07d1-488b-a9aa-368b38343331,Kplr,#266e2c,#ffffff,"Collection of tools related to data reduction, analysis,  and model fitting specifically for Kepler and K2 exoplanet-related data",8c19f42f-8e7b-4ae4-a1be-5db18351001b,Kepler
+b72b37ce-17a4-4664-89c4-5094a8b50abc,PLAT,#266e2c,#ffffff,"Collection of tools related to data reduction, analysis,  and model fitting specifically for PLATO exoplanet-related data",,PLATO
+f14f376d-4a2f-4af5-99de-a0ad8d272a6d,RST,#266e2c,#ffffff,"Collection of tools related to data reduction, analysis,  and model fitting specifically for Roman exoplanet-related data",,Roman
+605ae64f-cb33-4926-9bb9-0f24f0f67763,SEEC,#266e2c,#ffffff,Collection of tools related to or produced by teams at the NASA Sellers Exoplanet Environments Collaboration,,SEEC
+de948beb-815b-4d54-8307-ded071e4ee4c,TESS,#236e2d,#ffffff,"Collection of tools related to data reduction, analysis,  and model fitting specifically for TESS exoplanet transit and eclipse data",,TESS

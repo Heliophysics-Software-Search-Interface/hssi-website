@@ -1,0 +1,29 @@
+{% extends 'emac_base_template.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Curation Submission Success{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/submissions.css' %}?v=2024-09-05" />
+<link rel="stylesheet" href="{% static 'css/curate.css' %}?v=2024-09-05" />
+{% endblock %}
+
+{% block page_content %}
+
+    <div class="small-12 container submission_form">
+        <h3 class="page_title">Curation success</h3>
+        <div class="submission-info">
+            <div class="submission-name">
+                Submission: {{ submission.name }}
+            </div>
+            <div class="submission-description">
+                <p>Thank you for your contribution to the Exoplanet Modeling & Analysis Center!</p>
+                <p>The EMAC team have been notified of your suggested edits, and will review them before publishing them to the live site.</p>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

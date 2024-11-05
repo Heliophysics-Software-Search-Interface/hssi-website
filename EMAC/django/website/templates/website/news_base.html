@@ -1,0 +1,18 @@
+{% extends 'emac_base_template.html' %}
+
+{% load custom_tags_and_filters %}
+{% load static %}
+
+{% block head %}
+
+    <link rel="stylesheet" href="{% static 'css/blog.css' %}?v=2024-09-05" />
+	
+{% endblock %}
+<!-- END HEAD -->
+
+<!-- PAGE CONTENT -->
+{% block page_content %}
+{% block news_page_content %}
+{% endblock %} 
+
+{% endblock %} 

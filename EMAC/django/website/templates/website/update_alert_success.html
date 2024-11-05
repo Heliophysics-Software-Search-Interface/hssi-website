@@ -1,0 +1,41 @@
+{% extends 'emac_base_template.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Update Alert Success{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/submissions.css' %}?v=2024-01-24" />
+<link rel="stylesheet" href="{% static 'css/curate.css' %}?v=2024-01-24" />
+<style>
+    .final_box {
+        border: 2px solid #000; /* Black border */
+        padding: 20px;          /* Space inside the border */
+        margin: 20px;           /* Space outside the border */
+        background-color: #f9f9f9; /* Light grey background */
+        border-radius: 10px;    /* Rounded corners */
+    }
+</style>
+{% endblock %}
+
+{% block page_content %}
+
+    <div class="small-12 container submission_form">
+        <h3 class="page_title">Update Alert Success</h3>
+        <div class="submission-info">
+            <div class="submission-name">
+                Resource: {{ resource.name }}
+            </div>
+            <div class="submission-description">
+                <p>A subscriber alert has been sent!</p>
+                <p>The update message was the following:</p>
+                <div class="final_box">
+                    {{ release }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,107 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+<a class="anchor-set anchor-name" name="{{resource.id}}"></a>
+
+<div class="callout medium resource-info in-lit collapsed" data-resource-id="{{resource.id}}">
+    {# header / top section #}
+    <div class="resource-header-row">
+        <div>
+            <div class="resource_name">
+                {{resource.name}}{% if resource.subtitle %}: {{resource.subtitle}}{% endif %}
+            </div>
+            <p class="resource_info">
+            {{resource.credits|safe}}
+            {% for category in resource.categories.all %}
+                {% if not category.has_parents %}
+                <label class="label {{category.abbreviation}}">
+                    <input class="label {{category.abbreviation}} resource_info_label" type="checkbox" name="category_checkbox" value="{{category.id}}"
+                    {% if category.id in selected_category_ids %} checked {% endif %} >
+                    {{category.abbreviation}}
+                </label>
+                {% endif %}
+            {% endfor %}
+            </p>
+        </div>
+        {# ADS button in upper right on desktop only #}
+        <div class="text-right small-12 hide-for-small-only">
+            {% if resource.citation_count != None %}
+                <a class="hollow button ads_btn float-left" id="{{resource.id}}_abstract_link_inlit" href="{{resource.ads_abstract_link}}" data-tooltip tabindex="1" title="The number of times the paper associated with this tool has been cited on ADS, if applicable." data-position="bottom" data-alignment="right">ADS: <span>{{resource.citation_count}}</span></a>
+            {% else %}
+                <a class="hollow button ads_btn float-left" id="{{resource.id}}_abstract_link_inlit" href="{{resource.ads_abstract_link}}" data-tooltip tabindex="1" title="The number of times the paper associated with this tool has been cited on ADS, if applicable." data-position="bottom" data-alignment="right">ADS</a>
+            {% endif %}
+        </div>
+    </div>
+    {# bottom section #}
+    <div class="grid-x">
+        {# description #}
+        <div class="small-8 medium-8 large-8">
+            <div class="resource_description">
+                {{resource.description|safe}}
+            </div>
+            <div class="resource-details hide-for-small-only">
+                <p class="resource_code">
+                    Code Language(s): {{resource.code_languages|safe}}
+                </p>
+                {% if is_curator %}
+                <p class="curated-date">
+                    {% if resource.submission.last_curated_date %}
+                    Last curated: {{resource.submission.last_curated_date|date:'M. j, Y'}}
+                    {% else %}
+                    Last curated: -
+                    {% endif %}
+                </p>
+                <p class="curated-by">
+                    {% if resource.submission.last_curated_by %}
+                    Curated by: {{resource.submission.last_curated_by}}
+                    {% else %}
+                    Curated by: -
+                    {% endif %}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="text-right small-4 medium-4 large-4 in-lit-buttons hide-for-small-only">
+            
+            {% if is_curator %}
+                {% if resource.submission.curator_lock == None or resource.submission.curator_lock == request.user %}
+                <a class="hollow button float-left curate_btn" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/curate?id={{resource.id}}" data-tooltip tabindex="1" title="Edit categories or collections for this resource" data-position="bottom" data-alignment="right">Curate</a>
+                {% else %}
+                <button class="hollow button float-left curate_btn" data-tooltip tabindex="1" title="Edits locked by another curator" data-position="bottom" data-alignment="right" disabled="true">Curate</button>
+                {% endif %}
+            {% endif %}
+
+            {% if resource.download_link %}
+                <a class="hollow button download_btn" id="{{resource.id}}_download_link_inlit" href="{{resource.download_link}}" data-tooltip tabindex="1" title="View and download the source code to run the tool locally" data-position="bottom" data-alignment="right">Code</a>
+            {% endif %}
+            {% if resource.download_data_link %}
+                <a class="hollow button download_data_btn" id="{{resource.id}}_download_data_link_inlit" href="{{resource.download_data_link}}" data-tooltip tabindex="1" title="View and download output or input files for this resource" data-position="bottom" data-alignment="right">Data</a>
+            {% endif %}
+            {% if resource.launch_link %}
+                <a class="hollow button launch_btn" id="{{resource.id}}_launch_link_inlit" href="{{resource.launch_link}}" data-tooltip tabindex="1" title="Open the tool's web application" data-position="bottom" data-alignment="right">WebApp</a>
+            {% endif %}
+        </div>
+        {# ADS button tucked into hidden panel on mobile only #}
+        <div class="text-right small-12 show-for-small-only">
+            {% if resource.citation_count != None %}
+                <a class="hollow button ads_btn float-left" id="{{resource.id}}_abstract_link_inlit" href="{{resource.ads_abstract_link}}" data-tooltip tabindex="1" title="The number of times the paper associated with this tool has been cited on ADS, if applicable." data-position="bottom" data-alignment="right">ADS: <span>{{resource.citation_count}}</span></a>
+            {% else %}
+                <a class="hollow button ads_btn float-left" id="{{resource.id}}_abstract_link_inlit" href="{{resource.ads_abstract_link}}" data-tooltip tabindex="1" title="The number of times the paper associated with this tool has been cited on ADS, if applicable." data-position="bottom" data-alignment="right">ADS</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="arrow">
+        <i id="icon" class="fa fa-angle-down rotate"></i>
+    </div>
+</div>
+    
+<div class="child-category-list" data-resource-id="{{resource.id}}">
+    {% for category in resource.categories.all %}
+        {% if category.has_parents %}
+            {% for parent in category.parents.all %}
+                <div data-category="{{category.id}}" data-parent="{{parent.id}}"></div>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+</div>

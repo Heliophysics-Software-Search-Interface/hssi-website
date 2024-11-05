@@ -1,0 +1,268 @@
+{% extends 'emac_base_template.html' %} 
+
+{% load static %}
+
+{% block head %}
+	<link rel="stylesheet" href="{% static 'css/FAQ.css' %}?v=2024-09-05" />
+	<link rel="stylesheet" href="{% static 'css/FAQ_media.css' %}?v=2024-09-05" />
+{% endblock %}
+
+{% block page_content %}
+	<div class="grid-x container">
+		<h1 class="page_title">Frequently Asked Questions</h1>
+		<div class="input-search">
+			<input type="text" class="live-search-box" placeholder="Type your search term here.." />
+		</div>
+		<div>
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">Why submit a resource to EMAC?</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						EMAC offers the exoplanet community a "one-stop shop" to search and discover new exoplanet codes, model inputs/outputs, and data visualization tools. Resources listed on EMAC reach a larger and more diverse audience, but one that is still connected through a shared interest in exoplanet science. Our hope is that by listing many different resources alongside one another, the wider community will be able to more easily find and compare the latest models and more quickly achieve consensus on interpretation of the latest exoplanet findings.
+					</p>
+					<p>
+						EMAC also offers a <a href="/subscriptions">subscription service</a> and <a href="/news/rss">RSS feed</a> which reaches many researchers in the exoplanet community to regularly inform them about new resources listed on the site. We also promote resources on our <a href="https://twitter.com/exoplanetmodels">Twitter account</a>, including during the famous annual <a href="https://twitter.com/hashtag/EMACeys?src=hashtag_click">EMACey awards</a>.
+					</p>
+					<p>
+						To increase the accessibility of resources, the EMAC team has developed many video tutorials on our <a href="https://www.youtube.com/channel/UCLRJnT1l6CGC8aU2o2MofXw/videos">YouTube channel</a>. We are happy to work with authors to develop new tutorials, or rehost already produced tutorials, for their resources.
+					</p>
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">How do I submit a resource to EMAC?</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						Please visit the EMAC <a hrf="/submissions">submissions page</a> and fill out the form with as much information as you can provide. Once we have received a request through the web submission page, the EMAC team will review the details, determine if the tool is appropriate for EMAC, and contact the developer with a response and further instructions on how to finalize the submission.
+					</p>
+					<p>
+						Most code and software that is submitted to EMAC is hosted on third party websites like GitHub or Bit Bucket. If you have a resource but it is not hosted anywhere please feel free to start a submission and we can help you find a home for it.
+					</p>
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">How do I cite EMAC?</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						If you've used EMAC in any part of your research, please cite our <a href="https://ui.adsabs.harvard.edu/abs/2022RNAAS...6..185R/abstract" target="_blank">RNAAS paper</a> either in your methods section or in the "Software used" portion of any manuscripts.
+					</p>
+					<p>
+						Renaud, J. P., Lopez, E., Brande, J., Cruz-Arce, C. E., Kelahan, C., Susemiehl, N., Cristy, D., Hostetter, C., Moore, M. D., Patel, A., & Mandell, A. M. (2022). The Exoplanet Modeling and Analysis Center at NASA Goddard. Research Notes of the AAS, 6(9), 185. <a href="https://doi.org/10.3847/2515-5172/ac9060" target="_blank">https://doi.org/10.3847/2515-5172/ac9060</a>
+					</p>
+					<p>Bibtex Reference:</p>
+					<p>
+						@ARTICLE{2022RNAAS...6..185R,<br/>
+						author = {{Renaud}, Joe P. and {Lopez}, Eric and {Brande}, Jonathan and {Cruz-Arce}, Carlos E. and {Kelahan}, Cameron and {Susemiehl}, Nicholas and {Cristy}, Dylan and {Hostetter}, Carl and {Moore}, Michael Dane and {Patel}, Apexa and {Mandell}, Avi M.},<br/>
+						title = "{The Exoplanet Modeling and Analysis Center at NASA Goddard}",<br/>
+						journal = {Research Notes of the American Astronomical Society},<br/>
+						year = 2022,<br/>
+						month = sep,<br/>
+						volume = {6},<br/>
+						number = {9},<br/>
+						eid = {185},<br/>
+						pages = {185},<br/>
+						doi = {10.3847/2515-5172/ac9060},<br/>
+						archivePrefix = {arXiv},<br/>
+						eprint = {2209.04005},<br/>
+						primaryClass = {astro-ph.EP},<br/>
+						adsurl = {https://ui.adsabs.harvard.edu/abs/2022RNAAS...6..185R},<br/>
+						}
+					</p>
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">What does "resource" mean, in the context of EMAC?</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						A resource could be a suite of code, data visualization tools, or a collection of software inputs/outputs, meant to address scientific questions related to exoplanet environments and characteristics. Resources listed on EMAC can be focused on producing both theoretical simulation output as well as conducting data-focused analysis. These resources can currently exist over a wide range of complexity and state of development, from simple tables of pre-computed model outputs all the way up to complex and numerically intensive codes. Not sure if your resource fits with EMAC? Please feel free to make a <a href="/submissions">submission</a> and we can help you decide!
+					</p>
+					<p>
+						Once your resource has been submitted to EMAC and approved by our team, it will be considered an "EMAC-listed" resource. These resources will show up on the EMAC homepage and be searchable with EMAC's filters and search tools. These resources will also be sent out to our <a href="/subscriptions">subscription service</a> and <a href="/news/rss">RSS feed</a>.
+					</p>
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">How many resources are listed on EMAC?</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						EMAC currently has {{resources.count}} developer submitted resources.
+					</p>
+					<p>
+						We also list {{in_lit_resources.count}} other resources found in the literature that have not been officially submitted to EMAC.
+					</p>
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">How can I stay up-to-date on the latest EMAC-listed resources?</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						EMAC offers a <a href="/subscriptions">subscription service</a> where anyone can share an email address which will be updated when a new resource is published to their chosen categories or subcategories. After signing up using this form, a user will receive emails on a weekly, daily, or instantaneous basis related only to the (sub)categories you have selected. They will have the opportunity to modify your selections, update your email address, and unsubscribe via a link which will be included in each email sent to you. Please consider signing up and encouraging your colleagues to sign up to stay up to date on the latest exoplanet resources! EMAC also shares new resources on an <a href="/news/rss">RSS feed</a>. 
+					</p>
+					<p>
+						EMAC shares and promotes resources on our <a href="https://twitter.com/exoplanetmodels">Twitter account</a>. Our <a href="https://www.youtube.com/channel/UCLRJnT1l6CGC8aU2o2MofXw/videos">YouTube channel</a> is regularly updated with tutorials that the EMAC team has developed to help increase the accessibility of resources and foster cross-discipline interactions. We encourage everyone to follow EMAC on both of these platforms. If your resource has its own tutorials or demos please let us know and we would be happy to share them with our followers or rehost them on our YouTube channel.
+					</p>
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">Are all software tools listed on EMAC open-source?</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					Software resources can either be "open-source" (i.e. source code available to everyone) or "open-access" (i.e. proprietary code accessible through a web interface). While not all code listed on EMAC is open-source, all of it should be easily accessible to new users.
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">What computational resources does EMAC have available for hosting and running tools/models?</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					The EMAC library platform is hosted on the NASA Goddard Explore cloud computing cluster, which is a service of the <a href="https://www.nccs.nasa.gov/">NASA Center for Climate Simulation (NCCS)</a>. EMAC is able to offer limited access to high-end multi-core CPU and/or GPU computing resources to EMAC-listed code on a case-by-case basis. Please contact the EMAC team at 
+					<script type="text/javascript" language="javascript">
+						// Email obfuscator script 2.1 by Tim Williams, University of Arizona
+						// Random encryption key feature coded by Andrew Moulden
+						// This code is freeware provided these four comment lines remain intact
+						// A wizard to generate this code is at http://www.jottings.com/obfuscator/
+						{ 
+							var coded = "REDACTED KEY"; //JPR Redacted Oct. 2024
+							var key = "REDACTED KEY"; //JPR Redacted Oct. 2024
+							var shift = coded.length;
+							var link = "";
+							var ltr = "";
+							for (var i = 0; i < coded.length; i++) {
+								if (key.indexOf(coded.charAt(i)) === -1) {
+									ltr = coded.charAt(i);
+									link += (ltr);
+								} else {	 
+									ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length;
+									link += (key.charAt(ltr));
+								}
+							}
+							document.write("<a href='mailto:" + link + "'>REDACTED@nasa.gov</a>");
+						}
+					</script>
+					with specific questions about the computing configuration that best fits your resource and we can look into potentially offering support.
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">What future developments are planned for the EMAC project?</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					The mission of EMAC is to foster inter-model comparisons and improve the accessibility of exoplanet resources. To that end, we have a lot of plans for the future of EMAC including: hosting web-based resource interfaces, the ability to run and compare multiple codes in tandem and in batches, and to create educational resources for students who want experience working with exoplanet-related code and data.
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">Who funds the EMAC project?</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					The EMAC project is funded as part of the <a href="https://science.gsfc.nasa.gov/600/seec/">Goddard Sellers Exoplanet Environments Collaboration (SEEC)</a> by the NASA Planetary Science Division (PSD) as part of the Internal Scientist Funding Model (ISFM) Program. The NASA Headquarters point of contact for the SEEC initiative is Stephen Rinehart.
+				</div>
+			</div>
+
+		</div>
+	</div>
+{% endblock %}
+
+{% block scripts %} 
+	<script >
+		$(".faq-content").click(function() {
+			var container = $(this).parents(".faq-topic");
+			var answer = container.find(".faq-answer");
+			var trigger = container.find(".faq-t");
+
+			answer.slideToggle(200);
+
+			if (trigger.hasClass("faq-o")) {
+				trigger.removeClass("faq-o");
+			} else {
+				trigger.addClass("faq-o");
+			}
+
+			if (container.hasClass("expanded")) {
+				container.removeClass("expanded");
+			} else {
+				container.addClass("expanded");
+			}
+		});
+
+		jQuery(document).ready(function($) {
+			$('.faq-question').each(function() {
+				$(this).attr('data-search-term', $(this).text().toLowerCase() + $(this).find("ptag").text().toLowerCase());
+			});
+
+			$('.live-search-box').on('keyup', function() {
+			var searchTerm = $(this).val().toLowerCase();
+
+			$('.faq-question').each(function() {
+				if ($(this).filter('[data-search-term *= ' + searchTerm + ']').length > 0 || searchTerm.length < 1) {
+				$(this).parent().parent().show();
+				} else {
+				$(this).parent().parent().hide();
+				}
+			});
+		});
+	});
+
+	</script>
+{% endblock %}

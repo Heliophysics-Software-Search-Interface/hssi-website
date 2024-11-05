@@ -1,0 +1,38 @@
+{% extends 'emac_base_template.html' %}
+{% load static %}
+{% block head %}
+
+	<link rel="stylesheet" href="{% static 'css/scanLinks.css' %}?v=2024-09-05" />
+    <link rel="stylesheet" href="{% static 'emac_apps/css/app.css' %}?v=2024-09-05" />
+
+	<script type="text/javascript" src="{% static 'js/scanLinks.js' %}?v=2024-09-05"></script>
+	<script type="text/javascript" src="{% static 'emac_apps/js/spin.js' %}"></script>
+
+{% endblock %}
+<!-- END HEAD -->
+
+<!-- PAGE CONTENT -->
+{% block page_content %}
+
+    <div class="container scan-container">
+        <button type="button" class="hollow button" id="scan-all-links">Scan all published resource links</button>
+        <div id="scan-results" class="scan-results"></div>
+        <div id="error-list" class="error-list"></div>
+        <div id="resource-links-list" class="resource-links-list">
+            {% for resource in resource_list %}
+                {% include "website/resource_links_table.html" %}
+            {% endfor %}
+        </div>
+    </div>
+    <div id="loading_modal">
+        <div id="scan_message"></div>
+    </div>
+
+{% endblock %}
+<!-- END PAGE CONTENT -->
+
+<!-- SCRIPTS -->
+{% block scripts %}
+	{{ block.super }}
+{% endblock %}
+<!-- END SCRIPTS -->

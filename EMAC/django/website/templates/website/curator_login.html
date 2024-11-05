@@ -1,0 +1,139 @@
+{% extends 'emac_base_template.html' %}
+
+{% load static %}
+
+{% block title %}
+EMAC Curator Login
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'emac_apps/css/accounts.css' %}?v=2024-09-05" />
+<link rel="stylesheet" href="{% static 'css/curator_login.css' %}?v=2024-09-05" />
+<link rel="stylesheet" href="{% static 'emac_apps/css/media.css' %}?v=2024-09-05" />
+{% endblock %}
+
+{% block page_content %}
+
+<div class="main-container">
+    <div class="curator-info login">
+        <h6>Already a curator?</h6>
+        <p>
+            Please use the login below to access curator actions on resources. <span class="scroll-down-message">(Scroll down to learn more about EMAC Curators.)</span>
+        </p>
+        {% if form.errors %}
+            {% if form.captcha.errors %}
+                {% for error in form.captcha.errors %}
+                    <p class='login-error'>{{ error }}</p>
+                {% endfor %}
+            {% else %}
+                <p class='login-error'>Your username and password didn't match. Please try again.</p>
+            {% endif %}
+        {% endif %}
+        {% if user.is_authenticated %}
+            <p>You are logged in as: <b>{{ user.get_username }}</b></p>
+            {% if next %}
+                <p>This account does not have access to the page you were trying to reach.</p>
+                <p>Log out and log back in with a different account:</p>
+            {% endif %}
+        {% endif %}
+        <div class="form-container">
+            {% if user.is_authenticated %}
+            <p>
+                <a href="{% url 'logout' %}?next=/">
+                    <input type="button" class="button" value="Log out">
+                </a>
+            </p>
+            {% else %}
+            <form method="post" action="/curators/">
+                {% csrf_token %}
+                <div class="login-form">
+                    <div class="username labeltext">{{ form.username.label_tag }}</div>
+                    <div class="username input">{{ form.username }}</div>
+                    <div class="password labeltext">{{ form.password.label_tag }}</div>
+                    <div class="password input">{{ form.password }}</div>
+                </div>
+                <input type="submit" value="Login" class="button">
+                <input type="hidden" name="next" value="{{ next }}">
+                {{ form.captcha }}
+            </form>
+            {% endif %}
+            <p class="extra-link">
+                <a href="{% url 'password_reset' %}">Set/Reset password?</a>
+            </p>
+        </div>
+    </div>
+    {% if user.is_authenticated %}
+    <div class="curator-info resources">
+        <h6>Curator Resources</h6>
+        <ul>
+            <li>
+                The <a href="https://github.com/GSFC-EMAC/EMAC-Curation-Program/issues" id='curator_program_link' target="_blank">EMAC Curation Program GitHub repository</a> 
+                is used for discussing resources curation with other curators and with EMAC's admin team. As you curate, if you run into a question or a topic of discussion, 
+                please open a new GitHub issue with the title matching the resource in question. (Each resource's curation form page has a link to do this automatically.)
+            </li>
+        </ul>
+    </div>
+    {% endif %}
+    <div class="curator-info what">
+        <h6>What is an EMAC Curator?</h6>
+        <p>
+            NASA Goddard's Exoplanet Modeling and Analysis Center features hundreds of exoplanet-related resources that span many scientific disciplines. Our small team tries to ensure the repository stays up-to-date with the latest software, databases, and workflows used by the community - but we can't catch them all. We also don't always know when a certain resource is applicable to a particular category or collection.
+        </p>
+        <p>
+            This is where Curators come in. Curators are volunteers who occasionally check the collections and categories that fall into their area of expertise, in order to ensure that EMAC's tools are properly labeled, the filtering and search functionality stays relevant, and undiscovered resources are brought to our attention.
+        </p>
+    </div>
+    <div class="curator-info why">
+        <h6>Why be a Curator?</h6>
+        <p>
+            Curators help support EMAC's mission of creating a vibrant and inter-connected exoplanet researcher community through the sharing of online and open-source resources. This work is critical in avoiding duplication of work and supporting a collaborative open-science ethos. In addition to supporting this goal, EMAC will ensure that curator work is recognized in the following ways:
+        </p>
+        <ul>
+            <li>
+                Name listed on the <a href='/team/'>EMAC Team page</a>.
+            </li>
+            <li>
+                Name listed on the category(ies) / collections that you are supporting.
+            </li>
+            <li>
+                Invitation to talk about your own resource, if applicable, at a future <a href='/seminars/'>exoVAST seminar</a>.
+            </li>
+        </ul>
+    </div>
+    <div class="curator-info how">
+        <h6>How do I become a Curator?</h6>
+        <p>
+            Get in touch with us at 
+            <script type="text/javascript">
+                // Email obfuscator script 2.1 by Tim Williams, University of Arizona
+                // Random encryption key feature coded by Andrew Moulden
+                // This code is freeware provided these four comment lines remain intact
+                // A wizard to generate this code is at http://www.jottings.com/obfuscator/
+                { 
+                    var coded = "REDACTED KEY"; //JPR Redacted Oct. 2024
+                    var key = "REDACTED KEY"; //JPR Redacted Oct. 2024
+                    var shift = coded.length;
+                    var link = "";
+                    var ltr = "";
+                    for (var i = 0; i < coded.length; i++) {
+                        if (key.indexOf(coded.charAt(i)) === -1) {
+                            ltr = coded.charAt(i);
+                            link += (ltr);
+                        } else {
+                            ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
+                            link += (key.charAt(ltr));
+                        }
+                    }
+                    document.write("<a href='mailto:" + link + "'>REDACTED@nasa.gov</a>");
+                }
+                </script>
+             and let us know what scientific areas (e.g., atmospheric dynamics, planet interiors, stellar physics, etc.) and/or collections (e.g., resources related to a specific missions like JWST, HST, TESS, etc. or other collaborations like SEEC, NExSS, etc.) you would like to curate for.
+        </p>
+    </div>
+    
+</div>
+{% endblock %}
+
+{% block scripts %}
+	{{ block.super }}
+{% endblock %}

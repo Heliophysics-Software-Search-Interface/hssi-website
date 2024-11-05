@@ -1,0 +1,33 @@
+{% extends 'website/news_base.html' %}
+{% load custom_tags_and_filters %}
+
+{% load static %}
+{% block head %}
+
+    <link rel="stylesheet" href="{% static 'css/post_detail.css' %}?v=2024-09-05" />
+    <link rel="stylesheet" href="{% static 'css/blog.css' %}?v=2024-09-05" />
+    <link rel="stylesheet" href="{% static 'emac_apps/css/media.css' %}?v=2024-09-05" />
+	
+{% endblock %}
+
+{% block news_page_content %}
+
+<div class="small-6 medium-12 large-12 container">
+    <div>
+        <h1 class="news_title"> News Feed <span class="rss_sub"><a href="/news/rss"><img class="rss_img" src="{% static 'images/rss.png' %}" alt="Subscribe to EMAC news via RSS"></a></span></p></h1>
+    </div>
+    <div class="card_container">
+        <div class="card callout medium">
+            <div class="card-body">
+                <h1 class="news_text">{% block title %} {{ object.title }} {% endblock title %} </h1>
+                <p class="card-text text-muted h6">{{ object.author }} | {{ object.published_on}} </p>
+                <p class="card-desc ">{{ object.content | safe }}</p>
+                <a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/news"> &larr; back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+

@@ -1,0 +1,157 @@
+{% extends 'emac_base_template.html' %}
+
+{% load static %}
+
+{% block head %}
+
+<link rel="stylesheet" href="{% static 'css/team.css' %}?v=2024-09-05" />
+<script type="text/javascript" src="{% static 'js/team.js' %}?v=2024-09-05"></script>
+{% include "website/category_styling.html" %}
+
+{% endblock %} 
+
+{% block page_content %}
+
+{% get_static_prefix as STATIC_PREFIX %}
+
+<div class="small-6 medium-12 large-12 container">
+    <div class="team-description">
+        <h1 class="page_title">Our Team</h1>
+        <p>The EMAC Team at NASA Goddard includes both exoplanet scientists and research assistants as well as computer scientists, web developers, and back-end database and cloud developers.  If you see us around, don’t hesitate to ask us about EMAC!  Our email:
+        <a href="javascript:location='mailto:\u0020\u0067\u0073\u0066\u0063\u002d\u0065\u006d\u0061\u0063\u0040\u006d\u0061\u0069\u006c\u002e\u006e\u0061\u0073\u0061\u002e\u0067\u006f\u0076';void 0"><script type="text/javascript">document.write('\u0020\u0067\u0073\u0066\u0063\u002d\u0065\u006d\u0061\u0063\u0040\u006d\u0061\u0069\u006c\u002e\u006e\u0061\u0073\u0061\u002e\u0067\u006f\u0076')</script></a>
+        </p>
+    </div>
+    <div class="team_container">
+            {% for team_member in team %}
+                <div class="callout medium team-info">
+                    {% if team_member.member_image %}
+                        <img class="p_img" src="{{STATIC_PREFIX}}{{team_member.member_image.url}}">
+                    {% endif %}
+                    <div class="p_name">
+                        {% if team_member.personal_url %}
+                        <a href="{{team_member.personal_url}}" class="personal-url" target="_blank">{{team_member.name}}</a>
+                        {% else %}
+                        {{team_member.name}}
+                        {% endif %}
+                        <br/>
+                        <span class="p_desc">{{team_member.description}}</span>
+                        {% if team_member.collections.count or team_member.categories.count %}
+                        <p class="curator-tags p_desc">
+                            Curator for: 
+                            {% for category in team_member.categories.all %}
+                                {% if not category.has_parents %}
+                                    <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}?category={{category.id}}" title="{{category.name}}">
+                                        <label class="label {{category.abbreviation}}">{{category.abbreviation}}</label>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                            {% for collection in team_member.collections.all %}
+                                {% if not collection.has_parents %}
+                                    <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}?collection={{collection.id}}" title="{{collection.name}} Collection">
+                                        <label class="label {{collection.abbreviation}}">{{collection.abbreviation}}</label>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+    </div>
+
+    {% if curators.count %}
+    <div class="emaccordion-section">
+        <div class="emaccordion-header-bar">
+            <div class="page_title alumni-title">Topic Curators</div>
+            <div class="caret-container">
+                <span class="caret"></span>
+            </div>
+        </div>
+        <div class="team_container emaccordion-content">
+            {% for team_member in curators %}
+            <div class="callout medium team-info">
+                <!-- {% if team_member.member_image %}
+                        <img class="p_img" src="{{STATIC_PREFIX}}{{team_member.member_image.url}}">
+                    {% endif %} -->
+                <div class="p_name">
+                    {% if team_member.personal_url %}
+                    <a href="{{team_member.personal_url}}" class="personal-url" target="_blank">{{team_member.name}}</a>
+                    {% else %}
+                    {{team_member.name}}
+                    {% endif %}
+                    <br/>
+                    <span class="p_desc curator">{{team_member.description}}</span>
+                    {% if team_member.collections.count or team_member.categories.count %}
+                    <p class="curator-tags p_desc">
+                        Curator for:
+                        {% for category in team_member.categories.all %}
+                            {% if not category.has_parents %}
+                                <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}?category={{category.id}}" title="{{category.name}}">
+                                    <label class="label {{category.abbreviation}}">{{category.abbreviation}}</label>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                        {% for collection in team_member.collections.all %}
+                            {% if not collection.has_parents %}
+                                <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}?collection={{collection.id}}" title="{{collection.name}} Collection">
+                                    <label class="label {{collection.abbreviation}}">{{collection.abbreviation}}</label>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="emaccordion-section">
+        <div class="emaccordion-header-bar">
+            <div class="page_title alumni-title">EMAC Alumni</div>
+            <div class="caret-container">
+                <span class="caret"></span>
+            </div>
+        </div>
+        <div class="team_container emaccordion-content">
+            {% for team_member in alumni %}
+            <div class="callout medium team-info">
+                {% if team_member.member_image %}
+                <img class="p_img" src="{{STATIC_PREFIX}}{{team_member.member_image.url}}">
+                {% endif %}
+                <div class="p_name">
+                    {% if team_member.personal_url %}
+                    <a href="{{team_member.personal_url}}" class="personal-url" target="_blank">{{team_member.name}}</a>
+                    {% else %}
+                    {{team_member.name}}
+                    {% endif %}
+                    <br />
+                    <span class="p_desc">{{team_member.description}}</span>
+                    {% if team_member.collections.count or team_member.categories.count %}
+                    <p class="curator-tags p_desc">
+                        Curator for: 
+                        {% for category in team_member.categories.all %}
+                            {% if not category.has_parents %}
+                                <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}?category={{category.id}}" title="{{category.name}}">
+                                    <label class="label {{category.abbreviation}}">{{category.abbreviation}}</label>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                        {% for collection in team_member.collections.all %}
+                            {% if not collection.has_parents %}
+                                <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}?collection={{collection.id}}" title="{{collection.name}} Collection">
+                                    <label class="label {{collection.abbreviation}}">{{collection.abbreviation}}</label>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %} 

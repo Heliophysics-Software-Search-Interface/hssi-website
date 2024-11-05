@@ -1,0 +1,173 @@
+/* MAIN-HEADER */
+.header-background {
+	background-image: url("../images/exoplanet_570x300.jpg");
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: right;
+	position: fixed;
+	top: 0;
+	z-index: -1;
+	height: 50vh;
+	min-height: 22rem;
+	width: 100vw;
+	transform: translateY(-25%);
+	background-color: black;
+}
+
+.main_header-container {
+	display: flex;
+	flex-direction: row;
+}
+  
+.main_header {
+	padding: 0;
+	height: 80px;
+	display: flex;
+	align-items: center;
+}
+
+.nasa-brand_logo {
+	padding: 12px;
+	height: 100%;
+}
+  
+.nasa-brand_logo img {
+	height: 100%;
+	width: auto;
+	margin-left: 1rem;
+}
+
+.nasa-brand_heading {
+	height: 100%;
+	padding: 12px;
+	line-height: 20px;
+}
+
+.center_info {
+	font-size: 14pt;
+	letter-spacing: 0.25px;
+}
+  
+.nasa-brand_heading:hover {
+	text-decoration: underline;
+}
+
+.nasa-brand_heading a {
+	font-weight: 500;
+	color: #eee;
+	display: block;
+	padding: 2px;
+	text-decoration: none;
+	font-family: Lato, sans-serif;
+}
+  
+.nasa-brand_heading a:hover {
+	color: white;
+}
+
+/* SUB-HEADER */
+.sub_header-container {
+	min-width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+div.white-background {
+	background-color: white;
+	/* prevent margin collapse on child elements */
+	padding-top: 1px;
+	margin-top: -1px;
+	width: 100%;
+}
+  
+.emac_logo img {
+	height: 80px;
+}
+  
+.emac_logo {
+	margin: 1rem;
+}
+
+.emac_name {
+	margin-left: 1rem;
+}
+
+.emac_name a {
+	font-family: Lato, sans-serif;
+	font-weight: 500;
+	font-size: 33px;
+	color: #eee;
+	text-decoration: none;
+	text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6), 1px 1px 12px rgba(0, 0, 0, 0.8);
+}
+
+/* Footer */
+.footer-section {
+	background-color: #000000;
+}
+  
+footer {
+	border-top: 9px solid #9a2333;
+	min-height: 30px;
+	width: 100%;
+}
+.navbar-footer {
+	padding: 1.5rem 1.5rem 1.5rem 6rem;
+	font-size: 14px;
+}
+  
+.navbar-footer a{
+	color: white;
+	font-weight: 500;
+	font-family: Lato, sans-serif;
+	font-size: 10pt;
+	letter-spacing: 0.25px;
+}
+
+.navbar-footer span {
+	padding-top: 7px;
+	color: #9d9d9d;
+	margin-right: -12px;
+	padding-left: 12px;
+}
+  
+.menu.align-right li {
+	min-width: 205px;
+}
+
+.menu.align-right.navbar-footer {
+	right: 89px;
+}
+
+.menu a {
+	color: #d8d8d8;
+	font-family: Lato, sans-serif;
+	font-size: 10pt;
+	letter-spacing: 0.25px;
+}
+
+.menu a:hover {
+	color: white;
+	text-decoration: underline;
+}
+
+.seec-logo {
+	margin-left: 0px;
+}
+
+/* other shared elements */
+
+div.special-announcement {
+	display: inline-block;
+	border: 2px solid #1779ba; /*#9a2333;*/
+	box-shadow: 7px 7px 6px 0px #8B97B5;
+	border-radius: 3px;
+	padding: 0.5rem 2rem;
+	font-weight: 600;
+	font-size: larger;
+	/* color: rgb(100, 77, 77); */
+	color: rgb(47, 44, 44);
+	background-color: rgb(236, 236, 236);
+	margin-bottom: 0.5rem;
+}

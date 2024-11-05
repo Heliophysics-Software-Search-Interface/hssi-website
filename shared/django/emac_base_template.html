@@ -1,0 +1,344 @@
+{% load static %}
+
+<!doctype html>
+<!-- overflow: inherit used to adjust pop-up behavior -->
+<html class="no-js" lang="en" dir="ltr" style="overflow: inherit;">
+	<head>
+		<!-- start GA code -->
+		<script language="javascript" id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=NASA&subagency=GSFC&dclink=true"></script>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<!-- new GA4 link/id -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-X907G18Z8E"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-X907G18Z8E');
+
+			// check the connection to see if ad blockers are in place
+			var EMAC = EMAC || {};
+			EMAC.gtagReady = false;
+			gtag('event', 'connection_test', {
+				'event_callback': function (gtagId) {
+					if (gtagId === 'G-X907G18Z8E') {
+						EMAC.gtagReady = true;
+					}
+				}
+			});
+		</script>
+		<!-- Google Tag Manager -->
+		<script>
+			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+			new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+			})(window,document,'script','dataLayer','GTM-KGTJWJ9');
+		</script>
+		<!-- End Google Tag Manager -->
+		<!-- end GA code -->
+		<title>{% block title %}Exoplanet Modeling and Analysis Center - NASA/GSFC{% endblock %}</title>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
+		<meta http-equiv="Content-Language" content="en-us" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="orgcode" content="693" />
+		<meta name="rno" content="Avi M. Mandell" />
+		<meta name="content-owner" content="Avi M.  Mandell" />
+		<meta name="webmaster" content="Carl F. Hostetter" />
+		{% block seo_description %}
+		<meta name="description" content="Exoplanet Modeling and Analysis Center - NASA/GSFC" />
+		{% endblock %}
+		<meta name="doc-class" content="Living Document" />
+		<link rel="icon" href="{% static 'emac_apps/images/nasa_favicon.ico' %}">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/css/foundation.min.css" integrity="sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I=" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.foundation.min.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Parisienne" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="{% static 'emac_apps/css/contents.css' %}?v=2024-09-05" />
+		<link rel="stylesheet" href="{% static 'emac_apps/css/elements.css' %}?v=2024-09-05" />
+		<link rel="stylesheet" href="{% static 'emac_apps/css/navigation.css' %}?v=2024-09-05" />
+		<link rel="stylesheet" href="{% static 'emac_apps/css/other_pages.css' %}?v=2024-09-05" />
+		<link rel="stylesheet" href="{% static 'emac_apps/css/media.css' %}?v=2024-09-05" />
+	
+			<!-- jQuery -->
+		<!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script> -->
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+		<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+		<!-- <script type="application/javascript" src="{% static 'emac_apps/js/jquery.waypoints.min.js'%}"></script> -->
+
+		<!-- Foundation -->
+		<script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/js/foundation.min.js" integrity="sha256-pRF3zifJRA9jXGv++b06qwtSqX1byFQOLjqa2PTEb2o=" crossorigin="anonymous"></script>
+		<script src="https://cdn.datatables.net/1.10.21/js/dataTables.foundation.min.js"></script>
+		<script>
+			// set up EMAC namespace
+			var EMAC = EMAC || {};
+
+			jQuery(document).ready(function ($) {
+				// init all the foundation content
+				$(document).foundation();
+
+				// set up the EMAC name in the menu bar to show/hide at correct scroll height
+				$("#emac-short-text").css('color', 'rgb(47,44,44)'); //hide your div initially
+				EMAC.topOfDropdown = $("#dropdown-menu").offset().top;
+				$(window).scroll(function () {
+					if ($(window).scrollTop() > EMAC.topOfDropdown) {
+						$("#emac-short-text").css('color', 'white').show(100);
+					} else {
+						$("#emac-short-text").css('color', 'rgb(47,44,44)').show(100);
+					}
+				});
+			});
+		</script>
+
+		<!-- <script type="application/javascript" src="{% static 'emac_apps/js/infinite.min.js'%}"></script> -->
+		<script type="application/javascript" src="{% static 'emac_apps/js/vendor/what-input.js' %}"></script>
+	
+		{% block head %} {% endblock %}
+	</head>
+
+	<body>
+
+		<!-- Google Tag Manager (noscript) -->
+		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KGTJWJ9" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+		<!-- End Google Tag Manager (noscript) -->
+
+		{% block page_header %}
+		<div class="header-background"></div>
+		<!-- NASA Main-Header -->
+		<div class="main_header-container">
+			<div class="main_header">
+				<a class="nasa-brand_logo" href="https://www.nasa.gov/">
+					<img src="{% static 'emac_apps/images/nasa-logo.svg' %}" alt="NASA Logo, National Aeronautics and Space Administration">
+				</a>
+				<div class="nasa-brand_heading hide-for-small-only">
+					<a class="center_info" href="https://www.nasa.gov/">National Aeronautics and Space Administration</a>
+					<a class="center_info" href="https://www.nasa.gov/goddard/">Goddard Space Flight Center</a>
+				</div>
+			</div>
+			<div class="emac_logo show-for-small-only ">
+				<a href="https://emac.gsfc.nasa.gov/">
+					<img src="{% static 'emac_apps/images/emac_logo_v2_HR_Sm.png' %}" alt="EMAC" />
+				</a>
+			</div>
+		</div>
+
+		<!-- NASA SUB-HEADER -->
+		<div class="sub_header-container">
+			<div class="emac_logo hide-for-small-only">
+				<a href="https://emac.gsfc.nasa.gov/">
+					<img src="{% static 'emac_apps/images/emac_logo_v2_HR_Sm.png' %}" alt="EMAC" />
+				</a>
+			</div>
+			<div class="emac_name">
+				<a href="https://emac.gsfc.nasa.gov/">
+					Exoplanet Modeling and Analysis Center<br>
+				</a>
+			</div>
+		</div>
+
+		<div class="title-bar hide-for-large-only"  data-responsive-toggle="dropdown-menu">
+			<div class="title-bar-right">
+				<button class="menu-icon" type="button" data-toggle="dropdown-menu"></button>
+				<div class="title-bar-title"></div>
+			</div>
+		</div>
+
+		 <div id="dropdown-menu" class="nav-content">
+			<div id="emac-short-text" class="emac-short-text hide-for-small-only">EMAC</div>
+			<nav class="nav_dropdown_list top-nav" role="menubar" aria-label="breadcrumbs">
+				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/">Home</a></li>
+				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/submissions">Submit a Resource</a></li>
+				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/subscriptions">Subscribe</a></li>
+				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/FAQ">FAQ</a></li>
+				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/team">Our Team</a></li>
+				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/news">News</a></li>
+				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/seminars">Seminars</a></li>
+				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/developers">For Developers</a></li>
+				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/curators">Curators</a>
+					{% if user.is_authenticated %}
+					<a class="login-icon" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/accounts/logout?next=/" title="Log out"><i class="fa fa-sign-out"></i></a>
+					{% else %}
+					<a class="login-icon" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/curators" title="Log in"><i class="fa fa-sign-in"></i></a>
+					{% endif %}
+				</li>
+			</nav>
+			<div id="social-icon-container" class="social-icon-container hide-for-small-only">
+				<a class="social-link" href="https://twitter.com/ExoplanetModels" target="_blank">
+					<img src="{% static 'emac_apps/images/twitter_logo_white.svg' %}" alt="Visit our Twitter account" />
+				</a>
+				<a class="social-link" href="/news/rss" target="_blank">
+					<img src="{% static 'emac_apps/images/social_rss_48.png' %}" alt="Subscribe to EMAC news via RSS" />
+				</a>
+				<a class="social-link" href="https://www.youtube.com/channel/UCLRJnT1l6CGC8aU2o2MofXw" target="_blank">
+					<img src="{% static 'emac_apps/images/youtube_social_square_dark_44.png' %}" alt="Visit our YouTube channel" />
+				</a>
+			</div>
+		</div>
+
+	{% endblock %}
+
+		<div class="white-background">
+			{% block page_content %} {% endblock %}
+		</div>
+
+	{% block page_footer %}
+		<!-- FOOTER -->
+		<footer>
+			<div class="grid-x footer-section">
+				<div class="small-12 medium-6 large-4 seec-img">
+					<a href="https://seec.gsfc.nasa.gov">
+						<img class= "seec-logo" src="{% static 'emac_apps/images/seec_logo_and_title.jpg' %}" alt="SEEC" />
+					</a>
+				</div>
+
+				<div class="medium-6 large-8 cell text-right">
+					<ul class="align-center navbar-footer menu">
+						<li class="footer_tag">
+							<span>NASA Official: </span>
+							<script type="application/javascript">
+
+								// Email obfuscator script 2.1 by Tim Williams, University of Arizona
+								// Random encryption key feature coded by Andrew Moulden
+								// This code is freeware provided these four comment lines remain intact
+								// A wizard to generate this code is at http://www.jottings.com/obfuscator/
+								{
+									var coded = "REDACTED KEY"; // JPR Redacted Oct. 2024
+									var key = "REDACTED KEY"; // JPR Redacted Oct. 2024
+									var shift = coded.length;
+									var link = "";
+									var ltr = "";
+									for (var i = 0; i < coded.length; i++) {
+										if (key.indexOf(coded.charAt(i)) === -1) {
+											ltr = coded.charAt(i);
+											link += (ltr);
+										} else {
+											ltr = (key.indexOf(coded.charAt(i)) - shift + key.length) % key.length;
+											link += (key.charAt(ltr));
+										}
+									}
+									document.write("<a href='mailto:" + link + "'>Avi Mandell</a>");
+								}
+
+							</script>
+							<noscript><a href="#">Avi Mandell</a></noscript>
+						</li>
+						<li>
+							<span>Curator: </span>
+							<script type="application/javascript">
+
+								// Email obfuscator script 2.1 by Tim Williams, University of Arizona
+								// Random encryption key feature coded by Andrew Moulden
+								// This code is freeware provided these four comment lines remain intact
+								// A wizard to generate this code is at http://www.jottings.com/obfuscator/
+								{ 
+									var coded = "REDACTED KEY"; // JPR Redacted Oct. 2024
+									var key = "REDACTED KEY"; // JPR Redacted Oct. 2024
+									var shift = coded.length;
+									var link = "";
+									var ltr = "";
+									for (var i = 0; i < coded.length; i++) {
+										if (key.indexOf(coded.charAt(i)) === -1) {
+											ltr = coded.charAt(i);
+											link += (ltr);
+										} else {
+											ltr = (key.indexOf(coded.charAt(i)) - shift + key.length) % key.length;
+											link += (key.charAt(ltr));
+										}
+									}
+									document.write("<a href='mailto:" + link + "'>Carl F. Hostetter</a>");
+								}
+
+							</script>
+							<noscript><a href="#">Carl F. Hostetter</a></noscript>
+						</li>
+						<li>
+							<a href="javascript:location='mailto:\u0020\u0067\u0073\u0066\u0063\u002d\u0065\u006d\u0061\u0063\u0040\u006d\u0061\u0069\u006c\u002e\u006e\u0061\u0073\u0061\u002e\u0067\u006f\u0076';void 0"><script type="text/javascript">document.write('\u0020\u0067\u0073\u0066\u0063\u002d\u0065\u006d\u0061\u0063\u0040\u006d\u0061\u0069\u006c\u002e\u006e\u0061\u0073\u0061\u002e\u0067\u006f\u0076')</script></a>
+						</li>
+						<li>
+							<a href="https://www.nasa.gov/about/highlights/HP_Privacy.html" id="footer_content">Privacy and Security Notices</a>
+						</li>
+						<li>
+							<a id="GSFC-link" href="https://science.gsfc.nasa.gov">GSFC Sciences and Exploration</a>
+						</li>
+					</ul>
+				</div>
+				<!-- <div class="small-2 medium-6 large-2 cell footer_img-section text-right hide-for-small-only">
+					<a class="footer-brand_logo" href="https://www.nasa.gov/goddard/">
+						<img src="{% static 'emac_apps/images/goddard_logo.png' %}" alt="Goddard Space Flight Center">
+					</a>
+				</div> -->
+			</div>
+		</footer>
+	{% endblock %}
+
+	<a href="#" class="back-to-top scroll-button"><i class="fa fa-angle-double-up" ></i></a>
+	<a href="#" class="go-to-bottom scroll-button"><i class="fa fa-angle-double-down" ></i></a>
+
+	<script>
+
+		console.log('Welcome to EMAC')
+		var amountScrolled = 250;
+
+		// back to top functionality
+		$(window).scroll(function() {
+			if ( $(window).scrollTop() > amountScrolled ) {
+				$('a.scroll-button').fadeIn('slow');
+			} else {
+				$('a.scroll-button').fadeOut('slow');
+			}
+		});
+
+		$('a.scroll-button').hide();
+
+		$('a.scroll-button').click(function() {
+			var scrollPosition = 0;
+			if ($(this).hasClass('go-to-bottom')) {
+				scrollPosition = $(document).height();
+			}
+			$('html, body').animate({
+				scrollTop: scrollPosition
+			}, 600);
+			return false;
+		});
+
+		/*
+		* Function that registers a click on an outbound link in Google Analytics.
+		*/
+		var getOutboundLink = function (url, type, resource_id, resource_name, alt_params) {
+			// check to see if our initial connection test was successful
+			if (EMAC.gtagReady) {
+				var params = { url, type };
+				if (resource_id) {
+					params.resource_id = resource_id;
+				}
+				if (resource_name) {
+					params.resource_name = resource_name;
+				}
+				if (alt_params === undefined || alt_params === null) {
+					alt_params = {}
+				}
+
+				gtag('event', 'outbound_click', {
+					...params,
+					...alt_params,
+					'event_callback': function (gtagId) {			
+						if (gtagId === 'G-X907G18Z8E') {
+							window.open(url, "_blank");
+						}					
+					}
+				});
+			} else {			
+				window.open(url, "_blank");			
+			}
+		}
+
+	</script>
+
+	{% block scripts %} {% endblock %}
+
+	</body>
+
+</html>

@@ -1,0 +1,53 @@
+{% extends 'emac_base_template.html' %}
+
+{% load static %}
+
+{% block head %}
+
+	<link rel="stylesheet" href="{% static 'css/submissions.css' %}?v=2024-09-05" />
+	
+{% endblock %}
+
+{% block page_content %}
+
+	<h1 class="submission_title">Your submission has been received.</h1>
+
+	<div class="submission-summary">
+		Please use this link to edit your submission at any time:
+		<div class="submission-link">
+			<a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/submissions/{{id}}/">{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/submissions/{{id}}/</a>
+		</div>
+		or contact <a href="mailto:REDACTED@nasa.gov">REDACTED@nasa.gov</a> for help.
+		<div class="submission_detail">
+			Name: {{submission.name}} <br/>
+			Subtitle: {{submission.subtitle}}<br/>
+			Credits: {{submission.credits}}<br/>
+			Description: {{submission.description}}<br/>
+			Categories: {{category_list}}<br/>
+			Collections: {{collection_list}}<br/>
+			Tool Types: {{tooltype_list}}<br/>
+			Search Keywords: {{submission.search_keywords}}<br/>
+			Code Language(s): {{submission.code_languages}}<br/>
+			Other Category: {{submission.other_category}}<br/>
+			Host a Web-Accessible Version on EMAC? {{submission.host_app_on_emac}}<br/>
+			Host Data/Model Output on EMAC? {{submission.host_data_on_emac}}<br/>
+			Interested in a New Web Interface? {{submission.make_web_interface}}<br/>
+			About Link: {{submission.about_link}}<br/>
+			ADS Abstract Link: {{submission.ads_abstract_link}} <br/>
+			Demo Link: {{submission.demo_link}}<br/>
+			Discuss Link: {{submission.discuss_link}}<br/>
+			Download Link: {{submission.download_link}}<br/>
+			Jupyter Link: {{submission.jupyter_link}}<br/>
+			Launch Link: {{submission.launch_link}}<br/>
+			Private Code/Data link: {{submission.private_code_or_data_link}}<br/>
+			Related Tools: {{submission.related_tool_string}}<br/>
+			Submitter First Name: {{submission.submitter_first_name}}<br/>
+			Submitter Last Name: {{submission.submitter_last_name}}<br/>
+			Submitter Email: {{submission.submitter_email}}<br/>
+			Submission Notes: {{submission.submission_notes}}<br/>
+		</div>
+	</div>
+
+{% endblock %}
+
+

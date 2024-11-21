@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_extensions',
-    'django_recaptcha'
+    # 'django_recaptcha'
 ]
 
 MIDDLEWARE = [

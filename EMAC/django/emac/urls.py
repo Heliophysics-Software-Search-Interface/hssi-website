@@ -22,8 +22,8 @@ urlpatterns = [
     re_path(r'^tpfplotter/.*$(?i)', RedirectView.as_view(url=TOOLS_SITE_URL + "/tpfplotter")),
     path('accounts/login/', LoginView.as_view(form_class=RecaptchaAuthenticationForm), name='login'),
     path('accounts/password_reset/', PasswordResetView.as_view(
-        form_class=RecaptchaPasswordResetForm,
-        html_email_template_name="registration/html_password_reset_email.html"), name='password_reset'),
+         form_class=RecaptchaPasswordResetForm,
+         html_email_template_name="registration/html_password_reset_email.html"), name='password_reset'),
     path('accounts/reset/<uidb64>/<token>/', PasswordResetConfirmView.as_view(form_class=RecaptchaSetPasswordForm), name='password_reset_confirm'),
     path('accounts/', include('django.contrib.auth.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

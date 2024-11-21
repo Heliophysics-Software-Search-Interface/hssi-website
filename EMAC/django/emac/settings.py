@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'django_recaptcha'
+    # 'django_recaptcha'
 ]
 
 MIDDLEWARE = [
@@ -168,3 +168,7 @@ DB_IMPORT_IN_PROGRESS = False
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 from website import app_settings
+
+# SILENCED_SYSTEM_CHECKS = [
+#     "django_recaptcha.recaptcha_test_key_error"
+# ]

@@ -22,29 +22,30 @@ from .utils import organized_categories_json
 
 from emac import settings
 
-from django_recaptcha.fields import ReCaptchaField
-from django_recaptcha.widgets import ReCaptchaV3
+# from django_recaptcha.fields import ReCaptchaField
+# from django_recaptcha.widgets import ReCaptchaV3
 
 emac_public_key, emac_private_key = emac_utils.get_recaptcha_keys()
 
 class SubscriptionForm(ModelForm):
 
-    captcha = ReCaptchaField(
-        public_key=emac_public_key,
-        private_key=emac_private_key,
-        widget=ReCaptchaV3(
-            attrs={
-                'required_score':0.7
-            },
-            action='subscription'
-        )
-    )
+    # captcha = ReCaptchaField(
+    #     public_key=emac_public_key,
+    #     private_key=emac_private_key,
+    #     widget=ReCaptchaV3(
+    #         attrs={
+    #             'required_score':0.7
+    #         },
+    #         action='subscription'
+    #     )
+    # )
 
     class Meta:
         model = Subscription
 
         fields = [
-            'subscriber_email', 'categories', 'notification_frequency', 'captcha'
+            'subscriber_email', 'categories', 'notification_frequency', 
+            # 'captcha'
         ]
         help_texts = Subscription.help_texts
         # labels = Subscription.labels

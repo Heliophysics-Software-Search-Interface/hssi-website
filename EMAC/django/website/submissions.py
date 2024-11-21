@@ -24,23 +24,23 @@ from .utils import organized_categories_json
 
 from emac import settings
 
-from django_recaptcha.fields import ReCaptchaField
-from django_recaptcha.widgets import ReCaptchaV3
+# from django_recaptcha.fields import ReCaptchaField
+# from django_recaptcha.widgets import ReCaptchaV3
 
 emac_public_key, emac_private_key = emac_utils.get_recaptcha_keys()
 
 class SubmissionForm(ModelForm):
 
-    captcha = ReCaptchaField(
-        public_key=emac_public_key,
-        private_key=emac_private_key,
-        widget=ReCaptchaV3(
-            attrs={
-                'required_score':0.7
-            },
-            action='submission'
-        )
-    )
+    # captcha = ReCaptchaField(
+    #     public_key=emac_public_key,
+    #     private_key=emac_private_key,
+    #     widget=ReCaptchaV3(
+    #         attrs={
+    #             'required_score':0.7
+    #         },
+    #         action='submission'
+    #     )
+    # )
     class Meta:
         model = Submission
         fields = [
@@ -49,7 +49,7 @@ class SubmissionForm(ModelForm):
             'related_tool_string', 'host_app_on_emac', 'host_data_on_emac', 'private_code_or_data_link', 'submission_notes',
             'categories','other_category', 
             'about_link', 'ads_abstract_link', 'download_link', 'download_data_link','jupyter_link', 'launch_link', 'demo_link','ascl_id',
-            'captcha'
+            #'captcha'
         ]
         help_texts = Submission.help_texts
         labels = Submission.labels

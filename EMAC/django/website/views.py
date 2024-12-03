@@ -29,7 +29,6 @@ from crispy_forms.utils import render_crispy_form
 
 from ipware import get_client_ip
 
-from .ads_scraper import emac_ads_scraper
 from .analytics import analytics as _analytics # TODO: fix this kludge
 from .forms import FeedbackForm, AnalyticsForm #, SubscriptionForm
 from .models import Category, NewsItem, NewsItemStatus, PendingSubscriptionNotification, Resource, TeamMember, ToolType, Collection, InLitResource, Submission, SubmissionStatus
@@ -401,106 +400,6 @@ def published_resources(request):
     return response
 
 os.environ["ADS_DEV_KEY"] = settings.ADS_DEV_KEY
-
-def ADS_scraper(request):
-    class ADS_scraper_thread(Thread):
-        def run(self):
-            emac_ads_scraper.scrape()
-
-            if os.path.isfile(emac_ads_scraper.BROAD_RESULTS_FILE_PATH) and os.path.isfile(emac_ads_scraper.NARROW_RESULTS_FILE_PATH):
-
-                message = EmailMessage(
-                    subject = "EMAC ADS Scraper weekly results",
-                    body = "EMAC ADS Scraper weekly results",
-                    to = ["REDACTED@nasa.gov"], # JPR Redacted Oct. 2024
-                )
-
-                message.attach_file(emac_ads_scraper.BROAD_RESULTS_FILE_PATH)
-                message.attach_file(emac_ads_scraper.NARROW_RESULTS_FILE_PATH)
-
-                try:
-                    message.send(fail_silently=False)
-                except:
-                    return HttpResponse("Failed to send email!", status=500)
-                else:
-                    broad_results_rows = []
-                    narrow_results_rows = []
-
-                    with open(emac_ads_scraper.BROAD_RESULTS_FILE_PATH,'r') as broad_results_file:
-                        for line in broad_results_file:
-                            broad_results_rows.append(line.split(","))
-
-                    with open(emac_ads_scraper.NARROW_RESULTS_FILE_PATH,'r') as narrow_results_file:
-                        for line in narrow_results_file:
-                            narrow_results_rows.append(line.split(","))
-
-                    columns = broad_results_rows[0]
-                    date = broad_results_rows[1][0]
-                    broad_results_rows = broad_results_rows[2:]
-                    narrow_results_rows = narrow_results_rows[2:]
-
-                    os.remove(emac_ads_scraper.BROAD_RESULTS_FILE_PATH)
-                    os.remove(emac_ads_scraper.NARROW_RESULTS_FILE_PATH)
-    
-    ADS_scraper_thread().start()
-    return redirect('/')
-
-
-def ADS_citation_scraper(request):
-
-    class ADS_scraper_thread(Thread):
-        def run(self):
-            err_msg = ''
-            resources = Resource.objects.all()
-            for resource in resources:
-                try:
-                    print(f'Getting citation count for {resource.name}')
-                    new_citation_count = resource.get_citation_count()
-                    if new_citation_count != resource.citation_count:
-                        resource.citation_count = new_citation_count
-                        resource.submission.citation_count = new_citation_count
-                        resource.save()
-                        resource.submission.save()
-                except Exception as err:
-                    msg = f'Citation scraper failed for Resource {resource.name}\n'
-                    msg += f'ADS link used: {resource.ads_abstract_link}\n'
-                    msg += ''.join(traceback.TracebackException.from_exception(err).format()) + '\n'
-                    print(msg)
-                    err_msg+= msg+'\n'
-            resources = InLitResource.objects.all()
-            for resource in resources:
-                try:
-                    print(f'Getting citation count for {resource.name}')
-                    new_citation_count = resource.get_citation_count()
-                    if new_citation_count != resource.citation_count:
-                        resource.citation_count = new_citation_count
-                        resource.submission.citation_count = new_citation_count
-                        resource.save()
-                        resource.submission.save()
-                except Exception as err:
-                    msg = f'Citation scraper failed for In-Lit Resource {resource.name}\n'
-                    msg += f'ADS link used: {resource.ads_abstract_link}\n'
-                    msg += ''.join(traceback.TracebackException.from_exception(err).format()) + '\n'
-                    print(msg)
-                    err_msg+= msg+'\n'
-            print("citation scraper done")
-            if err_msg != '':
-                print("Error in citation scraper")
-                message = EmailMessage(
-                    subject="EMAC ADS Citation Scraper Failed",
-                    body=f"There was an error with the citation scraper!\n{err_msg}",
-                    to=["REDACTED@nasa.gov"], # JPR Redacted Oct. 2024
-                )
-                try:
-                    message.send(fail_silently=False)
-                except:
-                    print("ADS citation scraper failed and email failed to send")
-                else:
-                    print("ADS citation scraper failed and email sent")
-
-    ADS_scraper_thread().start()
-    
-    return redirect('/')
 
 def contact_all(request):
     """

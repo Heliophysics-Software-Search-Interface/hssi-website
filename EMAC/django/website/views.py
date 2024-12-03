@@ -4,8 +4,7 @@ from io import StringIO
 import re
 import pandas as pd
 
-from datetime import datetime, timedelta
-from datetime import date as date_package
+from datetime import timedelta, date
 from itertools import chain 
 from threading import Thread
     
@@ -534,7 +533,7 @@ def contact_all(request):
                         submission.date_contacted = timezone.now()
                         submission.save()
                         total_contacts += 1
-                    elif (submission.status == SubmissionStatus.CONTACTED.name) and (date_package.today() - submission.date_contacted > timedelta(days=89)):
+                    elif (submission.status == SubmissionStatus.CONTACTED.name) and (date.today() - submission.date_contacted > timedelta(days=89)):
                         if isInlit(submission):
                             if submission.contact_count == 1:
                                 submissions.send_contact_email(submission, SaveType.SECONDINLITCONTACT)
@@ -561,7 +560,7 @@ def contact_all(request):
                         submission.date_contacted = timezone.now()
                         submission.save()
                         total_contacts += 1
-                    elif (submission.status == SubmissionStatus.IN_LITERATURE.name and submission.contact_count == 2) and (date_package.today() - submission.date_contacted > timedelta(days=89)):
+                    elif (submission.status == SubmissionStatus.IN_LITERATURE.name and submission.contact_count == 2) and (date.today() - submission.date_contacted > timedelta(days=89)):
                         submissions.send_contact_email(submission, SaveType.FINALINLITCONTACT)
                         submission.contact_count += 1
                         submission.date_contacted = timezone.now()

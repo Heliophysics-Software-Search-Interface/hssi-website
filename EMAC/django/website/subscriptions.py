@@ -14,8 +14,6 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Button, Submit
 from ipware import get_client_ip
 
-from emac import emac_utils
-
 from .constants import SaveType
 from .models import Category, NotificationFrequency, PendingSubscriptionNotification, Resource, Subscription
 from .utils import organized_categories_json
@@ -36,9 +34,6 @@ class SubscriptionForm(ModelForm):
 
     def clean_subscriber_email(self):
         subscriber_email = self.cleaned_data['subscriber_email']
-        if not emac_utils.email_address_is_allowed(subscriber_email):
-            raise ValidationError(_("Subscriptions are not allowed from this email address"))
-
         return subscriber_email
 
     def clean_id(self):

@@ -22,9 +22,6 @@ from django.conf import settings
 API_KEY = settings.ADS_DEV_KEY
 import urllib.request, urllib.parse
 
-
-from emac import emac_utils
-
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
@@ -142,23 +139,9 @@ class NewsItemAdmin(ImportExportModelAdmin):
 
         # If we're not currently importing the database, and the news item status is publish, send a coresponding tweet to Twitter
         if not settings.DB_IMPORT_IN_PROGRESS and obj.status == NewsItemStatus.PUBLISH.name:
-
             obj.published_on = timezone.now()
-            super().save_model(request, obj, form, change)
-
-            if settings.EMAC_DOMAIN == "emac.gsfc.nasa.gov":
-
-                if obj.tweet_content is None or obj.tweet_content == "":
-                    tweet = f"{obj.title}\n\nSee more: https://emac.gsfc.nasa.gov/news/{obj.pk}"
-                else:
-                    tweet = f"{obj.title}\n\n{obj.tweet_content}\n\nSee more: https://emac.gsfc.nasa.gov/news/{obj.pk}"
-
-                try:
-                    emac_utils.twitter_api.update_status(tweet)
-                except Exception as ex:
-                    messages.error(request, message=f"Attempted tweet failed: {ex}")    
-        else:
-            super().save_model(request, obj, form, change)
+        
+        super().save_model(request, obj, form, change)
 
 class PendingSubscriptionNotificationResource(resources.ModelResource):
     

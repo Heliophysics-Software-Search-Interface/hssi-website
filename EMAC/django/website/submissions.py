@@ -16,31 +16,14 @@ from ipware import get_client_ip
 
 import requests
 
-from emac import emac_utils
-
 from .constants import SaveType
 from .models import Resource, Submission, SubmissionStatus
 from .utils import organized_categories_json
 
 from emac import settings
 
-# from django_recaptcha.fields import ReCaptchaField
-# from django_recaptcha.widgets import ReCaptchaV3
-
-emac_public_key, emac_private_key = emac_utils.get_recaptcha_keys()
-
 class SubmissionForm(ModelForm):
 
-    # captcha = ReCaptchaField(
-    #     public_key=emac_public_key,
-    #     private_key=emac_private_key,
-    #     widget=ReCaptchaV3(
-    #         attrs={
-    #             'required_score':0.7
-    #         },
-    #         action='submission'
-    #     )
-    # )
     class Meta:
         model = Submission
         fields = [
@@ -78,9 +61,6 @@ class SubmissionForm(ModelForm):
 
     def clean_submitter_email(self):
         submitter_email = self.cleaned_data['submitter_email']
-
-        if not emac_utils.email_address_is_allowed(submitter_email):
-            raise ValidationError(_("Submissions are not allowed from this email address"))
 
         return submitter_email
 

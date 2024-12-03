@@ -16,7 +16,6 @@ from google.oauth2 import service_account
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from googleapiclient.discovery import build
-from vidyo import Client
 
 from django.conf import settings
 from website.models import Resource, Submission, Category, NewsItem, Subscription, InLitResource

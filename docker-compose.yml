@@ -30,7 +30,6 @@ services:
     #         - ./shared/django/registration:/django/emac/templates/registration
     #         - ./shared/django/emac_context_processors.py:/django/emac/emac_context_processors.py
     #         - ./shared/django/emac_secret_settings.py:/django/emac/emac_secret_settings.py
-    #         - ./shared/django/emac_utils.py:/django/emac/emac_utils.py
     #         - ./shared/static/emac_apps:/static/emac_apps
     #         - ./shared/pip-requirements:/extensions/pip-requirements
     #         - ./shared/django/recaptcha_auth_forms.py:/django/emac/recaptcha_auth_forms.py

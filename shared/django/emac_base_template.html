@@ -117,15 +117,15 @@
 		 <div id="dropdown-menu" class="nav-content">
 			<div id="emac-short-text" class="emac-short-text hide-for-small-only">EMAC</div>
 			<nav class="nav_dropdown_list top-nav" role="menubar" aria-label="breadcrumbs">
-				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/">Home</a></li>
-				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/submissions">Submit a Resource</a></li>
-				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/subscriptions">Subscribe</a></li>
-				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/FAQ">FAQ</a></li>
-				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/team">Our Team</a></li>
-				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/news">News</a></li>
-				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/seminars">Seminars</a></li>
-				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/developers">For Developers</a></li>
-				<li role="nav-list"><a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/curators">Curators</a>
+				<li role="nav-list"><a class="nav-link" href="/">Home</a></li>
+				<li role="nav-list"><a class="nav-link" href="/submissions">Submit a Resource</a></li>
+				<li role="nav-list"><a class="nav-link" href="/subscriptions">Subscribe</a></li>
+				<li role="nav-list"><a class="nav-link" href="/FAQ">FAQ</a></li>
+				<li role="nav-list"><a class="nav-link" href="/team">Our Team</a></li>
+				<li role="nav-list"><a class="nav-link" href="/news">News</a></li>
+				<li role="nav-list"><a class="nav-link" href="/seminars">Seminars</a></li>
+				<li role="nav-list"><a class="nav-link" href="/developers">For Developers</a></li>
+				<li role="nav-list"><a class="nav-link" href="/curators">Curators</a>
 					{% if user.is_authenticated %}
 					<a class="login-icon" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/accounts/logout?next=/" title="Log out"><i class="fa fa-sign-out"></i></a>
 					{% else %}
@@ -134,13 +134,13 @@
 				</li>
 			</nav>
 			<div id="social-icon-container" class="social-icon-container hide-for-small-only">
-				<a class="social-link" href="https://twitter.com/ExoplanetModels" target="_blank">
+				<a class="social-link" href="#TODO" target="_blank">
 					<img src="{% static 'emac_apps/images/twitter_logo_white.svg' %}" alt="Visit our Twitter account" />
 				</a>
-				<a class="social-link" href="/news/rss" target="_blank">
+				<a class="social-link" href="#TODO rss" target="_blank">
 					<img src="{% static 'emac_apps/images/social_rss_48.png' %}" alt="Subscribe to EMAC news via RSS" />
 				</a>
-				<a class="social-link" href="https://www.youtube.com/channel/UCLRJnT1l6CGC8aU2o2MofXw" target="_blank">
+				<a class="social-link" href="#TODO" target="_blank">
 					<img src="{% static 'emac_apps/images/youtube_social_square_dark_44.png' %}" alt="Visit our YouTube channel" />
 				</a>
 			</div>

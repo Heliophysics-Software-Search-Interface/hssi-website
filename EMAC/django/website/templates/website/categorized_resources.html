@@ -5,7 +5,7 @@
 
 {% block title %}
 	{% if related_resource %}
-		Exoplanet Modeling and Analysis Center: {{related_resource.name}}
+		HSSI: {{related_resource.name}}
 	{% else %}
 		{{block.super}}
 	{% endif %}
@@ -148,11 +148,27 @@
 				<div id="result-count"></div>
 				<div id="sort_menu">
 					{% if is_curator %}
-					<input id="sort_by_curated" type="button" class="button sort-button" value="Sort by Curated Date" />
+					<input 
+						id="sort_by_curated" 
+						type="button" 
+						class="button sort-button" 
+						value="Sort by Curated Date" 
+					/>
 					{% endif %}
 					<!-- default to sort by date -->
-					<input id="sort_by_date" type="button" class="button sort-button active-sort" value="Sort by Date" selected="selected" />
-					<input id="sort_by_name" type="button" class="button sort-button" value="Sort by Name" />
+					<input 
+						id="sort_by_date" 
+						type="button" 
+						class="button sort-button active-sort" 
+						value="Sort by Date" 
+						selected="selected" 
+					/>
+					<input 
+						id="sort_by_name" 
+						type="button" 
+						class="button sort-button" 
+						value="Sort by Name" 
+					/>
 				</div>
 			</div>
 			<!-- RESOURCE CONTENT -->

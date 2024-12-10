@@ -14,7 +14,7 @@ services:
         volumes:
             - ./django:/django
             - ./django/static:/static
-            - ../../logs/nginx:/var/log/nginx
+            # - ../../logs/nginx:/var/log/nginx
             - ../shared/config/nginx/logrotate:/etc/logrotate.d/nginx
             - ../shared/config/django:/config/django
             - ../shared/config/nginx:/etc/nginx/conf.d
@@ -23,7 +23,7 @@ services:
             - ../shared/django/emac_context_processors.py:/django/emac/emac_context_processors.py
             - ../shared/django/emac_secret_settings.py:/django/emac/emac_secret_settings.py
             - ../shared/static/emac_apps:/static/emac_apps
-            - ../../data:/data
+            # - ../../data:/data
             - ../shared/pip-requirements:/extensions/pip-requirements
             - ../shared/django/recaptcha_auth_forms.py:/django/emac/recaptcha_auth_forms.py
         environment:

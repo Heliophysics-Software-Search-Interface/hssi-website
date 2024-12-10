@@ -4,39 +4,7 @@
 <!-- overflow: inherit used to adjust pop-up behavior -->
 <html class="no-js" lang="en" dir="ltr" style="overflow: inherit;">
 	<head>
-		<!-- start GA code -->
-		<script language="javascript" id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=NASA&subagency=GSFC&dclink=true"></script>
-		<!-- Global site tag (gtag.js) - Google Analytics -->
-		<!-- new GA4 link/id -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=G-X907G18Z8E"></script>
-		<script>
-			window.dataLayer = window.dataLayer || [];
-			function gtag(){dataLayer.push(arguments);}
-			gtag('js', new Date());
-			gtag('config', 'G-X907G18Z8E');
-
-			// check the connection to see if ad blockers are in place
-			var EMAC = EMAC || {};
-			EMAC.gtagReady = false;
-			gtag('event', 'connection_test', {
-				'event_callback': function (gtagId) {
-					if (gtagId === 'G-X907G18Z8E') {
-						EMAC.gtagReady = true;
-					}
-				}
-			});
-		</script>
-		<!-- Google Tag Manager -->
-		<script>
-			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-			new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-			})(window,document,'script','dataLayer','GTM-KGTJWJ9');
-		</script>
-		<!-- End Google Tag Manager -->
-		<!-- end GA code -->
-		<title>{% block title %}Exoplanet Modeling and Analysis Center - NASA/GSFC{% endblock %}</title>
+		<title>{% block title %}HSSI - Heliophysics Software Search Interface{% endblock %}</title>
 		<meta charset="utf-8">
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
 		<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
@@ -47,7 +15,7 @@
 		<meta name="content-owner" content="Avi M.  Mandell" />
 		<meta name="webmaster" content="Carl F. Hostetter" />
 		{% block seo_description %}
-		<meta name="description" content="Exoplanet Modeling and Analysis Center - NASA/GSFC" />
+		<meta name="description" content="HSSI - Heliophysics Software Search Interface" />
 		{% endblock %}
 		<meta name="doc-class" content="Living Document" />
 		<link rel="icon" href="{% static 'emac_apps/images/nasa_favicon.ico' %}">
@@ -110,17 +78,17 @@
 		<!-- NASA Main-Header -->
 		<div class="main_header-container">
 			<div class="main_header">
-				<a class="nasa-brand_logo" href="https://www.nasa.gov/">
-					<img src="{% static 'emac_apps/images/nasa-logo.svg' %}" alt="NASA Logo, National Aeronautics and Space Administration">
+				<a class="nasa-brand_logo" href="#">
+					<img src="{% static 'emac_apps/images/#' %}" alt="HSSI Logo - small">
 				</a>
 				<div class="nasa-brand_heading hide-for-small-only">
-					<a class="center_info" href="https://www.nasa.gov/">National Aeronautics and Space Administration</a>
-					<a class="center_info" href="https://www.nasa.gov/goddard/">Goddard Space Flight Center</a>
+					<a class="center_info" href="#">TODO Link corp 1</a>
+					<a class="center_info" href="#">TODO Link corp 2</a>
 				</div>
 			</div>
 			<div class="emac_logo show-for-small-only ">
-				<a href="https://emac.gsfc.nasa.gov/">
-					<img src="{% static 'emac_apps/images/emac_logo_v2_HR_Sm.png' %}" alt="EMAC" />
+				<a href="#">
+					<img src="{% static 'emac_apps/images/#' %}" alt="HSSI" />
 				</a>
 			</div>
 		</div>
@@ -128,13 +96,13 @@
 		<!-- NASA SUB-HEADER -->
 		<div class="sub_header-container">
 			<div class="emac_logo hide-for-small-only">
-				<a href="https://emac.gsfc.nasa.gov/">
-					<img src="{% static 'emac_apps/images/emac_logo_v2_HR_Sm.png' %}" alt="EMAC" />
+				<a href="#">
+					<img src="{% static 'emac_apps/images/#' %}" alt="HSSI Logo - large" />
 				</a>
 			</div>
 			<div class="emac_name">
-				<a href="https://emac.gsfc.nasa.gov/">
-					Exoplanet Modeling and Analysis Center<br>
+				<a href="#">
+					HSSI - Heliophysics Software Search Interface<br>
 				</a>
 			</div>
 		</div>
@@ -258,10 +226,10 @@
 							<a href="javascript:location='mailto:\u0020\u0067\u0073\u0066\u0063\u002d\u0065\u006d\u0061\u0063\u0040\u006d\u0061\u0069\u006c\u002e\u006e\u0061\u0073\u0061\u002e\u0067\u006f\u0076';void 0"><script type="text/javascript">document.write('\u0020\u0067\u0073\u0066\u0063\u002d\u0065\u006d\u0061\u0063\u0040\u006d\u0061\u0069\u006c\u002e\u006e\u0061\u0073\u0061\u002e\u0067\u006f\u0076')</script></a>
 						</li>
 						<li>
-							<a href="https://www.nasa.gov/about/highlights/HP_Privacy.html" id="footer_content">Privacy and Security Notices</a>
+							<a href="#" id="footer_content"> TODO Privacy and Security Notices</a>
 						</li>
 						<li>
-							<a id="GSFC-link" href="https://science.gsfc.nasa.gov">GSFC Sciences and Exploration</a>
+							<a id="GSFC-link" href="#"> TODO nee GSFC Sciences and Exploration</a>
 						</li>
 					</ul>
 				</div>

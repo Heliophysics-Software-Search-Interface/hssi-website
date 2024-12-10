@@ -3,76 +3,13 @@
 {% block page_description %}
 
 	<p class="welcome main-text">
-		Welcome to the GSFC Exoplanet Modeling and Analysis Center (EMAC)
+		Welcome to the Heliophysics Software Search Interface (HSSI)
 	</p>
 	<p class="main-text">
 		<p>
-			EMAC serves as a catalog, repository and integration platform for modeling and analysis resources focused on the study of exoplanet characteristics and environments. EMAC is a key project of the GSFC <a href="https://seec.gsfc.nasa.gov">Sellers Exoplanet Environments Collaboration</a> (SEEC).
+			HSSI serves as a catalog, repository and integration platform for 
+			modeling and analysis resources focused on heliophysics research.
 		</p>
-		<p>
-			If you've used EMAC in any part of your research, please cite our <a href="https://ui.adsabs.harvard.edu/abs/2022RNAAS...6..185R/abstract" target="_blank">RNAAS paper</a> either in your methods section or in the "Software used" portion of any manuscripts; see the <a href="FAQ">FAQ</a> for more information.
-		</p>
-		<span class="toggleLink" onclick="toggleDisplay('elaboration_1',this)">
-			<b>More Information on EMAC for first-time visitors...</b>
-		</span> 
-		<span class="elaboration" id="elaboration_1">
-			<br/>
-			<p>
-				<b>If you make use of tools linked or hosted on EMAC:</b> please use the following statement in your publication acknowledgements: “This research made use of the NASA Exoplanet Modeling and Analysis Center (EMAC), which is funded by the NASA Planetary Science Division’s Internal Scientist Funding Model.”
-			</p>
-			<span>
-				<b>Stay up to date with EMAC!</b>
-				<ul>
-					<li>Subscribe to our monthly <a href="news">RSS</a> messages on new updates and tools</li>
-					<li>Check out the Twitter account <a href=" https://twitter.com/ExoplanetModels" target="_blank">@ExoplanetModels</a> (not an official NASA account), where new tools and features are highlighted</li>
-				</ul>
-			</span>
-			<span>
-				<b>Help us improve EMAC!</b>
-				<ul>
-					<li>
-						Email us with general feedback at 
-						<script type="text/javascript">
-						// Email obfuscator script 2.1 by Tim Williams, University of Arizona
-						// Random encryption key feature coded by Andrew Moulden
-						// This code is freeware provided these four comment lines remain intact
-						// A wizard to generate this code is at http://www.jottings.com/obfuscator/
-						{ 
-							var coded = "REDACTED KEY";  //JPR Redacted Oct. 2024
-							var key = "REDACTED KEY"; //JPR Redacted Oct. 2024
-							var shift = coded.length;
-							var link = "";
-							var ltr = "";
-							for (var i = 0; i < coded.length; i++) {
-								if (key.indexOf(coded.charAt(i)) === -1) {
-									ltr = coded.charAt(i);
-									link += (ltr);
-								} else {
-									ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
-									link += (key.charAt(ltr));
-								}
-							}
-							document.write("<a href='mailto:" + link + "'>REDACTED@nasa.gov</a>.");
-						}
-						</script>
-						and tell us what you’d change or improve.
-					</li>
-					<li>Click the <img class="feedback-logo-text" src="/static/images/feedback.png" alt="feedback_img" /> icon in a resource box to provide suggestions for an individual tool or tools.</li>
-				</ul>
-			</span>
-			<span><b>Other EMAC info!</b></span>
-			<ul>
-				<li>EMAC is intended as a clearinghouse for the whole research community interested in exoplanets, where any software or model developer can submit their tool/model or their model output as a contribution for others to use.</li>
-				<li>EMAC provides a searchable and sortable database for available source code and data output files - both resources hosted locally by EMAC as well as existing external tools and repositories hosted elsewhere.</li>
-				<li>The EMAC team also helps develop new web interfaces for tools that can be run “on-demand” or model grids that can be interpolated for more individualized results.</li>
-				<li>If you would like to submit a new tool/model to EMAC, please visit our <a href="submissions">Submit a Resource</a> page.</li>
-				<li>For help with tutorials for select resources/tools use the “Demo” buttons below and subscribe to our <a href="https://www.youtube.com/channel/UCLRJnT1l6CGC8aU2o2MofXw" target="_blank">YouTube</a> channel.</li>
-				<li>Watch this <a href="https://www.youtube.com/watch?v=9lO7lEg161k&t=7s" target="_blank"> video </a> for a walk-through of the whole EMAC site, including how to submit a new tool and how to access information for each resource.</li>
-			</ul>
-			<p>
-				The P.I. is Avi Mandell, and the Deputy P.I. is Eric Lopez; more information on EMAC staffing and organization can be found on <a href="team">Our Team</a> page.
-			</p>
-		</span>
 	</p>
 
 	<div class="small reveal box-modal" id="modal" data-reveal>
@@ -89,20 +26,6 @@
 	{{ block.super }}
 
 	<script>
-
-		function toggleDisplay(d,b){
-			var c=document.getElementById(d);
-			if(c.style.display=="block"){
-				c.style.display="none";
-				if(b){b.innerHTML="<b>More Information on EMAC for first-time visitors...</b>"}
-			}
-			else{
-				c.style.display="block";
-				if(b){
-					b.innerHTML="<b>Hide...</b>"
-				}
-			}
-		};
 
 		function getResourceFeedback(resourceID){
 			$.ajax({
@@ -148,20 +71,6 @@
 				}
 			})
 		};
-
-		// var infinite = new Waypoint.Infinite({
-		// 	element: $('.infinite-container')[0]
-		// });
-
-		// var infinite = new Waypoint.Infinite({
-		// 	element: $('.infinite-container')[0],
-		// 	onBeforePageLoad: function () {
-		// 		$('.loading').show();
-		// 	},
-		// 	onAfterPageLoad: function ($items) {
-		// 		$('.loading').hide();
-		// 	}
-		// });
 
 	</script>
 {% endblock %} 

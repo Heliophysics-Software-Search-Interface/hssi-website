@@ -1,2 +1,4 @@
 id,name,member_image,description,personal_url,order,previous_order,is_alumnus,is_curator,curator_account,collections,categories
-ab36a5c1-d373-459c-8c6a-8e01d6ee6766,Joe Renaud,resources/Joe_Renaud/2024-Renaud_Square.jpg,"Joe Renaud has been a post-doctoral planetary scientist at Goddard Space Flight Center since 2019. His research focuses on the interior, thermal, and orbital evolution of planets and moons within our Solar System and beyond. He joined EMAC in 2022 and became co-lead in 2023. Joe is excited to expand EMAC's mission of open source and open science exoplanet software development.",,1,1,0,0,2,,
+22db37d0-a8ea-4b43-924e-a314ccf24bd4,Isaiah Smith,resources/emac_team/isaiah.jpg,Undergraduate developer leading development for HSSI,https://technostalgic.gitlab.io/portfolio/,0,0,0,0,1,,
+3963c29d-f8a5-4d94-bc53-fd5369ecf670,Shawn Polson,resources/emac_team/shawn.jpg,Project Manager and developer for HSSI,https://www.shawnpolson.com/,1,1,0,0,,,
+32adecb0-4111-4b96-a92d-8294a8fdc7c1,Julie Barnum,resources/emac_team/julie.jpg,Project Manager and concept lead for HSSI,https://www.linkedin.com/in/jibarnum/,2,2,0,0,,,

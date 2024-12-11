@@ -38,9 +38,11 @@ dfe5fae2-440b-4574-b392-024f6f4df7c9,Radiative Transfer Tools,RT,#82af00,#ffffff
 676eea53-e8b8-4ec1-996c-9a2dcdf02d68,RV Fitting,,#000000,#ffffff,,,
 a80b9940-ea32-4bb4-a6f9-bca9c80eb266,Spectroscopy Data Red.,,#000000,#ffffff,,,
 dd9f5985-9df5-4eaf-b453-91445db9afd8,Spectroscopy Instr. Models,,#000000,#ffffff,,,
-6c0d9e44-04a8-4612-ac1d-119316c9c4ab,Stellar Models and Catalogs,Star,#cc4b37,#ffffff,"Models of stellar output, including radiation, particles, and time-dependent models.","a94648a9-d164-4510-b459-133f79a4e821,8372cff6-c49b-41dd-88ef-6d7c96ae46d3",0
+6c0d9e44-04a8-4612-ac1d-119316c9c4ab,Stellar Models and Catalogs,Star,#cc4b37,#ffffff,"Models of stellar output, including radiation, particles, and time-dependent models.","a94648a9-d164-4510-b459-133f79a4e821,8372cff6-c49b-41dd-88ef-6d7c96ae46d3",1
 8372cff6-c49b-41dd-88ef-6d7c96ae46d3,Stellar Models and Spectra,,#000000,#ffffff,,,
 45e64876-9a6e-427b-bd99-8678d35c6468,Stellar Parameter Fitting,,#000000,#ffffff,,,
+153fa225-0240-4af3-b14e-15ef71298f66,Test Category,TST,#87745f,#000000,This is a category to test adding new categories through the admin interface,0baa60b3-0f70-4571-be0b-4351534bc40c,0
+0baa60b3-0f70-4571-be0b-4351534bc40c,Test Child,TSTC,#000000,#ffffff,Testing child functionality,,
 12a6a5a9-4806-46a3-ad7a-8a0913c0d4ef,Transit/Eclipse RT,,#000000,#ffffff,,,
 f40e66f6-5513-4e46-8518-91a3cc62fc95,Transit Survey Predictions,,#000000,#ffffff,,,
 25b2759b-acdd-4d40-8efd-463defcb2c22,Wavefront Control,,#000000,#ffffff,,,

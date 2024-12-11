@@ -1,4 +1,4 @@
 id,name,abbreviation,theme_color,text_color,description,children,index
-ec9952f9-739b-4b0e-8967-91b1dace10c7,Test Category,Tst,#c46200,#ffffff,For testing,,
-6a0a1068-707a-4b3f-af3d-b025ab332ce0,Test Child Category 1,Tsc1,#000000,#ffffff,child testing 1,,
-7871e9da-a022-42d8-b1b7-ed31d57c99fd,Test Child Category 2,Tsc2,#000000,#ffffff,child testing 2,,
+ec9952f9-739b-4b0e-8967-91b1dace10c7,Test Category,Tst,#c46200,#ffffff,For testing,"6a0a1068-707a-4b3f-af3d-b025ab332ce0,7871e9da-a022-42d8-b1b7-ed31d57c99fd",0
+6a0a1068-707a-4b3f-af3d-b025ab332ce0,Test Child Category 1,Tsc1,#800000,#ffffff,child testing 1,,
+7871e9da-a022-42d8-b1b7-ed31d57c99fd,Test Child Category 2,Tsc2,#000080,#ffffff,child testing 2,,

@@ -1,11 +1,3 @@
 id,abbreviation,theme_color,text_color,description,children,name
-9d3d21a1-a0d1-4cfc-8d7d-247977b94189,Cat,#696969,#ffffff,,,Catalogs & Databases
-72ef99a2-7d42-48e4-8a4f-e2162e5edd7f,D,#696969,#ffffff,This tool tag is for tools with video demos.,,Demo/Tutorial Video
-8fba67ed-7eab-48fe-a3f8-8cce79cafd24,Prog,#696969,#ffffff,A pre-compiled software resource that can be installed and run.,,Executable Program
-33c7d170-e4f1-404c-9288-16fe0c269b3d,IMD,#696969,#ffffff,"This tool type is for resources with downloadable datasets, either for model/analysis input data or model outputs",,Input and Model Datasets
-11e8bdc9-cd91-4e9e-b608-7d93d28afe17,ICC,#696969,#ffffff,"This tool type is for inter-code comparison projects, which compare the results from multiple EMAC resources",,Inter-Code Comparisons
-bdd26073-25bd-4d0f-8570-39cbe50207e2,JN,#696969,#ffffff,This tool type is for tools that offer a web-based Jupyter Notebook experience for users to interact with.,,Jupyter Notebook
-e9eb5f7b-e1e6-464e-a544-4b2f7821ddb8,WFlo,#696969,#ffffff,Existing work flows between EMAC-listed tools,,Multi-Resource Work Flows
-b130a676-ec86-45cc-94c7-3155d6e7d589,RR,#696969,#ffffff,"This tool type is for other collections or repositories for resources, which offer or house multiple resources",,Resource Repository
-bf678323-d215-424a-b78f-3b42cd573ce9,SC,#696969,#ffffff,"This type is for resources that have a open code base (such as a public GitHub repository). Depending on the license type these resources may or may not be considered ""open source.""",,Source Code
-0350fa5e-7f21-4d3c-8088-56fa0cd838ee,WA,#696969,#ffffff,This tool type is for tools that have a website users can interact with to use the tool.,,Web Interface
+49fa3065-d702-4dbf-b984-2ff6e2e8e610,T1,#4d4d4d,#ffffff,1st type for testing,,Test type 1
+f5776f88-c478-4ac1-8206-5006d798e2a6,T2,#4d4d4d,#ffffff,2nd type for testing,,Test type 2

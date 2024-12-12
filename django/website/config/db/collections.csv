@@ -1,8 +1,8 @@
 id,abbreviation,theme_color,text_color,description,children,name
-1be159e1-cf24-401f-9242-9771fcec57c1,Data,#4d4d4d,#ffffff,"A resource that provides data, whether it be simulation results, direct observations, or anything else","4b03709b-0d43-4345-bb72-e2e387bd51cb,6f3c4ada-feac-4aa3-bdf9-27b417671852",Data
 1ebeb4ea-268f-4736-90e1-0f656fca7076,Idl,#000000,#ffffff,Software libraries or tooling in IDL,,IDL
 52212650-92fb-4d1b-a442-d33ee9455f1c,Py,#000000,#ffffff,Software libraries in python,,Python
 4b03709b-0d43-4345-bb72-e2e387bd51cb,Rsch,#000000,#ffffff,Research publications or textbooks,,Research
-cd842079-3524-499a-8da4-5d3dd5462035,Soft,#4d4d4d,#ffffff,Software and tooling used for any heliophysics related work,"1ebeb4ea-268f-4736-90e1-0f656fca7076,52212650-92fb-4d1b-a442-d33ee9455f1c,66f8dd97-09a4-45fa-880b-8c3e7dbbee2a",Software
 6f3c4ada-feac-4aa3-bdf9-27b417671852,Slr,#000000,#ffffff,Data recorded from a solar observatory,,Solar Observations
 66f8dd97-09a4-45fa-880b-8c3e7dbbee2a,Bin,#000000,#ffffff,"Pre-compiled/built software utilities, executable programs, GUI apps, command-line utilities, or web apps",,Standalone
+cd842079-3524-499a-8da4-5d3dd5462035,Soft,#4d4d4d,#ffffff,Software and tooling used for any heliophysics related work,"1ebeb4ea-268f-4736-90e1-0f656fca7076,52212650-92fb-4d1b-a442-d33ee9455f1c,66f8dd97-09a4-45fa-880b-8c3e7dbbee2a",Software
+1be159e1-cf24-401f-9242-9771fcec57c1,Data,#4d4d4d,#ffffff,"A resource that provides data, whether it be simulation results, direct observations, or anything else","4b03709b-0d43-4345-bb72-e2e387bd51cb,6f3c4ada-feac-4aa3-bdf9-27b417671852",Data

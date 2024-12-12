@@ -14,18 +14,16 @@ services:
         volumes:
             - ./django:/django
             - ./django/static:/static
-            # - ../../logs/nginx:/var/log/nginx
-            - ../shared/config/nginx/logrotate:/etc/logrotate.d/nginx
-            - ../shared/config/django:/config/django
-            - ../shared/config/nginx:/etc/nginx/conf.d
-            - ../shared/django/emac_base_template.html:/django/emac/templates/emac_base_template.html
-            - ../shared/django/registration:/django/emac/templates/registration
-            - ../shared/django/emac_context_processors.py:/django/emac/emac_context_processors.py
-            - ../shared/django/emac_secret_settings.py:/django/emac/emac_secret_settings.py
-            - ../shared/static/emac_apps:/static/emac_apps
-            # - ../../data:/data
-            - ../shared/pip-requirements:/extensions/pip-requirements
-            - ../shared/django/recaptcha_auth_forms.py:/django/emac/recaptcha_auth_forms.py
+            - ./shared/config/nginx/logrotate:/etc/logrotate.d/nginx
+            - ./shared/config/django:/config/django
+            - ./shared/config/nginx:/etc/nginx/conf.d
+            - ./shared/django/emac_base_template.html:/django/emac/templates/emac_base_template.html
+            - ./shared/django/registration:/django/emac/templates/registration
+            - ./shared/django/emac_context_processors.py:/django/emac/emac_context_processors.py
+            - ./shared/django/emac_secret_settings.py:/django/emac/emac_secret_settings.py
+            - ./shared/static/emac_apps:/static/emac_apps
+            - ./shared/pip-requirements:/extensions/pip-requirements
+            - ./shared/django/recaptcha_auth_forms.py:/django/emac/recaptcha_auth_forms.py
         environment:
             - EMAC_ADMIN_USERNAME=$EMAC_ADMIN_USERNAME
             - EMAC_ADMIN_PASSWORD=$EMAC_ADMIN_PASSWORD
@@ -70,15 +68,13 @@ services:
     #         - ./launch.sh:/launch.sh
     #         - ./django:/django
     #         - ./django/static:/static
-    #         - ../../logs/nginx:/var/log/nginx
-    #         - ../shared/config/nginx/logrotate:/etc/logrotate.d/nginx
-    #         - ../shared/config/django:/config/django
-    #         - ../shared/config/nginx:/etc/nginx/conf.d
-    #         - ../shared/django/emac_base_template.html:/django/emac/templates/emac_base_template.html
-    #         - ../shared/django/emac_context_processors.py:/django/emac/emac_context_processors.py
-    #         - ../shared/django/emac_secret_settings.py:/django/emac/emac_secret_settings.py
-    #         - ../shared/static/emac_apps:/static/emac_apps
-    #         - ../../data:/data
+    #         - ./shared/config/nginx/logrotate:/etc/logrotate.d/nginx
+    #         - ./shared/config/django:/config/django
+    #         - ./shared/config/nginx:/etc/nginx/conf.d
+    #         - ./shared/django/emac_base_template.html:/django/emac/templates/emac_base_template.html
+    #         - ./shared/django/emac_context_processors.py:/django/emac/emac_context_processors.py
+    #         - ./shared/django/emac_secret_settings.py:/django/emac/emac_secret_settings.py
+    #         - ./shared/static/emac_apps:/static/emac_apps
 
 
 # To persist db data, uncomment at least the next two lines, and see the further note below

@@ -3,10 +3,10 @@ from django.conf import settings
 settings.INSTALLED_APPS.extend([
     'colorful',
     'crispy_forms',
+    'crispy_bootstrap4',
     'import_export',
     'ipware',
     'mathfilters',
-
     'website.apps.WebsiteConfig',
 ])
 

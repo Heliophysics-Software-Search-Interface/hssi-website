@@ -60,7 +60,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    # 'django_recaptcha'
 ]
 
 MIDDLEWARE = [
@@ -172,3 +171,6 @@ from website import app_settings
 # SILENCED_SYSTEM_CHECKS = [
 #     "django_recaptcha.recaptcha_test_key_error"
 # ]
+
+# Required in newer versions of django-crispy-forms
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

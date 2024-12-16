@@ -1,0 +1,22 @@
+gunicorn
+psycopg2-binary
+django
+django-crispy-forms
+django-import-export
+django-colorful
+django-ipware
+requests
+urllib3
+numpy
+pandas
+matplotlib
+tablib
+
+# analytics:
+google-api-core
+google-api-python-client
+google-auth
+google-auth-httplib2
+google-auth-oauthlib
+googleapis-common-protos
+gspread

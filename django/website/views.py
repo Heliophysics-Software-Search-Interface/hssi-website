@@ -312,12 +312,20 @@ def selected_resource_context(request):
 
     return context
 
+def is_request_ajax(request):
+    """
+    TODO (DEPRECATED) fix workaround for deprecated ajax request checking, 
+    currently this function is a patch for request.is_ajax() being removed from 
+    newer django versions
+    """
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHTTPREQUEST'
+
 def published_resources(request):
 
     context = {}
     response = None
 
-    if request.is_ajax():
+    if is_request_ajax(request):
         feedback_form = None
         resource_id = None
 
@@ -705,7 +713,7 @@ def run_analytics(request):
         else:
             print(form.errors)
 
-    if request.is_ajax():
+    if is_request_ajax(request):
         context['rendered_form'] = form.as_table()
         response = JsonResponse(context)
     else:
@@ -845,7 +853,7 @@ def scan_links(request):
             'discuss_link': resource.discuss_link
         })
 
-    if request.is_ajax():
+    if is_request_ajax(request):
         
         resource_id = request.GET.get('id')
 

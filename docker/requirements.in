@@ -20,3 +20,5 @@ google-auth-httplib2
 google-auth-oauthlib
 googleapis-common-protos
 gspread
+
+# also see: /shared/pip-requirements/*txt

@@ -23,7 +23,7 @@ google-auth
 google-auth-httplib2
 google-auth-oauthlib
 googleapis-common-protos
-oauth2client
+oauth2client # TODO remove this dependency (the whole library is deprecated)
 gspread
 
 # also see: /shared/pip-requirements/*.txt

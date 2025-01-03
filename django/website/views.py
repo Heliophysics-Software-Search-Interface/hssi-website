@@ -37,7 +37,6 @@ from .subscriptions import *
 from . import submissions
 from .utils import user_in_curators_group, organized_categories_json, organized_collections_json
 
-
 def keywords_match_all_tokens(resources, tokens):
 
     _, resources_by_matched_tokens = keywords_match_some_tokens(resources, tokens)
@@ -61,7 +60,6 @@ def keywords_match_some_tokens(resources, tokens=[]):
             result = result.union(keyword_matches)
 
     return result, resources_by_matched_tokens
-
 
 def names_match_some_tokens(resources, tokens=[]):
 
@@ -524,8 +522,6 @@ def contact_all(request):
     
     return redirect('/')
 
-
-
 def ascl_scraper(request):
     """
     Run the ASCL ID scraper for each resource
@@ -564,9 +560,6 @@ def ascl_scraper(request):
     ASCL_scraper_thread().start()
 
     return redirect('/')
-
-
-
 
 def run_analytics(request):
     analytics = _analytics.Analytics()
@@ -947,7 +940,6 @@ def cid_seed(request):
     post_save.connect(export_database_changes)
     return render(request, 'website/cid_seed.html', context)
 
-
 def ADS_endpoint(request):
     resources = Resource.objects.filter(is_published=True)
     data = {}
@@ -990,7 +982,6 @@ def curator_login(request):
         
     return render(request, 'website/curator_login.html', context)
 
-
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Button, Submit
 class CurateForm(ModelForm):
@@ -1017,7 +1008,6 @@ class CurateForm(ModelForm):
         self.helper.form_class = 'form'
         self.helper.form_id = 'id-submission_form'
         self.helper.form_method = 'POST'
-
 
 from ipware import get_client_ip
 from .submissions import submission_was_saved
@@ -1160,7 +1150,6 @@ def curate_success(request):
         'submission': submission
     }
     return render(request, 'website/curate_success.html', context)
-
 
 def git_fetch_version(request):
     """

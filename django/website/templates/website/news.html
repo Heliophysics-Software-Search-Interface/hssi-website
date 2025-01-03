@@ -16,8 +16,20 @@
 
 <div class="small-6 medium-12 large-12 container">
     <div>
-        <h1 class="news_title"> News Feed <span class="rss_sub"><a href="/news/rss"><img class="rss_img" src="{% static 'images/rss.png' %}" alt="Subscribe to EMAC news via RSS"></a></span></p></h1>
-        <p>The EMAC repository and interface are continually under development, and we are recruiting and receiving new resources all the time.  As EMAC grows, we will periodically make announcements on this News page and simultaneously through our RSS feed.</p>
+        <h1 class="news_title"> 
+            News Feed <span class="rss_sub"><a href="/news/rss">
+                    <img 
+                        class="rss_img" 
+                        src="{% static 'images/rss.png' %}" 
+                        alt="Subscribe to HSSI news via RSS">
+            </a></span>
+        </h1>
+        <p>
+            The HSSI repository and interface are continually under development, 
+            and we are recruiting and receiving new resources all the time. 
+            As HSSI grows, we will periodically make announcements on this News 
+            page and simultaneously through our RSS feed.
+        </p>
     </div>
     <div class="card_container">
         {% for news_item in object_list %}

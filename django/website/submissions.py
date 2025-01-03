@@ -63,7 +63,7 @@ class SubmissionForm(ModelForm):
                 Submission.objects.filter(name=resource_name).exists()
                 ):
                 raise ValidationError(_(
-                    "An EMAC resource name must be unique, " +
+                    "A resource name must be unique, " +
                     "please enter a different name"
                 ))
  
@@ -92,10 +92,10 @@ def email_strings_for(submission, save_type, changed_fields, curator):
     # submitter that outline all of the fields
     if save_type is SaveType.SUBMIT:
         submission_text = submission.detail_string()
-        subject = "EMAC: A new resource was submitted"
+        subject = "HSSI: A new resource was submitted"
 
         admin_message = str(
-            "A web user has submitted a new resource to EMAC via " +
+            "A web user has submitted a new resource to HSSI via " +
             f"https://{domain}/submissions/\n\n"
         )
         admin_message += submission_text
@@ -105,11 +105,11 @@ def email_strings_for(submission, save_type, changed_fields, curator):
         )
     
         submitter_message = (
-            "Thank you for submitting a new resource to the Exoplanet " +
-            "Modeling & Analysis Center! All new resources are reviewed " +
-            "for readiness and alignment with the EMAC strategic goals " +
+            "Thank you for submitting a new resource to the Heliophysics " +
+            "Software Search Interface! All new resources are reviewed " +
+            "for readiness and alignment with the HSSI strategic goals " +
             "before they are posted and/or prepared for further " +
-            "development. The EMAC team will review your submission and " +
+            "development. The HSSI team will review your submission and " +
             "contact you for further information if needed.\n\n"
         )
         submitter_message += submission_text
@@ -120,7 +120,7 @@ def email_strings_for(submission, save_type, changed_fields, curator):
     # This section is for when a submission that already exists is edited and 
     # highlights what has changed compared to its previous version.
     elif save_type is SaveType.EDIT or save_type is SaveType.CURATE:
-        subject = "EMAC: A submission was edited"
+        subject = "HSSI: A submission was edited"
         
         # Create the message sent specifically to admins that highlights which 
         # fields changed
@@ -228,11 +228,11 @@ def email_strings_for(submission, save_type, changed_fields, curator):
         )
 
         submitter_message = (
-            "Thank you for revising your submission to the Exoplanet " +
-            "Modeling & Analysis Center! All revised submissions are " +
-            "reviewed for readiness and alignment with the EMAC strategic " +
-            "goals before they are posted and/or prepared for further " +
-            "development. The EMAC team will review your submission and " +
+            "Thank you for submitting a new resource to the Heliophysics " +
+            "Software Search Interface! All new resources are reviewed " +
+            "for readiness and alignment with the HSSI strategic goals " +
+            "before they are posted and/or prepared for further " +
+            "development. The HSSI team will review your submission and " +
             "contact you for further information if needed.\n\n"
         )
         submitter_message += submission_text
@@ -383,7 +383,7 @@ def submission_was_saved(submission, save_type, changed_fields=None, curator=Non
     data = '{"text":"' + admin_message + '"}'
     headers = {'content-type': 'application/json', 'Accept-Charset': 'UTF-8'}
     
-    # Send emails to submitter, EMAC admins, and a Slack notification
+    # Send emails to submitter, HSSI admins, and a Slack notification
     if settings.EMAC_DOMAIN.startswith("emac.gsfc"):
 
         requests.post(

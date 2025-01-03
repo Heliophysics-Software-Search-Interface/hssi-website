@@ -17,15 +17,34 @@
   
 {% endblock %}
 
-{% block title %}EMAC Tool Submission{% endblock %}
+{% block title %}HSSI Software Submission{% endblock %}
 
 {% block page_content %}
 
     <div class="small-12 container submission_form">
         <h3 class="page_title">Resource Submission</h3>
-        <p class="submission-text">This page allows developers to submit their model, tool, or resource for inclusion within EMAC. Use the form below to let us know about your tool, including it’s name, a brief description, the developers, what categories the resource falls under, whether you want the resource hosted on EMAC, and any relevant links, images, or credits that you’d like us to include.</p>
-        <p class="submission-text">After you submit your resource, a member of our team will be in touch to discuss a plan for including it in EMAC.</p>
-        <p class="submission-text"><span class="submission-note">NOTE:</span> All web-based submissions are expected to conform to <a href="https://www.w3.org/standards/" target="_blank">W3C standards</a>, must pass the W3C <a href="https://validator.w3.org" target="_blank">Markup</a> and <a href="https://jigsaw.w3.org/css-validator/" target="_blank">CSS</a> validation services, and must support all major cross-platform browsers (sc. <a href="https://www.google.com/chrome/" target="_blank">Chrome</a>, <a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a>, and <a href="https://www.apple.com/safari/" target="_blank">Safari</a>).</p>
+        <p class="submission-text">
+            This page allows developers to submit their software for 
+            inclusion within HSSI. Use the form below to let us know about your software, 
+            including it's name, a brief description, the developers, what categories 
+            the resource falls under, whether you want the resource hosted on HSSI, 
+            and any relevant links, images, or credits that you'd like us to include.
+        </p>
+        <p class="submission-text">
+            After you submit your resource, a member of our team will be in touch to 
+            discuss a plan for including it in HSSI.
+        </p>
+        <p class="submission-text">
+            <span class="submission-note">NOTE:</span> 
+            All web-based submissions are expected to conform to 
+            <a href="https://www.w3.org/standards/" target="_blank">W3C standards</a>, 
+            must pass the W3C <a href="https://validator.w3.org" target="_blank">Markup</a> 
+            and <a href="https://jigsaw.w3.org/css-validator/" target="_blank">CSS</a> 
+            validation services, and must support all major cross-platform browsers 
+            (sc. <a href="https://www.google.com/chrome/" target="_blank">Chrome</a>, 
+            <a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a>, 
+            and <a href="https://www.apple.com/safari/" target="_blank">Safari</a>).
+        </p>
         {% if submission_form.captcha.errors %}
             {% for error in submission_form.captcha.errors %}
                 <p class="submission-text"><strong>{{ error }}</strong></p>

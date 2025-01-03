@@ -10,13 +10,20 @@
   
 {% endblock %}
 
-{% block title %}EMAC Tool Category Subscription{% endblock %}
+{% block title %}HSSI Tool Category Subscription{% endblock %}
 
 {% block page_content %}
 
     <div class="small-12 container submission_form">
         <h3 class="page_title">Tool Category Subscription</h3>
-        <p class="submission-text">Here you can subscribe to be updated by email when a new tool is published to your chosen categories or subcategories on EMAC. After signing up using this form, you will receive emails on a weekly basis related only to the (sub)categories you have selected. You will have the opportunity to modify your selections, update your email address, and unsubscribe via a link which will be included in each email sent to you.</p>
+        <p class="submission-text">
+            Here you can subscribe to be updated by email when new software is published
+            to your chosen categories or subcategories on HSSI. After signing up using 
+            this form, you will receive emails on a weekly basis related only to the 
+            (sub)categories you've selected. You will have the opportunity to modify 
+            your selections, update your email address, and unsubscribe via a link which 
+            will be included in each email sent to you.
+        </p>
         {% if subscription_form.captcha.errors %}
             {% for error in subscription_form.captcha.errors %}
                 <p class="submission-text"><strong>{{ error }}</strong></p>

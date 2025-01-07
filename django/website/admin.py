@@ -25,8 +25,12 @@ import urllib.request, urllib.parse
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
+from .models import (
+    Category, Collection, Feedback, NewsItem, NewsItemStatus, 
+    PendingSubscriptionNotification, Resource, Submission, SubmissionStatus, 
+    Subscription, TeamMember, ToolType, InLitResource
+)
 from .constants import SaveType
-from .models import Category, Collection, Feedback, NewsItem, NewsItemStatus, PendingSubscriptionNotification, Resource, Submission, SubmissionStatus, Subscription, TeamMember, ToolType, InLitResource
 from .models import place_static_copy
 from . import submissions
 
@@ -111,7 +115,11 @@ class FeedbackAdmin(ImportExportModelAdmin):
     def resource_name(self, obj): 
         return obj.resource.name
 
-    list_display = ('resource_name', 'provide_demo_video', 'provide_tutorial', 'provide_web_app', 'relate_a_resource', 'correction_needed', 'comments', 'feedback_date')
+    list_display = (
+        'resource_name', 'provide_demo_video', 'provide_tutorial', 
+        'provide_web_app', 'relate_a_resource', 'correction_needed', 
+        'comments', 'feedback_date'
+    )
 
 class NewsItemResource(resources.ModelResource):
 
@@ -130,14 +138,18 @@ class NewsItemAdmin(ImportExportModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
 
         kwargs['widgets'] = {
-            'tweet_content': forms.Textarea(attrs={'placeholder': "Enter your tweet content here. The title and URL of the news item will be added automatically."})
+            'tweet_content': forms.Textarea(attrs={
+                'placeholder': "Enter your tweet content here. " +
+                "The title and URL of the news item will be added automatically."
+            })
         }
 
         return super().get_form(request, obj, **kwargs)    
 
     def save_model(self, request, obj, form, change):
 
-        # If we're not currently importing the database, and the news item status is publish, send a coresponding tweet to Twitter
+        # If we're not currently importing the database, and the news item 
+        # status is publish, send a coresponding tweet to Twitter
         if not settings.DB_IMPORT_IN_PROGRESS and obj.status == NewsItemStatus.PUBLISH.name:
             obj.published_on = timezone.now()
         
@@ -174,9 +186,12 @@ def make_published(modeladmin, request, queryset):
     queryset.update(is_published=True)
     for resource in queryset:
         resource.save()
-        # only call the resource_added_categores function if it's an actual Resource and not an InLitResource
+
+        # only call the resource_added_categores function if it's an actual 
+        # Resource and not an InLitResource
         if isinstance(resource, Resource):
             resource_added_categories(resource)
+
 make_published.short_description = "Mark selected resources as published"
 
 def make_not_published(modeladmin, request, queryset):
@@ -200,7 +215,9 @@ def make_add_to_tooltype_action(tooltype):
         """
         for resource in queryset:
             resource.tool_types.add(tooltype)
-    add_to_tooltype.short_description = f"Add selected tool(s) to the '{tooltype.name}' resource type."
+    add_to_tooltype.short_description = (
+        f"Add selected tool(s) to the '{tooltype.name}' resource type."
+    )
     add_to_tooltype.__name__ = 'add_to_resource_type_{0}'.format(tooltype.id)
     return add_to_tooltype
 
@@ -212,7 +229,9 @@ def make_add_to_collection_action(collection):
         for resource in queryset:
             resource.collections.add(collection)
             resource.save()
-    add_to_collection.short_description = f"Add selected tool(s) to the '{collection.name}' collection."
+    add_to_collection.short_description = (
+        f"Add selected tool(s) to the '{collection.name}' collection."
+    )
     add_to_collection.__name__ = 'add_to_collection_{0}'.format(collection.id)
     return add_to_collection 
 
@@ -220,13 +239,18 @@ class ResourceAdmin(ImportExportModelAdmin):
 
     resource_class =  ResourceResource
 
-    list_display = ('name', 'search_keywords', 'subtitle', 'version', 'last_modification_date', 'citation_count', 'is_published', 'creation_date')
-    list_filter = ('categories', 'tool_types', 'collections', 'last_modification_date', 'creation_date', CitationCountListFilter, 'is_published', 'is_hosted')
-    search_fields = ['search_keywords', 'name']
-
-    exclude = ('ascii_credits',)
-
     actions = [update_submission, make_published, make_not_published]
+    exclude = ('ascii_credits',)
+    search_fields = ['search_keywords', 'name']
+    list_display = (
+        'name', 'search_keywords', 'subtitle', 'version', 
+        'last_modification_date', 'citation_count', 'is_published', 
+        'creation_date'
+    )
+    list_filter = (
+        'categories', 'tool_types', 'collections', 'last_modification_date', 
+        'creation_date', CitationCountListFilter, 'is_published', 'is_hosted'
+    )
 
     def get_actions(self, request):
         actions = super(ResourceAdmin, self).get_actions(request)
@@ -247,10 +271,13 @@ class ResourceAdmin(ImportExportModelAdmin):
 
     def save_model(self, request, obj, form, change):
 
-        # If any changes are made to the resource object, update the submission object
+        # If any changes are made to the resource object, update the submission object.
+        # This step is to update the submission from the current form 
+        # rather than the current saved status of the resource object
+        # This ensures that changes made to categories, collections, 
+        # tool_types in this save get ported over to the submission too, 
+        # otherwise they will be offset            
         if change:
-            # This step is to update the submission from the current form rather than the current saved status of the resource object
-            # This ensures that changes made to categories, collections, tool_types in this save get ported over to the submission too, otherwise they will be offset            
             copy_obj = form.save(commit=True)
             obj.submission.update_from(copy_obj, update_last_modification_date=True)
             copy_obj.delete()
@@ -273,13 +300,17 @@ class InLitResourceAdmin(ImportExportModelAdmin):
 
     resource_class =  InLitResourceResource
 
-    list_display = ('name', 'search_keywords', 'subtitle', 'version', 'last_modification_date', 'citation_count', 'is_published', 'creation_date')
-    list_filter = ('categories', 'tool_types', 'collections', 'last_modification_date', 'creation_date', CitationCountListFilter, 'is_published')
-    search_fields = ['search_keywords', 'name']
-
-    exclude = ('ascii_credits',)
-
     actions = [update_submission, make_published, make_not_published,upgrade_to_resource]
+    exclude = ('ascii_credits',)
+    search_fields = ['search_keywords', 'name']
+    list_display = (
+        'name', 'search_keywords', 'subtitle', 'version', 'last_modification_date', 
+        'citation_count', 'is_published', 'creation_date'
+    )
+    list_filter = (
+        'categories', 'tool_types', 'collections', 'last_modification_date', 
+        'creation_date', CitationCountListFilter, 'is_published'
+    )
 
     # def get_actions(self, request):
     #     actions = super(InLitResourceResource, self).get_actions(request)
@@ -301,9 +332,12 @@ class InLitResourceAdmin(ImportExportModelAdmin):
     def save_model(self, request, obj, form, change):
 
         # If any changes are made to the resource object, update the submission object
+        # This step is to update the submission from the current form 
+        # rather than the current saved status of the resource object
+        # This ensures that changes made to categories, collections, 
+        # tool_types in this save get ported over to the submission too, 
+        # otherwise they will be offset
         if change:
-            # This step is to update the submission from the current form rather than the current saved status of the resource object
-            # This ensures that changes made to categories, collections, tool_types in this save get ported over to the submission too, otherwise they will be offset
             copy_obj = form.save(commit=True)
             obj.submission.update_from(copy_obj, update_last_modification_date=True)
             copy_obj.delete()
@@ -326,44 +360,86 @@ resend_receipt_email.short_description = "Send the submission receipt email agai
 def send_initial_recruitment_email(modeladmin, request, queryset):
     for submission in queryset:
         submissions.send_contact_email(submission, SaveType.FIRSTCONTACT)
-    # Updates all of the "first contact" submissions to "successfully contacted" and increments contact_count
-    queryset.update(status='CONTACTED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
+    # Updates all of the "first contact" submissions to "successfully contacted" 
+    # and increments contact_count
+    queryset.update(
+        status='CONTACTED', 
+        contact_count=F('contact_count') + 1, 
+        date_contacted=timezone.now()
+    )
 send_initial_recruitment_email.short_description = "Send Initial Recruitment Email: 1st Contact"
 
 def send_followup_recruitment_email(modeladmin, request, queryset):
     for submission in queryset:
         submissions.send_contact_email(submission, SaveType.RECONTACT)
-    # Updates the contacted_date of the previously contacted submissions and increments contact_count
-    queryset.update(status='CONTACTED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_followup_recruitment_email.short_description = "Send Re-Contact Email: Previously Contacted Tools"
+    # Updates the contacted_date of the previously contacted submissions and 
+    # increments contact_count
+    queryset.update(
+        status='CONTACTED', 
+        contact_count=F('contact_count') + 1, 
+        date_contacted=timezone.now()
+    )
+send_followup_recruitment_email.short_description = (
+    "Send Re-Contact Email: Previously Contacted Tools"
+)
 
 def send_final_recruitment_email(modeladmin, request, queryset):
     for submission in queryset:
         submissions.send_contact_email(submission, SaveType.FINALCONTACT)
-    # Updates the contacted_date of the previously contacted submissions and increments contact_count
-    queryset.update(status='REJECTED_ABANDONED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_final_recruitment_email.short_description = "Send Final Recruitment Email: Previously Contacted Tools"
+    # Updates the contacted_date of the previously contacted submissions and 
+    # increments contact_count
+    queryset.update(
+        status='REJECTED_ABANDONED', 
+        contact_count=F('contact_count') + 1, 
+        date_contacted=timezone.now()
+    )
+send_final_recruitment_email.short_description = (
+    "Send Final Recruitment Email: Previously Contacted Tools"
+)
 
 def send_initial_inlit_email(modeladmin, request, queryset):
     for submission in queryset:
         submissions.send_contact_email(submission, SaveType.INITIALINLITCONTACT)
-    # Updates the contacted_date of the previously contacted submissions and increments contact_count
-    queryset.update(status='CONTACTED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_initial_inlit_email.short_description = "Send Initial Recruitment Email for In-Lit Resource: 1st Contact"
+    # Updates the contacted_date of the previously contacted submissions and 
+    # increments contact_count
+    queryset.update(
+        status='CONTACTED', 
+        contact_count=F('contact_count') + 1, 
+        date_contacted=timezone.now()
+    )
+send_initial_inlit_email.short_description = (
+    "Send Initial Recruitment Email for In-Lit Resource: 1st Contact"
+)
 
 def send_followup_inlit_email(modeladmin, request, queryset):
     for submission in queryset:
         submissions.send_contact_email(submission, SaveType.SECONDINLITCONTACT)
-    # Updates the contacted_date of the previously contacted submissions and increments contact_count
-    queryset.update(status='CONTACTED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_followup_inlit_email.short_description = "Send Followup Informational Email for In-Lit Resource: Previously Contacted Tools"
+    # Updates the contacted_date of the previously contacted submissions and 
+    # increments contact_count
+    queryset.update(
+        status='CONTACTED', 
+        contact_count=F('contact_count')+1, 
+        date_contacted=timezone.now()
+    )
+send_followup_inlit_email.short_description = (
+    "Send Followup Informational Email for In-Lit Resource: " + 
+    "Previously Contacted Tools"
+)
 
 def send_final_inlit_email(modeladmin, request, queryset):
     for submission in queryset:
         submissions.send_contact_email(submission, SaveType.FINALINLITCONTACT)
-    # Updates the contacted_date of the previously contacted submissions and increments contact_count
-    queryset.update(status='REJECTED_ABANDONED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_final_inlit_email.short_description = "Send Final Informational Email for In-Lit Resource: Previously Contacted Tools"
+    # Updates the contacted_date of the previously contacted submissions and 
+    # increments contact_count
+    queryset.update(
+        status='REJECTED_ABANDONED', 
+        contact_count=F('contact_count') + 1, 
+        date_contacted=timezone.now()
+    )
+send_final_inlit_email.short_description = (
+    "Send Final Informational Email for In-Lit Resource: " +
+    "Previously Contacted Tools"
+)
 
 def isInlit(submission):
     if 'adsabs.harvard.edu' in submission.ads_abstract_link:
@@ -379,28 +455,38 @@ def isInlit(submission):
                 return True
         # if 'arXiv' in bibcode:
         #     return False
-        results = requests.get("https://api.adsabs.harvard.edu/v1/export/bibtex/"+bibcode,
-                                headers={'Authorization': 'Bearer ' + API_KEY})#,timeout=120)
+        results = requests.get(
+            "https://api.adsabs.harvard.edu/v1/export/bibtex/" + bibcode,
+            headers={'Authorization': 'Bearer ' + API_KEY}
+        ) #,timeout=120)
         if results.text[:8] == '@ARTICLE':
             return True
     return False
 
 def send_test_email(content):
-    send_mail('Test email', print(content), "REDACTED@nasa.gov", ["REDACTED@nasa.gov"]) # JPR Redacted Oct. 2024
-
+    send_mail(
+        'Test email', print(content), 
+        "REDACTED@nasa.gov", ["REDACTED@nasa.gov"]
+    ) # JPR Redacted Oct. 2024
 
 def send_submission_contact_email(modeladmin, request, queryset):
     for submission in queryset:
         if submission.status == SubmissionStatus.FIRST_CONTACT.name:
             if isInlit(submission):
-                submissions.send_contact_email(submission, SaveType.INITIALINLITCONTACT)
+                submissions.send_contact_email(
+                    submission, 
+                    SaveType.INITIALINLITCONTACT
+                )
             else:
                 submissions.send_contact_email(submission, SaveType.FIRSTCONTACT)
-            # Updates the contacted_date of the contacted submissions and increments contact_count
+            
+            # Updates the contacted_date of the contacted submissions and 
+            # increments contact_count
             submission.status = SubmissionStatus.CONTACTED.name
             submission.contact_count += 1
             submission.date_contacted = timezone.now()
             submission.save()
+        
         elif submission.status == SubmissionStatus.CONTACTED.name:
             if isInlit(submission):
                 if submission.contact_count == 1:
@@ -419,15 +505,24 @@ def send_submission_contact_email(modeladmin, request, queryset):
                 else:
                     submissions.send_contact_email(submission, SaveType.FINALCONTACT)
                     submission.status = SubmissionStatus.REJECTED_ABANDONED.name
-                    submission.status_notes = "Rejected by the drop-down Contact action. The resource is not in the literature and the developer has been contacted at least 3 times.\n" + submission.status_notes
+                    submission.status_notes = (
+                        "Rejected by the drop-down Contact action. The resource " +
+                        "is not in the literature and the developer has been contacted " +
+                        "at least 3 times.\n" + submission.status_notes
+                    )
             submission.contact_count += 1
             submission.date_contacted = timezone.now()
             submission.save()
-        elif submission.status == SubmissionStatus.IN_LITERATURE.name and submission.contact_count == 2:
+
+        elif (
+            submission.status == SubmissionStatus.IN_LITERATURE.name and 
+            submission.contact_count == 2
+        ):
             submissions.send_contact_email(submission, SaveType.FINALINLITCONTACT)
             submission.contact_count += 1
             submission.date_contacted = timezone.now()
             submission.save()
+
 send_submission_contact_email.short_description = "Send Contact Emails for the Selected Submissions"
 
 
@@ -439,7 +534,9 @@ mark_missing_info.short_description = "0) Mark selected submissions as new tools
 def mark_ready_for_first_contact(modeladmin, request, queryset):
     queryset.update(status = SubmissionStatus.FIRST_CONTACT.name)
     for submission in queryset: submission.save()
-mark_ready_for_first_contact.short_description = "1) Mark selected submissions as ready for first contact"
+mark_ready_for_first_contact.short_description = (
+    "1) Mark selected submissions as ready for first contact"
+)
 
 def mark_contacted(modeladmin, request, queryset):
     queryset.update(date_contacted = timezone.now())
@@ -450,7 +547,9 @@ mark_contacted.short_description = "2) Mark selected submisions as successfully 
 def mark_paused(modeladmin, request, queryset):
     queryset.update(status = SubmissionStatus.TOOL_PAUSED.name)
     for submission in queryset: submission.save()
-mark_paused.short_description = "3) Mark selected submissions as paused (check the submission notes)"
+mark_paused.short_description = (
+    "3) Mark selected submissions as paused (check the submission notes)"
+)
 
 def mark_received(modeladmin, request, queryset):
     queryset.update(status = SubmissionStatus.RECEIVED.name)
@@ -475,7 +574,10 @@ def make_in_lit_resource(modeladmin, request, queryset):
     for submission in queryset:
         submission:Submission
         submission.make_in_lit_resource()
-make_in_lit_resource.short_description = "7b) Create new InLitResources based on the selected submissions"
+
+make_in_lit_resource.short_description = (
+    "7b) Create new InLitResources based on the selected submissions"
+)
             
 
 
@@ -489,7 +591,9 @@ make_resource.short_description = "7) Create new resources based on the selected
 def mark_under_development(modeladmin, request, queryset):
     queryset.update(status = SubmissionStatus.UNDER_DEVELOPMENT.name)
     for submission in queryset: submission.save()
-mark_under_development.short_description = "7a) Mark selected submission as Under Development (EMAC admin web tool creation)"
+mark_under_development.short_description = (
+    "7a) Mark selected submission as Under Development (EMAC admin web tool creation)"
+)
 
 def update_resource(modeladmin, request, queryset):
     for submission in queryset:
@@ -502,7 +606,9 @@ def update_resource(modeladmin, request, queryset):
             submission.curator_lock = None
             submission.save()
 
-update_resource.short_description = "Update the resources (or in-lit resources) of selected submissions"
+update_resource.short_description = (
+    "Update the resources (or in-lit resources) of selected submissions"
+)
 
 def mark_rejected_abandoned(modeladmin, request, queryset):
     queryset.update(status = SubmissionStatus.REJECTED_ABANDONED.name)
@@ -522,21 +628,24 @@ class SubmissionAdmin(ImportExportModelAdmin):
         models.ManyToManyField: {'widget': forms.CheckboxSelectMultiple},
     }
 
-    list_display = ('name', 'status', 'last_modification_date', 'has_unsynced_changes', 'date_contacted', 'shepherd', 
-                    'id', 'creation_date', 'contact_count')
-    list_filter = ('status', 'last_modification_date', 'has_unsynced_changes', 'shepherd', 'creation_date', 'date_contacted', 'categories', 
-                   'tool_types', 'collections', 'host_app_on_emac', 'host_data_on_emac','make_web_interface', 'contact_count')
-    
+    list_display = (
+        'name', 'status', 'last_modification_date', 'has_unsynced_changes', 
+        'date_contacted', 'shepherd', 'id', 'creation_date', 'contact_count'
+    )
+    list_filter = (
+        'status', 'last_modification_date', 'has_unsynced_changes', 'shepherd', 
+        'creation_date', 'date_contacted', 'categories', 'tool_types', 
+        'collections', 'host_app_on_emac', 'host_data_on_emac',
+        'make_web_interface', 'contact_count'
+    )
     search_fields = ['search_keywords', 'name']
-
     exclude = ('ascii_credits',)
-
     readonly_fields = ('last_curated_date', 'last_curated_by', 'all_curators')
-
     actions = [
         send_submission_contact_email, resend_receipt_email, mark_missing_info,
-        mark_ready_for_first_contact, mark_contacted, mark_paused, mark_received, mark_in_review, mark_accepted, make_resource,
-        mark_under_development,make_in_lit_resource, mark_rejected_abandoned, mark_spam, update_resource
+        mark_ready_for_first_contact, mark_contacted, mark_paused, mark_received, 
+        mark_in_review, mark_accepted, make_resource, mark_under_development,
+        make_in_lit_resource, mark_rejected_abandoned, mark_spam, update_resource
     ]
 
     # hide the extra controls by the curator_lock field
@@ -559,7 +668,10 @@ class SubmissionAdmin(ImportExportModelAdmin):
             obj.id = uuid.uuid4()
 
         obj.last_modification_date = timezone.now()
-        obj.has_unsynced_changes = True if hasattr(obj, 'resource') or hasattr(obj, 'il_resource') else False
+        obj.has_unsynced_changes = (
+            hasattr(obj, 'resource') or 
+            hasattr(obj, 'il_resource')
+        )
         
         super().save_model(request, obj, form, change)
     
@@ -579,11 +691,13 @@ class SubscriptionAdmin(ImportExportModelAdmin):
     def resource_name(self, obj): 
         return obj.resource.name
 
-    list_display = ('last_notification_date', 'notification_frequency','subscriber_email', 'creation_date', 'id')
+    list_display = (
+        'last_notification_date', 'notification_frequency','subscriber_email', 
+        'creation_date', 'id'
+    )
     list_filter = ('notification_frequency', 'categories',)
 
 class TeamMemberResource(resources.ModelResource):
-
     class Meta:
         model = TeamMember
     
@@ -616,10 +730,19 @@ def plain_curator_welcome_message(user):
     welcome_message = "Welcome to the EMAC Curators program!\n\n"
     welcome_message += f'Your EMAC curators account user name is: {user.username}' + "\n\n"
     welcome_message += f'The email address associated with this account is: {user.email}' + "\n\n"
-    welcome_message += "In order to get started, please set your password by going to the EMAC Curators login page:\n\n"
+    welcome_message += (
+        "In order to get started, please set your password by going to the " +
+        "EMAC Curators login page:\n\n"
+    )
     welcome_message += f'{settings.EMAC_PROTOCOL}://{settings.EMAC_DOMAIN}/curators' + "\n\n"
-    welcome_message += "Click on the 'Set/Reset password' link, enter the email above, and click to get a password reset email sent to you.\n\n"
-    welcome_message += "Follow the instructions in the email to set your password. Then you can log in and get started curating!\n\n"
+    welcome_message += (
+        "Click on the 'Set/Reset password' link, enter the email above, and " +
+        "click to get a password reset email sent to you.\n\n"
+    )
+    welcome_message += (
+        "Follow the instructions in the email to set your password. Then you " +
+        "can log in and get started curating!\n\n"
+    )
     welcome_message += "Thank you!"
     return welcome_message
 
@@ -653,7 +776,13 @@ def send_curator_welcome_email(user, request):
         from_address = "REDACTED@nasa.gov" 
         plain_message = plain_curator_welcome_message(user)
         welcome_email_message = render_to_string('website/curator_welcome_email.html', context)
-        send_mail("Welcome, EMAC Curator!", plain_message, from_address, [str(user.email)], fail_silently=False, html_message=welcome_email_message)
+        send_mail(
+            "Welcome, EMAC Curator!", 
+            plain_message, from_address, 
+            [str(user.email)], 
+            fail_silently=False, 
+            html_message=welcome_email_message
+        )
     else:
         messages.warning(request, f'The email supplied for account "{user.username}" did not pass validation: {user.email}')
 

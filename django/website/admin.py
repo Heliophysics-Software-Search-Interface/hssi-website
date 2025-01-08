@@ -1090,17 +1090,21 @@ def export_tool_types(**kwargs):
     with open(tool_types_file_path, 'w') as dataset_file:
         dataset_file.write(dataset.csv)
 
-def export_database(**kwargs):
+# whether or not the resource tables should be included by default
+default_include_resources: bool = False
+
+def export_database(include_resources: bool = default_include_resources, **kwargs):
 
     export_categories(**kwargs)
     export_collections(**kwargs)
     export_feedback(**kwargs)
     export_news(**kwargs)
     export_pending_subscription_notifications(**kwargs)
-    export_resources(**kwargs)
-    export_inlitresources(**kwargs)
-    export_submissions(**kwargs)
-    export_subscriptions(**kwargs)
+    if include_resources:
+        export_resources(**kwargs)
+        export_inlitresources(**kwargs)
+        export_submissions(**kwargs)
+        export_subscriptions(**kwargs)
     export_team(**kwargs)
     export_tool_types(**kwargs)
 
@@ -1110,7 +1114,7 @@ from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
 @receiver([post_delete, post_save])
-def export_database_changes(sender, **kwargs):
+def export_database_changes(sender, include_resources: bool = default_include_resources, **kwargs):
 
     if sender is Category:
         export_categories(**kwargs)
@@ -1122,13 +1126,13 @@ def export_database_changes(sender, **kwargs):
         export_feedback(**kwargs) 
     elif sender is PendingSubscriptionNotification:
         export_pending_subscription_notifications(**kwargs)
-    elif sender is Resource:
+    elif sender is Resource and include_resources:
         export_resources(**kwargs)
-    elif sender is InLitResource:
+    elif sender is InLitResource and include_resources:
         export_inlitresources(**kwargs)
-    elif sender is Submission:        
+    elif sender is Submission and include_resources:
         export_submissions(**kwargs)
-    elif sender is Subscription:        
+    elif sender is Subscription and include_resources:
         export_subscriptions(**kwargs)
     elif sender is TeamMember:
         export_team(**kwargs)

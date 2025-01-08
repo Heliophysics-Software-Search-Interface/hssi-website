@@ -784,17 +784,34 @@ def send_curator_welcome_email(user, request):
             html_message=welcome_email_message
         )
     else:
-        messages.warning(request, f'The email supplied for account "{user.username}" did not pass validation: {user.email}')
+        messages.warning(
+            request, 
+            f'The email supplied for account "{user.username}" ' +
+            f'did not pass validation: {user.email}'
+        )
 
 def make_team_member_for_user(user, request):
     if user.first_name and user.last_name:
-        existing = TeamMember.objects.filter(Q(name__startswith=user.first_name) & Q(name__endswith=user.last_name))
+        existing = TeamMember.objects.filter(
+            Q(name__startswith=user.first_name) & 
+            Q(name__endswith=user.last_name)
+        )
         if existing.count() > 0:
-            messages.warning(request, f'There is already a Team Member with name {user.first_name} {user.last_name}')
+            messages.warning(
+                request, 
+                f'There is already a Team Member with name {user.first_name} {user.last_name}'
+            )
         else:
-            TeamMember.objects.create(name=f"{user.first_name} {user.last_name}", is_curator=True, curator_account=user)
+            TeamMember.objects.create(
+                name=f"{user.first_name} {user.last_name}", 
+                is_curator=True, curator_account=user
+            )
     else:
-        messages.error(request, f'Account "{user.username}" did not have both first and last name set, could not create Team Member')
+        messages.error(
+            request, 
+            f'Account "{user.username}" did not have both first and last name set, '+
+            'could not create Team Member'
+        )
 
 @admin.action(description="Make selected users Curators (group/password/email/team):")
 def make_curators(modeladmin, request, queryset):
@@ -859,7 +876,10 @@ admin.site.register(Category, admin_class=CategoryAdmin)
 admin.site.register(Collection, admin_class=CollectionAdmin)
 admin.site.register(Feedback, admin_class=FeedbackAdmin)
 admin.site.register(NewsItem, admin_class=NewsItemAdmin)
-admin.site.register(PendingSubscriptionNotification, admin_class=PendingSubscriptionNotificationAdmin)
+admin.site.register(
+    PendingSubscriptionNotification, 
+    admin_class=PendingSubscriptionNotificationAdmin
+)
 admin.site.register(Resource, admin_class=ResourceAdmin)
 admin.site.register(InLitResource, admin_class=InLitResourceAdmin)
 admin.site.register(Subscription, admin_class=SubscriptionAdmin)
@@ -886,7 +906,13 @@ TOOL_TYPES_FILE_NAME = 'tool_types.csv'
 
 def export_categories(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None 
+            else
+        kwargs['path']
+    )
     categories_file_path = db_config_path + CATEGORIES_FILE_NAME
 
     print("Exporting categories to " + categories_file_path + " ...")
@@ -898,7 +924,12 @@ def export_categories(**kwargs):
 
 def export_collections(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     collections_file_path = db_config_path + COLLECTIONS_FILE_NAME
 
     print("Exporting collections to " + collections_file_path + " ...")
@@ -910,7 +941,12 @@ def export_collections(**kwargs):
 
 def export_feedback(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     feedback_file_path = db_config_path + FEEDBACK_FILE_NAME
 
     print("Exporting feedback to " + feedback_file_path + " ...")
@@ -922,7 +958,12 @@ def export_feedback(**kwargs):
 
 def export_news(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     news_file_path = db_config_path + NEWS_FILE_NAME
 
     print("Exporting news items to " + news_file_path + " ...")
@@ -934,7 +975,12 @@ def export_news(**kwargs):
 
 def export_pending_subscription_notifications(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     pending_subscription_notifications_file_path = db_config_path + PENDING_SUBSCRIPTION_NOTIFICATIONS_FILE_NAME
 
     print("Exporting pending subscription notifications to " + pending_subscription_notifications_file_path + " ...")
@@ -946,7 +992,12 @@ def export_pending_subscription_notifications(**kwargs):
 
 def export_resources(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     resources_file_path = db_config_path + RESOURCES_FILE_NAME
 
     print("Exporting resources to " + resources_file_path + " ...")
@@ -957,7 +1008,12 @@ def export_resources(**kwargs):
         dataset_file.write(dataset.csv)
 
 def export_inlitresources(**kwargs):
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     resources_file_path = db_config_path + IN_LIT_RESOURCES_FILE_NAME
     print("Exporting in-lit resources to " + resources_file_path + " ...")
     model_resource = resources.modelresource_factory(model=InLitResource)()
@@ -968,7 +1024,12 @@ def export_inlitresources(**kwargs):
 
 def export_submissions(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     submissions_file_path = db_config_path + SUBMISSIONS_FILE_NAME
 
     print("Exporting submissions to " + submissions_file_path + " ...")
@@ -980,7 +1041,12 @@ def export_submissions(**kwargs):
         
 def export_subscriptions(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     subscriptions_file_path = db_config_path + SUBSCRIPTIONS_FILE_NAME
 
     print("Exporting subscriptions to " + subscriptions_file_path + " ...")
@@ -992,7 +1058,12 @@ def export_subscriptions(**kwargs):
 
 def export_team(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     team_file_path = db_config_path + TEAM_FILE_NAME
 
     print("Exporting team to " + team_file_path + " ...")
@@ -1004,7 +1075,12 @@ def export_team(**kwargs):
 
 def export_tool_types(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     tool_types_file_path = db_config_path + TOOL_TYPES_FILE_NAME
 
     print("Exporting tool types to " + tool_types_file_path + " ...")

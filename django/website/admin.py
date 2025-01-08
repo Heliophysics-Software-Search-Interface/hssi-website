@@ -38,12 +38,9 @@ from .subscriptions import resource_added_categories
 
 from django.db.models import F
 
-admin.site.site_title = 'EMAC admin'
-admin.site.site_header = 'EMAC administration'
-admin.site.index_title = 'EMAC administration'
-
-
-
+admin.site.site_title = 'HSSI admin'
+admin.site.site_header = 'HSSI administration'
+admin.site.index_title = 'HSSI administration'
 
 class CategoryResource(resources.ModelResource):
 

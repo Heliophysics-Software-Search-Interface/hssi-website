@@ -11,5 +11,6 @@ Required environment variables are `POSTGRES_USER`, `POSTGRES_PASSWORD`,
 `POSTGRES_DB`, `EMAC_ADMIN_USERNAME`, `EMAC_ADMIN_PASSWORD`, `SECRET_KEY`. 
 The values can be filled with any string literals, ex: `POSTGRESS_USER="user"`.
 * Start the docker service on your systen and run `docker compose up` in the
-`/EMAC/` directory.  
-* Visit `localhost` in a browser to see the website
+project directory.  
+* After docker container is fully launched, visit `localhost` in a browser to 
+see the website

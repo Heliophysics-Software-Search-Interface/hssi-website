@@ -288,10 +288,7 @@ def upgrade_to_resource(modeladmin, request, queryset):
     Upgrade a queryset of `InLitResource` objects to full resources.
     """
     submissions = [in_lit_resource.submission for in_lit_resource in queryset]
-    make_resource(modeladmin,request,submissions)
-        
-        
-
+    make_resource(modeladmin,request,submissions)  
 
 class InLitResourceAdmin(ImportExportModelAdmin):
 
@@ -347,7 +344,6 @@ class SubmissionResource(resources.ModelResource):
 
     class Meta:
         model = Submission
-
 
 def resend_receipt_email(modeladmin, request, queryset):
     for submission in queryset:
@@ -563,7 +559,6 @@ def mark_accepted(modeladmin, request, queryset):
     for submission in queryset: submission.save()
 mark_accepted.short_description = "6) Mark selected submissions as in review (their end)"
 
-
 def make_in_lit_resource(modeladmin, request, queryset):
     """
     Create `InLitResource` objects from a queryset of submissions.
@@ -571,18 +566,14 @@ def make_in_lit_resource(modeladmin, request, queryset):
     for submission in queryset:
         submission:Submission
         submission.make_in_lit_resource()
-
 make_in_lit_resource.short_description = (
     "7b) Create new InLitResources based on the selected submissions"
 )
-            
-
 
 def make_resource(modeladmin, request, queryset):
     for submission in queryset:
         submission:Submission # vscode likes annotations like this
         submission.make_resource()
-
 make_resource.short_description = "7) Create new resources based on the selected submissions"
 
 def mark_under_development(modeladmin, request, queryset):
@@ -602,7 +593,6 @@ def update_resource(modeladmin, request, queryset):
         if (submission.curator_lock != None):
             submission.curator_lock = None
             submission.save()
-
 update_resource.short_description = (
     "Update the resources (or in-lit resources) of selected submissions"
 )
@@ -719,7 +709,6 @@ class TeamMemberAdmin(ImportExportModelAdmin):
         curator_account.widget.can_change_related = False
         curator_account.widget.can_delete_related = False
         return form
-
 
 # curator user actions
 #

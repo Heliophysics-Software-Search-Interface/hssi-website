@@ -38,12 +38,9 @@ from .subscriptions import resource_added_categories
 
 from django.db.models import F
 
-admin.site.site_title = 'EMAC admin'
-admin.site.site_header = 'EMAC administration'
-admin.site.index_title = 'EMAC administration'
-
-
-
+admin.site.site_title = 'HSSI admin'
+admin.site.site_header = 'HSSI administration'
+admin.site.index_title = 'HSSI administration'
 
 class CategoryResource(resources.ModelResource):
 
@@ -291,10 +288,7 @@ def upgrade_to_resource(modeladmin, request, queryset):
     Upgrade a queryset of `InLitResource` objects to full resources.
     """
     submissions = [in_lit_resource.submission for in_lit_resource in queryset]
-    make_resource(modeladmin,request,submissions)
-        
-        
-
+    make_resource(modeladmin,request,submissions)  
 
 class InLitResourceAdmin(ImportExportModelAdmin):
 
@@ -350,7 +344,6 @@ class SubmissionResource(resources.ModelResource):
 
     class Meta:
         model = Submission
-
 
 def resend_receipt_email(modeladmin, request, queryset):
     for submission in queryset:
@@ -566,7 +559,6 @@ def mark_accepted(modeladmin, request, queryset):
     for submission in queryset: submission.save()
 mark_accepted.short_description = "6) Mark selected submissions as in review (their end)"
 
-
 def make_in_lit_resource(modeladmin, request, queryset):
     """
     Create `InLitResource` objects from a queryset of submissions.
@@ -574,18 +566,14 @@ def make_in_lit_resource(modeladmin, request, queryset):
     for submission in queryset:
         submission:Submission
         submission.make_in_lit_resource()
-
 make_in_lit_resource.short_description = (
     "7b) Create new InLitResources based on the selected submissions"
 )
-            
-
 
 def make_resource(modeladmin, request, queryset):
     for submission in queryset:
         submission:Submission # vscode likes annotations like this
         submission.make_resource()
-
 make_resource.short_description = "7) Create new resources based on the selected submissions"
 
 def mark_under_development(modeladmin, request, queryset):
@@ -605,7 +593,6 @@ def update_resource(modeladmin, request, queryset):
         if (submission.curator_lock != None):
             submission.curator_lock = None
             submission.save()
-
 update_resource.short_description = (
     "Update the resources (or in-lit resources) of selected submissions"
 )
@@ -723,7 +710,6 @@ class TeamMemberAdmin(ImportExportModelAdmin):
         curator_account.widget.can_delete_related = False
         return form
 
-
 # curator user actions
 #
 def plain_curator_welcome_message(user):
@@ -784,17 +770,34 @@ def send_curator_welcome_email(user, request):
             html_message=welcome_email_message
         )
     else:
-        messages.warning(request, f'The email supplied for account "{user.username}" did not pass validation: {user.email}')
+        messages.warning(
+            request, 
+            f'The email supplied for account "{user.username}" ' +
+            f'did not pass validation: {user.email}'
+        )
 
 def make_team_member_for_user(user, request):
     if user.first_name and user.last_name:
-        existing = TeamMember.objects.filter(Q(name__startswith=user.first_name) & Q(name__endswith=user.last_name))
+        existing = TeamMember.objects.filter(
+            Q(name__startswith=user.first_name) & 
+            Q(name__endswith=user.last_name)
+        )
         if existing.count() > 0:
-            messages.warning(request, f'There is already a Team Member with name {user.first_name} {user.last_name}')
+            messages.warning(
+                request, 
+                f'There is already a Team Member with name {user.first_name} {user.last_name}'
+            )
         else:
-            TeamMember.objects.create(name=f"{user.first_name} {user.last_name}", is_curator=True, curator_account=user)
+            TeamMember.objects.create(
+                name=f"{user.first_name} {user.last_name}", 
+                is_curator=True, curator_account=user
+            )
     else:
-        messages.error(request, f'Account "{user.username}" did not have both first and last name set, could not create Team Member')
+        messages.error(
+            request, 
+            f'Account "{user.username}" did not have both first and last name set, '+
+            'could not create Team Member'
+        )
 
 @admin.action(description="Make selected users Curators (group/password/email/team):")
 def make_curators(modeladmin, request, queryset):
@@ -859,7 +862,10 @@ admin.site.register(Category, admin_class=CategoryAdmin)
 admin.site.register(Collection, admin_class=CollectionAdmin)
 admin.site.register(Feedback, admin_class=FeedbackAdmin)
 admin.site.register(NewsItem, admin_class=NewsItemAdmin)
-admin.site.register(PendingSubscriptionNotification, admin_class=PendingSubscriptionNotificationAdmin)
+admin.site.register(
+    PendingSubscriptionNotification, 
+    admin_class=PendingSubscriptionNotificationAdmin
+)
 admin.site.register(Resource, admin_class=ResourceAdmin)
 admin.site.register(InLitResource, admin_class=InLitResourceAdmin)
 admin.site.register(Subscription, admin_class=SubscriptionAdmin)
@@ -886,7 +892,13 @@ TOOL_TYPES_FILE_NAME = 'tool_types.csv'
 
 def export_categories(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None 
+            else
+        kwargs['path']
+    )
     categories_file_path = db_config_path + CATEGORIES_FILE_NAME
 
     print("Exporting categories to " + categories_file_path + " ...")
@@ -898,7 +910,12 @@ def export_categories(**kwargs):
 
 def export_collections(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     collections_file_path = db_config_path + COLLECTIONS_FILE_NAME
 
     print("Exporting collections to " + collections_file_path + " ...")
@@ -910,7 +927,12 @@ def export_collections(**kwargs):
 
 def export_feedback(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     feedback_file_path = db_config_path + FEEDBACK_FILE_NAME
 
     print("Exporting feedback to " + feedback_file_path + " ...")
@@ -922,7 +944,12 @@ def export_feedback(**kwargs):
 
 def export_news(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     news_file_path = db_config_path + NEWS_FILE_NAME
 
     print("Exporting news items to " + news_file_path + " ...")
@@ -934,7 +961,12 @@ def export_news(**kwargs):
 
 def export_pending_subscription_notifications(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     pending_subscription_notifications_file_path = db_config_path + PENDING_SUBSCRIPTION_NOTIFICATIONS_FILE_NAME
 
     print("Exporting pending subscription notifications to " + pending_subscription_notifications_file_path + " ...")
@@ -946,7 +978,12 @@ def export_pending_subscription_notifications(**kwargs):
 
 def export_resources(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     resources_file_path = db_config_path + RESOURCES_FILE_NAME
 
     print("Exporting resources to " + resources_file_path + " ...")
@@ -957,7 +994,12 @@ def export_resources(**kwargs):
         dataset_file.write(dataset.csv)
 
 def export_inlitresources(**kwargs):
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     resources_file_path = db_config_path + IN_LIT_RESOURCES_FILE_NAME
     print("Exporting in-lit resources to " + resources_file_path + " ...")
     model_resource = resources.modelresource_factory(model=InLitResource)()
@@ -968,7 +1010,12 @@ def export_inlitresources(**kwargs):
 
 def export_submissions(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     submissions_file_path = db_config_path + SUBMISSIONS_FILE_NAME
 
     print("Exporting submissions to " + submissions_file_path + " ...")
@@ -980,7 +1027,12 @@ def export_submissions(**kwargs):
         
 def export_subscriptions(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     subscriptions_file_path = db_config_path + SUBSCRIPTIONS_FILE_NAME
 
     print("Exporting subscriptions to " + subscriptions_file_path + " ...")
@@ -992,7 +1044,12 @@ def export_subscriptions(**kwargs):
 
 def export_team(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     team_file_path = db_config_path + TEAM_FILE_NAME
 
     print("Exporting team to " + team_file_path + " ...")
@@ -1004,7 +1061,12 @@ def export_team(**kwargs):
 
 def export_tool_types(**kwargs):
 
-    db_config_path = DEFAULT_DB_CONFIG_PATH if not 'path' in kwargs or kwargs['path'] is None else kwargs['path'] 
+    db_config_path = (
+        DEFAULT_DB_CONFIG_PATH 
+            if not 'path' in kwargs or 
+            kwargs['path'] is None else 
+        kwargs['path']
+    )
     tool_types_file_path = db_config_path + TOOL_TYPES_FILE_NAME
 
     print("Exporting tool types to " + tool_types_file_path + " ...")
@@ -1014,17 +1076,21 @@ def export_tool_types(**kwargs):
     with open(tool_types_file_path, 'w') as dataset_file:
         dataset_file.write(dataset.csv)
 
-def export_database(**kwargs):
+# whether or not the resource tables should be included by default
+default_include_resources: bool = False
+
+def export_database(include_resources: bool = default_include_resources, **kwargs):
 
     export_categories(**kwargs)
     export_collections(**kwargs)
     export_feedback(**kwargs)
     export_news(**kwargs)
     export_pending_subscription_notifications(**kwargs)
-    export_resources(**kwargs)
-    export_inlitresources(**kwargs)
-    export_submissions(**kwargs)
-    export_subscriptions(**kwargs)
+    if include_resources:
+        export_resources(**kwargs)
+        export_inlitresources(**kwargs)
+        export_submissions(**kwargs)
+        export_subscriptions(**kwargs)
     export_team(**kwargs)
     export_tool_types(**kwargs)
 
@@ -1034,7 +1100,7 @@ from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
 @receiver([post_delete, post_save])
-def export_database_changes(sender, **kwargs):
+def export_database_changes(sender, include_resources: bool = default_include_resources, **kwargs):
 
     if sender is Category:
         export_categories(**kwargs)
@@ -1046,13 +1112,13 @@ def export_database_changes(sender, **kwargs):
         export_feedback(**kwargs) 
     elif sender is PendingSubscriptionNotification:
         export_pending_subscription_notifications(**kwargs)
-    elif sender is Resource:
+    elif sender is Resource and include_resources:
         export_resources(**kwargs)
-    elif sender is InLitResource:
+    elif sender is InLitResource and include_resources:
         export_inlitresources(**kwargs)
-    elif sender is Submission:        
+    elif sender is Submission and include_resources:
         export_submissions(**kwargs)
-    elif sender is Subscription:        
+    elif sender is Subscription and include_resources:
         export_subscriptions(**kwargs)
     elif sender is TeamMember:
         export_team(**kwargs)

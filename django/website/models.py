@@ -133,7 +133,6 @@ def get_new_cid()->str:
         newCitationNumber = highestNumber + 1
         return f"{yearMon}-{newCitationNumber:03d}"
 
-
 class AbstractResource(models.Model):
 
     help_texts = {
@@ -408,9 +407,6 @@ class AbstractResource(models.Model):
             print(msg)
             raise RuntimeError(msg)
 
-
-
-
 class Feedback(models.Model):
 
     help_texts = {
@@ -498,8 +494,6 @@ class Resource(AbstractResource):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-
-
 class InLitResource(AbstractResource):
     help_texts = AbstractResource.help_texts.copy()
     help_texts.update({
@@ -542,7 +536,6 @@ class InLitResource(AbstractResource):
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        
 
 class SubmissionStatus(Enum):
     MISSING_INFO = '0) Proposed Tool w/ Missing Info'
@@ -715,8 +708,6 @@ class Submission(AbstractResource):
             warnings.warn(msg,RuntimeWarning)
         else:
             self._make_in_lit_resource()
-            
-    
             
 class NotificationFrequency(Enum):
     IMMEDIATELY = 'Immediately'

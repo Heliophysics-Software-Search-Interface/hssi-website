@@ -1,6 +1,6 @@
 
 FROM carlhostetteratnasa/django-nginx
-LABEL maintainer=“Carl.F.Hostetter@nasa.gov”
+LABEL maintainer="isaiah.smith@lasp.colorado.edu"
 ENV REFRESHED_AT 2021-07-14
 
 COPY ./requirements.txt requirements.txt

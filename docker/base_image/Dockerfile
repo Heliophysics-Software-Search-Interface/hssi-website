@@ -1,10 +1,10 @@
-FROM python:3-slim
+FROM python:3.10-slim
 
 LABEL maintainer="isaiah.smith@lasp.colorado.edu"
 
-ENV REFRESHED_AT 2021-10-07
+ENV REFRESHED_AT=2021-10-07
 
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && \
     apt-get -y install gcc libpq-dev logrotate procps && \

@@ -27,6 +27,7 @@ WORKDIR /extensions/post-launch-scripts
 WORKDIR /
 
 ADD launch-nginx.sh ./extensions/post-launch-scripts/
+RUN chmod +x ./extensions/post-launch-scripts/launch-nginx.sh
 
 ADD launch.sh .
 CMD ./launch.sh

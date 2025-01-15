@@ -1,4 +1,4 @@
-FROM hssi
+FROM hssi_base:latest
 
 LABEL maintainer="isaiah.smith@lasp.colorado.edu"
 ENV REFRESHED_AT=2021-07-14
@@ -12,5 +12,5 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 RUN python -m nltk.downloader -d /usr/local/share/nltk_data stopwords punkt
 
-ADD init_emac.sh /extensions/django/post-migration-scripts
-RUN chmod +x /extensions/django/post-migration-scripts/init_emac.sh
+ADD init_hssi.sh /extensions/django/post-migration-scripts
+RUN chmod +x /extensions/django/post-migration-scripts/init_hssi.sh

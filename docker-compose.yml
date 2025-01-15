@@ -2,10 +2,10 @@ version: '3'
 
 services:
             
-    emac: &emac
+    hssi: &hssi
         build: ./docker
-        image: emac
-        container_name: EMAC
+        image: hssi
+        container_name: HSSI
         depends_on:
             - shared_db
             - website_db
@@ -60,7 +60,7 @@ services:
 # To return to non-debug operation, ensure that the section is commented out again before "docker-compose up"
 #
     # debug:
-    #     << : *emac
+    #     << : *hssi
     #     ports:
     #         - "80:80"
     #         - "5678:5678"

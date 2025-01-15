@@ -1,7 +1,6 @@
 FROM python:3.10-slim
 
 LABEL maintainer="isaiah.smith@lasp.colorado.edu"
-
 ENV REFRESHED_AT=2021-10-07
 
 ENV PYTHONUNBUFFERED=1

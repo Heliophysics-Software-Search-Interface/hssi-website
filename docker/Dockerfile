@@ -1,5 +1,5 @@
-
 FROM hssi
+
 LABEL maintainer="isaiah.smith@lasp.colorado.edu"
 ENV REFRESHED_AT=2021-07-14
 

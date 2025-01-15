@@ -1,7 +1,7 @@
 
 FROM hssi
 LABEL maintainer="isaiah.smith@lasp.colorado.edu"
-ENV REFRESHED_AT 2021-07-14
+ENV REFRESHED_AT=2021-07-14
 
 COPY ./requirements.txt requirements.txt
 RUN pip install --upgrade pip && pip install -r requirements.txt

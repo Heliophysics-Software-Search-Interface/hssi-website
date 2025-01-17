@@ -22,7 +22,6 @@ EMAC_ADMIN_USERNAME="user"
 EMAC_ADMIN_PASSWORD="user"
 SECRET_KEY="secret"
 ```
-The values can be filled with any string literals, ex: `POSTGRESS_USER="user"`.  
 * Start the docker service on your systen and run `docker compose up` in the
 project directory.  
 * After docker container is fully launched, visit `localhost` in a browser to 

@@ -24,7 +24,7 @@
             <li>Suggest new categories that we should include, or adjustments to the current categories.</li>
             <li>Suggest new features for the website overall.</li>
         </ul>
-        <p>Also, we are asking the broader EMAC community to help us prioritize which tools to develop into new web-accessible applications.<br/> Please vote for the tools which you would be most interested in accessing from a web interface on the <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/vote">Vote page</a>.</p>
+        <p>Also, we are asking the broader HSSI community to help us prioritize which tools to develop into new web-accessible applications.<br/> Please vote for the tools which you would be most interested in accessing from a web interface on the <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/vote">Vote page</a>.</p>
         <form id="feedback_form" method="POST" action="{% url 'website:feedback' %}">
             {% csrf_token %} {{ form.as_p }}
             <div class="feedback_button">

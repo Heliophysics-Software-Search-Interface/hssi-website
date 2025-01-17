@@ -32,18 +32,18 @@
         <div class="submission-links">
             <!-- <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/submissions/{{ submission.id }}/" target="_blank">[Submission Form Link]</a> -->
             <a class="hollow button"
-                href="https://github.com/GSFC-EMAC/EMAC-Curation-Program/issues?q=is%3Aissue+in%3Atitle+{{ submission.name }}"
+                href="#+{{ submission.name }}"
                 target="_blank"
-                onclick="getOutboundLink('https://github.com/GSFC-EMAC/EMAC-Curation-Program/issues?q=is%3Aissue+in%3Atitle+{{ submission.name }}', 'curation_program_search_link', null, '{{ submission.name }}', { submission_id: '{{ submission.id }}' }); return false;"
+                onclick="getOutboundLink('#+{{ submission.name }}', 'curation_program_search_link', null, '{{ submission.name }}', { submission_id: '{{ submission.id }}' }); return false;"
                 data-tooltip data-position="bottom" data-alignment="right"
-                title="Search for an existing discussion about this resource on the EMAC Curator GitHub site."
+                title="Search for an existing discussion about this resource on the HSSI Curator GitHub site."
                 >Find discussions</a>
             <a class="hollow button" 
-                href="https://github.com/GSFC-EMAC/EMAC-Curation-Program/issues/new?title={{ submission.name }}" 
+                href="#?title={{ submission.name }}" 
                 target="_blank" 
-                onclick="getOutboundLink('https://github.com/GSFC-EMAC/EMAC-Curation-Program/issues/new?title={{ submission.name }}', 'curation_program_new_link', null, '{{ submission.name }}', { submission_id: '{{ submission.id }}' }); return false;" 
+                onclick="getOutboundLink('#?title={{ submission.name }}', 'curation_program_new_link', null, '{{ submission.name }}', { submission_id: '{{ submission.id }}' }); return false;" 
                 data-tooltip data-position="bottom" data-alignment="right"
-                title="Start a new discussion about this resource on the EMAC Curator GitHub site. (Please check for existing first.)"
+                title="Start a new discussion about this resource on the HSSI Curator GitHub site. (Please check for existing first.)"
                 >New discussion</a>
         </div>
        

@@ -455,9 +455,9 @@ class Resource(AbstractResource):
     help_texts = AbstractResource.help_texts.copy()
     help_texts.update({
         'github_release': "The current update note published on the resource.",
-        'is_hosted': "Indicates whether the resource is hosted (executed) on EMAC servers",
-        'is_published': "Indicates whether this is a published EMAC resource",
-        'subdomain': "The EMAC subdomain of a hosted resource",
+        'is_hosted': "Indicates whether the resource is hosted (executed) on HSSI servers",
+        'is_published': "Indicates whether this is a published HSSI resource",
+        'subdomain': "The HSSI subdomain of a hosted resource",
         'path': "The path (starting with /) of a hosted resource",
         'status_notes': "Any further information regarding this resource",
         'SEEC_tool': "Check if the tool is related to SEEC",
@@ -497,7 +497,7 @@ class Resource(AbstractResource):
 class InLitResource(AbstractResource):
     help_texts = AbstractResource.help_texts.copy()
     help_texts.update({
-        'is_published': "Indicates whether this is a published EMAC resource",
+        'is_published': "Indicates whether this is a published HSSI resource",
         'status_notes': "Any further information regarding this resource",
         'SEEC_tool': "Check if the tool is related to SEEC",
     })
@@ -559,8 +559,8 @@ class Submission(AbstractResource):
     help_texts.update({
         'other_category': "Suggest a category not listed here",
         'private_code/data_link':"<strong> Add one link only - </strong>If your resource is not publicly available and you would like EMAC to host it, please provide a (private) link to your source code",
-        'host_app_on_emac': "Would you like your tool to be hosted/executed on an EMAC server?",
-        'host_data_on_emac': "Would you like to store data/model output on a web-accessible EMAC server?",
+        'host_app_on_emac': "Would you like your tool to be hosted/executed on an HSSI server?",
+        'host_data_on_emac': "Would you like to store data/model output on a web-accessible HSSI server?",
         'make_web_interface': "Are you interested in a new web interface?",
         'submitter_first_name': "Please provide your first name",
         'submitter_last_name': "Please provide your last name",
@@ -577,8 +577,8 @@ class Submission(AbstractResource):
         'collections': "Collections (check all that apply)",
         'tool_types': "Tool types (check all that apply)",
         'make_web_interface': "Interested in a new web interface?",
-        'host_app_on_emac': "Host a web-accessible version on EMAC?",
-        'host_data_on_emac': "Host data/model output on EMAC?",
+        'host_app_on_emac': "Host a web-accessible version on HSSI?",
+        'host_data_on_emac': "Host data/model output on HSSI?",
     }
 
     id = models.UUIDField(primary_key=True, editable=False)
@@ -621,8 +621,8 @@ class Submission(AbstractResource):
             \n Tool Types: { ', '.join([tool_type.name for tool_type in self.tool_types.all()])} \
             \n Code Language(s): {str(self.code_languages)} \
             \n Other Category: {str(self.other_category)} \
-            \n Host a Web-Accessible Version on EMAC? {str(self.host_app_on_emac)} \
-            \n Host Data/Model Output on EMAC? {str(self.host_data_on_emac)} \
+            \n Host a Web-Accessible Version on HSSI? {str(self.host_app_on_emac)} \
+            \n Host Data/Model Output on HSSI? {str(self.host_data_on_emac)} \
             \n Interested in a New Web Interface? {str(self.make_web_interface)} \
             \n About Link: {str(self.about_link)} \
             \n ADS Abstract Link: {str(self.ads_abstract_link)} \

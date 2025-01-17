@@ -110,7 +110,7 @@
 <!--            {% csrf_token %}-->
 <!--            <p>{{ form.visits_over_time.label_tag }} {{ form.visits_over_time }} <input class="button-primary" type="submit" value="Update" /></p>-->
 <!--        </form>-->
-        <p>Visits to EMAC from people outside of our team.</p>
+        <p>Visits to HSSI from people outside of our team.</p>
     </div>
 </div>
 
@@ -121,7 +121,7 @@
 <!--            {% csrf_token %}-->
 <!--            <p>{{ form.weekly_visits.label_tag }} {{ form.weekly_visits }} <input class="button-primary" type="submit" value="Update" /></p>-->
 <!--        </form>-->
-        <p>Visits to EMAC from people outside of our team, aggregated by week.</p>
+        <p>Visits to HSSI from people outside of our team, aggregated by week.</p>
     </div>
 </div>
 
@@ -132,7 +132,7 @@
 <!--            {% csrf_token %}-->
 <!--            <p>{{ form.new_visitors_over_time.label_tag }} {{ form.new_visitors_over_time }} <input class="button-primary" type="submit" value="Update" /></p>-->
 <!--        </form>-->
-        <p>Blue: cumulative new users per week; red: new users per week (does not include EMAC team members).</p>
+        <p>Blue: cumulative new users per week; red: new users per week (does not include HSSI team members).</p>
     </div>
 </div>
 
@@ -143,7 +143,7 @@
 <!--            {% csrf_token %}-->
 <!--            <p>{{ form.new_user_fraction.label_tag }} {{ form.new_user_fraction }} <input class="button-primary" type="submit" value="Update" /></p>-->
 <!--        </form>-->
-        <p>Fraction of sessions that were from new users, by week. If someone visits EMAC for the first time then reloads the page, that would add one to the numerator fo this fraction and 2 to the denominator of this fraction. Does not count EMAC team members.</p>
+        <p>Fraction of sessions that were from new users, by week. If someone visits HSSI for the first time then reloads the page, that would add one to the numerator fo this fraction and 2 to the denominator of this fraction. Does not count HSSI team members.</p>
     </div>
 </div>
 
@@ -168,7 +168,7 @@
 <!--            {% csrf_token %}-->
 <!--            <p>{{ form.clicks_per_tool.label_tag }} {{ form.clicks_per_tool }} <input class="button-primary" type="submit" value="Update" /></p>-->
 <!--        </form>-->
-        <p>Number of people (outside of the EMAC team) who have clicked each tool tile button.</p>
+        <p>Number of people (outside of the HSSI team) who have clicked each tool tile button.</p>
     </div>
 </div>
 
@@ -179,7 +179,7 @@
 <!--            {% csrf_token %}-->
 <!--            <p>{{ form.exit_clicks_by_category.label_tag }} {{ form.exit_clicks_by_category }} <input class="button-primary" type="submit" value="Update" /></p>-->
 <!--        </form>-->
-        <p>Number of people (outside of the EMAC team) who have clicked on any of the links for any tool at least once per category.</p>
+        <p>Number of people (outside of the HSSI team) who have clicked on any of the links for any tool at least once per category.</p>
     </div>
 </div>
 
@@ -190,7 +190,7 @@
 <!--            {% csrf_token %}-->
 <!--            <p>{{ form.n_tools.label_tag }} {{ form.n_tools }} <input class="button-primary" type="submit" value="Update" /></p>-->
 <!--        </form>-->
-        <p>Number of published resources on EMAC.</p>
+        <p>Number of published resources on HSSI.</p>
     </div>
 </div>
 
@@ -223,7 +223,7 @@
 <!--            {% csrf_token %}-->
 <!--            <p>{{ form.n_tools.label_tag }} {{ form.n_tools }} <input class="button-primary" type="submit" value="Update" /></p>-->
 <!--        </form>-->
-        <p>Number of subscribers to various categories on EMAC.</p>
+        <p>Number of subscribers to various categories on HSSI.</p>
     </div>
 </div>
 
@@ -234,7 +234,7 @@
 <!--            {% csrf_token %}-->
 <!--            <p>{{ form.social_traffic.label_tag }} {{ form.social_traffic }} <input class="button-primary" type="submit" value="Update" /></p>-->
 <!--        </form>-->
-        <p>Visits from outside of EMAC that originate from our main social media channels.</p>
+        <p>Visits from outside of HSSI that originate from our main social media channels.</p>
     </div>
 </div>
 
@@ -294,7 +294,7 @@
         client = Analytics.with_secrets("./secrets.json") <br>
         report = client.retrieve(dimensions=("day",), metrics=("views",))
     </p>
-    The terminal output will display a link and a prompt to enter a code. Follow the link, log in with emacscience@gmail.com, click continue, check both boxes, then click continue again. This should lead you to hte local EMAC site if it is running on your machine or an error page if not. Look in the URL for a portion that says "code=" and copy everything from the "=" to "&scope" (exclusive). Paste this code into your terminal to create a new tokens.json file. Copy this file into EMAC/django/website/analytics, replacing the old version.
+    The terminal output will display a link and a prompt to enter a code. Follow the link, log in with emacscience@gmail.com, click continue, check both boxes, then click continue again. This should lead you to hte local HSSI site if it is running on your machine or an error page if not. Look in the URL for a portion that says "code=" and copy everything from the "=" to "&scope" (exclusive). Paste this code into your terminal to create a new tokens.json file. Copy this file into HSSI/django/website/analytics, replacing the old version.
     <img src="{% static 'analytics_plots/yt_video_stats.png' %}">
     <div class="inner-div">
 

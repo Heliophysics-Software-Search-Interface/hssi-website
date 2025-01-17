@@ -57,9 +57,9 @@ def email_strings_for(subscription, save_type, changed_fields=None):
     if save_type is SaveType.SUBMIT:
         # subscription_text = subscription.detail_string()
         cat_string, freq_string, email_string = subscription.detail_string()
-        subject = "EMAC: A new subscription was submitted"
+        subject = "HSSI: A new subscription was submitted"
 
-        admin_message = str(f"An EMAC web user has subscribed to one or more categories via https://{domain}/subscriptions/\n\n")
+        admin_message = str(f"An HSSI web user has subscribed to one or more categories via https://{domain}/subscriptions/\n\n")
         admin_message += cat_string + " " + freq_string + " " + email_string
         admin_message += str(f"\n\nTo review and manage this subscription, go to https://{domain}/admin/website/subscription/")
     
@@ -81,7 +81,7 @@ def email_strings_for(subscription, save_type, changed_fields=None):
     # This section is for when a subscription that already exists is edited and highlights what has changed compared to its
     # previous version.
     elif save_type is SaveType.EDIT:
-        subject = "EMAC: A subscription was edited"
+        subject = "HSSI: A subscription was edited"
         
         # Create the message sent specifically to admins that highlights which fields changed
         admin_subscription_text = ""
@@ -133,9 +133,9 @@ def email_strings_for_notification(pending_subscription_notification):
     
     subscription = pending_subscription_notification.subscription
 
-    subject = "EMAC: New tools and/or updates have been published!"
+    subject = "HSSI: New tools and/or updates have been published!"
 
-    admin_message = str(f"An EMAC Subscription alert was sent.\n\n")
+    admin_message = str(f"An HSSI Subscription alert was sent.\n\n")
     
     subscriber_intro_message = "New tools and/or updates have been published to your subscribed categories on the Exoplanet Modeling & Analysis Center!\n\n"
 

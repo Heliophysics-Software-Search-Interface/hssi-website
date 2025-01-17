@@ -713,12 +713,12 @@ class TeamMemberAdmin(ImportExportModelAdmin):
 # curator user actions
 #
 def plain_curator_welcome_message(user):
-    welcome_message = "Welcome to the EMAC Curators program!\n\n"
-    welcome_message += f'Your EMAC curators account user name is: {user.username}' + "\n\n"
+    welcome_message = "Welcome to the HSSI Curators program!\n\n"
+    welcome_message += f'Your HSSI curators account user name is: {user.username}' + "\n\n"
     welcome_message += f'The email address associated with this account is: {user.email}' + "\n\n"
     welcome_message += (
         "In order to get started, please set your password by going to the " +
-        "EMAC Curators login page:\n\n"
+        "HSSI Curators login page:\n\n"
     )
     welcome_message += f'{settings.EMAC_PROTOCOL}://{settings.EMAC_DOMAIN}/curators' + "\n\n"
     welcome_message += (
@@ -763,7 +763,7 @@ def send_curator_welcome_email(user, request):
         plain_message = plain_curator_welcome_message(user)
         welcome_email_message = render_to_string('website/curator_welcome_email.html', context)
         send_mail(
-            "Welcome, EMAC Curator!", 
+            "Welcome, HSSI Curator!", 
             plain_message, from_address, 
             [str(user.email)], 
             fail_silently=False, 

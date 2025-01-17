@@ -15,7 +15,7 @@ from website.signals import categories_changed
 
 class Command(BaseCommand):
 
-    help = "Imports the EMAC website database from the exported config files"
+    help = "Imports the HSSI website database from the exported config files"
 
     def import_db_file(self, file_path, Model):
 
@@ -37,7 +37,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
 
-        parser.add_argument('-p', '--path', type=str, help="Path to the EMAC website databse config files", )
+        parser.add_argument('-p', '--path', type=str, help="Path to the HSSI website databse config files", )
 
     def handle(self, *args, **kwargs):
 
@@ -57,7 +57,7 @@ class Command(BaseCommand):
         TEAM_FILE_PATH = DB_CONFIG_PATH + 'team.csv'
         TOOL_TYPES_FILE_PATH = DB_CONFIG_PATH + 'tool_types.csv'
 
-        print("Disabling auto-export of EMAC website database changes ...")
+        print("Disabling auto-export of HSSI website database changes ...")
         post_save.disconnect(export_database_changes)
         post_save.disconnect(categories_changed)
 
@@ -78,6 +78,6 @@ class Command(BaseCommand):
     
         settings.DB_IMPORT_IN_PROGRESS = False
 
-        print("Enabling auto-export of EMAC website database changes ...")
+        print("Enabling auto-export of HSSI website database changes ...")
         post_save.connect(export_database_changes)
         post_save.connect(categories_changed)

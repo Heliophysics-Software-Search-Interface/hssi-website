@@ -494,7 +494,7 @@ def contact_all(request):
             if err_msg != '':
                 print("Error in mass contact")
                 message = EmailMessage(
-                    subject="EMAC submission mass contact",
+                    subject="HSSI submission mass contact",
                     body=f"There was an error with the mass contact!\n{err_msg} \n" + body,
                     to=["REDACTED@nasa.gov"], # JPR Redacted Oct. 2024
                 )
@@ -507,7 +507,7 @@ def contact_all(request):
             else:
                 print("Mass contact successful")
                 message = EmailMessage(
-                    subject="EMAC submission mass contact",
+                    subject="HSSI submission mass contact",
                     body= "Mass submission contact was done successfully! \n" + body,
                     to=["REDACTED@nasa.gov"], # JPR Redacted Oct. 2024
                 )
@@ -547,7 +547,7 @@ def ascl_scraper(request):
             if err_msg != '':
                 print("Validation Errors in ASCL scraper")
                 message = EmailMessage(
-                    subject="EMAC ASCL Citation Scraper Had Validation Errors",
+                    subject="HSSI ASCL Citation Scraper Had Validation Errors",
                     body=f"There was a problem with the ASCL scraper!\n{err_msg}",
                     to=["REDACTED@nasa.gov"], # JPR Redacted Oct. 2024
                 )
@@ -742,9 +742,9 @@ class NewsItemView(generic.DetailView):
 
 class NewsFeed(Feed):
 
-    title = "EMAC News"
+    title = "HSSI News"
     link = "/news/"
-    description = "Updates on EMAC tools and activities."
+    description = "Updates on HSSI tools and activities."
     item_template = "website/news_item.html"
 
     def items(self):
@@ -784,9 +784,9 @@ def export_search_results(request):
     context = selected_resource_context(request)
     
     if context['selected_collection']:
-        filename = "EMAC {} Collection.csv".format(context['selected_collection'].name)
+        filename = "HSSI {} Collection.csv".format(context['selected_collection'].name)
     else:
-        filename = "EMAC Search Results.csv"
+        filename = "HSSI Search Results.csv"
     
     response = HttpResponse(
         content_type='text/csv',
@@ -794,7 +794,7 @@ def export_search_results(request):
     )
 
     writer = csv.writer(response)
-    writer.writerow(['Name', 'Developers', 'Description', 'Code used', 'EMAC Link', 'ADS Link'])
+    writer.writerow(['Name', 'Developers', 'Description', 'Code used', 'HSSI Link', 'ADS Link'])
 
     for resource in context['selected_resources']:
         link = "{}://{}?cid={}".format(settings.EMAC_PROTOCOL, settings.EMAC_DOMAIN, resource.citation_id)
@@ -1245,7 +1245,7 @@ def git_fetch_version(request):
             err_msg = '\n'.join(err_msg)
 
             message = EmailMessage(
-                subject="EMAC New Github Versions",
+                subject="HSSI New Github Versions",
                 body='Version fetching report is attached :)',
                 to=["REDACTED@nasa.gov"], # JPR Redacted Oct. 2024
             )
@@ -1267,7 +1267,7 @@ def git_fetch_version(request):
             if err_msg != '':
                 print("There were errors in the version fetching from GitHub.")
                 message = EmailMessage(
-                    subject="EMAC Fetching New Github Versions",
+                    subject="HSSI Fetching New Github Versions",
                     body=f"There were {n_failed} errors ({n_failed/n_total*100:.1f}%) with the version fetching :'(\n\n\n{err_msg}",
                     to=["REDACTED@nasa.gov"], # JPR Redacted Oct. 2024
                 )

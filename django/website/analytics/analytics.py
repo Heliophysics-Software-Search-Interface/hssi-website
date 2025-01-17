@@ -1305,7 +1305,7 @@ class Analytics():
         ax2.set_ylabel('Weekly New Visitors', color="red")
         ax2.tick_params(axis='y', labelcolor="red")
 
-        ax1.set_title(f"New Visitors to EMAC, Jan. 19 2021 - Yesterday \n Generated {datetime.datetime.now().replace(second=0, microsecond=0)}")
+        ax1.set_title(f"New Visitors to HSSI, Jan. 19 2021 - Yesterday \n Generated {datetime.datetime.now().replace(second=0, microsecond=0)}")
         ax1.set_xlabel("Date")
         ax1.tick_params(axis='x', labelrotation=-45)
 
@@ -1434,7 +1434,7 @@ class Analytics():
 
         fig, ax = plt.subplots()
         ax.plot_date(resources2["creation_date"], cumulative_n, fmt=",-", linewidth=5)
-        ax.set_title(f"Cumulative Number of Tools on EMAC, Total={sum(resources2['id'])} \n  Generated {datetime.datetime.now().replace(second=0, microsecond=0)}")
+        ax.set_title(f"Cumulative Number of Tools on HSSI, Total={sum(resources2['id'])} \n  Generated {datetime.datetime.now().replace(second=0, microsecond=0)}")
         ax.set_xlabel("Date")
         ax.set_ylabel("N")
         ax.tick_params(axis='x', labelrotation=-45)
@@ -1453,7 +1453,7 @@ class Analytics():
 
         fig, ax = plt.subplots()
         ax.plot_date(subs2["creation_date"], cumulative_n, fmt=",-", linewidth=5)
-        ax.set_title(f"Cumulative Number of Subscribers to EMAC, Total={sum(subs2['id'])} \n  Generated {datetime.datetime.now().replace(second=0, microsecond=0)}")
+        ax.set_title(f"Cumulative Number of Subscribers to HSSI, Total={sum(subs2['id'])} \n  Generated {datetime.datetime.now().replace(second=0, microsecond=0)}")
         ax.set_xlabel("Date")
         ax.set_ylabel("N")
         ax.tick_params(axis='x', labelrotation=-45)

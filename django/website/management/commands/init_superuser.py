@@ -5,16 +5,16 @@ from emac.secret_settings import EMAC_ADMIN_EMAIL, EMAC_ADMIN_PASSWORD, EMAC_ADM
 
 class Command(BaseCommand):
 
-    help = "Initializes the EMAC superuser and Curators group"
+    help = "Initializes the HSSI superuser and Curators group"
 
     def handle(self, *args, **options):
 
-        print("Checking for EMAC superuser...")
+        print("Checking for HSSI superuser...")
         if User.objects.filter(username=EMAC_ADMIN_USERNAME).count()==0:
             User.objects.create_superuser(EMAC_ADMIN_USERNAME, EMAC_ADMIN_EMAIL, EMAC_ADMIN_PASSWORD)
-            print("EMAC superuser created")
+            print("HSSI superuser created")
         else:
-            print("EMAC superuser already exists")
+            print("HSSI superuser already exists")
 
         print("Checking for Curators group...")
         if Group.objects.filter(name='Curators').count()==0:

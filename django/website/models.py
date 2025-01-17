@@ -564,7 +564,7 @@ class Submission(AbstractResource):
         'make_web_interface': "Are you interested in a new web interface?",
         'submitter_first_name': "Please provide your first name",
         'submitter_last_name': "Please provide your last name",
-        'submitter_email': "Please provide an email address at which the EMAC team can contact you",
+        'submitter_email': "Please provide an email address at which the HSSI team can contact you",
         'submission_notes': "Any further information you would like to include with your submission",
         'github_release': "Release Message for the latest Github release (Automatically pulled, but can be edited before sending out an alert)",
         'SEEC_tool': "Check if the tool is related to SEEC",
@@ -723,7 +723,7 @@ class Subscription(models.Model):
         'categories': "Please select one or more categories to receive alerts about",
         'collections': "Please select one or more collections to receive alerts about",
         'daily_digest': "Would you like to receive alerts in a single, daily digest?",
-        'subscriber_email': "Please provide an email address at which EMAC can alert you.",
+        'subscriber_email': "Please provide an email address at which HSSI can alert you.",
         'notification_frequency': 'Choose to pause notifications or be contacted immediately, daily, or weekly when new tools are added to your selected categories.',
         'internal': 'Check to mark this as an internal (team member) subscription to allow notifications from Dev'
     }

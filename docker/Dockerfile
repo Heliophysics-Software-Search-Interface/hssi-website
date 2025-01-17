@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 LABEL maintainer="isaiah.smith@lasp.colorado.edu"
 ENV REFRESHED_AT=2025-01-15

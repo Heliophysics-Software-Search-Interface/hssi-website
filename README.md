@@ -3,7 +3,7 @@
 A full stack implementation of the HSSI website source code
 
 HSSI's codebase is derived from the 
-[Exoplanet Modeling & Analysis Center (emac)](https://emac.gsfc.nasa.gov/)
+[Exoplanet Modeling & Analysis Center (EMAC)](https://emac.gsfc.nasa.gov/)
 , which is currently not open-source but is being prepared for release
 
 ## Setup
@@ -12,14 +12,14 @@ HSSI's codebase is derived from the
 * Ensure environment variables are set in `/.env` (this file is not 
 commited to the repository so you will likely need to create it yourself). 
 Required environment variables are `POSTGRES_USER`, `POSTGRES_PASSWORD`, 
-`POSTGRES_DB`, `EMAC_ADMIN_USERNAME`, `EMAC_ADMIN_PASSWORD`, `SECRET_KEY`. Here 
+`POSTGRES_DB`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `SECRET_KEY`. Here 
 is an example `.env` file:  
 ```
 POSTGRES_USER="user"
 POSTGRES_PASSWORD="user"
 POSTGRES_DB="db"
-EMAC_ADMIN_USERNAME="user"
-EMAC_ADMIN_PASSWORD="user"
+ADMIN_USERNAME="user"
+ADMIN_PASSWORD="user"
 SECRET_KEY="secret"
 ```
 * Start the docker service on your systen and run `docker compose up` in the

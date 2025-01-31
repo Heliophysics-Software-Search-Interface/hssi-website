@@ -338,8 +338,8 @@ def published_resources(request):
                 context = selected_resource_context(request)
                 
                 # add the protocol and domain settings to the context
-                context['EMAC_PROTOCOL'] = settings.EMAC_PROTOCOL
-                context['EMAC_DOMAIN'] = settings.EMAC_DOMAIN
+                context['HSSI_PROTOCOL'] = settings.HSSI_PROTOCOL
+                context['HSSI_DOMAIN'] = settings.HSSI_DOMAIN
                 
                 # render the list of included resources
                 resource_list = render_to_string('website/resource_list.html', context, request)
@@ -382,7 +382,7 @@ def published_resources(request):
                             "Relate a Resource: "+ str(feedback.relate_a_resource)+"\n" \
                             "Correction Needed: "+ str(feedback.correction_needed)+"\n" \
                             "Comments: " + str(feedback.comments),
-                        to=["REDACTED"], # JPR Redacted Oct. 2024
+                        to=["REDACTED"],
                     )
 
                     try:
@@ -496,7 +496,7 @@ def contact_all(request):
                 message = EmailMessage(
                     subject="HSSI submission mass contact",
                     body=f"There was an error with the mass contact!\n{err_msg} \n" + body,
-                    to=["REDACTED@nasa.gov"], # JPR Redacted Oct. 2024
+                    to=["REDACTED@nasa.gov"],
                 )
                 try:
                     message.send(fail_silently=False)
@@ -509,7 +509,7 @@ def contact_all(request):
                 message = EmailMessage(
                     subject="HSSI submission mass contact",
                     body= "Mass submission contact was done successfully! \n" + body,
-                    to=["REDACTED@nasa.gov"], # JPR Redacted Oct. 2024
+                    to=["REDACTED@nasa.gov"],
                 )
                 try:
                     message.send(fail_silently=False)
@@ -549,7 +549,7 @@ def ascl_scraper(request):
                 message = EmailMessage(
                     subject="HSSI ASCL Citation Scraper Had Validation Errors",
                     body=f"There was a problem with the ASCL scraper!\n{err_msg}",
-                    to=["REDACTED@nasa.gov"], # JPR Redacted Oct. 2024
+                    to=["REDACTED@nasa.gov"],
                 )
                 try:
                     message.send(fail_silently=False)
@@ -797,7 +797,7 @@ def export_search_results(request):
     writer.writerow(['Name', 'Developers', 'Description', 'Code used', 'HSSI Link', 'ADS Link'])
 
     for resource in context['selected_resources']:
-        link = "{}://{}?cid={}".format(settings.EMAC_PROTOCOL, settings.EMAC_DOMAIN, resource.citation_id)
+        link = "{}://{}?cid={}".format(settings.HSSI_PROTOCOL, settings.HSSI_DOMAIN, resource.citation_id)
         credits = resource.credits
         if (resource.credits.startswith('<a')):
             idx = credits.find('>') + 1
@@ -957,7 +957,7 @@ def ADS_endpoint(request):
         }
     return JsonResponse(data)
 
-from emac.recaptcha_auth_forms import RecaptchaAuthenticationForm
+from hssi.recaptcha_auth_forms import RecaptchaAuthenticationForm
 from django.contrib.auth import login
 def curator_login(request):
 
@@ -1185,7 +1185,7 @@ def git_fetch_version(request):
                     repo_name = elems[4]
                     # Making a GET request to the GitHub API to get access to the resource information
                     releases = requests.get(f"https://api.github.com/repos/{github_user}/{repo_name}/releases",
-                                            auth=('GSFC-EMAC', git_token)).json()
+                                            auth=('GSFC-HSSI', git_token)).json()
                     # Check if there were any published releases to the GitHub repo, and pull the latest one
                     if releases and releases[0]['html_url']:
                         # Pull the info we want
@@ -1209,7 +1209,7 @@ def git_fetch_version(request):
                                 if len(version_message_short)==300:
                                     version_message_short += '...'
                                 # Create the link for changing the message AND notifying subscribers
-                                send_alert_link = f'{settings.EMAC_PROTOCOL}://{settings.EMAC_DOMAIN}/github_release_edit/{resource.submission.id}/'
+                                send_alert_link = f'{settings.HSSI_PROTOCOL}://{settings.HSSI_DOMAIN}/github_release_edit/{resource.submission.id}/'
                                 # Compile the information and add it to the csv to be sent
                                 updates_dict["Resource"].append(resource.name)
                                 updates_dict["New Version Date"].append(version_date)
@@ -1247,7 +1247,7 @@ def git_fetch_version(request):
             message = EmailMessage(
                 subject="HSSI New Github Versions",
                 body='Version fetching report is attached :)',
-                to=["REDACTED@nasa.gov"], # JPR Redacted Oct. 2024
+                to=["REDACTED@nasa.gov"],
             )
             with StringIO() as csvfile:
                 # Convert the dictionary to a pandas dataframe
@@ -1269,7 +1269,7 @@ def git_fetch_version(request):
                 message = EmailMessage(
                     subject="HSSI Fetching New Github Versions",
                     body=f"There were {n_failed} errors ({n_failed/n_total*100:.1f}%) with the version fetching :'(\n\n\n{err_msg}",
-                    to=["REDACTED@nasa.gov"], # JPR Redacted Oct. 2024
+                    to=["REDACTED@nasa.gov"],
                 )
                 try:
                     message.send(fail_silently=False)

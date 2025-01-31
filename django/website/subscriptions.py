@@ -18,7 +18,7 @@ from .constants import SaveType
 from .models import Category, NotificationFrequency, PendingSubscriptionNotification, Resource, Subscription
 from .utils import organized_categories_json
 
-from emac import settings
+from hssi import settings
 
 class SubscriptionForm(ModelForm):
     class Meta:
@@ -52,7 +52,7 @@ class SubscriptionForm(ModelForm):
         self.helper.form_method = 'POST'
 
 def email_strings_for(subscription, save_type, changed_fields=None):
-    domain = settings.EMAC_DOMAIN
+    domain = settings.HSSI_DOMAIN
     # If this is a brand new subscription, create an email for admin and the subscriber that outline all of the fields
     if save_type is SaveType.SUBMIT:
         # subscription_text = subscription.detail_string()
@@ -71,8 +71,8 @@ def email_strings_for(subscription, save_type, changed_fields=None):
             'notification_frequency': freq_string,
             'subscriber_email': email_string,
             'subscription_edit': f'https://{domain}/subscriptions/{subscription.id}',
-            'EMAC_DOMAIN': settings.EMAC_DOMAIN,
-            'EMAC_PROTOCOL': settings.EMAC_PROTOCOL
+            'HSSI_DOMAIN': settings.HSSI_DOMAIN,
+            'HSSI_PROTOCOL': settings.HSSI_PROTOCOL
         }
 
         plain_subscriber_message = context["intro"] + " \n\n" + context["categories"] + " \n\n" + context["notification_frequency"] + " \n\n" + context["subscriber_email"] + " \n\n" + context["subscription_edit"]
@@ -118,8 +118,8 @@ def email_strings_for(subscription, save_type, changed_fields=None):
             'notification_frequency': freq_string,
             'subscriber_email': email_string,
             'subscription_edit': f'https://{domain}/subscriptions/{subscription.id}',
-            'EMAC_DOMAIN': settings.EMAC_DOMAIN,
-            'EMAC_PROTOCOL': settings.EMAC_PROTOCOL
+            'HSSI_DOMAIN': settings.HSSI_DOMAIN,
+            'HSSI_PROTOCOL': settings.HSSI_PROTOCOL
         }
 
         plain_subscriber_message = context["intro"] + " \n\n" + context["categories"] + " \n\n" + context["notification_frequency"] + " \n\n" + context["subscriber_email"] + " \n\n" + context["subscription_edit"]
@@ -144,9 +144,9 @@ def email_strings_for_notification(pending_subscription_notification):
     context = {
         'intro': subscriber_intro_message,
         'resources': resources_by_category,
-        'subscription_edit': f'{settings.EMAC_PROTOCOL}://{settings.EMAC_DOMAIN}/subscriptions/{subscription.id}',
-        'EMAC_PROTOCOL': settings.EMAC_PROTOCOL,
-        'EMAC_DOMAIN': settings.EMAC_DOMAIN
+        'subscription_edit': f'{settings.HSSI_PROTOCOL}://{settings.HSSI_DOMAIN}/subscriptions/{subscription.id}',
+        'HSSI_PROTOCOL': settings.HSSI_PROTOCOL,
+        'HSSI_DOMAIN': settings.HSSI_DOMAIN
     }
 
     plain_subscriber_message = context["intro"] + " \n\n" + context["resources"] + " \n\n" + context["subscription_edit"]
@@ -156,16 +156,16 @@ def email_strings_for_notification(pending_subscription_notification):
 
 
 def subscription_was_saved(subscription, save_type, changed_fields=None):
-    from_address = "REDACTED" # JPR Redacted Oct. 2024
-    admin_to_address = "REDACTED" # JPR Redacted Oct. 2024
+    from_address = "REDACTED"
+    admin_to_address = "REDACTED"
     print("subscription was saved")
     subject, admin_message, subscriber_message, plain_subscriber_message = email_strings_for(subscription, save_type, changed_fields)
 
     # If not on local lvh.me, send email to subscriber
-    if settings.EMAC_DOMAIN.startswith("emac"):
+    if settings.HSSI_DOMAIN.startswith("hssi"):
         send_mail(subject, plain_subscriber_message, from_address, [str(subscription.subscriber_email)], fail_silently=False, html_message=subscriber_message)
         # If on dev, send email to admin as well
-        if settings.EMAC_DOMAIN.startswith("emac-dev"):
+        if settings.HSSI_DOMAIN.startswith("hssi-dev"):
             send_mail(subject, admin_message, from_address, [admin_to_address], fail_silently=False)
 
 def submit(request):
@@ -308,8 +308,8 @@ def notify_subscribers(request, frequency=NotificationFrequency.DAILY.value):
 
 def send_notification_email(pending_subscription_notification):
 
-    from_address = "REDACTED" # JPR Redacted Oct. 2024
-    admin_to_address = "REDACTED" # JPR Redacted Oct. 2024
+    from_address = "REDACTED"
+    admin_to_address = "REDACTED"
     
     subject, admin_message, subscriber_message, plain_subscriber_message = email_strings_for_notification(pending_subscription_notification)
 
@@ -322,12 +322,12 @@ def send_notification_email(pending_subscription_notification):
     should_send_notification = False
     should_send_admin = False
 
-    # if on emac-dev, only send emails if subscriber is internal
+    # if on hssi-dev, only send emails if subscriber is internal
     # (i.e. part of the team) so regular subscribers do not get tesing emails
-    if settings.EMAC_DOMAIN.startswith("emac-dev") and is_internal:
+    if settings.HSSI_DOMAIN.startswith("hssi-dev") and is_internal:
         should_send_notification = True
         should_send_admin = True  
-    elif settings.EMAC_DOMAIN.startswith("emac.gsfc"):
+    elif settings.HSSI_DOMAIN.startswith("hssi.gsfc"):
         # if we are on prod, send regardless of "internal" status
         should_send_notification = True
 
@@ -435,10 +435,10 @@ def get_resources_from_subscriptions(pending_subscription_notification):
         # Add the New! and Updated! resource tags to differentiate between them
         # conditionally add the update notes if the associated submission has them
         if github_release_note:
-            resource_str += f"<a class='upd-flag'>Updated!</a><a href='{settings.EMAC_PROTOCOL}://{settings.EMAC_DOMAIN}/?cid={cid}'><b>{name}:</b></a> {subtitle} <ul><li><b>Credits:</b> {credits}</li>"
+            resource_str += f"<a class='upd-flag'>Updated!</a><a href='{settings.HSSI_PROTOCOL}://{settings.HSSI_DOMAIN}/?cid={cid}'><b>{name}:</b></a> {subtitle} <ul><li><b>Credits:</b> {credits}</li>"
             resource_str += f"<li><b>Release {version_num}:</b> {github_release_note}</li>"
         else:
-            resource_str += f"<a class='new-flag'>New!</a><a href='{settings.EMAC_PROTOCOL}://{settings.EMAC_DOMAIN}/?cid={cid}'><b>{name}:</b></a> {subtitle} <ul><li><b>Credits:</b> {credits}</li>"
+            resource_str += f"<a class='new-flag'>New!</a><a href='{settings.HSSI_PROTOCOL}://{settings.HSSI_DOMAIN}/?cid={cid}'><b>{name}:</b></a> {subtitle} <ul><li><b>Credits:</b> {credits}</li>"
         
         # conditionally add the concise description if it is not blank
         # and if it does not exactly match the subtitle

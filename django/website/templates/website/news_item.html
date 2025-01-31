@@ -6,7 +6,7 @@
 
     <link rel="stylesheet" href="{% static 'css/post_detail.css' %}?v=2024-09-05" />
     <link rel="stylesheet" href="{% static 'css/blog.css' %}?v=2024-09-05" />
-    <link rel="stylesheet" href="{% static 'emac_apps/css/media.css' %}?v=2024-09-05" />
+    <link rel="stylesheet" href="{% static 'hssi_apps/css/media.css' %}?v=2024-09-05" />
 	
 {% endblock %}
 
@@ -22,7 +22,7 @@
                 <h1 class="news_text">{% block title %} {{ object.title }} {% endblock title %} </h1>
                 <p class="card-text text-muted h6">{{ object.author }} | {{ object.published_on}} </p>
                 <p class="card-desc ">{{ object.content | safe }}</p>
-                <a class="nav-link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/news"> &larr; back</a>
+                <a class="nav-link" href="{{HSSI_PROTOCOL}}://{{HSSI_DOMAIN}}/news"> &larr; back</a>
             </div>
         </div>
     </div>

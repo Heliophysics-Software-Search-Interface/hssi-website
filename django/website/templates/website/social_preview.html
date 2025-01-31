@@ -2,11 +2,11 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@ExoplanetModels" />
 <meta property="og:type" content="website" />
-<meta property="og:image" content="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/static/emac_apps/images/emac_logo_v2_social.png" />
-<meta property="og:site_name" content="EMAC" />
+<meta property="og:image" content="{{HSSI_PROTOCOL}}://{{HSSI_DOMAIN}}/static/hssi_apps/images/_logo_social.png" />
+<meta property="og:site_name" content="HSSI" />
 {% if related_resource %}
 <meta property="og:title" content="{{related_resource.name}}{% if related_resource.subtitle %}: {{related_resource.subtitle}}{% endif %}" />
-<meta property="og:url" content="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}?cid={{related_resource.citation_id}}" />
+<meta property="og:url" content="{{HSSI_PROTOCOL}}://{{HSSI_DOMAIN}}?cid={{related_resource.citation_id}}" />
     {% if related_resource.concise_description %}
     <meta property="og:description" content="{{related_resource.concise_description}}" />
     {% else %}
@@ -14,11 +14,11 @@
     {% endif %}
 {% elif selected_collection %}
 <meta property="og:title" content="The {{selected_collection.name}} Collection" />
-<meta property="og:url" content="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}?collection={{selected_collection.id}}" />
+<meta property="og:url" content="{{HSSI_PROTOCOL}}://{{HSSI_DOMAIN}}?collection={{selected_collection.id}}" />
 <meta property="og:description" content="{{selected_collection.description|slice:'0:120'}}..." />
 {% else %}
 <meta property="og:title" content="Exoplanet Modeling and Analysis Center" />
-<meta property="og:url" content="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}" />
-<meta property="og:description" content="EMAC serves as a catalog, repository and integration platform for modeling and analysis resources focused on the study of exoplanet characteristics and environments." />
+<meta property="og:url" content="{{HSSI_PROTOCOL}}://{{HSSI_DOMAIN}}" />
+<meta property="og:description" content="HSSI serves as a catalog, repository and integration platform for modeling and analysis resources focused on the study of exoplanet characteristics and environments." />
 {% endif %}
 <!-- end social media preview tags -->

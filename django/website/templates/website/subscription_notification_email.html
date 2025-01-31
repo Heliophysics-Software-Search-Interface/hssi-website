@@ -1,8 +1,8 @@
-{% extends 'website/emac_email_template.html' %}
+{% extends 'website/hssi_email_template.html' %}
 
 {% block email_content %}
 
-<h1>Your <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}">HSSI</a> Subscription</h1>
+<h1>Your <a href="{{HSSI_PROTOCOL}}://{{HSSI_DOMAIN}}">HSSI</a> Subscription</h1>
 <p>{{ intro }}</p>
 <p>{{ resources | safe}}</p>
 <p>If you would like to revise your subscription settings you may do so by <a href="{{subscription_edit}}">clicking here.</a></p>

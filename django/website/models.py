@@ -489,7 +489,7 @@ class Resource(AbstractResource):
         ordering = ['name']
     
     def get_absolute_url(self):
-        return f'{settings.EMAC_PROTOCOL}://{settings.EMAC_DOMAIN}?cid={self.citation_id}'
+        return f'{settings.HSSI_PROTOCOL}://{settings.HSSI_DOMAIN}?cid={self.citation_id}'
     
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -558,9 +558,9 @@ class Submission(AbstractResource):
     help_texts = AbstractResource.help_texts.copy()
     help_texts.update({
         'other_category': "Suggest a category not listed here",
-        'private_code/data_link':"<strong> Add one link only - </strong>If your resource is not publicly available and you would like EMAC to host it, please provide a (private) link to your source code",
-        'host_app_on_emac': "Would you like your tool to be hosted/executed on an HSSI server?",
-        'host_data_on_emac': "Would you like to store data/model output on a web-accessible HSSI server?",
+        'private_code/data_link':"<strong> Add one link only - </strong>If your resource is not publicly available and you would like HSSI to host it, please provide a (private) link to your source code",
+        'host_app_on_hssi': "Would you like your tool to be hosted/executed on an HSSI server?",
+        'host_data_on_hssi': "Would you like to store data/model output on a web-accessible HSSI server?",
         'make_web_interface': "Are you interested in a new web interface?",
         'submitter_first_name': "Please provide your first name",
         'submitter_last_name': "Please provide your last name",
@@ -577,15 +577,15 @@ class Submission(AbstractResource):
         'collections': "Collections (check all that apply)",
         'tool_types': "Tool types (check all that apply)",
         'make_web_interface': "Interested in a new web interface?",
-        'host_app_on_emac': "Host a web-accessible version on HSSI?",
-        'host_data_on_emac': "Host data/model output on HSSI?",
+        'host_app_on_hssi': "Host a web-accessible version on HSSI?",
+        'host_data_on_hssi': "Host data/model output on HSSI?",
     }
 
     id = models.UUIDField(primary_key=True, editable=False)
     other_category = models.CharField(blank=True, max_length=256, help_text=help_texts['other_category'])
     private_code_or_data_link = models.URLField(blank=True,verbose_name ="private code/data link", help_text=help_texts['private_code/data_link'])
-    host_app_on_emac = models.BooleanField(default=False,verbose_name = "host web-app?", help_text=help_texts['host_app_on_emac'])
-    host_data_on_emac = models.BooleanField(default=False, verbose_name ="host output?", help_text=help_texts['host_data_on_emac'])
+    host_app_on_hssi = models.BooleanField(default=False,verbose_name = "host web-app?", help_text=help_texts['host_app_on_hssi'])
+    host_data_on_hssi = models.BooleanField(default=False, verbose_name ="host output?", help_text=help_texts['host_data_on_hssi'])
     make_web_interface = models.BooleanField(default=False, verbose_name = "new web interface?", help_text=help_texts['make_web_interface'])
     submitter_first_name = models.CharField(blank=True, max_length=100, verbose_name="your first name", help_text=help_texts['submitter_first_name'])
     submitter_last_name = models.CharField(blank=True, max_length=100, verbose_name="your last name", help_text=help_texts['submitter_last_name'])
@@ -621,8 +621,8 @@ class Submission(AbstractResource):
             \n Tool Types: { ', '.join([tool_type.name for tool_type in self.tool_types.all()])} \
             \n Code Language(s): {str(self.code_languages)} \
             \n Other Category: {str(self.other_category)} \
-            \n Host a Web-Accessible Version on HSSI? {str(self.host_app_on_emac)} \
-            \n Host Data/Model Output on HSSI? {str(self.host_data_on_emac)} \
+            \n Host a Web-Accessible Version on HSSI? {str(self.host_app_on_hssi)} \
+            \n Host Data/Model Output on HSSI? {str(self.host_data_on_hssi)} \
             \n Interested in a New Web Interface? {str(self.make_web_interface)} \
             \n About Link: {str(self.about_link)} \
             \n ADS Abstract Link: {str(self.ads_abstract_link)} \
@@ -797,7 +797,7 @@ class PendingSubscriptionNotification(models.Model):
     class Meta:
         ordering = ['-creation_date']
 
-_STATIC_TEAM_MEMBER_IMAGE_DIR = os.path.join(settings.STATIC_ROOT, "media", "resources", "emac_team")
+_STATIC_TEAM_MEMBER_IMAGE_DIR = os.path.join(settings.STATIC_ROOT, "media", "resources", "hssi_team")
 
 def num_team_members():
 
@@ -834,7 +834,7 @@ class TeamMember(models.Model):
         # If present, move the TeamMember's image file from the MEDIA folder to STATIC for serving the image
         if self.member_image and os.path.isfile(self.member_image.path):
             shutil.move(self.member_image.path, _STATIC_TEAM_MEMBER_IMAGE_DIR)
-            self.member_image = os.path.join("resources", "emac_team", os.path.basename(self.member_image.path))
+            self.member_image = os.path.join("resources", "hssi_team", os.path.basename(self.member_image.path))
 
         # If we're not currently importing the database, and the member order has changed...
         if not settings.DB_IMPORT_IN_PROGRESS and self.order != self.previous_order:

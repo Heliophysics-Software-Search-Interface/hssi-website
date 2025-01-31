@@ -1,4 +1,4 @@
-{% extends 'emac_base_template.html' %} 
+{% extends 'hssi_base_template.html' %} 
 
 {% load static %}
 
@@ -11,176 +11,16 @@
 
 <div class="container">
     
-    <div class="emaccordion-section expanded">
-        <div class="emaccordion-header-bar">
-            <h2 class="emaccordion-title">exoVAST: Virtual Exoplanet Software Talks</h2>
+    <div class="accordion-section expanded">
+        <div class="accordion-header-bar">
+            <h2 class="accordion-title">Software Talks</h2>
             <div class="caret-container">
                 <span class="caret caret-flip"></span>
             </div>
         </div>
-        <div class="emaccordion-content" style="display: block;">
-            <div class="exovast-container">
-                <div class="exovast-info">
-                    <div class="detail vast">
-                        <div class="header"><h6>What is VAST?</h6></div>
-                        <div class="detail-text">
-                            The <a href="https://vast-seminars.github.io/" target="_blank">Virtual Astronomy Software Talks (VAST)</a> is a free, 
-                            monthly virtual seminar series held on the 3rd Wednesday (11am US Eastern time). Each month features 
-                            two 20-minute talks about astronomy-related software and topics, followed by an open discussion. The 
-                            goal of these talks is to connect astronomers and physicists to developers that are creating astronomy 
-                            software and databases.
-                        </div>
-                    </div>
-                    <div class="detail exovast">
-                        <div class="header"><h6>What is exoVAST?</h6></div>
-                        <div class="detail-text">
-                            exoVAST is a new series that is built off of the VAST model but focused on software specific to exoplanet 
-                            science. It is co-hosted by the VAST and HSSI teams. exoVASTs will be held on the <strong>first Wednesday 
-                            of each month at 11am</strong> (US Eastern) unless otherwise noted in the schedule below.
-                        </div>
-                    </div>
-                    <div class="detail attending">
-                        <div class="header"><h6>I am interested in attending</h6></div>
-                        <div class="detail-text">
-                            Join the VAST mailing list to receive the Zoom links: <a href="https://groups.google.com/g/virtual-astro-sw-talks/about?pli=1" target="_blank">VAST google group.</a>
-                        </div>
-                    </div>
-                    <div class="detail speaking">
-                        <div class="header"><h6>I am interested in speaking</h6></div>
-                        <div class="detail-text">
-                            The exoVAST organizing committee will select the talks for each monthly seminar. If you wish to propose a 
-                            talk, <a href="https://github.com/vast-seminars/talk-proposals/issues" target="_blank">fill an issue on the VAST Github page.</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="exovast-schedule">
-                    <div class="emaccordion-section expanded">
-                        <div class="emaccordion-header-bar">
-                            <h2 class="emaccordion-title">Schedule</h2>
-                            <div class="caret-container">
-                                <span class="caret caret-flip"></span>
-                            </div>
-                        </div>
-                        <div class="emaccordion-content" style="display: block;">
-                            <p class="schedule-update">Last updated on: Jun. 24, 2024</p>
-                            <p>exoVAST seminars are held on the first Wednesday of each month at 11am (US Eastern time) unless noted otherwise below.</p>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Speaker</th>
-                                        <th>Topic</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td rowspan="2" class="date"></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="emaccordion-section">
-                        <div class="emaccordion-header-bar">
-                            <h2 class="emaccordion-title">Past Talks</h2>
-                            <div class="caret-container">
-                                <span class="caret"></span>
-                            </div>
-                        </div>
-                        <div class="emaccordion-content">
-                            <table class="schedule-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Speaker</th>
-                                        <th colspan="2">Topic</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td rowspan="2" class="date">Sept. 20th 2023</td>
-                                        <td>Joe Renaud (UMD / NASA Goddard)</td>
-                                        <td>NASA Goddard's Exoplanet Modeling & Analysis Center and exoVAST</td>
-                                        <td class="icon">
-                                            <a href="https://youtu.be/9Pu7prov9oY" class="youtube-link" title="Watch on YouTube">
-                                                <i class="fa fa-youtube-play"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>David Rice (Open University of Israel)</td>
-                                        <td>Solving and visualizing planet interiors with MAGRATHEA</td>
-                                        <td class="icon">
-                                            <a href="https://youtu.be/gVZpt-_U724" class="youtube-link" title="Watch on YouTube">
-                                                <i class="fa fa-youtube-play"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td rowspan="2" class="date">Nov. 1st 2023</td>
-                                        <td>Hanno Rein (University of Toronto)</td>
-                                        <td>Accelerating a single N-body simulation with 8 particles using AVX512 instructions</td>
-                                        <td class="icon">
-                                            <a href="https://youtu.be/xaC51s25T70" class="youtube-link" title="Watch on YouTube">
-                                                <i class="fa fa-youtube-play"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Néstor Espinoza (STScI)</td>
-                                        <td>What can juliet do for your exoplanet science?</td>
-                                        <td class="icon">
-                                            <a href="https://youtu.be/IBaL4vlNNsA" class="youtube-link" title="Watch on YouTube">
-                                                <i class="fa fa-youtube-play"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="date">Dec. 6th 2023</td>
-                                        <td>Giannina Guzman Caloca (UMD, College Park)</td>
-                                        <td>Eureka! An end-to-end pipeline for time-series observations</td>
-                                        <td class="icon">
-                                            <a href="https://www.youtube.com/watch?v=lYZ4qiV-pbc" class="youtube-link" title="Watch on YouTube">
-                                                <i class="fa fa-youtube-play"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="date">Feb. 7th 2024</td>
-                                        <td>Vincent Kofman (American U. / NASA GSFC)</td>
-                                        <td>Using the Planetary Spectrum Generator to Study Exoplanets</td>
-                                        <td class="icon">
-                                            <a href="https://www.youtube.com/watch?v=cojqtJjBxQg" class="youtube-link" title="Watch on YouTube">
-                                                <i class="fa fa-youtube-play"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="date">Jun. 12th 2024</td>
-                                        <td>Dr. Nicholas Wogan (NASA Ames)</td>
-                                        <td>Photochem: a 1D photochemical and climate model of planetary atmospheres</td>
-                                        <td class="icon">
-                                            <a href="https://www.youtube.com/watch?v=vy5QcfegeL4" class="youtube-link" title="Watch on YouTube">
-                                                <i class="fa fa-youtube-play"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <!-- <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr> -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="accordion-content" style="display: block;">
         </div>
-    </div>HSSI
+    </div>
 
     
 </div>

@@ -58,7 +58,7 @@
                 <img  class="copy-icon" src="/static/images/copy_clipboard.png" alt="Copy link">
             </div>
             <span class="copy_link">
-                <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}?cid={{resource.citation_id}}">{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}?cid={{resource.citation_id}}</a>
+                <a href="{{HSSI_PROTOCOL}}://{{HSSI_DOMAIN}}?cid={{resource.citation_id}}">{{HSSI_PROTOCOL}}://{{HSSI_DOMAIN}}?cid={{resource.citation_id}}</a>
             </span>
             <div class="feedback_img hide-for-small-only" data-tooltip tabindex="1" title="Feedback">
                 <img class="feedback-icon" onclick="getResourceFeedback('{{resource.id}}')" src="/static/images/feedback.png" alt="feedback_img">
@@ -148,12 +148,12 @@
                 <a class="button reset_btn float-left reset_btn" href='/'>Reset</a>
             {% elif resource.related_resources.count %}
                 <a class="hollow button related_btn float-left" data-open="modal-{{resource.id}}"
-                    href='?related_resource={{resource.id}}' data-tooltip tabindex="1" title="See resources listed on EMAC that are related to this tool" data-position="bottom" data-alignment="right">Related</a>
+                    href='?related_resource={{resource.id}}' data-tooltip tabindex="1" title="See resources listed on HSSI that are related to this tool" data-position="bottom" data-alignment="right">Related</a>
             {% endif %}
 
             {% if is_curator %}
                 {% if resource.submission.curator_lock == None or resource.submission.curator_lock == request.user %}
-                <a class="hollow button float-left curate_btn hide-for-small-only" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/curate?cid={{resource.citation_id}}" data-tooltip tabindex="1" title="Edit categories or collections for this resource" data-position="bottom" data-alignment="right">Curate</a>
+                <a class="hollow button float-left curate_btn hide-for-small-only" href="{{HSSI_PROTOCOL}}://{{HSSI_DOMAIN}}/curate?cid={{resource.citation_id}}" data-tooltip tabindex="1" title="Edit categories or collections for this resource" data-position="bottom" data-alignment="right">Curate</a>
                 {% else %}
                 <button class="hollow button float-left curate_btn hide-for-small-only" data-tooltip tabindex="1" title="Edits locked by another curator" data-position="bottom" data-alignment="right" disabled="true">Curate</button>
                 {% endif %}
@@ -170,11 +170,11 @@
             {% endif %}
             {% if resource.is_hosted %}
                 {% if resource.subdomain and resource.path %}
-                    <a class="hollow button launch_btn" id="{{resource.id}}_launch_link" href="{{EMAC_PROTOCOL}}://{{resource.subdomain}}.{{EMAC_DOMAIN}}{{resource.path}}" data-tooltip tabindex="1" title="Open the tool's web application" data-position="bottom" data-alignment="right">WebApp</a>
+                    <a class="hollow button launch_btn" id="{{resource.id}}_launch_link" href="{{HSSI_PROTOCOL}}://{{resource.subdomain}}.{{HSSI_DOMAIN}}{{resource.path}}" data-tooltip tabindex="1" title="Open the tool's web application" data-position="bottom" data-alignment="right">WebApp</a>
                 {% elif resource.subdomain %}
-                    <a class="hollow button launch_btn" id="{{resource.id}}_launch_link" href="{{EMAC_PROTOCOL}}://{{resource.subdomain}}.{{EMAC_DOMAIN}}" data-tooltip tabindex="1" title="Open the tool's web application" data-position="bottom" data-alignment="right">WebApp</a>
+                    <a class="hollow button launch_btn" id="{{resource.id}}_launch_link" href="{{HSSI_PROTOCOL}}://{{resource.subdomain}}.{{HSSI_DOMAIN}}" data-tooltip tabindex="1" title="Open the tool's web application" data-position="bottom" data-alignment="right">WebApp</a>
                 {% elif resource.path %}
-                    <a class="hollow button launch_btn" id="{{resource.id}}_launch_link" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}{{resource.path}}" data-tooltip tabindex="1" title="Open the tool's web application" data-position="bottom" data-alignment="right">WebApp</a>
+                    <a class="hollow button launch_btn" id="{{resource.id}}_launch_link" href="{{HSSI_PROTOCOL}}://{{HSSI_DOMAIN}}{{resource.path}}" data-tooltip tabindex="1" title="Open the tool's web application" data-position="bottom" data-alignment="right">WebApp</a>
                 {% endif %}
             {% elif resource.launch_link %}
                 <a class="hollow button launch_btn" id="{{resource.id}}_launch_link" href="{{resource.launch_link}}" data-tooltip tabindex="1" title="Open the tool's web application" data-position="bottom" data-alignment="right">WebApp</a>

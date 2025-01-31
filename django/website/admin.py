@@ -460,7 +460,7 @@ def send_test_email(content):
     send_mail(
         'Test email', print(content), 
         "REDACTED@nasa.gov", ["REDACTED@nasa.gov"]
-    ) # JPR Redacted Oct. 2024
+    )
 
 def send_submission_contact_email(modeladmin, request, queryset):
     for submission in queryset:
@@ -580,7 +580,7 @@ def mark_under_development(modeladmin, request, queryset):
     queryset.update(status = SubmissionStatus.UNDER_DEVELOPMENT.name)
     for submission in queryset: submission.save()
 mark_under_development.short_description = (
-    "7a) Mark selected submission as Under Development (EMAC admin web tool creation)"
+    "7a) Mark selected submission as Under Development (HSSI admin web tool creation)"
 )
 
 def update_resource(modeladmin, request, queryset):
@@ -622,7 +622,7 @@ class SubmissionAdmin(ImportExportModelAdmin):
     list_filter = (
         'status', 'last_modification_date', 'has_unsynced_changes', 'shepherd', 
         'creation_date', 'date_contacted', 'categories', 'tool_types', 
-        'collections', 'host_app_on_emac', 'host_data_on_emac',
+        'collections', 'host_app_on_hssi', 'host_data_on_hssi',
         'make_web_interface', 'contact_count'
     )
     search_fields = ['search_keywords', 'name']
@@ -720,7 +720,7 @@ def plain_curator_welcome_message(user):
         "In order to get started, please set your password by going to the " +
         "HSSI Curators login page:\n\n"
     )
-    welcome_message += f'{settings.EMAC_PROTOCOL}://{settings.EMAC_DOMAIN}/curators' + "\n\n"
+    welcome_message += f'{settings.HSSI_PROTOCOL}://{settings.HSSI_DOMAIN}/curators' + "\n\n"
     welcome_message += (
         "Click on the 'Set/Reset password' link, enter the email above, and " +
         "click to get a password reset email sent to you.\n\n"
@@ -755,8 +755,8 @@ def is_valid_email(email):
 def send_curator_welcome_email(user, request):
     if is_valid_email(user.email):
         context = {
-            'EMAC_PROTOCOL': settings.EMAC_PROTOCOL,
-            'EMAC_DOMAIN': settings.EMAC_DOMAIN,
+            'HSSI_PROTOCOL': settings.HSSI_PROTOCOL,
+            'HSSI_DOMAIN': settings.HSSI_DOMAIN,
             'user': user
         }
         from_address = "REDACTED@nasa.gov" 

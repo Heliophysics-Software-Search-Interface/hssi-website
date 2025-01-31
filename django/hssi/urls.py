@@ -4,11 +4,11 @@ from django.contrib import admin
 from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordResetConfirmView
-from emac.recaptcha_auth_forms import RecaptchaAuthenticationForm, RecaptchaPasswordResetForm, RecaptchaSetPasswordForm
+from hssi.recaptcha_auth_forms import RecaptchaAuthenticationForm, RecaptchaPasswordResetForm, RecaptchaSetPasswordForm
 
 
 
-TOOLS_SITE_URL = settings.EMAC_PROTOCOL + "://tools." + settings.EMAC_DOMAIN
+TOOLS_SITE_URL = settings.HSSI_PROTOCOL + "://tools." + settings.HSSI_DOMAIN
 
 urlpatterns = [
     path('admin/', admin.site.urls),

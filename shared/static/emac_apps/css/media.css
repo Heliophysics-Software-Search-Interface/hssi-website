@@ -11,7 +11,7 @@
     background-color: #ececec;
   }
 
-  .emac_name a {
+  .hssi_name a {
     font-family: Lato, sans-serif;
     font-weight: 500;
     font-size: 14px;
@@ -229,7 +229,7 @@
     line-height: 1.2;
   }
 
-  .emac_name a {
+  .hssi_name a {
     font-family: Lato, sans-serif;
     font-weight: 500;
     font-size: 22px;
@@ -574,7 +574,7 @@
     justify-content: space-between;
     align-items: center;
   }
-  .emac_logo img {
+  .hssi_logo img {
     height: 45px;
   }
   .nasa-brand_logo img {
@@ -583,10 +583,10 @@
   .sub_header-container {
     justify-content: center;
   }
-  .emac_name {
+  .hssi_name {
     margin: 1.5rem;
   }
-  .emac_name a {
+  .hssi_name a {
     font-size: 1rem;
   }
   .card-title {
@@ -677,13 +677,13 @@
 }
 
 @media screen and (min-width: 500px) and (max-width: 40em) {
-  .emac_name a {
+  .hssi_name a {
     font-size: 1.5rem;
   }
 }
 
 @media screen and (max-width: 320px) {
-  .emac_name a {
+  .hssi_name a {
     font-size: 0.9rem;
   }
 }
@@ -720,7 +720,7 @@
 
 @media only screen and (min-width: 600px) and (max-width: 760px) and (orientation: landscape) {
   
-  .emac_name a {
+  .hssi_name a {
     font-family: Lato, sans-serif;
     font-weight: 500;
     font-size: 22px;
@@ -729,11 +729,11 @@
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6), 1px 1px 12px rgba(0, 0, 0, 0.8);
   }
 
-  .emac_logo img {
+  .hssi_logo img {
     height: 40px;
   }
 
-  .emac_logo {
+  .hssi_logo {
     margin: 1rem;
   }
 
@@ -784,11 +784,11 @@
    padding-left: 25px;
  }
 
- .emac_logo img {
+ .hssi_logo img {
    height: 70px;
  }
 
- .emac_name a {
+ .hssi_name a {
    font-family: Lato, sans-serif;
    font-weight: 500;
    font-size: 28px;
@@ -864,7 +864,7 @@ table {
 }
 
 @media only screen and (min-width: 700px) and (max-width: 1024px) and (orientation: portrait) {
-  .emac_name a {
+  .hssi_name a {
     font-family: Lato, sans-serif;
     font-weight: 500;
     font-size: 22px;
@@ -873,7 +873,7 @@ table {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6), 1px 1px 12px rgba(0, 0, 0, 0.8);
   }
 
-  .emac_logo img {
+  .hssi_logo img {
     height: 60px;
   }
 
@@ -947,7 +947,7 @@ table {
   
   }
 
-  .emac_logo img {
+  .hssi_logo img {
     height: 70px;
   }
 
@@ -984,7 +984,7 @@ table {
     padding-left: 25px;
   }
 
-  .emac_name a {
+  .hssi_name a {
     font-family: Lato, sans-serif;
     font-weight: 500;
     font-size: 28px;
@@ -1017,10 +1017,10 @@ table {
   .filter_label label:first-child {
     display: none;
   }
-  .emac_logo img {
+  .hssi_logo img {
     height: 60px;
   }
-  .emac_name a {
+  .hssi_name a {
     font-size: 22px;
   }
   .filter_selector {
@@ -1044,7 +1044,7 @@ table {
   .social-link {
     margin: 0 0.4rem 0 0.2rem;
   }
-  .emac-short-text {
+  .hssi-short-text {
     padding-left: 1.3rem;
   }
   div.social-icon-container {
@@ -1076,7 +1076,7 @@ table {
     max-height: 1rem;
     min-width: 1rem;
   }
-  .emac-short-text {
+  .hssi-short-text {
     padding: 0.4rem 0.4rem 0.4rem 1rem;
     font-size: 1rem;
   }
@@ -1095,7 +1095,7 @@ table {
   .nav_dropdown_list li {
     font-size: 12px;
   }
-  .emac-short-text {
+  .hssi-short-text {
     padding: 0.4rem 0.4rem 0.4rem 0.5rem;
     font-size: 1rem;
   }

@@ -20,7 +20,7 @@ from .constants import SaveType
 from .models import Resource, Submission, SubmissionStatus
 from .utils import organized_categories_json
 
-from emac import settings
+from hssi import settings
 
 class SubmissionForm(ModelForm):
 
@@ -30,7 +30,7 @@ class SubmissionForm(ModelForm):
             'submitter_first_name', 'submitter_last_name', 'submitter_email', 
             'name', 'credits', 'description', 'subtitle', 'version', 
             'search_keywords', 'code_languages', 'logo_image', 'logo_link', 
-            'related_tool_string', 'host_app_on_emac', 'host_data_on_emac', 
+            'related_tool_string', 'host_app_on_hssi', 'host_data_on_hssi', 
             'private_code_or_data_link', 'submission_notes','categories',
             'other_category', 'about_link', 'ads_abstract_link', 
             'download_link', 'download_data_link','jupyter_link', 
@@ -86,7 +86,7 @@ class SubmissionForm(ModelForm):
 
 def email_strings_for(submission, save_type, changed_fields, curator):
 
-    domain = settings.EMAC_DOMAIN
+    domain = settings.HSSI_DOMAIN
 
     # If this is a brand new submission, create an email for admin and the 
     # submitter that outline all of the fields
@@ -243,7 +243,7 @@ def email_strings_for(submission, save_type, changed_fields, curator):
     
     elif save_type is SaveType.FIRSTCONTACT:
         
-        subject = "Listing Software on the NASA Exoplanet Modeling & Analysis Center"
+        subject = "Listing Software on HSSI"
         context = {
             "submitter_first_name": submission.submitter_first_name,
             "tool_name": submission.name,
@@ -265,7 +265,7 @@ def email_strings_for(submission, save_type, changed_fields, curator):
         
     elif save_type is SaveType.RECONTACT:
 
-        subject = "Listing Software on the NASA Exoplanet Modeling & Analysis Center"
+        subject = "Listing Software on HSSI"
         context = {
             "submitter_first_name": submission.submitter_first_name,
             "tool_name": submission.name,
@@ -287,7 +287,7 @@ def email_strings_for(submission, save_type, changed_fields, curator):
         
     elif save_type is SaveType.FINALCONTACT:
         
-        subject = "Listing Software on the NASA Exoplanet Modeling & Analysis Center"
+        subject = "Listing Software on HSSI"
         context = {
             "submitter_first_name": submission.submitter_first_name,
             "tool_name": submission.name,
@@ -309,7 +309,7 @@ def email_strings_for(submission, save_type, changed_fields, curator):
 
     elif save_type is SaveType.INITIALINLITCONTACT:
         
-        subject = "Listing Software on the NASA Exoplanet Modeling & Analysis Center"
+        subject = "Listing Software on HSSI"
         context = {
             "submitter_first_name": submission.submitter_first_name,
             "tool_name": submission.name,
@@ -328,7 +328,7 @@ def email_strings_for(submission, save_type, changed_fields, curator):
 
     elif save_type is SaveType.SECONDINLITCONTACT:
         
-        subject = "Listing Software on the NASA Exoplanet Modeling & Analysis Center"
+        subject = "Listing Software on HSSI"
         context = {
             "submitter_first_name": submission.submitter_first_name,
             "tool_name": submission.name,
@@ -350,7 +350,7 @@ def email_strings_for(submission, save_type, changed_fields, curator):
     
     elif save_type is SaveType.FINALINLITCONTACT:
         
-        subject = "Listing Software on the NASA Exoplanet Modeling & Analysis Center"
+        subject = "Listing Software on HSSI"
         context = {
             "submitter_first_name": submission.submitter_first_name,
             "tool_name": submission.name,
@@ -371,8 +371,8 @@ def email_strings_for(submission, save_type, changed_fields, curator):
 
 def submission_was_saved(submission, save_type, changed_fields=None, curator=None):
 
-    from_address = "REDACTED@nasa.gov" # JPR Redacted Oct. 2024
-    admin_to_address = "REDACTED@nasa.gov" # JPR Redacted Oct. 2024
+    from_address = "placeholder email"
+    admin_to_address = "placeholder email"
 
     subject, admin_message, submitter_message = email_strings_for(submission, 
         save_type, 
@@ -384,10 +384,10 @@ def submission_was_saved(submission, save_type, changed_fields=None, curator=Non
     headers = {'content-type': 'application/json', 'Accept-Charset': 'UTF-8'}
     
     # Send emails to submitter, HSSI admins, and a Slack notification
-    if settings.EMAC_DOMAIN.startswith("emac.gsfc"):
+    if settings.HSSI_DOMAIN.startswith("hssi.gsfc"):
 
         requests.post(
-            settings.EMAC_SUBMISSION_SLACK_URL, 
+            settings.SUBMISSION_SLACK_URL, 
             data=data.encode('utf-8'), 
             headers=headers
         )
@@ -431,7 +431,7 @@ def submission_was_saved(submission, save_type, changed_fields=None, curator=Non
                 fail_silently=False
             )
     else:
-        if settings.EMAC_DOMAIN.startswith("emac-dev"):
+        if settings.HSSI_DOMAIN.startswith("hssi-dev"):
             if (
                 save_type is SaveType.FIRSTCONTACT or 
                 save_type is SaveType.RECONTACT or 
@@ -460,8 +460,8 @@ def submission_was_saved(submission, save_type, changed_fields=None, curator=Non
                 )
     
         # # send email to console in local dev
-        # # (requires uncommenting setting in /EMAC/django/emac/seetings.py)
-        # elif settings.EMAC_DOMAIN == "lvh.me":
+        # # (requires uncommenting setting in /HSSI/django/hssi/seetings.py)
+        # elif settings.HSSI_DOMAIN == "lvh.me":
         #     send_mail(
         #         subject, 
         #         admin_message, 
@@ -471,7 +471,7 @@ def submission_was_saved(submission, save_type, changed_fields=None, curator=Non
         #     )
 
         requests.post(
-            settings.EMAC_SUBMISSION_TEST_SLACK_URL, 
+            settings.SUBMISSION_TEST_SLACK_URL, 
             data=data.encode('utf-8'), 
             headers=headers
         )

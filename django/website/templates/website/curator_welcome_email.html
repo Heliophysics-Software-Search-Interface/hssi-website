@@ -1,14 +1,14 @@
-{% extends 'website/emac_email_template.html' %}
+{% extends 'website/hssi_email_template.html' %}
 
 {% block email_content %}
 
-<h1>Welcome <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}">EMAC</a> Curator!</h1>
+<h1>Welcome <a href="{{HSSI_PROTOCOL}}://{{HSSI_DOMAIN}}">HSSI</a> Curator!</h1>
 <p>Thank you for joining the HSSI Curators program!</p>
 <p>Your HSSI curator account user name is: <b>{{ user.username }}</b></p>
 <p>The email address associated with this account is: <b>{{ user.email }}</b></p>
 <p>In order to get started:
     <ul>
-        <li>Visit the <a href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/curators/">HSSI Curator's login page</a>.</li>
+        <li>Visit the <a href="{{HSSI_PROTOCOL}}://{{HSSI_DOMAIN}}/curators/">HSSI Curator's login page</a>.</li>
         <li>Click on the "Set/Reset password" link.</li>
         <li>Enter the email address listed above, and click the button to send a password reset link.</li>
         <li>Follow the instructions in that email to set your password.</li>

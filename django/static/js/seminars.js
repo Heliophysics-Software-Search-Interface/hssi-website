@@ -1,8 +1,8 @@
 $(document).ready(function(){
 
-    $(".emaccordion-header-bar").click(function(evt) {
-        var container = $(this).closest(".emaccordion-section");
-        var content = container.find(".emaccordion-content");
+    $(".accordion-header-bar").click(function(evt) {
+        var container = $(this).closest(".accordion-section");
+        var content = container.find(".accordion-content");
         var caret = container.find(".caret");
 
         if (caret.hasClass("caret-flip")) {
@@ -110,9 +110,9 @@ $(document).ready(function(){
 
     // workshop redirect, expand old workshop section
     if (window.location.hash.toLowerCase().includes('workshop')) {
-        // close everything that is not the emac workshop section
-        $('div.emaccordion-content:not(.emac)').prev('.emaccordion-header-bar').click();
-        // open the emac workshop section
-        $('div.emaccordion-content.emac').prev('.emaccordion-header-bar').click();
+        // close everything that is not the workshop section
+        $('div.accordion-content:not(.hssi)').prev('.accordion-header-bar').click();
+        // open the workshop section
+        $('div.accordion-content.hssi').prev('.accordion-header-bar').click();
     }
 });

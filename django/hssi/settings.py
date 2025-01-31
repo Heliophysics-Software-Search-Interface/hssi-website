@@ -18,33 +18,33 @@ from .secret_settings import *
 response_bytes = requests.get('http://ifcfg.me').content
 host_ip_address = "".join(map(chr, response_bytes))
 
-EMAC_DOMAIN = "lvh.me"
-EMAC_PROTOCOL = "http"
+HSSI_DOMAIN = "lvh.me"
+HSSI_PROTOCOL = "http"
 
 
-HOST_IP_ADDRESS_1 = "REDACTED" # JPR Redacted Oct. 2024
-HOST_IP_ADDRESS_2 = "REDACTED" # JPR Redacted Oct. 2024
-HOST_IP_ADDRESS_3 = "REDACTED" # JPR Redacted Oct. 2024
-HOST_IP_ADDRESS_4 = "REDACTED" # JPR Redacted Oct. 2024
+HOST_IP_ADDRESS_1 = "REDACTED"
+HOST_IP_ADDRESS_2 = "REDACTED"
+HOST_IP_ADDRESS_3 = "REDACTED"
+HOST_IP_ADDRESS_4 = "REDACTED"
 
 if host_ip_address.startswith(HOST_IP_ADDRESS_1):
     if host_ip_address == HOST_IP_ADDRESS_2 or host_ip_address == HOST_IP_ADDRESS_3 :
-        EMAC_DOMAIN = "emac-dev.gsfc.nasa.gov"
-        EMAC_PROTOCOL = "https"
+        HSSI_DOMAIN = "hssi-dev.placeholder.url"
+        HSSI_PROTOCOL = "https"
     elif host_ip_address == HOST_IP_ADDRESS_4:
-        EMAC_DOMAIN = "emac.gsfc.nasa.gov"
-        EMAC_PROTOCOL = "https"
+        HSSI_DOMAIN = "hssi.gsfc.placeholder.url"
+        HSSI_PROTOCOL = "https"
 
-# if EMAC_DOMAIN == "lvh.me":
+# if HSSI_DOMAIN == "lvh.me":
 #     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False if EMAC_DOMAIN == "emac.gsfc.nasa.gov" else True
+DEBUG = False if HSSI_DOMAIN == "main_hssi_website.com" else True
 
-ALLOWED_HOSTS = ["*"] if DEBUG else ["emac.gsfc.nasa.gov"]
+ALLOWED_HOSTS = ["*"] if DEBUG else ["main_hssi_website.com"]
 
 # redirect back to root after logging in because we are not setting up profile pages
 LOGIN_REDIRECT_URL = '/'
@@ -72,12 +72,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'emac.urls'
+ROOT_URLCONF = 'hssi.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'emac', 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'hssi', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,13 +85,13 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'emac.emac_context_processors.export_vars',
+                'hssi.hssi_context_processors.export_vars',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'emac.wsgi.application'
+WSGI_APPLICATION = 'hssi.wsgi.application'
 
 
 # Database
@@ -102,14 +102,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres', 
         'USER': 'postgres', 
-        'PASSWORD': EMAC_ADMIN_PASSWORD,
+        'PASSWORD': ADMIN_PASSWORD,
         'HOST': 'website_db',
     },
     'shared': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres', 
         'USER': 'postgres', 
-        'PASSWORD': EMAC_ADMIN_PASSWORD,
+        'PASSWORD': ADMIN_PASSWORD,
         'HOST': 'shared_db',
     }
 }

@@ -50,8 +50,8 @@ $(document).ready(function() {
             'div_id_logo_image',
             'div_id_logo_link',
             'div_id_related_tool_string',
-            'div_id_host_app_on_emac',
-            'div_id_host_data_on_emac',
+            'div_id_host_app_on_hssi',
+            'div_id_host_data_on_hssi',
             'div_id_private_code_or_data_link',
             'div_id_submission_notes'
         ],

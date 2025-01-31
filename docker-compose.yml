@@ -15,17 +15,17 @@ services:
             - ./shared/config/nginx/logrotate:/etc/logrotate.d/nginx
             - ./shared/config/django:/config/django
             - ./shared/config/nginx:/etc/nginx/conf.d
-            - ./shared/django/emac_base_template.html:/django/emac/templates/emac_base_template.html
-            - ./shared/django/registration:/django/emac/templates/registration
-            - ./shared/django/emac_context_processors.py:/django/emac/emac_context_processors.py
-            - ./shared/django/emac_secret_settings.py:/django/emac/emac_secret_settings.py
-            - ./shared/static/emac_apps:/static/emac_apps
+            - ./shared/django/hssi_base_template.html:/django/hssi/templates/hssi_base_template.html
+            - ./shared/django/registration:/django/hssi/templates/registration
+            - ./shared/django/hssi_context_processors.py:/django/hssi/hssi_context_processors.py
+            - ./shared/django/hssi_secret_settings.py:/django/hssi/hssi_secret_settings.py
+            - ./shared/static/hssi_apps:/static/hssi_apps
             - ./shared/pip-requirements:/extensions/pip-requirements
-            - ./shared/django/recaptcha_auth_forms.py:/django/emac/recaptcha_auth_forms.py
+            - ./shared/django/recaptcha_auth_forms.py:/django/hssi/recaptcha_auth_forms.py
         environment:
-            - EMAC_ADMIN_USERNAME=$EMAC_ADMIN_USERNAME
-            - EMAC_ADMIN_PASSWORD=$EMAC_ADMIN_PASSWORD
-            - PROJECT_NAME=emac
+            - ADMIN_USERNAME=$ADMIN_USERNAME
+            - ADMIN_PASSWORD=$ADMIN_PASSWORD
+            - PROJECT_NAME=hssi
             - APP_NAME=website
             - GUNICORN_WORKERS=4
             - GUNICORN_BACKLOG=4096
@@ -36,7 +36,7 @@ services:
         image: postgres
         container_name: shared_db
         environment: 
-            - POSTGRES_PASSWORD=$EMAC_ADMIN_PASSWORD
+            - POSTGRES_PASSWORD=$ADMIN_PASSWORD
         # To persist db data, uncomment the following volumes statement, and see the outer 
         # volumes section below:
         volumes:
@@ -46,7 +46,7 @@ services:
         image: postgres
         container_name: website_db
         environment: 
-            - POSTGRES_PASSWORD=$EMAC_ADMIN_PASSWORD
+            - POSTGRES_PASSWORD=$ADMIN_PASSWORD
         # To persist db data, uncomment the following volumes statement, and see the outer 
         # volumes section below:
         volumes:
@@ -69,16 +69,16 @@ services:
     #         - ./shared/config/nginx/logrotate:/etc/logrotate.d/nginx
     #         - ./shared/config/django:/config/django
     #         - ./shared/config/nginx:/etc/nginx/conf.d
-    #         - ./shared/django/emac_base_template.html:/django/emac/templates/emac_base_template.html
-    #         - ./shared/django/emac_context_processors.py:/django/emac/emac_context_processors.py
-    #         - ./shared/django/emac_secret_settings.py:/django/emac/emac_secret_settings.py
-    #         - ./shared/static/emac_apps:/static/emac_apps
+    #         - ./shared/django/hssi_base_template.html:/django/hssi/templates/hssi_base_template.html
+    #         - ./shared/django/hssi_context_processors.py:/django/hssi/hssi_context_processors.py
+    #         - ./shared/django/hssi_secret_settings.py:/django/hssi/hssi_secret_settings.py
+    #         - ./shared/static/hssi_apps:/static/hssi_apps
 
 
 # To persist db data, uncomment at least the next two lines, and see the further note below
 volumes:
     shared_db_data:  # NOTE that this statement alone persists data in Docker's volume storage 
-                # area. To clear this data entirely, use: docker volume rm emac_shared_db_data
+                # area. To clear this data entirely, use: docker volume rm hssi_shared_db_data
                 # To persist elsewhere, uncomment the following, and make sure a directory 
                 # exists at the desired location as specified by "device:"
         # driver_opts:
@@ -86,7 +86,7 @@ volumes:
         #     device: data/db
         #     o: bind   
     website_db_data:  # NOTE that this statement alone persists data in Docker's volume storage 
-                # area. To clear this data entirely, use: docker volume rm emac_website_db_data
+                # area. To clear this data entirely, use: docker volume rm hssi_website_db_data
                 # To persist elsewhere, uncomment the following, and make sure a directory 
                 # exists at the desired location as specified by "device:"
         # driver_opts:

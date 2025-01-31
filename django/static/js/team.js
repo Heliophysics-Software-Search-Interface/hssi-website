@@ -1,8 +1,8 @@
 $(document).ready(function(){
 
-    $(".emaccordion-header-bar").click(function(evt) {
-        var container = $(this).closest(".emaccordion-section");
-        var content = container.find(".emaccordion-content");
+    $(".accordion-header-bar").click(function(evt) {
+        var container = $(this).closest(".accordion-section");
+        var content = container.find(".accordion-content");
         var caret = container.find(".caret");
 
         if (caret.hasClass("caret-flip")) {

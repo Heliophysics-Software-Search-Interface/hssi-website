@@ -1,39 +1,39 @@
 import os
 
-EMAC_ADMIN_USERNAME = None if 'EMAC_ADMIN_USERNAME' not in os.environ else os.environ.get('EMAC_ADMIN_USERNAME')
-EMAC_ADMIN_PASSWORD = None if 'EMAC_ADMIN_PASSWORD' not in os.environ else os.environ.get('EMAC_ADMIN_PASSWORD')
+ADMIN_USERNAME = None if 'ADMIN_USERNAME' not in os.environ else os.environ.get('ADMIN_USERNAME')
+ADMIN_PASSWORD = None if 'ADMIN_PASSWORD' not in os.environ else os.environ.get('ADMIN_PASSWORD')
 
-EMAC_ADMIN_EMAIL = "REDACTED@nasa.gov" # JPR Redacted Oct. 2024
+ADMIN_EMAIL = "REDACTED@nasa.gov"
 
-DEFAULT_FROM_EMAIL = EMAC_ADMIN_EMAIL
+DEFAULT_FROM_EMAIL = ADMIN_EMAIL
 
-EMAIL_HOST = 'REDACTED URL' # JPR Redacted Oct. 2024
+EMAIL_HOST = 'REDACTED URL'
 EMAIL_PORT = 25
-EMAIL_SUBJECT_PREFIX = "[EMAC] "
+EMAIL_SUBJECT_PREFIX = "[HSSI] "
 
-EMAC_SUBMISSION_SLACK_URL = "REDACTED URL" # JPR Redacted Oct. 2024
-EMAC_SUBMISSION_TEST_SLACK_URL = "REDACTED URL" # JPR Redacted Oct. 2024
+SUBMISSION_SLACK_URL = "REDACTED URL"
+SUBMISSION_TEST_SLACK_URL = "REDACTED URL"
 
-ADS_DEV_KEY = "REDACTED KEY" # JPR Redacted Oct. 2024
+ADS_DEV_KEY = "REDACTED KEY"
 
 ANALYTICS_SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 ANALYTICS_KEY_FILE = {
   "type": "service_account",
-  "project_id": "emac-analytics",
-  "private_key_id": "REDACTED KEY", # JPR Redacted Oct. 2024
-  "private_key": "REDACTED KEY", # JPR Redacted Oct. 2024
-  "client_email": "emac-analytics@emac-analytics.iam.gserviceaccount.com",
-  "client_id": "REDACTED KEY", # JPR Redacted Oct. 2024
+  "project_id": "placholder id",
+  "private_key_id": "REDACTED KEY",
+  "private_key": "REDACTED KEY",
+  "client_email": "placeholder analytics address",
+  "client_id": "REDACTED KEY",
   "auth_uri": "https://accounts.google.com/o/oauth2/auth",
   "token_uri": "https://oauth2.googleapis.com/token",
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "REDACTED URL" # JPR Redacted Oct. 2024
+  "client_x509_cert_url": "REDACTED URL"
 }
-ANALYTICS_VIEW_ID = "REDACTED KEY" # JPR Redacted Oct. 2024
+ANALYTICS_VIEW_ID = "REDACTED KEY"
 
-EMAC_TWITTER_BOT_ACCESS_TOKEN = "REDACTED KEY" # JPR Redacted Oct. 2024
-EMAC_TWITTER_BOT_ACCESS_TOKEN_SECRET = "REDACTED KEY" # JPR Redacted Oct. 2024
-EMAC_TWITTER_BOT_CONSUMER_KEY = "REDACTED KEY" # JPR Redacted Oct. 2024
-EMAC_TWITTER_BOT_CONSUMER_SECRET = "REDACTED KEY" # JPR Redacted Oct. 2024
+HSSI_TWITTER_BOT_ACCESS_TOKEN = "REDACTED KEY"
+HSSI_TWITTER_BOT_ACCESS_TOKEN_SECRET = "REDACTED KEY"
+HSSI_TWITTER_BOT_CONSUMER_KEY = "REDACTED KEY"
+HSSI_TWITTER_BOT_CONSUMER_SECRET = "REDACTED KEY"
 
-YT_KEY = "REDACTED KEY" # JPR Redacted Oct. 2024
+YT_KEY = "REDACTED KEY"

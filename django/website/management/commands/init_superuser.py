@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from django.contrib.auth.models import User, Group;
-from emac.secret_settings import EMAC_ADMIN_EMAIL, EMAC_ADMIN_PASSWORD, EMAC_ADMIN_USERNAME 
+from hssi.secret_settings import ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_USERNAME 
 
 class Command(BaseCommand):
 
@@ -10,8 +10,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         print("Checking for HSSI superuser...")
-        if User.objects.filter(username=EMAC_ADMIN_USERNAME).count()==0:
-            User.objects.create_superuser(EMAC_ADMIN_USERNAME, EMAC_ADMIN_EMAIL, EMAC_ADMIN_PASSWORD)
+        if User.objects.filter(username=ADMIN_USERNAME).count()==0:
+            User.objects.create_superuser(ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD)
             print("HSSI superuser created")
         else:
             print("HSSI superuser already exists")

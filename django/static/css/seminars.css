@@ -10,12 +10,12 @@
 
 /* main seminar expandable container section */
 
-.emaccordion-section {
+.accordion-section {
     border-bottom: solid 1px #ebebeb;
     margin-bottom: 0.5rem;
 }
 
-.emaccordion-header-bar {
+.accordion-header-bar {
     cursor: pointer;
     padding: 1.2rem;
     background-color: #e7e7e7;
@@ -28,7 +28,7 @@
     align-items: center;
 }
 
-.emaccordion-title {
+.accordion-title {
     font-size: 1.0625rem;
     font-weight: 500;
     color: #010508d7;
@@ -68,7 +68,7 @@
     transform: rotate(-224deg);
 }
 
-.emaccordion-content {
+.accordion-content {
     display: none;
 }
 
@@ -76,86 +76,9 @@
     transition: all .3s ease-in-out;
 }
 
-/* exovast section */
+/* workshop section */
 
-.exovast-container {
-    max-width: 85%;
-    margin: 0 auto;
-}
-
-.exovast-info {
-    display: -ms-grid;
-    display: grid;
-    -ms-grid-columns: 3fr 1fr;
-    grid-template-columns: 3fr 1fr;
-    -ms-grid-rows: auto;
-    grid-template-rows: auto;
-    /* padding: 1.5em 0; */
-}
-
-.exovast-info .detail.vast {
-    -ms-grid-column: 1;
-    grid-column: 1;
-    -ms-grid-row: 1;
-    grid-row: 1;
-}
-
-.exovast-info .detail.exovast {
-    -ms-grid-column: 1;
-    grid-column: 1;
-    -ms-grid-row: 2;
-    grid-row: 2;
-}
-
-.exovast-info .detail.attending {
-    -ms-grid-column: 2;
-    grid-column: 2;
-    -ms-grid-row: 1;
-    grid-row: 1;
-}
-
-.exovast-info .detail.speaking {
-    -ms-grid-column: 2;
-    grid-column: 2;
-    -ms-grid-row: 2;
-    grid-row: 2;
-}
-
-.exovast-info .detail {
-    padding: 1rem 0.5rem;
-}
-
-.exovast-info .detail .header h6 {
-    font-weight: bold;
-    font-size: 1.1rem;
-}
-
-.exovast-info .detail .detail-text {
-    font-size: 1.0833rem
-}
-
-.exovast-schedule p {
-    margin-left: 0.5rem;
-}
-
-.exovast-schedule p.schedule-update {
-    font-style: italic;
-}
-
-.exovast-schedule .emaccordion-content p:nth-child(1) {
-    margin-top: 0.7rem;
-}
-
-.exovast-schedule td.date {
-    border-bottom: 1px solid #e7e7e7;
-    width: 1%;
-    white-space: nowrap;
-    padding: 1rem;
-}
-
-/* emac workshop section */
-
-.emac .page_title {
+.hssi .page_title {
     font-size: 24px;
     padding: 0.5rem 1.5rem;
 }
@@ -206,18 +129,18 @@
     line-height: 1.3;
 }
 
-.emac-schedule-container .time-zone-note {
+.schedule-container .time-zone-note {
     margin: 1rem 0;
     text-align: center;
     font-weight: bold;
 }
 
-.emac-schedule-container .schedule-grid-tabs {
+.schedule-container .schedule-grid-tabs {
     width: 80%;
     margin: 0 auto;
 }
 
-.emac-schedule-container .schedule-tab-container {
+.schedule-container .schedule-tab-container {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -225,7 +148,7 @@
     border-top: 1px solid #2f2c2c;
 }
 
-.emac-schedule-container .schedule-tab {
+.schedule-container .schedule-tab {
     background-color: #cfcfd1;
     cursor: pointer;
     padding: 0.6rem 0.3rem;
@@ -236,11 +159,11 @@
     white-space: nowrap;
 }
 
-.emac-schedule-container .schedule-tab:hover {
+.schedule-container .schedule-tab:hover {
     background-color: #b7b7b7;
 }
 
-.emac-schedule-container .schedule-tab.open {
+.schedule-container .schedule-tab.open {
     background-color: #ECECEC;
 }
 
@@ -248,48 +171,48 @@
     border-right: 1px solid #b7b7b7;
 }
 
-.emac-schedule-container .schedule-day {
+.schedule-container .schedule-day {
     display: none;
 }
 
-.emac-schedule-container .schedule-day.open {
+.schedule-container .schedule-day.open {
     display: block;
 }
 
-.emac-schedule-container .schedule-table tr:not(.continued) {
+.schedule-container .schedule-table tr:not(.continued) {
     border-top: 1px solid lightgray;
 }
 
-.emac-schedule-container .schedule-table tbody td {
+.schedule-container .schedule-table tbody td {
     padding-bottom: 0.825rem;
     vertical-align: top;
 }
 
-.emac-schedule-container .schedule-table td.time {
+.schedule-container .schedule-table td.time {
     font-weight: bold;
     font-size: small;
     white-space: nowrap;
 }
 
-.emac-schedule-container .schedule-table .event div.event-title {
+.schedule-container .schedule-table .event div.event-title {
     margin-bottom: 0.2rem;
 }
 
-.emac-schedule-container .schedule-table tr.has-detail a.open-abstract,
+.schedule-container .schedule-table tr.has-detail a.open-abstract,
 .schedule-table tr.has-video a.youtube-link,
 #detail-modal .detail-title a.youtube-link,
-.emac-schedule-container .schedule-table tr.has-detail a.open-abstract:visited,
+.schedule-container .schedule-table tr.has-detail a.open-abstract:visited,
 .schedule-table tr.has-video a.youtube-link:visited,
 #detail-modal .detail-title a.youtube-link:visited {
     color: rgb(10, 10, 10);
 }
 
-.emac-schedule-container .schedule-table .event div.speaker {
+.schedule-container .schedule-table .event div.speaker {
     font-size: small;
 }
 
-.emac-schedule-container .schedule-table .event div.detail,
-.emac-schedule-container .schedule-table .event div.youtube-link {
+.schedule-container .schedule-table .event div.detail,
+.schedule-container .schedule-table .event div.youtube-link {
     display: none;
 }
 
@@ -332,7 +255,7 @@
     .workshop-main-text p {
         max-width: 95%;
     }
-    .emac-schedule-container .schedule-grid-tabs {
+    .schedule-container .schedule-grid-tabs {
         width: 95%
     }
 }
@@ -355,17 +278,17 @@
 
 /* first, styles we want for touch devices */
 /* additional info icon should be hidden when there is no additional info */
-.emac-schedule-container .schedule-table td.icon i {
+.schedule-container .schedule-table td.icon i {
     display: none;
 }
-.emac-schedule-container .schedule-table tr.has-detail td.icon i.fa-external-link,
-.emac-schedule-container .schedule-table tr.has-video td.icon i.fa-youtube-play {
+.schedule-container .schedule-table tr.has-detail td.icon i.fa-external-link,
+.schedule-container .schedule-table tr.has-video td.icon i.fa-youtube-play {
     display: inline-block;
 }
 
 /* override styles we want for hoverable devices */
 @media (hover: hover) and (pointer: fine) {
-    .emac-schedule-container .schedule-table tr.has-detail span.event-title:hover {
+    .schedule-container .schedule-table tr.has-detail span.event-title:hover {
         text-decoration: underline;
     }
 }

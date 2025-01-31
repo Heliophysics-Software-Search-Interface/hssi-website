@@ -45,7 +45,7 @@ class Analytics():
         self.dirname = os.path.dirname(__file__)
 
         self.analytics = self.initialize_analyticsreporting()
-        self.internal_segment = [{"segmentId": "REDACTED # JPR Redacted Oct. 2024"}]
+        self.internal_segment = [{"segmentId": "REDACTED"}]
 
         # credentials = ServiceAccountCredentials.from_json_keyfile_dict(self.KEY_FILE)
         credentials = service_account.Credentials.from_service_account_file('website/analytics/google_analytics_api_access_keys.json')
@@ -180,7 +180,7 @@ class Analytics():
 
         clicks_GA4 = pd.DataFrame.from_dict(clicks)
 
-        # Get the number of direct visits to this resource's page on EMAC (https://emac.gsfc.nasa.gov?cid={cid})
+        # Get the number of direct visits to this resource's page on HSSI (https://main_hssi_website.com?cid={cid})
         # metrics = ['screenPageViews']
         # dimensions = ['pageTitle']
         # response = self.format_report(metrics, dimensions)
@@ -275,10 +275,10 @@ class Analytics():
             #             exits_breakdown.loc[exits_breakdown.Tool == name, "Discuss Count"] = exits_df["External Unique Events"][l]
             #             accounted_for_links.append(exits_df["Link"][l])
 
-            # exits_breakdown.loc[exits_breakdown.Tool == "HARDCORE", "Launch Count"] = exits_df.loc[exits_df.Link == "https://hardcore.emac.gsfc.nasa.gov", "External Unique Events"].values[0]
-            # exits_breakdown.loc[exits_breakdown.Tool == "REPAST", "Launch Count"] = exits_df.loc[exits_df.Link == "https://tools.emac.gsfc.nasa.gov/repast", "External Unique Events"].values[0]
-            # exits_breakdown.loc[exits_breakdown.Tool == "CGP", "Launch Count"] = exits_df.loc[exits_df.Link == "https://tools.emac.gsfc.nasa.gov/CGP", "External Unique Events"].values[0]
-            # exits_breakdown.loc[exits_breakdown.Tool == "ECI", "Launch Count"] = exits_df.loc[exits_df.Link == "https://tools.emac.gsfc.nasa.gov/ECI", "External Unique Events"].values[0]
+            # exits_breakdown.loc[exits_breakdown.Tool == "HARDCORE", "Launch Count"] = exits_df.loc[exits_df.Link == "https://hardcore.main_hssi_website.com", "External Unique Events"].values[0]
+            # exits_breakdown.loc[exits_breakdown.Tool == "REPAST", "Launch Count"] = exits_df.loc[exits_df.Link == "https://tools.main_hssi_website.com/repast", "External Unique Events"].values[0]
+            # exits_breakdown.loc[exits_breakdown.Tool == "CGP", "Launch Count"] = exits_df.loc[exits_df.Link == "https://tools.main_hssi_website.com/CGP", "External Unique Events"].values[0]
+            # exits_breakdown.loc[exits_breakdown.Tool == "ECI", "Launch Count"] = exits_df.loc[exits_df.Link == "https://tools.main_hssi_website.com/ECI", "External Unique Events"].values[0]
 
             # exits_breakdown2 = exits_breakdown.copy()
             # exits_breakdown2["Total"] = exits_breakdown.sum(axis=1)
@@ -795,7 +795,7 @@ class Analytics():
         TWITTER_KEY_FILE = settings.TWITTER_SHEETS_KEY_FILE
         # TWITTER_SCOPES = settings.TWITTER_SCOPES
         gc = gspread.service_account_from_dict(TWITTER_KEY_FILE)
-        gsheet = gc.open_by_url("REDACTED URL") # JPR Redacted Oct. 2024
+        gsheet = gc.open_by_url("REDACTED URL")
 
         data = gsheet.sheet1.get_all_records()
         all_tweets = pd.DataFrame(data)

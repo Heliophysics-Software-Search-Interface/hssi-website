@@ -1,4 +1,4 @@
-{% extends 'emac_base_template.html' %}
+{% extends 'hssi_base_template.html' %}
 
 {% load static %}
 {% load static %}
@@ -250,61 +250,8 @@
 </div>
 
 <div class="outer-div">
-    <img src="{% static 'analytics_plots/tweet_impressions.png' %}">
-    <p>Number of times people saw the tweet.</p>
-    <img src="{% static 'analytics_plots/tweet_engagements.png' %}">
-    <p>Number of times people interacted with the tweet.</p>
-    <div class="inner-div">
-        <p>Impressions/Engagements for each tweet, by date the tweet was sent. Days when multiple tweets were sent show the sum total of all tweets on that day (which were rare). Numbers are  over the lifetime of the tweet, so older may be biased towards higher numbers if users frequently check our backlog of tweets (no indication as of 3/17/22).</p>
-
-        <p><b>Top Engagement Tweets</b></p>
-        {% for text, time, engagements in top_tweets %}
-            <p> <b>Tweet text:</b> {{text}} <br> <b>Date:</b> {{time}}  <br> <b>Engagements:</b> {{engagements}} </p>
-        {% endfor %}
-
-        <p><b>Bottom Engagement Tweets</b></p>
-        {% for text, time, engagements in bot_tweets %}
-            <p> <b>Tweet text:</b> {{text}} <br> <b>Date:</b> {{time}}  <br> <b>Engagements:</b> {{engagements}} </p>
-        {% endfor %}
-    </div>
-    <p>Data has to be updated manually. To do so, go to the <a href="https://analytics.twitter.com/user/ExoplanetModels/tweets">Twitter analytics site</a>, select a month in the upper right, then export the data by tweet.
-        Finally, copy the data from the new .csv and paste it into the <a href="https://docs.google.com/spreadsheets/d/114dgnnWoSKyIJgtzOtBaBWH6IKwwXW8gZXnS9zFQfxc/edit#gid=0">Twitter data Google Sheet</a>.
-    </p>
+    <p>Removed twitter analytics as it was broken anyways.</p>
 </div>
-
-<!-- JPR 2023-04-24: Disabling YouTube analytics due to problem in the analytix package.-->
-<!-- <div class="outer-div">
-    <img src="{% static 'analytics_plots/yt_channel_stats.png' %}">
-    <div class="inner-div"> -->
-<!--        <form method="post">-->
-<!--            {% csrf_token %}-->
-<!--            <p>{{ form.youtube_analytics.label_tag }} {{ form.youtube_analytics }} <input class="button-primary" type="submit" value="Update" /></p>-->
-<!--        </form>-->
-        <!-- <p>Channel-wide stats.</p>
-    </div>
-    The Youtube analytics tokens file has to be refreshed every seven days. To do so, run this code in a terminal:
-    <p style="font-family: Consolas,'courier new';
-          color: crimson;
-          background-color: #f1f1f1;
-          padding: 2px;
-          font-size: 105%;">
-        from analytix import Analytics <br>
-        import analytix <br>
-        analytix.setup_logging() <br>
-        client = Analytics.with_secrets("./secrets.json") <br>
-        report = client.retrieve(dimensions=("day",), metrics=("views",))
-    </p>
-    The terminal output will display a link and a prompt to enter a code. Follow the link, log in with emacscience@gmail.com, click continue, check both boxes, then click continue again. This should lead you to hte local HSSI site if it is running on your machine or an error page if not. Look in the URL for a portion that says "code=" and copy everything from the "=" to "&scope" (exclusive). Paste this code into your terminal to create a new tokens.json file. Copy this file into HSSI/django/website/analytics, replacing the old version.
-    <img src="{% static 'analytics_plots/yt_video_stats.png' %}">
-    <div class="inner-div">
-
-        <p>video-specific stats.</p>
-    </div>
-    <form method="post">
-        {% csrf_token %}
-        <p>{{ form.youtube_analytics.label_tag }} {{ form.youtube_analytics }} <input class="button-primary" type="submit" value="Update" /></p>
-    </form>
-</div> -->
 
 <div class="outer-div">
     <div class="inner-div">

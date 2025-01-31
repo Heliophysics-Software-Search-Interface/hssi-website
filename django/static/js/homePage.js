@@ -1,17 +1,17 @@
-var EMAC = EMAC || {};
-EMAC.spinner = null;
-EMAC.currentRequest = null;
-EMAC.resourceFilterAnchor = null;
+var HSSI = HSSI || {};
+HSSI.spinner = null;
+HSSI.currentRequest = null;
+HSSI.resourceFilterAnchor = null;
 
-EMAC.handlePopState = function handlePopState (event) {
+HSSI.handlePopState = function handlePopState (event) {
     if (event.state) {
         var  { url } = event.state;
         var params = url.substring(1).split('&'); 
         // reload the data based on historical URL
         // without adding a new entry to the browser history
-        EMAC.loadContentByQueryParams(url, false).then(function() {
+        HSSI.loadContentByQueryParams(url, false).then(function() {
             // clearing all controls but do not collapse menus
-            EMAC.clearAllFilterControls(false);
+            HSSI.clearAllFilterControls(false);
             if (params.length > 0) {
                 if (params[0] !== 'all') {
                     // reset controls to previous states
@@ -20,13 +20,13 @@ EMAC.handlePopState = function handlePopState (event) {
                         switch (qPair[0]) {
                             case 'q':
                                 $('#searchbar').val(qPair[1]);
-                                EMAC.toggleSortVisible(false);
+                                HSSI.toggleSortVisible(false);
                                 break;
                             case 'sort':
-                                EMAC.setActiveSort(qPair[1]);
+                                HSSI.setActiveSort(qPair[1]);
                                 break;
                             case 'related_resource':
-                                EMAC.toggleSortVisible(false);
+                                HSSI.toggleSortVisible(false);
                                 break;
                             case 'category':
                             case 'tooltype':
@@ -45,9 +45,9 @@ EMAC.handlePopState = function handlePopState (event) {
                         }
                     });
                 }
-                EMAC.determineSelectedUnselectedParents();
-                EMAC.showResultCount(url);
-                EMAC.showAppliedFilters(url);
+                HSSI.determineSelectedUnselectedParents();
+                HSSI.showResultCount(url);
+                HSSI.showAppliedFilters(url);
             }
         });
 
@@ -57,9 +57,9 @@ EMAC.handlePopState = function handlePopState (event) {
     }
 }
 // register pop state handler to handle back/forward button clicks
-window.onpopstate = EMAC.handlePopState;
+window.onpopstate = HSSI.handlePopState;
 
-EMAC.buildFilterQueryParamsAndSend = function buildFilterQueryParamsAndSend() {
+HSSI.buildFilterQueryParamsAndSend = function buildFilterQueryParamsAndSend() {
     // if we're in the mobile view, close the category
     // menu before loading new data
     if ($('.mobile-filter-toggle').is(':visible')) {
@@ -117,21 +117,21 @@ EMAC.buildFilterQueryParamsAndSend = function buildFilterQueryParamsAndSend() {
     } else {
         url += 'all';
     }
-    EMAC.loadContentByQueryParams(url, true);
+    HSSI.loadContentByQueryParams(url, true);
 }
 
-EMAC.loadContentByQueryParams = function loadContentByQueryParams(queryParamUrl, addToHistory) {
-    if (EMAC.currentRequest) {
-        EMAC.currentRequest.abort();
-        EMAC.currentRequest = null;
+HSSI.loadContentByQueryParams = function loadContentByQueryParams(queryParamUrl, addToHistory) {
+    if (HSSI.currentRequest) {
+        HSSI.currentRequest.abort();
+        HSSI.currentRequest = null;
     }
     var dfd = $.Deferred();
     // need the content div as NOT a jQuery object for the spinny code
     var loader = document.getElementById('loading_modal');
-    EMAC.spinner = EMAC.spinner || new Spin.Spinner();
-    EMAC.spinner.spin(loader);
+    HSSI.spinner = HSSI.spinner || new Spin.Spinner();
+    HSSI.spinner.spin(loader);
     $(loader).addClass('visible');
-    EMAC.currentRequest = $.ajax({
+    HSSI.currentRequest = $.ajax({
         url: queryParamUrl,
         method: 'GET',
         dataType: 'json'
@@ -142,27 +142,27 @@ EMAC.loadContentByQueryParams = function loadContentByQueryParams(queryParamUrl,
         $('div#resource_content').html(response.resource_content);
         // re-init any dynamically loaded foundation content
         $('div#resource_content').foundation();
-        EMAC.showResultCount(queryParamUrl);
-        EMAC.showAppliedFilters(queryParamUrl);
-        EMAC.scrollToContentTop();
+        HSSI.showResultCount(queryParamUrl);
+        HSSI.showAppliedFilters(queryParamUrl);
+        HSSI.scrollToContentTop();
     }).fail(function (xhr, status, error) {
         console.warn(status)
         console.warn(error)
-        window.emacError = {
+        window.HSSIError = {
             xhr,
             status,
             error
         }
     }).always(function() {
-        EMAC.currentRequest = null;
+        HSSI.currentRequest = null;
         $(loader).removeClass('visible');
-        EMAC.spinner.stop();
+        HSSI.spinner.stop();
         dfd.resolve();
     });
     return dfd.promise();
 }
 
-EMAC.determineSelectedUnselectedParents = function determineSelectedUnselectedParents() {
+HSSI.determineSelectedUnselectedParents = function determineSelectedUnselectedParents() {
     var mainSections = $('div.filter_table');
     $(mainSections).each(function() {
         var parents = $(this).find('li.filter_menu');
@@ -196,23 +196,23 @@ EMAC.determineSelectedUnselectedParents = function determineSelectedUnselectedPa
     });
 }
 
-EMAC.handleParentFilterChange = function handleParentFilterChange() {
+HSSI.handleParentFilterChange = function handleParentFilterChange() {
     if (this.name.startsWith('collection')) {
         // if a collection is being selected, clear all other filters
         // including other collection filters, to ensure that
         // only one collection can be selected at any time
         if (this.checked) {
-            EMAC.clearSearchBox();
-            EMAC.clearAllFilterCheckboxes(true, 'category');
-            EMAC.clearAllFilterCheckboxes(true, 'tooltype');
-            EMAC.clearAllFilterCheckboxes(true, 'collection');
+            HSSI.clearSearchBox();
+            HSSI.clearAllFilterCheckboxes(true, 'category');
+            HSSI.clearAllFilterCheckboxes(true, 'tooltype');
+            HSSI.clearAllFilterCheckboxes(true, 'collection');
             // reset this as checked
             $(this).prop('checked', true);
         } // proceed with default behavior
     } else {
         // if a category or tool type filter is being applied,
         // clear any collection filters
-        EMAC.clearAllFilterCheckboxes(true, 'collection');
+        HSSI.clearAllFilterCheckboxes(true, 'collection');
     }
     
     // sync checked state
@@ -226,27 +226,27 @@ EMAC.handleParentFilterChange = function handleParentFilterChange() {
     // check or uncheck all subcategories to match
     $(`.parent_filter[value=${this.value}]`).closest('li.filter_menu').find('input.sub_filter').prop('checked', this.checked);
     
-    EMAC.determineSelectedUnselectedParents();
-    EMAC.buildFilterQueryParamsAndSend();
+    HSSI.determineSelectedUnselectedParents();
+    HSSI.buildFilterQueryParamsAndSend();
 }
 
-EMAC.handleSubFilterChange = function handleSubFilterChange() {
+HSSI.handleSubFilterChange = function handleSubFilterChange() {
     if (this.name.startsWith('collection')) {
         // if a collection is being selected, clear all other filters
         // including other collection filters, to ensure that
         // only one collection can be selected at any time
         if (this.checked) {
-            EMAC.clearSearchBox();
-            EMAC.clearAllFilterCheckboxes(true, 'category');
-            EMAC.clearAllFilterCheckboxes(true, 'tooltype');
-            EMAC.clearAllFilterCheckboxes(true, 'collection');
+            HSSI.clearSearchBox();
+            HSSI.clearAllFilterCheckboxes(true, 'category');
+            HSSI.clearAllFilterCheckboxes(true, 'tooltype');
+            HSSI.clearAllFilterCheckboxes(true, 'collection');
             // reset this as checked
             $(this).prop('checked', true);
         } // proceed with default behavior
     } else {
         // if a category or tool type filter is being applied,
         // clear any collection filters
-        EMAC.clearAllFilterCheckboxes(true, 'collection');
+        HSSI.clearAllFilterCheckboxes(true, 'collection');
     }
 
     // sync checked state
@@ -269,14 +269,14 @@ EMAC.handleSubFilterChange = function handleSubFilterChange() {
         $(`.parent_filter[value=${parentId}]`).closest('li.filter_menu').removeClass('selected_filter');
     }
     
-    EMAC.determineSelectedUnselectedParents();
-    EMAC.buildFilterQueryParamsAndSend();
+    HSSI.determineSelectedUnselectedParents();
+    HSSI.buildFilterQueryParamsAndSend();
 }
 
-EMAC.handleResourceLabelClick = function handleResourceLabelClick() {
+HSSI.handleResourceLabelClick = function handleResourceLabelClick() {
     // set the scroll to anchor for when the data reloads
     var anchor = $(this).closest('div.callout.resource-info').prev('.anchor-name');
-    EMAC.resourceFilterAnchor = $(anchor).attr('name');
+    HSSI.resourceFilterAnchor = $(anchor).attr('name');
     // figure out the filters to appy
     var resourceId = $(this).closest('div.callout.resource-info').data('resourceId');
     var parentIds = [];
@@ -297,9 +297,9 @@ EMAC.handleResourceLabelClick = function handleResourceLabelClick() {
         }
     });
     
-    EMAC.clearAllFilterCheckboxes(true, 'tooltype');
-    EMAC.clearAllFilterCheckboxes(true, 'collection');
-    EMAC.clearAllFilterCheckboxes(false, 'category');
+    HSSI.clearAllFilterCheckboxes(true, 'tooltype');
+    HSSI.clearAllFilterCheckboxes(true, 'collection');
+    HSSI.clearAllFilterCheckboxes(false, 'category');
 
     filterIds.forEach(id => {
         var filter = $(`div#category-menu-main input[id=${id}]`);
@@ -328,17 +328,17 @@ EMAC.handleResourceLabelClick = function handleResourceLabelClick() {
             $(filter).closest('li.filter_menu').find('input.sub_filter').prop('checked', this.checked);
         }
     });
-    EMAC.determineSelectedUnselectedParents();
-    EMAC.buildFilterQueryParamsAndSend();
+    HSSI.determineSelectedUnselectedParents();
+    HSSI.buildFilterQueryParamsAndSend();
 }
 
-EMAC.setActiveSort = function setActiveSort(sortType) {
+HSSI.setActiveSort = function setActiveSort(sortType) {
     // disable all, then set selected one active
     $('div#sort_menu .sort-button').removeAttr('selected').removeClass('active-sort');
     $(`div#sort_menu .sort-button[id$=${sortType}]`).attr('selected', 'true').addClass('active-sort');
 }
 
-EMAC.toggleSortVisible = function toggleSortVisible(visible) {
+HSSI.toggleSortVisible = function toggleSortVisible(visible) {
     if (visible) {
         $('div#sort_menu').show();
     } else {
@@ -346,19 +346,19 @@ EMAC.toggleSortVisible = function toggleSortVisible(visible) {
     }
 }
 
-EMAC.clearSearchBox = function clearSearchBox() {
+HSSI.clearSearchBox = function clearSearchBox() {
     $("#searchbar").val('');
 }
 
-EMAC.submitSearch = function submitSearch() {
+HSSI.submitSearch = function submitSearch() {
     // search results are sorted by relevance weight
     // so remove any applied sorting filters before submitting
-    EMAC.setActiveSort('date');
-    EMAC.toggleSortVisible(false);
-    EMAC.buildFilterQueryParamsAndSend();
+    HSSI.setActiveSort('date');
+    HSSI.toggleSortVisible(false);
+    HSSI.buildFilterQueryParamsAndSend();
 }
 
-EMAC.clearAllFilterCheckboxes = function clearAllFilterCheckboxes(collapse, filterType) {
+HSSI.clearAllFilterCheckboxes = function clearAllFilterCheckboxes(collapse, filterType) {
     var filterMenu = $(`div[id^=${filterType}-menu]`);
     $(filterMenu).find('[name$=_checkbox]').prop('checked', false);
     $(filterMenu).find('.selected_filter').removeClass('selected_filter');
@@ -371,17 +371,17 @@ EMAC.clearAllFilterCheckboxes = function clearAllFilterCheckboxes(collapse, filt
     }
 }
 
-EMAC.clearAllFilterControls = function clearAllFilterControls(collapseMenus) {
-    EMAC.clearSearchBox();
+HSSI.clearAllFilterControls = function clearAllFilterControls(collapseMenus) {
+    HSSI.clearSearchBox();
     $('.filter-chip-container').empty();
-    EMAC.clearAllFilterCheckboxes(collapseMenus, 'category');
-    EMAC.clearAllFilterCheckboxes(collapseMenus, 'tooltype');
-    EMAC.clearAllFilterCheckboxes(collapseMenus, 'collection');
-    EMAC.setActiveSort('date');
-    EMAC.toggleSortVisible(true);
+    HSSI.clearAllFilterCheckboxes(collapseMenus, 'category');
+    HSSI.clearAllFilterCheckboxes(collapseMenus, 'tooltype');
+    HSSI.clearAllFilterCheckboxes(collapseMenus, 'collection');
+    HSSI.setActiveSort('date');
+    HSSI.toggleSortVisible(true);
 }
 
-EMAC.scrollToContentTop = function scrollToContentTop(delay) {
+HSSI.scrollToContentTop = function scrollToContentTop(delay) {
     // scroll to top of resource content box accounting for header menu row
     var stickyOffset = 40;
     if ($('.mobile-filter-toggle').is(':visible')) {
@@ -396,24 +396,24 @@ EMAC.scrollToContentTop = function scrollToContentTop(delay) {
         window.scrollTo(0, sortTop);
     }
     // if there is an anchor set, scroll back to it
-    if (EMAC.resourceFilterAnchor) {
+    if (HSSI.resourceFilterAnchor) {
         var scrollOffset = 140;
         if ($('.mobile-filter-toggle').is(':visible')) {
             scrollOffset += 265;
         }
-        var anchorRelativeTop = $(`a.anchor-set[name=${EMAC.resourceFilterAnchor}]`).get(0).getBoundingClientRect().top;
+        var anchorRelativeTop = $(`a.anchor-set[name=${HSSI.resourceFilterAnchor}]`).get(0).getBoundingClientRect().top;
         var resourceTop = $('div#resource_content').offset().top  + anchorRelativeTop - scrollOffset;
         window.scrollTo({ top: resourceTop, behavior: 'smooth' });
-        EMAC.resourceFilterAnchor = null;
+        HSSI.resourceFilterAnchor = null;
     }
 }
 
-EMAC.showResultCount = function showResultCount(queryParamUrl) {
+HSSI.showResultCount = function showResultCount(queryParamUrl) {
     let results = $("#resource_content .callout").length;
     if (results === 0) {
         $('#result-count').html("No resources match your search...yet!<br/>Would you like to <a href='/submissions'>submit a new resource?</a>").show();
         $('#result-count').addClass('no-results');
-        EMAC.toggleSortVisible(false);
+        HSSI.toggleSortVisible(false);
     } else {
         var collections = $("#resource_content .callout.collection").length;
         var visibleResults = (results - collections);
@@ -432,14 +432,14 @@ EMAC.showResultCount = function showResultCount(queryParamUrl) {
         }
         if (params.some(param => param.startsWith('related_resource=')
                                   || param.startsWith('q='))) {
-            EMAC.toggleSortVisible(false);
+            HSSI.toggleSortVisible(false);
         } else {
-            EMAC.toggleSortVisible(true);
+            HSSI.toggleSortVisible(true);
         }
     }
 }
 
-EMAC.showAppliedFilters = function showAppliedFilters(queryParamUrl) {
+HSSI.showAppliedFilters = function showAppliedFilters(queryParamUrl) {
     $('.filter-chip-container').empty();
     var params = queryParamUrl.substring(1).split('&');
     var filterTypes = [...new Set(params.map(param => param.split('=')[0]))];
@@ -455,7 +455,7 @@ EMAC.showAppliedFilters = function showAppliedFilters(queryParamUrl) {
             case 'category':
             case 'tooltype':
             case 'collection':
-                EMAC.addFilterChipSection(filter);
+                HSSI.addFilterChipSection(filter);
                 break;
             default:
                 break;
@@ -463,29 +463,29 @@ EMAC.showAppliedFilters = function showAppliedFilters(queryParamUrl) {
     });
 }
 
-EMAC.getFilterLabel = function getFilterLabel(filterId) {
+HSSI.getFilterLabel = function getFilterLabel(filterId) {
     var label = $(`label[for$=${filterId}]`)[0];
     var labelText = $(label).text();
     return labelText;
 }
 
-EMAC.getParentClass = function getParentClass(filterId) {
+HSSI.getParentClass = function getParentClass(filterId) {
     var label = $(`label[for$=${filterId}]`)[0];
     var className = $(label).attr('parent-abbr');
     return className;
 }
 
-EMAC.addFilterChip = function addFilterChip(filterId) {
-    var label = EMAC.getFilterLabel(filterId);
-    var className = EMAC.getParentClass(filterId);
+HSSI.addFilterChip = function addFilterChip(filterId) {
+    var label = HSSI.getFilterLabel(filterId);
+    var className = HSSI.getParentClass(filterId);
     $(`div.filter-chip-container`).append(`<div class="filter-chip ${className}" filter-id="${filterId}"><span>${label}</span><i class="fi-x"></i></div>`);
 }
 
-EMAC.addFilterChipSection = function addFilterChipSection(filter) {
+HSSI.addFilterChipSection = function addFilterChipSection(filter) {
     var section = $('<div class="filter-chip-section"></div>');
     filter.ids.forEach(filterId => {
-        var label = EMAC.getFilterLabel(filterId);
-        var className = EMAC.getParentClass(filterId);
+        var label = HSSI.getFilterLabel(filterId);
+        var className = HSSI.getParentClass(filterId);
         $(section).append(`<div class="filter-chip ${className}" filter-id="${filterId}"><span>${label}</span><i class="fi-x"></i></div>`);
     });
     $('div.filter-chip-container').append(section);
@@ -502,19 +502,19 @@ $(document).ready(function () {
             return;
         }
         var sortType = $(this).attr('id').split('_')[2];
-        EMAC.setActiveSort(sortType);
-        EMAC.buildFilterQueryParamsAndSend();
+        HSSI.setActiveSort(sortType);
+        HSSI.buildFilterQueryParamsAndSend();
     });
 
     // search button
     $('button.search-button').on('click', function() {
-        EMAC.submitSearch();
+        HSSI.submitSearch();
     });
 
     // seach textbox
     $('input#searchbar').on('keyup', function(evt) {
         if (evt.originalEvent.key === 'Enter' || evt.originalEvent.keyCode === 13) {
-            EMAC.submitSearch();
+            HSSI.submitSearch();
         }
     });
 
@@ -531,18 +531,18 @@ $(document).ready(function () {
         if ($('.mobile-filter-toggle').is(':visible')) {
             evt.originalEvent.stopPropagation();
         }
-        EMAC.clearAllFilterControls(true);
-        EMAC.buildFilterQueryParamsAndSend();
+        HSSI.clearAllFilterControls(true);
+        HSSI.buildFilterQueryParamsAndSend();
     });
 
     // parent filters
-    $('.parent_filter[name$=_checkbox]').on('change', EMAC.handleParentFilterChange);
+    $('.parent_filter[name$=_checkbox]').on('change', HSSI.handleParentFilterChange);
 
     // sub filters
-    $('.sub_filter[name$=_checkbox]').on('change', EMAC.handleSubFilterChange);
+    $('.sub_filter[name$=_checkbox]').on('change', HSSI.handleSubFilterChange);
 
     // resource info label boxes
-    $('div#resource_content').on('change','.resource_info_label[name=category_checkbox]', EMAC.handleResourceLabelClick);
+    $('div#resource_content').on('change','.resource_info_label[name=category_checkbox]', HSSI.handleResourceLabelClick);
 
     // related resource buttons
     $('div#resource_content').on('click', 'a.related_btn', function(evt) {
@@ -551,16 +551,16 @@ $(document).ready(function () {
         // hide the foundation tooltip to prevent bizarre offset bug
         $(this).foundation('hide');
         var queryParamUrl = $(this).attr('href');
-        EMAC.clearAllFilterControls(true);
-        EMAC.toggleSortVisible(false);
-        EMAC.loadContentByQueryParams(queryParamUrl, true);
+        HSSI.clearAllFilterControls(true);
+        HSSI.toggleSortVisible(false);
+        HSSI.loadContentByQueryParams(queryParamUrl, true);
     });
 
     // highlighted resource "reset" button
     $('div#resource_content').on('click', 'a.reset_btn', function(evt) {
         evt.originalEvent.preventDefault();
-        EMAC.clearAllFilterControls(true);
-        EMAC.buildFilterQueryParamsAndSend();
+        HSSI.clearAllFilterControls(true);
+        HSSI.buildFilterQueryParamsAndSend();
     });
 
     // copy link icon
@@ -667,23 +667,23 @@ $(document).ready(function () {
 
     // build badge link HTML and markdown for modal
     $('div#resource_content').on('click', 'div.citation_id > svg', function(evt) {
-        var emacLink = $(this).closest('.icon-container').find('span.copy_link').text();
+        var HSSILink = $(this).closest('.icon-container').find('span.copy_link').text();
         var svgText = $(this).find('title').text();
         var parts = svgText.split(':');
-        var badgeSrc = `https://img.shields.io/badge/EMAC-${parts[1].trim().replace('-', '--')}-blue`;
-        var emacAlt = `EMAC ${parts[1].trim()}`;
-        var htmlToEncode = `<a href="${emacLink}"><img src="${badgeSrc}" alt="${emacAlt}"></a>`;
+        var badgeSrc = `https://img.shields.io/badge/HSSI-${parts[1].trim().replace('-', '--')}-blue`;
+        var HSSIAlt = `HSSI ${parts[1].trim()}`;
+        var htmlToEncode = `<a href="${HSSILink}"><img src="${badgeSrc}" alt="${HSSIAlt}"></a>`;
         htmlToEncode = htmlToEncode.replace(/</g, '&lt;');
         htmlToEncode = htmlToEncode.replace(/>/g, '&gt;');
-        var htmlString = '<div><div class="badge-dialog-title">EMAC Badge</div>';
+        var htmlString = '<div><div class="badge-dialog-title">HSSI Badge</div>';
         htmlString += '<div class="badge-label">HTML <i class="fa fa-files-o copy-markup-icon" title="Copy"></i> <span class="copy-message">Copied!</span></div>';
         htmlString += `<textarea class='badge-markup' readonly>${htmlToEncode}</textarea>`;
         htmlString += '<div class="badge-label">Markdown <i class="fa fa-files-o copy-markup-icon" title="Copy"></i> <span class="copy-message">Copied!</span></div>';
-        htmlString += `<textarea class='badge-markup' readonly>[![EMAC](${badgeSrc})](${emacLink})</textarea>`;
+        htmlString += `<textarea class='badge-markup' readonly>[![HSSI](${badgeSrc})](${HSSILink})</textarea>`;
         htmlString += '<div class="badge-label">Image URL <i class="fa fa-files-o copy-markup-icon" title="Copy"></i> <span class="copy-message">Copied!</span></div>';
         htmlString += `<textarea class='badge-markup' readonly>${badgeSrc}</textarea>`;
         htmlString += '<div class="badge-label">Target URL <i class="fa fa-files-o copy-markup-icon" title="Copy"></i> <span class="copy-message">Copied!</span></div>';
-        htmlString += `<textarea class='badge-markup' readonly>${emacLink}</textarea>`;
+        htmlString += `<textarea class='badge-markup' readonly>${HSSILink}</textarea>`;
         htmlString += `</div>`;
         $('#modal .modal-content').html(htmlString);
         if ($('#modal .modal-content').hasClass('popup-title')) {
@@ -748,20 +748,20 @@ $(document).ready(function () {
             }
             var sortParam = params.find(param => param.startsWith('sort='));
             if (sortParam && sortParam.split('=')[1] == 'name') {
-                EMAC.setActiveSort('name');
+                HSSI.setActiveSort('name');
             }
             // template rendering handles search box value based on "q" param
             // so we just need to know if it's there
             if (params.some(param => param.startsWith('related_resource=')
                                   || param.startsWith('q='))) {
-                EMAC.toggleSortVisible(false);
+                HSSI.toggleSortVisible(false);
             }
             // if the initial load already has settings/params on the URL,
             // assume the person has visited before and go straight
             // to the content (need slight delay for some reason)
-            EMAC.scrollToContentTop(200);
+            HSSI.scrollToContentTop(200);
         }
     }
-    EMAC.showResultCount(window.location.search);
-    EMAC.showAppliedFilters(window.location.search);
+    HSSI.showResultCount(window.location.search);
+    HSSI.showAppliedFilters(window.location.search);
 });

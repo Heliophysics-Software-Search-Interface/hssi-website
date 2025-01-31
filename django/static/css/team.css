@@ -8,7 +8,7 @@
     background: linear-gradient(to right, #fcfcfd, #ececec);
 }
 
-.emaccordion-header-bar {
+.accordion-header-bar {
     cursor: pointer;
     padding: 0 1.2rem;
     background: #e3e3e3;
@@ -22,7 +22,7 @@
     margin-bottom: 1rem;
 }
 
-.emaccordion-header-bar.page_title {
+.accordion-header-bar.page_title {
     -ms-grid-column: 1;
     grid-column: 1;
     -ms-grid-row: 1;
@@ -58,7 +58,7 @@
     transform: rotate(-224deg);
 }
 
-.emaccordion-content {
+.accordion-content {
     display: none;
 }
 

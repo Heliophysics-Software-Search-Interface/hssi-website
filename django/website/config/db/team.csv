@@ -1,4 +1,4 @@
 id,name,member_image,description,personal_url,order,previous_order,is_alumnus,is_curator,curator_account,collections,categories
-22db37d0-a8ea-4b43-924e-a314ccf24bd4,Isaiah Smith,resources/emac_team/isaiah.jpg,Student Developer,https://technostalgic.gitlab.io/portfolio/,0,0,0,0,1,,
-3963c29d-f8a5-4d94-bc53-fd5369ecf670,Shawn Polson,resources/emac_team/shawn.jpg,Technical Lead,https://www.shawnpolson.com/,1,1,0,0,,,
-32adecb0-4111-4b96-a92d-8294a8fdc7c1,Julie Barnum,resources/emac_team/julie.jpg,Principal Investigator,https://www.linkedin.com/in/jibarnum/,2,2,0,0,,,
+22db37d0-a8ea-4b43-924e-a314ccf24bd4,Isaiah Smith,resources/hssi_team/isaiah.jpg,Student Developer,https://technostalgic.gitlab.io/portfolio/,0,0,0,0,1,,
+3963c29d-f8a5-4d94-bc53-fd5369ecf670,Shawn Polson,resources/hssi_team/shawn.jpg,Technical Lead,https://www.shawnpolson.com/,1,1,0,0,,,
+32adecb0-4111-4b96-a92d-8294a8fdc7c1,Julie Barnum,resources/hssi_team/julie.jpg,Principal Investigator,https://www.linkedin.com/in/jibarnum/,2,2,0,0,,,

@@ -65,7 +65,7 @@
             
             {% if is_curator %}
                 {% if resource.submission.curator_lock == None or resource.submission.curator_lock == request.user %}
-                <a class="hollow button float-left curate_btn" href="{{EMAC_PROTOCOL}}://{{EMAC_DOMAIN}}/curate?id={{resource.id}}" data-tooltip tabindex="1" title="Edit categories or collections for this resource" data-position="bottom" data-alignment="right">Curate</a>
+                <a class="hollow button float-left curate_btn" href="{{HSSI_PROTOCOL}}://{{HSSI_DOMAIN}}/curate?id={{resource.id}}" data-tooltip tabindex="1" title="Edit categories or collections for this resource" data-position="bottom" data-alignment="right">Curate</a>
                 {% else %}
                 <button class="hollow button float-left curate_btn" data-tooltip tabindex="1" title="Edits locked by another curator" data-position="bottom" data-alignment="right" disabled="true">Curate</button>
                 {% endif %}

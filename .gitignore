@@ -159,5 +159,5 @@ django/static/admin
 django/static/analytics_plots
 django/static/colorful
 django/static/django_extensions
-django/static/emac_apps
+django/static/hssi_apps
 django/static/import_export

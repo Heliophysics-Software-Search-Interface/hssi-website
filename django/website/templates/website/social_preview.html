@@ -1,0 +1,19 @@
+<!-- social media preview tags -->
+<meta name="twitter:card" content="summary" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/static/images/logo-image.png" />
+<meta property="og:site_name" content="HSSI" />
+{% if related_resource %}
+<meta property="og:title" content="{{related_resource.name}}" />
+<meta property="og:url" content="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}?id={{related_resource.id}}" />
+    <meta property="og:description" content="{{related_resource.description}}..." />
+{% elif selected_collection %}
+<meta property="og:title" content="The {{selected_collection.name}} Collection" />
+<meta property="og:url" content="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}?collection={{selected_collection.id}}" />
+<meta property="og:description" content="{{selected_collection.description}}..." />
+{% else %}
+<meta property="og:title" content="Heliophysics Software Search Interface" />
+<meta property="og:url" content="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}" />
+<meta property="og:description" content="Heliophysics Software Search Interface" />
+{% endif %}
+<!-- end social media preview tags -->

@@ -1,0 +1,28 @@
+gunicorn
+psycopg2-binary
+django
+django-import-export
+django-colorful
+django-ipware
+django-mathfilters
+django-crispy-forms 
+crispy-bootstrap4 # required in newer versions of crispy forms
+requests
+urllib3
+numpy
+pandas
+matplotlib
+tablib
+nltk
+
+# analytics:
+google-api-core
+google-api-python-client
+google-auth
+google-auth-httplib2
+google-auth-oauthlib
+googleapis-common-protos
+oauth2client # TODO remove this dependency (the whole library is deprecated)
+gspread
+
+# also see: /shared/pip-requirements/*.txt

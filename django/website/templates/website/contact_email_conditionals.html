@@ -1,0 +1,30 @@
+{% extends "website/contact_email_base.html" %}
+
+{% block contactcount %}
+{% if tool_contact_order == 0 %}
+    We are contacting you about hosting your resource {{ tool_name }} on the 
+    <a href="{{ site_protocol }}://{{ site_domain }}">Resource Discovery Tool</a>. At the end of this 
+    message is more information about RDT and why you might want to have your resource featured.
+{% elif tool_contact_order == 1 %}
+    We previously contacted you in regards to adding {{ tool_name }} to the
+    <a href="{{ site_protocol }}://{{ site_domain }}">Resource Discovery Tool</a>.
+{% else %}
+    We previously contacted you in regards to adding {{ tool_name }} to the 
+    <a href="{{ site_protocol }}://{{ site_domain }}">Resource Discovery Tool</a>. We are reaching 
+    out a final time to see if you are interested in sharing more information about your resource for RDT.
+{% endif %}
+{% endblock %}
+
+{% block inlitelig %}
+{% if tool_is_inlit_elig %}
+    Since we have found {{ tool_name }} mentioned in the scientific literature, we assume that having it published again 
+    on RDT is okay. <strong>We plan to publish what information we were able to find soon unless we hear otherwise 
+    from you.</strong> The info we found is likely incomplete so we highly encourage you to fill out the 
+    <a href="{{ site_protocol }}://{{ site_domain }}/submissions/{{ tool_id }}">prefilled form</a> for {{ tool_name }}.
+{% else %}
+    Since we could not find {{ tool_name}} mentioned in any published scientific paper we do not want to 
+    publish it on RDT without your permission. <strong>Therefore, it will not appear unless we hear from you </strong>
+    (either by completing the <a href="{{ site_protocol }}://{{ site_domain }}submissions/{{ tool_id }}">prefilled form</a> 
+    or by <a href="mailto:admin@my-site.com">emailing us</a>).
+{% endif %}
+{% endblock %}

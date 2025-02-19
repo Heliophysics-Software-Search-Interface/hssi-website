@@ -1,0 +1,209 @@
+{% load static %}
+
+<!doctype html>
+<!-- overflow: inherit used to adjust pop-up behavior -->
+<html class="no-js" lang="en" dir="ltr" style="overflow: inherit;">
+
+<head>
+	<title>{% block title %}HSSI Search{% endblock %}</title>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
+	<meta http-equiv="Content-Language" content="en-us" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="rno" content="John Doe" />
+	<meta name="content-owner" content="Jane Doe" />
+	<meta name="webmaster" content="John Smith" />
+	{% block seo_description %}
+	<meta name="description" content="Heliophysics Software Search Interface" />
+	{% endblock %}
+	<meta name="doc-class" content="Living Document" />
+	<link rel="icon" href="{% static 'images/favicon.ico' %}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/css/foundation.min.css" integrity="sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.foundation.min.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.css" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Parisienne" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="{% static 'css/contents.css' %}?v=2024-10-15" />
+	<link rel="stylesheet" href="{% static 'css/elements.css' %}?v=2024-10-15" />
+	<link rel="stylesheet" href="{% static 'css/navigation.css' %}?v=2024-10-15" />
+	<link rel="stylesheet" href="{% static 'css/other_pages.css' %}?v=2024-10-15" />
+	<link rel="stylesheet" href="{% static 'css/media.css' %}?v=2024-10-15" />
+
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+	<!-- Foundation -->
+	<script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/js/foundation.min.js" integrity="sha256-pRF3zifJRA9jXGv++b06qwtSqX1byFQOLjqa2PTEb2o=" crossorigin="anonymous"></script>
+	<script src="https://cdn.datatables.net/1.10.21/js/dataTables.foundation.min.js"></script>
+
+	{% comment %}
+		https://docs.mathjax.org/en/latest/web/configuration.html#using-a-local-file-for-configuration
+
+		If you are using the same MathJax configuration over multiple pages, 
+		you may find it convenient to store your configuration in a separate JavaScript file that you load into the page.
+		
+		https://docs.mathjax.org/en/latest/options/index.html
+	{% endcomment %}
+
+	<script type="text/javascript" src="{% static 'js/mathjax-config.js' %}?v=2024-10-15"></script>
+	<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+	<script>
+		// set up HSSI namespace
+		var HSSI = HSSI || {};
+
+		jQuery(document).ready(function ($) {
+			// init all the foundation content
+			$(document).foundation();
+
+			// set up the HSSI name in the menu bar to show/hide at correct scroll height
+			$("#site-name-short").css('color', 'rgb(47,44,44)'); //hide your div initially
+			HSSI.topOfDropdown = $("#dropdown-menu").offset().top;
+			$(window).scroll(function () {
+				if ($(window).scrollTop() > HSSI.topOfDropdown) {
+					$("#site-name-short").css('color', 'white').show(100);
+				} else {
+					$("#site-name-short").css('color', 'rgb(47,44,44)').show(100);
+				}
+			});
+		});
+	</script>
+
+	<!-- <script type="application/javascript" src="{% static 'js/infinite.min.js'%}"></script> -->
+	<script type="application/javascript" src="{% static 'js/vendor/what-input.js' %}"></script>
+
+	{% block head %} {% endblock %}
+</head>
+
+<body>
+
+	{% block page_header %}
+	<div class="header-background"></div>
+	<!--Main-Header -->
+	<div class="main_header-container">
+		<div class="logo-image show-for-small-only ">
+			<a href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/">
+				<img src="{% static 'images/logo-image.png' %}" alt="Site Logo" />
+			</a>
+		</div>
+	</div>
+
+	<!-- NASA SUB-HEADER -->
+	<div class="sub_header-container">
+		<div class="logo-image hide-for-small-only">
+			<a href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/">
+				<img src="{% static 'images/logo-image.png' %}" alt="Site Logo" />
+			</a>
+		</div>
+		<div class="site_name">
+			<a href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/">
+				HSSI - Heliophysics Software Search Interface<br>
+			</a>
+		</div>
+	</div>
+
+	<div class="title-bar hide-for-large-only" data-responsive-toggle="dropdown-menu">
+		<div class="title-bar-right">
+			<button class="menu-icon" type="button" data-toggle="dropdown-menu"></button>
+			<div class="title-bar-title"></div>
+		</div>
+	</div>
+
+
+	<div id="dropdown-menu" class="nav-content">
+		<div id="site-name-short" class="site-name-short hide-for-small-only">My Site</div>
+		<nav class="nav_dropdown_list top-nav" role="menubar" aria-label="breadcrumbs">
+			<li role="nav-list"><a class="nav-link" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/">Home</a></li>
+			<li role="nav-list"><a class="nav-link" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/submissions">Submit a Resource</a></li>
+			<li role="nav-list"><a class="nav-link" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/FAQ">FAQ</a></li>
+			<li role="nav-list"><a class="nav-link" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/team">Our Team</a></li>
+			<li role="nav-list"><a class="nav-link" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/news">News</a></li>
+		</nav>
+		<div id="social-icon-container" class="social-icon-container hide-for-small-only">
+			<a class="social-link" href="https://bsky.app/" target="_blank">
+				<img src="{% static 'images/bluesky_media_kit_logo.svg' %}" alt="Visit our Bluesky account" />
+			</a>
+			<a class="social-link" href="/news/rss" target="_blank">
+				<img src="{% static 'images/social_rss_48.png' %}" alt="Subscribe to HSSI news via RSS" />
+			</a>
+			<a class="social-link" href="https://www.youtube.com/" target="_blank">
+				<img src="{% static 'images/youtube_social_square_dark_44.png' %}" alt="Visit our YouTube channel" />
+			</a>
+		</div>
+	</div>
+
+	{% endblock %}
+
+	<div class="white-background">
+		{% block page_content %} {% endblock %}
+	</div>
+
+	{% block page_footer %}
+	<!-- FOOTER -->
+	<footer>
+		<div class="grid-x footer-section">
+			<div class="small-12 medium-6 large-4">
+			</div>
+
+			<div class="medium-6 large-8 cell text-right">
+				<ul class="align-center navbar-footer menu">
+					<li class="footer_tag">
+						<span>Footer Info 1: </span>
+						<a href="#">Qwerty</a>
+					</li>
+					<li>
+						<span>Footer Info 2: </span>
+						<a href="#">Qwerty</a>
+					</li>
+					<li>
+						<a href="#">Footer Info 3</a>
+					</li>
+					<li>
+						<a href="#" id="footer_content">Footer Info 4</a>
+					</li>
+					<li>
+						<a id="last-link" href="#">Footer Info 5</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</footer>
+	{% endblock %}
+
+	<a href="#" class="back-to-top scroll-button"><i class="fa fa-angle-double-up"></i></a>
+	<a href="#" class="go-to-bottom scroll-button"><i class="fa fa-angle-double-down"></i></a>
+
+	<script>
+
+		var amountScrolled = 250;
+
+		// back to top functionality
+		$(window).scroll(function() {
+			if ( $(window).scrollTop() > amountScrolled ) {
+				$('a.scroll-button').fadeIn('slow');
+			} else {
+				$('a.scroll-button').fadeOut('slow');
+			}
+		});
+
+		$('a.scroll-button').hide();
+
+		$('a.scroll-button').click(function() {
+			var scrollPosition = 0;
+			if ($(this).hasClass('go-to-bottom')) {
+				scrollPosition = $(document).height();
+			}
+			$('html, body').animate({
+				scrollTop: scrollPosition
+			}, 600);
+			return false;
+		});
+
+	</script>
+
+	{% block scripts %} {% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,169 @@
+{% extends 'site_base_template.html' %}
+
+{% load custom_tags_and_filters %}
+{% load static %}
+
+{% block title %}
+	{% if related_resource %}
+		{{related_resource.name}}
+	{% else %}
+		{{block.super}}
+	{% endif %}
+{% endblock %}
+
+{% block seo_description %}
+	{% if related_resource %}
+		<meta name="description" content="{{related_resource.description}}" />
+	{% else %}
+		{{block.super}}
+	{% endif %}
+{% endblock %}
+
+{% block head %}
+	
+	{% include "website/social_preview.html" %}
+
+	<link rel="stylesheet" href="{% static 'css/categories.css' %}?v=2024-10-15" />
+	<link rel="stylesheet" href="{% static 'css/resources.css' %}?v=2024-10-15" />
+	<link rel="stylesheet" href="{% static 'css/media.css' %}?v=2024-10-15" />
+	<link rel="stylesheet" href="{% static 'css/app.css' %}?v=2024-10-15" />
+
+	{% include "website/category_styling.html" %}
+
+	<script type="text/javascript" src="{% static 'js/homePage.js' %}?v=2024-10-15"></script>
+	<script type="text/javascript" src="{% static 'js/spin.js' %}"></script>
+
+{% endblock %}
+<!-- END HEAD -->
+
+<!-- PAGE CONTENT -->
+{% block page_content %}
+
+	<div id="main-grid-layout" class="main-grid-layout">
+
+		<div id="sidebar" class="sidebar">
+			<!-- SEARCHBAR -->
+			<div class="search_form_div">
+				<div class="search_form">
+					<div class="search-container">
+						<input type="search" id="searchbar" name="q" class="search-form" value="{{request.GET.q}}" placeholder="Search">
+						<button type="button" class="search-button">
+							<img class="search-img" src="{% static 'images/blue-glass.jpg' %}" alt="search-glass" />
+						</button>
+					</div> 
+				</div>
+			</div>
+			<!--END SEARCHBAR -->
+
+			<!-- CATEGORY SELECTOR -->
+			<div class="category_list">
+				<!-- DROPDOWN CATEGORY SELECTOR FOR SMALL DISPLAY -->
+				<div class="filter-sidebar show-for-small-only">
+					<div class="filter_selector">
+						<div class="mobile-filter-header">
+							<div class="mobile-filter-toggle">
+								<span>Filters</span>
+								<span class="category-t"></span>
+								<input class="hollow button alert reset" type="button" value="Reset" />
+								
+							</div>
+							<div class="mobile-menu-container">
+								<div class="filter-chip-container"></div>
+								<div class="filter-tab-container">
+									<div class="filter-tab open">Categories</div>
+									<div class="filter-tab">Tool Types</div>
+									<div class="filter-tab">Collections</div>
+								</div>
+								<div class="filter-menus">
+								<div class="filter-section-body open">
+									<div class="filter_table" id="category-menu-mobile">
+										{% include "website/filter_menu.html" with is_dropdown="True" tags=categories selected_filter_ids=selected_category_ids filter_type="category" %}
+									</div>
+								</div>
+								<div class="filter-section-body">
+									<div class="filter_table" id="tooltype-menu-mobile">
+										{% include "website/filter_menu.html" with tags=tool_types selected_filter_ids=selected_tooltype_ids filter_type="tooltype" %}
+									</div>
+								</div>
+								<div class="filter-section-body">
+									<div class="filter_table" id="collection-menu-mobile">
+										{% include "website/filter_menu.html" with is_dropdown="True" tags=collections selected_filter_ids=selected_collection_ids filter_type="collection" %}
+									</div>
+								</div>
+							</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- END DROPDOWN CATEGORY SELECTOR FOR SMALL DISPLAY -->
+
+				<!-- CATEGORY SELECTOR FOR MEDIUM DISPLAY -->
+				<div class="filter-sidebar hide-for-small-only">
+					<div class="filter_selector">
+						<div class="filter_table_header">
+							<div class="main-filter-label">Filters</div>
+							<div class="filter-chip-container"></div>
+							<input class="hollow button alert reset" type="button" value="Reset" />
+						</div>
+						<div class="filter-tab-container">
+							<div class="filter-tab open">Categories</div>
+							<div class="filter-tab">Resource Types</div>
+							<div class="filter-tab">Collections</div>
+						</div>
+						<div class="filter-menus">
+							<div class="filter-section-body open">
+								<div class="filter_table" id="category-menu-main">
+									{% include "website/filter_menu.html" with tags=categories selected_filter_ids=selected_category_ids filter_type="category" %}
+								</div>
+							</div>
+							<div class="filter-section-body">
+								<div class="filter_table" id="tooltype-menu-main">
+									{% include "website/filter_menu.html" with tags=tool_types selected_filter_ids=selected_tooltype_ids filter_type="tooltype" %}
+								</div>
+							</div>
+							<div class="filter-section-body">
+								<div class="filter_table" id="collection-menu-main">
+									{% include "website/filter_menu.html" with tags=collections selected_filter_ids=selected_collection_ids filter_type="collection" %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- END CATEGORY SELECTOR FOR MEDIUM DISPLAY -->
+			</div>
+		</div>
+
+		<!-- MAIN CONTENT -->
+		<div class="main-content">
+
+			{% block page_description %}
+			{% endblock %}
+			
+			<div class="resource-content-header">
+				<!-- Used to show no results found! -->
+				<div id="result-count"></div>
+				<div id="sort_menu">
+					<!-- default to sort by date -->
+					<input id="sort_by_date" type="button" class="button sort-button active-sort" value="Sort by Date" selected="selected" />
+					<input id="sort_by_name" type="button" class="button sort-button" value="Sort by Name" />
+				</div>
+			</div>
+			<!-- RESOURCE CONTENT -->
+			<div id="resource_content">
+				{% include "website/resource_list.html" %}
+			</div>
+			<div id="loading_modal"></div>
+			
+		<!-- END MAIN CONTENT -->
+		</div>
+
+	</div>
+
+{% endblock %}
+<!-- END PAGE CONTENT -->
+
+<!-- SCRIPTS -->
+{% block scripts %}
+	{{ block.super }}
+{% endblock %}
+<!-- END SCRIPTS -->

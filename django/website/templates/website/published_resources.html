@@ -1,0 +1,113 @@
+{% extends 'website/categorized_resources.html' %} 
+
+{% block page_description %}
+
+	<p class="welcome main-text">
+		Welcome to the Resource Discovery Tool (RDT)
+	</p>
+	<p class="main-text">
+		<p>
+			RDT serves as a catalog of miscellaneous resources.
+		</p>
+		<span class="toggleLink" onclick="toggleDisplay('elaboration_1',this)">
+			<b>More Information on the site for first-time visitors...</b>
+		</span> 
+		<span class="elaboration" id="elaboration_1">
+			<br/>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc et mollis leo. In rutrum felis id erat fringilla aliquet.
+			</p>
+			<span>
+				<b>Help us improve!</b>
+				<ul>
+					<li>Click the <img class="feedback-logo-text" src="/static/images/feedback.png" alt="feedback_img" /> icon in a resource box to provide suggestions for an individual tool or tools.</li>
+				</ul>
+			</span>
+			<span><b>Other info!</b></span>
+			<ul>
+				<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+				<li>Nunc et mollis leo. In rutrum felis id erat fringilla aliquet.</li>
+				<li>Nullam interdum rhoncus ultrices.</li>
+			</ul>
+			<p>
+				More information on our staffing and organization can be found on <a href="team">Our Team</a> page.
+			</p>
+		</span>
+	</p>
+	<div class="small reveal box-modal" id="modal" data-reveal>
+		<button class="close-button" data-close aria-label="Close modal" type="button">
+		  <span aria-hidden="true">&times;</span>
+		</button>
+		<div class="modal-content"></div>
+	</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+	{{ block.super }}
+
+	<script>
+
+		function toggleDisplay(d,b){
+			var c = document.getElementById(d);
+			if (c.style.display=="block") {
+				c.style.display="none";
+				if (b) {
+					b.innerHTML="<b>More Information on the site for first-time visitors...</b>";
+				}
+			} else {
+				c.style.display="block";
+				if (b) {
+					b.innerHTML="<b>Hide...</b>";
+				}
+			}
+		};
+
+		function getResourceFeedback(resourceID){
+			$.ajax({
+				url:'',
+				type: 'GET',
+				data: {'resource_id' : resourceID},
+				dataType:'json',
+				success: function(data){
+					$('#modal .modal-content').html(data.rendered_form);
+					$('#modal .modal-content').prepend(data.resource_name).addClass('popup-title');
+					$('#modal').foundation('open');
+				},
+				error: function(xhr,errmsg,err){
+					console.log("error");
+					console.log(xhr.status + ": " + xhr.responseText);
+				}
+			})
+		};
+
+		function submitResourceFeedback(){
+			var feedback_form = new FormData(document.getElementById('resource_feedback_form'))
+			$.ajax({
+				url:'',
+				type: 'POST',
+				data: feedback_form,
+				contentType: false,
+            	processData: false,
+				dataType: 'json',
+				success: function(data){
+					if (data.rendered_form)
+					{
+						// Validation failed, display rendered form
+						$('#modal .modal-content').html(data.rendered_form);
+					}
+					else
+					{
+						$('#modal').foundation('close');
+					}
+				},
+				error: function(xhr,errmsg,err){
+					console.log("error");
+					console.log(xhr.status + ": " + xhr.responseText);
+				}
+			})
+		};
+
+	</script>
+{% endblock %} 

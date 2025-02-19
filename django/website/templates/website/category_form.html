@@ -1,0 +1,84 @@
+{% load custom_tags_and_filters %}
+
+<form id={{form_id}} method="GET">
+    {% if is_dropdown %}
+    <ul class="vertical dropdown menu accordion-menu mobile-menu-container" data-accordion-menu>
+    {% else %}
+    <ul class="vertical menu accordion-menu" data-accordion-menu>
+    {% endif %}
+        {% for category in categories %}
+        {% with selected_subcategory_ids=category.children|id_values_list|intersection:selected_category_ids %}
+        {% if selected_category_ids and category.id not in selected_category_ids and not selected_subcategory_ids %}
+        <li class="unselected_filter filter_menu">
+        {% elif selected_category_ids and category.id in selected_category_ids %}
+        <li class="selected_filter filter_menu">
+        {% else %}
+        <li class="filter_menu">
+        {% endif %}
+            <a class="filter_dropdown">
+                <div class="filter_label">
+                    <label class="label {{category.abbreviation}}">
+                        <input class="label {{category.abbreviation}} parent_filter" type="checkbox" name="category_checkbox" value="{{category.id}}" id="{{category.id}}"
+                        {% if category.id in selected_category_ids %} checked {% endif %} >
+                        {{category.abbreviation}}
+                    </label>
+                    <label for="{{category.id}}" class="category_name {{category.abbreviation}}">{{category.name}}</label>
+                </div>
+            </a>
+            {% if selected_subcategory_ids %}
+            <ul class="menu vertical nested is-active">
+            {% else %}
+            <ul class="menu vertical nested">
+            {% endif %}
+                {% for subcategory in category.children.all %}
+                <li>
+                    <input class="label sub_filter" type="checkbox" name="category_checkbox" value="{{subcategory.id}}" id="{{category.id}}_{{subcategory.id}}"
+                        {% if subcategory.id in selected_subcategory_ids %} checked {% endif %} >
+                    </input>
+                    <label class="subcategory_name" for="{{category.id}}_{{subcategory.id}}">{{subcategory.name}}</label>
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endwith %}
+        {% endfor %}
+    </ul>
+</form>
+
+{% if not is_dropdown %}
+    <ul class="vertical menu accordion-menu" data-accordion-menu>
+        <li>
+            <a href="#" id="cat_description">Category Descriptions</a>
+            <ul class="menu vertical nested scrollable-menu cat-description-menu">
+                {% for category in categories %}
+                <li><span class="cat_name">{{category.name}}</span> - {{category.description}}</li>
+                {% endfor %}
+                <li id="cat_suggestion">
+                    <script type="text/javascript">
+						// Email obfuscator script 2.1 by Tim Williams, University of Arizona
+						// Random encryption key feature coded by Andrew Moulden
+						// This code is freeware provided these four comment lines remain intact
+						// A wizard to generate this code is at http://www.jottings.com/obfuscator/
+						{ 
+							var coded = "D8Jy-l13y@139i.t383.DUZ";
+							var key = "FitMsa0N7YcpT1CDze6xVbLI9dO83AvG4ySfoBwklnHhWXRQKPuqmZgEj2JUr5";
+							var shift = coded.length;
+							var link = "";
+							var ltr = "";
+							for (var i = 0; i < coded.length; i++) {
+								if (key.indexOf(coded.charAt(i)) === -1) {
+									ltr = coded.charAt(i);
+									link += (ltr);
+								} else {
+									ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
+									link += (key.charAt(ltr));
+								}
+							}
+							document.write("<a href='mailto:" + link + "'>New Category Suggestion?</a>");
+						}
+					</script>
+                </li>
+            </ul>
+        </li>
+    </ul>
+{% endif %}

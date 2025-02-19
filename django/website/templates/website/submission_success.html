@@ -1,0 +1,42 @@
+{% extends 'site_base_template.html' %}
+
+{% load static %}
+
+{% block head %}
+
+	<link rel="stylesheet" href="{% static 'css/submissions.css' %}?v=2024-10-15" />
+	
+{% endblock %}
+
+{% block page_content %}
+
+	<h1 class="submission_title">Your submission has been received.</h1>
+
+	<div class="submission-summary">
+		Please use this link to edit your submission at any time:
+		<div class="submission-link">
+			<a href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/submissions/{{id}}/">{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/submissions/{{id}}/</a>
+		</div>
+		or contact <a href="mailto:admin@my-site.com">admin@my-site.com</a> for help.
+		<div class="submission_detail">
+			Name: {{submission.name}} <br/>
+			Credits: {{submission.author}}<br/>
+			Description: {{submission.description}}<br/>
+			Categories: {{category_list}}<br/>
+			Collections: {{collection_list}}<br/>
+			Tool Types: {{tooltype_list}}<br/>
+			Search Keywords: {{submission.search_keywords}}<br/>
+			Code Language: {{submission.code_language}}<br/>
+			Other Category: {{submission.other_category}}<br/>
+			Repository: {{submission.repo_url}}<br/>
+			Documentation: {{submission.docs_url}}<br/>
+			Website: {{submission.website_url}}<br/>
+			Related Tools: {{submission.related_tool_string}}<br/>
+			Submitter Contact Info: {{submission.submitter_contact}}<br/>
+			Submission Notes: {{submission.submission_notes}}<br/>
+		</div>
+	</div>
+
+{% endblock %}
+
+

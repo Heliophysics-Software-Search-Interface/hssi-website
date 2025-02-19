@@ -1,0 +1,370 @@
+/***************************************************************************************
+    resource content header has the count of items showing and the sort buttons
+*/
+
+div.resource-content-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+#result-count,
+#in-lit-header {
+    color: #14679e;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+#in-lit-header {
+    padding-top: 1em;
+    margin-bottom: 0.5em;
+}
+
+#result-count.no-results {
+    color: red;
+    width: 100%;
+    text-align: center;
+}
+
+#result-count a:hover{
+	text-decoration: underline;
+}
+
+#sort_menu {
+    padding: 6px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#sort_menu .sort-button {
+    color: #1779ba;
+    border: 1px solid #1779ba;
+    background-color: transparent;
+    margin-bottom: 0;
+}
+
+#sort_menu .sort-button:hover {
+    text-decoration: none;
+}
+
+#sort_menu .sort-button.active-sort {
+    color: #fefefe;
+    background-color: #1779ba;
+}
+
+#sort_menu .sort-button.active-sort:hover {
+    background-color: #14679e;
+}
+
+/*****************************************************************************************
+    resource content div below the count that is the container for all listed resources
+*/
+
+#resource_content {
+    position: relative;
+    min-height: 100vh;
+}
+
+/*****************************************************************************************
+    main resource card (repeated within resource_content)
+*/
+
+.resource-info {
+    background: linear-gradient(to left, #fcfcfd, #ececec);
+    border-radius: 5px;
+    padding-bottom: 0.5rem;
+    margin-right: 10px;
+    min-height: 215px;
+
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: auto;
+}
+
+.resource-info.in-lit {
+    min-height: 0;
+}
+
+div.resource-header-row {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    grid-row: 1;
+}
+
+p.resource_name,
+div.resource_name,
+div.collection-header {
+	font-size: 16px;
+	font-weight: bold;
+	color: #4d4d4d;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+p.resource_info {
+	font-size: 13px;
+	color: #4d4d4d;
+	margin-top: 0;
+    padding-top: 4pt;
+    margin-bottom: 8px;
+}
+
+.resource_version {
+	font-size: 13px;
+	font-weight: normal;
+}
+
+.icon-container {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-rows: min-content;
+    grid-template-rows: min-content;
+    -ms-grid-columns: max-content max-content max-content;
+    grid-template-columns: max-content max-content max-content;
+    justify-items: center;
+    margin-left: 1rem;
+}
+
+
+.has-tip {
+    border-bottom: none;
+}
+
+span.copy_link {
+    display:none;
+}
+
+.copy_img {
+    cursor: pointer;
+}
+
+.copy-icon {
+    height: 35px;
+    filter: opacity(70%);
+    padding-right: 7px;
+}
+
+.feedback-icon {
+    height: 33px;
+    cursor: pointer;
+}
+/* end resource-header-row */
+
+/* grid-x is second row, has description, logo, buttons */
+div.grid-x {
+    grid-row: 2;
+}
+
+p.resource_description,
+div.resource_description,
+div.collection-description {
+	font-size: 15px;
+	color: #4d4d4d;
+    margin: 0.75rem 0.5rem 0.75rem 0;
+}
+
+div.resource_description {
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+}
+
+div.resource-details p {
+    font-size: 13px;
+	color: #4d4d4d;
+    margin: 0;
+}
+
+div.resource-details p.github-notes {
+    margin-left: 8.1rem;
+    text-indent: -8.1rem;
+}
+
+div.resource-details p:last-of-type {
+    margin-bottom: 1.15rem;
+}
+
+div.logo_container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+a.logo_link {
+    margin: 1em;
+}
+
+img.resource_logo {
+    max-width: 150px; 
+    object-fit: contain;
+    /* add margin in case wrapping link
+       is not rendered by the template */
+    margin: 1em;
+}
+
+a.logo_link img.resource_logo {
+    /* remove margin if image is wrapped */
+    margin: 0;
+}
+
+.in-lit-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+
+/* arrow div is third row */
+div.arrow {
+    grid-row: 3;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    left: 46%;
+    bottom: -12px;
+    cursor: pointer;
+
+    .fa-angle-down {
+        border: 1px solid #3498db;
+        background: white;
+        color: #3498db;
+        width: 24px;
+        height: 24px;
+        font-size: 16px;
+        border-radius: 25px;
+        padding: 3px;
+        text-align: center;
+        font-weight: 700;
+    }
+    
+    .rotate {
+        -moz-transition: all .25s linear;
+        -webkit-transition: all .25s linear;
+        transition: all .25s linear;
+    }
+
+    .rotate.down {
+        -moz-transform:rotate(180deg);
+        -webkit-transform:rotate(180deg);
+        transform:rotate(180deg);
+    }
+}
+
+/* hidden div that follows a .resource-info div to hold the tagged category ids */
+div.child-category-list {
+    display: none;
+}
+
+/*******************************************************************************
+    collapsed main card (desktop)
+*/
+.resource-info.collapsed {
+    min-height: 0px;
+}
+
+.resource-info.collapsed .logo_container {
+    display: none;
+}
+
+.resource-info.collapsed .grid-x > .large-9 {
+    width: 100%;
+}
+
+.resource-info.collapsed .resource_description {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 1.15rem;
+}
+
+.resource-info.collapsed .resource_description > *:not(a),
+.resource-info.collapsed .resource_description ~ * {
+    display: none;
+}
+
+
+/*****************************************************************************************
+    main resource card when it is the highlighted resource or a collection info box
+*/
+
+div.resource-info.highlighted-resource,
+div.resource-info.collection {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-bottom: 0;
+}
+
+div.resource-info.collection {
+    min-height: auto;
+    padding-bottom: 1.1rem;
+}
+
+/****************************************************************************************
+    indented "related resource" and "collection" lists under the main card/box
+*/
+
+div.related-resource-list,
+div.collection-resources-list {
+    padding: 0 1rem 0 1.5rem;
+    border: 1px solid rgba(10,10,10,.25);
+    border-top: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-right: 10px;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #e9e9e9);
+}
+
+div.collection-resources-list {
+    padding-top: 1rem;
+}
+
+.related-resource-header {
+    padding: 1rem 0 0 0;
+}
+
+div.related-resource-list .resource-info,
+div.collection-resources-list .resource-info {
+    margin-right: 0;
+}
+
+
+/**********************************************************************************
+    feedback dialog pop-up
+*/
+
+.popup-title::first-line {
+    text-align: center !important;
+    text-align: -webkit-center !important;
+    font-weight: bold;
+    font-size: 19px;
+    line-height: 250%;
+    position: absolute;
+}
+
+.popup-title {
+    text-align: center !important;
+    text-align: -webkit-center !important;
+    
+}
+
+#resource_feedback_form {
+    text-align: left;
+}
+
+/*********************************************************************
+    other misc
+*/
+
+/* used */
+.reveal.small {
+	background-color: white;
+    width: 35%;
+    /* prevent from getting so narrow the text wraps */
+    min-width: max-content;
+}
+
+/* maybe used in submission or subscription form?? */
+.control-label {
+    font-weight: 500;
+}

@@ -1,0 +1,28 @@
+{% extends 'website/hssi_email_template.html' %}
+
+{% block email_content %}
+
+<h1> Listing {{ tool_name }} on <a href="{{ site_protocol }}://{{ site_domain }}/">Resource Discovery Tool</a> </h1>
+<p>Dear author of {{ tool_name }},<br>
+<br>
+    {% block contactcount %}
+    {% endblock %}
+<br>
+<br>We think {{ tool_name }} would be a valuable resource for the scientific community to have 
+    access to on RDT and have already filled in some basic information we could find on it. But the more 
+    info we have, the more likely that other scientists in the field will be able to find your resource. 
+    Please consider adding (or correcting) the information found 
+    <a href="{{ site_protocol }}://{{ site_domain }}/submissions/{{ tool_id }}">here</a>.<br>
+<br>
+    {% block inlitelig %}
+    {% endblock %}
+<br>
+<br>If you have another resource, or know a colleague who might be interested, you can create a new submission 
+    <a href="{{ site_protocol }}://{{ site_domain }}/submissions">here</a>. If you have questions or concerns please feel 
+    free to email us at: admin@my-site.com; we would love to hear from you!<br>
+<br>
+<br>
+<br>Thank you,<br>
+<br>The Resource Discovery Tool team.</p>
+
+{% endblock %}

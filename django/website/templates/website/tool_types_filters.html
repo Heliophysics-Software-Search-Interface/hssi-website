@@ -1,0 +1,42 @@
+
+{% if is_dropdown %}
+<ul class="vertical dropdown menu accordion-menu mobile-menu-container" data-accordion-menu>
+{% else %}
+<ul class="vertical menu accordion-menu" data-accordion-menu>
+{% endif %}
+    {% for tool_type in tool_types %}
+    {% if selected_tooltype_ids and tool_type.id not in selected_tooltype_ids and not selected_subtooltype_ids %}
+    <li class="unselected_filter filter_menu">
+    {% elif selected_tooltype_ids and tool_type.id in selected_tooltype_ids %}
+    <li class="selected_filter filter_menu">
+    {% else %}
+    <li class="filter_menu">
+    {% endif %}
+        <a class="filter_dropdown">
+            <div class="filter_label">
+                <label class="label {{tool_type.abbreviation}}">
+                    <input class="label {{tool_type.abbreviation}} parent_filter" type="checkbox" name="category_checkbox" value="{{tool_type.id}}" id="{{tool_type.id}}"
+                    {% if tool_type.id in selected_tooltype_ids %} checked {% endif %} >
+                    {{tool_type.abbreviation}}
+                </label>
+                <label for="{{tool_type.id}}" class="category_name {{tool_type.abbreviation}}">{{tool_type.name}}</label>
+            </div>
+        </a>
+        {% if selected_tooltype_ids %}
+        <ul class="menu vertical nested is-active">
+        {% else %}
+        <ul class="menu vertical nested">
+        {% endif %}
+            {% for subtooltype in tool_type.children.all %}
+            <li>
+                <input class="label sub_filter" type="checkbox" name="category_checkbox" value="{{subtooltype.id}}" id="{{tool_type.id}}_{{subtooltype.id}}"
+                    {% if subtooltype.id in selected_subtooltype_ids %} checked {% endif %} >
+                </input>
+                <label class="subcategory_name" for="{{tool_type.id}}_{{subtooltype.id}}">{{subtooltype.name}}</label>
+            </li>
+            {% endfor %}
+        </ul>
+    </li>
+
+    {% endfor %}
+</ul>

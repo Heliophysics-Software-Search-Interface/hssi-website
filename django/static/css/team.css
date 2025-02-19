@@ -1,0 +1,148 @@
+.container {
+    margin: 0 auto;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 11px;
+    border-radius: 4px;
+    width: 80%;
+    background: linear-gradient(to right, #fcfcfd, #ececec);
+}
+
+.my-accordion-header-bar {
+    cursor: pointer;
+    padding: 0 1.2rem;
+    background: #e3e3e3;
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 1fr min-content;
+    grid-template-columns: 1fr min-content;
+    -ms-grid-rows: auto;
+    grid-template-rows: auto;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.my-accordion-header-bar.page_title {
+    -ms-grid-column: 1;
+    grid-column: 1;
+    -ms-grid-row: 1;
+    grid-row: 1;
+}
+
+.caret-container {
+    margin-left: 0.5rem;
+    -ms-grid-column: 2;
+    grid-column: 2;
+    -ms-grid-row: 1;
+    grid-row: 1;
+}
+
+.caret {
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: transparent;
+    border-left: 2px solid #888;
+    border-bottom: 2px solid #888;
+    transition: all .3s ease-in-out;
+}
+
+.caret-flip {
+    -moz-transform: rotate(-224deg);
+    -ms-transform: rotate(-224deg);
+    -webkit-transform: rotate(-224deg);
+    transform: rotate(-224deg);
+}
+
+.my-accordion-content {
+    display: none;
+}
+
+.expanded {
+    transition: all .3s ease-in-out;
+}
+
+.p_img {
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+}
+
+.p_name {
+    font-weight: 500;
+    font-size: 18px;
+    padding: 20px;
+}
+
+.p_img + .p_name {
+    margin-left: 1.5rem;
+}
+
+.p_desc {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.callout {
+    padding: 0rem;
+}
+
+.team-info {
+    background: linear-gradient(to left, #fcfcfd, #ececec);
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+@media screen and (max-width: 1024px) {
+    .container {
+        width: 95%;
+    }
+}
+
+/* max-width 40em is the show-for-small-only/hide-for-small-only breakpoint */
+@media screen and (max-width: 40em) {
+    .container {
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .team_container {
+        margin-bottom: 1rem;
+    }
+
+    .team-info {
+        margin: 0;
+        display: block;
+    }
+
+    .p_img {
+        float: right;
+        width: 100px;
+        height: auto;
+    }
+
+    .p_img + .p_name {
+        margin-left: 0;
+    }
+
+    .callout>:first-child.p_img {
+        margin: 0.5rem;
+    }
+
+    .p_name {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .p_desc {
+        font-size: 14px;
+    }
+}

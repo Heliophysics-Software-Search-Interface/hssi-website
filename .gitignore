@@ -1,0 +1,23 @@
+.DS_Store
+
+*.pyc
+*.project
+*.pydevproject
+
+.vscode
+
+*/certs/
+*/logs/
+*/postgres/
+
+# Ignore all secret settings
+**/.env
+**/app_secret_settings.py
+**/secret_settings.py
+
+# Ignore statics provided by installed frameworks
+staticfiles.json
+django/static/admin/
+django/static/colorful/
+django/static/django_extensions/
+django/static/import_export/

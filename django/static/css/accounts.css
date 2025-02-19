@@ -1,0 +1,78 @@
+html, body {
+    height: 100%;
+}
+
+body > footer {
+    position: sticky;
+    top: 100vh;
+}
+
+@media screen and (min-width: 40em) {
+    div.container {
+        padding: 2rem;
+        width: max-content;
+        min-height: 10rem;
+    }
+}
+@media screen and (max-width: 40em) {
+    div.container {
+        padding: 1rem;
+        background-color: white;
+        min-height: 10rem;
+    }
+}
+
+.login-form {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: max-content max-content;
+    -ms-grid-rows: max-content max-content;
+    grid-template-columns: max-content max-content;
+    grid-template-rows: max-content max-content;
+    column-gap: 0.5rem;
+    row-gap: 0.75rem;
+
+    margin-bottom: 1rem;
+
+    & .username {
+        -ms-grid-row: 1;
+        grid-row: 1;
+    }
+
+    & .password {
+        -ms-grid-row: 2;
+        grid-row: 2;
+    }
+
+    & .labeltext {
+        -ms-grid-column: 1;
+        grid-column: 1;
+        justify-self: end;
+        align-self: center;
+    }
+
+    & .input {
+        -ms-grid-column: 2;
+        grid-column: 2;
+
+        & input {
+            margin: 0;
+        }
+    }
+}
+
+.form-container {
+    width: fit-content;
+}
+
+form {
+    text-align: right;
+
+    & input.button {
+        display: inline-block;
+    }
+}
+
+p.extra-link {
+    text-align: right;
+}

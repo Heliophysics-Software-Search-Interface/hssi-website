@@ -1,0 +1,13 @@
+# Enforce LF line endings for all files
+* text eol=lf
+
+# Declare files that will always have LF line endings on checkout.
+*.sh text eof=lf
+*.csv text eof=lf
+
+# Denote all files that are truly binary and should not be modified.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary

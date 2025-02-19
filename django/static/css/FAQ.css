@@ -1,0 +1,136 @@
+.container {
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  padding: 10px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  margin-top: 10px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  background-color: #ececec;
+}
+
+.input-search{
+  margin-bottom: 10px;
+}
+
+.live-search-box {
+  width: 80%;
+  display: block;
+  padding: 1em;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 1px solid #d2cacb;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  margin: 0 auto;
+}
+
+.faq-title {
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 32px;
+  font-weight: 400;
+  text-align: center;
+  color: #2b2b31;
+}
+
+.faq-topic {
+  border-bottom: solid 1px #ebebeb;
+  margin-bottom: 0.5rem;
+}
+
+.faq-content {
+  cursor: pointer;
+  padding: 1.2rem;
+  background-color: #e7e7e7;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: min-content 1fr min-content;
+  grid-template-columns: min-content 1fr min-content;
+  -ms-grid-rows: auto;
+  grid-template-rows: auto;
+  align-items: center;
+}
+
+.expanded {
+  transition: all .3s ease-in-out;
+}
+
+.ptag {
+  display: none;
+}
+
+.faq-question {
+  font-size: 17px;
+  font-weight: 500;
+  color: #01080fc0;
+  -ms-grid-column: 2;
+  grid-column: 2;
+  -ms-grid-row: 1;
+  grid-row: 1;
+  margin: 0;
+}
+
+.faq-bullet {
+  content: '';
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  background-color: #ccc;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  -ms-grid-column: 1;
+  grid-column: 1;
+  -ms-grid-row: 1;
+  grid-row: 1;
+
+}
+
+.faq-answer {
+  font-size: 16px;
+  line-height: 26px;
+  display: none;
+  font-weight: 500;
+  color: #2b2b31;
+  margin: 0;
+  padding: 1rem 1.5rem;
+  background-color: #f5f5f5;
+}
+
+.faq-answer ul {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+.caret-container {
+  margin-left: 0.5rem;
+  -ms-grid-column: 3;
+  grid-column: 3;
+  -ms-grid-row: 1;
+  grid-row: 1;
+}
+
+.faq-t {
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: transparent;
+  border-left: 2px solid #ccc;
+  border-bottom: 2px solid #ccc;
+  transition: all .3s ease-in-out;
+}
+
+.faq-o {
+  -moz-transform: rotate(-224deg);
+  -ms-transform: rotate(-224deg);
+  -webkit-transform: rotate(-224deg);
+  transform: rotate(-224deg);
+}

@@ -1,0 +1,107 @@
+{% extends 'site_base_template.html' %} 
+
+{% load static %}
+
+{% block head %}
+	<link rel="stylesheet" href="{% static 'css/FAQ.css' %}?v=2024-10-15" />
+	<link rel="stylesheet" href="{% static 'css/FAQ_media.css' %}?v=2024-10-15" />
+{% endblock %}
+
+{% block page_content %}
+	<div class="grid-x container">
+		<h1 class="page_title">Frequently Asked Questions</h1>
+		<div class="input-search">
+			<input type="text" class="live-search-box" placeholder="Type your search term here.." />
+		</div>
+		<div>
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">FAQ Question 1?</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						FAQ Answer 1.
+					</p>
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">FAQ Question 2?</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						FAQ Answer 2.
+					</p>
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">FAQ Question 3?</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						FAQ Answer 3.
+					</p>
+				</div>
+			</div>
+
+		</div>
+	</div>
+{% endblock %}
+
+{% block scripts %} 
+	<script >
+		$(".faq-content").click(function() {
+			var container = $(this).parents(".faq-topic");
+			var answer = container.find(".faq-answer");
+			var trigger = container.find(".faq-t");
+
+			answer.slideToggle(200);
+
+			if (trigger.hasClass("faq-o")) {
+				trigger.removeClass("faq-o");
+			} else {
+				trigger.addClass("faq-o");
+			}
+
+			if (container.hasClass("expanded")) {
+				container.removeClass("expanded");
+			} else {
+				container.addClass("expanded");
+			}
+		});
+
+		jQuery(document).ready(function($) {
+			$('.faq-question').each(function() {
+				$(this).attr('data-search-term', $(this).text().toLowerCase() + $(this).find("ptag").text().toLowerCase());
+			});
+
+			$('.live-search-box').on('keyup', function() {
+			var searchTerm = $(this).val().toLowerCase();
+
+			$('.faq-question').each(function() {
+				if ($(this).filter('[data-search-term *= ' + searchTerm + ']').length > 0 || searchTerm.length < 1) {
+				$(this).parent().parent().show();
+				} else {
+				$(this).parent().parent().hide();
+				}
+			});
+		});
+	});
+
+	</script>
+{% endblock %}

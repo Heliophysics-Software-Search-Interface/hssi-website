@@ -1,0 +1,22 @@
+{% extends "admin/index.html" %}
+
+{% block sidebar %}
+{{ block.super }}
+<div class="module" id="recent-actions-module">
+  <h2>HSSI ACTIONS</h2>
+  <ul>
+    <li>
+      <form action="{% url 'admin:export_db' %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Export Database">
+      </form>
+    </li>
+    <li>
+      <form action="{% url 'admin:import_db' %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Import Database">
+      </form>
+    </li>
+  </ul>
+</div>
+{% endblock %}c

@@ -205,6 +205,7 @@ ul.cat-description-menu li {
 }
 
 label.label {
+  border-radius: 3px;
   cursor: pointer;
   min-width: 45px;
   text-align: center;

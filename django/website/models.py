@@ -104,9 +104,9 @@ class QualitySpec(models.IntegerChoices):
             case QualitySpec.GOOD:
                 return "https://img.shields.io/badge/Good-brightgreen.svg"
             case QualitySpec.PARTIALLY_MET:
-                return "https://img.shields.io/badge/Partially%20met-orange.svg"
+                return "https://img.shields.io/badge/Partially%20Met-orange.svg"
             case QualitySpec.NEEDS_IMPROVEMENT:
-                return "https://img.shields.io/badge/Requires%20improvement-red.svg"
+                return "https://img.shields.io/badge/Needs%20Improvement-red.svg"
             case QualitySpec.UNKNOWN:
                 return "https://img.shields.io/badge/unknown-gray.svg"
 

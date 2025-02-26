@@ -20,3 +20,10 @@ def id_values_list(queryset):
 @register.filter    
 def intersection(list1, list2):
     return set(list1) & set(list2)
+
+@register.filter
+def index(sequence, i):
+    try:
+        return sequence[int(i)]
+    except (IndexError, ValueError, TypeError):
+        return ""

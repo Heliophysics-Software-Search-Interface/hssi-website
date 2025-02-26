@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_tags_and_filters %}
 {% get_static_prefix as STATIC_PREFIX %}
 {% load markdownify %}
 
@@ -73,98 +74,132 @@
     </div>
     {# bottom section #}
     <div class="grid-x">
-        {# description #}
-        <div class="small-10 medium-9 large-9">
-            <div class="resource_description">
-            {% if resource.is_under_development %}
-                WEB TOOL DEVELOPMENT IN PROGRESS &mdash;
-            {% endif %}
-            {{resource.description|markdownify}}
+        <div style="display: inline-block; margin-right: auto;">
+            {# description #}
+            <div class="small-10 medium-9 large-9" style="height: calc(100% - 60px)">
+                <div class="resource_description">
+                {% if resource.is_under_development %}
+                    WEB TOOL DEVELOPMENT IN PROGRESS &mdash;
+                {% endif %}
+                {{resource.description|markdownify}}
+                </div>
+
+                <div class="resource-details hide-for-small-only">
+                    {# pyhc quality spec #}
+                    <div
+                        class="hide-for-small-only"
+                        style="display: inline-block; border-radius: 3px; outline: rgba(10,10,10,.25) 1px solid;"
+                        data-tooltip title="PyHC Quality Specs" 
+                        data-position="bottom" 
+                        data-alignment="right"
+                    >
+                        <table style="margin: 0;">
+                            <tr>
+                                <td style="text-align: right;"> Community</td>
+                                <td style="text-align: left;"> <img src="{{quality_badge_urls|index:resource.spec_community}}"> </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;"> Documentation </td>
+                                <td style="text-align: left";> <img src="{{quality_badge_urls|index:resource.spec_documentation}}"> </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;"> Testing </td>
+                                <td style="text-align: left;"> <img src="{{quality_badge_urls|index:resource.spec_testing}}"> </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: right;"> Maturity </td>
+                                <td style="text-align: left;"> <img src="{{quality_badge_urls|index:resource.spec_maturity}}"> </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <p class="resource_code">
+                            Code Language(s): {{resource.code_language}}
+                        </p>
+                        <p class="resource_updated">
+                            Last updated: {{resource.creation_date|date:'M. j, Y'}}
+                        </p>
+                        {% if resource.version %}
+                        <p class="resource-version">
+                            Version: {{ resource.version }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            <div class="resource-details hide-for-small-only">
-                <p class="resource_code">
-                    Code Language(s): {{resource.code_language}}
-                </p>
-                <p class="resource_updated">
-                    Last updated: {{resource.creation_date|date:'M. j, Y'}}
-                </p>
-                {% if resource.version %}
-                <p class="resource-version">
-                    Version: {{ resource.version }}
-                </p>
+            {# logo section #}
+            <div class="small-2 medium-3 large-3 logo_container hide-for-small-only">
+                {% if resource.logo_url %}
+                    {% if resource.logo_link %}
+                        <a href="{{resource.logo_link}}" id="{{resource.id}}_logo_link" class="logo_link">
+                    {% elif resource.about_link %}
+                        <a href="{{resource.about_link}}" id="{{resource.id}}_logo_link" class="logo_link">
+                    {% endif %}
+                        <img class="resource_logo" loading="lazy" src="{{resource.logo_url}}" alt="logo">
+                    {% if resource.logo_link or resource.about_link %}
+                        </a>
+                    {% endif %}
                 {% endif %}
             </div>
-        </div>
-        {# logo section #}
-        <div class="small-2 medium-3 large-3 logo_container hide-for-small-only">
-            {% if resource.logo_url %}
-                {% if resource.logo_link %}
-                    <a href="{{resource.logo_link}}" id="{{resource.id}}_logo_link" class="logo_link">
-                {% elif resource.about_link %}
-                    <a href="{{resource.about_link}}" id="{{resource.id}}_logo_link" class="logo_link">
-                {% endif %}
-                    <img class="resource_logo" loading="lazy" src="{{resource.logo_url}}" alt="logo">
-                {% if resource.logo_link or resource.about_link %}
-                    </a>
-                {% endif %}
-            {% endif %}
-        </div>
-        {# buttons #}
-        <div class="text-right small-12">
-            {% if resource.repo_url %}
-                <a 
-                    class="hollow button download_btn hide-for-small-only float-left" 
-                    id="{{resource.id}}_download_link" 
-                    href="{{resource.repo_url}}" 
-                    data-tooltip tabindex="1" 
-                    title="Veiw the code repository" 
-                    data-position="bottom" 
-                    data-alignment="right"
-                >
-                    <i class="fa fa-code"></i> Repo
-                </a>
-            {% endif %}
-            {% if resource.docs_url %}
-                <a 
-                    class="hollow button about_btn float-left" 
-                    id="{{resource.id}}_about_link" 
-                    href="{{resource.docs_url}}" 
-                    data-tooltip tabindex="1" 
-                    title="Learn what it's used for and how to use it" 
-                    data-position="bottom" 
-                    data-alignment="right"
-                >
-                    <i class="fa fa-book"></i> Docs
-                </a>
-            {% endif %}
-            {% if resource.website_url %}
-                <a 
-                    class="hollow button launch_btn float-left" 
-                    id="{{resource.id}}_launch_link" 
-                    href="{{resource.website_url}}" 
-                    data-tooltip tabindex="1"
-                    title="Open the software's website" 
-                    data-position="bottom" 
-                    data-alignment="right"
-                >
-                    <i class="fa fa-globe"></i> Site
-                </a>
-            {% endif %}
-            {% if highlighted %}
-                <a class="button reset_btn float-left reset_btn" href='/'>Reset</a>
-            {% elif resource.related_resources.count %}
-                <a 
-                    class="hollow button related_btn float-left" 
-                    data-open="modal-{{resource.id}}"
-                    href='?related_resource={{resource.id}}' 
-                    data-tooltip tabindex="1" 
-                    title="See resources that are related to this tool" 
-                    data-position="bottom" 
-                    data-alignment="right"
-                >
-                    Related
-                </a>
-            {% endif %}
+            {# buttons #}
+            <div class="text-right small-12">
+                <div>
+                    {% if resource.repo_url %}
+                        <a 
+                            class="hollow button download_btn hide-for-small-only float-left" 
+                            id="{{resource.id}}_download_link" 
+                            href="{{resource.repo_url}}" 
+                            data-tooltip tabindex="1" 
+                            title="Veiw the code repository" 
+                            data-position="bottom" 
+                            data-alignment="right"
+                        >
+                            <i class="fa fa-code"></i> Repo
+                        </a>
+                    {% endif %}
+                    {% if resource.docs_url %}
+                        <a 
+                            class="hollow button about_btn float-left" 
+                            id="{{resource.id}}_about_link" 
+                            href="{{resource.docs_url}}" 
+                            data-tooltip tabindex="1" 
+                            title="Learn what it's used for and how to use it" 
+                            data-position="bottom" 
+                            data-alignment="right"
+                        >
+                            <i class="fa fa-book"></i> Docs
+                        </a>
+                    {% endif %}
+                    {% if resource.website_url %}
+                        <a 
+                            class="hollow button launch_btn float-left" 
+                            id="{{resource.id}}_launch_link" 
+                            href="{{resource.website_url}}" 
+                            data-tooltip tabindex="1"
+                            title="Open the software's website" 
+                            data-position="bottom" 
+                            data-alignment="right"
+                        >
+                            <i class="fa fa-globe"></i> Site
+                        </a>
+                    {% endif %}
+                    {% if highlighted %}
+                        <a class="button reset_btn float-left reset_btn" href='/'>Reset</a>
+                    {% elif resource.related_resources.count %}
+                        <a 
+                            class="hollow button related_btn float-left" 
+                            data-open="modal-{{resource.id}}"
+                            href='?related_resource={{resource.id}}' 
+                            data-tooltip tabindex="1" 
+                            title="See resources that are related to this tool" 
+                            data-position="bottom" 
+                            data-alignment="right"
+                        >
+                            Related
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 

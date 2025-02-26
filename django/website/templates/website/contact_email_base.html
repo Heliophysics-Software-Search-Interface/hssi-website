@@ -2,14 +2,14 @@
 
 {% block email_content %}
 
-<h1> Listing {{ tool_name }} on <a href="{{ site_protocol }}://{{ site_domain }}/">Resource Discovery Tool</a> </h1>
+<h1> Listing {{ tool_name }} on <a href="{{ site_protocol }}://{{ site_domain }}/">Heliophysics Software Search Interface</a> </h1>
 <p>Dear author of {{ tool_name }},<br>
 <br>
     {% block contactcount %}
     {% endblock %}
 <br>
 <br>We think {{ tool_name }} would be a valuable resource for the scientific community to have 
-    access to on RDT and have already filled in some basic information we could find on it. But the more 
+    access to on HSSI and have already filled in some basic information we could find on it. But the more 
     info we have, the more likely that other scientists in the field will be able to find your resource. 
     Please consider adding (or correcting) the information found 
     <a href="{{ site_protocol }}://{{ site_domain }}/submissions/{{ tool_id }}">here</a>.<br>
@@ -23,6 +23,6 @@
 <br>
 <br>
 <br>Thank you,<br>
-<br>The Resource Discovery Tool team.</p>
+<br>The Heliophysics Software Search Interface team.</p>
 
 {% endblock %}

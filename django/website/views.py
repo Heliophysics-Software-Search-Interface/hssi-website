@@ -457,7 +457,7 @@ def contact_all(request):
             if err_msg != '':
                 print("Error in mass contact")
                 message = EmailMessage(
-                    subject="RDT submission mass contact",
+                    subject="HSSI submission mass contact",
                     body=f"There was an error with the mass contact!\n{err_msg} \n" + body,
                     to=["admin@my-site.com"],
                 )
@@ -470,7 +470,7 @@ def contact_all(request):
             else:
                 print("Mass contact successful")
                 message = EmailMessage(
-                    subject="RDT submission mass contact",
+                    subject="HSSI submission mass contact",
                     body= "Mass submission contact was done successfully! \n" + body,
                     to=["admin@my-site.com"],
                 )

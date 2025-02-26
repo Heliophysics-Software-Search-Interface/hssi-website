@@ -149,7 +149,7 @@ def email_strings_for(submission: Submission, save_type: SaveType, changed_field
         submitter_message += str(f"\n\nIf you would like to further review or revise your submission you may do so here: {protocol}://{domain}/submissions/{submission.id}")
     
     elif save_type is SaveType.FIRSTCONTACT:
-        subject = "Listing a resource on the Resource Discovery Tool"
+        subject = "Listing a resource on HSSI"
         
         context = {'tool_name': submission.name,
                    'tool_id': submission.id,
@@ -165,7 +165,7 @@ def email_strings_for(submission: Submission, save_type: SaveType, changed_field
         admin_message += str(f"\n\nTo review and manage the submissions, go to https://{domain}/admin/website/submission/")
         
     elif save_type is SaveType.RECONTACT:
-        subject = "Listing a resource on the Resource Discovery Tool"
+        subject = "Listing a resource on HSSI"
         
         context = {'tool_name': submission.name,
                    'tool_id': submission.id,
@@ -181,7 +181,7 @@ def email_strings_for(submission: Submission, save_type: SaveType, changed_field
         admin_message += str(f"\n\nTo review and manage the submissions, go to https://{domain}/admin/website/submission/")
         
     elif save_type is SaveType.FINALCONTACT:
-        subject = "Listing a resource on the Resource Discovery Tool"
+        subject = "Listing a resource on HSSI"
         
         context = {'tool_name': submission.name,
                    'tool_id': submission.id,
@@ -197,7 +197,7 @@ def email_strings_for(submission: Submission, save_type: SaveType, changed_field
         admin_message += str(f"\n\nTo review and manage the submissions, go to https://{domain}/admin/website/submission/")
 
     elif save_type is SaveType.INITIALINLITCONTACT:
-        subject = "Listing a resource on the Resource Discovery Tool"
+        subject = "Listing a resource on HSSI"
         
         context = {'tool_name': submission.name,
                    'tool_id': submission.id,
@@ -213,7 +213,7 @@ def email_strings_for(submission: Submission, save_type: SaveType, changed_field
         admin_message += str(f"\n\nTo review and manage the submissions, go to https://{domain}/admin/website/submission/")
 
     elif save_type is SaveType.SECONDINLITCONTACT:
-        subject = "Listing a resource on the Resource Discovery Tool"
+        subject = "Listing a resource on HSSI"
         
         context = {'tool_name': submission.name,
                    'tool_id': submission.id,
@@ -229,7 +229,7 @@ def email_strings_for(submission: Submission, save_type: SaveType, changed_field
         admin_message += str(f"\n\nTo review and manage the submissions, go to https://{domain}/admin/website/submission/")
     
     elif save_type is SaveType.FINALINLITCONTACT:
-        subject = "Listing a resource on the Resource Discovery Tool"
+        subject = "Listing a resource on HSSI"
         
         context = {'tool_name': submission.name,
                    'tool_id': submission.id,

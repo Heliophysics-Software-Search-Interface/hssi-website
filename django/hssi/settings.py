@@ -27,7 +27,7 @@ DEFAULT_FROM_EMAIL = ADMIN_EMAIL
 
 EMAIL_HOST = 'your.email.server'
 EMAIL_PORT = 25
-EMAIL_SUBJECT_PREFIX = "[RDT] "
+EMAIL_SUBJECT_PREFIX = "[HSSI] "
 ###
 ### - end secret settings
 

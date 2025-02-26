@@ -111,28 +111,59 @@
         </div>
         {# buttons #}
         <div class="text-right small-12">
-            {% if resource.about_link %}
-                <a class="hollow button about_btn float-left" id="{{resource.id}}_about_link" href="{{resource.about_link}}" data-tooltip tabindex="1" title="Learn what the tool is used for and how to use it" data-position="bottom" data-alignment="right">About</a>
+            {% if resource.repo_url %}
+                <a 
+                    class="hollow button download_btn hide-for-small-only float-left" 
+                    id="{{resource.id}}_download_link" 
+                    href="{{resource.repo_url}}" 
+                    data-tooltip tabindex="1" 
+                    title="Veiw the code repository" 
+                    data-position="bottom" 
+                    data-alignment="right"
+                >
+                    <i class="fa fa-code"></i> Repo
+                </a>
             {% endif %}
-            {% if resource.demo_link %}
-                <a class="hollow button alert float-left" id="{{resource.id}}_demo_link" href="{{resource.demo_link}}" data-tooltip tabindex="1" title="View a video demonstration of the basic use of the tool" target="_blank;" data-position="bottom" data-alignment="right">Demo</a>
+            {% if resource.docs_url %}
+                <a 
+                    class="hollow button about_btn float-left" 
+                    id="{{resource.id}}_about_link" 
+                    href="{{resource.docs_url}}" 
+                    data-tooltip tabindex="1" 
+                    title="Learn what it's used for and how to use it" 
+                    data-position="bottom" 
+                    data-alignment="right"
+                >
+                    <i class="fa fa-book"></i> Docs
+                </a>
             {% endif %}
-            
+            {% if resource.website_url %}
+                <a 
+                    class="hollow button launch_btn float-left" 
+                    id="{{resource.id}}_launch_link" 
+                    href="{{resource.website_url}}" 
+                    data-tooltip tabindex="1"
+                    title="Open the software's website" 
+                    data-position="bottom" 
+                    data-alignment="right"
+                >
+                    <i class="fa fa-globe"></i> Site
+                </a>
+            {% endif %}
             {% if highlighted %}
                 <a class="button reset_btn float-left reset_btn" href='/'>Reset</a>
             {% elif resource.related_resources.count %}
-                <a class="hollow button related_btn float-left" data-open="modal-{{resource.id}}"
-                    href='?related_resource={{resource.id}}' data-tooltip tabindex="1" title="See resources that are related to this tool" data-position="bottom" data-alignment="right">Related</a>
-            {% endif %}
-            
-            {% if resource.download_link %}
-                <a class="hollow button download_btn hide-for-small-only" id="{{resource.id}}_download_link" href="{{resource.download_link}}" data-tooltip tabindex="1" title="View and download the source code to run the tool locally" data-position="bottom" data-alignment="right">Code</a>
-            {% endif %}
-            {% if resource.download_data_link %}
-                <a class="hollow button download_data_btn hide-for-small-only" id="{{resource.id}}_download_data_link" href="{{resource.download_data_link}}" data-tooltip tabindex="1" title="View and download output or input files for this resource" data-position="bottom" data-alignment="right">Data</a>
-            {% endif %}
-            {% if resource.launch_link %}
-                <a class="hollow button launch_btn" id="{{resource.id}}_launch_link" href="{{resource.launch_link}}" data-tooltip tabindex="1" title="Open the tool's web application" data-position="bottom" data-alignment="right">WebApp</a>
+                <a 
+                    class="hollow button related_btn float-left" 
+                    data-open="modal-{{resource.id}}"
+                    href='?related_resource={{resource.id}}' 
+                    data-tooltip tabindex="1" 
+                    title="See resources that are related to this tool" 
+                    data-position="bottom" 
+                    data-alignment="right"
+                >
+                    Related
+                </a>
             {% endif %}
         </div>
     </div>

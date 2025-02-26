@@ -29,7 +29,7 @@ from crispy_forms.utils import render_crispy_form
 from ipware import get_client_ip
 
 from .forms import FeedbackForm
-from .models import Category, NewsItem, NewsItemStatus, Resource, TeamMember, ToolType, Collection, InLitResource, Submission, SubmissionStatus
+from .models import Category, NewsItem, NewsItemStatus, Resource, TeamMember, ToolType, Collection, InLitResource, Submission, SubmissionStatus, QualitySpec
 from .admin import isInlit
 from .constants import SaveType
 from . import submissions
@@ -254,7 +254,14 @@ def selected_resource_context(request):
         # No category or tooltype filters and no search terms set, setting in-lit to None
         in_lit_resources = None
 
+    
     context = {
+        'quality_badge_urls': [
+            QualitySpec.UNKNOWN.get_img_url(),
+            QualitySpec.NEEDS_IMPROVEMENT.get_img_url(),
+            QualitySpec.PARTIALLY_MET.get_img_url(),
+            QualitySpec.GOOD.get_img_url()
+        ],
         'categories': categories,
         'selected_category_ids': selected_category_ids,
         'selected_resources': selected_resources,

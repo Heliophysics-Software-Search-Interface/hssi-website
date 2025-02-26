@@ -99,6 +99,17 @@ class QualitySpec(models.IntegerChoices):
     NEEDS_IMPROVEMENT = 1, "Needs Improvement"
     UNKNOWN = 0, "Unknown"
 
+    def get_img_url(self):
+        match self:
+            case QualitySpec.GOOD:
+                return "https://img.shields.io/badge/Good-brightgreen.svg"
+            case QualitySpec.PARTIALLY_MET:
+                return "https://img.shields.io/badge/Partially%20met-orange.svg"
+            case QualitySpec.NEEDS_IMPROVEMENT:
+                return "https://img.shields.io/badge/Requires%20improvement-red.svg"
+            case QualitySpec.UNKNOWN:
+                return "https://img.shields.io/badge/unknown-gray.svg"
+
 class SubmissionStatus(models.IntegerChoices):
     MISSING_INFO = 0, 'Proposed Tool w/ Missing Info'
     FIRST_CONTACT = 1,  'Ready for 1st Contact'

@@ -110,6 +110,18 @@ class QualitySpec(models.IntegerChoices):
             case QualitySpec.UNKNOWN:
                 return "https://img.shields.io/badge/unknown-gray.svg"
 
+class RecomendationSpec(models.IntegerChoices):
+    MANDITORY = 3, "Manditory"
+    RECOMMENDED = 2, "Recommended"
+    OPTIONAL = 1, "Optional"
+    UNKNOWN = 0, "Unknown"
+
+class PackageTier(models.IntegerChoices):
+    GOLD = 3, "Gold"
+    SILVER = 2, "Silver"
+    BRONZE = 1, "Bronze"
+    NONE = 0, "None"
+
 class SubmissionStatus(models.IntegerChoices):
     MISSING_INFO = 0, 'Proposed Tool w/ Missing Info'
     FIRST_CONTACT = 1,  'Ready for 1st Contact'

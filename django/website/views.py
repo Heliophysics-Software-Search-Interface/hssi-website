@@ -141,6 +141,9 @@ def selected_resource_context(request):
     selected_category_ids = request.GET.getlist('category')
     selected_tooltype_ids = request.GET.getlist('tooltype')
     selected_collection_ids = request.GET.getlist('collection')
+    selected_category_not_ids = request.GET.getlist('category_not')
+    selected_tooltype_not_ids = request.GET.getlist('tooltype_not')
+    selected_collection_not_ids = request.GET.getlist('collection_not')
     search_terms = request.GET.get('q')
     sort = request.GET.get('sort', 'date')
 
@@ -192,6 +195,22 @@ def selected_resource_context(request):
         selected_resources = selected_resources.filter(collections__id=selected_collection_id)
         selected_resources = selected_resources.distinct()
         in_lit_resources = None
+
+    # filter out ids with in the negation filters
+    if selected_category_not_ids:
+        for category_not_id in selected_category_not_ids:
+            selected_resources = selected_resources.exclude(categories__id=category_not_id)
+            in_lit_resources = in_lit_resources.exclude(categories__id=category_not_id)
+
+    if selected_tooltype_not_ids:
+        for tooltype_not_id in selected_tooltype_not_ids:
+            selected_resources = selected_resources.exclude(tool_types__id=tooltype_not_id)
+            in_lit_resources = in_lit_resources.exclude(tool_types__id=tooltype_not_id)
+    
+    if selected_collection_not_ids:
+        for collection_not_id in selected_collection_not_ids:
+            selected_resources = selected_resources.exclude(collections__id=collection_not_id)
+            in_lit_resources = in_lit_resources.exclude(collections__id=collection_not_id)
 
     # default to sort by date by pass through conditions
     if sort == 'name':

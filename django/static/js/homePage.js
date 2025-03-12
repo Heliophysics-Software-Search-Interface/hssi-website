@@ -578,7 +578,7 @@ $(document).ready(function () {
         tempElement.remove();
     });
 
-    // filter chips
+    // filter chip remove
     $('div.filter-chip-container').on('click', 'div.filter-chip>i', function() {
         var filterId = $(this).parent('.filter-chip').attr('filter-id');
         // find the single filter checkbox within this
@@ -589,6 +589,58 @@ $(document).ready(function () {
         $(filterCheckbox).trigger('change');
         // delete the filter chip itself
         $(this).parent('.filter-chip').remove();
+    });
+    
+    // filter chip negation
+    $('div.filter-chip-container').on('click', 'div.filter-chip>span', function(e) {
+        /** @type {HTMLSpanElement} */
+        
+        // get element and filter id
+        let span = this;
+        const filterID = span.parentElement.getAttribute('filter-id');
+        
+        // find out if current query param is negated or not
+        let params = new URLSearchParams(window.location.search);
+        let negated = false;
+        for (let pair of params.entries()) {
+            if (pair[1] == filterID) {
+                negated = pair[0].endsWith('_not');
+                break;
+            }
+        }
+        negated = !negated;
+
+        // toggle negation symbol
+        span.innerText = negated ? '~' + span.innerText : span.innerText.replace('~', '');
+        
+        // negate query params
+        let new_pairs = [];
+        for (let pair of params.entries()) {
+            if (pair[1] == filterID) {
+                if(negated){
+                    new_pairs.push([
+                        pair[0] + "_not", 
+                        pair[1]
+                    ]);
+                }
+                else {
+                    new_pairs.push([
+                        pair[0].replace("_not", ""),
+                        pair[1]
+                    ]);  
+                }
+                console.log(new_pairs[new_pairs.length - 1]);
+                params.delete(pair[0], pair[1]);
+            }
+        }
+        for (let pair of new_pairs) {
+            params.append(pair[0], pair[1]);
+        }
+
+        console.log(params.toString().split('&'));
+
+        // apply new query
+        window.location.search = params.toString();
     });
 
     // main filter sections

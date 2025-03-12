@@ -103,6 +103,8 @@ div.filter-chip {
 
 div.filter-chip > span {
   margin-right: 0.2rem;
+  cursor: pointer;
+  user-select: none;
 }
 
 div.filter-chip i {

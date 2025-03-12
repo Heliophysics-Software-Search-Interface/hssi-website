@@ -339,7 +339,7 @@ class Submission(AbstractResource):
     submission_notes = models.TextField(blank=True, help_text=help_texts['submission_notes'])
 
     submitter_ip_address = models.GenericIPAddressField(blank=True, null=True)
-    status = models.IntegerField(choices=SubmissionStatus.choices, default=SubmissionStatus.FIRST_CONTACT.label, max_length=100)
+    status = models.IntegerField(choices=SubmissionStatus.choices, default=SubmissionStatus.FIRST_CONTACT.label)
     status_notes = models.TextField(blank=True)
     shepherd = models.CharField(max_length=40, blank=True)
     date_contacted = models.DateField(null=True, blank=True, editable=True)

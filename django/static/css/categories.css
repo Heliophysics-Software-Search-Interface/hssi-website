@@ -101,6 +101,10 @@ div.filter-chip {
   align-items: flex-start;
 }
 
+.filter-chip.negated > span {
+  text-decoration: line-through;
+}
+
 div.filter-chip > span {
   margin-right: 0.2rem;
   cursor: pointer;

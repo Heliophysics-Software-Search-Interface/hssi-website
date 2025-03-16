@@ -443,28 +443,34 @@ HSSI.showResultCount = function showResultCount(queryParamUrl) {
     }
 }
 
-HSSI.showAppliedFilters = function showAppliedFilters(queryParamUrl) {
-    $('.filter-chip-container').empty();
-    var params = queryParamUrl.substring(1).split('&');
-    var filterTypes = [...new Set(params.map(param => param.split('=')[0]))];
-    var filters = filterTypes.map(type => {
-        ids = params.filter(param => param.startsWith(type)).map(param => param.split('=')[1]);
+/** @param {string} queryParamUrl */
+HSSI.showAppliedFilters = function(queryParamUrl) {
+    const filterChipContainer = document.querySelector('filter-chip-container');
+    const params = queryParamUrl.substring(1).split('&');
+    const filterTypes = [
+        ...new Set(params.map(param=>param.split('=')[0].replace('_not','')))
+    ];
+    const filters = filterTypes.map(type => {
+        const infos = (params
+            .filter(param => param.startsWith(type))
+            .map(param => {
+                const splitParam = param.split('=');
+                return {
+                    negated: splitParam[0].endsWith('_not'),
+                    id: splitParam[1]
+                }
+            })
+        );
         return {
             type,
-            ids
-        };
-    });
-    filters.forEach(filter => {
-        switch (filter.type) {
-            case 'category':
-            case 'tooltype':
-            case 'collection':
-                HSSI.addFilterChipSection(filter);
-                break;
-            default:
-                break;
+            ids: infos.map(info=>info.id),
+            index_negated: infos.map(info=>info.negated)
         }
     });
+    for(const filter of filters) {
+        if (['category', 'tooltype', 'collection'].includes(filter.type))
+            HSSI.addFilterChipSection(filter)
+    }
 }
 
 HSSI.getFilterLabel = function getFilterLabel(filterId) {
@@ -485,14 +491,36 @@ HSSI.addFilterChip = function addFilterChip(filterId) {
     $(`div.filter-chip-container`).append(`<div class="filter-chip ${className}" filter-id="${filterId}"><span>${label}</span><i class="fi-x"></i></div>`);
 }
 
+/**
+ * @typedef {Object} FilterInfo
+ * @property {string} type the filter type
+ * @property {Array<string>} ids the uids of the tags in the filter
+ * @property {Array<bool>} index_negated whether the id at each index is negated
+ * @param {FilterInfo} filter 
+ */
 HSSI.addFilterChipSection = function addFilterChipSection(filter) {
-    var section = $('<div class="filter-chip-section"></div>');
-    filter.ids.forEach(filterId => {
-        var label = HSSI.getFilterLabel(filterId);
-        var className = HSSI.getParentClass(filterId);
-        $(section).append(`<div class="filter-chip ${className}" filter-id="${filterId}"><span>${label}</span><i class="fi-x"></i></div>`);
-    });
-    $('div.filter-chip-container').append(section);
+    const containers = document.querySelectorAll('div.filter-chip-container');
+    const section = document.createElement('div');
+    section.classList.add('filter-chip-section');
+    for(const i in filter.ids){
+        const id = filter.ids[i];
+        const negated = filter.index_negated[i];
+        
+        const filterChip = document.createElement('div');
+        filterChip.setAttribute('filter-id', id);
+        filterChip.classList.add("filter-chip", HSSI.getParentClass(id));
+        if(negated) filterChip.classList.add('negated');
+        
+        const filterChipLabel = document.createElement('span');
+        filterChipLabel.innerText = HSSI.getFilterLabel(id);
+
+        const deleteChipButton = document.createElement('i');
+        deleteChipButton.classList.add('fi-x');
+
+        filterChip.append(filterChipLabel, deleteChipButton);
+        section.appendChild(filterChip);
+    }
+    for(container of containers) container.appendChild(section);
 }
 
 $(document).ready(function () {
@@ -610,8 +638,9 @@ $(document).ready(function () {
         }
         negated = !negated;
 
-        // toggle negation symbol
-        span.innerText = negated ? '~' + span.innerText : span.innerText.replace('~', '');
+        // toggle negation style
+        if(negated) span.parentElement.classList.add("negated");
+        else span.parentElement.classList.remove("negated");
         
         // negate query params
         let new_pairs = [];

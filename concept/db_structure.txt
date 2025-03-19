@@ -1,0 +1,144 @@
+ProgrammingLanguage: {
+    name: string,
+    version: string,
+    organization: uuid,
+}
+TABLE ProgrammingLanguages: ProgrammingLanguage
+
+Date
+Person: {
+    name: string,
+    lastName: string,
+    affiliation: uuid - organization,
+    identifier: ORCiD ?? string,
+}
+TABLE Persons: Person
+
+Enum(OrganizationType) [University, Local/National Government, Government Agency, NonProfit, Company ...]
+Organization: {
+    type: uuid - OrganizationType,
+    name: string,
+    abbreviation: string,
+    parentOrganization: uuid - organization,
+    website: string,
+    identifier: ROR ?? string,
+}
+TABLE organizations: Organization
+
+Enum(IvoaEntryType) [Instrument, Observatory, Mission]
+IvoaEntry: {
+    type: IvoaEntryType
+    name: string
+    identifier: DOI ?? string
+    ivoaEntry: IVOA ID ?? string
+}
+TABLE IvoaEntries: IvoaEntry
+
+FunctionCategory: {
+    name: string
+    abbreviation: string,
+    backgroundColor: color,
+    textColor: color,
+}
+TABLE functionCategories: FunctionCategory
+Functionality: {
+    name: string,
+    abbreviation: string,
+    category: uuid - FunctionCategories
+}
+TABLE functionalities: Functionality
+
+FileFormat: {
+    fullName: string
+    extension: string
+    affiliation: uuid - Organization
+}
+TABLE fileFormats: FileFormat
+
+Enum(RepoStatus) [get from https://www.repostatus.org/]
+Enum(OperatingSystem) [Windows, Macintosh, Android, iOS, Linux, Unix, other]
+
+License {
+    name: string,
+    identifier: string,
+    fullText: string,
+    scheme: string,
+    schemeUri: string,
+    uri: string,
+}
+TABLE licenses: License
+
+Region: ??
+
+TABLE keywords: string
+
+Award: {
+    title: string,
+    identifier: string,
+}
+TABLE awards: Award
+
+Image: {
+    uri: string,
+    description: string,
+}
+TABLE images: Image
+
+Phenomena: {
+    name: string,
+}
+TABLE phenomenas: Phenomena
+
+Software: {
+    programmingLanguage: uuid - ProgrammingLanguage,
+    publicationDate: Date,
+    authors: uuid[] - persons[],
+    authorAffiliation: authors[0]->affiliation,
+    authorAffiliationIdentifier: authors[0]->affiliation->identifier,
+    authorIdentifier: authors[0]->identifier,
+    publisher: uuid - organizations,
+    publisherIdentifier: publisher->identifier,
+    relatedInstruments: uuid - IvoaEntries,
+    relatedInstrumentIdentifier: relatedInstruments[0]->identifier,
+    relatedObservatories: uuid - IvoaEntries,
+    softwareName: string,
+    versionNumber: string,
+    versionDate: Date,
+    versionDescription: string,
+    versionPid: string,
+    persistentIdentifier: string,
+    referencePublication: string,
+    description: string,
+    conciseDescription: string,
+    softwareFunctionality: uuid - functionalities,
+    documentation: string,
+    dataInputs: uuid - functionalities,
+    supportedFileFormats: uuid - fileFormats,
+    relatedPublications: string[],
+    relatedDatasets: string[],
+    developmentStatus: uuid - RepoStatus,
+    operatingSystem: uuid[] - OperatingSystem[],
+    metadataLicense: uuid - licenses,
+    metadataLicenseUri: metadataLicense->uri,
+    metadataLicenseIdentifier: metadataLicense->identifier,
+    metadataLicenseIdentifierScheme: metadataLicense->scheme,
+    metadataSchemeUri: metadataLicense->schemeUri,
+    license: uuid - licenses,
+    licenseUri: license->uri,
+    licenseIdentifier: license->identifier,
+    licenseIdentifierScheme: license->scheme,
+    schemeUri: license->schemeUri,
+    relatedRegion: Region ?? string,
+    keywords: uuid[] - keywords[],
+    relatedSoftware: string[],
+    interopableSoftware: string,
+    funder: uuid - organizations,
+    funderIdentifier: funder->identifier,
+    award: uuid -> awards,
+    awardTitle: award->title,
+    awardNumber: award->identifier,
+    codeRepositoryURL: string,
+    logo: uuid - images,
+    relatedPhenomena: uuid - phenomenas,
+}
+Table softwares: Software

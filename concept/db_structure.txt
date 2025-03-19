@@ -110,7 +110,7 @@ Software: {
     referencePublication: string,
     description: string,
     conciseDescription: string,
-    softwareFunctionality: uuid - functionalities,
+    softwareFunctionality: uuid[] - functionalities[],
     documentation: string,
     dataInputs: uuid - functionalities,
     supportedFileFormats: uuid - fileFormats,
@@ -137,7 +137,7 @@ Software: {
     award: uuid -> awards,
     awardTitle: award->title,
     awardNumber: award->identifier,
-    codeRepositoryURL: string,
+    codeRepositoryUrl: string,
     logo: uuid - images,
     relatedPhenomena: uuid - phenomenas,
 }

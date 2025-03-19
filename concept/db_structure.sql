@@ -103,6 +103,7 @@ CREATE TABLE IF NOT EXISTS "Phenomenas" (
 
 CREATE TABLE IF NOT EXISTS "Softwares" (
 	"id" serial NOT NULL UNIQUE,
+	"programmingLanguage" bigint NOT NULL,
 	"publicationDate" timestamp with time zone NOT NULL,
 	"authors" bigint NOT NULL,
 	"publisher" bigint NOT NULL,
@@ -151,6 +152,14 @@ CREATE TABLE IF NOT EXISTS "OperatingSystems" (
 	PRIMARY KEY ("id")
 );
 
+CREATE TABLE IF NOT EXISTS "ProgrammingLanguages" (
+	"id" serial NOT NULL UNIQUE,
+	"name" varchar(255) NOT NULL,
+	"version" varchar(255) NOT NULL,
+	"organization" bigint NOT NULL,
+	PRIMARY KEY ("id")
+);
+
 
 ALTER TABLE "Organizations" ADD CONSTRAINT "Organizations_fk1" FOREIGN KEY ("type") REFERENCES "OrganizationType"("id");
 
@@ -166,35 +175,39 @@ ALTER TABLE "FileFormats" ADD CONSTRAINT "FileFormats_fk3" FOREIGN KEY ("affilia
 
 
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk2" FOREIGN KEY ("authors") REFERENCES "Persons"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk1" FOREIGN KEY ("programmingLanguage") REFERENCES "ProgrammingLanguages"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk3" FOREIGN KEY ("publisher") REFERENCES "Organizations"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk3" FOREIGN KEY ("authors") REFERENCES "Persons"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk4" FOREIGN KEY ("relatedInstruments") REFERENCES "IvoaEntries"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk4" FOREIGN KEY ("publisher") REFERENCES "Organizations"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk5" FOREIGN KEY ("relatedObservatories") REFERENCES "IvoaEntries"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk5" FOREIGN KEY ("relatedInstruments") REFERENCES "IvoaEntries"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk15" FOREIGN KEY ("softwareFunctionality") REFERENCES "Functionalities"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk6" FOREIGN KEY ("relatedObservatories") REFERENCES "IvoaEntries"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk17" FOREIGN KEY ("dataInputs") REFERENCES "Functionalities"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk16" FOREIGN KEY ("softwareFunctionality") REFERENCES "Functionalities"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk18" FOREIGN KEY ("supportedFileFormats") REFERENCES "FileFormats"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk18" FOREIGN KEY ("dataInputs") REFERENCES "Functionalities"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk21" FOREIGN KEY ("developmentStatus") REFERENCES "RepoStatuses"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk19" FOREIGN KEY ("supportedFileFormats") REFERENCES "FileFormats"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk22" FOREIGN KEY ("operatingSystem") REFERENCES "OperatingSystems"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk22" FOREIGN KEY ("developmentStatus") REFERENCES "RepoStatuses"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk23" FOREIGN KEY ("metadataLicense") REFERENCES "Licenses"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk23" FOREIGN KEY ("operatingSystem") REFERENCES "OperatingSystems"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk24" FOREIGN KEY ("license") REFERENCES "Licenses"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk24" FOREIGN KEY ("metadataLicense") REFERENCES "Licenses"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk26" FOREIGN KEY ("keywords") REFERENCES "Keywords"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk25" FOREIGN KEY ("license") REFERENCES "Licenses"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk29" FOREIGN KEY ("funder") REFERENCES "Organizations"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk27" FOREIGN KEY ("keywords") REFERENCES "Keywords"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk30" FOREIGN KEY ("award") REFERENCES "Awards"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk30" FOREIGN KEY ("funder") REFERENCES "Organizations"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk32" FOREIGN KEY ("logo") REFERENCES "Images"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk31" FOREIGN KEY ("award") REFERENCES "Awards"("id");
 
-ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk33" FOREIGN KEY ("relatedPhenomena") REFERENCES "Phenomenas"("id");
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk33" FOREIGN KEY ("logo") REFERENCES "Images"("id");
 
+ALTER TABLE "Softwares" ADD CONSTRAINT "Softwares_fk34" FOREIGN KEY ("relatedPhenomena") REFERENCES "Phenomenas"("id");
+
+
+ALTER TABLE "ProgrammingLanguages" ADD CONSTRAINT "ProgrammingLanguages_fk3" FOREIGN KEY ("organization") REFERENCES "Organizations"("id");

@@ -17,11 +17,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 from .constants import SaveType
-from .models import (
-    Category, Collection, Feedback, NewsItem, NewsItemStatus, Resource, 
-    Submission, SubmissionStatus, TeamMember, ToolType, InLitResource
-)
-from .models import place_static_copy
+from .models import *
 from . import submissions
 
 from django.db.models import F

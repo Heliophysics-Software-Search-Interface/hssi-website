@@ -1,5 +1,6 @@
 from .__old import *
 from .software import *
+from .submission_info import *
 from .organization import *
 from .person import *
 from .ivoa_entry import *

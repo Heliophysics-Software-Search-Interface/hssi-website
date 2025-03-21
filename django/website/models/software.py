@@ -7,6 +7,7 @@ from .ivoa_entry import IvoaEntry
 from .functionality import Functionality
 from .basics import RepoStatuses, OperatingSystems, Keywords, Awards, Images, PhenomenaTypes
 from .license import License
+from .submission_info import SubmissionInfo
 
 class ProgrammingLanguage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -139,6 +140,11 @@ class Software(models.Model):
         related_name='softwares'
     )
     relatedPhenomena = models.ManyToManyField(PhenomenaTypes, related_name='softwares')
+    submissionInfo = models.ForeignKey(
+        SubmissionInfo,
+        on_delete=models.CASCADE,
+        related_name='softwares'
+    )
 
     class Meta: ordering = ['softwareName']
     def __str__(self): return self.softwareName

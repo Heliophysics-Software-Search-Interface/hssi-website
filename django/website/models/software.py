@@ -5,7 +5,7 @@ from .organization import Organization
 from .person import Person
 from .ivoa_entry import IvoaEntry
 from .functionality import Functionality
-from .basics import RepoStatuses, OperatingSystems, Keywords, Awards, Images, PhenomenaTypes
+from .basics import RepoStatus, OperatingSystem, Keyword, Award, Image, PhenomenaType
 from .license import License
 from .submission_info import SubmissionInfo
 
@@ -92,13 +92,13 @@ class Software(models.Model):
     relatedPublications = models.TextField(blank=True, null=True)
     relatedDatasets = models.TextField(blank=True, null=True)
     developmentStatus = models.ForeignKey(
-        RepoStatuses,
+        RepoStatus,
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
         related_name='softwares'
     )
-    operatingSystem = models.ManyToManyField(OperatingSystems, related_name='softwares')
+    operatingSystem = models.ManyToManyField(OperatingSystem, related_name='softwares')
     metadataLicense = models.ForeignKey(
         License,
         on_delete=models.CASCADE, 
@@ -114,7 +114,7 @@ class Software(models.Model):
         related_name='softwares_license'
     )
     relatedRegion = models.TextField(blank=True, null=True)
-    keywords = models.ManyToManyField(Keywords, related_name='softwares')
+    keywords = models.ManyToManyField(Keyword, related_name='softwares')
     relatedSoftware = models.TextField(blank=True, null=True)
     interopableSoftware = models.TextField(blank=True, null=True)
     funder = models.ForeignKey(
@@ -125,7 +125,7 @@ class Software(models.Model):
         related_name='softwares_funder'
     )
     award = models.ForeignKey(
-        Awards,
+        Award,
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
@@ -133,13 +133,13 @@ class Software(models.Model):
     )
     codeRepositoryUrl = models.URLField(blank=True, null=True)
     logo = models.ForeignKey(
-        Images,
+        Image,
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
         related_name='softwares'
     )
-    relatedPhenomena = models.ManyToManyField(PhenomenaTypes, related_name='softwares')
+    relatedPhenomena = models.ManyToManyField(PhenomenaType, related_name='softwares')
     submissionInfo = models.ForeignKey(
         SubmissionInfo,
         on_delete=models.CASCADE,

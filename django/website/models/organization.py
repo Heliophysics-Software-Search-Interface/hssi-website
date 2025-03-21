@@ -5,7 +5,7 @@ from django.db import models
 # Organizations.programming_languages field's type
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from .softwares import ProgrammingLanguages
+    from .software import ProgrammingLanguage
 
 class OrganizationType(models.IntegerChoices):
     UNIVERSITY = 1, "University"
@@ -14,7 +14,7 @@ class OrganizationType(models.IntegerChoices):
     GOVERNMENT_AGENCY = 4, "Government Agency"
     OTHER = 6, "Other"
 
-class Organizations(models.Model):
+class Organization(models.Model):
     '''Database model for organization entries to be linked to metadata'''
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -32,7 +32,7 @@ class Organizations(models.Model):
     )
 
     # specified for intellisense, defined in ProgrammingLanguages model
-    programming_languages: models.Manager['ProgrammingLanguages']
+    programming_languages: models.Manager['ProgrammingLanguage']
 
     class Meta: ordering = ['name']
     def __str__(self): 

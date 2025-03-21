@@ -1,19 +1,19 @@
 import uuid
 from django.db import models
 
-from .organizations import Organizations
-from .persons import Persons
-from .ivoa_entries import IvoaEntries
-from .functionalities import Functionalities
+from .organization import Organization
+from .person import Person
+from .ivoa_entry import IvoaEntry
+from .functionality import Functionality
 from .basics import RepoStatuses, OperatingSystems, Keywords, Awards, Images, PhenomenaTypes
-from .licenses import Licenses
+from .license import License
 
-class ProgrammingLanguages(models.Model):
+class ProgrammingLanguage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     version = models.CharField(max_length=50, blank=True, null=True)
     organization = models.ForeignKey(
-        Organizations,
+        Organization,
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
@@ -24,12 +24,12 @@ class ProgrammingLanguages(models.Model):
     def __str__(self): 
         return self.name + (f' {self.version}' if self.version else '')
 
-class FileFormats(models.Model):
+class FileFormat(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     extension = models.CharField(max_length=25)
     fullName = models.CharField(max_length=100, blank=True, null=True)
     affiliation = models.ForeignKey(
-        Organizations,
+        Organization,
         on_delete=models.CASCADE,
         null=True, 
         blank=True, 
@@ -37,39 +37,39 @@ class FileFormats(models.Model):
     )
 
     # specified for intellisense, defined in Softwares model
-    softares: models.Manager['Softwares']
+    softares: models.Manager['Software']
 
     class Meta: ordering = ['extension']
     def __str__(self): 
         return self.extension + (f' - {self.fullName}' if self.fullName else '')
     
-class Softwares(models.Model):
+class Software(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)    
     programmingLanguage = models.ForeignKey(
-        ProgrammingLanguages,
+        ProgrammingLanguage,
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
         related_name='softwares'
     )
     publicationDate = models.DateField()
-    authors = models.ManyToManyField(Persons, related_name='softwares')
+    authors = models.ManyToManyField(Person, related_name='softwares')
     publisher = models.ForeignKey(
-        Organizations,
+        Organization,
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
         related_name='softwares'
     )
     relatedInstruments = models.ForeignKey(
-        IvoaEntries,
+        IvoaEntry,
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
         related_name='softwares'
     )
     relatedObservatories = models.ForeignKey(
-        IvoaEntries,
+        IvoaEntry,
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
@@ -84,10 +84,10 @@ class Softwares(models.Model):
     referencePublication = models.CharField(max_length=200, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     conciseDescription = models.TextField(max_length=200, blank=True, null=True)
-    softwareFunctionality = models.ManyToManyField(Functionalities, related_name='softwares')
+    softwareFunctionality = models.ManyToManyField(Functionality, related_name='softwares')
     documentation = models.URLField(blank=True, null=True)
-    dataInputs = models.ManyToManyField(Functionalities, related_name='softwares_data')
-    supportedFileFormats = models.ManyToManyField(FileFormats, related_name='softwares')
+    dataInputs = models.ManyToManyField(Functionality, related_name='softwares_data')
+    supportedFileFormats = models.ManyToManyField(FileFormat, related_name='softwares')
     relatedPublications = models.TextField(blank=True, null=True)
     relatedDatasets = models.TextField(blank=True, null=True)
     developmentStatus = models.ForeignKey(
@@ -99,14 +99,14 @@ class Softwares(models.Model):
     )
     operatingSystem = models.ManyToManyField(OperatingSystems, related_name='softwares')
     metadataLicense = models.ForeignKey(
-        Licenses,
+        License,
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
         related_name='softwares'
     )
     license = models.ForeignKey(
-        Licenses,
+        License,
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
@@ -117,7 +117,7 @@ class Softwares(models.Model):
     relatedSoftware = models.TextField(blank=True, null=True)
     interopableSoftware = models.TextField(blank=True, null=True)
     funder = models.ForeignKey(
-        Organizations,
+        Organization,
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 

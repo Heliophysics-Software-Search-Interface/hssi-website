@@ -6,7 +6,7 @@ class IvoaType(models.IntegerChoices):
     OBSERVATORY = 2, "Observatory"
     MISSION = 3, "Mission"
 
-class IvoaEntries(models.Model):
+class IvoaEntry(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     type = models.IntegerField(choices=IvoaType.choices, default=IvoaType.INSTRUMENT)
     name = models.CharField(max_length=100)

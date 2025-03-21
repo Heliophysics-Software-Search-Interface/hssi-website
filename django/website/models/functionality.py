@@ -2,7 +2,7 @@ import uuid
 from django.db import models
 from colorful.fields import RGBColorField
 
-class FunctionCategories(models.Model):
+class FunctionCategory(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     abbreviation = models.CharField(max_length=5, null=True, blank=True)
@@ -10,17 +10,17 @@ class FunctionCategories(models.Model):
     textColor = RGBColorField("Text Color", default="#000000", blank=True, null=True)
 
     # specified for intellisense, defined in Functionalities model
-    functionalities: models.Manager["Functionalities"]
+    functionalities: models.Manager["Functionality"]
 
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
-class Functionalities(models.Model):
+class Functionality(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     category = models.ForeignKey(
-        FunctionCategories, 
+        FunctionCategory, 
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 

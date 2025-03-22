@@ -617,6 +617,23 @@ class TeamMemberAdmin(ImportExportModelAdmin):
 
 # Register your models here.
 
+# site.register(Software, admin_class=SoftwareAdmin)
+# site.register(FileFormat, admin_class=FileFormatAdmin)
+# site.register(ProgrammingLanguage, admin_class=ProgrammingLanguageAdmin)
+# site.register(IvoaEntry, admin_class=IvoaEntryAdmin)
+# site.register(Functionality, admin_class=FunctionalityAdmin)
+# site.register(FunctionCategory, admin_class=FunctionCategoryAdmin)
+# site.register(Person, admin_class=PersonAdmin)
+# site.register(Curator, admin_class=CuratorAdmin)
+# site.register(Organization, admin_class=OrganizationAdmin)
+# site.register(License, admin_class=LicenseAdmin)
+# site.register(SubmissionInfo, admin_class=SubmissionInfoAdmin)
+# site.register(OperatingSystem, admin_class=OperatingSystemAdmin)
+# site.register(PhenomenaType, admin_class=PhenomenaTypeAdmin)
+# site.register(Keyword, admin_class=KeywordAdmin)
+# site.register(Award, admin_class=AwardAdmin)
+# site.register(Image, admin_class=ImageAdmin)
+
 site.register(Category, admin_class=CategoryAdmin)
 site.register(Collection, admin_class=CollectionAdmin)
 site.register(Feedback, admin_class=FeedbackAdmin)

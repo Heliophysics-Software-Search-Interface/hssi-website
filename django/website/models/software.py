@@ -157,4 +157,4 @@ class FileFormatAdmin(ImportExportModelAdmin): resource_class = FileFormatResour
 
 class ProgrammingLanguageResource(resources.ModelResource):
     class Meta: model = ProgrammingLanguage
-
+class ProgrammingLanguageAdmin(ImportExportModelAdmin): resource_class = ProgrammingLanguageResource

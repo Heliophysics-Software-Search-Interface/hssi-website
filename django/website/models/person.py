@@ -1,5 +1,7 @@
 import uuid
 from django.db import models
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 
 # we need to import the softwares type for intellisense
 from typing import TYPE_CHECKING
@@ -44,3 +46,13 @@ class Curator(models.Model):
 
     class Meta: ordering = ['person']
     def __str__(self): return str(self.person)
+
+# Definitions for admin page ---------------------------------------------------
+
+class PersonResource(resources.ModelResource): 
+    class Meta: model = Person
+class PersonAdmin(ImportExportModelAdmin): resource_class = PersonResource
+
+class CuratorResource(resources.ModelResource):
+    class Meta: model = Curator
+class CuratorAdmin(ImportExportModelAdmin): resource_class = CuratorResource

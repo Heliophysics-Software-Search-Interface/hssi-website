@@ -50,7 +50,7 @@ class Category(AbstractTag):
 
     class Meta:
         ordering = ['name']
-        verbose_name_plural = "categories"
+        verbose_name_plural = "~Categories"
 
 class Collection(AbstractTag):
 
@@ -58,6 +58,7 @@ class Collection(AbstractTag):
 
     class Meta:
         ordering = ['name']
+        verbose_name_plural = "~Collections"
 
 class ToolType(AbstractTag):
 
@@ -65,6 +66,7 @@ class ToolType(AbstractTag):
 
     class Meta:
         ordering = ['name']
+        verbose_name_plural = "~Tool types"
 
 def resource_media_directory_path(instance: 'AbstractResource', filename: str) -> str:
     # The named file will be uploaded to MEDIA_ROOT/resources/<instance.name>/<filename>
@@ -267,6 +269,7 @@ class Resource(AbstractResource):
 
     class Meta:
         ordering = ['name']
+        verbose_name_plural = "~Resources"
     
     def get_absolute_url(self):
         return f'{settings.SITE_PROTOCOL}://{settings.SITE_DOMAIN}?id={self.id}'
@@ -294,6 +297,7 @@ class InLitResource(AbstractResource):
 
     class Meta:
         ordering = ['name']
+        verbose_name_plural = "~In lit resources"
         
     def get_absolute_url(self):
         """
@@ -378,6 +382,7 @@ class Submission(AbstractResource):
 
     class Meta:
         ordering = ['-creation_date']
+        verbose_name_plural = "~Submissions"
     
     def clean(self, *args, **kwargs):
 
@@ -453,7 +458,7 @@ class Feedback(models.Model):
 
     class Meta:
         ordering = ['-feedback_date']
-        verbose_name_plural = "feedback"
+        verbose_name_plural = "~Feedback"
 
 class NewsItemStatus(Enum):
     DRAFT = 'Draft'
@@ -471,6 +476,7 @@ class NewsItem(models.Model):
 
     class Meta:
         ordering = ["-published_on"]
+        verbose_name_plural = "~News items"
 
     def __str__(self):
         return self.title
@@ -498,6 +504,7 @@ class TeamMember(models.Model):
 
     class Meta:
         ordering = ["order"]
+        verbose_name_plural = "~Team members"
 
     def save(self, *args, **kwargs): 
         

@@ -39,5 +39,7 @@ class SubmissionInfo(models.Model):
     curatorLock = models.BooleanField(default=False)
     outOfSync = models.BooleanField(default=False)
 
-    class Meta: ordering = ['submissionDate']
+    class Meta: 
+        ordering = ['submissionDate']
+        verbose_name_plural = "  Submission info"
     def __str__(self): return f"{self.submissionDate} - {self.submissionStatus}"

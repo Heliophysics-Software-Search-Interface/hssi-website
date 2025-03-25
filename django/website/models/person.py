@@ -42,5 +42,7 @@ class Curator(models.Model):
     submission_info_owner: models.Manager['SubmissionInfo']
     submission_info_leader: models.Manager['SubmissionInfo']
 
-    class Meta: ordering = ['person']
+    class Meta: 
+        ordering = ['person']
+        verbose_name_plural = "People"
     def __str__(self): return str(self.person)

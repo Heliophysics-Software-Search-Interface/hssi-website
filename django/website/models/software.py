@@ -140,5 +140,7 @@ class Software(models.Model):
         related_name='softwares'
     )
 
-    class Meta: ordering = ['softwareName']
+    class Meta:
+        ordering = ['softwareName']
+        verbose_name_plural = "  Software"
     def __str__(self): return self.softwareName

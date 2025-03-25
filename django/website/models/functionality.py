@@ -12,7 +12,9 @@ class FunctionCategory(models.Model):
     # specified for intellisense, defined in Functionalities model
     functionalities: models.Manager["Functionality"]
 
-    class Meta: ordering = ['name']
+    class Meta: 
+        ordering = ['name']
+        verbose_name_plural = "Function Categories"
     def __str__(self): return self.name
 
 class Functionality(models.Model):
@@ -27,5 +29,7 @@ class Functionality(models.Model):
         related_name='functionalities'
     )
 
-    class Meta: ordering = ['name']
+    class Meta: 
+        ordering = ['name']
+        verbose_name_plural = "Functionalities"
     def __str__(self): return self.name

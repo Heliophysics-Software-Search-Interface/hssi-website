@@ -620,6 +620,7 @@ from .model_admin import *
 site.register(Software, admin_class=SoftwareAdmin)
 site.register(FileFormat, admin_class=FileFormatAdmin)
 site.register(ProgrammingLanguage, admin_class=ProgrammingLanguageAdmin)
+site.register(VisibleSoftware, admin_class=VisibleSoftwareAdmin)
 site.register(IvoaEntry, admin_class=IvoaEntryAdmin)
 site.register(Functionality, admin_class=FunctionalityAdmin)
 site.register(FunctionCategory, admin_class=FunctionCategoryAdmin)

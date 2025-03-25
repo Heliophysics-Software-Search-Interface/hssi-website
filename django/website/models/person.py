@@ -24,7 +24,9 @@ class Person(models.Model):
     softwares: models.Manager['Software']
     submission_info: models.Manager['SubmissionInfo']
 
-    class Meta: ordering = ['lastName', 'name']
+    class Meta: 
+        ordering = ['lastName', 'name']
+        verbose_name_plural = "People"
     def __str__(self): return self.name
 
 class Curator(models.Model):
@@ -42,7 +44,5 @@ class Curator(models.Model):
     submission_info_owner: models.Manager['SubmissionInfo']
     submission_info_leader: models.Manager['SubmissionInfo']
 
-    class Meta: 
-        ordering = ['person']
-        verbose_name_plural = "People"
+    class Meta: ordering = ['person']
     def __str__(self): return str(self.person)

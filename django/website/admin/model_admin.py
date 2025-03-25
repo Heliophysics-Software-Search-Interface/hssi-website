@@ -7,7 +7,7 @@ from ..models.ivoa_entry import IvoaEntry
 from ..models.license import License
 from ..models.organization import Organization
 from ..models.person import Person, Curator
-from ..models.software import Software, FileFormat, ProgrammingLanguage
+from ..models.software import Software, FileFormat, ProgrammingLanguage, VisibleSoftware
 from ..models.submission_info import SubmissionInfo
 
 # Admin definitions for basics module ------------------------------------------
@@ -83,6 +83,10 @@ class FileFormatAdmin(ImportExportModelAdmin): resource_class = FileFormatResour
 class ProgrammingLanguageResource(resources.ModelResource):
     class Meta: model = ProgrammingLanguage
 class ProgrammingLanguageAdmin(ImportExportModelAdmin): resource_class = ProgrammingLanguageResource
+
+class VisibleSoftwareResource(resources.ModelResource):
+    class Meta: model = VisibleSoftware
+class VisibleSoftwareAdmin(ImportExportModelAdmin): resource_class = VisibleSoftwareResource
 
 # Admin definitions for submission_info module ---------------------------------
 

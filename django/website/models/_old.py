@@ -44,7 +44,6 @@ class AbstractTag(models.Model):
     def has_children(self):
         return self.children.all().count() != 0
 
-
 class Category(AbstractTag):
 
     index = models.PositiveIntegerField(blank=True, null=True)

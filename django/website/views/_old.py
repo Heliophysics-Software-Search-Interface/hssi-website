@@ -28,11 +28,11 @@ from crispy_forms.utils import render_crispy_form
 
 from ipware import get_client_ip
 
-from .forms import FeedbackForm
-from .models import Category, NewsItem, NewsItemStatus, Resource, TeamMember, ToolType, Collection, InLitResource, Submission, SubmissionStatus, QualitySpec
-from .admin import isInlit
-from .constants import SaveType
-from . import submissions
+from ..forms import FeedbackForm
+from ..models import Category, NewsItem, NewsItemStatus, Resource, TeamMember, ToolType, Collection, InLitResource, Submission, SubmissionStatus, QualitySpec
+from ..admin import isInlit
+from ..constants import SaveType
+from .. import submissions
 
 
 def keywords_match_all_tokens(resources, tokens):

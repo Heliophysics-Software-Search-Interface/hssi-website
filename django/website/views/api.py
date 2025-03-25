@@ -1,0 +1,12 @@
+from django.http import JsonResponse, HttpRequest
+from django.forms.models import model_to_dict
+
+from ..models import Software
+
+def apiView(request: HttpRequest) -> JsonResponse:
+    data: Software | None = None
+    if len(Software.objects.all()) <= 0:data = None
+    else: data = Software.objects.all()[0]
+
+    json_data: dict = model_to_dict(data) if data else {"Error": "No software found"}
+    return JsonResponse(json_data)

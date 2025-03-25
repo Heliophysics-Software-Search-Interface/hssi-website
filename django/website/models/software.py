@@ -1,7 +1,5 @@
 import uuid
 from django.db import models
-from import_export import resources
-from import_export.admin import ImportExportModelAdmin
 
 from .organization import Organization
 from .person import Person
@@ -93,7 +91,7 @@ class Software(models.Model):
     supportedFileFormats = models.ManyToManyField(FileFormat, related_name='softwares')
     relatedPublications = models.TextField(blank=True, null=True)
     relatedDatasets = models.TextField(blank=True, null=True)
-    developmentStatus = models.IntegerChoices(RepoStatus.choices, default=RepoStatus.OTHER)
+    developmentStatus = models.IntegerField(choices=RepoStatus.choices, default=RepoStatus.WIP)
     operatingSystem = models.ManyToManyField(OperatingSystem, related_name='softwares')
     metadataLicense = models.ForeignKey(
         License,
@@ -144,17 +142,3 @@ class Software(models.Model):
 
     class Meta: ordering = ['softwareName']
     def __str__(self): return self.softwareName
-
-# Definitions for admin page ---------------------------------------------------
-
-class SoftwareResource(resources.ModelResource):
-    class Meta: model = Software
-class SoftwareAdmin(ImportExportModelAdmin): resource_class = SoftwareResource
-
-class FileFormatResource(resources.ModelResource):
-    class Meta: model = FileFormat
-class FileFormatAdmin(ImportExportModelAdmin): resource_class = FileFormatResource
-
-class ProgrammingLanguageResource(resources.ModelResource):
-    class Meta: model = ProgrammingLanguage
-class ProgrammingLanguageAdmin(ImportExportModelAdmin): resource_class = ProgrammingLanguageResource

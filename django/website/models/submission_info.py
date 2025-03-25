@@ -1,11 +1,7 @@
 import uuid
 from django.db import models
-from import_export import resources
-from import_export.admin import ImportExportModelAdmin
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from .person import Person, Curator
+from .person import Person, Curator
 
 class SubmissionInfo(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -45,9 +41,3 @@ class SubmissionInfo(models.Model):
 
     class Meta: ordering = ['submissionDate']
     def __str__(self): return f"{self.submissionDate} - {self.submissionStatus}"
-
-# Definitions for admin page ---------------------------------------------------
-
-class SubmissionInfoResource(resources.ModelResource):
-    class Meta: model = SubmissionInfo
-class SubmissionInfoAdmin(ImportExportModelAdmin): resource_class = SubmissionInfoResource

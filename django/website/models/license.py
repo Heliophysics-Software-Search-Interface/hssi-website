@@ -1,7 +1,5 @@
 import uuid
 from django.db import models
-from import_export import resources
-from import_export.admin import ImportExportModelAdmin
 
 class License(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -14,9 +12,3 @@ class License(models.Model):
 
     class Meta: ordering = ['identifier', 'name']
     def __str__(self): return self.identifier or self.name
-
-# Definitions for admin page ---------------------------------------------------
-
-class LicenseResource(resources.ModelResource):
-    class Meta: model = License
-class LicenseAdmin(ImportExportModelAdmin): resource_class = LicenseResource

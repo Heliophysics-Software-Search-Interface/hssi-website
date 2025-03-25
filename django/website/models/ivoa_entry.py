@@ -1,7 +1,5 @@
 import uuid
 from django.db import models
-from import_export import resources
-from import_export.admin import ImportExportModelAdmin
 
 class IvoaType(models.IntegerChoices):
     INSTRUMENT = 1, "Instrument"
@@ -17,9 +15,3 @@ class IvoaEntry(models.Model):
 
     class Meta: ordering = ['name']
     def __str__(self): return self.name
-
-# Definitions for admin page ---------------------------------------------------
-
-class IvoaEntryResource(resources.ModelResource):
-    class Meta: model = IvoaEntry
-class IvoaEntryAdmin(ImportExportModelAdmin): resource_class = IvoaEntryResource

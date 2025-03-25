@@ -1,7 +1,5 @@
 import uuid
 from django.db import models
-from import_export import resources
-from import_export.admin import ImportExportModelAdmin
 from colorful.fields import RGBColorField
 
 class FunctionCategory(models.Model):
@@ -31,13 +29,3 @@ class Functionality(models.Model):
 
     class Meta: ordering = ['name']
     def __str__(self): return self.name
-
-# Definitions for admin page ---------------------------------------------------
-
-class FunctionalityResource(resources.ModelResource):
-    class Meta: model = Functionality
-class FunctionalityAdmin(ImportExportModelAdmin): resource_class = FunctionalityResource
-
-class FunctionCategoryResource(resources.ModelResource):
-    class Meta: model = FunctionCategory
-class FunctionCategoryAdmin(ImportExportModelAdmin): resource_class = FunctionCategoryResource

@@ -1,7 +1,5 @@
 import uuid
 from django.db import models
-from import_export import resources
-from import_export.admin import ImportExportModelAdmin
 
 # we need to import programming languages for intellisense to resolve the 
 # Organizations.programming_languages field's type
@@ -41,9 +39,3 @@ class Organization(models.Model):
         if self.abbreviation:
             return f"{self.name} ({self.abbreviation})"
         return self.name
-
-# Definitions for admin page ---------------------------------------------------
-
-class OrganizationResource(resources.ModelResource):
-    class Meta: model = Organization
-class OrganizationAdmin(ImportExportModelAdmin): resource_class = OrganizationResource

@@ -16,18 +16,16 @@ from django.conf import settings
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
-from .constants import SaveType
-from .models import *
-from . import submissions
+from ..constants import SaveType
+from ..models import *
+from .. import submissions
 
 from django.db.models import F
 
 ## HSSI Admin Site
-
-
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import redirect
-from .metadata import get_metadata
+from ..metadata import get_metadata
 
 from django.core.management import call_command
 from django.contrib import admin
@@ -617,22 +615,24 @@ class TeamMemberAdmin(ImportExportModelAdmin):
 
 # Register your models here.
 
-# site.register(Software, admin_class=SoftwareAdmin)
-# site.register(FileFormat, admin_class=FileFormatAdmin)
-# site.register(ProgrammingLanguage, admin_class=ProgrammingLanguageAdmin)
-# site.register(IvoaEntry, admin_class=IvoaEntryAdmin)
-# site.register(Functionality, admin_class=FunctionalityAdmin)
-# site.register(FunctionCategory, admin_class=FunctionCategoryAdmin)
-# site.register(Person, admin_class=PersonAdmin)
-# site.register(Curator, admin_class=CuratorAdmin)
-# site.register(Organization, admin_class=OrganizationAdmin)
-# site.register(License, admin_class=LicenseAdmin)
-# site.register(SubmissionInfo, admin_class=SubmissionInfoAdmin)
-# site.register(OperatingSystem, admin_class=OperatingSystemAdmin)
-# site.register(PhenomenaType, admin_class=PhenomenaTypeAdmin)
-# site.register(Keyword, admin_class=KeywordAdmin)
-# site.register(Award, admin_class=AwardAdmin)
-# site.register(Image, admin_class=ImageAdmin)
+from .model_admin import *
+
+site.register(Software, admin_class=SoftwareAdmin)
+site.register(FileFormat, admin_class=FileFormatAdmin)
+site.register(ProgrammingLanguage, admin_class=ProgrammingLanguageAdmin)
+site.register(IvoaEntry, admin_class=IvoaEntryAdmin)
+site.register(Functionality, admin_class=FunctionalityAdmin)
+site.register(FunctionCategory, admin_class=FunctionCategoryAdmin)
+site.register(Person, admin_class=PersonAdmin)
+site.register(Curator, admin_class=CuratorAdmin)
+site.register(Organization, admin_class=OrganizationAdmin)
+site.register(License, admin_class=LicenseAdmin)
+site.register(SubmissionInfo, admin_class=SubmissionInfoAdmin)
+site.register(OperatingSystem, admin_class=OperatingSystemAdmin)
+site.register(PhenomenaType, admin_class=PhenomenaTypeAdmin)
+site.register(Keyword, admin_class=KeywordAdmin)
+site.register(Award, admin_class=AwardAdmin)
+site.register(Image, admin_class=ImageAdmin)
 
 site.register(Category, admin_class=CategoryAdmin)
 site.register(Collection, admin_class=CollectionAdmin)

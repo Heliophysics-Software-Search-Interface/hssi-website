@@ -1,4 +1,4 @@
-from .old import *
+from ._old import *
 from .software import *
 from .submission_info import *
 from .organization import *

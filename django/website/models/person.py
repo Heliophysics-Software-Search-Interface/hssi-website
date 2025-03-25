@@ -27,7 +27,12 @@ class Person(models.Model):
     class Meta: 
         ordering = ['lastName', 'name']
         verbose_name_plural = "People"
-    def __str__(self): return self.name
+    def __str__(self): return self.name + ("" if self.lastName == None else " " + self.lastName)
+
+    def to_str_lastname_firstname(self) -> str:
+        if self.lastName is None or len(self.lastName) <= 0:
+            return self.name
+        return f"{self.lastName}, {self.name}"
 
 class Curator(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

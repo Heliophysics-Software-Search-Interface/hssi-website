@@ -140,7 +140,7 @@ class Software(models.Model):
     submissionInfo = models.ForeignKey(
         SubmissionInfo,
         on_delete=models.CASCADE,
-        related_name='softwares'
+        related_name='software'
     )
 
     # specified for intellisense, defined in other model

@@ -69,7 +69,6 @@ class SubmissionInfo(models.Model):
         verbose_name_plural = "  Submission info"
     def __str__(self): 
         return (
-            f" {str(self.submissionDate)} - " + 
-            f"{self.submitter.to_str_lastname_firstname()}, {self.software}: " +
+            f"{str(self.submissionDate)} - " + f"{str(self.software)}: " +
             f"{self.get_internalStatusCode_display()}"
         )

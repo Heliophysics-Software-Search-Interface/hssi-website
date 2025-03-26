@@ -46,4 +46,4 @@ class Image(models.Model):
     description = models.CharField(max_length=250)
 
     class Meta: ordering = ['description']
-    def __str__(self): return self.name
+    def __str__(self): return self.url

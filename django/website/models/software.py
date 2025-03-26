@@ -219,9 +219,18 @@ class Software(models.Model):
                 lambda x: cast(Person, x).to_str_lastname_firstname(),
                 self.authors.all()
             )),
-            'authorAffiliation': author_affiliation,
-            'authorAffiliationIdentifier': author_affiliation_identifier,
-            'authorIdentifier': author_identifier,
+            'authorAffiliation': list(map(
+                lambda x: cast(Person, x).affiliation.name if x and cast(Person, x).affiliation else None,
+                self.authors.all()
+            )),
+            'authorAffiliationIdentifier': list(map(
+                lambda x: cast(Person, x).affiliation.identifier if x and cast(Person, x).affiliation else None,
+                self.authors.all()
+            )),
+            'authorIdentifier': list(map(
+                lambda x: cast(Person, x).identifier,
+                self.authors.all()
+            )),
             'Publisher': self.publisher.name if self.publisher else None,
             'publisherIdentifier': self.publisher.identifier if self.publisher else None,
             'relatedInstruments': list(map(

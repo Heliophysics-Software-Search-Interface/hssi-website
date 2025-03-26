@@ -208,10 +208,8 @@ class Software(models.Model):
 
         # extract string from publication date if available
         pub_date_str: str | None
-        if self.publicationDate:
-            pub_date_str = self.publicationDate.strftime('%Y-%m-%d')
-        else:
-            pub_date_str = None
+        if self.publicationDate: pub_date_str = self.publicationDate.strftime('%Y-%m-%d')
+        else: pub_date_str = None
 
         # create and return the data dictionary
         return {

@@ -56,7 +56,7 @@ class Software(models.Model):
         blank=True, 
         related_name='softwares'
     )
-    publicationDate = models.DateField()
+    publicationDate = models.DateField(null=True)
     authors = models.ManyToManyField(Person, related_name='softwares')
     publisher = models.ForeignKey(
         Organization,
@@ -88,14 +88,30 @@ class Software(models.Model):
     referencePublication = models.CharField(max_length=200, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     conciseDescription = models.TextField(max_length=200, blank=True, null=True)
-    softwareFunctionality = models.ManyToManyField(Functionality, related_name='softwares')
+    softwareFunctionality = models.ManyToManyField(
+        Functionality, 
+        blank=True, 
+        related_name='softwares'
+    )
     documentation = models.URLField(blank=True, null=True)
-    dataInputs = models.ManyToManyField(Functionality, related_name='softwares_data')
-    supportedFileFormats = models.ManyToManyField(FileFormat, related_name='softwares')
+    dataInputs = models.ManyToManyField(
+        Functionality, 
+        blank=True,
+        related_name='softwares_data'
+    )
+    supportedFileFormats = models.ManyToManyField(
+        FileFormat, 
+        blank=True, 
+        related_name='softwares'
+    )
     relatedPublications = models.TextField(blank=True, null=True)
     relatedDatasets = models.TextField(blank=True, null=True)
     developmentStatus = models.IntegerField(choices=RepoStatus.choices, default=RepoStatus.WIP)
-    operatingSystem = models.ManyToManyField(OperatingSystem, related_name='softwares')
+    operatingSystem = models.ManyToManyField(
+        OperatingSystem, 
+        blank=True, 
+        related_name='softwares'
+    )
     metadataLicense = models.ForeignKey(
         License,
         on_delete=models.CASCADE, 
@@ -111,7 +127,11 @@ class Software(models.Model):
         related_name='softwares_license'
     )
     relatedRegion = models.TextField(blank=True, null=True)
-    keywords = models.ManyToManyField(Keyword, related_name='softwares')
+    keywords = models.ManyToManyField(
+        Keyword, 
+        blank=True, 
+        related_name='softwares'
+    )
     relatedSoftware = models.TextField(blank=True, null=True)
     interopableSoftware = models.TextField(blank=True, null=True)
     funder = models.ForeignKey(
@@ -136,7 +156,11 @@ class Software(models.Model):
         blank=True, 
         related_name='softwares'
     )
-    relatedPhenomena = models.ManyToManyField(PhenomenaType, related_name='softwares')
+    relatedPhenomena = models.ManyToManyField(
+        PhenomenaType, 
+        blank=True, 
+        related_name='softwares'
+    )
     submissionInfo = models.ForeignKey(
         SubmissionInfo,
         on_delete=models.CASCADE,

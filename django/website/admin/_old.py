@@ -18,6 +18,7 @@ from import_export.admin import ImportExportModelAdmin
 
 from ..constants import SaveType
 from ..models import *
+from ..views import migrate_db_old_to_new
 from .. import submissions
 
 from django.db.models import F
@@ -51,6 +52,7 @@ class HssiAdminSite(admin.AdminSite):
             path('export_db/', view_export_db, name='export_db'),
             path('import_db/', view_import_db, name='import_db'),
             path('get_metadata/', view_get_metadata, name='get_metadata'),
+            path('migrate_old_to_new/', migrate_db_old_to_new, name="migrate_old_to_new")
         ] + urls_base[-1:]
         return urls
 

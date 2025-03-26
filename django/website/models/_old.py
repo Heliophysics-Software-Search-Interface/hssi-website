@@ -16,6 +16,8 @@ from django.conf import settings
 # See: https://github.com/charettes/django-colorful
 from colorful.fields import RGBColorField
 
+from .submission_info import SubmissionStatusCode
+
 class AbstractTag(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -136,6 +138,21 @@ class SubmissionStatus(models.IntegerChoices):
     IN_LITERATURE = 9, 'In Literature Resource Created'
     REJECTED_ABANDONED = 10, 'Rejected/Abandoned'
     SPAM = 11, 'Spam'
+
+    def to_new_code(self) -> SubmissionStatusCode:
+        match self:
+            case SubmissionStatus.MISSING_INFO: return SubmissionStatusCode.PROPOSED_RESOURCE
+            case SubmissionStatus.FIRST_CONTACT: return SubmissionStatusCode.READY_FOR_CONTACT
+            case SubmissionStatus.CONTACTED: return SubmissionStatusCode.CONTACTED
+            case SubmissionStatus.TOOL_PAUSED: return SubmissionStatusCode.RESOURCE_DEV_PAUSED
+            case SubmissionStatus.RECEIVED: return SubmissionStatusCode.RECEIVED
+            case SubmissionStatus.IN_REVIEW: return SubmissionStatusCode.IN_REVIEW_INTERNAL
+            case SubmissionStatus.ACCEPTED: return SubmissionStatusCode.IN_REVIEW_EXTERNAL
+            case SubmissionStatus.RESOURCE_CREATED: return SubmissionStatusCode.RESOURCE_CREATED
+            case SubmissionStatus.UNDER_DEVELOPMENT: return SubmissionStatusCode.PROPOSED_RESOURCE
+            case SubmissionStatus.IN_LITERATURE: return SubmissionStatusCode.PROPOSED_RESOURCE
+            case SubmissionStatus.REJECTED_ABANDONED: return SubmissionStatusCode.REJECTED
+            case SubmissionStatus.SPAM: return SubmissionStatusCode.SPAM
 
 class AbstractResource(models.Model):
 

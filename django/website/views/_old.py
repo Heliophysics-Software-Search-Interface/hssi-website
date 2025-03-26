@@ -30,7 +30,7 @@ from ipware import get_client_ip
 
 from ..forms import FeedbackForm
 from ..models import Category, NewsItem, NewsItemStatus, Resource, TeamMember, ToolType, Collection, InLitResource, Submission, SubmissionStatus, QualitySpec
-from ..admin import isInlit
+# from ..admin import isInlit
 from ..constants import SaveType
 from .. import submissions
 
@@ -415,7 +415,7 @@ def contact_all(request):
             for submission in submissionList:
                 try:
                     if submission.status == SubmissionStatus.FIRST_CONTACT:
-                        if isInlit(submission):
+                        if False: #isInlit(submission):
                             submissions.send_contact_email(submission, SaveType.INITIALINLITCONTACT)
                             first_in_lit_counter += f"   - {submission.name}\n"
                         else:
@@ -428,7 +428,7 @@ def contact_all(request):
                         submission.save()
                         total_contacts += 1
                     elif (submission.status == SubmissionStatus.CONTACTED) and (date_package.today() - submission.date_contacted > timedelta(days=89)):
-                        if isInlit(submission):
+                        if False: #isInlit(submission):
                             if submission.contact_count == 1:
                                 submissions.send_contact_email(submission, SaveType.SECONDINLITCONTACT)
                                 submission:Submission

@@ -21,7 +21,7 @@ class SubmissionStatusCode(models.IntegerChoices):
 
 class SubmissionInfo(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    dateModified = models.DateField(auto_now=True)
+    dateModified = models.DateField(auto_now=True, blank=True, null=True)
     modificationDescription = models.TextField(blank=True, null=True)
     metadataVersionNumber = models.CharField(max_length=50, blank=True, null=True)
     submitter = models.ForeignKey(
@@ -31,7 +31,7 @@ class SubmissionInfo(models.Model):
         blank=True, 
         related_name='submission_info'
     )
-    submitterEmail = models.EmailField()
+    submitterEmail = models.EmailField(null=True)
     curator = models.ForeignKey(
         Curator,
         on_delete=models.CASCADE, 
@@ -39,8 +39,8 @@ class SubmissionInfo(models.Model):
         blank=True, 
         related_name='submission_info_owner'
     )
-    curatorEmail = models.EmailField()
-    submissionDate = models.DateField()
+    curatorEmail = models.EmailField(null=True)
+    submissionDate = models.DateField(blank=True, null=True)
     internalStatusCode = models.IntegerField(
         choices=SubmissionStatusCode.choices, 
         default=SubmissionStatusCode.PROPOSED_RESOURCE

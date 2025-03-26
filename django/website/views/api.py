@@ -3,7 +3,7 @@ from django.forms.models import model_to_dict
 
 from ..models import Software
 
-def apiView(request: HttpRequest) -> JsonResponse:
+def api_view(request: HttpRequest) -> JsonResponse:
     data: Software | None = None
     if len(Software.objects.all()) <= 0:data = None
     else: data = Software.objects.all()[0]

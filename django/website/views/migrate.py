@@ -20,8 +20,8 @@ def migrate_db_old_to_new(request: HttpRequest) -> HttpResponse:
         author: Person
         if len(res_auth_split) >= 2:
             author, _ = Person.objects.get_or_create(
-                name=res_auth_split[0], 
-                lastName=' '.join(res_auth_split[1:])
+                name=' '.join(res_auth_split[:-1]), 
+                lastName=res_auth_split[-1]
             )
         else:
             author, _ = Person.objects.get_or_create(name=res_auth_split[0])
@@ -51,13 +51,15 @@ def migrate_db_old_to_new(request: HttpRequest) -> HttpResponse:
         software.authors.add(author)
 
         # create/assign programming language
-        lang, _ = ProgrammingLanguage.objects.get_or_create(name=resource.code_language)
-        lang.save()
-        software.programmingLanguage = lang
+        if len(resource.code_language.strip()) > 0:
+            lang, _ = ProgrammingLanguage.objects.get_or_create(name=resource.code_language.strip())
+            lang.save()
+            software.programmingLanguage = lang
         
         # create/assign keywords
         res_keyw_split = map(lambda x: x.strip(), resource.search_keywords.split(','))
         for res_keyword in res_keyw_split:
+            if len(res_keyword) <= 0: continue
             # we need to query with case-insensitivity, hence the __iexact, but 
             # if not found, it needs to set the 'name' field, hence the 
             # 'defaults' parameter

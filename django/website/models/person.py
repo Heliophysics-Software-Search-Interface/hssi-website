@@ -1,6 +1,8 @@
 import uuid
 from django.db import models
 
+from .organization import Organization
+
 # we need to import the softwares type for intellisense
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -13,7 +15,7 @@ class Person(models.Model):
     lastName = models.CharField(max_length=100, null=True, blank=True)
     identifier = models.CharField(max_length=512, blank=True, null=True)
     affiliation = models.ForeignKey(
-        'Organization', 
+        Organization, 
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 

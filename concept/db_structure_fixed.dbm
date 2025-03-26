@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+ Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="1.1.3" use-changelog="false" max-obj-count="25"
+	 last-position="0,0" last-zoom="1"
+	 default-owner="postgres"
+	 layers="Default layer"
+	 active-layers="0"
+	 layer-name-colors="#000000"
+	 layer-rect-colors="#b4b4b4"
+	 show-layer-names="false" show-layer-rects="false">
+<database name="new_database" is-template="false" allow-conns="true">
+</database>
+
+<schema name="public" layers="0" fill-color="#e1e1e1" name-color="#000000" sql-disabled="true">
+</schema>
+
+<table name="License" layers="0" collapse-mode="1" max-obj-count="8" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="760" y="940"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="identifier" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="fulltext">
+		<type name="text" length="0"/>
+	</column>
+	<column name="scheme">
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="schemeUri">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="uri">
+		<type name="varchar" length="512"/>
+	</column>
+	<constraint name="License_pk" type="pk-constr" table="public.&quot;License&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Phenomena" layers="0" collapse-mode="1" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1780" y="1000"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="Phenomena_pk" type="pk-constr" table="public.&quot;Phenomena&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="OrganizationType" layers="0" collapse-mode="1" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="740" y="440"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="OrganizationType_pk" type="pk-constr" table="public.&quot;OrganizationType&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Organization" layers="0" collapse-mode="1" pagination="true" attribs-page="0" ext-attribs-page="0" max-obj-count="8" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="560" y="540"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="type">
+		<type name="public.&quot;OrganizationType&quot;" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="abbreviation">
+		<type name="varchar" length="25"/>
+	</column>
+	<column name="parentOrganization">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="website">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="identifier">
+		<type name="varchar" length="512"/>
+	</column>
+	<constraint name="Organization_pk" type="pk-constr" table="public.&quot;Organization&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="IvoaType" layers="0" collapse-mode="1" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="540" y="440"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="IvoaType_pk" type="pk-constr" table="public.&quot;IvoaType&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="FileFormat" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="520" y="760"/>
+	<column name="uuid" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="extension" not-null="true">
+		<type name="varchar" length="25"/>
+	</column>
+	<column name="affiliation">
+		<type name="public.&quot;Organization&quot;" length="0"/>
+	</column>
+	<constraint name="FileFormat_pk" type="pk-constr" table="public.&quot;FileFormat&quot;">
+		<columns names="uuid" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="ProgrammingLanguage" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="640" y="280"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="version">
+		<type name="varchar" length="25"/>
+	</column>
+	<column name="organization">
+		<type name="public.&quot;Organization&quot;" length="0"/>
+	</column>
+	<constraint name="ProgrammingLanguage_pk" type="pk-constr" table="public.&quot;ProgrammingLanguage&quot;">
+		<columns names="id,name" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Person" layers="0" collapse-mode="1" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1020" y="980"/>
+	<column name="id" not-null="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="lastName">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="identifier">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="affiliation">
+		<type name="public.&quot;Organization&quot;" length="0"/>
+	</column>
+	<constraint name="Person_pk" type="pk-constr" table="public.&quot;Person&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="IvoaObject" layers="0" collapse-mode="1" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="800" y="760"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="type">
+		<type name="public.&quot;IvoaType&quot;" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="identifier">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="ivoaEntry">
+		<type name="varchar" length="512"/>
+	</column>
+	<constraint name="IvoaObject_pk" type="pk-constr" table="public.&quot;IvoaObject&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="RepoStatus" layers="0" collapse-mode="1" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1780" y="280"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="RepoStatus_pk" type="pk-constr" table="public.&quot;RepoStatus&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="OperatingSystem" layers="0" collapse-mode="1" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1780" y="380"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="OperatingSystem_pk" type="pk-constr" table="public.&quot;OperatingSystem&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="FunctionalityCategory" layers="0" collapse-mode="1" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1780" y="620"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="25"/>
+	</column>
+	<column name="abbreviation" not-null="true">
+		<type name="varchar" length="4"/>
+	</column>
+	<column name="backgroundColor" not-null="true">
+		<type name="float" length="0"/>
+	</column>
+	<column name="textColor" not-null="true">
+		<type name="float" length="0"/>
+	</column>
+	<constraint name="FunctionalityCategory_pk" type="pk-constr" table="public.&quot;FunctionalityCategory&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Keyword" layers="0" collapse-mode="1" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1780" y="900"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="Keyword_pk" type="pk-constr" table="public.&quot;Keyword&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Functionality" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1780" y="480"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="25"/>
+	</column>
+	<column name="abbreviation" not-null="true">
+		<type name="varchar" length="4"/>
+	</column>
+	<column name="category" not-null="true">
+		<type name="public.&quot;FunctionalityCategory&quot;" length="0"/>
+	</column>
+	<constraint name="Functionality_pk" type="pk-constr" table="public.&quot;Functionality&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Award" layers="0" collapse-mode="1" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="2000" y="900"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="0"/>
+	</column>
+	<column name="idnetifier">
+		<type name="varchar" length="512"/>
+	</column>
+	<constraint name="Award_pk" type="pk-constr" table="public.&quot;Award&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Image" layers="0" collapse-mode="1" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1960" y="1020"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="url" not-null="true">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="description">
+		<type name="varchar" length="200"/>
+	</column>
+	<constraint name="Image_pk" type="pk-constr" table="public.&quot;Image&quot;">
+		<columns names="id,url" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="SoftwareVersion" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1060" y="680"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="number" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="description">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="Version_pk" type="pk-constr" table="public.&quot;SoftwareVersion&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="dataInput" layers="0" collapse-mode="1" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1780" y="780"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="25"/>
+	</column>
+	<column name="abbreviation" not-null="true">
+		<type name="varchar" length="4"/>
+	</column>
+	<constraint name="dataInput_pk" type="pk-constr" table="public.&quot;dataInput&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Curator" layers="0" collapse-mode="1" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1060" y="840"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="person" not-null="true">
+		<type name="public.&quot;Person&quot;" length="0"/>
+	</column>
+	<column name="email" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="Curator_pk" type="pk-constr" table="public.&quot;Curator&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="SubmissionInfo" layers="0" collapse-mode="1" max-obj-count="18" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="940" y="280"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="dateModified">
+		<type name="date" length="0"/>
+	</column>
+	<column name="modificationDescription">
+		<type name="text" length="0"/>
+	</column>
+	<column name="metadataVersionNumber">
+		<type name="varchar" length="25"/>
+	</column>
+	<column name="submitter" not-null="true">
+		<type name="public.&quot;Person&quot;" length="0"/>
+	</column>
+	<column name="submitterEmail" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="curator">
+		<type name="public.&quot;Curator&quot;" length="0"/>
+	</column>
+	<column name="submissionDate">
+		<type name="date" length="0"/>
+	</column>
+	<column name="internalStatusCode">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="internalStatusNote">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="leadCurator">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="lastContactDate">
+		<type name="date" length="0"/>
+	</column>
+	<column name="contactCount" default-value="0">
+		<type name="integer" length="0"/>
+	</column>
+	<column name="curatorLock">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="outOfSync">
+		<type name="boolean" length="0"/>
+	</column>
+	<constraint name="SubmissionInfo_pk" type="pk-constr" table="public.&quot;SubmissionInfo&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Software" layers="0" collapse-mode="1" max-obj-count="39" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1320" y="280"/>
+	<column name="id" not-null="true" default-value="gen_random_uuid()">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="programmingLanguage">
+		<type name="public.&quot;ProgrammingLanguage&quot;" length="0"/>
+	</column>
+	<column name="publicationDate">
+		<type name="date" length="0"/>
+	</column>
+	<column name="authors" not-null="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="publisher">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="relatedInstruments">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="relatedObservatories">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="softwareName" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="versions">
+		<type name="public.&quot;SoftwareVersion&quot;" length="25"/>
+	</column>
+	<column name="persistentIdentifier">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="referencePublication">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="description" not-null="true">
+		<type name="text" length="0"/>
+	</column>
+	<column name="conciseDescription">
+		<type name="varchar" length="200"/>
+	</column>
+	<column name="softwareFunctionality">
+		<type name="public.&quot;Functionality&quot;" length="0"/>
+	</column>
+	<column name="documentation">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="dataInputs">
+		<type name="public.&quot;dataInput&quot;" length="0"/>
+	</column>
+	<column name="supportedFileFormats">
+		<type name="public.&quot;FileFormat&quot;" length="0"/>
+	</column>
+	<column name="relatedPublications">
+		<type name="text" length="0"/>
+	</column>
+	<column name="relatedDatasets">
+		<type name="text" length="0"/>
+	</column>
+	<column name="developmentStatus">
+		<type name="public.&quot;RepoStatus&quot;" length="0"/>
+	</column>
+	<column name="operatingSystem">
+		<type name="public.&quot;OperatingSystem&quot;" length="0"/>
+	</column>
+	<column name="metadataLicense">
+		<type name="public.&quot;License&quot;" length="0"/>
+	</column>
+	<column name="license" not-null="true">
+		<type name="public.&quot;License&quot;" length="0"/>
+	</column>
+	<column name="relatedRegion">
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="keywords">
+		<type name="public.&quot;Keyword&quot;" length="0"/>
+	</column>
+	<column name="relatedSoftware">
+		<type name="text" length="0"/>
+	</column>
+	<column name="interopableSoftware">
+		<type name="text" length="0"/>
+	</column>
+	<column name="funder">
+		<type name="public.&quot;Organization&quot;" length="0"/>
+	</column>
+	<column name="award">
+		<type name="public.&quot;Award&quot;" length="0"/>
+	</column>
+	<column name="codeRepositoryUrl" not-null="true">
+		<type name="varchar" length="200"/>
+	</column>
+	<column name="logo">
+		<type name="public.&quot;Image&quot;" length="0"/>
+	</column>
+	<column name="relatedPhenomena">
+		<type name="public.&quot;Phenomena&quot;" length="0"/>
+	</column>
+	<column name="submissionInfo">
+		<type name="public.&quot;SubmissionInfo&quot;" length="0"/>
+	</column>
+	<constraint name="Software_pk" type="pk-constr" table="public.&quot;Software&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+</dbmodel>

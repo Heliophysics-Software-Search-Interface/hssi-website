@@ -8,5 +8,5 @@ def api_view(request: HttpRequest) -> JsonResponse:
     if len(Software.objects.all()) <= 0:data = None
     else: data = Software.objects.all()[0]
 
-    json_data: dict = model_to_dict(data) if data else {"Error": "No software found"}
+    json_data: dict = data.get_hssi_data_dict() if data else {"Error": "No software found"}
     return JsonResponse(json_data)

@@ -1,5 +1,5 @@
 import uuid
-from typing import Callable
+from typing import Callable, cast
 
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
@@ -65,17 +65,13 @@ class Software(models.Model):
         blank=True, 
         related_name='softwares'
     )
-    relatedInstruments = models.ForeignKey(
+    relatedInstruments = models.ManyToManyField(
         IvoaEntry,
-        on_delete=models.CASCADE, 
-        null=True, 
         blank=True, 
         related_name='softwares'
     )
-    relatedObservatories = models.ForeignKey(
+    relatedObservatories = models.ManyToManyField(
         IvoaEntry,
-        on_delete=models.CASCADE, 
-        null=True, 
         blank=True, 
         related_name='observatories'
     )
@@ -186,6 +182,118 @@ class Software(models.Model):
             return True
         except ObjectDoesNotExist: 
             return False
+    
+    def get_hssi_data_dict(self) -> dict:
+        are_any_authors: bool = self.authors.count() > 0
+
+        # extract author metadata from the authors field
+        author_affiliation: str
+        author_affiliation_identifier: str
+        author_identifier: str
+        if are_any_authors:
+            first_author: Person = self.authors.first()
+            author_identifier = first_author.identifier
+            first_author_affiliation: Organization | None = first_author.affiliation
+            if first_author_affiliation is not None:
+                author_affiliation = first_author_affiliation.name
+                author_affiliation_identifier = first_author_affiliation.identifier
+            else:
+                author_affiliation = None
+                author_affiliation_identifier = None
+        else:
+            author_affiliation = None
+            author_identifier = None
+            author_affiliation = None
+            author_affiliation_identifier = None
+
+        # extract string from publication date if available
+        pub_date_str: str | None
+        if self.publicationDate:
+            pub_date_str = self.publicationDate.strftime('%Y-%m-%d')
+        else:
+            pub_date_str = None
+
+        # create and return the data dictionary
+        return {
+            'programmingLanguage': self.programmingLanguage.name,
+            'publicationDate': pub_date_str,
+            'Authors': list(map(
+                lambda x: cast(Person, x).to_str_lastname_firstname(),
+                self.authors.all()
+            )),
+            'authorAffiliation': author_affiliation,
+            'authorAffiliationIdentifier': author_affiliation_identifier,
+            'authorIdentifier': author_identifier,
+            'Publisher': self.publisher.name if self.publisher else None,
+            'publisherIdentifier': self.publisher.identifier if self.publisher else None,
+            'relatedInstruments': list(map(
+                lambda x: cast(IvoaEntry, x).name,
+                self.relatedInstruments.all()
+            )),
+            'relatedInstrumentIdentifier': list(map(
+                lambda x: cast(IvoaEntry, x).identifier,
+                self.relatedInstruments.all()
+            )),
+            'relatedObservatories': list(map(
+                lambda x: cast(IvoaEntry, x).name,
+                self.relatedObservatories.all()
+            )),
+            'softwareName': self.softwareName,
+            'versionNumber': self.versionNumber,
+            'versionDate': self.versionDate.strftime('%Y-%m-%d'),
+            'versionDescription': self.versionDescription,
+            'versionPID': self.versionPid,
+            'persistentIdentifer': self.persistentIdentifier,
+            'referencePublication': self.referencePublication,
+            'Description': self.description,
+            'conciseDescription': self.conciseDescription,
+            'softwareFunctionality': list(map(
+                lambda x: cast(Functionality, x).name,
+                self.softwareFunctionality.all()
+            )),
+            'Documentation': self.documentation,
+            'dataInputs': list(map(
+                lambda x: cast(Functionality, x).name,
+                self.dataInputs.all()
+            )),
+            'supportedFileFormats': list(map(
+                lambda x: cast(FileFormat, x).extension,
+                self.supportedFileFormats.all()
+            )),
+            'relatedPublications': self.relatedPublications,
+            'relatedDatasets': self.relatedDatasets,
+            'developmentStatus': RepoStatus(self.developmentStatus).name,
+            'operatingSystem': self.operatingSystem.name,
+            'processorArchitecture': None,
+            'processorTopologyType': None,
+            'metadataLicense': self.metadataLicense.name if self.metadataLicense else None,
+            'metadatalicenseURI': self.metadataLicense.url if self.metadataLicense else None,
+            'metadatalicenseIdentifier': self.metadataLicense.identifier if self.metadataLicense else None,
+            'metadatalicenseIdentifierScheme': self.metadataLicense.scheme if self.metadataLicense else None,
+            'metadataschemeURI': self.metadataLicense.scheme_url if self.metadataLicense else None,
+            'License': self.license.name if self.license else None,
+            'licenseURI': self.license.url if self.license else None,
+            'licenseIdentifier': self.license.identifier if self.license else None,
+            'licenseIdentifierScheme': self.license.scheme if self.license else None,
+            'schemeURI': self.license.scheme_url if self.license else None,
+            'relatedRegion': self.relatedRegion,
+            'Keywords': list(map(
+                lambda x: cast(Keyword, x).name,
+                self.keywords.all()
+            )),
+            'relatedSoftware': self.relatedSoftware,
+            'interoperableSoftware': self.interopableSoftware,
+            'funder': self.funder.name if self.funder else None,
+            'funderIdentifier': self.funder.identifier if self.funder else None,
+            'awardTitle': self.award.name if self.award else None,
+            'awardNumber': self.award.identifier if self.award else None,
+            'codeRepositoryURL': self.codeRepositoryUrl,
+            'Logo': self.logo.url if self.logo else None,
+            'relatedPhenomena': list(map(
+                lambda x: cast(PhenomenaType, x).name,
+                self.relatedPhenomena.all()
+            )),
+        }
 
 class VisibleSoftware(models.Model):
     id = models.OneToOneField(

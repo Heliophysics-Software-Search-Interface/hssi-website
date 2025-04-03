@@ -9,12 +9,14 @@
     <li class="filter_menu">
         <a class="filter_dropdown"> 
             <div class="filter_label">
-                <label class="label {{tag.abbreviation}}" style="background-color: {{tag.backgroundColor}};">
+                <label 
+                class="label {{tag.abbreviation}}" 
+                style="background-color: {{tag.backgroundColor}}; color: {{tag.textColor}}">
                     <input class="label {{tag.abbreviation}} parent_filter" 
                     type="checkbox" name="{{filter_type}}_checkbox" 
                     value="{{tag.id}}" id="{{tag.id}}"
                     {% if tag.id in selected_filter_ids %} checked {% endif %} >
-                    {{tag.abbreviation}}
+                        {{tag.abbreviation}}
                 </label>
                 <label for="{{tag.id}}" class="category_name {{tag.abbreviation}}" parent-abbr="{{tag.abbreviation}}">{{tag.name}}</label> 
             </div>

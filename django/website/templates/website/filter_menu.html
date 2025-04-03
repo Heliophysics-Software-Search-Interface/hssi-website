@@ -6,7 +6,19 @@
 <ul class="vertical menu accordion-menu" data-accordion-menu>
 {% endif %}
     {% for tag in tags %}
-    {% with selected_subfilter_ids=tag.children|id_values_list|intersection:selected_filter_ids %}
+    <li class="filter_menu">
+        <a class="filter_dropdown"> 
+            <div class="filter_label">
+                <label class="label {{tag.abbreviation}}">
+                    <input class="label {{tag.abbreviation}} parent_filter" type="checkbox" name="{{filter_type}}_checkbox" value="{{tag.id}}" id="{{tag.id}}"
+                    {% if tag.id in selected_filter_ids %} checked {% endif %} >
+                    {{tag.abbreviation}}
+                </label>
+                <label for="{{tag.id}}" class="category_name {{tag.abbreviation}}" parent-abbr="{{tag.abbreviation}}">{{tag.name}}</label> 
+            </div>
+        </a>
+    </li>
+    <!--
     {% if selected_filter_ids and tag.id not in selected_filter_ids and not selected_subfilter_ids %}
     <li class="unselected_filter filter_menu">
     {% elif selected_filter_ids and tag.id in selected_filter_ids %}
@@ -26,7 +38,7 @@
         </a>
         {% if tag.children.all %}
             <ul class="menu vertical nested">
-                {% for subtag in tag.children.all %}
+                {% for subtag in tag.functionalities.all %}
                 <li>
                     <input class="label sub_filter" type="checkbox" name="{{filter_type}}_checkbox" value="{{subtag.id}}" id="{{tag.id}}_{{subtag.id}}"
                         {% if subtag.id in selected_subfilter_ids %} checked {% endif %} >
@@ -37,12 +49,11 @@
             </ul>
         {% endif %}
     </li>
-    {% endwith %}
+    -->
     {% endfor %}
 </ul>
 
 {% if not is_dropdown %}
-{% if filter_type == "category" or filter_type == "collection" %}
     <div class="cat-description" data-description-type="{{filter_type}}">
         <span>{{filter_type}} Descriptions</span> <i class="fa fa-external-link"></i>
     </div>
@@ -87,5 +98,4 @@
         </div>
         {% endif %}
     </div>
-{% endif %}
 {% endif %}

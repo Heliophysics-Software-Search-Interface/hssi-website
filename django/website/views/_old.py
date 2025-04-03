@@ -29,7 +29,11 @@ from crispy_forms.utils import render_crispy_form
 from ipware import get_client_ip
 
 from ..forms import FeedbackForm
-from ..models import Category, NewsItem, NewsItemStatus, Resource, TeamMember, ToolType, Collection, InLitResource, Submission, SubmissionStatus, QualitySpec
+from ..models import (
+    Category, NewsItem, NewsItemStatus, Resource, TeamMember, ToolType, 
+    Collection, InLitResource, Submission, SubmissionStatus, QualitySpec,
+    FunctionCategory, Functionality
+)
 # from ..admin import isInlit
 from ..constants import SaveType
 from .. import submissions
@@ -152,7 +156,9 @@ def selected_resource_context(request):
     tool_types = ToolType.objects.filter(parents=None) #.order_by('index')
     collections = Collection.objects.filter(parents=None)
     in_lit_resources = InLitResource.objects.filter(is_published=True)
-    
+    function_categories = FunctionCategory.objects.all()
+    functionalities = Functionality.objects.filter(category__in=function_categories)
+
     related_resource = None
     selected_collection = None
 
@@ -273,7 +279,6 @@ def selected_resource_context(request):
         # No category or tooltype filters and no search terms set, setting in-lit to None
         in_lit_resources = None
 
-    
     context = {
         'quality_badge_urls': [
             QualitySpec.UNKNOWN.get_img_url(),
@@ -281,6 +286,8 @@ def selected_resource_context(request):
             QualitySpec.PARTIALLY_MET.get_img_url(),
             QualitySpec.GOOD.get_img_url()
         ],
+        'function_categories': function_categories,
+        'functionalities': functionalities,
         'categories': categories,
         'selected_category_ids': selected_category_ids,
         'selected_resources': selected_resources,

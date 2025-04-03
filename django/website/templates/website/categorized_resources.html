@@ -71,16 +71,16 @@
 								<div class="filter-chip-container"></div>
 								<div class="filter-tab-container">
 									<div class="filter-tab open">Categories</div>
-									<div class="filter-tab">Tool Types</div>
-									<div class="filter-tab">Collections</div>
+									<!--div class="filter-tab">Tool Types</div>
+									<div class="filter-tab">Collections</div-->
 								</div>
 								<div class="filter-menus">
 								<div class="filter-section-body open">
 									<div class="filter_table" id="category-menu-mobile">
-										{% include "website/filter_menu.html" with is_dropdown="True" tags=categories selected_filter_ids=selected_category_ids filter_type="category" %}
+										{% include "website/filter_menu.html" with is_dropdown="True" tags=function_categories selected_filter_ids=selected_category_ids filter_type="category" %}
 									</div>
 								</div>
-								<div class="filter-section-body">
+								<!--div class="filter-section-body">
 									<div class="filter_table" id="tooltype-menu-mobile">
 										{% include "website/filter_menu.html" with tags=tool_types selected_filter_ids=selected_tooltype_ids filter_type="tooltype" %}
 									</div>
@@ -89,7 +89,7 @@
 									<div class="filter_table" id="collection-menu-mobile">
 										{% include "website/filter_menu.html" with is_dropdown="True" tags=collections selected_filter_ids=selected_collection_ids filter_type="collection" %}
 									</div>
-								</div>
+								</div-->
 							</div>
 							</div>
 						</div>
@@ -107,16 +107,16 @@
 						</div>
 						<div class="filter-tab-container">
 							<div class="filter-tab open">Categories</div>
-							<div class="filter-tab">Resource Types</div>
-							<div class="filter-tab">Collections</div>
+							<!--div class="filter-tab">Resource Types</div>
+							<div class="filter-tab">Collections</div-->
 						</div>
 						<div class="filter-menus">
 							<div class="filter-section-body open">
 								<div class="filter_table" id="category-menu-main">
-									{% include "website/filter_menu.html" with tags=categories selected_filter_ids=selected_category_ids filter_type="category" %}
+									{% include "website/filter_menu.html" with tags=function_categories selected_filter_ids=selected_category_ids filter_type="category" %}
 								</div>
 							</div>
-							<div class="filter-section-body">
+							<!--div class="filter-section-body">
 								<div class="filter_table" id="tooltype-menu-main">
 									{% include "website/filter_menu.html" with tags=tool_types selected_filter_ids=selected_tooltype_ids filter_type="tooltype" %}
 								</div>
@@ -125,7 +125,7 @@
 								<div class="filter_table" id="collection-menu-main">
 									{% include "website/filter_menu.html" with tags=collections selected_filter_ids=selected_collection_ids filter_type="collection" %}
 								</div>
-							</div>
+							</div-->
 						</div>
 					</div>
 				</div>

@@ -1,4 +1,5 @@
 import os, re, traceback
+import tablib
 
 from import_export import resources
 from ..models import (
@@ -11,7 +12,6 @@ from typing import Type, TYPE_CHECKING
 if TYPE_CHECKING:
     from django.db import models
     from import_export import declarative
-    import tablib
 
 # Setup ------------------------------------------------------------------------
 
@@ -27,12 +27,16 @@ def snake_to_camel(name: str) -> str:
     parts = name.split('_')
     return ''.join(word.capitalize() for word in parts)
 
+def model_csv_filepath(
+    model: 'Type[models.Model]', 
+    directory: os.PathLike = DEFAULT_DB_EXPORT_PATH
+) -> str:
+    return directory + camel_to_snake(model.__name__) + '.csv'
 
 # Module functionality ---------------------------------------------------------
 
 def export_model_csv(model: 'Type[models.Model]', directory: str = DEFAULT_DB_EXPORT_PATH):
-    filename: str = camel_to_snake(model.__name__) + '.csv'
-    filepath: str = directory + filename
+    filepath: str = model_csv_filepath(model, directory)
     print(f'Exporting {model.__name__} to ' + filepath + ' ...')
 
     model_resource: resources.ModelResource = resources.modelresource_factory(model)()
@@ -60,7 +64,8 @@ def export_db_csv():
     export_model_csv(PhenomenaType)
     export_model_csv(ProgrammingLanguage)
 
-def import_model_csv(model: 'type[models.Model]', filepath: os.PathLike):
+def import_model_csv(model: 'type[models.Model]', filepath: os.PathLike | None = None):
+    if filepath is None: filepath = model_csv_filepath(model)
     print(f"Importing {filepath} ...")
 
     if os.path.isfile(filepath):

@@ -20,6 +20,7 @@ from ..constants import SaveType
 from ..models import *
 from ..views import migrate_db_old_to_new
 from .. import submissions
+from .csv_export import export_db_csv, import_db_csv
 
 from django.db.models import F
 
@@ -51,6 +52,8 @@ class HssiAdminSite(admin.AdminSite):
         urls = urls_base[:-1] + [
             path('export_db/', view_export_db, name='export_db'),
             path('import_db/', view_import_db, name='import_db'),
+            path('export_db_new/', view_export_db_new, name='export_db_new'),
+            path('import_db_new/', view_import_db_new, name='import_db_new'),
             path('get_metadata/', view_get_metadata, name='get_metadata'),
             path('migrate_old_to_new/', migrate_db_old_to_new, name="migrate_old_to_new")
         ] + urls_base[-1:]
@@ -72,7 +75,6 @@ def view_export_db(request: HttpRequest) -> HttpResponse:
 
     # only allow post requests from super user to export the database
     if request.method == 'POST' and request.user.is_superuser:
-
         print("Exporting database to csv files..")
         export_database()
     
@@ -108,6 +110,27 @@ def view_get_metadata(request: HttpRequest) -> HttpResponse:
     # get the metadata from the URL as a json object and respond with it
     data = get_metadata(url)
     return HttpResponse(json.dumps(data.__dict__), content_type="application/json")
+
+def view_export_db_new(request: HttpRequest) -> HttpResponse:
+
+    # only allow post requests from super user to export the database
+    if request.method == 'POST' and request.user.is_superuser:
+        print("Exporting new database to csv files..")
+        export_db_csv()
+    
+    # redirect to admin page
+    return redirect('admin:index')
+
+def view_import_db_new(request: HttpRequest) -> HttpResponse:
+
+    # only allow post requests from super user to reimport the database
+    if request.method == 'POST' and request.user.is_superuser:
+
+        print("Importing new database from csv files..")
+        import_db_csv()
+    
+    # redirect to admin page
+    return redirect('admin:index')
 
 site = HssiAdminSite()
 

@@ -1,0 +1,5 @@
+id,type,name,identifier,ivoaEntryId
+0f46f9e2-41d8-4d43-a704-51ac55b00267,2,Fermi,,
+a4590b6f-b6c2-48c5-aff9-5f6b62ba3dd2,1,GOES,https://www.ncei.noaa.gov/products/satellite/goes-r,
+973d1683-153a-4ef3-a62b-b8ec7e3db1c4,1,LASCO,https://hpde.io/SMWG/Instrument/SOHO/LASCO.html,https://hpde.io/SMWG/Instrument/SOHO/LASCO.html
+ad292314-a843-4080-8e17-1ee1290357c2,2,SOHO,https://doi.org/10.1007/BF00768758,

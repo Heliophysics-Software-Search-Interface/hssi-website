@@ -158,7 +158,7 @@ def selected_resource_context(request):
     in_lit_resources = InLitResource.objects.filter(is_published=True)
     function_categories = FunctionCategory.objects.all()
     functionalities = Functionality.objects.filter(category__in=function_categories)
-
+    
     related_resource = None
     selected_collection = None
 
@@ -227,7 +227,6 @@ def selected_resource_context(request):
 
     if in_lit_resources != None:
         in_lit_resources.order_by('name')
-
     
     stop_words = None
     if search_terms:

@@ -3,8 +3,8 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.1.3" use-changelog="false" max-obj-count="25"
-	 last-position="293,183" last-zoom="0.95" scene-rect="0,0,2228.73,1165.12"
+<dbmodel pgmodeler-ver="1.1.3" use-changelog="false" max-obj-count="26"
+	 last-position="478,241" last-zoom="1" scene-rect="0,0,2297.15,1165.12"
 	 default-owner="postgres"
 	 layers="Default layer"
 	 active-layers="0"
@@ -20,7 +20,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="License" layers="0" collapse-mode="1" max-obj-count="7" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="540" y="780"/>
+	<position x="560" y="720"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -59,25 +59,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="OrganizationType" layers="0" collapse-mode="1" max-obj-count="2" z-value="0">
+<table name="Organization" layers="0" collapse-mode="1" pagination="true" attribs-page="0" ext-attribs-page="0" max-obj-count="6" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1600" y="60"/>
-	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
-		<type name="uuid" length="0"/>
-	</column>
-	<column name="name">
-		<type name="varchar" length="100"/>
-	</column>
-	<constraint name="OrganizationType_pk" type="pk-constr" table="public.&quot;OrganizationType&quot;">
-		<columns names="id" ref-type="src-columns"/>
-	</constraint>
-</table>
-
-<table name="Organization" layers="0" collapse-mode="1" pagination="true" attribs-page="0" ext-attribs-page="0" max-obj-count="7" z-value="0">
-	<schema name="public"/>
-	<role name="postgres"/>
-	<position x="620" y="440"/>
+	<position x="640" y="420"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -86,9 +71,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<column name="abbreviation">
 		<type name="varchar" length="25"/>
-	</column>
-	<column name="parentOrganization">
-		<type name="uuid" length="0"/>
 	</column>
 	<column name="website">
 		<type name="varchar" length="512"/>
@@ -104,7 +86,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="IvoaType" layers="0" collapse-mode="1" max-obj-count="2" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1800" y="60"/>
+	<position x="1780" y="60"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -119,7 +101,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="FileFormat" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="540" y="640"/>
+	<position x="560" y="580"/>
 	<column name="uuid" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -140,7 +122,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="ProgrammingLanguage" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="640" y="280"/>
+	<position x="620" y="280"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -161,7 +143,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="Person" layers="0" collapse-mode="1" max-obj-count="6" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="780" y="860"/>
+	<position x="800" y="840"/>
 	<column name="id" not-null="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -185,7 +167,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="InstrumentObservatory" layers="0" collapse-mode="1" max-obj-count="6" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="820" y="680"/>
+	<position x="840" y="660"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -296,10 +278,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="Award" layers="0" collapse-mode="1" max-obj-count="3" z-value="0">
+<table name="Award" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="2000" y="900"/>
+	<position x="1980" y="880"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -308,6 +290,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<column name="idnetifier">
 		<type name="varchar" length="512"/>
+	</column>
+	<column name="funder">
+		<type name="public.&quot;Organization&quot;" length="0"/>
 	</column>
 	<constraint name="Award_pk" type="pk-constr" table="public.&quot;Award&quot;">
 		<columns names="id" ref-type="src-columns"/>
@@ -335,7 +320,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="SoftwareVersion" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1060" y="680"/>
+	<position x="1080" y="660"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -374,7 +359,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="Curator" layers="0" collapse-mode="1" max-obj-count="3" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1060" y="840"/>
+	<position x="1080" y="800"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -389,10 +374,28 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="SubmissionInfo" layers="0" collapse-mode="1" max-obj-count="18" z-value="0">
+<table name="Submitter" layers="0" collapse-mode="1" max-obj-count="3" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="940" y="280"/>
+	<position x="1080" y="920"/>
+	<column name="id" not-null="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="person" not-null="true">
+		<type name="public.&quot;Person&quot;" length="0"/>
+	</column>
+	<column name="email" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="Submitter_pk" type="pk-constr" table="public.&quot;Submitter&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="SubmissionInfo" layers="0" collapse-mode="1" max-obj-count="16" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="920" y="280"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -406,10 +409,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="varchar" length="25"/>
 	</column>
 	<column name="submitter" not-null="true">
-		<type name="public.&quot;Person&quot;" length="0"/>
-	</column>
-	<column name="submitterEmail" not-null="true">
-		<type name="varchar" length="100"/>
+		<type name="public.&quot;Submitter&quot;" length="0"/>
 	</column>
 	<column name="curator">
 		<type name="public.&quot;Curator&quot;" length="0"/>
@@ -424,7 +424,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="smallint" length="0"/>
 	</column>
 	<column name="leadCurator">
-		<type name="smallint" length="0"/>
+		<type name="public.&quot;Curator&quot;" length="0"/>
 	</column>
 	<column name="lastContactDate">
 		<type name="date" length="0"/>
@@ -443,7 +443,34 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="Software" layers="0" collapse-mode="1" max-obj-count="39" z-value="0">
+<table name="RelatedRegion" layers="0" collapse-mode="1" max-obj-count="7" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1980" y="280"/>
+	<column name="id" not-null="true">
+		<type name="uuid" length="0"/>
+	</column>
+	<column name="value" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="subjectScheme">
+		<type name="text" length="0"/>
+	</column>
+	<column name="schemeURI">
+		<type name="varchar" length="200"/>
+	</column>
+	<column name="valueURI">
+		<type name="varchar" length="200"/>
+	</column>
+	<column name="classificationCode">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="new_table_pk" type="pk-constr" table="public.&quot;RelatedRegion&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="Software" layers="0" collapse-mode="1" max-obj-count="38" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="1320" y="280"/>
@@ -517,19 +544,16 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="public.&quot;License&quot;" length="0"/>
 	</column>
 	<column name="relatedRegion">
-		<type name="varchar" length="50"/>
+		<type name="public.&quot;RelatedRegion&quot;" length="50"/>
 	</column>
 	<column name="keywords">
 		<type name="public.&quot;Keyword&quot;" length="0"/>
 	</column>
 	<column name="relatedSoftware">
-		<type name="text" length="0"/>
+		<type name="varchar" length="200"/>
 	</column>
 	<column name="interopableSoftware">
-		<type name="text" length="0"/>
-	</column>
-	<column name="funder">
-		<type name="public.&quot;Organization&quot;" length="0"/>
+		<type name="varchar" length="200"/>
 	</column>
 	<column name="award">
 		<type name="public.&quot;Award&quot;" length="0"/>

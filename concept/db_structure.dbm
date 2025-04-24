@@ -3,8 +3,8 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.1.3" use-changelog="false" max-obj-count="33"
-	 last-position="0,-112" last-zoom="0.7" scene-rect="0,-160,2629.5,1642.52"
+<dbmodel pgmodeler-ver="1.1.3" use-changelog="false" max-obj-count="34"
+	 last-position="368,246" last-zoom="0.9" scene-rect="0,-160,2629.5,1642.52"
 	 default-owner="postgres"
 	 layers="Default layer"
 	 active-layers="0"
@@ -20,7 +20,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="License" layers="0" collapse-mode="1" max-obj-count="7" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1120" y="1200"/>
+	<position x="1120" y="1220"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -623,6 +623,18 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
+<constraint name="License_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="CASCADE" del-action="SET NULL" ref-table="public.&quot;License&quot;" table="public.&quot;DatasetName&quot;">
+	<columns names="license" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="Creator_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;Person&quot;" table="public.&quot;DatasetName&quot;">
+	<columns names="creator" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
 <constraint name="SubmissionInfo_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;SubmissionInfo&quot;" table="public.&quot;Software&quot;">
 	<columns names="submissionInfo" ref-type="src-columns"/>
@@ -737,15 +749,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="License_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
-	 upd-action="CASCADE" del-action="SET NULL" ref-table="public.&quot;License&quot;" table="public.&quot;DatasetName&quot;">
-	<columns names="license" ref-type="src-columns"/>
-	<columns names="id" ref-type="dst-columns"/>
-</constraint>
-
-<constraint name="Creator_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;Person&quot;" table="public.&quot;DatasetName&quot;">
-	<columns names="creator" ref-type="src-columns"/>
+<constraint name="MdLicence_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;License&quot;" table="public.&quot;Software&quot;">
+	<columns names="metadataLicense" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
@@ -817,7 +823,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.&quot;Phenomena&quot;" reference-fk="Phenomena_fk"
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
-		<position x="-2.0437" y="-18.453"/>
+		<position x="-2.0437" y="-58.453"/>
 	</label>
 </relationship>
 
@@ -916,7 +922,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.&quot;License&quot;" reference-fk="License_fk"
 	 src-required="false" dst-required="true">
 	<label ref-type="name-label">
-		<position x="34.2329" y="-28.453"/>
+		<position x="-197.638" y="-18.453"/>
 	</label>
 </relationship>
 
@@ -998,6 +1004,15 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
 		<position x="-63.2502" y="-12.353"/>
+	</label>
+</relationship>
+
+<relationship name="Software_metadataLicense" type="relfk" layers="0"
+	 src-table="public.&quot;Software&quot;"
+	 dst-table="public.&quot;License&quot;" reference-fk="MdLicence_fk"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-177.657" y="21.547"/>
 	</label>
 </relationship>
 

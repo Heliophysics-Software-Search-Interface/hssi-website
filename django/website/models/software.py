@@ -5,12 +5,11 @@ from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 
 from .people import Person
-from .auxillary_info import Functionality, Dataset
+from .auxillary_info import Functionality, Dataset, SoftwareVersion
 from .submission_info import SubmissionInfo
 from .roots import ( LEN_NAME,
     RepoStatus, OperatingSystem, Keyword, Award, Image, Phenomena, Organization, 
-    License, InstrumentObservatory, ProgrammingLanguage, FileFormat, 
-    SoftwareVersion, Region
+    License, InstrumentObservatory, ProgrammingLanguage, FileFormat, Region
 )
     
 class Software(models.Model):

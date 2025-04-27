@@ -64,7 +64,7 @@ class SubmissionInfo(models.Model):
     get_internalStatusCode_display: Callable[[], str]
 
     class Meta: 
-        ordering = ['dateModified', 'submitter__lastName']
+        ordering = ['dateModified', 'submitter__person__lastName']
         verbose_name_plural = "  Submission Info"
     def __str__(self): 
         return (

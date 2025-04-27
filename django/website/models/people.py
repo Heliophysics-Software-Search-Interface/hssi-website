@@ -17,7 +17,6 @@ class Person(models.Model):
     identifier = models.URLField(blank=True, null=True)
     affiliation = models.ManyToManyField(
         Organization, 
-        null=True, 
         blank=True, 
         related_name='people'
     )

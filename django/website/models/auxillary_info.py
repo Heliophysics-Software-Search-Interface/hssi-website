@@ -49,7 +49,7 @@ class Dataset(models.Model):
     name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
     creator = models.ManyToManyField(
         Person,
-        blank=True, null=True,
+        blank=True,
         related_name='datasets'
     )
     description = models.TextField(blank=True, null=True)

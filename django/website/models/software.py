@@ -9,7 +9,8 @@ from .auxillary_info import Functionality, Dataset, SoftwareVersion, Award
 from .submission_info import SubmissionInfo
 from .roots import ( LEN_NAME,
     RepoStatus, OperatingSystem, Keyword, Image, Phenomena, Organization, 
-    License, InstrumentObservatory, ProgrammingLanguage, FileFormat, Region
+    License, InstrumentObservatory, ProgrammingLanguage, FileFormat, 
+    Region, DataInput
 )
     
 class Software(models.Model):
@@ -58,7 +59,7 @@ class Software(models.Model):
     )
     documentation = models.URLField(blank=True, null=True)
     dataInputs = models.ManyToManyField(
-        Functionality, 
+        DataInput, 
         blank=True,
         related_name='softwares'
     )

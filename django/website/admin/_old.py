@@ -663,7 +663,6 @@ site.register(Image, admin_class=ImageAdmin)
 site.register(Region, admin_class=RegionAdmin)
 site.register(RepoStatus, admin_class=RepoStatusAdmin)
 site.register(DataInput, admin_class=DataInputAdmin)
-site.register(Curator, admin_class=CuratorAdmin)
 site.register(Submitter, admin_class=SubmitterAdmin)
 site.register(Dataset, admin_class=DatasetAdmin)
 

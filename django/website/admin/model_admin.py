@@ -4,14 +4,14 @@ from import_export.admin import ImportExportModelAdmin
 from ..models.people import Person, Curator
 from ..models.software import Software, VisibleSoftware
 from ..models.submission_info import SubmissionInfo
-from ..models.auxillary_info import Functionality, Dataset, Award
+from ..models.auxillary_info import Functionality, Dataset, Award, SoftwareVersion
 from ..models.roots import (
     FunctionCategory, OperatingSystem, Phenomena, Keyword, Image, 
     Organization, License, InstrumentObservatory, RepoStatus, DataInput,
-    ProgrammingLanguage, FileFormat, Region, SoftwareVersion
+    ProgrammingLanguage, FileFormat, Region
 )
 
-# Admin definitions for basics module ------------------------------------------
+# Admin definitions for roots module -------------------------------------------
 
 class OperatingSystemResource(resources.ModelResource):
     class Meta: model = OperatingSystem
@@ -25,43 +25,47 @@ class KeywordResource(resources.ModelResource):
     class Meta: model = Keyword
 class KeywordAdmin(ImportExportModelAdmin): resource_class = KeywordResource
 
-class AwardResource(resources.ModelResource):
-    class Meta: model = Award
-class AwardAdmin(ImportExportModelAdmin): resource_class = AwardResource
-
 class ImageResource(resources.ModelResource):
     class Meta: model = Image
 class ImageAdmin(ImportExportModelAdmin): resource_class = ImageResource
 
-# Admin definitions for functionality module -----------------------------------
+class RegionResource(resources.ModelResource):
+    class Meta: model = Region
+class RegionAdmin(ImportExportModelAdmin): resource_class = RegionResource
 
-class FunctionalityResource(resources.ModelResource):
-    class Meta: model = Functionality
-class FunctionalityAdmin(ImportExportModelAdmin): resource_class = FunctionalityResource
+class DataInputResource(resources.ModelResource):
+    class Meta: model = DataInput
+class DataInputAdmin(ImportExportModelAdmin): resource_class = DataInputResource
+
+class RepoStatusResource(resources.ModelResource):
+    class Meta: model = RepoStatus
+class RepoStatusAdmin(ImportExportModelAdmin): resource_class = RepoStatusResource
 
 class FunctionCategoryResource(resources.ModelResource):
     class Meta: model = FunctionCategory
 class FunctionCategoryAdmin(ImportExportModelAdmin): resource_class = FunctionCategoryResource
 
-# Admin definitions for ivoa_entry module --------------------------------------
-
 class IvoaEntryResource(resources.ModelResource):
     class Meta: model = InstrumentObservatory
 class IvoaEntryAdmin(ImportExportModelAdmin): resource_class = IvoaEntryResource
-
-# Admin definitions for license module -----------------------------------------
 
 class LicenseResource(resources.ModelResource):
     class Meta: model = License
 class LicenseAdmin(ImportExportModelAdmin): resource_class = LicenseResource
 
-# Admin definitions for organization module ------------------------------------
-
 class OrganizationResource(resources.ModelResource):
     class Meta: model = Organization
 class OrganizationAdmin(ImportExportModelAdmin): resource_class = OrganizationResource
 
-# Admin definitions for person module ------------------------------------------
+class FileFormatResource(resources.ModelResource):
+    class Meta: model = FileFormat
+class FileFormatAdmin(ImportExportModelAdmin): resource_class = FileFormatResource
+
+class ProgrammingLanguageResource(resources.ModelResource):
+    class Meta: model = ProgrammingLanguage
+class ProgrammingLanguageAdmin(ImportExportModelAdmin): resource_class = ProgrammingLanguageResource
+
+# Admin definitions for people module ------------------------------------------
 
 class PersonResource(resources.ModelResource): 
     class Meta: model = Person
@@ -71,19 +75,29 @@ class CuratorResource(resources.ModelResource):
     class Meta: model = Curator
 class CuratorAdmin(ImportExportModelAdmin): resource_class = CuratorResource
 
+# Admin definitions for Auxillary Info -----------------------------------------
+
+class AwardResource(resources.ModelResource):
+    class Meta: model = Award
+class AwardAdmin(ImportExportModelAdmin): resource_class = AwardResource
+
+class FunctionalityResource(resources.ModelResource):
+    class Meta: model = Functionality
+class FunctionalityAdmin(ImportExportModelAdmin): resource_class = FunctionalityResource
+
+class DatasetResource(resources.ModelResource):
+    class Meta: model = Dataset
+class DatasetAdmin(ImportExportModelAdmin): resource_class = DatasetResource
+
+class SoftwareVersionResource(resources.ModelResource):
+    class Meta: model = SoftwareVersion
+class SoftwareVersionAdmin(ImportExportModelAdmin): resource_class = SoftwareVersionResource
+
 # Admin definitions for software module ----------------------------------------
 
 class SoftwareResource(resources.ModelResource):
     class Meta: model = Software
 class SoftwareAdmin(ImportExportModelAdmin): resource_class = SoftwareResource
-
-class FileFormatResource(resources.ModelResource):
-    class Meta: model = FileFormat
-class FileFormatAdmin(ImportExportModelAdmin): resource_class = FileFormatResource
-
-class ProgrammingLanguageResource(resources.ModelResource):
-    class Meta: model = ProgrammingLanguage
-class ProgrammingLanguageAdmin(ImportExportModelAdmin): resource_class = ProgrammingLanguageResource
 
 class VisibleSoftwareResource(resources.ModelResource):
     class Meta: model = VisibleSoftware

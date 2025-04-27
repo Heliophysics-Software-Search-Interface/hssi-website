@@ -106,8 +106,16 @@ class Software(models.Model):
         blank=True, 
         related_name='softwares'
     )
-    relatedSoftware = models.TextField(blank=True, null=True)
-    interopableSoftware = models.TextField(blank=True, null=True)
+    relatedSoftware = models.ManyToManyField(
+        'self',
+        blank=True,
+        symmetrical=True
+    )
+    interopableSoftware = models.ManyToManyField(
+        'self',
+        blank=True,
+        symmetrical=True
+    )
     award = models.ForeignKey(
         Award,
         on_delete=models.CASCADE, 

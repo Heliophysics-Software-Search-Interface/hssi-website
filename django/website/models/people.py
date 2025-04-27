@@ -17,7 +17,6 @@ class Person(models.Model):
     identifier = models.URLField(blank=True, null=True)
     affiliation = models.ManyToManyField(
         Organization, 
-        on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
         related_name='people'
@@ -36,7 +35,7 @@ class Person(models.Model):
     def to_str_lastname_firstname(self) -> str:
         if self.lastName is None or len(self.lastName) <= 0:
             return self.name
-        return f"{self.lastName}, {self.name}"
+        return f"{self.lastName}, {self.firstName}"
 
 class Curator(models.Model):
     '''A user who is able to curate submissions'''

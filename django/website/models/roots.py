@@ -60,13 +60,6 @@ class ProgrammingLanguage(models.Model):
     class Meta: ordering = ['name']
     def __str__(self): return self.name + f" {self.version}" if self.version else ""
 
-class RepoStatus(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=LEN_NAME)
-
-    class Meta: ordering = ['name']
-    def __str__(self): return self.name
-
 class DataInput(models.Model):
     '''Ways that the software can accept data as input'''
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

@@ -45,9 +45,9 @@ class FunctionCategoryResource(resources.ModelResource):
     class Meta: model = FunctionCategory
 class FunctionCategoryAdmin(ImportExportModelAdmin): resource_class = FunctionCategoryResource
 
-class IvoaEntryResource(resources.ModelResource):
+class InstrumentObservatoryResource(resources.ModelResource):
     class Meta: model = InstrumentObservatory
-class IvoaEntryAdmin(ImportExportModelAdmin): resource_class = IvoaEntryResource
+class InstrumentObservatoryAdmin(ImportExportModelAdmin): resource_class = InstrumentObservatoryResource
 
 class LicenseResource(resources.ModelResource):
     class Meta: model = License
@@ -74,6 +74,10 @@ class PersonAdmin(ImportExportModelAdmin): resource_class = PersonResource
 class CuratorResource(resources.ModelResource):
     class Meta: model = Curator
 class CuratorAdmin(ImportExportModelAdmin): resource_class = CuratorResource
+
+class SubmitterResource(resources.ModelResource):
+    class Meta: model = Person
+class SubmitterAdmin(ImportExportModelAdmin): resource_class = SubmitterResource
 
 # Admin definitions for Auxillary Info -----------------------------------------
 

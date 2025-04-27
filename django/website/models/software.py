@@ -5,10 +5,10 @@ from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 
 from .people import Person
-from .auxillary_info import Functionality, Dataset, SoftwareVersion
+from .auxillary_info import Functionality, Dataset, SoftwareVersion, Award
 from .submission_info import SubmissionInfo
 from .roots import ( LEN_NAME,
-    RepoStatus, OperatingSystem, Keyword, Award, Image, Phenomena, Organization, 
+    RepoStatus, OperatingSystem, Keyword, Image, Phenomena, Organization, 
     License, InstrumentObservatory, ProgrammingLanguage, FileFormat, Region
 )
     

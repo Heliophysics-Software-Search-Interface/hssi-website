@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .software import Software
 
-from .roots import Organization, Person, FunctionCategory, License, LEN_NAME
+from .people import Person
+from .roots import Organization, FunctionCategory, License, LEN_NAME
 
 ## -----------------------------------------------------------------------------
 
@@ -48,7 +49,6 @@ class Dataset(models.Model):
     name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
     creator = models.ManyToManyField(
         Person,
-        on_delete=models.CASCADE,
         blank=True, null=True,
         related_name='datasets'
     )

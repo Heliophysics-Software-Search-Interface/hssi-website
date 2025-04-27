@@ -4,7 +4,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
 <dbmodel pgmodeler-ver="1.1.3" use-changelog="false" max-obj-count="36"
-	 last-position="0,7" last-zoom="0.65" scene-rect="0,-160,2629.5,1642.52"
+	 last-position="0,6" last-zoom="0.65" scene-rect="0,-180,2629.5,1662.52"
 	 default-owner="postgres"
 	 layers="Default layer"
 	 active-layers="0"
@@ -308,10 +308,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="SoftwareVersion" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
+<table name="SoftwareVersion" layers="0" collapse-mode="1" max-obj-count="6" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1780" y="40"/>
+	<position x="1740" y="40"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -323,6 +323,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<column name="description">
 		<type name="text" length="0"/>
+	</column>
+	<column name="persistentIdentifier">
+		<type name="varchar" length="512"/>
 	</column>
 	<constraint name="Version_pk" type="pk-constr" table="public.&quot;SoftwareVersion&quot;">
 		<columns names="id" ref-type="src-columns"/>
@@ -913,7 +916,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.&quot;SoftwareVersion&quot;" reference-fk="Version_fk"
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
-		<position x="4.44171" y="-51.0812"/>
+		<position x="-54.424" y="-43.8421"/>
 	</label>
 </relationship>
 

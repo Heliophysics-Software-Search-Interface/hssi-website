@@ -5,7 +5,7 @@ from import_export import resources
 from ..models import (
     Software, SubmissionInfo, Award, Curator, FunctionCategory, Functionality,
     IvoaEntry, Image, Keyword, License, OperatingSystem, Organization, Person,
-    PhenomenaType, ProgrammingLanguage, VisibleSoftware
+    Phenomena, ProgrammingLanguage, VisibleSoftware
 )
 
 from typing import Type, TYPE_CHECKING
@@ -61,7 +61,7 @@ def export_db_csv():
     export_model_csv(OperatingSystem)
     export_model_csv(Organization)
     export_model_csv(Person)
-    export_model_csv(PhenomenaType)
+    export_model_csv(Phenomena)
     export_model_csv(ProgrammingLanguage)
 
 def import_model_csv(model: 'type[models.Model]', filepath: os.PathLike | None = None):
@@ -97,7 +97,7 @@ def import_db_csv():
     import_model_csv(Keyword)
     import_model_csv(License)
     import_model_csv(OperatingSystem)
-    import_model_csv(PhenomenaType)
+    import_model_csv(Phenomena)
     import_model_csv(ProgrammingLanguage)
     import_model_csv(SubmissionInfo)
     import_model_csv(Software)

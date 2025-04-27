@@ -1,14 +1,15 @@
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
-from ..models.basics import OperatingSystem, PhenomenaType, Keyword, Award, Image
-from ..models.functionality import Functionality, FunctionCategory
-from ..models.ivoa_entry import IvoaEntry
-from ..models.license import License
-from ..models.organization import Organization
-from ..models.person import Person, Curator
-from ..models.software import Software, FileFormat, ProgrammingLanguage, VisibleSoftware
+from ..models.people import Person, Curator
+from ..models.software import Software, VisibleSoftware
 from ..models.submission_info import SubmissionInfo
+from ..models.auxillary_info import Functionality, Dataset, Award
+from ..models.roots import (
+    FunctionCategory, OperatingSystem, Phenomena, Keyword, Image, 
+    Organization, License, InstrumentObservatory, RepoStatus, DataInput,
+    ProgrammingLanguage, FileFormat, Region, SoftwareVersion
+)
 
 # Admin definitions for basics module ------------------------------------------
 
@@ -17,7 +18,7 @@ class OperatingSystemResource(resources.ModelResource):
 class OperatingSystemAdmin(ImportExportModelAdmin): resource_class = OperatingSystemResource
 
 class PhenomenaTypeResource(resources.ModelResource):
-    class Meta: model = PhenomenaType
+    class Meta: model = Phenomena
 class PhenomenaTypeAdmin(ImportExportModelAdmin): resource_class = PhenomenaTypeResource
 
 class KeywordResource(resources.ModelResource):
@@ -45,7 +46,7 @@ class FunctionCategoryAdmin(ImportExportModelAdmin): resource_class = FunctionCa
 # Admin definitions for ivoa_entry module --------------------------------------
 
 class IvoaEntryResource(resources.ModelResource):
-    class Meta: model = IvoaEntry
+    class Meta: model = InstrumentObservatory
 class IvoaEntryAdmin(ImportExportModelAdmin): resource_class = IvoaEntryResource
 
 # Admin definitions for license module -----------------------------------------

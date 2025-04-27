@@ -4,48 +4,14 @@ from typing import Callable, cast
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 
-from .organization import Organization
-from .person import Person
-from .ivoa_entry import IvoaEntry
-from .functionality import Functionality
-from .basics import RepoStatus, OperatingSystem, Keyword, Award, Image, PhenomenaType
-from .license import License
+from .people import Person
+from .auxillary_info import Functionality, Dataset
 from .submission_info import SubmissionInfo
-
-class ProgrammingLanguage(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=100)
-    version = models.CharField(max_length=50, blank=True, null=True)
-    organization = models.ForeignKey(
-        Organization,
-        on_delete=models.CASCADE, 
-        null=True, 
-        blank=True, 
-        related_name='programming_languages'
-    )
-
-    class Meta: ordering = ['name', 'version']
-    def __str__(self): 
-        return self.name + (f' {self.version}' if self.version else '')
-
-class FileFormat(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    extension = models.CharField(max_length=25)
-    fullName = models.CharField(max_length=100, blank=True, null=True)
-    affiliation = models.ForeignKey(
-        Organization,
-        on_delete=models.CASCADE,
-        null=True, 
-        blank=True, 
-        related_name='file_formats'
-    )
-
-    # specified for intellisense, defined in Softwares model
-    softares: models.Manager['Software']
-
-    class Meta: ordering = ['extension']
-    def __str__(self): 
-        return self.extension + (f' - {self.fullName}' if self.fullName else '')
+from .roots import ( LEN_NAME,
+    RepoStatus, OperatingSystem, Keyword, Award, Image, Phenomena, Organization, 
+    License, InstrumentObservatory, ProgrammingLanguage, FileFormat, 
+    SoftwareVersion, Region
+)
     
 class Software(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)    
@@ -57,7 +23,6 @@ class Software(models.Model):
         related_name='softwares'
     )
     publicationDate = models.DateField(null=True)
-    authors = models.ManyToManyField(Person, related_name='softwares')
     publisher = models.ForeignKey(
         Organization,
         on_delete=models.CASCADE, 
@@ -65,23 +30,26 @@ class Software(models.Model):
         blank=True, 
         related_name='softwares'
     )
+    authors = models.ManyToManyField(Person, related_name='softwares')
     relatedInstruments = models.ManyToManyField(
-        IvoaEntry,
+        InstrumentObservatory,
         blank=True, 
         related_name='softwares'
     )
     relatedObservatories = models.ManyToManyField(
-        IvoaEntry,
+        InstrumentObservatory,
         blank=True, 
         related_name='observatories'
     )
-    softwareName = models.CharField(max_length=150)
-    versionNumber = models.CharField(max_length=25, blank=True, null=True)
-    versionDate = models.DateField(blank=True, null=True)
-    versionDescription = models.TextField(blank=True, null=True)
-    versionPid = models.CharField(max_length=200, blank=True, null=True)
-    persistentIdentifier = models.CharField(max_length=200, blank=True, null=True)
-    referencePublication = models.CharField(max_length=200, blank=True, null=True)
+    softwareName = models.CharField(max_length=LEN_NAME)
+    version = models.OneToOneField(
+        SoftwareVersion,
+        on_delete=models.CASCADE,
+        blank=False, null=False,
+        related_name='software_current'
+    )
+    persistentIdentifier = models.URLField(blank=True, null=True)
+    referencePublication = models.URLField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     conciseDescription = models.TextField(max_length=200, blank=True, null=True)
     softwareFunctionality = models.ManyToManyField(
@@ -93,7 +61,7 @@ class Software(models.Model):
     dataInputs = models.ManyToManyField(
         Functionality, 
         blank=True,
-        related_name='softwares_data'
+        related_name='softwares'
     )
     supportedFileFormats = models.ManyToManyField(
         FileFormat, 
@@ -101,8 +69,17 @@ class Software(models.Model):
         related_name='softwares'
     )
     relatedPublications = models.TextField(blank=True, null=True)
-    relatedDatasets = models.TextField(blank=True, null=True)
-    developmentStatus = models.IntegerField(choices=RepoStatus.choices, default=RepoStatus.WIP)
+    relatedDatasets = models.ManyToManyField(
+        Dataset,
+        blank=True,
+        related_name='softwares'
+    )
+    developmentStatus = models.ForeignKey(
+        RepoStatus,
+        on_delete=models.CASCADE,
+        null=False, blank=False,
+        related_name='softwares'
+    )
     operatingSystem = models.ManyToManyField(
         OperatingSystem, 
         blank=True, 
@@ -111,18 +88,20 @@ class Software(models.Model):
     metadataLicense = models.ForeignKey(
         License,
         on_delete=models.CASCADE, 
-        null=True, 
-        blank=True, 
+        null=True, blank=True, 
         related_name='softwares'
     )
     license = models.ForeignKey(
         License,
         on_delete=models.CASCADE, 
-        null=True, 
-        blank=True, 
+        null=True, blank=True, 
         related_name='softwares_license'
     )
-    relatedRegion = models.TextField(blank=True, null=True)
+    relatedRegion = models.ManyToManyField(
+        Region, 
+        blank=True, 
+        related_name='softwares_region'
+    )
     keywords = models.ManyToManyField(
         Keyword, 
         blank=True, 
@@ -130,13 +109,6 @@ class Software(models.Model):
     )
     relatedSoftware = models.TextField(blank=True, null=True)
     interopableSoftware = models.TextField(blank=True, null=True)
-    funder = models.ForeignKey(
-        Organization,
-        on_delete=models.CASCADE, 
-        null=True, 
-        blank=True, 
-        related_name='softwares_funder'
-    )
     award = models.ForeignKey(
         Award,
         on_delete=models.CASCADE, 
@@ -153,13 +125,14 @@ class Software(models.Model):
         related_name='softwares'
     )
     relatedPhenomena = models.ManyToManyField(
-        PhenomenaType, 
-        blank=True, 
+        Phenomena, 
+        blank=True,
         related_name='softwares'
     )
-    submissionInfo = models.ForeignKey(
+    submissionInfo = models.OneToOneField(
         SubmissionInfo,
         on_delete=models.CASCADE,
+        blank=True, null=True,
         related_name='software'
     )
 
@@ -234,15 +207,15 @@ class Software(models.Model):
             'Publisher': self.publisher.name if self.publisher else None,
             'publisherIdentifier': self.publisher.identifier if self.publisher else None,
             'relatedInstruments': list(map(
-                lambda x: cast(IvoaEntry, x).name,
+                lambda x: cast(InstrumentObservatory, x).name,
                 self.relatedInstruments.all()
             )),
             'relatedInstrumentIdentifier': list(map(
-                lambda x: cast(IvoaEntry, x).identifier,
+                lambda x: cast(InstrumentObservatory, x).identifier,
                 self.relatedInstruments.all()
             )),
             'relatedObservatories': list(map(
-                lambda x: cast(IvoaEntry, x).name,
+                lambda x: cast(InstrumentObservatory, x).name,
                 self.relatedObservatories.all()
             )),
             'softwareName': self.softwareName,
@@ -297,7 +270,7 @@ class Software(models.Model):
             'codeRepositoryURL': self.codeRepositoryUrl,
             'Logo': self.logo.url if self.logo else None,
             'relatedPhenomena': list(map(
-                lambda x: cast(PhenomenaType, x).name,
+                lambda x: cast(Phenomena, x).name,
                 self.relatedPhenomena.all()
             )),
         }

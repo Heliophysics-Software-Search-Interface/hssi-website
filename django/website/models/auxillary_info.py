@@ -1,10 +1,6 @@
 import uuid
 from django.db import models
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from .software import Software
-
 from .people import Person
 from .roots import Organization, FunctionCategory, License, LEN_NAME
 
@@ -64,20 +60,3 @@ class Dataset(models.Model):
     
     class Meta: ordering = ['name']
     def __str__(self): return self.name
-
-class SoftwareVersion(models.Model):
-    '''A snapshot of the software metadata whenever it's updated to a new version'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    number = models.CharField(max_length=LEN_NAME)
-    release_date = models.DateField(blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    version_pid = models.URLField(blank=True, null=True)
-    software = models.ForeignKey(
-        'Software',
-        on_delete=models.CASCADE,
-        blank=True, null=True,
-        related_name='versions'
-    )
-    
-    # specified for intellisense, defined in Software model
-    software_current: models.Manager['Software']

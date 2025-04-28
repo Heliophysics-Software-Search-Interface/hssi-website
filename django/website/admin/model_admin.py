@@ -2,9 +2,9 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 from ..models.people import Person, Curator
-from ..models.software import Software, VisibleSoftware
+from ..models.software import Software, VisibleSoftware, SoftwareVersion
 from ..models.submission_info import SubmissionInfo
-from ..models.auxillary_info import Functionality, Dataset, Award, SoftwareVersion
+from ..models.auxillary_info import Functionality, Dataset, Award
 from ..models.roots import (
     FunctionCategory, OperatingSystem, Phenomena, Keyword, Image, 
     Organization, License, InstrumentObservatory, RepoStatus, DataInput,

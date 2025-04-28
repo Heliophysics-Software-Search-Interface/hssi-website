@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 class Person(models.Model):
     '''Metadata to hold needed information about someone'''
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    firstName = models.CharField(max_length=LEN_NAME, null=False, blank=False)
-    lastName = models.CharField(max_length=LEN_NAME, null=False, blank=False)
+    firstName = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
+    lastName = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
     identifier = models.URLField(blank=True, null=True)
     affiliation = models.ManyToManyField(
         Organization, 

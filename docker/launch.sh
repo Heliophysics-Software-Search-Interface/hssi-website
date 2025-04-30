@@ -78,4 +78,4 @@ cd /django
 
 # Start the project app server via Gunicorn
 echo "Starting Gunicorn ..."
-gunicorn --config /config/django/gunicorn.conf.py --log-config /config/django/logging.conf $PROJECT_NAME.wsgi
+exec gunicorn --config /config/django/gunicorn.conf.py --log-config /config/django/logging.conf $PROJECT_NAME.wsgi

@@ -30,7 +30,7 @@ ADD launch-nginx.sh ./extensions/post-launch-scripts/
 RUN chmod +x ./extensions/post-launch-scripts/launch-nginx.sh
 
 ADD launch.sh .
-CMD ./launch.sh
+ENTRYPOINT ["sh", "./launch.sh"]
 
 COPY ./requirements.txt requirements.txt
 RUN pip install --upgrade pip && pip install -r requirements.txt

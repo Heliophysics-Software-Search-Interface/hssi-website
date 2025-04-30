@@ -1,5 +1,27 @@
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Submit</button>
-</form>
+{% extends 'site_base_template.html' %}
+
+{% load static %}
+
+{% block page_content %}
+<style>
+  .form-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    width: 400px;
+  }
+</style>
+<p><h1>Test Form</h1></p>
+<div class="form-wrapper">
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+  </form>
+</div>
+{% endblock %}

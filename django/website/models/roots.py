@@ -58,7 +58,7 @@ class ProgrammingLanguage(models.Model):
     version = models.CharField(max_length=LEN_NAME, blank=True, null=True)
 
     class Meta: ordering = ['name']
-    def __str__(self): return self.name + f" {self.version}" if self.version else ""
+    def __str__(self): return self.name + (f" {self.version}" if self.version else "")
 
 class DataInput(models.Model):
     '''Ways that the software can accept data as input'''

@@ -29,11 +29,11 @@ class Person(models.Model):
     class Meta: 
         ordering = ['lastName', 'firstName']
         verbose_name_plural = "People"
-    def __str__(self): return self.name + ("" if self.lastName == None else " " + self.lastName)
+    def __str__(self): return self.firstName + ("" if self.lastName == None else " " + self.lastName)
 
     def to_str_lastname_firstname(self) -> str:
         if self.lastName is None or len(self.lastName) <= 0:
-            return self.name
+            return self.firstName
         return f"{self.lastName}, {self.firstName}"
 
 class Curator(models.Model):

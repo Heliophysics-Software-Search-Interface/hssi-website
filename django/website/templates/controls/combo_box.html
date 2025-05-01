@@ -51,7 +51,9 @@
             id: "{{ id }}",
             name: "{{ name }}",
             keywords: [
-              {% for k in kw %}"{{ k }}"{% if not forloop.last %},{% endif %}{% endfor %}
+              {% for k in kw %}
+                "{{ k }}".toLocaleLowerCase(){% if not forloop.last %},{% endif %}
+              {% endfor %}
             ]
           } {% if not forloop.last%},{% endif %}
       {% endfor %}
@@ -60,6 +62,7 @@
   for (let op of all) {
     const li = document.createElement('li');
     li.style.userSelect = 'none';
+    li.style.display = 'none'
     li.data = op;
     li.innerText = op.name;
     list.appendChild(li);
@@ -80,6 +83,22 @@
   });
 
   function filterOptions() {
+    splitInput = input.value.toLocaleLowerCase().split(' ')
+    outer: for (option of list.children) {
+      if (input.value.length <= 0) {
+        option.style.display = 'block';
+        continue outer;
+      }
+      for (kw of option.data.keywords) {
+        for (inWord of splitInput) {
+          if (kw.includes(inWord)){
+            option.style.display = 'block';
+            continue outer;
+          }
+        }
+      }
+      option.style.display = "none"
+    }
     list.style.display = 'block';
   };
 

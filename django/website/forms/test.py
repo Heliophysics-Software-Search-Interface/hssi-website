@@ -1,5 +1,8 @@
 from django import forms
 
+from ..forms import ComboBoxChoice, ComboBox
+from ..models import Person
+
 class TestForm(forms.Form):
     
     boolean_field = forms.BooleanField(label="BooleanField", required=False)
@@ -26,3 +29,21 @@ class TestForm(forms.Form):
     datetime_field = forms.DateTimeField(
         label="DateTimeField", widget=forms.DateTimeInput(attrs={'type': 'datetime-local'})
     )
+
+    choice_field2 = forms.ChoiceField(
+        label="ChoiceField2",
+        choices=[('', '---'), ('a', 'Option A'), ('b', 'Option B')]
+    )
+
+    combo_box = forms.CharField(
+        label="ComboBox",
+        widget=ComboBox(   
+        [
+            ComboBoxChoice(
+                str(person.id), 
+                str(person), 
+                [person.firstName, person.lastName]
+            )
+            for person in Person.objects.all()
+        ]
+    ))

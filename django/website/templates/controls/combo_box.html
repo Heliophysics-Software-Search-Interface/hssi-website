@@ -1,0 +1,90 @@
+<style>
+  .combobox-container {
+    position: relative;
+  }
+  
+  .combobox-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    z-index: 1000;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .combobox-options li {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .combobox-options li:hover {
+    background:rgb(154, 181, 255);
+  }
+</style>
+
+<div class="combobox-container">
+  <input 
+    type="text" 
+    name="{{ widget.name }}" 
+    value=""
+    {% include "django/forms/widgets/attrs.html" %} 
+    class="combobox-input"
+  >
+  <ul class="combobox-options" style="display: none;"> </ul>
+</div>
+  
+<script>
+  const input = document.getElementsByClassName('combobox-input')[0];
+  const list = document.getElementsByClassName('combobox-options')[0];
+
+  const all = [
+      {% for id, name, kw in widget.choices %}
+          {
+            id: "{{ id }}",
+            name: "{{ name }}",
+            keywords: [
+              {% for k in kw %}"{{ k }}"{% if not forloop.last %},{% endif %}{% endfor %}
+            ]
+          } {% if not forloop.last%},{% endif %}
+      {% endfor %}
+  ];
+
+  for (let op of all) {
+    const li = document.createElement('li');
+    li.style.userSelect = 'none';
+    li.data = op;
+    li.innerText = op.name;
+    list.appendChild(li);
+
+    li.addEventListener('click', function() {
+      input.value = li.data.name;
+      input.setAttribute('data-id', li.data.id);
+      hideOptions();
+    });
+  }
+
+  input.addEventListener('focus', filterOptions);
+  input.addEventListener('input', filterOptions);
+  input.addEventListener('blur', () => {
+    setTimeout(() => {
+      hideOptions();
+    }, 200);
+  });
+
+  function filterOptions() {
+    list.style.display = 'block';
+  };
+
+  function hideOptions() {
+    list.style.display = 'none';
+  };
+
+</script>

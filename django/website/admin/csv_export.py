@@ -2,11 +2,7 @@ import os, re, traceback
 import tablib
 
 from import_export import resources
-from ..models import (
-    Software, SubmissionInfo, Award, Curator, FunctionCategory, Functionality,
-    IvoaEntry, Image, Keyword, License, OperatingSystem, Organization, Person,
-    PhenomenaType, ProgrammingLanguage, VisibleSoftware
-)
+from ..models import *
 
 from typing import Type, TYPE_CHECKING
 if TYPE_CHECKING:
@@ -54,14 +50,14 @@ def export_db_csv():
     export_model_csv(Curator)
     export_model_csv(FunctionCategory)
     export_model_csv(Functionality)
-    export_model_csv(IvoaEntry)
+    export_model_csv(InstrumentObservatory)
     export_model_csv(Image)
     export_model_csv(Keyword)
     export_model_csv(License)
     export_model_csv(OperatingSystem)
     export_model_csv(Organization)
     export_model_csv(Person)
-    export_model_csv(PhenomenaType)
+    export_model_csv(Phenomena)
     export_model_csv(ProgrammingLanguage)
 
 def import_model_csv(model: 'type[models.Model]', filepath: os.PathLike | None = None):
@@ -93,12 +89,19 @@ def import_db_csv():
     import_model_csv(Award)
     import_model_csv(FunctionCategory)
     import_model_csv(Functionality)
-    import_model_csv(IvoaEntry)
+    import_model_csv(InstrumentObservatory)
     import_model_csv(Keyword)
     import_model_csv(License)
     import_model_csv(OperatingSystem)
-    import_model_csv(PhenomenaType)
+    import_model_csv(Phenomena)
     import_model_csv(ProgrammingLanguage)
     import_model_csv(SubmissionInfo)
     import_model_csv(Software)
     import_model_csv(VisibleSoftware)
+    import_model_csv(Region)
+    import_model_csv(RepoStatus)
+    import_model_csv(DataInput)
+    import_model_csv(FileFormat)
+    import_model_csv(SoftwareVersion)
+    import_model_csv(Submitter)
+    import_model_csv(Dataset)

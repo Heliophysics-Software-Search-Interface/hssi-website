@@ -1,11 +1,11 @@
 import uuid
+from django.db import models
+
 from typing import Callable, TYPE_CHECKING
 if TYPE_CHECKING:
     from .software import Software
 
-from django.db import models
-
-from .person import Person, Curator
+from .people import Curator, Submitter
 
 class SubmissionStatusCode(models.IntegerChoices):
     PROPOSED_RESOURCE = 1, "Proposed Resource"
@@ -20,26 +20,25 @@ class SubmissionStatusCode(models.IntegerChoices):
     SPAM = 10, "Spam"
 
 class SubmissionInfo(models.Model):
+    '''Metadata about the a piece of software submitted to HSSI'''
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     dateModified = models.DateField(auto_now=True, blank=True, null=True)
     modificationDescription = models.TextField(blank=True, null=True)
     metadataVersionNumber = models.CharField(max_length=50, blank=True, null=True)
     submitter = models.ForeignKey(
-        Person,
+        Submitter,
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
-        related_name='submission_info'
+        related_name='submission_infos'
     )
-    submitterEmail = models.EmailField(null=True)
     curator = models.ForeignKey(
         Curator,
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
-        related_name='submission_info_owner'
+        related_name='submission_infos'
     )
-    curatorEmail = models.EmailField(null=True)
     submissionDate = models.DateField(blank=True, null=True)
     internalStatusCode = models.IntegerField(
         choices=SubmissionStatusCode.choices, 
@@ -51,7 +50,7 @@ class SubmissionInfo(models.Model):
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
-        related_name='submission_info_leader'
+        related_name='submission_infos_led'
     )
     lastContactDate = models.DateField(blank=True, null=True)
     contactCount = models.IntegerField(default=0)
@@ -65,8 +64,8 @@ class SubmissionInfo(models.Model):
     get_internalStatusCode_display: Callable[[], str]
 
     class Meta: 
-        ordering = ['dateModified', 'submitter__lastName']
-        verbose_name_plural = "  Submission info"
+        ordering = ['dateModified', 'submitter__person__lastName']
+        verbose_name_plural = "  Submission Info"
     def __str__(self): 
         return (
             f"{str(self.submissionDate)} - " + f"{str(self.software)}: " +

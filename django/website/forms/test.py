@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.utils import ErrorList
 
 from ..forms import ComboBoxChoice, ComboBox
 from ..models import Person
@@ -35,15 +36,44 @@ class TestForm(forms.Form):
         choices=[('', '---'), ('a', 'Option A'), ('b', 'Option B')]
     )
 
-    combo_box = forms.CharField(
-        label="ComboBox",
-        widget=ComboBox(   
-        [
-            ComboBoxChoice(
-                str(person.id), 
-                str(person), 
-                [person.firstName, person.lastName]
-            )
-            for person in Person.objects.all()
-        ]
-    ))
+    combo_box = forms.CharField(label="ComboBox")
+
+    def __init__(
+        self, 
+        data=None,
+        files=None,
+        auto_id="id_%s",
+        prefix=None,
+        initial=None,
+        error_class=ErrorList,
+        label_suffix=None,
+        empty_permitted=False,
+        field_order=None,
+        use_required_attribute=None,
+        renderer=None,
+    ):
+
+        super().__init__(
+            data, 
+            files, 
+            auto_id,
+            prefix,
+            initial, 
+            error_class, 
+            label_suffix, 
+            empty_permitted, 
+            field_order, 
+            use_required_attribute, 
+            renderer
+        )
+
+        self.fields['combo_box'].widget = ComboBox(   
+            [
+                ComboBoxChoice(
+                    str(person.id), 
+                    str(person), 
+                    [person.firstName, person.lastName]
+                )
+                for person in Person.objects.all()
+            ]
+        )

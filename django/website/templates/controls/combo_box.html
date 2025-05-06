@@ -153,6 +153,11 @@
   // filter and show dropdown based on char field value
   function filterOptions() {
     
+    if(selectedOption >= 0) {
+      const option = filteredOptionElements[selectedOption];
+      option.classList.remove("highlighted");
+    }
+
     selectedOption = -1;
     filteredOptionElements.length = 0;
 

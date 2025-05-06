@@ -31,6 +31,10 @@
   .combobox-options li:hover {
     background:rgb(154, 181, 255);
   }
+
+  .combobox-options li.highlighted {
+    background:rgb(154, 181, 255);
+  }
 </style>
 
 <div class="combobox-container">
@@ -51,6 +55,11 @@
 
   const input = document.getElementsByClassName("{{ uid }}-input")[0];
   const list = document.getElementsByClassName("{{ uid }}-options")[0];
+
+  /** @type {HTMLLIElement} */
+  const filteredOptionElements = [];
+  
+  let selectedOption = -1;
 
   // create a list of every object in the combobox model
   const all = [
@@ -87,6 +96,7 @@
   // add event listeners for interacting with dropdown
   input.addEventListener('focus', filterOptions);
   input.addEventListener('input', filterOptions);
+  input.addEventListener('keydown', handleOptionKeyNav);
   input.addEventListener('focusout', (e) => {
     /** @type {HTMLElement} */
     let focusTarget = e.relatedTarget
@@ -96,26 +106,66 @@
     }
     if(!focusTarget.parentElement.classList.contains('combobox-options')){
       hideOptions();
+      return;
     }
   });
 
+  /** @param {KeyboardEvent} evt  */
+  function handleOptionKeyNav(evt){
+    let optionChanged = -1;
+    switch (evt.key) {
+      case 'ArrowDown':
+        optionChanged = selectedOption;
+        selectedOption += 1;
+        if(selectedOption >= filteredOptionElements.length){
+          selectedOption = 0;
+        }
+        break;
+      case 'ArrowUp':
+        optionChanged = selectedOption;
+        selectedOption -= 1;
+        if(selectedOption < 0){
+          selectedOption = filteredOptionElements.length - 1;
+        }
+        break;
+      case 'Enter':
+        break;
+    }
+    if(selectedOption >= 0){
+      if(optionChanged >= 0){
+        const option = filteredOptionElements[optionChanged];
+        option.classList.remove("highlighted");
+      }
+      const option = filteredOptionElements[selectedOption];
+      option.scrollIntoView({block: 'nearest'});
+      option.classList.add("highlighted");
+    }
+  }
+
   // filter and show dropdown based on char field value
   function filterOptions() {
-    splitInput = input.value.toLocaleLowerCase().split(' ')
+    
+    selectedIndex = -1;
+    filteredOptionElements.length = 0;
+
+    // show all matching elements, hided non-matching elements
+    splitInput = input.value.toLocaleLowerCase().split(' ');
     outer: for (option of list.children) {
       if (input.value.length <= 0) {
         option.style.display = 'block';
+        filteredOptionElements.push(option);
         continue outer;
       }
       for (kw of option.data.keywords) {
         for (inWord of splitInput) {
           if (kw.includes(inWord)){
             option.style.display = 'block';
+            filteredOptionElements.push(option);
             continue outer;
           }
         }
       }
-      option.style.display = "none"
+      option.style.display = 'none'
     }
     list.style.display = 'block';
   };

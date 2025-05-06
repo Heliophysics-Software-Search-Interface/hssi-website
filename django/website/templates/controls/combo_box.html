@@ -114,6 +114,8 @@
   function handleOptionKeyNav(evt){
     let optionChanged = -1;
     switch (evt.key) {
+      
+      // select next option
       case 'ArrowDown':
         optionChanged = selectedOption;
         selectedOption += 1;
@@ -121,6 +123,8 @@
           selectedOption = 0;
         }
         break;
+      
+      // select previous option
       case 'ArrowUp':
         optionChanged = selectedOption;
         selectedOption -= 1;
@@ -128,9 +132,13 @@
           selectedOption = filteredOptionElements.length - 1;
         }
         break;
+      
+      // confirm selected option
       case 'Enter':
         break;
     }
+
+    // highlight/unhighlight and scroll selected option into view
     if(selectedOption >= 0){
       if(optionChanged >= 0){
         const option = filteredOptionElements[optionChanged];
@@ -145,7 +153,7 @@
   // filter and show dropdown based on char field value
   function filterOptions() {
     
-    selectedIndex = -1;
+    selectedOption = -1;
     filteredOptionElements.length = 0;
 
     // show all matching elements, hided non-matching elements

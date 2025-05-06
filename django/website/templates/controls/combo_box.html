@@ -1,3 +1,6 @@
+{% load unique_id %}
+{% unique_id "combobox" as uid %}
+
 <style>
   .combobox-container {
     position: relative;
@@ -35,16 +38,21 @@
     type="text" 
     name="{{ widget.name }}" 
     value=""
-    {% include "django/forms/widgets/attrs.html" %} 
-    class="combobox-input"
+    {% include "django/forms/widgets/attrs.html" %}
+    class="combobox-input {{ uid }}-input"
   >
-  <ul class="combobox-options" style="display: none;"> </ul>
+  <ul 
+    class="combobox-options {{ uid }}-options" 
+    style="display: none;"
+  > </ul>
 </div>
   
-<script>
-  const input = document.getElementsByClassName('combobox-input')[0];
-  const list = document.getElementsByClassName('combobox-options')[0];
+<script>(function(){
 
+  const input = document.getElementsByClassName("{{ uid }}-input")[0];
+  const list = document.getElementsByClassName("{{ uid }}-options")[0];
+
+  // create a list of every object in the combobox model
   const all = [
       {% for id, name, kw in widget.choices %}
           {
@@ -59,8 +67,10 @@
       {% endfor %}
   ];
 
+  // create a list element in the ul for each item
   for (let op of all) {
     const li = document.createElement('li');
+    li.tabIndex = 0;
     li.style.userSelect = 'none';
     li.style.display = 'none'
     li.data = op;
@@ -74,14 +84,22 @@
     });
   }
 
+  // add event listeners for interacting with dropdown
   input.addEventListener('focus', filterOptions);
   input.addEventListener('input', filterOptions);
-  input.addEventListener('blur', () => {
-    setTimeout(() => {
+  input.addEventListener('focusout', (e) => {
+    /** @type {HTMLElement} */
+    let focusTarget = e.relatedTarget
+    if (focusTarget == null){
       hideOptions();
-    }, 200);
+      return;
+    }
+    if(!focusTarget.parentElement.classList.contains('combobox-options')){
+      hideOptions();
+    }
   });
 
+  // filter and show dropdown based on char field value
   function filterOptions() {
     splitInput = input.value.toLocaleLowerCase().split(' ')
     outer: for (option of list.children) {
@@ -102,8 +120,9 @@
     list.style.display = 'block';
   };
 
+  // hide the dropdown
   function hideOptions() {
     list.style.display = 'none';
   };
 
-</script>
+})()</script>

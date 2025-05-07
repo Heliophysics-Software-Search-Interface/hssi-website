@@ -16,7 +16,7 @@ class ModelObjectSelector(forms.TextInput):
     instances of the model that the combobox is associated with
     """
     attrs: dict | None
-    template_name: str = 'controls/combo_box.html'
+    template_name: str = 'widgets/model_object_selector.html'
     model: Type[HssiModel] | None = None
     case_sensitive_filtering: bool = False
     filter: dict = {}

@@ -1,12 +1,12 @@
 {% load unique_id %}
-{% unique_id "combobox" as uid %}
+{% unique_id "modelbox" as uid %}
 
 <style>
-  .combobox-container {
+  .modelbox-container {
     position: relative;
   }
   
-  .combobox-options {
+  .modelbox-options {
     position: absolute;
     top: 100%;
     left: 0;
@@ -23,45 +23,47 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
   
-  .combobox-options li {
+  .modelbox-options li {
     padding: 8px;
     cursor: pointer;
   }
   
-  .combobox-options li:hover {
+  .modelbox-options li:hover {
     background:rgb(154, 181, 255);
   }
 
-  .combobox-options li.highlighted {
+  .modelbox-options li.highlighted {
     background:rgb(154, 181, 255);
   }
 </style>
 
-<div class="combobox-container">
+<div class="modelbox-container">
+  <ul 
+    class="modelbox-options {{ uid }}-options" 
+    style="display: none;"
+  > </ul>
   <input 
     type="text" 
     name="{{ widget.name }}" 
     value=""
     {% include "django/forms/widgets/attrs.html" %}
-    class="combobox-input {{ uid }}-input"
+    class="modelbox-input {{ uid }}-input"
   >
-  <ul 
-    class="combobox-options {{ uid }}-options" 
-    style="display: none;"
-  > </ul>
 </div>
-  
+
 <script>(function(){
 
-  const input = document.getElementsByClassName("{{ uid }}-input")[0];
-  const list = document.getElementsByClassName("{{ uid }}-options")[0];
+  const optionList = document.getElementsByClassName("{{ uid }}-options")[0];
+
+  /** @type {HTMLElement} */
+  let input = document.getElementsByClassName("{{ uid }}-input")[0];
 
   /** @type {HTMLLIElement} */
   const filteredOptionElements = [];
   
   let selectedOption = -1;
 
-  // create a list of every object in the combobox model
+  // create a list of every object in the modelbox model
   const all = [
       {% for id, name, kw in widget.choices %}
           {
@@ -84,13 +86,8 @@
     li.style.display = 'none'
     li.data = op;
     li.innerText = op.name;
-    list.appendChild(li);
-
-    li.addEventListener('click', function() {
-      input.value = li.data.name;
-      input.setAttribute('data-id', li.data.id);
-      hideOptions();
-    });
+    optionList.appendChild(li);
+    li.addEventListener('click', selectOption.bind(null, li));
   }
 
   // add event listeners for interacting with dropdown
@@ -104,7 +101,7 @@
       hideOptions();
       return;
     }
-    if(!focusTarget.parentElement.classList.contains('combobox-options')){
+    if(!focusTarget.parentElement.classList.contains('modelbox-options')){
       hideOptions();
       return;
     }
@@ -117,24 +114,33 @@
       
       // select next option
       case 'ArrowDown':
-        optionChanged = selectedOption;
-        selectedOption += 1;
-        if(selectedOption >= filteredOptionElements.length){
-          selectedOption = 0;
+        if(optionList.style.display != 'none'){
+          optionChanged = selectedOption;
+          selectedOption += 1;
+          if(selectedOption >= filteredOptionElements.length){
+            selectedOption = 0;
+          }
         }
         break;
       
       // select previous option
       case 'ArrowUp':
-        optionChanged = selectedOption;
-        selectedOption -= 1;
-        if(selectedOption < 0){
-          selectedOption = filteredOptionElements.length - 1;
+        if(optionList.style.display != 'none'){
+          optionChanged = selectedOption;
+          selectedOption -= 1;
+          if(selectedOption < 0){
+            selectedOption = filteredOptionElements.length - 1;
+          }
         }
         break;
       
       // confirm selected option
       case 'Enter':
+      if(selectedOption >= 0){
+          const option = filteredOptionElements[selectedOption];
+          selectOption(option);
+          evt.preventDefault();
+        }
         break;
     }
 
@@ -163,7 +169,7 @@
 
     // show all matching elements, hided non-matching elements
     splitInput = input.value.toLocaleLowerCase().split(' ');
-    outer: for (option of list.children) {
+    outer: for (option of optionList.children) {
       if (input.value.length <= 0) {
         option.style.display = 'block';
         filteredOptionElements.push(option);
@@ -180,12 +186,26 @@
       }
       option.style.display = 'none'
     }
-    list.style.display = 'block';
+    optionList.style.display = 'block';
   };
+
+  function selectOption(option) {
+    input.value = option.data.name;
+    input.setAttribute('data-id', option.data.id);
+    selectedOption = -1;
+    hideOptions();
+  }
 
   // hide the dropdown
   function hideOptions() {
-    list.style.display = 'none';
+    optionList.style.display = 'none';
   };
+
+  function confirmInput(textbox) {
+    const newInput = input.cloneNode(true);
+    newInput.value = "";
+    input.parentNode.appendChild(newInput);
+
+  }
 
 })()</script>

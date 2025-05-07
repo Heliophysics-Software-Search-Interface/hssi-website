@@ -13,7 +13,7 @@ class ModelObjectChoice(NamedTuple):
 class ModelObjectSelector(forms.TextInput):
     """
     allows the user to easily select one or multiple of the 
-    instances of the model that the combobox is associated with
+    instances of the model that the modelbox is associated with
     """
     attrs: dict | None
     template_name: str = 'widgets/model_object_selector.html'

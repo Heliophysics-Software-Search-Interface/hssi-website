@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.utils import ErrorList
 
-from ..forms import ComboBoxChoice, ComboBox
+from ..forms import ModelObjectSelector
 from ..models import Person
 
 class TestForm(forms.Form):
@@ -36,7 +36,7 @@ class TestForm(forms.Form):
 #        choices=[('', '---'), ('a', 'Option A'), ('b', 'Option B')]
 #    )
 
-    combo_box = forms.CharField(label="ComboBox")
+    model_obj_selector = forms.CharField(label="Model Object Selector")
 
     def __init__(
         self, 
@@ -67,13 +67,4 @@ class TestForm(forms.Form):
             renderer
         )
 
-        self.fields['combo_box'].widget = ComboBox(   
-            [
-                ComboBoxChoice(
-                    str(person.id), 
-                    str(person), 
-                    [person.firstName, person.lastName]
-                )
-                for person in Person.objects.all()
-            ]
-        )
+        self.fields['model_obj_selector'].widget = ModelObjectSelector(Person)

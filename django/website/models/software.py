@@ -7,15 +7,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from .people import Person
 from .auxillary_info import Functionality, Dataset, Award
 from .submission_info import SubmissionInfo
-from .roots import ( LEN_NAME,
+from .roots import ( LEN_NAME, HssiModel,
     RepoStatus, OperatingSystem, Keyword, Image, Phenomena, Organization, 
     License, InstrumentObservatory, ProgrammingLanguage, FileFormat, 
     Region, DataInput
 )
 
-class SoftwareVersion(models.Model):
+class SoftwareVersion(HssiModel):
     '''A snapshot of the software metadata whenever it's updated to a new version'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     number = models.CharField(max_length=LEN_NAME)
     release_date = models.DateField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -33,8 +32,7 @@ class SoftwareVersion(models.Model):
     class Meta: ordering = ['number']
     def __str__(self): return self.number
 
-class Software(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)    
+class Software(HssiModel):
     programmingLanguage = models.ForeignKey(
         ProgrammingLanguage,
         on_delete=models.CASCADE, 

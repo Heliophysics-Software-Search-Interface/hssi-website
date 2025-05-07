@@ -5,7 +5,7 @@ from typing import Callable, TYPE_CHECKING
 if TYPE_CHECKING:
     from .software import Software
 
-from .people import Curator, Submitter
+from .people import HssiModel, Curator, Submitter
 
 class SubmissionStatusCode(models.IntegerChoices):
     PROPOSED_RESOURCE = 1, "Proposed Resource"
@@ -19,9 +19,8 @@ class SubmissionStatusCode(models.IntegerChoices):
     REJECTED = 9, "Rejected/Abandoned"
     SPAM = 10, "Spam"
 
-class SubmissionInfo(models.Model):
+class SubmissionInfo(HssiModel):
     '''Metadata about the a piece of software submitted to HSSI'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     dateModified = models.DateField(auto_now=True, blank=True, null=True)
     modificationDescription = models.TextField(blank=True, null=True)
     metadataVersionNumber = models.CharField(max_length=50, blank=True, null=True)

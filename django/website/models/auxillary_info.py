@@ -2,13 +2,12 @@ import uuid
 from django.db import models
 
 from .people import Person
-from .roots import Organization, FunctionCategory, License, LEN_NAME
+from .roots import HssiModel, Organization, FunctionCategory, License, LEN_NAME
 
 ## -----------------------------------------------------------------------------
 
-class Award(models.Model):
+class Award(HssiModel):
     '''A grant or other funding award given by an organization'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=LEN_NAME)
     identifier = models.URLField(blank=True, null=True)
     funder = models.ForeignKey(
@@ -22,9 +21,8 @@ class Award(models.Model):
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
-class Functionality(models.Model):
+class Functionality(HssiModel):
     '''A type of functionality supported by the software'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=LEN_NAME)
     abbreviation = models.CharField(max_length=5, blank=True, null=True)
     category = models.ForeignKey(
@@ -40,8 +38,7 @@ class Functionality(models.Model):
         verbose_name_plural = "Functionalities"
     def __str__(self): return self.name
 
-class Dataset(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class Dataset(HssiModel):
     name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
     creator = models.ManyToManyField(
         Person,

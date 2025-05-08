@@ -17,78 +17,83 @@ class InstrObsType(models.IntegerChoices):
     OBSERVATORY = 2, "Observatory"
     UNKNOWN = 3, "Unknown"
 
-## Simple Root Models ----------------------------------------------------------
-
-class OperatingSystem(models.Model):
-    '''Operating system on which the software can run'''
+class HssiModel(models.Model):
+    '''Base class for all models in the HSSI project'''
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    def get_search_terms(self) -> list[str]: 
+        '''
+        The search terms that are used for filtering autocomplete suggestions in 
+        relevant form interfaces
+        '''
+        return [str(self)]
+
+    class Meta:
+        abstract = True
+
+## Simple Root Models ----------------------------------------------------------
+    
+class OperatingSystem(HssiModel):
+    '''Operating system on which the software can run'''
     name = models.CharField(max_length=LEN_NAME)
 
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
-class Phenomena(models.Model):
+class Phenomena(HssiModel):
     '''Solar phenomena that relate to the software'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=LEN_NAME)
     
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
-class Keyword(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class Keyword(HssiModel):
     name = models.CharField(max_length=LEN_NAME)
 
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
-class Image(models.Model):
+class Image(HssiModel):
     '''Reference to an image file and alt text description'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     url = models.URLField(blank=True, null=True)
     description = models.CharField(max_length=250)
 
     class Meta: ordering = ['description']
     def __str__(self): return self.url
 
-class ProgrammingLanguage(models.Model):
+class ProgrammingLanguage(HssiModel):
     '''Primary Programming language used to develop the software'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=LEN_NAME)
     version = models.CharField(max_length=LEN_NAME, blank=True, null=True)
 
     class Meta: ordering = ['name']
     def __str__(self): return self.name + (f" {self.version}" if self.version else "")
 
-class DataInput(models.Model):
+class DataInput(HssiModel):
     '''Ways that the software can accept data as input'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=LEN_NAME)
     abbreviation = models.CharField(max_length=LEN_ABBREVIATION, blank=True, null=True)
 
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
-class FileFormat(models.Model):
+class FileFormat(HssiModel):
     '''File formats that are supported as input or output types by the software'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=LEN_NAME, blank=True, null=True)
     extension = models.CharField(max_length=25, blank=False, null=False)
 
     class Meta: ordering = ['name']
     def __str__(self): return self.extension + f" ({self.name})" if self.name else ""
 
-class Region(models.Model):
+class Region(HssiModel):
     '''Region of the sun which relates to the software'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=LEN_NAME)
 
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
-class InstrumentObservatory(models.Model):
+class InstrumentObservatory(HssiModel):
     '''An observatory or scientific research instrument'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     type = models.IntegerField(choices=InstrObsType.choices, default=InstrObsType.UNKNOWN)
     name = models.CharField(max_length=LEN_NAME)
     identifier = models.URLField(blank=True, null=True)
@@ -98,12 +103,11 @@ class InstrumentObservatory(models.Model):
 
 ## Complex Root Models ---------------------------------------------------------
 
-class RepoStatus(models.Model):
+class RepoStatus(HssiModel):
     '''
     Repo status as defined by the repostatus.org json-ld: 
     https://www.repostatus.org/badges/latest/ontology.jsonld
     '''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     identifier = models.URLField(blank=True, null=True)
     prefLabel = models.CharField(max_length=LEN_NAME, blank=False, null=False)
     definition = models.TextField(blank=True, null=True)
@@ -114,8 +118,7 @@ class RepoStatus(models.Model):
         verbose_name_plural = "Repo Statuses"
     def __str__(self): return self.prefLabel
 
-class FunctionCategory(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class FunctionCategory(HssiModel):
     name = models.CharField(max_length=100)
     abbreviation = models.CharField(max_length=5, null=True, blank=True)
     backgroundColor = RGBColorField("Background Color", default="#FFFFFF", blank=True, null=True)
@@ -130,8 +133,7 @@ class FunctionCategory(models.Model):
         verbose_name_plural = "Function Categories"
     def __str__(self): return self.name
 
-class License(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class License(HssiModel):
     name = models.CharField(max_length=100)
     identifier = models.CharField(max_length=100, blank=True, null=True)
     full_text = models.TextField(blank=True, null=True)
@@ -142,10 +144,9 @@ class License(models.Model):
     class Meta: ordering = ['identifier', 'name']
     def __str__(self): return self.identifier or self.name
 
-class Organization(models.Model):
+class Organization(HssiModel):
     '''A legal entity such as university, agency, or company'''
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=LEN_NAME)
     abbreviation = models.CharField(max_length=20, null=True, blank=True)
     website = models.URLField(blank=True, null=True)

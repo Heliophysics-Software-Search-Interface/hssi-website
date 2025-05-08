@@ -7,10 +7,7 @@ from ..models import Person
 class TestForm(forms.Form):
     
 #    boolean_field = forms.BooleanField(label="BooleanField", required=False)
-    choice_field = forms.ChoiceField(
-        label="ChoiceField",
-        choices=[('', '---'), ('a', 'Option A'), ('b', 'Option B')]
-    )
+
 #    multiple_choice_field = forms.MultipleChoiceField(
 #        label="MultipleChoiceField",
 #        choices=[('x', 'Choice X'), ('y', 'Choice Y')],
@@ -25,7 +22,6 @@ class TestForm(forms.Form):
 #        widget=forms.Textarea
 #    )
 #    
-#    date_field = forms.DateField(label="DateField", widget=forms.DateInput(attrs={'type': 'date'}))
 #    time_field = forms.TimeField(label="TimeField", widget=forms.TimeInput(attrs={'type': 'time'}))
 #    datetime_field = forms.DateTimeField(
 #        label="DateTimeField", widget=forms.DateTimeInput(attrs={'type': 'datetime-local'})
@@ -36,7 +32,40 @@ class TestForm(forms.Form):
 #        choices=[('', '---'), ('a', 'Option A'), ('b', 'Option B')]
 #    )
 
-    model_obj_selector = forms.CharField(label="Model Object Selector")
+    field_programming_language = forms.ChoiceField(
+        label="Programming Language",
+        choices=[
+            ('', '---'), 
+            ('a', 'C'), 
+            ('b', 'C++'),
+            ('c', 'C#'),
+            ('d', 'Python'),
+            ('e', 'Fortran'),
+            ('f', 'Julia'),
+            ('g', 'Java'),
+            ('h', 'JavaScript'),
+            ('i', 'MATLAB'),
+            ('j', 'SQL'),
+            ('k', 'IDL'),
+            ('l', 'Other'),
+        ]
+    )
+    field_pub_date = forms.DateField(label="Publication Date", widget=forms.DateInput(attrs={'type': 'date'}))
+    field_authors = forms.CharField(label="Authors")
+    field_publisher = forms.CharField(label="Publisher")
+    field_related_instruments = forms.CharField(label="Related Instruments")
+    field_related_observatories = forms.CharField(label="Related Observatories")
+
+    field_name = forms.CharField(label = "Software Name")
+    field_version = forms.CharField(label = "Software Version")
+    field_version_date = forms.DateField(label = "Version Date", widget=forms.DateInput(attrs={'type': 'date'}))
+    field_version_description = forms.CharField(label="Version Description", widget=forms.Textarea)
+    field_version_pid = forms.URLField(label = "Version PID")
+
+    field_pid = forms.URLField(label = "Persistent Identifier")
+    field_ref_pub = forms.URLField(label = "Reference Publication")
+    field_description = forms.CharField(label = "Description", widget=forms.Textarea)
+    field_description_concise = forms.CharField(label = "Concise Description", widget=forms.Textarea)
 
     def __init__(
         self, 
@@ -67,4 +96,4 @@ class TestForm(forms.Form):
             renderer
         )
 
-        self.fields['model_obj_selector'].widget = ModelObjectSelector(Person)
+        self.fields['field_authors'].widget = ModelObjectSelector(Person)

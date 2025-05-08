@@ -54,12 +54,21 @@
 
 <script>(function(){
 
+  const properties = {
+    caseSensitiveFiltering: {{ widget.case_sensitive_filtering }},
+    multiSelect: {{ widget.multi_select }},
+    dropdownButton: {{ widget.dropdown_button }},
+    dropdownOnFocus: {{ widget.dropdown_on_focus }},
+    dropdownOnBlank: {{ widget.dropdown_on_blank }},
+  }
+
   const optionList = document.getElementsByClassName("{{ uid }}-options")[0];
   optionList.remove();
   document.body.appendChild(optionList);
 
   /** @type {HTMLInputElement} */
   let input = document.getElementsByClassName("{{ uid }}-input")[0];
+  addDropdownEvents(input);
 
   /** @type {Array<HTMLInputElement>} */
   const allInputs = [input]
@@ -96,8 +105,16 @@
     li.addEventListener('click', selectOption.bind(null, li));
   }
 
-  // add event listeners for interacting with dropdown
-  addDropdownEvents(input);
+  /** @param {Event} evt */
+  function inputFocusIn(evt) {
+    /** @type {HTMLInputElement} */
+    const target = evt.target;
+    input = target;
+    if(properties.dropdownOnFocus || !(evt instanceof FocusEvent)){
+      if(properties.dropdownOnBlank) filterOptions(target);
+      else if(target.value.length > 0) filterOptions(target);
+    }
+  }
 
   /** @param {FocusEvent} e  */
   function inputFocusOut(e) {
@@ -200,8 +217,11 @@
     selectedOption = -1;
     filteredOptionElements.length = 0;
 
-    // show all matching elements, hided non-matching elements
-    splitInput = elem.value.toLocaleLowerCase().split(' ');
+    // show all matching elements, hide non-matching elements
+    const inputVal = properties.caseSensitiveFiltering ? 
+      elem.value.toLocaleUpperCase() : 
+      elem.value;
+    const splitInput = inputVal.split(' ');
     outer: for (option of optionList.children) {
       if (elem.value.length <= 0) {
         option.style.display = 'block';
@@ -227,12 +247,6 @@
     optionList.style.display = 'block';
   };
 
-  /** @param {Event} evt */
-  function focusInput(evt) {
-    input = evt.target;
-    filterOptions(evt.target);
-  }
-
   function selectOption(option) {
     input.value = option.data.name;
     input.setAttribute('data-id', option.data.id);
@@ -249,10 +263,10 @@
   
   /** @param {HTMLElement} elem */
   function addDropdownEvents(elem) {
-    elem.addEventListener('focus', focusInput);
-    elem.addEventListener('input', focusInput);
-    elem.addEventListener('keydown', handleOptionKeyNav);
+    elem.addEventListener('focus', inputFocusIn);
     elem.addEventListener('focusout', inputFocusOut);
+    elem.addEventListener('input', inputFocusIn);
+    elem.addEventListener('keydown', handleOptionKeyNav);
   }
 
   /** @param {HTMLElement} elem */

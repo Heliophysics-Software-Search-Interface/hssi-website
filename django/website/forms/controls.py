@@ -3,6 +3,11 @@ from django import forms
 from typing import NamedTuple, Type
 from ..models import HssiModel
 
+## Utility ---------------------------------------------------------------------
+
+def bool_js_string(value: bool) -> str:
+    return "true" if value else "false"
+
 ## Combo box -------------------------------------------------------------------
 
 class ModelObjectChoice(NamedTuple):
@@ -18,8 +23,12 @@ class ModelObjectSelector(forms.TextInput):
     attrs: dict | None
     template_name: str = 'widgets/model_object_selector.html'
     model: Type[HssiModel] | None = None
-    case_sensitive_filtering: bool = False
     filter: dict = {}
+    case_sensitive_filtering: bool = False
+    multi_select: bool = True
+    dropdown_button: bool = False
+    dropdown_on_focus: bool = True
+    dropdown_on_blank: bool = True
 
     def __init__(self, model: Type[HssiModel], attrs: dict = None):
         super().__init__(attrs)
@@ -28,7 +37,11 @@ class ModelObjectSelector(forms.TextInput):
     def get_context(self, name, value, attrs) -> dict:
         context = super().get_context(name, value, attrs)
         context['widget']['choices'] = self.get_choices()
-        context['widget']['case_sensitive'] = self.case_sensitive_filtering
+        context['widget']['case_sensitive_filtering'] = bool_js_string(self.case_sensitive_filtering)
+        context['widget']['multi_select'] = bool_js_string(self.multi_select)
+        context['widget']['dropdown_button'] = bool_js_string(self.dropdown_button)
+        context['widget']['dropdown_on_focus'] = bool_js_string(self.dropdown_on_focus)
+        context['widget']['dropdown_on_blank'] = bool_js_string(self.dropdown_on_blank)
         return context
 
     def get_choices(self) -> list[ModelObjectChoice]:

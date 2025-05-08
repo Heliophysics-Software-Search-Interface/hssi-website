@@ -55,7 +55,7 @@
 <script>(function(){
 
   const optionList = document.getElementsByClassName("{{ uid }}-options")[0];
-  optionList.parentElement.removeChild(optionList);
+  optionList.remove();
   document.body.appendChild(optionList);
 
   /** @type {HTMLInputElement} */
@@ -99,9 +99,18 @@
   // add event listeners for interacting with dropdown
   addDropdownEvents(input);
 
+  /** @param {FocusEvent} e  */
   function inputFocusOut(e) {
     /** @type {HTMLElement} */
-    let focusTarget = e.relatedTarget
+    const target = e.target;
+    const focusTarget = e.relatedTarget;
+    if (target != allInputs[allInputs.length - 1]) {
+      if(target.value.trim().length <= 0) {
+        target.remove();
+        const index = allInputs.indexOf(target)
+        allInputs.splice(index, 1);
+      }
+    }
     if (focusTarget == null){
       hideOptions();
       return;
@@ -139,6 +148,20 @@
         }
         break;
       
+      // unfocus current input if backspace on empty and multi fields
+      case 'Backspace':
+        if(input.value.length <= 0 && allInputs.length > 1) {
+          let index = allInputs.indexOf(evt.target);
+          if(index <= 0){
+            allInputs[1].focus();
+          }
+          else {
+            index -= 1;
+            allInputs[index].focus();
+          }
+        }
+        break;
+
       // confirm selected option
       case 'Enter':
       if(selectedOption >= 0){
@@ -207,7 +230,6 @@
   /** @param {Event} evt */
   function focusInput(evt) {
     input = evt.target;
-    input.focus();
     filterOptions(evt.target);
   }
 

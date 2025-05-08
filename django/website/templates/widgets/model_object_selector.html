@@ -55,12 +55,14 @@
 <script>(function(){
 
   const optionList = document.getElementsByClassName("{{ uid }}-options")[0];
+  optionList.parentElement.removeChild(optionList);
+  document.body.appendChild(optionList);
 
   /** @type {HTMLInputElement} */
   let input = document.getElementsByClassName("{{ uid }}-input")[0];
 
   /** @type {Array<HTMLInputElement>} */
-  const oldInputs = []
+  const allInputs = [input]
 
   /** @type {HTMLLIElement} */
   const filteredOptionElements = [];
@@ -162,9 +164,11 @@
     }
   }
 
-  // filter and show dropdown based on char field value
-  function filterOptions() {
-    
+  /** 
+    @param {HTMLInputElement} elem
+    filter and show dropdown based on char field value
+  */
+  function filterOptions(elem) {
     if(selectedOption >= 0) {
       const option = filteredOptionElements[selectedOption];
       option.classList.remove("highlighted");
@@ -174,9 +178,9 @@
     filteredOptionElements.length = 0;
 
     // show all matching elements, hided non-matching elements
-    splitInput = input.value.toLocaleLowerCase().split(' ');
+    splitInput = elem.value.toLocaleLowerCase().split(' ');
     outer: for (option of optionList.children) {
-      if (input.value.length <= 0) {
+      if (elem.value.length <= 0) {
         option.style.display = 'block';
         filteredOptionElements.push(option);
         continue outer;
@@ -192,12 +196,25 @@
       }
       option.style.display = 'none'
     }
+
+    let rect = elem.getBoundingClientRect();
+    optionList.style.left = `${rect.left + window.scrollX}px`;
+    optionList.style.top = `${rect.bottom + window.scrollY}px`;
+    optionList.style.width = `${rect.width}px`
     optionList.style.display = 'block';
   };
+
+  /** @param {Event} evt */
+  function focusInput(evt) {
+    input = evt.target;
+    input.focus();
+    filterOptions(evt.target);
+  }
 
   function selectOption(option) {
     input.value = option.data.name;
     input.setAttribute('data-id', option.data.id);
+    option.classList.remove("highlighted");
     selectedOption = -1;
     hideOptions();
     confirmInput(input);
@@ -210,8 +227,8 @@
   
   /** @param {HTMLElement} elem */
   function addDropdownEvents(elem) {
-    elem.addEventListener('focus', filterOptions);
-    elem.addEventListener('input', filterOptions);
+    elem.addEventListener('focus', focusInput);
+    elem.addEventListener('input', focusInput);
     elem.addEventListener('keydown', handleOptionKeyNav);
     elem.addEventListener('focusout', inputFocusOut);
   }
@@ -226,14 +243,19 @@
 
   /** @param {HTMLInputElement} textbox */
   function confirmInput(textbox) {
-    const newInput = input.cloneNode(true);
-    newInput.value = "";
-    addDropdownEvents(newInput);
-    input.parentNode.appendChild(newInput);
-
-    input.classList.remove("{{ uid }}-input");
-    oldInputs.push(input);
-    input = newInput;
+    const lastInput = allInputs[allInputs.length - 1];
+    if(input != lastInput){
+      input = lastInput;
+    }
+    else{
+      const newInput = input.cloneNode(true);
+      newInput.value = "";
+      addDropdownEvents(newInput);
+      input.parentNode.appendChild(newInput);
+      allInputs.push(newInput);
+      
+      input = newInput;
+    }
     input.focus();
   }
 

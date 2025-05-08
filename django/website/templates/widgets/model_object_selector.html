@@ -44,6 +44,7 @@
   > </ul>
   <input 
     type="text" 
+    autocomplete="off"
     name="{{ widget.name }}" 
     value=""
     {% include "django/forms/widgets/attrs.html" %}
@@ -55,8 +56,11 @@
 
   const optionList = document.getElementsByClassName("{{ uid }}-options")[0];
 
-  /** @type {HTMLElement} */
+  /** @type {HTMLInputElement} */
   let input = document.getElementsByClassName("{{ uid }}-input")[0];
+
+  /** @type {Array<HTMLInputElement>} */
+  const oldInputs = []
 
   /** @type {HTMLLIElement} */
   const filteredOptionElements = [];
@@ -91,10 +95,9 @@
   }
 
   // add event listeners for interacting with dropdown
-  input.addEventListener('focus', filterOptions);
-  input.addEventListener('input', filterOptions);
-  input.addEventListener('keydown', handleOptionKeyNav);
-  input.addEventListener('focusout', (e) => {
+  addDropdownEvents(input);
+
+  function inputFocusOut(e) {
     /** @type {HTMLElement} */
     let focusTarget = e.relatedTarget
     if (focusTarget == null){
@@ -105,7 +108,7 @@
       hideOptions();
       return;
     }
-  });
+  }
 
   /** @param {KeyboardEvent} evt  */
   function handleOptionKeyNav(evt){
@@ -137,10 +140,13 @@
       // confirm selected option
       case 'Enter':
       if(selectedOption >= 0){
-          const option = filteredOptionElements[selectedOption];
-          selectOption(option);
-          evt.preventDefault();
-        }
+        const option = filteredOptionElements[selectedOption];
+        selectOption(option);
+      }
+      else {
+        confirmInput(input);
+      }
+      evt.preventDefault();
         break;
     }
 
@@ -194,18 +200,41 @@
     input.setAttribute('data-id', option.data.id);
     selectedOption = -1;
     hideOptions();
+    confirmInput(input);
   }
 
   // hide the dropdown
   function hideOptions() {
     optionList.style.display = 'none';
   };
+  
+  /** @param {HTMLElement} elem */
+  function addDropdownEvents(elem) {
+    elem.addEventListener('focus', filterOptions);
+    elem.addEventListener('input', filterOptions);
+    elem.addEventListener('keydown', handleOptionKeyNav);
+    elem.addEventListener('focusout', inputFocusOut);
+  }
 
+  /** @param {HTMLElement} elem */
+  function removeDropdownEvents(elem) {
+    elem.removeEventListener('focus', filterOptions);
+    elem.removeEventListener('input', filterOptions);
+    elem.removeEventListener('keydown', handleOptionKeyNav);
+    elem.removeEventListener('focusout', inputFocusOut);
+  }
+
+  /** @param {HTMLInputElement} textbox */
   function confirmInput(textbox) {
     const newInput = input.cloneNode(true);
     newInput.value = "";
+    addDropdownEvents(newInput);
     input.parentNode.appendChild(newInput);
 
+    input.classList.remove("{{ uid }}-input");
+    oldInputs.push(input);
+    input = newInput;
+    input.focus();
   }
 
 })()</script>

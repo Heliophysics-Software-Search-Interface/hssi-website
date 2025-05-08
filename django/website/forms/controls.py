@@ -32,16 +32,30 @@ class ModelObjectSelector(forms.TextInput):
 
     def __init__(self, model: Type[HssiModel], attrs: dict = None):
         super().__init__(attrs)
+        self.case_sensitive_filtering = getattr(
+            attrs, "case_sensitive_filtering", 
+            self.case_sensitive_filtering
+        )
+        print(attrs)
+        self.multi_select = attrs.get("multi_select", self.multi_select)
+        self.dropdown_button = attrs.get("dropdown_button", self.dropdown_button)
+        self.dropdown_on_focus = attrs.get("dropdown_on_focus", self.dropdown_on_focus)
+        self.dropdown_on_blank = attrs.get("dropdown_on_blank", self.dropdown_on_blank)
         self.model = model
+        print(self.dropdown_on_blank)
 
     def get_context(self, name, value, attrs) -> dict:
         context = super().get_context(name, value, attrs)
         context['widget']['choices'] = self.get_choices()
-        context['widget']['case_sensitive_filtering'] = bool_js_string(self.case_sensitive_filtering)
+        context['widget']['case_sensitive_filtering'] = bool_js_string(
+            self.case_sensitive_filtering
+        )
         context['widget']['multi_select'] = bool_js_string(self.multi_select)
         context['widget']['dropdown_button'] = bool_js_string(self.dropdown_button)
         context['widget']['dropdown_on_focus'] = bool_js_string(self.dropdown_on_focus)
         context['widget']['dropdown_on_blank'] = bool_js_string(self.dropdown_on_blank)
+        print(self.dropdown_on_blank)
+        print(context['widget'])
         return context
 
     def get_choices(self) -> list[ModelObjectChoice]:

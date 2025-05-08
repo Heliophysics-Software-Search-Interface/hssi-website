@@ -96,4 +96,8 @@ class TestForm(forms.Form):
             renderer
         )
 
-        self.fields['field_authors'].widget = ModelObjectSelector(Person)
+        self.fields['field_authors'].widget = ModelObjectSelector(
+            Person, {
+                'dropdown_on_blank': False,
+            }
+        )

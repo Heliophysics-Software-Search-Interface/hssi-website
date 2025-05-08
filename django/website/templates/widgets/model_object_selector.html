@@ -110,6 +110,7 @@
     /** @type {HTMLInputElement} */
     const target = evt.target;
     input = target;
+    console.log(properties)
     if(properties.dropdownOnFocus || !(evt instanceof FocusEvent)){
       if(properties.dropdownOnBlank) filterOptions(target);
       else if(target.value.length > 0) filterOptions(target);

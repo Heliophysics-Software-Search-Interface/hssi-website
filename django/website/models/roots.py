@@ -163,6 +163,12 @@ class Organization(HssiModel):
     people: models.Manager['Person']
     awards: models.Manager['Award']
 
+    def get_search_terms(self) -> list[str]:
+        return [
+            self.name,
+            self.abbreviation
+        ]
+
     class Meta: ordering = ['name']
     def __str__(self): 
         if self.abbreviation:

@@ -2,7 +2,7 @@ from django import forms
 from django.forms.utils import ErrorList
 
 from ..forms import ModelObjectSelector
-from ..models import Person
+from ..models import Person, Organization
 
 class TestForm(forms.Form):
     
@@ -98,6 +98,12 @@ class TestForm(forms.Form):
 
         self.fields['field_authors'].widget = ModelObjectSelector(
             Person, {
+                'dropdown_on_blank': False,
+            }
+        )
+
+        self.fields['field_publisher'].widget = ModelObjectSelector(
+            Organization, {
                 'dropdown_on_blank': False,
             }
         )

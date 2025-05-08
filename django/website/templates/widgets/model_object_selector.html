@@ -86,12 +86,19 @@
             name: "{{ name }}",
             keywords: [
               {% for k in kw %}
-                "{{ k }}".toLocaleLowerCase(){% if not forloop.last %},{% endif %}
+                "{{ k }}"{% if not forloop.last %},{% endif %}
               {% endfor %}
             ]
           } {% if not forloop.last%},{% endif %}
       {% endfor %}
   ];
+  if(!properties.caseSensitiveFiltering){
+    for(choice of all){
+      for(i in choice.keywords){
+        choice.keywords[i] = choice.keywords[i].toLocaleUpperCase()
+      }
+    }
+  }
 
   // create a list element in the ul for each item
   for (let op of all) {
@@ -110,7 +117,6 @@
     /** @type {HTMLInputElement} */
     const target = evt.target;
     input = target;
-    console.log(properties)
     if(properties.dropdownOnFocus || !(evt instanceof FocusEvent)){
       if(properties.dropdownOnBlank) filterOptions(target);
       else if(target.value.length > 0) filterOptions(target);
@@ -219,7 +225,7 @@
     filteredOptionElements.length = 0;
 
     // show all matching elements, hide non-matching elements
-    const inputVal = properties.caseSensitiveFiltering ? 
+    const inputVal = !properties.caseSensitiveFiltering ? 
       elem.value.toLocaleUpperCase() : 
       elem.value;
     const splitInput = inputVal.split(' ');

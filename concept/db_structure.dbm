@@ -4,7 +4,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
 <dbmodel pgmodeler-ver="1.1.3" use-changelog="false" max-obj-count="36"
-	 last-position="0,-8" last-zoom="0.65" scene-rect="0,-180,2629.5,1818.12"
+	 last-position="0,-117" last-zoom="0.65" scene-rect="0,-180,2629.5,1818.12"
 	 default-owner="postgres"
 	 layers="Default layer"
 	 active-layers="0"
@@ -83,7 +83,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="FileFormat" layers="0" collapse-mode="1" max-obj-count="6" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="2060" y="580"/>
+	<position x="2060" y="620"/>
 	<column name="uuid" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -266,12 +266,15 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="Functionality" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
+<table name="Functionality" layers="0" collapse-mode="1" max-obj-count="7" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1340" y="40"/>
+	<position x="1300" y="40"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
+	</column>
+	<column name="category" not-null="true">
+		<type name="public.&quot;FunctionCategory&quot;" length="0"/>
 	</column>
 	<column name="name" not-null="true">
 		<type name="varchar" length="25"/>
@@ -279,8 +282,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="abbreviation" not-null="true">
 		<type name="varchar" length="4"/>
 	</column>
-	<column name="category" not-null="true">
-		<type name="public.&quot;FunctionCategory&quot;" length="0"/>
+	<column name="identifier">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="definition">
+		<type name="text" length="0"/>
 	</column>
 	<constraint name="Functionality_pk" type="pk-constr" table="public.&quot;Functionality&quot;">
 		<columns names="id" ref-type="src-columns"/>
@@ -311,7 +317,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="Image" layers="0" collapse-mode="1" max-obj-count="3" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="2060" y="760"/>
+	<position x="2060" y="800"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -350,7 +356,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="DataInput" layers="0" collapse-mode="1" max-obj-count="3" z-value="0">
+<table name="DataInput" layers="0" collapse-mode="1" max-obj-count="6" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="2060" y="460"/>
@@ -362,6 +368,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<column name="abbreviation" not-null="true">
 		<type name="varchar" length="4"/>
+	</column>
+	<column name="identifier">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="definition">
+		<type name="text" length="0"/>
 	</column>
 	<constraint name="dataInput_pk" type="pk-constr" table="public.&quot;DataInput&quot;">
 		<columns names="id" ref-type="src-columns"/>
@@ -458,7 +470,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="Region" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="2100" y="900"/>
+	<position x="2100" y="920"/>
 	<column name="id" not-null="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -926,7 +938,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.&quot;Functionality&quot;" reference-fk="Functionality_fk"
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
-		<position x="-1.13057" y="-21.053"/>
+		<position x="91.6706" y="-23.653"/>
 	</label>
 </relationship>
 

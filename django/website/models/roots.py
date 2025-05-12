@@ -72,20 +72,16 @@ class Image(HssiModel):
     class Meta: ordering = ['description']
     def __str__(self): return self.url
 
-class ProgrammingLanguage(HssiModel):
+class ProgrammingLanguage(ControlledList):
     '''Primary Programming language used to develop the software'''
-    name = models.CharField(max_length=LEN_NAME)
     version = models.CharField(max_length=LEN_NAME, blank=True, null=True)
 
-    class Meta: ordering = ['name']
     def __str__(self): return self.name + (f" {self.version}" if self.version else "")
 
-class DataInput(HssiModel):
+class DataInput(ControlledList):
     '''Ways that the software can accept data as input'''
-    name = models.CharField(max_length=LEN_NAME)
     abbreviation = models.CharField(max_length=LEN_ABBREVIATION, blank=True, null=True)
 
-    class Meta: ordering = ['name']
     def __str__(self): return self.name
 
 class FileFormat(ControlledList):
@@ -110,19 +106,15 @@ class InstrumentObservatory(HssiModel):
 
 ## Complex Root Models ---------------------------------------------------------
 
-class FunctionCategory(HssiModel):
-    name = models.CharField(max_length=100)
+class FunctionCategory(ControlledList):
     abbreviation = models.CharField(max_length=5, null=True, blank=True)
     backgroundColor = RGBColorField("Background Color", default="#FFFFFF", blank=True, null=True)
     textColor = RGBColorField("Text Color", default="#000000", blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
 
     # specified for intellisense, defined in Functionalities model
     functionalities: models.Manager['Functionality']
 
-    class Meta: 
-        ordering = ['name']
-        verbose_name_plural = "Function Categories"
+    class Meta: verbose_name_plural = "Function Categories"
     def __str__(self): return self.name
 
 class License(HssiModel):

@@ -2,7 +2,10 @@ import uuid
 from django.db import models
 
 from .people import Person
-from .roots import HssiModel, Organization, FunctionCategory, License, LEN_NAME
+from .roots import (
+    HssiModel, ControlledList, Organization, FunctionCategory, 
+    License, LEN_NAME
+)
 
 from typing import Callable
 
@@ -30,9 +33,8 @@ class Award(HssiModel):
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
-class Functionality(HssiModel):
+class Functionality(ControlledList):
     '''A type of functionality supported by the software'''
-    name = models.CharField(max_length=LEN_NAME)
     abbreviation = models.CharField(max_length=5, blank=True, null=True)
     category = models.ForeignKey(
         FunctionCategory, 
@@ -42,13 +44,10 @@ class Functionality(HssiModel):
         related_name='functionalities'
     )
 
-    class Meta: 
-        ordering = ['name']
-        verbose_name_plural = "Functionalities"
+    class Meta: verbose_name_plural = "Functionalities"
     def __str__(self): return self.name
 
-class RelatedItem(HssiModel):
-    name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
+class RelatedItem(ControlledList):
     type = models.IntegerField(
         choices=RelatedItemType.choices, 
         default=RelatedItemType.UNKNOWN
@@ -60,7 +59,6 @@ class RelatedItem(HssiModel):
         related_name='relatedItems'
     )
     creditText = models.TextField(blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
     license = models.ForeignKey(
         License,
         on_delete=models.CASCADE,
@@ -71,5 +69,4 @@ class RelatedItem(HssiModel):
     # specified for intellisense, defined automatically by django
     get_type_display: Callable[[], str]
     
-    class Meta: ordering = ['name']
     def __str__(self): return f"{self.name} ({self.get_type_display()})"

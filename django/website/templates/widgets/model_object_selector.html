@@ -42,14 +42,32 @@
     class="modelbox-options {{ uid }}-options" 
     style="display: none;"
   > </ul>
-  <input 
-    type="text" 
-    autocomplete="off"
-    name="{{ widget.name }}" 
-    value=""
-    {% include "django/forms/widgets/attrs.html" %}
-    class="modelbox-input {{ uid }}-input"
-  >
+  <div>
+    <div style="position: relative; display: block;">
+      <input 
+        type="text" 
+        autocomplete="off"
+        name="{{ widget.name }}" 
+        value=""
+        {% include "django/forms/widgets/attrs.html" %}
+        class="modelbox-input {{ uid }}-input"
+      >
+      {% if widget.dropdown_button == "true" %}
+      <button 
+        style="
+          position:absolute;
+          right: 0;
+          top: 0;
+          translateY(-50%);
+          height: 100%;
+          aspect-ratio: 1;
+          border-left: #ccc solid 1px;
+        "
+        class="dropdown-btn {{ uid }}-dropdown-btn"
+      >▼</button>
+      {% endif %}
+    </div>
+  </div>
 </div>
 
 <script>(function(){
@@ -60,6 +78,7 @@
     dropdownButton: {{ widget.dropdown_button }},
     dropdownOnFocus: {{ widget.dropdown_on_focus }},
     dropdownOnBlank: {{ widget.dropdown_on_blank }},
+    allowObjectCreation: false,
   }
 
   const optionList = document.getElementsByClassName("{{ uid }}-options")[0];
@@ -113,6 +132,14 @@
   }
 
   /** @param {Event} evt */
+  function dropdownButtonClick(evt) {
+    /** @type {HTMLButtonElement} */
+    let button = evt.target;
+    input = button.previousElementSibling;
+    filterOptions(input);
+  }
+
+  /** @param {Event} evt */
   function inputFocusIn(evt) {
     /** @type {HTMLInputElement} */
     const target = evt.target;
@@ -124,7 +151,6 @@
         else hideOptions();
       }
     }
-    console.log(all)
   }
 
   /** @param {FocusEvent} e  */
@@ -278,6 +304,8 @@
     elem.addEventListener('focusout', inputFocusOut);
     elem.addEventListener('input', inputFocusIn);
     elem.addEventListener('keydown', handleOptionKeyNav);
+    if (properties.dropdownButton)
+      elem.nextElementSibling.addEventListener('click', dropdownButtonClick);
   }
 
   /** @param {HTMLElement} elem */
@@ -286,6 +314,8 @@
     elem.removeEventListener('input', filterOptions);
     elem.removeEventListener('keydown', handleOptionKeyNav);
     elem.removeEventListener('focusout', inputFocusOut);
+    if (properties.dropdownButton)
+      elem.nextElementSibling.removeEventListener('click', dropdownButtonClick);
   }
 
   /** @param {HTMLInputElement} textbox */
@@ -295,15 +325,17 @@
       input = lastInput;
     }
     else{
-      const newInput = input.cloneNode(true);
+      /** @type {HTMLInputElement} */
+      const newInputContainer = input.parentElement.cloneNode(true);
+      const newInput = newInputContainer.querySelector('input');
       newInput.value = "";
       addDropdownEvents(newInput);
-      input.parentNode.appendChild(newInput);
+      input.parentNode.parentNode.appendChild(newInputContainer);
       allInputs.push(newInput);
-      
       input = newInput;
     }
     input.focus();
+    hideOptions();
   }
 
 })()</script>

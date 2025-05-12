@@ -2,7 +2,7 @@ from django import forms
 from django.forms.utils import ErrorList
 
 from ..forms import ModelObjectSelector
-from ..models import Person, Organization
+from ..models import Person, Organization, ProgrammingLanguage
 
 class TestForm(forms.Form):
     
@@ -32,24 +32,8 @@ class TestForm(forms.Form):
 #        choices=[('', '---'), ('a', 'Option A'), ('b', 'Option B')]
 #    )
 
-    field_programming_language = forms.ChoiceField(
-        label="Programming Language",
-        choices=[
-            ('', '---'), 
-            ('a', 'C'), 
-            ('b', 'C++'),
-            ('c', 'C#'),
-            ('d', 'Python'),
-            ('e', 'Fortran'),
-            ('f', 'Julia'),
-            ('g', 'Java'),
-            ('h', 'JavaScript'),
-            ('i', 'MATLAB'),
-            ('j', 'SQL'),
-            ('k', 'IDL'),
-            ('l', 'Other'),
-        ]
-    )
+    field_programming_language = forms.CharField(label="Programming Language")
+
     field_pub_date = forms.DateField(label="Publication Date", widget=forms.DateInput(attrs={'type': 'date'}))
     field_authors = forms.CharField(label="Authors")
     field_publisher = forms.CharField(label="Publisher")
@@ -94,6 +78,12 @@ class TestForm(forms.Form):
             field_order, 
             use_required_attribute, 
             renderer
+        )
+
+        self.fields['field_programming_language'].widget = ModelObjectSelector(
+            ProgrammingLanguage, {
+                'dropdown_button': True,
+            }
         )
 
         self.fields['field_authors'].widget = ModelObjectSelector(

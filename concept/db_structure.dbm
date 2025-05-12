@@ -4,7 +4,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
 <dbmodel pgmodeler-ver="1.1.3" use-changelog="false" max-obj-count="36"
-	 last-position="0,6" last-zoom="0.65" scene-rect="0,-180,2629.5,1662.52"
+	 last-position="0,-8" last-zoom="0.65" scene-rect="0,-180,2629.5,1818.12"
 	 default-owner="postgres"
 	 layers="Default layer"
 	 active-layers="0"
@@ -17,26 +17,17 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <schema name="public" layers="0" fill-color="#e1e1e1" name-color="#000000" sql-disabled="true">
 </schema>
 
-<table name="License" layers="0" collapse-mode="1" max-obj-count="7" z-value="0">
+<table name="License" layers="0" collapse-mode="1" max-obj-count="3" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1120" y="1220"/>
+	<position x="1160" y="1220"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
-	<column name="name">
+	<column name="name" not-null="true">
 		<type name="varchar" length="100"/>
 	</column>
-	<column name="identifier" not-null="true">
-		<type name="varchar" length="50"/>
-	</column>
-	<column name="scheme">
-		<type name="varchar" length="50"/>
-	</column>
-	<column name="schemeUri">
-		<type name="varchar" length="512"/>
-	</column>
-	<column name="uri">
+	<column name="uri" not-null="true">
 		<type name="varchar" length="512"/>
 	</column>
 	<constraint name="License_pk" type="pk-constr" table="public.&quot;License&quot;">
@@ -44,15 +35,21 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="Phenomena" layers="0" collapse-mode="1" max-obj-count="2" z-value="0">
+<table name="Phenomena" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1420" y="1220"/>
+	<position x="1460" y="1220"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
 	<column name="name">
 		<type name="varchar" length="50"/>
+	</column>
+	<column name="identifier">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="definition">
+		<type name="text" length="0"/>
 	</column>
 	<constraint name="Phenomena_pk" type="pk-constr" table="public.&quot;Phenomena&quot;">
 		<columns names="id" ref-type="src-columns"/>
@@ -83,10 +80,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="FileFormat" layers="0" collapse-mode="1" max-obj-count="3" z-value="0">
+<table name="FileFormat" layers="0" collapse-mode="1" max-obj-count="6" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="2060" y="620"/>
+	<position x="2060" y="580"/>
 	<column name="uuid" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -96,6 +93,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="extension" not-null="true">
 		<type name="varchar" length="25"/>
 	</column>
+	<column name="identifier">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="definition">
+		<type name="text" length="0"/>
+	</column>
 	<constraint name="FileFormat_pk" type="pk-constr" table="public.&quot;FileFormat&quot;">
 		<columns names="uuid" ref-type="src-columns"/>
 	</constraint>
@@ -104,7 +107,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="ProgrammingLanguage" layers="0" collapse-mode="1" max-obj-count="3" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="920" y="200"/>
+	<position x="1020" y="220"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -146,7 +149,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="InstrumentObservatory" layers="0" collapse-mode="1" max-obj-count="6" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="640" y="760"/>
+	<position x="640" y="740"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -206,10 +209,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="FunctionCategory" layers="0" collapse-mode="1" max-obj-count="7" z-value="0">
+<table name="FunctionCategory" layers="0" collapse-mode="1" max-obj-count="8" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="580" y="40"/>
+	<position x="700" y="40"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -225,7 +228,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="textColor" not-null="true">
 		<type name="float" length="0"/>
 	</column>
-	<column name="description">
+	<column name="identifier">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="definition">
 		<type name="text" length="0"/>
 	</column>
 	<constraint name="FunctionalityCategory_pk" type="pk-constr" table="public.&quot;FunctionCategory&quot;">
@@ -233,15 +239,21 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="Keyword" layers="0" collapse-mode="1" max-obj-count="2" z-value="0">
+<table name="Keyword" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1620" y="1220"/>
+	<position x="1700" y="1220"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
 	<column name="name" not-null="true">
 		<type name="varchar" length="50"/>
+	</column>
+	<column name="identifier">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="definition">
+		<type name="text" length="0"/>
 	</column>
 	<constraint name="Keyword_pk" type="pk-constr" table="public.&quot;Keyword&quot;">
 		<columns names="id" ref-type="src-columns"/>
@@ -335,7 +347,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="DataInput" layers="0" collapse-mode="1" max-obj-count="3" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="2060" y="480"/>
+	<position x="2060" y="460"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
@@ -405,7 +417,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="submitter" not-null="true">
 		<type name="public.&quot;Submitter&quot;" length="0"/>
 	</column>
-	<column name="curator" not-null="true">
+	<column name="curator">
 		<type name="public.&quot;Curator&quot;" length="0"/>
 	</column>
 	<column name="submissionDate">
@@ -437,7 +449,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="Region" layers="0" collapse-mode="1" max-obj-count="2" z-value="0">
+<table name="Region" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="2100" y="900"/>
@@ -447,37 +459,47 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="name" not-null="true">
 		<type name="varchar" length="100"/>
 	</column>
+	<column name="identifier">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="definition">
+		<type name="text" length="0"/>
+	</column>
 	<constraint name="new_table_pk" type="pk-constr" table="public.&quot;Region&quot;">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="Dataset" layers="0" collapse-mode="1" max-obj-count="8" z-value="0">
+<table name="RelatedItem" layers="0" collapse-mode="1" max-obj-count="9" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="700" y="1180"/>
+	<position x="720" y="1180"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
+	</column>
+	<column name="type">
+		<type name="smallint" length="0"/>
+		<comment> <![CDATA[(dataset, publication, software)]]> </comment>
 	</column>
 	<column name="name" not-null="true">
 		<type name="varchar" length="100"/>
 	</column>
-	<column name="creator">
+	<column name="identifier">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="authors">
 		<type name="public.&quot;Person&quot;" length="0"/>
 	</column>
-	<column name="description">
+	<column name="creditText">
 		<type name="text" length="0"/>
 	</column>
 	<column name="license">
 		<type name="public.&quot;License&quot;" length="0"/>
 	</column>
-	<column name="creditText">
+	<column name="description">
 		<type name="text" length="0"/>
 	</column>
-	<column name="identifier">
-		<type name="varchar" length="512"/>
-	</column>
-	<constraint name="DatasetName_pk" type="pk-constr" table="public.&quot;Dataset&quot;">
+	<constraint name="DatasetName_pk" type="pk-constr" table="public.&quot;RelatedItem&quot;">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
@@ -517,7 +539,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="varchar" length="512"/>
 	</column>
 	<column name="referencePublication">
-		<type name="varchar" length="512"/>
+		<type name="public.&quot;RelatedItem&quot;" length="512"/>
 	</column>
 	<column name="description" not-null="true">
 		<type name="text" length="0"/>
@@ -538,10 +560,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="public.&quot;FileFormat&quot;" length="0"/>
 	</column>
 	<column name="relatedPublications">
-		<type name="text" length="0"/>
+		<type name="public.&quot;RelatedItem&quot;" length="0"/>
 	</column>
 	<column name="relatedDatasets">
-		<type name="public.&quot;Dataset&quot;" length="0"/>
+		<type name="public.&quot;RelatedItem&quot;" length="0"/>
 	</column>
 	<column name="developmentStatus">
 		<type name="public.&quot;RepoStatus&quot;" length="0"/>
@@ -562,10 +584,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="public.&quot;Keyword&quot;" length="0"/>
 	</column>
 	<column name="relatedSoftware">
-		<type name="varchar" length="200"/>
+		<type name="public.&quot;RelatedItem&quot;" length="200"/>
 	</column>
 	<column name="interopableSoftware">
-		<type name="varchar" length="200"/>
+		<type name="public.&quot;RelatedItem&quot;" length="200"/>
 	</column>
 	<column name="award">
 		<type name="public.&quot;Award&quot;" length="0"/>
@@ -636,14 +658,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </constraint>
 
 <constraint name="License_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
-	 upd-action="CASCADE" del-action="SET NULL" ref-table="public.&quot;License&quot;" table="public.&quot;Dataset&quot;">
+	 upd-action="CASCADE" del-action="SET NULL" ref-table="public.&quot;License&quot;" table="public.&quot;RelatedItem&quot;">
 	<columns names="license" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="Creator_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;Person&quot;" table="public.&quot;Dataset&quot;">
-	<columns names="creator" ref-type="src-columns"/>
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;Person&quot;" table="public.&quot;RelatedItem&quot;">
+	<columns names="authors" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
@@ -750,7 +772,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </constraint>
 
 <constraint name="Dataset_fk" type="fk-constr" comparison-type="MATCH SIMPLE"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;Dataset&quot;" table="public.&quot;Software&quot;">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;RelatedItem&quot;" table="public.&quot;Software&quot;">
 	<columns names="relatedDatasets" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
@@ -768,7 +790,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </constraint>
 
 <relationship name="Dataset_license" type="relfk" layers="0"
-	 src-table="public.&quot;Dataset&quot;"
+	 src-table="public.&quot;RelatedItem&quot;"
 	 dst-table="public.&quot;License&quot;" reference-fk="License_fk"
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
@@ -817,7 +839,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.&quot;ProgrammingLanguage&quot;" reference-fk="ProgrammingLang_fk"
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
-		<position x="-32.8695" y="-66.8077"/>
+		<position x="-26.444" y="-62.2752"/>
 	</label>
 </relationship>
 
@@ -826,7 +848,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.&quot;Keyword&quot;" reference-fk="Keyword_fk"
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
-		<position x="17.1886" y="-18.453"/>
+		<position x="30.7408" y="1.54701"/>
 	</label>
 </relationship>
 
@@ -835,7 +857,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.&quot;Phenomena&quot;" reference-fk="Phenomena_fk"
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
-		<position x="-2.0437" y="-58.453"/>
+		<position x="12.7454" y="1.54701"/>
 	</label>
 </relationship>
 
@@ -959,7 +981,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <relationship name="SubmissionInfo_Curator" type="relfk" layers="0"
 	 src-table="public.&quot;SubmissionInfo&quot;"
 	 dst-table="public.&quot;Curator&quot;" reference-fk="Curator_fk"
-	 src-required="false" dst-required="true">
+	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
 		<position x="-62.0771" y="-84.6768"/>
 	</label>
@@ -974,12 +996,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</label>
 </relationship>
 
-<relationship name="Software_relDataset" type="relfk" layers="0"
+<relationship name="Software_relatedItems" type="relfk" layers="0"
 	 src-table="public.&quot;Software&quot;"
-	 dst-table="public.&quot;Dataset&quot;" reference-fk="Dataset_fk"
+	 dst-table="public.&quot;RelatedItem&quot;" reference-fk="Dataset_fk"
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
-		<position x="-111.74" y="154.037"/>
+		<position x="4.50209" y="-20.8075"/>
 	</label>
 </relationship>
 
@@ -1010,12 +1032,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</label>
 </relationship>
 
-<relationship name="Dataset_creator" type="relfk" layers="0"
-	 src-table="public.&quot;Dataset&quot;"
+<relationship name="Dataset_authors" type="relfk" layers="0"
+	 src-table="public.&quot;RelatedItem&quot;"
 	 dst-table="public.&quot;Person&quot;" reference-fk="Creator_fk"
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
-		<position x="-63.2502" y="-12.353"/>
+		<position x="-59.9837" y="-12.353"/>
 	</label>
 </relationship>
 
@@ -1028,12 +1050,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</label>
 </relationship>
 
-<relationship name="Award_organization" type="relfk" layers="0"
+<relationship name="Award_funder" type="relfk" layers="0"
 	 src-table="public.&quot;Award&quot;"
 	 dst-table="public.&quot;Organization&quot;" reference-fk="Funder_fk"
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
-		<position x="274.979" y="-41.7327"/>
+		<position x="243.979" y="-21.7327"/>
 	</label>
 </relationship>
 

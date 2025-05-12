@@ -65,7 +65,7 @@ def export_db_csv():
     export_model_csv(FileFormat)
     export_model_csv(SoftwareVersion)
     export_model_csv(Submitter)
-    export_model_csv(Dataset)
+    export_model_csv(RelatedItem)
 
 def import_model_csv(model: 'Type[models.Model]', filepath: os.PathLike | None = None):
     if filepath is None: filepath = model_csv_filepath(model)
@@ -111,4 +111,4 @@ def import_db_csv():
     import_model_csv(FileFormat)
     import_model_csv(SoftwareVersion)
     import_model_csv(Submitter)
-    import_model_csv(Dataset)
+    import_model_csv(RelatedItem)

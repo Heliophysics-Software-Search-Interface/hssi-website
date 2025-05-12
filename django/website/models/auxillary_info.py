@@ -38,13 +38,15 @@ class Functionality(HssiModel):
         verbose_name_plural = "Functionalities"
     def __str__(self): return self.name
 
-class Dataset(HssiModel):
+class RelatedItem(HssiModel):
     name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
-    creator = models.ManyToManyField(
+    identifier = models.URLField(blank=True, null=True)
+    authors = models.ManyToManyField(
         Person,
         blank=True,
         related_name='datasets'
     )
+    creditText = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     license = models.ForeignKey(
         License,
@@ -52,8 +54,6 @@ class Dataset(HssiModel):
         blank=True, null=True,
         related_name='datasets'
     )
-    creditText = models.TextField(blank=True, null=True)
-    identifier = models.URLField(blank=True, null=True)
     
     class Meta: ordering = ['name']
     def __str__(self): return self.name

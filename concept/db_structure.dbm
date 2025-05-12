@@ -194,15 +194,21 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="OperatingSystem" layers="0" collapse-mode="1" max-obj-count="2" z-value="0">
+<table name="OperatingSystem" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1860" y="260"/>
+	<position x="1840" y="240"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
 	<column name="name" not-null="true">
 		<type name="varchar" length="50"/>
+	</column>
+	<column name="identifier">
+		<type name="varchar" length="512"/>
+	</column>
+	<column name="definition">
+		<type name="text" length="0"/>
 	</column>
 	<constraint name="OperatingSystem_pk" type="pk-constr" table="public.&quot;OperatingSystem&quot;">
 		<columns names="id" ref-type="src-columns"/>
@@ -478,7 +484,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="uuid" length="0"/>
 	</column>
 	<column name="type">
-		<type name="smallint" length="0"/>
+		<type name="uuid" length="0"/>
 		<comment> <![CDATA[(dataset, publication, software)]]> </comment>
 	</column>
 	<column name="name" not-null="true">
@@ -866,7 +872,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 dst-table="public.&quot;OperatingSystem&quot;" reference-fk="OperatingSystem_fk"
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
-		<position x="18.4733" y="-52.1065"/>
+		<position x="40.5967" y="-56.4894"/>
 	</label>
 </relationship>
 

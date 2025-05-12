@@ -132,8 +132,8 @@ class License(HssiModel):
     # specified for intellisense, defined in other models
     relatedItems: models.Manager['RelatedItem']
 
-    class Meta: ordering = ['identifier', 'name']
-    def __str__(self): return self.identifier or self.name
+    class Meta: ordering = ['name']
+    def __str__(self): return self.name
 
 class Organization(HssiModel):
     '''A legal entity such as university, agency, or company'''

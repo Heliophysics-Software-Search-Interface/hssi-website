@@ -5,7 +5,7 @@ from colorful.fields import RGBColorField
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .people import Person
-    from .auxillary_info import Functionality, Award
+    from .auxillary_info import Functionality, Award, RelatedItem
 
 # Character length limits
 LEN_NAME = 100
@@ -140,6 +140,9 @@ class License(HssiModel):
     scheme = models.CharField(max_length=100, blank=True, null=True)
     scheme_url = models.URLField(blank=True, null=True)
     url = models.URLField(blank=True, null=True)
+
+    # specified for intellisense, defined in other models
+    relatedItems: models.Manager['RelatedItem']
 
     class Meta: ordering = ['identifier', 'name']
     def __str__(self): return self.identifier or self.name

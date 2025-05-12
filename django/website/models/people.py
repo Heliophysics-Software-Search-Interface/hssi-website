@@ -3,6 +3,10 @@ from django.db import models
 
 from .roots import HssiModel, Organization, LEN_NAME
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .auxillary_info import RelatedItem
+
 # we need to import the softwares type for intellisense
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -24,6 +28,7 @@ class Person(HssiModel):
     softwares: models.Manager['Software']
     submission_info: models.Manager['SubmissionInfo']
     curator: models.Manager['Curator']
+    relatedItems: models.Manager['RelatedItem']
 
     # meta info that allows data in this model to be serialized to allow for user discovery
     def get_search_terms(self) -> list[str]:

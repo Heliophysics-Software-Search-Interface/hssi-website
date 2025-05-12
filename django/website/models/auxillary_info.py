@@ -44,7 +44,7 @@ class RelatedItem(HssiModel):
     authors = models.ManyToManyField(
         Person,
         blank=True,
-        related_name='datasets'
+        related_name='relatedItems'
     )
     creditText = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
@@ -52,7 +52,7 @@ class RelatedItem(HssiModel):
         License,
         on_delete=models.CASCADE,
         blank=True, null=True,
-        related_name='datasets'
+        related_name='relatedItems'
     )
     
     class Meta: ordering = ['name']

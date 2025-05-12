@@ -48,7 +48,7 @@ def migrate_db_old_to_new(request: HttpRequest) -> HttpResponse:
         submission_info.save()
 
         # dev status
-        repo_status, created = RepoStatus.objects.get_or_create(prefLabel="Unknown")
+        repo_status, created = RepoStatus.objects.get_or_create(name="Unknown")
         if created: print(f"WARNING: repo status created: {str(repo_status)}")
 
         # create the software from the specified submission info

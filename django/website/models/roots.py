@@ -63,7 +63,6 @@ class RepoStatus(ControlledList):
     image = models.URLField(blank=True, null=True)
 
     class Meta: verbose_name_plural = "Repo Statuses"
-    def __str__(self): return self.prefLabel
 
 class Image(HssiModel):
     '''Reference to an image file and alt text description'''

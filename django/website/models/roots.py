@@ -31,27 +31,39 @@ class HssiModel(models.Model):
     class Meta:
         abstract = True
 
+class ControlledList(HssiModel):
+    '''Base class for all controlled lists in the HSSI project'''
+    name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
+    identifier = models.URLField(blank=True, null=True)
+    definition = models.TextField(blank=True, null=True)
+
+    def __str__(self): return self.name
+
+    class Meta:
+        ordering = ['name']
+        abstract = True
+
 ## Simple Root Models ----------------------------------------------------------
-    
-class OperatingSystem(HssiModel):
+
+class Keyword(ControlledList): pass
+
+class OperatingSystem(ControlledList):
     '''Operating system on which the software can run'''
-    name = models.CharField(max_length=LEN_NAME)
+    pass
 
-    class Meta: ordering = ['name']
-    def __str__(self): return self.name
-
-class Phenomena(HssiModel):
+class Phenomena(ControlledList):
     '''Solar phenomena that relate to the software'''
-    name = models.CharField(max_length=LEN_NAME)
-    
-    class Meta: ordering = ['name']
-    def __str__(self): return self.name
+    pass
 
-class Keyword(HssiModel):
-    name = models.CharField(max_length=LEN_NAME)
+class RepoStatus(ControlledList):
+    '''
+    Repo status as defined by the repostatus.org json-ld: 
+    https://www.repostatus.org/badges/latest/ontology.jsonld
+    '''
+    image = models.URLField(blank=True, null=True)
 
-    class Meta: ordering = ['name']
-    def __str__(self): return self.name
+    class Meta: verbose_name_plural = "Repo Statuses"
+    def __str__(self): return self.prefLabel
 
 class Image(HssiModel):
     '''Reference to an image file and alt text description'''
@@ -77,18 +89,14 @@ class DataInput(HssiModel):
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
-class FileFormat(HssiModel):
+class FileFormat(ControlledList):
     '''File formats that are supported as input or output types by the software'''
-    name = models.CharField(max_length=LEN_NAME, blank=True, null=True)
     extension = models.CharField(max_length=25, blank=False, null=False)
 
-    class Meta: ordering = ['name']
     def __str__(self): return self.extension + f" ({self.name})" if self.name else ""
 
-class Region(HssiModel):
+class Region(ControlledList):
     '''Region of the sun which relates to the software'''
-    name = models.CharField(max_length=LEN_NAME)
-
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
@@ -102,21 +110,6 @@ class InstrumentObservatory(HssiModel):
     def __str__(self): return self.name
 
 ## Complex Root Models ---------------------------------------------------------
-
-class RepoStatus(HssiModel):
-    '''
-    Repo status as defined by the repostatus.org json-ld: 
-    https://www.repostatus.org/badges/latest/ontology.jsonld
-    '''
-    identifier = models.URLField(blank=True, null=True)
-    prefLabel = models.CharField(max_length=LEN_NAME, blank=False, null=False)
-    definition = models.TextField(blank=True, null=True)
-    image = models.URLField(blank=True, null=True)
-
-    class Meta: 
-        ordering = ['prefLabel']
-        verbose_name_plural = "Repo Statuses"
-    def __str__(self): return self.prefLabel
 
 class FunctionCategory(HssiModel):
     name = models.CharField(max_length=100)
@@ -135,10 +128,6 @@ class FunctionCategory(HssiModel):
 
 class License(HssiModel):
     name = models.CharField(max_length=100)
-    identifier = models.CharField(max_length=100, blank=True, null=True)
-    full_text = models.TextField(blank=True, null=True)
-    scheme = models.CharField(max_length=100, blank=True, null=True)
-    scheme_url = models.URLField(blank=True, null=True)
     url = models.URLField(blank=True, null=True)
 
     # specified for intellisense, defined in other models

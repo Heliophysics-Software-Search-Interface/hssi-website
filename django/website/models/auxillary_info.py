@@ -4,6 +4,15 @@ from django.db import models
 from .people import Person
 from .roots import HssiModel, Organization, FunctionCategory, License, LEN_NAME
 
+from typing import Callable
+
+class RelatedItemType(models.IntegerChoices):
+    '''The type of an object in the RelatedField model'''
+    SOFTWARE = 1, "Software"
+    DATASET = 2, "Dataset"
+    PUBLICATION = 3, "Publication"
+    UNKNOWN = 4, "Unknown"
+
 ## -----------------------------------------------------------------------------
 
 class Award(HssiModel):
@@ -40,6 +49,10 @@ class Functionality(HssiModel):
 
 class RelatedItem(HssiModel):
     name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
+    type = models.IntegerField(
+        choices=RelatedItemType.choices, 
+        default=RelatedItemType.UNKNOWN
+    )
     identifier = models.URLField(blank=True, null=True)
     authors = models.ManyToManyField(
         Person,
@@ -54,6 +67,9 @@ class RelatedItem(HssiModel):
         blank=True, null=True,
         related_name='relatedItems'
     )
+
+    # specified for intellisense, defined automatically by django
+    get_type_display: Callable[[], str]
     
     class Meta: ordering = ['name']
-    def __str__(self): return self.name
+    def __str__(self): return f"{self.name} ({self.get_type_display()})"

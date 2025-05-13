@@ -90,11 +90,13 @@ class TestForm(forms.Form):
         self.fields['field_authors'].widget = ModelObjectSelector(
             Person, {
                 'dropdown_on_blank': False,
+                'dropdown_on_focus': False,
             }
         )
 
         self.fields['field_publisher'].widget = ModelObjectSelector(
             Organization, {
                 'dropdown_on_blank': False,
+                'dropdown_on_focus': False,
             }
         )

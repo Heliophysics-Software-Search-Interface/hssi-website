@@ -222,17 +222,23 @@
 
       // confirm selected option
       case 'Enter':
-      if(selectedOption >= 0){
-        const option = filteredOptionElements[selectedOption];
-        selectOption(option);
-      }
-      else {
-        confirmInput(input);
-      }
-      evt.preventDefault();
+        if(selectedOption >= 0){
+          const option = filteredOptionElements[selectedOption];
+          selectOption(option);
+        }
+        else {
+          confirmInput(input);
+        }
+        evt.preventDefault();
+        break;
+      
+      // summon autocomplete dropdown with ctrl + space
+      case ' ':
+        if(evt.ctrlKey){
+          filterOptions(input);
+        }
         break;
     }
-
     // highlight/unhighlight and scroll selected option into view
     if(selectedOption >= 0){
       if(optionChanged >= 0){

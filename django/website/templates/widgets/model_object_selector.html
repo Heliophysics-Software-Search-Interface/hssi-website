@@ -76,6 +76,7 @@
   const properties = {
     caseSensitiveFiltering: {{ widget.case_sensitive_filtering }},
     multiSelect: {{ widget.multi_select }},
+    filterOnFocus: {{ widget.filter_on_focus }},
     dropdownButton: {{ widget.dropdown_button }},
     dropdownOnFocus: {{ widget.dropdown_on_focus }},
     dropdownOnBlank: {{ widget.dropdown_on_blank }},
@@ -147,9 +148,10 @@
     const target = evt.target;
     input = target;
     if(properties.dropdownOnFocus || !(evt instanceof FocusEvent)){
-      if(properties.dropdownOnBlank) filterOptions(target);
+      let filterStr = properties.filterOnFocus ? null : "";
+      if(properties.dropdownOnBlank) filterOptions(target, filterStr);
       else {
-        if(target.value.length > 0) filterOptions(target);
+        if(target.value.length > 0) filterOptions(target, filterStr);
         else hideOptions();
       }
     }

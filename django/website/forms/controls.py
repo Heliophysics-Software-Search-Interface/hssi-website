@@ -26,6 +26,7 @@ class ModelObjectSelector(forms.TextInput):
     filter: dict = {}
     case_sensitive_filtering: bool = False
     multi_select: bool = True
+    filter_on_focus: bool = True
     dropdown_button: bool = False
     dropdown_on_focus: bool = True
     dropdown_on_blank: bool = True
@@ -37,6 +38,7 @@ class ModelObjectSelector(forms.TextInput):
             self.case_sensitive_filtering
         )
         self.multi_select = attrs.get("multi_select", self.multi_select)
+        self.filter_on_focus = attrs.get("filter_on_focus", self.filter_on_focus)
         self.dropdown_button = attrs.get("dropdown_button", self.dropdown_button)
         self.dropdown_on_focus = attrs.get("dropdown_on_focus", self.dropdown_on_focus)
         self.dropdown_on_blank = attrs.get("dropdown_on_blank", self.dropdown_on_blank)
@@ -49,6 +51,7 @@ class ModelObjectSelector(forms.TextInput):
             self.case_sensitive_filtering
         )
         context['widget']['multi_select'] = bool_js_string(self.multi_select)
+        context['widget']['filter_on_focus'] = bool_js_string(self.filter_on_focus)
         context['widget']['dropdown_button'] = bool_js_string(self.dropdown_button)
         context['widget']['dropdown_on_focus'] = bool_js_string(self.dropdown_on_focus)
         context['widget']['dropdown_on_blank'] = bool_js_string(self.dropdown_on_blank)

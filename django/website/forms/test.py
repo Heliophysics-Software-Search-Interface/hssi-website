@@ -84,6 +84,7 @@ class TestForm(forms.Form):
             ProgrammingLanguage, {
                 'multi_select': False,
                 'dropdown_button': True,
+                'filter_on_focus': False,
             }
         )
 

@@ -54,6 +54,7 @@
       >
       {% if widget.dropdown_button == "true" %}
       <button 
+        type="button"
         style="
           position:absolute;
           right: 0;
@@ -136,6 +137,7 @@
     /** @type {HTMLButtonElement} */
     let button = evt.target;
     input = button.previousElementSibling;
+    input.focus();
     filterOptions(input);
   }
 

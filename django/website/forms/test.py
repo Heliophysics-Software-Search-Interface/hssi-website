@@ -82,6 +82,7 @@ class TestForm(forms.Form):
 
         self.fields['field_programming_language'].widget = ModelObjectSelector(
             ProgrammingLanguage, {
+                'multi_select': False,
                 'dropdown_button': True,
             }
         )

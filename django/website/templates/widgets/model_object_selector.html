@@ -79,7 +79,7 @@
     dropdownButton: {{ widget.dropdown_button }},
     dropdownOnFocus: {{ widget.dropdown_on_focus }},
     dropdownOnBlank: {{ widget.dropdown_on_blank }},
-    allowObjectCreation: false,
+    newObjectField: null,
   }
 
   const optionList = document.getElementsByClassName("{{ uid }}-options")[0];
@@ -138,7 +138,7 @@
     let button = evt.target;
     input = button.previousElementSibling;
     input.focus();
-    filterOptions(input);
+    filterOptions(input, "");
   }
 
   /** @param {Event} evt */
@@ -247,7 +247,7 @@
     @param {HTMLInputElement} elem
     filter and show dropdown based on char field value
   */
-  function filterOptions(elem) {
+  function filterOptions(elem, filterStr = null) {
     if(selectedOption >= 0) {
       const option = filteredOptionElements[selectedOption];
       option.classList.remove("highlighted");
@@ -257,12 +257,13 @@
     filteredOptionElements.length = 0;
 
     // show all matching elements, hide non-matching elements
-    const inputVal = !properties.caseSensitiveFiltering ? 
-      elem.value.toLocaleUpperCase() : 
-      elem.value;
+    let inputVal = filterStr != null ? filterStr : elem.value;
+    if (!properties.caseSensitiveFiltering) {
+      inputVal = inputVal.toLocaleUpperCase();
+    }
     const splitInput = inputVal.split(' ');
     outer: for (option of optionList.children) {
-      if (elem.value.length <= 0) {
+      if (inputVal.length <= 0) {
         option.style.display = 'block';
         filteredOptionElements.push(option);
         continue outer;
@@ -322,22 +323,28 @@
 
   /** @param {HTMLInputElement} textbox */
   function confirmInput(textbox) {
-    const lastInput = allInputs[allInputs.length - 1];
-    if(input != lastInput){
-      input = lastInput;
+    if(properties.multiSelect){
+      const lastInput = allInputs[allInputs.length - 1];
+      if(input != lastInput){
+        input = lastInput;
+      }
+      else{
+        /** @type {HTMLInputElement} */
+        const newInputContainer = input.parentElement.cloneNode(true);
+        const newInput = newInputContainer.querySelector('input');
+        newInput.value = "";
+        addDropdownEvents(newInput);
+        input.parentNode.parentNode.appendChild(newInputContainer);
+        allInputs.push(newInput);
+        input = newInput;
+      }
+      input.focus();
+      hideOptions();
     }
-    else{
-      /** @type {HTMLInputElement} */
-      const newInputContainer = input.parentElement.cloneNode(true);
-      const newInput = newInputContainer.querySelector('input');
-      newInput.value = "";
-      addDropdownEvents(newInput);
-      input.parentNode.parentNode.appendChild(newInputContainer);
-      allInputs.push(newInput);
-      input = newInput;
+    else {
+      input.setAttribute('data-id', -1);
+      hideOptions();
     }
-    input.focus();
-    hideOptions();
   }
 
 })()</script>

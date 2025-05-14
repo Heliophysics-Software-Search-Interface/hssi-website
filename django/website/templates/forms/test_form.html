@@ -43,7 +43,9 @@
     padding: 6px 8px;
     border-radius: 4px;
     font-size: 0.9em;
-    white-space: nowrap;
+    white-space: normal;
+    max-width: 500px;
+    width: max-content;
     top: 100%;
     left: 0;
     z-index: 100;
@@ -64,7 +66,13 @@
                 <span class="tooltip-wrapper">
                   <span class="tooltip-icon">?</span>
                   <div class="tooltip-text">
-                    {{ field.help_text|default:"Enter a value for this field." }}
+                    {{ field.field.tt_explanation|default:"Enter a value for this field." }}
+                  </div>
+                </span>
+                <span class="tooltip-wrapper">
+                  <span class="tooltip-icon">!</span>
+                  <div class="tooltip-text">
+                    {{ field.field.tt_best_practice|default:"Enter a value for this field." }}
                   </div>
                 </span>
             </label>

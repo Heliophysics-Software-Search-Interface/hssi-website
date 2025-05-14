@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.utils import ErrorList
 
-from ..forms import ModelObjectSelector
+from ..forms import ModelObjectSelector, SectionLabel
 from ..models import (
     Person, Organization, ProgrammingLanguage, RelatedItem, InstrumentObservatory,
     InstrObsType, Phenomena, DataInput, Functionality
@@ -9,6 +9,14 @@ from ..models import (
 
 class TestForm(forms.Form):
     
+    field_code_repository = forms.URLField(
+        label="Code Repository URL",
+    )
+
+    field_name = forms.CharField(
+        label="Software Name",
+    )
+
     field_programming_language = forms.CharField(
         label="Programming Language",
     )
@@ -21,8 +29,43 @@ class TestForm(forms.Form):
     field_authors = forms.CharField(
         label="Authors", 
     )
+
     field_publisher = forms.CharField(
         label="Publisher",
+    )
+
+    field_development_status = forms.CharField(
+        label="Development Status",
+    )
+
+    field_license = forms.CharField(
+        label="License",
+    )
+
+    field_operating_system = forms.CharField(
+        label="Operating System",
+    )
+
+    field_pid = forms.URLField(
+        label="Persistent Identifier",
+    )
+
+    field_software_functionality = forms.CharField(
+        label="Software Functionality",
+    )
+
+    field_documentation = forms.URLField(
+        label="Documentation",
+    )
+
+    field_description = forms.CharField(
+        label="Description",
+        widget=forms.Textarea,
+    )
+
+    field_concise_description = forms.CharField(
+        label="Concise Description",
+        widget=forms.Textarea,
     )
 
     field_related_instruments = forms.CharField(
@@ -33,13 +76,11 @@ class TestForm(forms.Form):
         label="Related Observatories",
     )
 
-    field_name = forms.CharField(
-        label="Software Name",
-    )
-
     field_version = forms.CharField(
         label="Software Version",
     )
+
+    section_1 = SectionLabel()
 
     field_version_date = forms.DateField(
         label="Version Date",
@@ -55,38 +96,10 @@ class TestForm(forms.Form):
         label="Version PID",
     )
 
-    field_pid = forms.URLField(
-        label="Persistent Identifier",
-    )
+    section_2 = SectionLabel()
 
     field_reference_publication = forms.URLField(
         label="Reference Publication",
-    )
-
-    field_description = forms.CharField(
-        label="Description",
-        widget=forms.Textarea,
-    )
-
-    field_concise_description = forms.CharField(
-        label="Concise Description",
-        widget=forms.Textarea,
-    )
-
-    field_software_functionality = forms.CharField(
-        label="Software Functionality",
-    )
-
-    field_documentation = forms.URLField(
-        label="Documentation",
-    )
-
-    field_data_inputs = forms.CharField(
-        label="Data Inputs",
-    )
-
-    field_file_formats = forms.CharField(
-        label="Supported File Formats",
     )
 
     field_related_publications = forms.CharField(
@@ -97,28 +110,12 @@ class TestForm(forms.Form):
         label="Related Datasets",
     )
 
-    field_development_status = forms.CharField(
-        label="Development Status",
+    field_awards = forms.CharField(
+        label="Awards",
     )
 
-    field_operating_system = forms.CharField(
-        label="Operating System",
-    )
-
-    field_metadata_license = forms.CharField(
-        label="Metadata License",
-    )
-
-    field_license = forms.CharField(
-        label="License",
-    )
-
-    field_related_regions = forms.CharField(
-        label="Related Regions",
-    )
-
-    field_keywords = forms.CharField(
-        label="Keywords",
+    field_logo = forms.URLField(
+        label="Logo",
     )
 
     field_related_software = forms.CharField(
@@ -129,20 +126,28 @@ class TestForm(forms.Form):
         label="Interoperable Software",
     )
 
-    field_awards = forms.CharField(
-        label="Awards",
+    field_keywords = forms.CharField(
+        label="Keywords",
     )
 
-    field_code_repository = forms.URLField(
-        label="Code Repository URL",
+    field_related_regions = forms.CharField(
+        label="Related Regions",
     )
 
-    field_logo = forms.URLField(
-        label="Logo",
+    field_data_inputs = forms.CharField(
+        label="Data Inputs",
+    )
+
+    field_file_formats = forms.CharField(
+        label="Supported File Formats",
     )
 
     field_related_phenomena = forms.CharField(
         label="Related Phenomena",
+    )
+
+    field_metadata_license = forms.CharField(
+        label="Metadata License",
     )
 
     def __init__(

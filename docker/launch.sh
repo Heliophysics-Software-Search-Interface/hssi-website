@@ -10,7 +10,7 @@ for file in /extensions/pre-launch-scripts/*; do
 	[ -f "$file" ] && [ -x "$file" ] && echo "Running script $file ..." && "$file"
 done
 
-DATABASE_SLEEP_TIME=10
+DATABASE_SLEEP_TIME=1 #10
 
 # Create the Django project if it doesn't exist
 cd /django

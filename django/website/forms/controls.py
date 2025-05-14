@@ -53,7 +53,6 @@ class ModelObjectSelector(forms.TextInput):
             'dropdown_on_focus': False,
             **(attrs or {}),
         })
-        
 
     def __init__(self, model: Type[HssiModel], attrs: dict = None):
         super().__init__(attrs)
@@ -67,6 +66,10 @@ class ModelObjectSelector(forms.TextInput):
         self.dropdown_on_focus = attrs.get("dropdown_on_focus", self.dropdown_on_focus)
         self.dropdown_on_blank = attrs.get("dropdown_on_blank", self.dropdown_on_blank)
         self.model = model
+
+    def with_helptext(self, note: str) -> 'ModelObjectSelector':
+        self.attrs['help_text'] = note
+        return self
 
     def get_context(self, name, value, attrs) -> dict:
         context = super().get_context(name, value, attrs)

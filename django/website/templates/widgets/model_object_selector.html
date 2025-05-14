@@ -145,10 +145,11 @@
   /** @param {Event} evt */
   function inputFocusIn(evt) {
     /** @type {HTMLInputElement} */
+    const isFocusEvt = evt instanceof FocusEvent;
     const target = evt.target;
     input = target;
-    if(properties.dropdownOnFocus || !(evt instanceof FocusEvent)){
-      let filterStr = properties.filterOnFocus ? null : "";
+    if(properties.dropdownOnFocus || !isFocusEvt){
+      let filterStr = isFocusEvt && !properties.filterOnFocus ? "" : null;
       if(properties.dropdownOnBlank) filterOptions(target, filterStr);
       else {
         if(target.value.length > 0) filterOptions(target, filterStr);

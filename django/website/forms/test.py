@@ -51,6 +51,29 @@ class TestForm(forms.Form):
     field_description = forms.CharField(label = "Description", widget=forms.Textarea)
     field_description_concise = forms.CharField(label = "Concise Description", widget=forms.Textarea)
 
+    field_software_functionality = forms.CharField(label = "Software Functionality")
+    field_documentation = forms.URLField(label = "Software Functionality")
+    field_data_inputs = forms.CharField(label = "Data Inputs")
+    field_file_formats = forms.CharField(label = "Supported File Formats")
+    field_related_publications = forms.CharField(label = "Related Publications")
+    field_related_datasets = forms.CharField(label = "Related Datasets")
+
+    field_development_status = forms.CharField(label = "Development Status")
+    field_operating_system = forms.CharField(label = "Operating System")
+    field_metadata_license = forms.CharField(label = "Metadata License")
+    field_license = forms.CharField(label = "License")
+    field_related_regions = forms.CharField(label = "Related Regions")
+    field_keywords = forms.CharField(label = "Keywords")
+
+    field_related_software = forms.CharField(label = "Related Software")
+    field_intereoperable_software = forms.CharField(label = "Interoperable Software")
+    field_awards = forms.CharField(label = "Awards")
+
+    field_code_repository = forms.URLField(label = "Code Repository URL")
+    field_logo = forms.URLField(label = "Logo URL")
+
+    field_related_phenomena = forms.CharField(label = "Related Phenomena")
+
     def __init__(
         self, 
         data=None,
@@ -80,24 +103,11 @@ class TestForm(forms.Form):
             renderer
         )
 
-        self.fields['field_programming_language'].widget = ModelObjectSelector(
-            ProgrammingLanguage, {
-                'multi_select': False,
-                'dropdown_button': True,
-                'filter_on_focus': False,
-            }
-        )
+        self.fields['field_programming_language'].widget = (
+            ModelObjectSelector.dropdown_selector(
+                ProgrammingLanguage
+            ))
 
-        self.fields['field_authors'].widget = ModelObjectSelector(
-            Person, {
-                'dropdown_on_blank': False,
-                'dropdown_on_focus': False,
-            }
-        )
+        self.fields['field_authors'].widget = ModelObjectSelector.auto_textbox(Person)
 
-        self.fields['field_publisher'].widget = ModelObjectSelector(
-            Organization, {
-                'dropdown_on_blank': False,
-                'dropdown_on_focus': False,
-            }
-        )
+        self.fields['field_publisher'].widget = ModelObjectSelector.auto_textbox(Organization)

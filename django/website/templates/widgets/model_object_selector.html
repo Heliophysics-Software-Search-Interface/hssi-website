@@ -130,7 +130,7 @@
     li.data = op;
     li.innerText = op.name;
     optionList.appendChild(li);
-    li.addEventListener('click', selectOption.bind(null, li));
+    li.addEventListener('click', selectOption.bind(null, li, false));
   }
 
   /** @param {Event} evt */
@@ -296,13 +296,13 @@
     optionList.style.display = 'block';
   };
 
-  function selectOption(option) {
+  function selectOption(option, focusNext = true) {
     input.value = option.data.name;
     input.setAttribute('data-id', option.data.id);
     option.classList.remove("highlighted");
     selectedOption = -1;
     hideOptions();
-    confirmInput(input);
+    confirmInput(input, focusNext);
   }
 
   // hide the dropdown
@@ -331,10 +331,10 @@
   }
 
   /** @param {HTMLInputElement} textbox */
-  function confirmInput(textbox) {
+  function confirmInput(textbox, focusNext) {
     if(properties.multiSelect){
       const lastInput = allInputs[allInputs.length - 1];
-      if(input != lastInput){
+      if(input != lastInput && focusNext){
         input = lastInput;
       }
       else{
@@ -345,10 +345,12 @@
         addDropdownEvents(newInput);
         input.parentNode.parentNode.appendChild(newInputContainer);
         allInputs.push(newInput);
-        input = newInput;
+        if(focusNext) input = newInput;
       }
-      input.focus();
-      hideOptions();
+      if(focusNext) {
+        input.focus();
+        hideOptions();
+      }
     }
     else {
       input.setAttribute('data-id', -1);

@@ -338,7 +338,7 @@
       if(input != lastInput && focusNext){
         input = lastInput;
       }
-      else{
+      else if (input == lastInput) {
         /** @type {HTMLInputElement} */
         const newInputContainer = input.parentElement.cloneNode(true);
         const newInput = newInputContainer.querySelector('input');

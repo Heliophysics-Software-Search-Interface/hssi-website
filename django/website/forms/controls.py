@@ -31,29 +31,6 @@ class ModelObjectSelector(forms.TextInput):
     dropdown_on_focus: bool = True
     dropdown_on_blank: bool = True
 
-    @classmethod
-    def dropdown_selector(cls, model: Type[HssiModel], attrs: dict = None):
-        """
-        creates a dropdown selector for the given model
-        """
-        return cls(model, {
-            'multi_select': False,
-            'dropdown_button': True,
-            'filter_on_focus': False,
-            **(attrs or {}),
-        })
-    
-    @classmethod
-    def auto_textbox(cls, model: Type[HssiModel], attrs: dict = None):
-        """
-        creates a dropdown selector for the given model
-        """
-        return cls(model, {
-            'dropdown_on_blank': False,
-            'dropdown_on_focus': False,
-            **(attrs or {}),
-        })
-
     def __init__(self, model: Type[HssiModel], attrs: dict = None):
         super().__init__(attrs)
         self.case_sensitive_filtering = getattr(
@@ -67,9 +44,32 @@ class ModelObjectSelector(forms.TextInput):
         self.dropdown_on_blank = attrs.get("dropdown_on_blank", self.dropdown_on_blank)
         self.model = model
 
-    def with_helptext(self, note: str) -> 'ModelObjectSelector':
-        self.attrs['help_text'] = note
-        return self
+    @classmethod
+    def dropdown_selector(cls, model: Type[HssiModel], attrs: dict = None) -> 'ModelObjectSelector':
+        """
+        creates a dropdown selector for the given model
+        """
+        return cls(model, {
+            'multi_select': False,
+            'dropdown_button': True,
+            'filter_on_focus': False,
+            **(attrs or {}),
+        })
+    
+    @classmethod
+    def auto_textbox(cls, model: Type[HssiModel], attrs: dict = None) -> 'ModelObjectSelector':
+        """
+        creates a dropdown selector for the given model
+        """
+        return cls(model, {
+            'dropdown_on_blank': False,
+            'dropdown_on_focus': False,
+            **(attrs or {}),
+        })
+
+    @classmethod
+    def modelbox(cls, model: Type[HssiModel], attrs: dict = None) -> 'ModelObjectSelector':
+        return cls(model, { **(attrs or {}) })
 
     def get_context(self, name, value, attrs) -> dict:
         context = super().get_context(name, value, attrs)

@@ -4,7 +4,8 @@ from django.forms.utils import ErrorList
 from ..forms import ModelObjectSelector
 from ..models import (
     Person, Organization, ProgrammingLanguage, RelatedItem, InstrumentObservatory,
-    InstrObsType, Phenomena, DataInput, Functionality
+    InstrObsType, Phenomena, DataInput, Functionality, RepoStatus, License,
+    OperatingSystem, RelatedItemType, Award, Region, FileFormat
 )
 
 class TestForm(forms.Form):
@@ -50,10 +51,6 @@ class TestForm(forms.Form):
         label="Persistent Identifier",
     )
 
-    field_software_functionality = forms.CharField(
-        label="Software Functionality",
-    )
-
     field_documentation = forms.URLField(
         label="Documentation",
     )
@@ -65,7 +62,8 @@ class TestForm(forms.Form):
 
     field_concise_description = forms.CharField(
         label="Concise Description",
-        widget=forms.Textarea,
+        max_length=200,
+        widget=forms.Textarea(attrs={'maxlength': 200, 'rows': 3}),
     )
 
     field_related_instruments = forms.CharField(
@@ -97,13 +95,9 @@ class TestForm(forms.Form):
     field_reference_publication = forms.URLField(
         label="Reference Publication",
     )
-
+    
     field_related_publications = forms.CharField(
         label="Related Publications",
-    )
-
-    field_related_datasets = forms.CharField(
-        label="Related Datasets",
     )
 
     field_awards = forms.CharField(
@@ -112,6 +106,18 @@ class TestForm(forms.Form):
 
     field_logo = forms.URLField(
         label="Logo",
+    )
+    
+    field_software_functionality = forms.CharField(
+        label="Software Functionality",
+    )
+
+    field_data_inputs = forms.CharField(
+        label="Data Inputs",
+    )
+    
+    field_related_datasets = forms.CharField(
+        label="Related Datasets",
     )
 
     field_related_software = forms.CharField(
@@ -128,10 +134,6 @@ class TestForm(forms.Form):
 
     field_related_regions = forms.CharField(
         label="Related Regions",
-    )
-
-    field_data_inputs = forms.CharField(
-        label="Data Inputs",
     )
 
     field_file_formats = forms.CharField(
@@ -157,32 +159,97 @@ class TestForm(forms.Form):
         )
 
         self.fields['field_programming_language'].widget = (
-            ModelObjectSelector.dropdown_selector(
-                ProgrammingLanguage, 
-                {'multi_select': True}
-            )
+            ModelObjectSelector.dropdown_selector(ProgrammingLanguage, True)
         )
 
-        self.fields['field_authors'].widget = ModelObjectSelector.auto_textbox(Person)
-        self.fields['field_publisher'].widget = ModelObjectSelector.auto_textbox(Organization)
+        self.fields['field_authors'].widget = ModelObjectSelector.auto_textbox(Person, True)
+        self.fields['field_publisher'].widget = ModelObjectSelector.auto_textbox(Organization, True)
 
         self.fields['field_development_status'].widget = (
-            ModelObjectSelector.dropdown_selector(Functionality,)
+            ModelObjectSelector.dropdown_selector(RepoStatus)
+        )
+
+        self.fields['field_license'].widget = (
+            ModelObjectSelector.modelbox(License)
+        )
+
+        self.fields['field_operating_system'].widget = (
+            ModelObjectSelector.dropdown_selector(OperatingSystem, True)
         )
 
         self.fields['field_related_instruments'].widget = (
-            ModelObjectSelector.auto_textbox(InstrumentObservatory)
+            ModelObjectSelector.auto_textbox(InstrumentObservatory, True)
         )
         self.fields['field_related_instruments'].widget.filter = {
             'type': InstrObsType.INSTRUMENT.value
         }
 
         self.fields['field_related_observatories'].widget = (
-            ModelObjectSelector.auto_textbox(InstrumentObservatory)
+            ModelObjectSelector.auto_textbox(InstrumentObservatory, True)
         )
         self.fields['field_related_observatories'].widget.filter = {
             'type': InstrObsType.OBSERVATORY.value
         }
+
+        self.fields['field_related_publications'].widget = (
+            ModelObjectSelector.auto_textbox(RelatedItem, True)
+        )
+        self.fields['field_related_publications'].widget.filter = {
+            'type': RelatedItemType.PUBLICATION.value
+        }
+
+        self.fields['field_awards'].widget = (
+            ModelObjectSelector.auto_textbox(Award, True)
+        )
+        
+        self.fields['field_software_functionality'].widget = (
+            ModelObjectSelector.modelbox(Functionality, True)
+        )
+
+        self.fields['field_data_inputs'].widget = (
+            ModelObjectSelector.modelbox(DataInput, True)
+        )
+
+        self.fields['field_related_datasets'].widget = (
+            ModelObjectSelector.auto_textbox(RelatedItem, True)
+        )
+        self.fields['field_related_datasets'].widget.filter = {
+            'type': RelatedItemType.DATASET.value
+        }
+
+        self.fields['field_related_software'].widget = (
+            ModelObjectSelector.auto_textbox(RelatedItem, True)
+        )
+        self.fields['field_related_software'].widget.filter = {
+            'type': RelatedItemType.SOFTWARE.value
+        }
+
+        self.fields['field_intereoperable_software'].widget = (
+            ModelObjectSelector.auto_textbox(RelatedItem, True)
+        )
+        self.fields['field_intereoperable_software'].widget.filter = {
+            'type': RelatedItemType.SOFTWARE.value
+        }
+
+        self.fields['field_keywords'].widget = (
+            ModelObjectSelector.auto_textbox(Phenomena, True)
+        )
+
+        self.fields['field_related_regions'].widget = (
+            ModelObjectSelector.auto_textbox(Region, True)
+        )
+
+        self.fields['field_file_formats'].widget = (
+            ModelObjectSelector.auto_textbox(FileFormat, True)
+        )
+
+        self.fields['field_related_phenomena'].widget = (
+            ModelObjectSelector.auto_textbox(Phenomena, True)
+        )
+
+        self.fields['field_metadata_license'].widget = (
+            ModelObjectSelector.modelbox(License)
+        )
 
         self.set_tooltips()
 

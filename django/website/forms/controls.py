@@ -25,7 +25,7 @@ class ModelObjectSelector(forms.TextInput):
     model: Type[HssiModel] | None = None
     filter: dict = {}
     case_sensitive_filtering: bool = False
-    multi_select: bool = True
+    multi_select: bool = False
     filter_on_focus: bool = True
     dropdown_button: bool = False
     dropdown_on_focus: bool = True
@@ -45,31 +45,34 @@ class ModelObjectSelector(forms.TextInput):
         self.model = model
 
     @classmethod
-    def dropdown_selector(cls, model: Type[HssiModel], attrs: dict = None) -> 'ModelObjectSelector':
-        """
-        creates a dropdown selector for the given model
-        """
+    def dropdown_selector(
+        cls, model: Type[HssiModel], mutli_select = False, attrs: dict = None
+    ) -> 'ModelObjectSelector':
+        """ creates a dropdown selector for the given model """
         return cls(model, {
-            'multi_select': False,
+            'multi_select': mutli_select,
             'dropdown_button': True,
             'filter_on_focus': False,
             **(attrs or {}),
         })
     
     @classmethod
-    def auto_textbox(cls, model: Type[HssiModel], attrs: dict = None) -> 'ModelObjectSelector':
-        """
-        creates a dropdown selector for the given model
-        """
+    def auto_textbox(
+        cls, model: Type[HssiModel], mutli_select = False, attrs: dict = None
+    ) -> 'ModelObjectSelector':
+        """ creates a dropdown selector for the given model"""
         return cls(model, {
+            'multi_select': mutli_select,
             'dropdown_on_blank': False,
             'dropdown_on_focus': False,
             **(attrs or {}),
         })
 
     @classmethod
-    def modelbox(cls, model: Type[HssiModel], attrs: dict = None) -> 'ModelObjectSelector':
-        return cls(model, { **(attrs or {}) })
+    def modelbox(
+        cls, model: Type[HssiModel], mutli_select = False, attrs: dict = None
+    ) -> 'ModelObjectSelector':
+        return cls(model, {'multi_select': mutli_select, **(attrs or {}) })
 
     def get_context(self, name, value, attrs) -> dict:
         context = super().get_context(name, value, attrs)

@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.utils import ErrorList
 
-from ..forms import ModelObjectSelector, SectionLabel
+from ..forms import ModelObjectSelector
 from ..models import (
     Person, Organization, ProgrammingLanguage, RelatedItem, InstrumentObservatory,
     InstrObsType, Phenomena, DataInput, Functionality
@@ -80,8 +80,6 @@ class TestForm(forms.Form):
         label="Software Version",
     )
 
-    section_1 = SectionLabel()
-
     field_version_date = forms.DateField(
         label="Version Date",
         widget=forms.DateInput(attrs={'type': 'date'}),
@@ -95,8 +93,6 @@ class TestForm(forms.Form):
     field_version_pid = forms.URLField(
         label="Version PID",
     )
-
-    section_2 = SectionLabel()
 
     field_reference_publication = forms.URLField(
         label="Reference Publication",

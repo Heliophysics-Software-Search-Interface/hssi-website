@@ -166,6 +166,10 @@ class TestForm(forms.Form):
         self.fields['field_authors'].widget = ModelObjectSelector.auto_textbox(Person)
         self.fields['field_publisher'].widget = ModelObjectSelector.auto_textbox(Organization)
 
+        self.fields['field_development_status'].widget = (
+            ModelObjectSelector.dropdown_selector(Functionality,)
+        )
+
         self.fields['field_related_instruments'].widget = (
             ModelObjectSelector.auto_textbox(InstrumentObservatory)
         )

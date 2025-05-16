@@ -5,15 +5,20 @@
 {% block page_content %}
 <style>
   .form-wrapper {
-    display: flex;
     justify-content: center;
-    padding: 2rem;
+    margin: 120px;
+    padding: 25px;
+    margin-top: 0;
+  }
+  @media (max-width: 800px) {
+    .form-wrapper {
+      margin: 0;
+    }
   }
   form {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    width: 400px;
   }
   .tooltip-wrapper {
     position: relative;
@@ -58,8 +63,8 @@
       display: block;
   }
 </style>
-<p><h1>Test Form</h1></p>
 <div class="form-wrapper">
+  <p><h3>Test Form</h3></p>
   <form method="post">
     {% csrf_token %}
 

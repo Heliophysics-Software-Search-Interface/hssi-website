@@ -115,6 +115,7 @@ class Software(HssiModel):
         null=True, blank=True, 
         related_name='softwares_license'
     )
+    licenseFileUrl = models.URLField(blank=True, null=True)
     relatedRegion = models.ManyToManyField(
         Region, 
         blank=True, 

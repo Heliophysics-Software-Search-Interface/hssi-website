@@ -3,4 +3,4 @@ from ..forms import SubmissionForm
 
 def submit_resource(request):
     form = SubmissionForm(request.POST or None)
-    return render(request, "website/submit.html", {"form": form})
+    return render(request, "pages/submit.html", {"form": form})

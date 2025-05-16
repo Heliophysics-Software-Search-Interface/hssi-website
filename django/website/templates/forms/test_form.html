@@ -50,6 +50,10 @@
     left: 0;
     z-index: 100;
   }
+  .explanation-text {
+    font-size: smaller;
+    opacity: 50%;
+  }
   .tooltip-icon:hover + .tooltip-text {
       display: block;
   }
@@ -64,18 +68,15 @@
             <label for="{{ field.id_for_label }}" class="custom-label">
                 {{ field.label }}
                 <span class="tooltip-wrapper">
-                  <span class="tooltip-icon">?</span>
-                  <div class="tooltip-text">
-                    {{ field.field.tt_explanation|default:"Enter a value for this field." }}
-                  </div>
-                </span>
-                <span class="tooltip-wrapper">
                   <span class="tooltip-icon">!</span>
                   <div class="tooltip-text">
                     {{ field.field.tt_best_practice|default:"Enter a value for this field." }}
                   </div>
                 </span>
             </label>
+            <div class="explanation-text">
+              {{ field.field.tt_explanation|default:"Enter a value for this field." }}
+            </div>
             {{ field }}
             {% if field.errors %}
                 <div class="error">{{ field.errors }}</div>

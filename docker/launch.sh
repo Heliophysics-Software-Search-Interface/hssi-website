@@ -10,7 +10,7 @@ for file in /extensions/pre-launch-scripts/*; do
 	[ -f "$file" ] && [ -x "$file" ] && echo "Running script $file ..." && "$file"
 done
 
-DATABASE_SLEEP_TIME=10
+DATABASE_SLEEP_TIME=1 #10
 
 # Create the Django project if it doesn't exist
 cd /django
@@ -78,4 +78,4 @@ cd /django
 
 # Start the project app server via Gunicorn
 echo "Starting Gunicorn ..."
-gunicorn --config /config/django/gunicorn.conf.py --log-config /config/django/logging.conf $PROJECT_NAME.wsgi
+exec gunicorn --config /config/django/gunicorn.conf.py --log-config /config/django/logging.conf $PROJECT_NAME.wsgi

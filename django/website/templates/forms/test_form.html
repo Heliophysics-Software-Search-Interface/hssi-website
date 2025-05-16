@@ -1,0 +1,81 @@
+{% extends 'site_base_template.html' %}
+
+{% load static %}
+
+{% block page_content %}
+<style>
+  .form-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    width: 400px;
+  }
+  .tooltip-wrapper {
+    position: relative;
+    display: inline-block;
+}
+  .tooltip-icon {
+    color: white;
+    font-size: smaller;
+    text-align: center;
+    background-color: #72a7cf;
+    display: inline-block;
+    margin-left: 4px;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 0 5px;
+    font-weight: bold;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    transform: scale(0.75);
+  }
+  .tooltip-text {
+    display: none;
+    position: absolute;
+    background: #333;
+    color: white;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    white-space: nowrap;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+  }
+  .tooltip-icon:hover + .tooltip-text {
+      display: block;
+  }
+</style>
+<p><h1>Test Form</h1></p>
+<div class="form-wrapper">
+  <form method="post">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <div class="form-row">
+            <label for="{{ field.id_for_label }}" class="custom-label">
+                {{ field.label }}
+                <span class="tooltip-wrapper">
+                  <span class="tooltip-icon">?</span>
+                  <div class="tooltip-text">
+                    {{ field.help_text|default:"Enter a value for this field." }}
+                  </div>
+                </span>
+            </label>
+            {{ field }}
+            {% if field.errors %}
+                <div class="error">{{ field.errors }}</div>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <button type="submit">Submit</button>
+  </form>
+</div>
+{% endblock %}

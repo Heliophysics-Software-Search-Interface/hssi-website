@@ -2,13 +2,24 @@ import uuid
 from django.db import models
 
 from .people import Person
-from .roots import Organization, FunctionCategory, License, LEN_NAME
+from .roots import (
+    HssiModel, ControlledList, Organization, FunctionCategory, 
+    License, LEN_NAME
+)
+
+from typing import Callable
+
+class RelatedItemType(models.IntegerChoices):
+    '''The type of an object in the RelatedField model'''
+    SOFTWARE = 1, "Software"
+    DATASET = 2, "Dataset"
+    PUBLICATION = 3, "Publication"
+    UNKNOWN = 4, "Unknown"
 
 ## -----------------------------------------------------------------------------
 
-class Award(models.Model):
+class Award(HssiModel):
     '''A grant or other funding award given by an organization'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=LEN_NAME)
     identifier = models.URLField(blank=True, null=True)
     funder = models.ForeignKey(
@@ -22,10 +33,8 @@ class Award(models.Model):
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
-class Functionality(models.Model):
+class Functionality(ControlledList):
     '''A type of functionality supported by the software'''
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=LEN_NAME)
     abbreviation = models.CharField(max_length=5, blank=True, null=True)
     category = models.ForeignKey(
         FunctionCategory, 
@@ -35,28 +44,29 @@ class Functionality(models.Model):
         related_name='functionalities'
     )
 
-    class Meta: 
-        ordering = ['name']
-        verbose_name_plural = "Functionalities"
+    class Meta: verbose_name_plural = "Functionalities"
     def __str__(self): return self.name
 
-class Dataset(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
-    creator = models.ManyToManyField(
+class RelatedItem(ControlledList):
+    type = models.IntegerField(
+        choices=RelatedItemType.choices, 
+        default=RelatedItemType.UNKNOWN
+    )
+    identifier = models.URLField(blank=True, null=True)
+    authors = models.ManyToManyField(
         Person,
         blank=True,
-        related_name='datasets'
+        related_name='relatedItems'
     )
-    description = models.TextField(blank=True, null=True)
+    creditText = models.TextField(blank=True, null=True)
     license = models.ForeignKey(
         License,
         on_delete=models.CASCADE,
         blank=True, null=True,
-        related_name='datasets'
+        related_name='relatedItems'
     )
-    creditText = models.TextField(blank=True, null=True)
-    identifier = models.URLField(blank=True, null=True)
+
+    # specified for intellisense, defined automatically by django
+    get_type_display: Callable[[], str]
     
-    class Meta: ordering = ['name']
-    def __str__(self): return self.name
+    def __str__(self): return f"{self.name} ({self.get_type_display()})"

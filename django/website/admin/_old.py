@@ -664,7 +664,7 @@ site.register(Region, admin_class=RegionAdmin)
 site.register(RepoStatus, admin_class=RepoStatusAdmin)
 site.register(DataInput, admin_class=DataInputAdmin)
 site.register(Submitter, admin_class=SubmitterAdmin)
-site.register(Dataset, admin_class=DatasetAdmin)
+site.register(RelatedItem, admin_class=DatasetAdmin)
 
 site.register(Category, admin_class=CategoryAdmin)
 site.register(Collection, admin_class=CollectionAdmin)

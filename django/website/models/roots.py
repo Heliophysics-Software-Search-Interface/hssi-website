@@ -28,6 +28,8 @@ class HssiModel(models.Model):
         '''
         return [str(self)]
 
+    def get_tooltip(self) -> str: return ""
+
     class Meta:
         abstract = True
 
@@ -38,6 +40,8 @@ class ControlledList(HssiModel):
     definition = models.TextField(blank=True, null=True)
 
     def __str__(self): return self.name
+
+    def get_tooltip(self): return self.definition
 
     class Meta:
         ordering = ['name']

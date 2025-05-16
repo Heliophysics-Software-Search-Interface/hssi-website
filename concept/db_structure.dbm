@@ -170,17 +170,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="RepoStatus" layers="0" collapse-mode="1" max-obj-count="6" z-value="0">
+<table name="RepoStatus" layers="0" collapse-mode="1" max-obj-count="4" z-value="0">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<position x="2080" y="280"/>
 	<column name="id" not-null="true" default-value="gen_random_uuid()" generated="true">
 		<type name="uuid" length="0"/>
 	</column>
-	<column name="identifier">
-		<type name="varchar" length="512"/>
-	</column>
-	<column name="prefLabel" not-null="true">
+	<column name="name" not-null="true">
 		<type name="varchar" length="100"/>
 	</column>
 	<column name="definition">

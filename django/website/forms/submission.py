@@ -8,7 +8,7 @@ from ..models import (
     OperatingSystem, RelatedItemType, Award, Region, FileFormat
 )
 
-class TestForm(forms.Form):
+class SubmissionForm(forms.Form):
     
     field_code_repository = forms.URLField(label="Code Repository URL")
 

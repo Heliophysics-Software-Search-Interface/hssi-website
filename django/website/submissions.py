@@ -339,7 +339,7 @@ def submit(request: HttpRequest) -> HttpResponse:
     context = {
         'category_hierarchy_json': category_hierarchy_json,
         'category_names_by_id_json': category_names_by_id_json,
-        'submission_form': submission_form
+        'form': submission_form
     }
 
     return render(request, 'website/submission.html', context)

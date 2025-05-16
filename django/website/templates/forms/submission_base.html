@@ -1,26 +1,14 @@
-{% extends 'site_base_template.html' %}
-
-{% load static %}
-
-{% block page_content %}
 <style>
   .form-wrapper {
     display: flex;
     justify-content: center;
-    margin: 120px;
-    padding: 25px;
-    margin-top: 0;
-  }
-  @media (max-width: 800px) {
-    .form-wrapper {
-      margin: 0;
-    }
+    padding: 2rem;
   }
   form {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    max-width: 600px;
+    width: 400px;
   }
   .tooltip-wrapper {
     position: relative;
@@ -50,39 +38,31 @@
     padding: 6px 8px;
     border-radius: 4px;
     font-size: 0.9em;
-    white-space: normal;
-    max-width: 500px;
-    width: max-content;
+    white-space: nowrap;
     top: 100%;
     left: 0;
     z-index: 100;
-  }
-  .explanation-text {
-    font-size: smaller;
-    opacity: 50%;
   }
   .tooltip-icon:hover + .tooltip-text {
       display: block;
   }
 </style>
+<p><h1>Test Form</h1></p>
 <div class="form-wrapper">
   <form method="post">
-    <h3>Test Form</h3>
     {% csrf_token %}
+
     {% for field in form %}
         <div class="form-row">
             <label for="{{ field.id_for_label }}" class="custom-label">
                 {{ field.label }}
                 <span class="tooltip-wrapper">
-                  <span class="tooltip-icon">!</span>
+                  <span class="tooltip-icon">?</span>
                   <div class="tooltip-text">
-                    {{ field.field.tt_best_practice|default:"Enter a value for this field." }}
+                    {{ field.help_text|default:"Enter a value for this field." }}
                   </div>
                 </span>
             </label>
-            <div class="explanation-text">
-              {{ field.field.tt_explanation|default:"Enter a value for this field." }}
-            </div>
             {{ field }}
             {% if field.errors %}
                 <div class="error">{{ field.errors }}</div>
@@ -93,4 +73,3 @@
     <button type="submit">Submit</button>
   </form>
 </div>
-{% endblock %}

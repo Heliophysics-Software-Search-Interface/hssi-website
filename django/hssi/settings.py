@@ -31,18 +31,9 @@ EMAIL_SUBJECT_PREFIX = "[HSSI] "
 ###
 ### - end secret settings
 
-response_bytes = requests.get('http://ifcfg.me').content
-host_ip_address = "".join(map(chr, response_bytes))
-
 # default for local development
-SITE_DOMAIN = "lvh.me"
+SITE_DOMAIN = "localhost"
 SITE_PROTOCOL = "http"
-
-if host_ip_address.startswith("your.prod.ip"):
-    SITE_DOMAIN = "your.production.domain"
-elif host_ip_address.startswith("your.dev.ip"):
-    SITE_DOMAIN = "your.dev.domain"
-
 
 # uncomment the below 2 lines to see email contents in the console output
 # to debug when an actual SMTP server is not available
@@ -55,9 +46,9 @@ elif host_ip_address.startswith("your.dev.ip"):
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False if SITE_DOMAIN == "your.production.domain" else True
+DEBUG = True if SITE_DOMAIN == "localhost" else False
 
-ALLOWED_HOSTS = ["*"] if DEBUG else ["your.production.domain"]
+ALLOWED_HOSTS = ["*"] if DEBUG else ["hssi.hsdcloud.org"]
 
 
 # Application definition

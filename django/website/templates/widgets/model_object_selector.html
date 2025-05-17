@@ -23,6 +23,33 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
   
+  .modelbox-option-tooltip {
+    display: none;
+    position: absolute;
+    background: #333;
+    color: white;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    white-space: normal;
+    max-width: 500px;
+    width: max-content;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+  }
+
+  .modelbox-option-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left:-6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent #333 transparent transparent;
+  }
+
   .modelbox-options li {
     padding: 8px;
     cursor: pointer;
@@ -70,6 +97,9 @@
         class="dropdown-btn {{ uid }}-dropdown-btn"
       >▼</button>
       {% endif %}
+      <div class="modelbox-option-tooltip modelbox-op-tt-{{ uuid }}">
+        test
+      </div>
     </div>
   </div>
 </div>
@@ -83,7 +113,7 @@
     dropdownButton: {{ widget.dropdown_button }},
     dropdownOnFocus: {{ widget.dropdown_on_focus }},
     dropdownOnBlank: {{ widget.dropdown_on_blank }},
-    optionTooltips: false,
+    optionTooltips: true,
     newObjectField: null,
   }
 
@@ -100,6 +130,11 @@
 
   /** @type {HTMLLIElement} */
   const filteredOptionElements = [];
+
+  /** @type {HTMLDivElement} */
+  const opTooltip = document.getElementsByClassName("modelbox-op-tt-{{ uuid }}")[0];
+  opTooltip.remove();
+  document.body.appendChild(opTooltip);
   
   let selectedOption = -1;
 
@@ -136,6 +171,11 @@
     li.innerText = op.name;
     optionList.appendChild(li);
     li.addEventListener('click', selectOption.bind(null, li, false));
+    if(properties.optionTooltips) {
+      li.title = op.tooltip;
+      li.addEventListener('mouseenter', showOpTooltip.bind(null, li));
+      li.addEventListener('mouseout', hideOpTooltip)
+    }
   }
 
   /** @param {Event} evt */
@@ -313,6 +353,7 @@
   // hide the dropdown
   function hideOptions() {
     optionList.style.display = 'none';
+    hideOpTooltip();
   };
   
   /** @param {HTMLElement} elem */
@@ -333,6 +374,18 @@
     elem.removeEventListener('focusout', inputFocusOut);
     if (properties.dropdownButton)
       elem.nextElementSibling.removeEventListener('click', dropdownButtonClick);
+  }
+
+  /** @param {HTMLLIElement} option */
+  function showOpTooltip(option) {
+    let rect = option.getBoundingClientRect();
+    opTooltip.style.left = `${rect.right + window.scrollX + 10}px`;
+    opTooltip.style.top = `${rect.top + window.scrollY}px`;
+    opTooltip.style.display = "block";
+  }
+
+  function hideOpTooltip() {
+    opTooltip.style.display = "none";
   }
 
   /** @param {HTMLInputElement} textbox */

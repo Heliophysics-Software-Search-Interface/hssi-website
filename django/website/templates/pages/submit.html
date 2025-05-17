@@ -6,18 +6,19 @@
 
 {% block head %}
 
+    <link rel="stylesheet" href="{% static 'css/submissions.css' %}?v=2024-10-15" />
+    
     <!-- 
         We must create our own shared header scripts and css files for new form, since
         none of this works for the new submission form, it was for legacy EMAC form:
-    
-	<link rel="stylesheet" href="{% static 'css/submissions.css' %}?v=2024-10-15" />
+        
     <script type="text/javascript" src="{% static 'js/categoryRendering.js' %}?v=2024-10-15"></script>
+    <script type="text/javascript" src="{% static 'js/submissions.js' %}?v=2024-10-15"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             rerenderCategoriesHierarchically('{{ category_hierarchy_json|safe }}', '{{ category_names_by_id_json|safe }}', '{{ selected_category_ids_json|safe }}');
         });
     </script>
-    <script type="text/javascript" src="{% static 'js/submissions.js' %}?v=2024-10-15"></script>
     -->
   
 {% endblock %}

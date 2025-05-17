@@ -415,7 +415,7 @@ HSSI.scrollToContentTop = function scrollToContentTop(delay) {
 HSSI.showResultCount = function showResultCount(queryParamUrl) {
     let results = $("#resource_content .callout").length;
     if (results === 0) {
-        $('#result-count').html("No resources match your search...yet!<br/>Would you like to <a href='/submissions'>submit a new resource?</a>").show();
+        $('#result-count').html("No resources match your search...yet!<br/>Would you like to <a href='/submit'>submit a new resource?</a>").show();
         $('#result-count').addClass('no-results');
         HSSI.toggleSortVisible(false);
     } else {

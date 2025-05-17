@@ -14,6 +14,7 @@ class ModelObjectChoice(NamedTuple):
     id: str
     name: str
     keywords: list[str]
+    tooltip: str
 
 class ModelObjectSelector(forms.TextInput):
     """
@@ -95,7 +96,8 @@ class ModelObjectSelector(forms.TextInput):
             choice = ModelObjectChoice(
                 str(obj.id), 
                 str(obj),
-                obj.get_search_terms()
+                obj.get_search_terms(),
+                obj.get_tooltip(),
             )
             choices.append(choice)
         

@@ -90,13 +90,13 @@ def email_strings_for(submission: Submission, save_type: SaveType, changed_field
         submission_text = submission.detail_string()
         subject = "A new resource was submitted"
 
-        admin_message = str(f"A web user has submitted a new resource via {protocol}://{domain}/submissions/\n\n")
+        admin_message = str(f"A web user has submitted a new resource via {protocol}://{domain}/submit/\n\n")
         admin_message += submission_text
         admin_message += str(f"\n\nTo review and manage this submission, go to {protocol}://{domain}/admin/website/submission/")
     
         submitter_message = "Thank you for submitting a new resource! All new resources are reviewed for readiness and alignment with our strategic goals before they are posted and/or prepared for further development. The team will review your submission and contact you for further information if needed.\n\n"
         submitter_message += submission_text
-        submitter_message += str(f"\n\nIf you would like to review or revise your submission you may do so here: {protocol}://{domain}/submissions/{submission.id}/")
+        submitter_message += str(f"\n\nIf you would like to review or revise your submission you may do so here: {protocol}://{domain}/submit/{submission.id}/")
     # This section is for when a submission that already exists is edited and highlights what has changed compared to its
     # previous version.
     elif save_type is SaveType.EDIT:
@@ -139,14 +139,14 @@ def email_strings_for(submission: Submission, save_type: SaveType, changed_field
         # This creates an email string to send to the submitter that siply outlines all of the fields
         submission_text = submission.detail_string()
 
-        admin_message = str(f"A web user has revised a submission via {protocol}://{domain}/submissions/{submission.id}/\n\n")
+        admin_message = str(f"A web user has revised a submission via {protocol}://{domain}/submit/{submission.id}/\n\n")
 
         admin_message += admin_submission_text
         admin_message += str(f"\n\nTo review and manage this submission, go to {protocol}://{domain}/admin/website/submission/")
 
         submitter_message = "Thank you for revising your submission! All revised submissions are reviewed for readiness and alignment with our strategic goals before they are posted and/or prepared for further development. The team will review your submission and contact you for further information if needed.\n\n"
         submitter_message += submission_text
-        submitter_message += str(f"\n\nIf you would like to further review or revise your submission you may do so here: {protocol}://{domain}/submissions/{submission.id}")
+        submitter_message += str(f"\n\nIf you would like to further review or revise your submission you may do so here: {protocol}://{domain}/submit/{submission.id}")
     
     elif save_type is SaveType.FIRSTCONTACT:
         subject = "Listing a resource on HSSI"
@@ -325,13 +325,13 @@ def submit(request: HttpRequest) -> HttpResponse:
 
             request.session['submission_id'] = str(submission.id)
             
-            return redirect('/submissions/success/')
+            return redirect('/submit/success/')
 
     else:
         submission_form = SubmissionForm()
 
 
-    submission_form.helper.form_action = '/submissions/'
+    submission_form.helper.form_action = '/submit/'
     submission_form.helper.add_input(Submit('newSubmit', 'Submit', css_class='hollow button'))
 
     category_hierarchy_json, category_names_by_id_json = organized_categories_json()
@@ -412,7 +412,7 @@ def edit(request: HttpRequest, id: str) -> HttpResponse:
 
             request.session['submission_id'] = str(submission.id)
 
-            return redirect('/submissions/success/')
+            return redirect('/submit/success/')
     else:
         try:
             submission_id = uuid.UUID(id)
@@ -423,7 +423,7 @@ def edit(request: HttpRequest, id: str) -> HttpResponse:
                     selected_category_ids.append(str(category.id))
 
                 submission_form = SubmissionForm(instance=submission)
-                submission_form.helper.form_action = str(f'/submissions/{submission_id}/')
+                submission_form.helper.form_action = str(f'/submit/{submission_id}/')
                 submission_form.helper.add_input(Submit('save', 'Save', css_class='hollow button save'))
                 submission_form.helper.add_input(Button('cancel', 'Cancel', css_class='hollow button cancel', onclick=f"window.location.href='/';"))
 

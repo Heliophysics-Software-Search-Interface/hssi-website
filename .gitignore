@@ -21,3 +21,14 @@ django/static/admin/
 django/static/colorful/
 django/static/django_extensions/
 django/static/import_export/
+django/static/js/compiled
+
+# Ignore frontend package manager bloat
+node_modules/
+
+# Ignore lock files - we only need one package so we really shouldn't 
+# need to commit exact module version info
+package-lock.json
+pnpm-lock.json
+bun.lock
+bun.lockb

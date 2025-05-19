@@ -1,0 +1,13 @@
+{
+  "name": "hssi-frontend",
+  "module": "frontend/index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "esbuild": "^0.25.4"
+  },
+  "peerDependencies": {},
+  "scripts": {
+    "build": "esbuild frontend/index.ts --outfile=django/static/js/compiled/hssi-frontend.js --bundle --sourcemap"
+  }
+}

@@ -6,10 +6,12 @@
  * name of the attribute on the html element that contains JSON properties 
  * for widget configuration 
  */
-const propertyAttribute = "data-hssi-properties";
+export const propertiesType = "json-properties";
+export const uidAttribute = "data-hssi-uid";
 
 /** name of attribute on html element that specifies the wudget type */
-const typeAttribute = "data-hssi-widget";
+export const widgetAttribute = "data-hssi-widget";
+export const typeAttribute = "data-hssi-type";
 
 /**
  * Base class for all widgets
@@ -27,10 +29,11 @@ export abstract class Widget {
 
 	public constructor(elem: HTMLElement) {
 		this.element = elem;
+		this.setDefaultProperties()
 
 		// parse all the properties defined in the data property attribute of 
 		// the top-level element for the widget and apply them to this class
-		const propsJson = elem.getAttribute(propertyAttribute)
+		const propsJson = elem.getAttribute(propertiesType)
 		if(propsJson != undefined) {
 			const propsObj = JSON.parse(propsJson)
 			for(const prop in propsObj) {
@@ -38,6 +41,9 @@ export abstract class Widget {
 			}
 		}
 	}
+
+	/** set default properties on the widget */
+	protected abstract setDefaultProperties(): void
 
 	/** custom initialization logic for widget */
 	protected abstract initialize(): void
@@ -70,10 +76,12 @@ export abstract class Widget {
 	public static initializeWidgets<WidgetClass extends Widget>(
 		widgetClass: new (elem: HTMLElement) => WidgetClass,
 	): Array<Widget> {
+		console.log("Initializing " + widgetClass.name + " widgets..")
 		const widgets = this.getWidgetsFromElements(
 			widgetClass, 
-			document.querySelectorAll(`[${typeAttribute}='${widgetClass.name}']`),
+			document.querySelectorAll(`[${widgetAttribute}='${widgetClass.name}']`),
 		);
+		console.log("found " + widgets.length + " with " + `[${widgetAttribute}='${widgetClass.name}']`)
 		for(const widget of widgets) widget.initialize();
 		return widgets;
 	}

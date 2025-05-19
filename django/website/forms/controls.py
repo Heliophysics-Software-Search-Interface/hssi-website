@@ -1,3 +1,4 @@
+import json
 from django import forms
 
 from typing import NamedTuple, Type
@@ -77,15 +78,23 @@ class ModelObjectSelector(forms.TextInput):
 
     def get_context(self, name, value, attrs) -> dict:
         context = super().get_context(name, value, attrs)
-        context['widget']['choices'] = self.get_choices()
         context['widget']['case_sensitive_filtering'] = bool_js_string(
             self.case_sensitive_filtering
         )
-        context['widget']['multi_select'] = bool_js_string(self.multi_select)
-        context['widget']['filter_on_focus'] = bool_js_string(self.filter_on_focus)
-        context['widget']['dropdown_button'] = bool_js_string(self.dropdown_button)
-        context['widget']['dropdown_on_focus'] = bool_js_string(self.dropdown_on_focus)
-        context['widget']['dropdown_on_blank'] = bool_js_string(self.dropdown_on_blank)
+
+        properties: dict = {
+            'multi_select': self.multi_select,
+            'filter_on_focus': self.filter_on_focus,
+            'dropdown_button': self.dropdown_button,
+            'dropdown_on_focus': self.dropdown_on_focus,
+            'dropdown_on_blank': self.dropdown_on_blank,
+        }
+        context['widget']['properties'] = properties
+        context['widget']['properties_json'] = json.dumps(properties)
+
+        choices = self.get_choices()
+        context['widget']['choices_json'] = json.dumps([x._asdict() for x in choices])
+
         return context
 
     def get_choices(self) -> list[ModelObjectChoice]:

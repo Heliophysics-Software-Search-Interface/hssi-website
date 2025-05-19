@@ -5,5 +5,5 @@
  * where they are defined.
  */
 
-export { Widget } from "./widgets/widget";
-export { ModelObjectSelector } from "./widgets/modelObjectSelector";
+export * from "./widgets/widget";
+export * from "./widgets/modelObjectSelector";

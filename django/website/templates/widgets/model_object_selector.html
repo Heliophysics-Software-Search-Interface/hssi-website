@@ -66,7 +66,11 @@
   }
 </style>
 
-<div class="modelbox-container">
+<div 
+  class="modelbox-container" 
+  data-hssi-widget="ModelObjectSelector"
+  data-hssi-uid="{{ uid }}"
+>
   <ul 
     class="modelbox-options {{ uid }}-options" 
     style="display: none;"
@@ -82,7 +86,6 @@
         {% include "django/forms/widgets/attrs.html" %}
         class="modelbox-input {{ uid }}-input"
       >
-      {% if widget.dropdown_button == "true" %}
       <button 
         type="button"
         style="
@@ -95,17 +98,27 @@
           border-left: #ccc solid 1px;
         "
         class="dropdown-btn {{ uid }}-dropdown-btn"
+        data-hssi-type="dropdown-button"
       >▼</button>
-      {% endif %}
-      <div class="modelbox-option-tooltip modelbox-op-tt-{{ uuid }}">
+      <div 
+        class="modelbox-option-tooltip modelbox-op-tt-{{ uuid }}" 
+        data-hssi-type="option-tooltip"
+      >
         test
       </div>
     </div>
   </div>
+  <script type="application/json" data-hssi-type="json-properties">
+    {{ widget.properties_json|safe }}
+  </script>
+  <script type="application/json" data-hssi-type="json-choices">
+    {{ widget.choices_json|safe }}
+  </script>
 </div>
 
-<script>(function(){
-
+{% comment "dontwant" %}
+  <script>(function(){
+    
   const properties = {
     caseSensitiveFiltering: {{ widget.case_sensitive_filtering }},
     multiSelect: {{ widget.multi_select }},
@@ -116,174 +129,174 @@
     optionTooltips: true,
     newObjectField: null,
   }
-
+  
   const optionList = document.getElementsByClassName("{{ uid }}-options")[0];
   optionList.remove();
   document.body.appendChild(optionList);
-
+  
   /** @type {HTMLInputElement} */
   let input = document.getElementsByClassName("{{ uid }}-input")[0];
   addDropdownEvents(input);
-
-  /** @type {Array<HTMLInputElement>} */
-  const allInputs = [input]
-
-  /** @type {HTMLLIElement} */
-  const filteredOptionElements = [];
-
-  /** @type {HTMLDivElement} */
-  const opTooltip = document.getElementsByClassName("modelbox-op-tt-{{ uuid }}")[0];
-  opTooltip.remove();
-  document.body.appendChild(opTooltip);
   
-  let selectedOption = -1;
-
-  // create a list of every object in the modelbox model
-  const all = [
-      {% for id, name, kw, tooltip in widget.choices %}
-          {
-            id: "{{ id }}",
-            name: "{{ name }}",
-            keywords: [
-              {% for k in kw %}
-                "{{ k }}"{% if not forloop.last %},{% endif %}
-              {% endfor %}
-            ],
-            tooltip: "{{ tooltip|default:"" }}",
-          } {% if not forloop.last%},{% endif %}
+  /** @type {Array<HTMLInputElement>} */
+    const allInputs = [input]
+    
+    /** @type {HTMLLIElement} */
+    const filteredOptionElements = [];
+    
+    /** @type {HTMLDivElement} */
+    const opTooltip = document.getElementsByClassName("modelbox-op-tt-{{ uuid }}")[0];
+    opTooltip.remove();
+    document.body.appendChild(opTooltip);
+    
+    let selectedOption = -1;
+    
+    // create a list of every object in the modelbox model
+    const all = [
+    {% for id, name, kw, tooltip in widget.choices %}
+    {
+      id: "{{ id }}",
+      name: "{{ name }}",
+      keywords: [
+      {% for k in kw %}
+      "{{ k }}"{% if not forloop.last %},{% endif %}
       {% endfor %}
-  ];
-  if(!properties.caseSensitiveFiltering){
-    for(choice of all){
-      for(i in choice.keywords){
-        choice.keywords[i] = choice.keywords[i].toLocaleUpperCase()
+      ],
+      tooltip: "{{ tooltip|default:"" }}",
+    } {% if not forloop.last%},{% endif %}
+    {% endfor %}
+    ];
+    if(!properties.caseSensitiveFiltering){
+      for(choice of all){
+        for(i in choice.keywords){
+          choice.keywords[i] = choice.keywords[i].toLocaleUpperCase()
+        }
       }
     }
-  }
-
-  // create a list element in the ul for each item
-  for (let op of all) {
-    const li = document.createElement('li');
-    li.tabIndex = 0;
-    li.style.userSelect = 'none';
-    li.style.display = 'none'
-    li.data = op;
-    li.innerText = op.name;
-    optionList.appendChild(li);
-    li.addEventListener('click', selectOption.bind(null, li, false));
-    if(properties.optionTooltips) {
-      li.title = op.tooltip;
-      li.addEventListener('mouseenter', showOpTooltip.bind(null, li));
-      li.addEventListener('mouseout', hideOpTooltip)
-    }
-  }
-
-  /** @param {Event} evt */
-  function dropdownButtonClick(evt) {
-    /** @type {HTMLButtonElement} */
-    let button = evt.target;
-    input = button.previousElementSibling;
-    input.focus();
-    filterOptions(input, "");
-  }
-
-  /** @param {Event} evt */
-  function inputFocusIn(evt) {
-    /** @type {HTMLInputElement} */
-    const isFocusEvt = evt instanceof FocusEvent;
-    const target = evt.target;
-    input = target;
-    if(properties.dropdownOnFocus || !isFocusEvt){
-      let filterStr = isFocusEvt && !properties.filterOnFocus ? "" : null;
-      if(properties.dropdownOnBlank) filterOptions(target, filterStr);
-      else {
-        if(target.value.length > 0) filterOptions(target, filterStr);
-        else hideOptions();
+    
+    // create a list element in the ul for each item
+    for (let op of all) {
+      const li = document.createElement('li');
+      li.tabIndex = 0;
+      li.style.userSelect = 'none';
+      li.style.display = 'none'
+      li.data = op;
+      li.innerText = op.name;
+      optionList.appendChild(li);
+      li.addEventListener('click', selectOption.bind(null, li, false));
+      if(properties.optionTooltips) {
+        li.title = op.tooltip;
+        li.addEventListener('mouseenter', showOpTooltip.bind(null, li));
+        li.addEventListener('mouseout', hideOpTooltip)
       }
     }
-  }
-
-  /** @param {FocusEvent} e  */
-  function inputFocusOut(e) {
-    /** @type {HTMLElement} */
-    const target = e.target;
-    const focusTarget = e.relatedTarget;
-    if (target != allInputs[allInputs.length - 1]) {
-      if(target.value.trim().length <= 0) {
-        target.remove();
-        const index = allInputs.indexOf(target)
-        allInputs.splice(index, 1);
+    
+    /** @param {Event} evt */
+    function dropdownButtonClick(evt) {
+      /** @type {HTMLButtonElement} */
+      let button = evt.target;
+      input = button.previousElementSibling;
+      input.focus();
+      filterOptions(input, "");
+    }
+    
+    /** @param {Event} evt */
+    function inputFocusIn(evt) {
+      /** @type {HTMLInputElement} */
+      const isFocusEvt = evt instanceof FocusEvent;
+      const target = evt.target;
+      input = target;
+      if(properties.dropdownOnFocus || !isFocusEvt){
+        let filterStr = isFocusEvt && !properties.filterOnFocus ? "" : null;
+        if(properties.dropdownOnBlank) filterOptions(target, filterStr);
+        else {
+          if(target.value.length > 0) filterOptions(target, filterStr);
+          else hideOptions();
+        }
       }
     }
-    if (focusTarget == null){
-      hideOptions();
-      return;
+    
+    /** @param {FocusEvent} e  */
+    function inputFocusOut(e) {
+      /** @type {HTMLElement} */
+      const target = e.target;
+      const focusTarget = e.relatedTarget;
+      if (target != allInputs[allInputs.length - 1]) {
+        if(target.value.trim().length <= 0) {
+          target.remove();
+          const index = allInputs.indexOf(target)
+          allInputs.splice(index, 1);
+        }
+      }
+      if (focusTarget == null){
+        hideOptions();
+        return;
+      }
+      if(!focusTarget.parentElement.classList.contains('modelbox-options')){
+        hideOptions();
+        return;
+      }
     }
-    if(!focusTarget.parentElement.classList.contains('modelbox-options')){
-      hideOptions();
-      return;
-    }
-  }
-
-  /** @param {KeyboardEvent} evt  */
-  function handleOptionKeyNav(evt){
-    let optionChanged = -1;
-    switch (evt.key) {
-      
+    
+    /** @param {KeyboardEvent} evt  */
+    function handleOptionKeyNav(evt){
+      let optionChanged = -1;
+      switch (evt.key) {
+        
       // select next option
       case 'ArrowDown':
-        if(optionList.style.display != 'none'){
-          optionChanged = selectedOption;
-          selectedOption += 1;
-          if(selectedOption >= filteredOptionElements.length){
-            selectedOption = 0;
-          }
+      if(optionList.style.display != 'none'){
+        optionChanged = selectedOption;
+        selectedOption += 1;
+        if(selectedOption >= filteredOptionElements.length){
+          selectedOption = 0;
         }
-        break;
+      }
+      break;
       
       // select previous option
       case 'ArrowUp':
-        if(optionList.style.display != 'none'){
-          optionChanged = selectedOption;
-          selectedOption -= 1;
-          if(selectedOption < 0){
-            selectedOption = filteredOptionElements.length - 1;
-          }
+      if(optionList.style.display != 'none'){
+        optionChanged = selectedOption;
+        selectedOption -= 1;
+        if(selectedOption < 0){
+          selectedOption = filteredOptionElements.length - 1;
         }
-        break;
+      }
+      break;
       
       // unfocus current input if backspace on empty and multi fields
       case 'Backspace':
-        if(input.value.length <= 0 && allInputs.length > 1) {
-          let index = allInputs.indexOf(evt.target);
-          if(index <= 0){
-            allInputs[1].focus();
-          }
-          else {
-            index -= 1;
-            allInputs[index].focus();
-          }
-        }
-        break;
-
-      // confirm selected option
-      case 'Enter':
-        if(selectedOption >= 0){
-          const option = filteredOptionElements[selectedOption];
-          selectOption(option);
+      if(input.value.length <= 0 && allInputs.length > 1) {
+        let index = allInputs.indexOf(evt.target);
+        if(index <= 0){
+          allInputs[1].focus();
         }
         else {
-          confirmInput(input);
+          index -= 1;
+          allInputs[index].focus();
         }
-        evt.preventDefault();
-        break;
+      }
+      break;
+      
+      // confirm selected option
+      case 'Enter':
+      if(selectedOption >= 0){
+        const option = filteredOptionElements[selectedOption];
+        selectOption(option);
+      }
+      else {
+        confirmInput(input);
+      }
+      evt.preventDefault();
+      break;
       
       // summon autocomplete dropdown with ctrl + space
       case ' ':
-        if(evt.ctrlKey){
-          filterOptions(input);
-        }
-        break;
+      if(evt.ctrlKey){
+        filterOptions(input);
+      }
+      break;
     }
     // highlight/unhighlight and scroll selected option into view
     if(selectedOption >= 0){
@@ -296,51 +309,51 @@
       option.classList.add("highlighted");
     }
   }
-
+  
   /** 
-    @param {HTMLInputElement} elem
-    filter and show dropdown based on char field value
+  @param {HTMLInputElement} elem
+  filter and show dropdown based on char field value
   */
   function filterOptions(elem, filterStr = null) {
-    if(selectedOption >= 0) {
-      const option = filteredOptionElements[selectedOption];
-      option.classList.remove("highlighted");
+  if(selectedOption >= 0) {
+    const option = filteredOptionElements[selectedOption];
+    option.classList.remove("highlighted");
+  }
+  
+  selectedOption = -1;
+  filteredOptionElements.length = 0;
+  
+  // show all matching elements, hide non-matching elements
+  let inputVal = filterStr != null ? filterStr : elem.value;
+  if (!properties.caseSensitiveFiltering) {
+    inputVal = inputVal.toLocaleUpperCase();
+  }
+  const splitInput = inputVal.split(' ');
+  outer: for (option of optionList.children) {
+    if (inputVal.length <= 0) {
+      option.style.display = 'block';
+      filteredOptionElements.push(option);
+      continue outer;
     }
-
-    selectedOption = -1;
-    filteredOptionElements.length = 0;
-
-    // show all matching elements, hide non-matching elements
-    let inputVal = filterStr != null ? filterStr : elem.value;
-    if (!properties.caseSensitiveFiltering) {
-      inputVal = inputVal.toLocaleUpperCase();
-    }
-    const splitInput = inputVal.split(' ');
-    outer: for (option of optionList.children) {
-      if (inputVal.length <= 0) {
-        option.style.display = 'block';
-        filteredOptionElements.push(option);
-        continue outer;
-      }
-      for (kw of option.data.keywords) {
-        for (inWord of splitInput) {
-          if (kw.includes(inWord)){
-            option.style.display = 'block';
-            filteredOptionElements.push(option);
-            continue outer;
-          }
+    for (kw of option.data.keywords) {
+      for (inWord of splitInput) {
+        if (kw.includes(inWord)){
+          option.style.display = 'block';
+          filteredOptionElements.push(option);
+          continue outer;
         }
       }
-      option.style.display = 'none'
     }
-
-    let rect = elem.getBoundingClientRect();
-    optionList.style.left = `${rect.left + window.scrollX}px`;
-    optionList.style.top = `${rect.bottom + window.scrollY}px`;
-    optionList.style.width = `${rect.width}px`
-    optionList.style.display = 'block';
+    option.style.display = 'none'
+  }
+  
+  let rect = elem.getBoundingClientRect();
+  optionList.style.left = `${rect.left + window.scrollX}px`;
+  optionList.style.top = `${rect.bottom + window.scrollY}px`;
+  optionList.style.width = `${rect.width}px`
+  optionList.style.display = 'block';
   };
-
+  
   function selectOption(option, focusNext = true) {
     input.value = option.data.name;
     input.setAttribute('data-id', option.data.id);
@@ -349,7 +362,7 @@
     hideOptions();
     confirmInput(input, focusNext);
   }
-
+  
   // hide the dropdown
   function hideOptions() {
     optionList.style.display = 'none';
@@ -363,9 +376,9 @@
     elem.addEventListener('input', inputFocusIn);
     elem.addEventListener('keydown', handleOptionKeyNav);
     if (properties.dropdownButton)
-      elem.nextElementSibling.addEventListener('click', dropdownButtonClick);
+    elem.nextElementSibling.addEventListener('click', dropdownButtonClick);
   }
-
+  
   /** @param {HTMLElement} elem */
   function removeDropdownEvents(elem) {
     elem.removeEventListener('focus', filterOptions);
@@ -373,9 +386,9 @@
     elem.removeEventListener('keydown', handleOptionKeyNav);
     elem.removeEventListener('focusout', inputFocusOut);
     if (properties.dropdownButton)
-      elem.nextElementSibling.removeEventListener('click', dropdownButtonClick);
+    elem.nextElementSibling.removeEventListener('click', dropdownButtonClick);
   }
-
+  
   /** @param {HTMLLIElement} option */
   function showOpTooltip(option) {
     let rect = option.getBoundingClientRect();
@@ -383,11 +396,11 @@
     opTooltip.style.top = `${rect.top + window.scrollY}px`;
     opTooltip.style.display = "block";
   }
-
+  
   function hideOpTooltip() {
     opTooltip.style.display = "none";
   }
-
+  
   /** @param {HTMLInputElement} textbox */
   function confirmInput(textbox, focusNext) {
     if(properties.multiSelect){
@@ -415,5 +428,6 @@
       hideOptions();
     }
   }
-
-})()</script>
+  
+  })()</script>
+{% endcomment %}

@@ -21,3 +21,9 @@ SUPERUSER_PWD="user"
 project directory.  
 * After docker container is fully launched, visit `localhost` in a browser to 
 see the website
+
+### Compiling
+
+* You must first compile the typescript frontend to javascript before running 
+the docker container. Assuming you're using npm, simply run `npm run build` to 
+run the build script for the typescript frontend defined in package.json

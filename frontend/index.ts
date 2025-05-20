@@ -2,11 +2,12 @@
  * entry point module for the website frontend logic
  */
 
-import { Widget, ModelObjectSelector } from "./loader";
+import { RequiredInput, Widget, ModelObjectSelector } from "./loader";
 
 function main() {
 	// initialize all widgets
 	Widget.initializeWidgets(ModelObjectSelector);
+	RequiredInput.applyRequirementLevels();
 }
 
 // call main when document DOM tree is finished building so that we can access

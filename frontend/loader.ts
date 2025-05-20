@@ -5,5 +5,6 @@
  * where they are defined.
  */
 
+export * from "./widgets/requiredInput";
 export * from "./widgets/widget";
 export * from "./widgets/modelObjectSelector";

@@ -2,6 +2,8 @@
  * Module that handles definition of base class for all widgets
  */
 
+import { RequirementLevel } from "../loader";
+
 /** 
  * name of the attribute on the html element that contains JSON properties 
  * for widget configuration 
@@ -13,14 +15,6 @@ export const uidAttribute = "data-hssi-uid";
 export const widgetAttribute = "data-hssi-widget";
 export const typeAttribute = "data-hssi-type";
 
-export enum RequirementLevel {
-	/** its optional - unnecessary if not relevant */
-	OPTIONAL = 0,
-	/** its recommended to not be left blank */
-	RECOMMENDED = 1,
-	/** it must be filled or else the form cannot be submitted */
-	MANDATORY = 2,
-}
 
 /**
  * Base class for all widgets

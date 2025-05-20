@@ -138,7 +138,13 @@ export class ModelObjectSelector extends Widget {
 	/** Handles input focus or input event */
 	private handleFocusIn(e: Event): void {
 		const isFocusEvt = e instanceof FocusEvent;
-		this.input = e.target as any;
+		let target: HTMLInputElement = e.target as any;
+		if (!(e.target instanceof HTMLInputElement)) {
+			target = target.parentElement.querySelector<HTMLInputElement>("input");
+			target.focus();
+			return;
+		}
+		this.input = target;
 		if (this.properties.dropdown_on_focus || !isFocusEvt) {
 			const filterStr = isFocusEvt && !this.properties.filter_on_focus ? "" : null;
 			if (this.properties.dropdown_on_blank || this.input.value.length > 0) {
@@ -153,6 +159,7 @@ export class ModelObjectSelector extends Widget {
 	private handleFocusOut(e: FocusEvent): void {
 		const target = e.target as HTMLElement;
 		const focusTarget = e.relatedTarget;
+		console.log(focusTarget);
 		if (!focusTarget || !this.optionList.contains(focusTarget as HTMLUListElement)) {
 			this.hideOptions();
 		}

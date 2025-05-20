@@ -99,7 +99,11 @@ export class ModelObjectSelector extends Widget {
 				choice.keywords = choice.keywords.map(k => k?.toLocaleUpperCase());
 			}
 		}
+		this.createChoiceLIs();
+		this.addEvents(this.input.parentElement);
+	}
 
+	private createChoiceLIs(): void {
 		this.allChoices.forEach(choice => {
 			const li = document.createElement("li") as ChoiceLi;
 			li.tabIndex = 0;
@@ -109,15 +113,13 @@ export class ModelObjectSelector extends Widget {
 			li.innerText = choice.name;
 			this.optionList.appendChild(li);
 
-			li.addEventListener("click", () => this.selectOption(li));
+			li.addEventListener("click", () => this.selectOption(li, false));
 			if (this.properties.option_tooltips) {
 				li.title = choice.tooltip || "";
 				li.addEventListener("mouseenter", () => this.showTooltip(li));
 				li.addEventListener("mouseout", () => this.hideTooltip());
 			}
 		});
-
-		this.addEvents(this.input.parentElement);
 	}
 
 	private addEvents(container: HTMLElement): void {
@@ -235,18 +237,18 @@ export class ModelObjectSelector extends Widget {
 	}
 
 	/** Handles when a user selects an option */
-	private selectOption(option: HTMLLIElement): void {
+	private selectOption(option: HTMLLIElement, focusNext: boolean = true): void {
 		const data = (option as ChoiceLi).data;
 		this.input.value = data.name;
 		this.input.setAttribute("data-id", data.id);
 		option.classList.remove("highlighted");
 		this.selectedOption = -1;
 		this.hideOptions();
-		this.confirmInput();
+		this.confirmInput(focusNext);
 	}
 
 	/** Finalizes input value, adds input if multiselect is enabled */
-	private confirmInput(): void {
+	private confirmInput(focusNext: boolean = true): void {
 		if (this.properties.multi_select) {
 			const lastInput = this.allInputs[this.allInputs.length - 1];
 			if (this.input !== lastInput) {
@@ -258,10 +260,12 @@ export class ModelObjectSelector extends Widget {
 				newInput.value = "";
 				this.input.parentElement.parentElement.appendChild(clone);
 				this.allInputs.push(newInput);
-				this.input = newInput;
-				this.input.focus();
+				if(focusNext) this.input = newInput;
 			}
-			this.hideOptions();
+			if(focusNext){
+				this.input.focus();
+				this.hideOptions();
+			}
 		} else {
 			this.input.setAttribute("data-id", "-1");
 			this.hideOptions();

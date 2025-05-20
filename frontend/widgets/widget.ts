@@ -15,6 +15,9 @@ export const uidAttribute = "data-hssi-uid";
 export const widgetAttribute = "data-hssi-widget";
 export const typeAttribute = "data-hssi-type";
 
+export interface BaseProperties extends Record<string, any> {
+	requirement_level: RequirementLevel;
+}
 
 /**
  * Base class for all widgets
@@ -28,7 +31,7 @@ export abstract class Widget {
 	public element: HTMLElement | null = null;
 
 	/** holds congfiguration properties for the widget */
-	public properties: Record<string, any> = {};
+	public properties: BaseProperties = {} as any;
 
 	public constructor(elem: HTMLElement) {
 		this.element = elem;
@@ -46,7 +49,7 @@ export abstract class Widget {
 	}
 
 	/** set default properties on the widget */
-	protected getDefaultProperties(): Record<string, any> {
+	protected getDefaultProperties(): BaseProperties {
 		return {
 			requirement_level: RequirementLevel.OPTIONAL,
 		};

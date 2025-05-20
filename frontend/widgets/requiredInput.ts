@@ -77,6 +77,7 @@ export class RequiredInput {
 
 		// iterate through all inputs
 		this.findRequiredInputs();
+		console.log("found " + this.all.length + " required inputs");
 		for(const input of this.all) {
 
 			// enforce required attribute if mandatory

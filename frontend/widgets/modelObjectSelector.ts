@@ -3,7 +3,9 @@
  */
 
 import { 
-	Widget, propertiesType, uidAttribute, typeAttribute, RequirementLevel
+	Widget, propertiesType, uidAttribute, typeAttribute,
+	type BaseProperties,
+	requirementAttribute
 } from "../loader";
 
 const choicesType = "json-choices";
@@ -39,7 +41,7 @@ export class ModelObjectSelector extends Widget {
 	private allChoices: Choice[] = [];
 	private allInputs: HTMLInputElement[] = [];
 
-	protected getDefaultProperties(): Record<string, any> {
+	protected getDefaultProperties(): BaseProperties {
 		return {
 			... super.getDefaultProperties(),
 			case_sensitive_filtering: false,
@@ -87,6 +89,11 @@ export class ModelObjectSelector extends Widget {
 		this.input.spellcheck = false;
 		this.allInputs.push(this.input);
 
+		// set requirement level
+		this.input.setAttribute(
+			requirementAttribute, this.properties.requirement_level.toString()
+		);
+
 		// find the tooltip element
 		this.tooltip = this.element.querySelector(
 			`[${typeAttribute}=${tooltipType}]`
@@ -120,7 +127,6 @@ export class ModelObjectSelector extends Widget {
 			li.innerText = choice.name;
 			this.optionList.appendChild(li);
 
-			console.log(this.properties);
 			li.addEventListener("click", () => this.selectOption(li, false));
 			if (this.properties.option_tooltips) {
 				li.addEventListener("mouseenter", e => this.showTooltip(li, e.clientX + window.scrollX));

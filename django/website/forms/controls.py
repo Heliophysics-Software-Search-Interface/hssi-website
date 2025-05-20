@@ -72,7 +72,7 @@ class ModelObjectSelector(forms.TextInput):
     def auto_textbox(
         cls, model: Type[HssiModel], mutli_select = False, attrs: dict = None
     ) -> 'ModelObjectSelector':
-        """ creates a dropdown selector for the given model"""
+        """ creates a dropdown selector for the given model """
         return cls(model, {
             'multi_select': mutli_select,
             'dropdown_on_blank': False,
@@ -87,6 +87,7 @@ class ModelObjectSelector(forms.TextInput):
         return cls(model, {'multi_select': mutli_select, **(attrs or {}) })
 
     def get_context(self, name, value, attrs) -> dict:
+        attrs['data-hssi-required'] = str(self.requirement_level.value)
         context = super().get_context(name, value, attrs)
 
         properties: dict = {

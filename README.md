@@ -24,6 +24,15 @@ see the website
 
 ### Compiling
 
-* You must first compile the typescript frontend to javascript before running 
-the docker container. Assuming you're using npm, simply run `npm run build` to 
+You must first compile the typescript frontend to javascript before running 
+the docker container. If you have do not have a package manager, I recommend 
+installing [bun](https://bun.sh/package-manager), then restart your terminal
+or IDE, and follow the instructions below (if using bun, you'll need to replace 
+`npm` in each command with `bun`).
+
+* First you will need to install the dev dependencies required for building.
+Assuming you're using npm, use the command `npm install` to install dependencies
+from package.json
+
+* After dependencies are finished installing, simply run `npm run build` to 
 run the build script for the typescript frontend defined in package.json

@@ -216,7 +216,7 @@ export class ModelObjectSelector extends Widget {
 
 		for (const option of children) {
 			const data = (option as ChoiceLi).data;
-			const match = splitInput.some(word => data.keywords.some(kw => kw.includes(word)));
+			const match = splitInput.some(word => data.keywords.some(kw => kw?.includes(word)));
 			option.style.display = (match || inputVal.length <= 0) ? "block" : "none";
 			if (option.style.display === "block") this.filteredOptions.push(option);
 		}

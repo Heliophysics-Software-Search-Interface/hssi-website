@@ -1,6 +1,7 @@
 import json
 from django import forms
 
+from enum import Enum
 from typing import NamedTuple, Type
 from ..models import HssiModel
 
@@ -16,6 +17,11 @@ class ModelObjectChoice(NamedTuple):
     name: str
     keywords: list[str]
     tooltip: str
+
+class RequirementLevel(Enum):
+    OPTIONAL = 0
+    RECOMMENDED = 1
+    MANDATORY = 2
 
 class ModelObjectSelector(forms.TextInput):
     """
@@ -33,8 +39,9 @@ class ModelObjectSelector(forms.TextInput):
     dropdown_button: bool = False
     dropdown_on_focus: bool = True
     dropdown_on_blank: bool = True
-    option_tooltips: bool = True,
-    new_object_field: str | None = None,
+    option_tooltips: bool = True
+    new_object_field: str | None = None
+    requirement_level: RequirementLevel = RequirementLevel.OPTIONAL
 
     def __init__(self, model: Type[HssiModel], attrs: dict = None):
         super().__init__(attrs)
@@ -81,11 +88,10 @@ class ModelObjectSelector(forms.TextInput):
 
     def get_context(self, name, value, attrs) -> dict:
         context = super().get_context(name, value, attrs)
-        context['widget']['case_sensitive_filtering'] = bool_js_string(
-            self.case_sensitive_filtering
-        )
 
         properties: dict = {
+            'requirement_level': self.requirement_level.value,
+            'case_sensitive_filtering': self.case_sensitive_filtering,
             'multi_select': self.multi_select,
             'filter_on_focus': self.filter_on_focus,
             'dropdown_button': self.dropdown_button,

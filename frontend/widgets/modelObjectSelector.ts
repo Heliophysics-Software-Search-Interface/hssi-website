@@ -3,7 +3,7 @@
  */
 
 import { 
-	Widget, propertiesType, uidAttribute, typeAttribute 
+	Widget, propertiesType, uidAttribute, typeAttribute, RequirementLevel
 } from "../loader";
 
 const choicesType = "json-choices";
@@ -39,8 +39,9 @@ export class ModelObjectSelector extends Widget {
 	private allChoices: Choice[] = [];
 	private allInputs: HTMLInputElement[] = [];
 
-	protected setDefaultProperties(): void {
-		this.properties = {
+	protected getDefaultProperties(): Record<string, any> {
+		return {
+			... super.getDefaultProperties(),
 			case_sensitive_filtering: false,
     		multi_select: false,
     		filter_on_focus: true,
@@ -64,7 +65,10 @@ export class ModelObjectSelector extends Widget {
 				`script[${typeAttribute}=${propertiesType}]`
 			).textContent
 		);
-		for(const prop in propertySpec) this.properties[prop] = propertySpec[prop];
+		this.properties = {
+			...this.properties,
+			...propertySpec,
+		}
 
 		// find option list element and properly append it
 		this.optionList = this.element.querySelector("ul") as HTMLUListElement;

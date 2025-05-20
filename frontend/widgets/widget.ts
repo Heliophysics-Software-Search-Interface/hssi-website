@@ -13,6 +13,15 @@ export const uidAttribute = "data-hssi-uid";
 export const widgetAttribute = "data-hssi-widget";
 export const typeAttribute = "data-hssi-type";
 
+export enum RequirementLevel {
+	/** its optional - unnecessary if not relevant */
+	OPTIONAL = 0,
+	/** its recommended to not be left blank */
+	RECOMMENDED = 1,
+	/** it must be filled or else the form cannot be submitted */
+	MANDATORY = 2,
+}
+
 /**
  * Base class for all widgets
  */
@@ -29,7 +38,7 @@ export abstract class Widget {
 
 	public constructor(elem: HTMLElement) {
 		this.element = elem;
-		this.setDefaultProperties()
+		this.properties = this.getDefaultProperties()
 
 		// parse all the properties defined in the data property attribute of 
 		// the top-level element for the widget and apply them to this class
@@ -43,7 +52,11 @@ export abstract class Widget {
 	}
 
 	/** set default properties on the widget */
-	protected abstract setDefaultProperties(): void
+	protected getDefaultProperties(): Record<string, any> {
+		return {
+			requirement_level: RequirementLevel.OPTIONAL,
+		};
+	}
 
 	/** custom initialization logic for widget */
 	protected abstract initialize(): void

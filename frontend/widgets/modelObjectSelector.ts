@@ -41,14 +41,14 @@ export class ModelObjectSelector extends Widget {
 
 	protected setDefaultProperties(): void {
 		this.properties = {
-			caseSensitiveFiltering: false,
-    		multiSelect: false,
-    		filterOnFocus: true,
-    		dropdownOnFocus: true,
-    		dropdownOnBlank: false,
-    		dropdownButton: false,
-    		optionTooltips: true,
-    		newObjectField: null,
+			case_sensitive_filtering: false,
+    		multi_select: false,
+    		filter_on_focus: true,
+    		dropdown_on_focus: true,
+    		dropdown_on_blank: false,
+    		dropdown_button: false,
+    		option_tooltips: true,
+    		new_object_field: null,
 		};
 	}
 
@@ -59,11 +59,12 @@ export class ModelObjectSelector extends Widget {
 
 		// get properties and uuid from data attributes
 		this.uid = this.element.getAttribute(uidAttribute);
-		this.properties = JSON.parse(
+		const propertySpec = JSON.parse(
 			this.element.querySelector<HTMLOrSVGScriptElement>(
 				`script[${typeAttribute}=${propertiesType}]`
 			).textContent
 		);
+		for(const prop in propertySpec) this.properties[prop] = propertySpec[prop];
 
 		// find option list element and properly append it
 		this.optionList = this.element.querySelector("ul") as HTMLUListElement;
@@ -86,6 +87,8 @@ export class ModelObjectSelector extends Widget {
 		this.tooltip = this.element.querySelector(
 			`[${typeAttribute}=${tooltipType}]`
 		) as HTMLDivElement;
+		this.tooltip.remove();
+		document.body.appendChild(this.tooltip);
 
 		// gather the choices from the element
 		this.allChoices = JSON.parse(
@@ -113,9 +116,9 @@ export class ModelObjectSelector extends Widget {
 			li.innerText = choice.name;
 			this.optionList.appendChild(li);
 
+			console.log(this.properties);
 			li.addEventListener("click", () => this.selectOption(li, false));
 			if (this.properties.option_tooltips) {
-				li.title = choice.tooltip || "";
 				li.addEventListener("mouseenter", () => this.showTooltip(li));
 				li.addEventListener("mouseout", () => this.hideTooltip());
 			}
@@ -299,7 +302,8 @@ export class ModelObjectSelector extends Widget {
 	}
 
 	/** Shows a tooltip near the hovered option */
-	private showTooltip(option: HTMLLIElement): void {
+	private showTooltip(option: ChoiceLi): void {
+		console.log(option.data);
 		const rect = option.getBoundingClientRect();
 		this.tooltip.style.left = `${rect.right + window.scrollX + 10}px`;
 		this.tooltip.style.top = `${rect.top + window.scrollY}px`;

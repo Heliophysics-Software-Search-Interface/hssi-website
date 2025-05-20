@@ -159,7 +159,6 @@ export class ModelObjectSelector extends Widget {
 	private handleFocusOut(e: FocusEvent): void {
 		const target = e.target as HTMLElement;
 		const focusTarget = e.relatedTarget;
-		console.log(focusTarget);
 		if (!focusTarget || !this.optionList.contains(focusTarget as HTMLUListElement)) {
 			this.hideOptions();
 		}
@@ -175,6 +174,7 @@ export class ModelObjectSelector extends Widget {
 					this.selectedOption = (this.selectedOption + 1) % this.filteredOptions.length;
 				}
 				break;
+
 			case "ArrowUp":
 				if (this.optionList.style.display !== "none") {
 					optionChanged = this.selectedOption;
@@ -183,6 +183,7 @@ export class ModelObjectSelector extends Widget {
 					) % this.filteredOptions.length;
 				}
 				break;
+
 			case "Enter":
 				if (this.selectedOption >= 0) {
 					this.selectOption(this.filteredOptions[this.selectedOption]);
@@ -191,10 +192,28 @@ export class ModelObjectSelector extends Widget {
 				}
 				evt.preventDefault();
 				break;
+
 			case " ":
 				if (evt.ctrlKey) {
 					this.filterOptions();
 				}
+				break;
+
+			case 'Backspace':
+				if(this.input.value.length <= 0 && this.allInputs.length > 1) {
+					let index = this.allInputs.indexOf(evt.target as any);
+					if(index <= 0){
+						this.allInputs[1].focus();
+					}
+					else {
+						index -= 1;
+						this.allInputs[index].focus();
+					}
+				}
+				break;
+			
+			case "Escape":
+				this.hideOptions();
 				break;
 		}
 		if (this.selectedOption >= 0 && optionChanged !== this.selectedOption) {

@@ -2,8 +2,7 @@
  * entry point module for the website frontend logic
  */
 
-import { Widget } from "./loader";
-import { ModelObjectSelector } from "./loader";
+import { Widget, ModelObjectSelector } from "./loader";
 
 function main() {
 	// initialize all widgets

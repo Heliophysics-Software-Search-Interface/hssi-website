@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from .auxillary_info import Functionality, Award, RelatedItem
 
 # Character length limits
+LEN_LONGNAME = 512
 LEN_NAME = 100
 LEN_ABBREVIATION = 5
 
@@ -102,11 +103,20 @@ class Region(ControlledList):
 class InstrumentObservatory(HssiModel):
     '''An observatory or scientific research instrument'''
     type = models.IntegerField(choices=InstrObsType.choices, default=InstrObsType.UNKNOWN)
-    name = models.CharField(max_length=LEN_NAME)
+    name = models.CharField(max_length=LEN_LONGNAME)
+    abbreviation = models.CharField(max_length=LEN_NAME, null=True, blank=True)
     identifier = models.URLField(blank=True, null=True)
 
+    def get_search_terms(self) -> list[str]:
+        terms = []
+        if self.abbreviation:
+            terms.append(self.abbreviation)
+        terms.extend(self.name.split(' '))
+        return terms
+    
     class Meta: ordering = ['name']
-    def __str__(self): return self.name
+    def __str__(self): 
+        return f"{self.name} ({self.abbreviation})" if self.abbreviation else self.name
 
 ## Complex Root Models ---------------------------------------------------------
 
@@ -122,7 +132,7 @@ class FunctionCategory(ControlledList):
     def __str__(self): return self.name
 
 class License(HssiModel):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=LEN_NAME)
     url = models.URLField(blank=True, null=True)
 
     # specified for intellisense, defined in other models

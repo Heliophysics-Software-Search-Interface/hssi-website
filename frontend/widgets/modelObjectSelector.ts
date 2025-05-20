@@ -32,7 +32,6 @@ export class ModelObjectSelector extends Widget {
 
 	private uid: string = "";
 	private input: HTMLInputElement = null;
-	private dropdownButton: HTMLButtonElement = null;
 	private optionList: HTMLUListElement = null;
 	private tooltip: HTMLDivElement = null;
 	private filteredOptions: HTMLLIElement[] = [];
@@ -66,12 +65,16 @@ export class ModelObjectSelector extends Widget {
 			).textContent
 		);
 
-		// find option list element and dropdown button
+		// find option list element and properly append it
 		this.optionList = this.element.querySelector("ul") as HTMLUListElement;
-		this.dropdownButton = this.element.querySelector<HTMLButtonElement>(
+		this.optionList.remove();
+		document.body.appendChild(this.optionList);
+
+		// find dropdown button and remove it if disabled
+		const dropdownButton = this.element.querySelector<HTMLButtonElement>(
 			`button[${typeAttribute}=${dropdownButtonType}]`
 		);
-		if(!this.properties.dropdown_button) this.dropdownButton.remove();
+		if(!this.properties.dropdown_button) dropdownButton.remove();
 
 		// find input element to use
 		this.input = this.element.querySelector("input") as HTMLInputElement;
@@ -114,15 +117,26 @@ export class ModelObjectSelector extends Widget {
 			}
 		});
 
-		this.input.addEventListener("focus", e => this.handleFocusIn(e));
-		this.input.addEventListener("input", e => this.handleFocusIn(e));
-		this.input.addEventListener("keydown", e => this.handleKeyNav(e));
-		this.input.addEventListener("focusout", e => this.handleFocusOut(e));
+		this.addEvents(this.input.parentElement);
+	}
+
+	private addEvents(container: HTMLElement): void {
+		const input = container.querySelector<HTMLInputElement>("input");
+		input.addEventListener("focus", e => this.handleFocusIn(e));
+		input.addEventListener("input", e => this.handleFocusIn(e));
+		input.addEventListener("focusout", e => this.handleFocusOut(e));
+		input.addEventListener("keydown", e => this.handleKeyNav(e));
+
+		if(this.properties.dropdown_button) {
+			const button = container.querySelector<HTMLButtonElement>("button");
+			button.addEventListener("click", e => this.handleFocusIn(e))
+		}
 	}
 
 	/** Handles input focus or input event */
 	private handleFocusIn(e: Event): void {
 		const isFocusEvt = e instanceof FocusEvent;
+		this.input = e.target as any;
 		if (this.properties.dropdown_on_focus || !isFocusEvt) {
 			const filterStr = isFocusEvt && !this.properties.filter_on_focus ? "" : null;
 			if (this.properties.dropdown_on_blank || this.input.value.length > 0) {
@@ -191,7 +205,7 @@ export class ModelObjectSelector extends Widget {
 		}
 		this.selectedOption = -1;
 		this.filteredOptions = [];
-
+		
 		let inputVal = filterStr !== null ? filterStr : this.input.value;
 		if (!this.properties.case_sensitive_filtering) {
 			inputVal = inputVal.toLocaleUpperCase();
@@ -203,7 +217,7 @@ export class ModelObjectSelector extends Widget {
 		for (const option of children) {
 			const data = (option as ChoiceLi).data;
 			const match = splitInput.some(word => data.keywords.some(kw => kw.includes(word)));
-			option.style.display = match || inputVal.length === 0 ? "block" : "none";
+			option.style.display = (match || inputVal.length <= 0) ? "block" : "none";
 			if (option.style.display === "block") this.filteredOptions.push(option);
 		}
 
@@ -212,6 +226,12 @@ export class ModelObjectSelector extends Widget {
 		this.optionList.style.top = `${rect.bottom + window.scrollY}px`;
 		this.optionList.style.width = `${rect.width}px`;
 		this.optionList.style.display = "block";
+	}
+
+	/** Hides the dropdown list */
+	private hideOptions(): void {
+		this.optionList.style.display = "none";
+		this.hideTooltip();
 	}
 
 	/** Handles when a user selects an option */
@@ -232,10 +252,11 @@ export class ModelObjectSelector extends Widget {
 			if (this.input !== lastInput) {
 				this.input = lastInput;
 			} else {
-				const clone = this.input.parentElement!.cloneNode(true) as HTMLElement;
+				const clone = this.input.parentElement.cloneNode(true) as HTMLElement;
+				this.addEvents(clone);
 				const newInput = clone.querySelector("input")!;
 				newInput.value = "";
-				this.input.parentElement!.parentElement!.appendChild(clone);
+				this.input.parentElement.parentElement.appendChild(clone);
 				this.allInputs.push(newInput);
 				this.input = newInput;
 				this.input.focus();
@@ -245,12 +266,6 @@ export class ModelObjectSelector extends Widget {
 			this.input.setAttribute("data-id", "-1");
 			this.hideOptions();
 		}
-	}
-
-	/** Hides the dropdown list */
-	private hideOptions(): void {
-		this.optionList.style.display = "none";
-		this.hideTooltip();
 	}
 
 	/** Shows a tooltip near the hovered option */

@@ -26,12 +26,15 @@ class ModelObjectSelector(forms.TextInput):
     template_name: str = 'widgets/model_object_selector.html'
     model: Type[HssiModel] | None = None
     filter: dict = {}
+
     case_sensitive_filtering: bool = False
     multi_select: bool = False
     filter_on_focus: bool = True
     dropdown_button: bool = False
     dropdown_on_focus: bool = True
     dropdown_on_blank: bool = True
+    option_tooltips: bool = True,
+    new_object_field: str | None = None,
 
     def __init__(self, model: Type[HssiModel], attrs: dict = None):
         super().__init__(attrs)
@@ -88,6 +91,8 @@ class ModelObjectSelector(forms.TextInput):
             'dropdown_button': self.dropdown_button,
             'dropdown_on_focus': self.dropdown_on_focus,
             'dropdown_on_blank': self.dropdown_on_blank,
+            'option_tooltips': self.option_tooltips,
+            'new_object_field': self.new_object_field,
         }
         context['widget']['properties'] = properties
         context['widget']['properties_json'] = json.dumps(properties)

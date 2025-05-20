@@ -119,7 +119,7 @@ export class ModelObjectSelector extends Widget {
 			console.log(this.properties);
 			li.addEventListener("click", () => this.selectOption(li, false));
 			if (this.properties.option_tooltips) {
-				li.addEventListener("mouseenter", () => this.showTooltip(li));
+				li.addEventListener("mouseenter", e => this.showTooltip(li, e.clientX + window.scrollX));
 				li.addEventListener("mouseout", () => this.hideTooltip());
 			}
 		});
@@ -302,12 +302,25 @@ export class ModelObjectSelector extends Widget {
 	}
 
 	/** Shows a tooltip near the hovered option */
-	private showTooltip(option: ChoiceLi): void {
-		console.log(option.data);
+	private showTooltip(option: ChoiceLi, cursorX: number = null): void {
+		const tipText = (option.data?.tooltip || "").trim();
+		if(tipText.length <= 0)  return;
+		this.tooltip.innerText = tipText;
+
 		const rect = option.getBoundingClientRect();
 		this.tooltip.style.left = `${rect.right + window.scrollX + 10}px`;
 		this.tooltip.style.top = `${rect.top + window.scrollY}px`;
 		this.tooltip.style.display = "block";
+
+		if(cursorX != null) {
+			this.tooltip.style.left = `${cursorX + 100}px`;
+		}
+		
+		const tooltipRect = this.tooltip.getBoundingClientRect();
+		if (tooltipRect.right > window.innerWidth) {
+			const diff = tooltipRect.right - window.innerWidth;
+			this.tooltip.style.left = `${tooltipRect.left - diff}px`;
+		}
 	}
 
 	/** Hides the tooltip */

@@ -3,20 +3,9 @@ from django import forms
 
 from enum import Enum
 from typing import NamedTuple, Type
-from ..models import HssiModel
 
-## Utility ---------------------------------------------------------------------
-
-class RequirementLevel(Enum):
-    OPTIONAL = 0
-    RECOMMENDED = 1
-    MANDATORY = 2
-
-    def __str__(self) -> str: return str(self.value)
-
-REQ_LVL_ATTR = "data-hssi-required"
-
-## Combo box -------------------------------------------------------------------
+from . import RequirementLevel, REQ_LVL_ATTR
+from ...models import HssiModel
 
 class ModelObjectChoice(NamedTuple):
     id: str

@@ -4,8 +4,8 @@
 
 import { 
 	Widget, propertiesType, uidAttribute, typeAttribute,
-	requirementAttributeContainer,
-	type BaseProperties,
+	requirementAttributeContainer, invalidManStyle, invalidRecStyle,
+	type BaseProperties, 
 } from "../loader";
 
 const choicesType = "json-choices";
@@ -296,6 +296,9 @@ export class ModelObjectSelector extends Widget {
 				this.input = lastInput;
 			} else {
 				const clone = this.input.parentElement.cloneNode(true) as HTMLElement;
+				clone.removeAttribute(requirementAttributeContainer);
+				clone.classList.remove(invalidManStyle);
+				clone.classList.remove(invalidRecStyle);
 				this.addEvents(clone);
 				const newInput = clone.querySelector("input")!;
 				newInput.value = "";

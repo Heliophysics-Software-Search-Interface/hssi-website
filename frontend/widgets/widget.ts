@@ -91,8 +91,10 @@ export abstract class Widget {
 			widgetClass, 
 			document.querySelectorAll(`[${widgetAttribute}='${widgetClass.name}']`),
 		);
-		console.log("found " + widgets.length + " with " + `[${widgetAttribute}='${widgetClass.name}']`)
+		
 		for(const widget of widgets) widget.initialize();
+		console.log("Initialized " + widgets.length)
+
 		return widgets;
 	}
 }

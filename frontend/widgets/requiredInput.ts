@@ -134,6 +134,9 @@ export class RequiredInput {
 	*/
 	private static all: RequiredInput[] = [];
 
+	/** map applicable elements to their corresponding required input object */
+	private static elementMap: Map<HTMLElement, RequiredInput> = new Map();
+
 	/// Static methods ---------------------------------------------------------
 
 	/** finds all required widgets in the document and stores them */
@@ -159,24 +162,31 @@ export class RequiredInput {
 
 			const elemReqLvl = Number.parseInt(elem.getAttribute(requirementAttribute));
 			if(elemReqLvl > RequirementLevel.OPTIONAL) {
-				this.all.push(new RequiredInput(elem as FormElement, elemReqLvl));
+				const reqIn = new RequiredInput(elem as FormElement, elemReqLvl);
+				this.all.push(reqIn);
+				this.elementMap.set(elem, reqIn);
 			}
 		}
 
 		// query for all containers (for widgets with potential multi input elements)
 		const containers = document.querySelectorAll(`[${requirementAttributeContainer}]`);
 		for(const container of containers) {
+			if(!(container instanceof HTMLElement)) continue;
+
 			const elem = container.querySelector(`input`);
 			if(!elem) throw new Error("No input found in container with requirement attribute");
-			const elemReqLvl = Number.parseInt(container.getAttribute(requirementAttributeContainer));
+			const elemReqLvl = Number.parseInt(
+				container.getAttribute(requirementAttributeContainer)
+			);
+			
 			if(elemReqLvl > RequirementLevel.OPTIONAL) {
-				this.all.push(
-					new RequiredInput(
-						elem as FormElement, 
-						elemReqLvl, 
-						container as HTMLElement
-					)
-				);
+				const reqIn = new RequiredInput(
+					elem as FormElement, 
+					elemReqLvl, 
+					container as HTMLElement
+				)
+				this.all.push(reqIn);
+				this.elementMap.set(container, reqIn);
 			}
 		}
 	}
@@ -208,5 +218,15 @@ export class RequiredInput {
 				});
 			}
 		}
+	}
+
+	/** 
+	 * get the associated {@link RequiredInput} object from a given html element
+	 */
+	public static getFromElement(element: HTMLElement): RequiredInput {
+		if(this.elementMap.has(element)) {
+			return this.elementMap.get(element);
+		}
+		return null;
 	}
 }

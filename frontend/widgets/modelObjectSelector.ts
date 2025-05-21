@@ -218,12 +218,13 @@ export class ModelObjectSelector extends Widget {
 			case 'Backspace':
 				if(this.input.value.length <= 0 && this.allInputs.length > 1) {
 					let index = this.allInputs.indexOf(evt.target as any);
-					if(index <= 0){
-						this.allInputs[1].focus();
-					}
-					else {
+					if(index > 0){
+						this.allInputs[index].parentElement.remove();
+						this.allInputs.splice(index, 1);
 						index -= 1;
-						this.allInputs[index].focus();
+						this.input = this.allInputs[index];
+						this.input.focus();
+						this.input.value += " ";
 					}
 				}
 				break;
@@ -291,6 +292,10 @@ export class ModelObjectSelector extends Widget {
 
 	/** Finalizes input value, adds input if multiselect is enabled */
 	private confirmInput(focusNext: boolean = true): void {
+		if (this.input.value.trim().length <= 0) {
+			this.hideOptions();
+			return;
+		}
 		if (this.properties.multi_select) {
 			const lastInput = this.allInputs[this.allInputs.length - 1];
 			if (this.input !== lastInput) {

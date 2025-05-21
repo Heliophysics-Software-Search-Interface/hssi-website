@@ -19,6 +19,8 @@ export enum RequirementLevel {
 
 interface FormElement extends HTMLElement {
 	required: boolean;
+	type: string;
+	value: string;
 	checkValidity: () => boolean;
 }
 
@@ -42,7 +44,7 @@ export class RequiredInput {
 	}
 
 	private getNoteText(): string {
-		const valid = this.element.checkValidity();
+		const valid = this.isValidNonNull();
 		if(valid || this.requirementLevel == RequirementLevel.OPTIONAL) return "";
 
 		let note = "";
@@ -72,11 +74,12 @@ export class RequiredInput {
 	private onFocusExit(e: FocusEvent): void {
 		
 		// no need to add invalid styles if it is filled out
-		if(this.element.checkValidity()) return;
+		if(this.isValidNonNull()) return;
 
 		// add invalid style
 		let className = "";
 		switch(this.requirementLevel) {
+			case RequirementLevel.OPTIONAL: return;
 			case RequirementLevel.RECOMMENDED: className = invalidRecStyle; break;
 			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
 		}
@@ -84,6 +87,18 @@ export class RequiredInput {
 		this.noteElement.classList.add(className);
 		this.noteElement.style.display = "block";
 		this.noteElement.innerText = this.getNoteText();
+	}
+
+	private isValidNonNull(): boolean {
+		switch(this.element.type) {
+			case "text": case "email": case "url": case "tel": case "search": 
+			case "number": case "date": case "datetime-local": case "month": 
+			case "week": case "time": case "color": case "range": 
+				return this.element.checkValidity() && this.element.value.trim().length > 0;
+			case "checkbox": case "radio":
+				return this.element.checkValidity() && (this.element as any).checked;
+		}
+		return true;
 	}
 
 	/** 

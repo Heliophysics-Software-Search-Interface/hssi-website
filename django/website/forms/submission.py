@@ -143,7 +143,10 @@ class SubmissionForm(forms.Form):
             ModelObjectSelector.dropdown_selector(ProgrammingLanguage, True)
         )
 
-        self.fields['field_authors'].widget = ModelObjectSelector.auto_textbox(Person, True)
+        self.fields['field_authors'].widget = ModelObjectSelector.auto_textbox(
+            Person, True, RequirementLevel.MANDATORY
+        )
+
         self.fields['field_publisher'].widget = ModelObjectSelector.auto_textbox(Organization, True)
 
         self.fields['field_development_status'].widget = (
@@ -158,29 +161,29 @@ class SubmissionForm(forms.Form):
             ModelObjectSelector.dropdown_selector(OperatingSystem, True)
         )
 
-        self.fields['field_related_instruments'].widget = (
-            ModelObjectSelector.auto_textbox(InstrumentObservatory, True)
+        self.fields['field_related_instruments'].widget = ModelObjectSelector.auto_textbox(
+            InstrumentObservatory, True, RequirementLevel.OPTIONAL
         )
         self.fields['field_related_instruments'].widget.filter = {
             'type': InstrObsType.INSTRUMENT.value
         }
 
         self.fields['field_related_observatories'].widget = (
-            ModelObjectSelector.auto_textbox(InstrumentObservatory, True)
+            ModelObjectSelector.auto_textbox(InstrumentObservatory, True, RequirementLevel.OPTIONAL)
         )
         self.fields['field_related_observatories'].widget.filter = {
             'type': InstrObsType.OBSERVATORY.value
         }
 
         self.fields['field_related_publications'].widget = (
-            ModelObjectSelector.auto_textbox(RelatedItem, True)
+            ModelObjectSelector.auto_textbox(RelatedItem, True, RequirementLevel.OPTIONAL)
         )
         self.fields['field_related_publications'].widget.filter = {
             'type': RelatedItemType.PUBLICATION.value
         }
 
         self.fields['field_awards'].widget = (
-            ModelObjectSelector.auto_textbox(Award, True)
+            ModelObjectSelector.auto_textbox(Award, True, RequirementLevel.OPTIONAL)
         )
         
         self.fields['field_software_functionality'].widget = (
@@ -188,32 +191,32 @@ class SubmissionForm(forms.Form):
         )
 
         self.fields['field_data_inputs'].widget = (
-            ModelObjectSelector.modelbox(DataInput, True)
+            ModelObjectSelector.modelbox(DataInput, True, RequirementLevel.OPTIONAL)
         )
 
         self.fields['field_related_datasets'].widget = (
-            ModelObjectSelector.auto_textbox(RelatedItem, True)
+            ModelObjectSelector.auto_textbox(RelatedItem, True, RequirementLevel.OPTIONAL)
         )
         self.fields['field_related_datasets'].widget.filter = {
             'type': RelatedItemType.DATASET.value
         }
 
         self.fields['field_related_software'].widget = (
-            ModelObjectSelector.auto_textbox(RelatedItem, True)
+            ModelObjectSelector.auto_textbox(RelatedItem, True, RequirementLevel.OPTIONAL)
         )
         self.fields['field_related_software'].widget.filter = {
             'type': RelatedItemType.SOFTWARE.value
         }
 
         self.fields['field_intereoperable_software'].widget = (
-            ModelObjectSelector.auto_textbox(RelatedItem, True)
+            ModelObjectSelector.auto_textbox(RelatedItem, True, RequirementLevel.OPTIONAL)
         )
         self.fields['field_intereoperable_software'].widget.filter = {
             'type': RelatedItemType.SOFTWARE.value
         }
 
         self.fields['field_keywords'].widget = (
-            ModelObjectSelector.auto_textbox(Phenomena, True)
+            ModelObjectSelector.auto_textbox(Phenomena, True, RequirementLevel.OPTIONAL)
         )
 
         self.fields['field_related_regions'].widget = (
@@ -225,7 +228,7 @@ class SubmissionForm(forms.Form):
         )
 
         self.fields['field_related_phenomena'].widget = (
-            ModelObjectSelector.auto_textbox(Phenomena, True)
+            ModelObjectSelector.auto_textbox(Phenomena, True, RequirementLevel.OPTIONAL)
         )
 
         self.set_tooltips()

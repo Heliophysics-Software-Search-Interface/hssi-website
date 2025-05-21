@@ -1,6 +1,7 @@
 {% load unique_id %}
 {% unique_id "modelbox" as uid %}
 
+{% block widget_style %}
 <style>
   .modelbox-container {
     position: relative;
@@ -66,16 +67,14 @@
     background:rgb(154, 181, 255);
   }
 </style>
+{% endblock %}
 
 <div 
   class="modelbox-container" 
   data-hssi-widget="ModelObjectSelector"
   data-hssi-uid="{{ uid }}"
 >
-  <ul 
-    class="modelbox-options {{ uid }}-options" 
-    style="display: none;"
-  > </ul>
+  {% block input_element %}
   <div>
     <div style="position: relative; display: block;">
       <input 
@@ -90,19 +89,27 @@
       <button 
         type="button"
         style="
-          position:absolute;
-          right: 0;
-          top: 0;
-          translateY(-50%);
-          height: 100%;
-          aspect-ratio: 1;
-          border-left: #ccc solid 1px;
+        position:absolute;
+        right: 0;
+        top: 0;
+        translateY(-50%);
+        height: 100%;
+        aspect-ratio: 1;
+        border-left: #ccc solid 1px;
         "
         class="dropdown-btn {{ uid }}-dropdown-btn"
         data-hssi-type="dropdown-button"
       >▼</button>
     </div>
   </div>
+  {% endblock %}
+  {% block aux_element %}
+  <ul 
+    class="modelbox-options {{ uid }}-options" 
+    style="display: none;"
+  > </ul>
+  {% endblock %}
+  {% block widget_data %}
   <div 
     class="modelbox-option-tooltip modelbox-op-tt-{{ uuid }}" 
     data-hssi-type="option-tooltip"
@@ -113,4 +120,5 @@
   <script type="application/json" data-hssi-type="json-choices">
     {{ widget.choices_json|safe }}
   </script>
+  {% endblock %}
 </div>

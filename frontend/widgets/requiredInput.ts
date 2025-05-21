@@ -3,6 +3,7 @@
 import { Widget } from "../loader";
 
 export const requirementAttribute = "data-hssi-required";
+export const requirementAttributeContainer = "data-hssi-required-container";
 
 export const invalidRecStyle = "invalid-recommended";
 export const invalidManStyle = "invalid-mandatory";
@@ -27,20 +28,40 @@ interface FormElement extends HTMLElement {
 export class RequiredInput {
 
 	public element: FormElement = null;
+	public elementContainer: HTMLElement = null;
 	public noteElement: HTMLDivElement = null;
 	public requirementLevel: RequirementLevel = RequirementLevel.OPTIONAL;
 	
-	public constructor(element: FormElement, requirementLevel: RequirementLevel) {
+	public constructor(
+		element: FormElement, 
+		requirementLevel: RequirementLevel, 
+		container: HTMLElement = null
+	) {
+		this.elementContainer = container
 		this.element = element;
 		this.requirementLevel = requirementLevel;
 		this.createNoteElement();
+	}
+
+	/// Private methods --------------------------------------------------------
+
+	private isValidNonNull(): boolean {
+		switch(this.element.type) {
+			case "text": case "email": case "url": case "tel": case "search": 
+			case "number": case "date": case "datetime-local": case "month": 
+			case "week": case "time": case "color": case "range": 
+				return this.element.checkValidity() && this.element.value.trim().length > 0;
+			case "checkbox": case "radio":
+				return this.element.checkValidity() && (this.element as any).checked;
+		}
+		return true;
 	}
 
 	private createNoteElement(): void {
 		this.noteElement = document.createElement("div");
 		this.noteElement.classList.add(noteStyle);
 		this.noteElement.style.display = "none";
-		this.element.insertAdjacentElement("afterend", this.noteElement);
+		this.getStyledElement().insertAdjacentElement("afterend", this.noteElement);
 	}
 
 	private getNoteText(): string {
@@ -59,6 +80,15 @@ export class RequiredInput {
 		return note;
 	}
 
+	/// Public methods ---------------------------------------------------------
+
+	/** returns the element that the invalid-* class style is applied to */
+	public getStyledElement(): HTMLElement {
+		return this.elementContainer ?? this.element;
+	}
+
+	/// Event listeners --------------------------------------------------------
+
 	private onFocusEnter(e: FocusEvent): void {
 		// remove invalid style
 		let className = "";
@@ -66,13 +96,13 @@ export class RequiredInput {
 			case RequirementLevel.RECOMMENDED: className = invalidRecStyle; break;
 			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
 		}
-		this.element.classList.remove(className);
+		this.getStyledElement().classList.remove(className);
 		this.noteElement.classList.remove(className);
 		this.noteElement.style.display = "none";
 	}
 
 	private onFocusExit(e: FocusEvent): void {
-		
+
 		// no need to add invalid styles if it is filled out
 		if(this.isValidNonNull()) return;
 
@@ -83,23 +113,15 @@ export class RequiredInput {
 			case RequirementLevel.RECOMMENDED: className = invalidRecStyle; break;
 			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
 		}
-		this.element.classList.add(className);
+
+		// add class to required element/container if applicable
+		this.getStyledElement().classList.add(className);
 		this.noteElement.classList.add(className);
 		this.noteElement.style.display = "block";
 		this.noteElement.innerText = this.getNoteText();
 	}
 
-	private isValidNonNull(): boolean {
-		switch(this.element.type) {
-			case "text": case "email": case "url": case "tel": case "search": 
-			case "number": case "date": case "datetime-local": case "month": 
-			case "week": case "time": case "color": case "range": 
-				return this.element.checkValidity() && this.element.value.trim().length > 0;
-			case "checkbox": case "radio":
-				return this.element.checkValidity() && (this.element as any).checked;
-		}
-		return true;
-	}
+	/// Static properties ------------------------------------------------------
 
 	/** 
 	 * contains all required widgets in a given form with a requirement level 
@@ -107,14 +129,43 @@ export class RequiredInput {
 	*/
 	private static all: RequiredInput[] = [];
 
+	/// Static methods ---------------------------------------------------------
+
 	/** finds all required widgets in the document and stores them */
 	private static findRequiredInputs(): void {
 		this.all.length = 0;
+
+		// query for individual inpputs with specified requirement levels
 		const elements = document.querySelectorAll(`input[${requirementAttribute}]`);
 		for(const elem of elements) {
+
+			// we don't want to double count inputs that are children of containers
+			const container = elem.closest(`[${requirementAttributeContainer}]`);
+			if(container != null) {
+				elem.removeAttribute(requirementAttribute);
+				continue;
+			}
+
 			const elemReqLvl = Number.parseInt(elem.getAttribute(requirementAttribute));
 			if(elemReqLvl > RequirementLevel.OPTIONAL) {
 				this.all.push(new RequiredInput(elem as FormElement, elemReqLvl));
+			}
+		}
+
+		// query for all containers (for widgets with potential multi input elements)
+		const containers = document.querySelectorAll(`[${requirementAttributeContainer}]`);
+		for(const container of containers) {
+			const elem = container.querySelector(`input`);
+			if(!elem) throw new Error("No input found in container with requirement attribute");
+			const elemReqLvl = Number.parseInt(container.getAttribute(requirementAttributeContainer));
+			if(elemReqLvl > RequirementLevel.OPTIONAL) {
+				this.all.push(
+					new RequiredInput(
+						elem as FormElement, 
+						elemReqLvl, 
+						container as HTMLElement
+					)
+				);
 			}
 		}
 	}

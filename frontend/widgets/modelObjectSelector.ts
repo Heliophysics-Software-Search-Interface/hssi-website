@@ -4,8 +4,8 @@
 
 import { 
 	Widget, propertiesType, uidAttribute, typeAttribute,
+	requirementAttributeContainer,
 	type BaseProperties,
-	requirementAttribute
 } from "../loader";
 
 const choicesType = "json-choices";
@@ -33,6 +33,7 @@ export class ModelObjectSelector extends Widget {
 	public static widgets: ModelObjectSelector[] = [];
 
 	private uid: string = "";
+	private inputContainer: HTMLElement = null;
 	private input: HTMLInputElement = null;
 	private optionList: HTMLUListElement = null;
 	private tooltip: HTMLDivElement = null;
@@ -88,10 +89,11 @@ export class ModelObjectSelector extends Widget {
 		this.input.removeAttribute("autocomplete");
 		this.input.spellcheck = false;
 		this.allInputs.push(this.input);
+		this.inputContainer = this.input.parentElement;
 
 		// set requirement level
-		this.input.setAttribute(
-			requirementAttribute, this.properties.requirement_level.toString()
+		this.inputContainer.setAttribute(
+			requirementAttributeContainer, this.properties.requirement_level.toString()
 		);
 
 		// find the tooltip element

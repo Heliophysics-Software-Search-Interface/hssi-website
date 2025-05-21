@@ -6,6 +6,7 @@ export const requirementAttribute = "data-hssi-required";
 
 export const invalidRecStyle = "invalid-recommended";
 export const invalidManStyle = "invalid-mandatory";
+export const noteStyle = "note"
 
 export enum RequirementLevel {
 	/** its optional - unnecessary if not relevant */
@@ -24,14 +25,39 @@ interface FormElement extends HTMLElement {
 export class RequiredInput {
 
 	public element: FormElement = null;
+	public noteElement: HTMLDivElement = null;
 	public requirementLevel: RequirementLevel = RequirementLevel.OPTIONAL;
 	
 	public constructor(element: FormElement, requirementLevel: RequirementLevel) {
 		this.element = element;
 		this.requirementLevel = requirementLevel;
+		this.createNoteElement();
 	}
 
-	public onFocusEnter(e: FocusEvent): void {
+	private createNoteElement(): void {
+		this.noteElement = document.createElement("div");
+		this.noteElement.classList.add(noteStyle);
+		this.noteElement.style.display = "none";
+		this.element.insertAdjacentElement("afterend", this.noteElement);
+	}
+
+	private getNoteText(): string {
+		const valid = this.element.checkValidity();
+		if(valid || this.requirementLevel == RequirementLevel.OPTIONAL) return "";
+
+		let note = "";
+		switch(this.requirementLevel){
+			case RequirementLevel.MANDATORY: 
+				note = "This field is mandatory";
+				break;
+			case RequirementLevel.RECOMMENDED: 
+				note = "This field is recommended";
+				break;
+		}
+		return note;
+	}
+
+	private onFocusEnter(e: FocusEvent): void {
 		// remove invalid style
 		let className = "";
 		switch(this.requirementLevel) {
@@ -39,9 +65,11 @@ export class RequiredInput {
 			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
 		}
 		this.element.classList.remove(className);
+		this.noteElement.classList.remove(className);
+		this.noteElement.style.display = "none";
 	}
 
-	public onFocusExit(e: FocusEvent): void {
+	private onFocusExit(e: FocusEvent): void {
 		
 		// no need to add invalid styles if it is filled out
 		if(this.element.checkValidity()) return;
@@ -53,6 +81,9 @@ export class RequiredInput {
 			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
 		}
 		this.element.classList.add(className);
+		this.noteElement.classList.add(className);
+		this.noteElement.style.display = "block";
+		this.noteElement.innerText = this.getNoteText();
 	}
 
 	/** 

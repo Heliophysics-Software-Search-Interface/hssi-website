@@ -92,9 +92,14 @@ export class RequiredInput {
 		return this.elementContainer ?? this.element;
 	}
 
+	public applyValidityStyle(): void{
+		this.onFocusEnter(null);
+		this.onFocusExit(null);
+	}
+
 	/// Event listeners --------------------------------------------------------
 
-	private onFocusEnter(e: FocusEvent): void {
+	private onFocusEnter(_e: FocusEvent): void {
 		// remove invalid style
 		let className = "";
 		switch(this.requirementLevel) {
@@ -106,7 +111,7 @@ export class RequiredInput {
 		this.noteElement.style.display = "none";
 	}
 
-	private onFocusExit(e: FocusEvent): void {
+	private onFocusExit(_e: FocusEvent): void {
 
 		// no need to add invalid styles if it is filled out
 		if(this.isValidNonNull()) return;
@@ -178,7 +183,7 @@ export class RequiredInput {
 			const elemReqLvl = Number.parseInt(
 				container.getAttribute(requirementAttributeContainer)
 			);
-			
+
 			if(elemReqLvl > RequirementLevel.OPTIONAL) {
 				const reqIn = new RequiredInput(
 					elem as FormElement, 

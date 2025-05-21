@@ -5,7 +5,8 @@
 import { 
 	Widget, propertiesType, uidAttribute, typeAttribute,
 	requirementAttributeContainer, invalidManStyle, invalidRecStyle,
-	type BaseProperties, 
+	type BaseProperties,
+	RequiredInput, 
 } from "../loader";
 
 const choicesType = "json-choices";
@@ -314,6 +315,9 @@ export class ModelObjectSelector extends Widget {
 			this.input.setAttribute("data-id", "-1");
 			this.hideOptions();
 		}
+
+		// recheck for styling if validation is required
+		RequiredInput.getFromElement(this.inputContainer)?.applyValidityStyle();
 	}
 
 	/** Shows a tooltip near the hovered option */

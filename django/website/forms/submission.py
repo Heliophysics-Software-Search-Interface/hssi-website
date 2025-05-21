@@ -91,7 +91,7 @@ class SubmissionForm(forms.Form):
 
     field_reference_publication = forms.URLField(
         label="Reference Publication",
-        widget=forms.URLInput(attrs={REQ_LVL_ATTR: RequirementLevel.MANDATORY}),
+        widget=forms.URLInput(attrs={REQ_LVL_ATTR: RequirementLevel.OPTIONAL}),
     )
     
     field_related_publications = forms.CharField(label="Related Publications")

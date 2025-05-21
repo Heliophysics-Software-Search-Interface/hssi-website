@@ -97,7 +97,10 @@
             <div class="explanation-text">
               {{ field.field.tt_explanation|default:"Enter a value for this field." }}
             </div>
-            {{ field }}
+            {{ field }} 
+            {% if field.html_name == "field_consent" %}
+              <span style="user-select: none;"> I agree </span>
+            {% endif %}
             {% if field.errors %}
                 <div class="error">{{ field.errors }}</div>
             {% endif %}

@@ -126,7 +126,7 @@ class SubmissionForm(forms.Form):
     # field_metadata_license = forms.CharField(label="Metadata License")
     field_consent = forms.BooleanField(
         label="Consent to Share Metadata",
-        widget=forms.CheckboxInput(attrs={REQ_LVL_ATTR: RequirementLevel.MANDATORY})
+        widget=forms.CheckboxInput(attrs={REQ_LVL_ATTR: RequirementLevel.MANDATORY}),
     )
 
     def __init__(
@@ -329,3 +329,6 @@ class SubmissionForm(forms.Form):
         
         self.fields['field_related_phenomena'].tt_explanation = "The phenomena the software supports science functionality for."
         self.fields['field_related_phenomena'].tt_best_practice = "Please select phenomena terms from a supported controlled vocabulary."
+
+        self.fields['field_consent'].tt_explanation = "Without consent, we cannot accept the submission."
+        self.fields['field_consent'].tt_best_bractise =  "Consent to metadata filled out in this form to be indexed and searchable."

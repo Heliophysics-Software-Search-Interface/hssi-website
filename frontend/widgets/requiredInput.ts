@@ -46,13 +46,18 @@ export class RequiredInput {
 	/// Private methods --------------------------------------------------------
 
 	private isValidNonNull(): boolean {
-		switch(this.element.type) {
-			case "text": case "email": case "url": case "tel": case "search": 
-			case "number": case "date": case "datetime-local": case "month": 
-			case "week": case "time": case "color": case "range": 
-				return this.element.checkValidity() && this.element.value.trim().length > 0;
-			case "checkbox": case "radio":
-				return this.element.checkValidity() && (this.element as any).checked;
+		if(this.element instanceof HTMLInputElement) {
+			switch(this.element.type) {
+				case "text": case "email": case "url": case "tel": case "search": 
+				case "number": case "date": case "datetime-local": case "month": 
+				case "week": case "time": case "color": case "range": 
+					return this.element.checkValidity() && this.element.value.trim().length > 0;
+				case "checkbox": case "radio":
+					return this.element.checkValidity() && (this.element as any).checked;
+			}
+		}
+		else if (this.element instanceof HTMLTextAreaElement) {
+			return this.element.checkValidity() && this.element.value.trim().length > 0;
 		}
 		return true;
 	}
@@ -136,8 +141,14 @@ export class RequiredInput {
 		this.all.length = 0;
 
 		// query for individual inpputs with specified requirement levels
-		const elements = document.querySelectorAll(`input[${requirementAttribute}]`);
+		const elements = document.querySelectorAll(`[${requirementAttribute}]`);
 		for(const elem of elements) {
+
+			// must be a form element
+			if(!(elem instanceof HTMLInputElement)) 
+				if (!(elem instanceof HTMLTextAreaElement)) 
+					if (!(elem instanceof HTMLSelectElement))
+						continue;
 
 			// we don't want to double count inputs that are children of containers
 			const container = elem.closest(`[${requirementAttributeContainer}]`);

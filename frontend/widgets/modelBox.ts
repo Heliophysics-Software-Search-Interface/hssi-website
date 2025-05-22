@@ -172,7 +172,6 @@ export class ModelBox extends Widget {
     /** @override Implementation for {@link Widget.prototype.collectData} */
     protected collectData(): void {
         super.collectData();
-		console.log(this.properties);
 
         // get the json data for the options
         this.options = 

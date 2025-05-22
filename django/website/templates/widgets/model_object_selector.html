@@ -74,50 +74,52 @@
   data-hssi-widget="ModelBox"
   data-hssi-uid="{{ uid }}"
 >
-<div>
-    {% block input_element %}
-    <div style="position: relative; display: block;">
-      <input 
-        type="search" 
-        autocomplete="off"
-        autocorrect="off"
-        name="{{ widget.name }}" 
-        value=""
-        {% include "django/forms/widgets/attrs.html" %}
-        class="modelbox-input {{ uid }}-input"
-      >
-      <button 
-        type="button"
-        style="
-        position:absolute;
-        right: 0;
-        top: 0;
-        translateY(-50%);
-        height: 100%;
-        aspect-ratio: 1;
-        border-left: #ccc solid 1px;
-        "
-        class="dropdown-btn {{ uid }}-dropdown-btn"
-        data-hssi-type="dropdown-button"
-      >▼</button>
-    </div>
-    {% endblock %}
+  {% block input_element %}
+  {% comment %}
+  <div style="position: relative; display: block;">
+    <input 
+    type="search" 
+    autocomplete="off"
+    autocorrect="off"
+    name="{{ widget.name }}" 
+    value=""
+    {% include "django/forms/widgets/attrs.html" %}
+    class="modelbox-input {{ uid }}-input"
+    >
+    <button 
+    type="button"
+    style="
+    position:absolute;
+    right: 0;
+    top: 0;
+    translateY(-50%);
+    height: 100%;
+    aspect-ratio: 1;
+    border-left: #ccc solid 1px;
+    "
+    class="dropdown-btn {{ uid }}-dropdown-btn"
+    data-hssi-type="dropdown-button"
+    >▼</button>
   </div>
-  {% block aux_element %}
+  {% endcomment %}
+  {% endblock %}
+  {% block aux_elements %}
+  {% comment %}
   <ul 
-    class="modelbox-options {{ uid }}-options" 
-    style="display: none;"
+  class="modelbox-options {{ uid }}-options" 
+  style="display: none;"
   > </ul>
+  <div 
+  class="modelbox-option-tooltip modelbox-op-tt-{{ uuid }}" 
+  data-hssi-type="option-tooltip"
+  > option tooltip </div>
+  {% endcomment %}
   {% endblock %}
   {% block widget_data %}
-  <div 
-    class="modelbox-option-tooltip modelbox-op-tt-{{ uuid }}" 
-    data-hssi-type="option-tooltip"
-  > option tooltip </div>
-  <script type="application/json" data-hssi-type="json-properties">
+  <script type="application/json" data-hssi-data="json-properties">
     {{ widget.properties_json|safe }}
   </script>
-  <script type="application/json" data-hssi-type="json-choices">
+  <script type="application/json" data-hssi-data="json-options">
     {{ widget.choices_json|safe }}
   </script>
   {% endblock %}

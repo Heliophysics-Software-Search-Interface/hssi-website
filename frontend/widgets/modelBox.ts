@@ -81,6 +81,7 @@ export class ModelBox extends Widget {
 
         this.dropdownButtonElement = document.createElement("button");
         this.dropdownButtonElement.type = "button";
+        this.dropdownButtonElement.innerText = "▼";
         this.dropdownButtonElement.style.position = "absolute";
         this.dropdownButtonElement.style.height = "100%";
         this.dropdownButtonElement.style.aspectRatio = "1";
@@ -173,6 +174,16 @@ export class ModelBox extends Widget {
     private static dropdownElement: HTMLDivElement = null;
     private static tooltipElement: HTMLDivElement = null;
 
+    protected static getDropdownElement(): HTMLDivElement {
+        if(this.dropdownElement == null) this.createDropdownElement();
+        return this.dropdownElement;
+    }
+
+    protected static getTooltipElement(): HTMLDivElement {
+        if(this.tooltipElement == null) this.createTooltipElement();
+        return this.tooltipElement;
+    }
+
     private static createDropdownElement(): void {
         this.dropdownElement = document.createElement("div");
         this.dropdownElement.style.position = "absolute";
@@ -184,29 +195,20 @@ export class ModelBox extends Widget {
 
     private static createTooltipElement(): void {
         this.tooltipElement = document.createElement("div");
-        this.dropdownElement.style.position = "absolute";
+        this.tooltipElement.style.position = "absolute";
         this.tooltipElement.style.display = "none";
-        this.dropdownElement.style.zIndex = "2000";
-        this.dropdownElement.style.pointerEvents = "none";
+        this.tooltipElement.style.zIndex = "2000";
+        this.tooltipElement.style.pointerEvents = "none";
         document.body.appendChild(this.tooltipElement);
     }
 
-    protected static getDropdownElement(): HTMLDivElement {
-        if(this.dropdownElement == null) this.createDropdownElement();
-        return this.dropdownElement;
-    }
-
-    protected static getTooltipElement(): HTMLDivElement {
-        if(this.tooltipElement == null) this.createTooltipElement();
-        return this.tooltipElement;
-    }
-
     private static positionDropdownElement(target: HTMLElement): void {
+        const dropdown = this.getDropdownElement();
 		const rect = target.getBoundingClientRect();
-		this.dropdownElement.style.left = `${rect.left + window.scrollX}px`;
-		this.dropdownElement.style.top = `${rect.bottom + window.scrollY}px`;
-		this.dropdownElement.style.width = `${rect.width}px`;
-		this.dropdownElement.style.display = "block";
+		dropdown.style.left = `${rect.left + window.scrollX}px`;
+		dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+		dropdown.style.width = `${rect.width}px`;
+		dropdown.style.display = "block";
     }
 
     /**
@@ -215,7 +217,7 @@ export class ModelBox extends Widget {
      */
     private static showDropdown(from: HTMLElement) {
         this.positionDropdownElement(from);
-        this.dropdownElement.style.display = "block";
+        this.getDropdownElement().style.display = "block";
     }
 
     /**
@@ -225,14 +227,15 @@ export class ModelBox extends Widget {
     private static setDropdownList(list: HTMLUListElement) {
 
         // clear previous content
-        while(this.dropdownElement.firstChild) {
+        const dropdown = this.getDropdownElement();
+        while(dropdown.firstChild) {
             // TODO remove events
-            this.dropdownElement.removeChild(this.dropdownElement.firstChild)
+            dropdown.removeChild(dropdown.firstChild)
         }
 
         // add new content
         // TODO attach events
-        this.dropdownElement.appendChild(list);
+        dropdown.appendChild(list);
     }
 
     /**
@@ -245,7 +248,7 @@ export class ModelBox extends Widget {
     }
 
     public static hideDropdown() {
-        this.dropdownElement.style.display = "none";
+        this.getDropdownElement().style.display = "none";
     }
 
     /**

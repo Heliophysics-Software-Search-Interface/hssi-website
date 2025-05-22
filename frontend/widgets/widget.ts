@@ -13,6 +13,7 @@ export const uidAttribute = "data-hssi-uid";
 
 /** name of attribute on html element that specifies the wudget type */
 export const widgetAttribute = "data-hssi-widget";
+export const widgetDataAttribute = "data-hssi-data";
 export const typeAttribute = "data-hssi-type";
 
 export interface BaseProperties extends Record<string, any> {

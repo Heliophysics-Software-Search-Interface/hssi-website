@@ -3,10 +3,9 @@
  */
 
 import { 
-	Widget, propertiesType, uidAttribute, typeAttribute,
+	Widget, propertiesType, uidAttribute, typeAttribute, RequiredInput, 
 	requirementAttributeContainer, invalidManStyle, invalidRecStyle,
 	type BaseProperties,
-	RequiredInput, 
 } from "../loader";
 
 const choicesType = "json-choices";

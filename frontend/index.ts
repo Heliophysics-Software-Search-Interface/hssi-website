@@ -2,17 +2,23 @@
  * entry point module for the website frontend logic
  */
 
-import { RequiredInput, Widget, ModelObjectSelector } from "./loader";
+import { 
+	RequiredInput, Widget, ModelBox, ModelObjectSelector
+} from "./loader";
 
 function main() {
 	
 	// register widgets that can be generated on clientside
 	Widget.registerWidgets(
+		ModelBox,
 		ModelObjectSelector,
 	)
 
 	// initialize all widgets
+	Widget.initializeWidgets(ModelBox);
 	Widget.initializeWidgets(ModelObjectSelector);
+
+	// apply the requirement levels for the form widget requirements
 	setTimeout(() => RequiredInput.applyRequirementLevels(), 1000);
 }
 

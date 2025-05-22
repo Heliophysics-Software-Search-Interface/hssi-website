@@ -15,6 +15,7 @@ export const uidAttribute = "data-hssi-uid";
 export const widgetAttribute = "data-hssi-widget";
 export const widgetDataAttribute = "data-hssi-data";
 export const typeAttribute = "data-hssi-type";
+export const targetUuidAttribute = "data-hssi-target-uuid";
 
 export interface BaseProperties extends Record<string, any> {
 	requirement_level: RequirementLevel;

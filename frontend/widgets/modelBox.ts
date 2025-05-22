@@ -43,7 +43,7 @@ export class ModelBox extends Widget {
     
     /// Restricted functionality -----------------------------------------------
 
-    private collectData(): void {
+    protected collectData(): void {
 
         // get the json data for the options
         this.options = 

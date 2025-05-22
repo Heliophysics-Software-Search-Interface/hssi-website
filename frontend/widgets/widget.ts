@@ -2,7 +2,7 @@
  * Module that handles definition of base class for all widgets
  */
 
-import { requirementAttribute, requirementAttributeContainer, RequirementLevel } from "../loader";
+import { RequiredInput, requirementAttribute, requirementAttributeContainer, RequirementLevel } from "../loader";
 
 // names of values in data attributes
 export const propertiesDataValue = "json-properties";
@@ -67,12 +67,17 @@ export abstract class Widget {
 	/** custom initialization logic for widget */
 	protected initialize(): void {
 		this.collectData();
-		if(this.properties.requirement_level != undefined) {
+		if(this.properties.requirementLevel != undefined) {
 			this.element.setAttribute(
 				requirementAttributeContainer, 
 				this.properties.requirementLevel
 			);
 		}
+	}
+
+	/** get the requiredinput object associated with the widget */
+	public getRequiredInputInstance(): RequiredInput {
+		return RequiredInput.getFromElement(this.element);
 	}
 
 	/** map of all registered widgets that are accessible */

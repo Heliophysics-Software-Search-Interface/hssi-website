@@ -75,7 +75,6 @@ export class ModelBox extends Widget {
         this.inputContainerElement.addEventListener("focusout", e => this.onInputFocusOut(e));
 
         // build dropdown button if applicable
-        // TODO dropdown button property
         if(this.properties.dropdownButton) this.buildDropdownButton();
     }
 
@@ -140,6 +139,7 @@ export class ModelBox extends Widget {
         if(option != null){
             this.inputElement.value = option.name;
             this.inputElement.setAttribute(targetUuidAttribute, option.id);
+            this.getRequiredInputInstance().applyValidityStyle();
         }
         else {
             this.inputElement.removeAttribute(targetUuidAttribute);

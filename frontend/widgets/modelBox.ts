@@ -121,15 +121,32 @@ export class ModelBox extends Widget {
 			optionLi.style.display = visible ? "block" : "none";
 			if (visible) this.filteredOptionLIs.push(optionLi);
 		}
+
+        // deselect if the selected option is filtered out
+        if(this.selectedOptionLI?.style.display === "none"){
+            this.setSelectedOptionLI(null);
+        }
+
+        // hide dropdown if no options are visible
+        if(this.filteredOptionLIs.length <= 0) {
+            ModelBox.hideDropdown();
+        }
     }
 
-    protected selectOption(option: Option = null): void {
-        if(option == null) {
-            option = this.selectedOptionLI?.data;
+    private confirmInput(): void {
+        const targetUuid = this.inputElement.getAttribute(targetUuidAttribute);
+        if(targetUuid == null) {
+            this.inputElement.setAttribute(targetUuidAttribute, "0");
         }
-        if(option != null) {
+    }
+
+    protected selectOption(option: Option = this.selectedOptionLI?.data): void {
+        if(option != null){
             this.inputElement.value = option.name;
             this.inputElement.setAttribute(targetUuidAttribute, option.id);
+        }
+        else {
+            this.inputElement.removeAttribute(targetUuidAttribute);
         }
     }
 
@@ -211,7 +228,11 @@ export class ModelBox extends Widget {
     }
 
     private onInputValueChanged(_: Event): void {
+        this.selectOption(null);
         this.filterOptionVisibility();
+        if(!ModelBox.isDropdownVisible() && this.filteredOptionLIs.length > 0){
+            this.showDropdown();
+        }
     }
 
     private onInputKeyDown(keyEvent: KeyboardEvent): void {
@@ -236,11 +257,14 @@ export class ModelBox extends Widget {
                 }
                 break;
             case "Enter": 
-                if(ModelBox.isDropdownVisible()){
-                    keyEvent.preventDefault();
+                keyEvent.preventDefault();
+                if(ModelBox.isDropdownVisible() && this.selectedOptionIndex >= 0){
                     this.selectOption();
-                    ModelBox.hideDropdown();
                 }
+                else {
+                    this.confirmInput();
+                }
+                ModelBox.hideDropdown();
                 break;
 			case " ":
 				if (keyEvent.ctrlKey && !ModelBox.isDropdownVisible()) {
@@ -266,6 +290,8 @@ export class ModelBox extends Widget {
         if(!newFocus || !this.allOptionLIs.includes(newFocus as any)){
             ModelBox.hideDropdown();
         }
+
+        this.confirmInput();
     }
 
     /// Public functionality ---------------------------------------------------

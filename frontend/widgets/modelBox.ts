@@ -33,6 +33,7 @@ export class ModelBox extends Widget {
     private allOptionLIs: OptionLi[] = [];
     private filteredOptionLIs: OptionLi[] = [];
     private selectedOptionIndex: number = -1;
+    private selectedOptionLI: OptionLi = null;
     
     /// Restricted functionality -----------------------------------------------
 
@@ -55,6 +56,16 @@ export class ModelBox extends Widget {
         for(const option of this.options) {
             const li: OptionLi = document.createElement("li") as any;
             li.data = option;
+            li.tabIndex = 0;
+            li.style.position = "relative";
+            li.style.display = "inline-block";
+			li.style.userSelect = "none";
+
+            // TODO proper style sheet
+            li.style.padding = "8px";
+            li.style.cursor = "pointer";
+            
+            li.innerText = option.name;
             this.allOptionLIs.push(li);
             this.optionListElement.appendChild(li);
         }
@@ -69,10 +80,13 @@ export class ModelBox extends Widget {
         this.element.appendChild(this.inputContainerRowElement);
 
         // add event listeners for the input
-        this.inputElement.addEventListener("input", e => this.onInputValueChanged(e))
-        this.inputElement.addEventListener("keydown", e => this.onInputKeyDown(e))
+        this.inputElement.addEventListener("input", e => this.onInputValueChanged(e));
+        this.inputElement.addEventListener("keydown", e => this.onInputKeyDown(e));
+        this.inputContainerElement.addEventListener("focusin", e => this.onInputFocusIn(e));
+        this.inputContainerElement.addEventListener("focusout", e => this.onInputFocusOut(e));
 
         // build dropdown button if applicable
+        // TODO dropdown button property
         const dropdownButton = true;
         if(dropdownButton) this.buildDropdownButton();
     }
@@ -88,7 +102,7 @@ export class ModelBox extends Widget {
         this.dropdownButtonElement.style.right = "0";
         this.dropdownButtonElement.style.top = "0";
         this.inputContainerElement.appendChild(this.dropdownButtonElement);
-        this.dropdownButtonElement.addEventListener("click", _ => this.showDropdown());
+        this.dropdownButtonElement.addEventListener("click", e => this.onDropdownButtonClick(e));
     }
 
     private filterOptionVisibility(filterString: string = null) {
@@ -108,7 +122,7 @@ export class ModelBox extends Widget {
         this.filteredOptionLIs = [];
 		for (const index in this.allOptionLIs) {
             const optionLi = this.allOptionLIs[index];
-			const match = splitInput.every(
+			const match = splitInput.some(
                 word => optionLi.data.keywords.some(kw => kw?.includes(word))
             );
             const visible = (match || filterString.length <= 0);
@@ -124,6 +138,10 @@ export class ModelBox extends Widget {
     }
 
     /// Event listeners --------------------------------------------------------
+
+    private onDropdownButtonClick(_: Event): void {
+        this.inputElement.focus();
+    }
 
     private onInputValueChanged(_: Event): void {
         this.filterOptionVisibility();
@@ -160,6 +178,22 @@ export class ModelBox extends Widget {
         }
     }
 
+    private onInputFocusIn(focusEvent: FocusEvent): void {
+        if(ModelBox.isDropdownVisible()) ModelBox.hideDropdown();
+        this.showDropdown();
+    }
+
+    private onInputFocusOut(focusEvent: FocusEvent): void {
+        const newFocus = focusEvent.relatedTarget;
+
+        // we only want to hid the dropdown if something in the dropdown is not
+        // what is being focused
+        console.log(newFocus);
+        if(!newFocus || !this.allOptionLIs.includes(newFocus as any)){
+            ModelBox.hideDropdown();
+        }
+    }
+
     /// Public functionality ---------------------------------------------------
 
     public showDropdown(): void {
@@ -186,10 +220,22 @@ export class ModelBox extends Widget {
 
     private static createDropdownElement(): void {
         this.dropdownElement = document.createElement("div");
-        this.dropdownElement.style.position = "absolute";
+        this.dropdownElement.classList.add(dropdownStyle);
         this.dropdownElement.style.display = "none";
-        this.dropdownElement.style.zIndex = "1000";
         this.dropdownElement.style.overflow = "hidden";
+        this.dropdownElement.style.position = "absolute";
+        this.dropdownElement.style.borderTop = "none";
+        this.dropdownElement.style.zIndex = "1000";
+        this.dropdownElement.style.listStyle ="none";
+        this.dropdownElement.style.maxHeight = "200px";
+        this.dropdownElement.style.overflowY = "auto";
+
+        // TODO proper stylesheet
+        this.dropdownElement.style.paddingLeft = "12px";
+        this.dropdownElement.style.background = "white";
+        this.dropdownElement.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+        this.dropdownElement.style.border = "1px solid #ccc";
+        
         document.body.appendChild(this.dropdownElement);
     }
 
@@ -211,11 +257,15 @@ export class ModelBox extends Widget {
 		dropdown.style.display = "block";
     }
 
+    private static isDropdownVisible(): boolean {
+        return this.getDropdownElement().style.display !== "none";
+    }
+
     /**
      * display the dropdown menu to appear as if it is coming from the 
      * specified element
      */
-    private static showDropdown(from: HTMLElement) {
+    private static showDropdown(from: HTMLElement): void {
         this.positionDropdownElement(from);
         this.getDropdownElement().style.display = "block";
     }
@@ -224,7 +274,7 @@ export class ModelBox extends Widget {
      * set the content inside the dropdown menu
      * @param list the list of LIs that will be displayed within the dropdown
      */
-    private static setDropdownList(list: HTMLUListElement) {
+    private static setDropdownList(list: HTMLUListElement): void {
 
         // clear previous content
         const dropdown = this.getDropdownElement();
@@ -232,6 +282,11 @@ export class ModelBox extends Widget {
             // TODO remove events
             dropdown.removeChild(dropdown.firstChild)
         }
+
+        // TODO proper style sheet
+        list.style.width = "100%";
+        list.style.margin = "0";
+        list.style.padding = "0";
 
         // add new content
         // TODO attach events
@@ -243,11 +298,11 @@ export class ModelBox extends Widget {
      * related actions
      * @param target the target instance to use
      */
-    private static setDropdownTarget(target: ModelBox) {
+    private static setDropdownTarget(target: ModelBox): void {
         // TODO
     }
 
-    public static hideDropdown() {
+    public static hideDropdown(): void {
         this.getDropdownElement().style.display = "none";
     }
 

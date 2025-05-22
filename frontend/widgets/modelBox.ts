@@ -10,7 +10,11 @@ const dropdownStyle = "widget-dropdown";
 /** style class name for tooltip element */
 const tooltipStyle = "widget-tooltip";
 
-/// Types used for 
+const dropButtonStyle = "dropdown-button";
+
+const selectedStyle = "selected";
+
+/// Organizational types -------------------------------------------------------
 
 interface OptionLi extends HTMLLIElement { data: Option; }
 
@@ -20,6 +24,8 @@ interface Option {
 	keywords: string[];
 	tooltip?: string;
 }
+
+/// Main defintion -------------------------------------------------------------
 
 export class ModelBox extends Widget {
     
@@ -60,10 +66,6 @@ export class ModelBox extends Widget {
             li.style.position = "relative";
             li.style.display = "inline-block";
 			li.style.userSelect = "none";
-
-            // TODO proper style sheet
-            li.style.padding = "8px";
-            li.style.cursor = "pointer";
             
             li.innerText = option.name;
             this.allOptionLIs.push(li);
@@ -97,6 +99,7 @@ export class ModelBox extends Widget {
         this.dropdownButtonElement = document.createElement("button");
         this.dropdownButtonElement.type = "button";
         this.dropdownButtonElement.innerText = "▼";
+        this.dropdownButtonElement.classList.add(dropButtonStyle);
         this.dropdownButtonElement.style.position = "absolute";
         this.dropdownButtonElement.style.height = "100%";
         this.dropdownButtonElement.style.aspectRatio = "1";
@@ -132,6 +135,30 @@ export class ModelBox extends Widget {
 		}
     }
 
+    protected setSelectedOptionLI(option: OptionLi): void {
+        
+        // remove the previously selected class from the selected li if 
+        // there is one
+        if(this.selectedOptionLI != null){
+            this.selectedOptionLI.classList.remove(selectedStyle);
+        }
+
+        // add selected style to newly selected option and scroll it into view
+        if(option != null && option.style.display !== "none"){
+            option.classList.add(selectedStyle);
+            option.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            const index = this.filteredOptionLIs.indexOf(option);
+            this.selectedOptionIndex = index;
+        }
+        else {
+            // set option index to -1 if selecting null or invalid li
+            this.selectedOptionIndex = -1;
+        }
+
+        this.selectedOptionLI = option;
+        console.log(option);
+    }
+
     /** Implementation for {@link Widget.prototype.initialize} */
     protected initialize(): void {
         this.collectData();
@@ -158,25 +185,32 @@ export class ModelBox extends Widget {
 
         switch(keyEvent.key) {
             case "ArrowDown": 
-                // TODO nav down style
-                this.selectedOptionIndex += 1;
-                if(this.selectedOptionIndex >= this.filteredOptionLIs.length) {
-                    this.selectedOptionIndex = 0;
+                if(ModelBox.isDropdownVisible()){
+                    this.selectedOptionIndex += 1;
+                    if(this.selectedOptionIndex >= this.filteredOptionLIs.length) {
+                        this.selectedOptionIndex = 0;
+                    }
+                    this.setSelectedOptionLI(this.filteredOptionLIs[this.selectedOptionIndex]);
                 }
                 break;
             case "ArrowUp": 
-                // TODO nav up style
-                this.selectedOptionIndex -= 1;
-                if(this.selectedOptionIndex < 0) {
-                    this.selectedOptionIndex = this.filteredOptionLIs.length - 1;
+                if(ModelBox.isDropdownVisible()){
+                    this.selectedOptionIndex -= 1;
+                    if(this.selectedOptionIndex < 0) {
+                        this.selectedOptionIndex = this.filteredOptionLIs.length - 1;
+                    }
+                    this.setSelectedOptionLI(this.filteredOptionLIs[this.selectedOptionIndex]);
                 }
                 break;
             case "Enter": 
-                // TODO select nav option
+                if(ModelBox.isDropdownVisible()){
+                    keyEvent.preventDefault();
+                    // TODO select nav option
+                }
                 break;
 			case " ":
-				if (keyEvent.ctrlKey) {
-					this.filterOptionVisibility();
+				if (keyEvent.ctrlKey && !ModelBox.isDropdownVisible()) {
+                    this.showDropdown();
 				}
 				break;
 			case "Escape": 
@@ -235,12 +269,6 @@ export class ModelBox extends Widget {
         this.dropdownElement.style.listStyle ="none";
         this.dropdownElement.style.maxHeight = "200px";
         this.dropdownElement.style.overflowY = "auto";
-
-        // TODO proper stylesheet
-        this.dropdownElement.style.paddingLeft = "12px";
-        this.dropdownElement.style.background = "white";
-        this.dropdownElement.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
-        this.dropdownElement.style.border = "1px solid #ccc";
         
         document.body.appendChild(this.dropdownElement);
     }
@@ -285,17 +313,10 @@ export class ModelBox extends Widget {
         // clear previous content
         const dropdown = this.getDropdownElement();
         while(dropdown.firstChild) {
-            // TODO remove events
             dropdown.removeChild(dropdown.firstChild)
         }
 
-        // TODO proper style sheet
-        list.style.width = "100%";
-        list.style.margin = "0";
-        list.style.padding = "0";
-
         // add new content
-        // TODO attach events
         dropdown.appendChild(list);
     }
 

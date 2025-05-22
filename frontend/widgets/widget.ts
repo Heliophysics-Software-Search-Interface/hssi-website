@@ -58,13 +58,18 @@ export abstract class Widget {
 	/** custom initialization logic for widget */
 	protected abstract initialize(): void
 
+	/** map of all registered widgets that are accessible */
+	private static registeredWidgets: Map<
+		string, new (elem: HTMLElement) => Widget
+	> = new Map();
+
 	/**
 	 * construct a set of widgets from a given set of elements
 	 * @param widgetClass the type of widget to query for
 	 * @param elements the elements to create widgets from
 	 */
-	private static getWidgetsFromElements<WidgetClass extends Widget>(
-		widgetClass: new (elem: HTMLElement) => WidgetClass,
+	private static getWidgetsFromElements(
+		widgetClass: new (elem: HTMLElement) => Widget,
 		elements: Iterable<Element>,
 	): Array<Widget> {
 
@@ -83,8 +88,8 @@ export abstract class Widget {
 	 * construct and initialize all widgets of a given type in a webpage
 	 * @param widgetClass the widget type to initialize
 	 */
-	public static initializeWidgets<WidgetClass extends Widget>(
-		widgetClass: new (elem: HTMLElement) => WidgetClass,
+	public static initializeWidgets(
+		widgetClass: new (elem: HTMLElement) => Widget,
 	): Array<Widget> {
 		console.log("Initializing " + widgetClass.name + " widgets..")
 		const widgets = this.getWidgetsFromElements(
@@ -96,5 +101,28 @@ export abstract class Widget {
 		console.log("Initialized " + widgets.length)
 
 		return widgets;
+	}
+
+	/**
+	 * Register many widgets types that can be used for dynamic form generation
+	 * @example
+	 * Widget.registerWidgets(MyWidgetA, MyWidgetB, ...);
+	 */
+	public static registerWidgets(
+		...widgetClasses: (new (elem: HTMLElement) => Widget)[]
+	): void {
+		for(const widgetClass of widgetClasses) {
+			this.registeredWidgets.set(widgetClass.name, widgetClass);
+		}
+	}
+
+	/** gets a registered widget type by name, if it exists, otherwise null */
+	public static getRegisteredWidget(
+		className: string
+	): new (elem: HTMLElement) => Widget {
+		if(this.registeredWidgets.has(className)) {
+			return this.registeredWidgets.get(className);
+		}
+		return null;
 	}
 }

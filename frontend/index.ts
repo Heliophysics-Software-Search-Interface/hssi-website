@@ -5,6 +5,12 @@
 import { RequiredInput, Widget, ModelObjectSelector } from "./loader";
 
 function main() {
+	
+	// register widgets that can be generated on clientside
+	Widget.registerWidgets(
+		ModelObjectSelector,
+	)
+
 	// initialize all widgets
 	Widget.initializeWidgets(ModelObjectSelector);
 	setTimeout(() => RequiredInput.applyRequirementLevels(), 1000);

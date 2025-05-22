@@ -83,6 +83,7 @@ export class ModelBox extends Widget {
 
         // add event listeners
         this.optionListElement.addEventListener("click", e => this.onListClick(e));
+        this.optionListElement.addEventListener("mouseover", e => this.onListMouseover(e));
         this.inputElement.addEventListener("input", e => this.onInputValueChanged(e));
         this.inputElement.addEventListener("keydown", e => this.onInputKeyDown(e));
         this.inputContainerElement.addEventListener("focusin", e => this.onInputFocusIn(e));
@@ -146,7 +147,7 @@ export class ModelBox extends Widget {
         // add selected style to newly selected option and scroll it into view
         if(option != null && option.style.display !== "none"){
             option.classList.add(selectedStyle);
-            option.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            option.scrollIntoView({ behavior: "instant", block: "nearest" });
             const index = this.filteredOptionLIs.indexOf(option);
             this.selectedOptionIndex = index;
         }
@@ -156,7 +157,6 @@ export class ModelBox extends Widget {
         }
 
         this.selectedOptionLI = option;
-        console.log(option);
     }
 
     /** Implementation for {@link Widget.prototype.initialize} */
@@ -174,7 +174,17 @@ export class ModelBox extends Widget {
     private onListClick(event: Event): void {
         const clickedOption = event.target;
         // TODO handle selecting clicked option
+        if(clickedOption instanceof HTMLLIElement){
+            this.setSelectedOptionLI(clickedOption as OptionLi);
+        }
         ModelBox.hideDropdown();
+    }
+
+    private onListMouseover(event: MouseEvent): void {
+        const option = event.target;
+        if(option instanceof HTMLLIElement){
+            this.setSelectedOptionLI(option as OptionLi);
+        }
     }
 
     private onInputValueChanged(_: Event): void {

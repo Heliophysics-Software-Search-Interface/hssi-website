@@ -79,7 +79,8 @@ export class ModelBox extends Widget {
         this.inputContainerRowElement.append(this.inputContainerElement);
         this.element.appendChild(this.inputContainerRowElement);
 
-        // add event listeners for the input
+        // add event listeners
+        this.optionListElement.addEventListener("click", e => this.onListClick(e));
         this.inputElement.addEventListener("input", e => this.onInputValueChanged(e));
         this.inputElement.addEventListener("keydown", e => this.onInputKeyDown(e));
         this.inputContainerElement.addEventListener("focusin", e => this.onInputFocusIn(e));
@@ -143,6 +144,12 @@ export class ModelBox extends Widget {
         this.inputElement.focus();
     }
 
+    private onListClick(event: Event): void {
+        const clickedOption = event.target;
+        // TODO handle selecting clicked option
+        ModelBox.hideDropdown();
+    }
+
     private onInputValueChanged(_: Event): void {
         this.filterOptionVisibility();
     }
@@ -186,9 +193,8 @@ export class ModelBox extends Widget {
     private onInputFocusOut(focusEvent: FocusEvent): void {
         const newFocus = focusEvent.relatedTarget;
 
-        // we only want to hid the dropdown if something in the dropdown is not
-        // what is being focused
-        console.log(newFocus);
+        // we only want to hide the dropdown if something in the dropdown 
+        // isn't what's being focused
         if(!newFocus || !this.allOptionLIs.includes(newFocus as any)){
             ModelBox.hideDropdown();
         }

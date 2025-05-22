@@ -4,14 +4,11 @@
 
 import { requirementAttribute, RequirementLevel } from "../loader";
 
-/** 
- * name of the attribute on the html element that contains JSON properties 
- * for widget configuration 
- */
-export const propertiesType = "json-properties";
-export const uidAttribute = "data-hssi-uid";
+// names of values in data attributes
+export const propertiesDataValue = "json-properties";
 
-/** name of attributes on html element that specify widget information */
+// names of attributes on html element that specify widget information
+export const uidAttribute = "data-hssi-uid";
 export const widgetAttribute = "data-hssi-widget";
 export const widgetDataAttribute = "data-hssi-data";
 export const typeAttribute = "data-hssi-type";
@@ -41,7 +38,7 @@ export abstract class Widget {
 
 		// parse all the properties defined in the data property attribute of 
 		// the top-level element for the widget and apply them to this class
-		const propsJson = elem.getAttribute(propertiesType)
+		const propsJson = elem.getAttribute(propertiesDataValue)
 		if(propsJson != undefined) {
 			const propsObj = JSON.parse(propsJson)
 			for(const prop in propsObj) {
@@ -57,9 +54,19 @@ export abstract class Widget {
 		};
 	}
 
+	/** collect data from json script elements */
+	protected collectData(): void {
+		this.properties = 
+			JSON.parse(
+				this.element.querySelector(
+					`script[${widgetDataAttribute}=${propertiesDataValue}]`
+				).textContent
+			);
+	}
+
 	/** custom initialization logic for widget */
 	protected initialize(): void {
-		// TODO properties
+		this.collectData();
 	}
 
 	/** map of all registered widgets that are accessible */

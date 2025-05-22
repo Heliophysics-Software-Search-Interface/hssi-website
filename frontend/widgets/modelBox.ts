@@ -4,14 +4,10 @@ import {
 
 const optionDataValue = "json-options";
 
-/** style class name for dropdown element */
+// style names for managed elements
 const dropdownStyle = "widget-dropdown";
-
-/** style class name for tooltip element */
 const tooltipStyle = "widget-tooltip";
-
 const dropButtonStyle = "dropdown-button";
-
 const selectedStyle = "selected";
 
 /// Organizational types -------------------------------------------------------
@@ -80,8 +76,7 @@ export class ModelBox extends Widget {
 
         // build dropdown button if applicable
         // TODO dropdown button property
-        const dropdownButton = true;
-        if(dropdownButton) this.buildDropdownButton();
+        if(this.properties.dropdownButton) this.buildDropdownButton();
     }
 
     private buildDropdownButton(): void {
@@ -104,9 +99,10 @@ export class ModelBox extends Widget {
         // default to input value as filter
         if(filterString == null) filterString = this.inputElement.value;
 		
-        // TODO get property
-        const caseSensitiveFilter = false;
-		if (!caseSensitiveFilter) filterString = filterString.toLocaleUpperCase();
+        // 
+		if (!this.properties.caseSensitiveFilter) {
+            filterString = filterString.toLocaleUpperCase();
+        }
         
         // iterate through each option li showing options that pass the 
         // filter while hiding others
@@ -173,7 +169,10 @@ export class ModelBox extends Widget {
         this.selectedOptionLI = option;
     }
     
+    /** @override Implementation for {@link Widget.prototype.collectData} */
     protected collectData(): void {
+        super.collectData();
+		console.log(this.properties);
 
         // get the json data for the options
         this.options = 
@@ -183,9 +182,8 @@ export class ModelBox extends Widget {
                 ).textContent
             );
         
-        // enforce case sensitivity for keyword filtering
-        const caseSensitiveFilter = false;
-        if(!caseSensitiveFilter) {
+        // enforce case insensitivity for keyword filtering
+        if(!this.properties.caseSensitiveFilter) {
             for(let i0 = this.options.length - 1; i0 >= 0; i0--) {
                 if(this.options[i0] == null) continue;
                 for(let i1 = this.options[i0].keywords.length - 1; i1 >= 0; i1--) {
@@ -198,10 +196,9 @@ export class ModelBox extends Widget {
         }
     }
 
-    /** Implementation for {@link Widget.prototype.initialize} */
+    /** @override Implementation for {@link Widget.prototype.initialize} */
     protected initialize(): void {
 		super.initialize();
-        this.collectData();
         this.buildElements();
     }
 
@@ -336,6 +333,7 @@ export class ModelBox extends Widget {
 
     private static createTooltipElement(): void {
         this.tooltipElement = document.createElement("div");
+        this.tooltipElement.classList.add(tooltipStyle);
         this.tooltipElement.style.position = "absolute";
         this.tooltipElement.style.display = "none";
         this.tooltipElement.style.zIndex = "2000";

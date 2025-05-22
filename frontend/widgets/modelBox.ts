@@ -1,6 +1,6 @@
 import { 
     Widget, widgetDataAttribute,
-} from "./widget";
+} from "../loader";
 
 const optionDataValue = "json-options";
 
@@ -161,6 +161,7 @@ export class ModelBox extends Widget {
 
     /** Implementation for {@link Widget.prototype.initialize} */
     protected initialize(): void {
+		super.initialize();
         this.collectData();
         this.buildElements();
     }

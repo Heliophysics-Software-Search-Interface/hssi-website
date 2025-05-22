@@ -58,7 +58,7 @@ export class ModelObjectSelector extends Widget {
 
 	/** Initialize the widget instance */
 	protected initialize(): void {
-		if (!this.element) return;
+		super.initialize();
 		ModelObjectSelector.widgets.push(this);
 
 		// get properties and uuid from data attributes

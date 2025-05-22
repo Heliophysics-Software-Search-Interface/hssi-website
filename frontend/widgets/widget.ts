@@ -2,7 +2,7 @@
  * Module that handles definition of base class for all widgets
  */
 
-import { RequirementLevel } from "../loader";
+import { requirementAttribute, RequirementLevel } from "../loader";
 
 /** 
  * name of the attribute on the html element that contains JSON properties 
@@ -11,7 +11,7 @@ import { RequirementLevel } from "../loader";
 export const propertiesType = "json-properties";
 export const uidAttribute = "data-hssi-uid";
 
-/** name of attribute on html element that specifies the wudget type */
+/** name of attributes on html element that specify widget information */
 export const widgetAttribute = "data-hssi-widget";
 export const widgetDataAttribute = "data-hssi-data";
 export const typeAttribute = "data-hssi-type";
@@ -57,7 +57,9 @@ export abstract class Widget {
 	}
 
 	/** custom initialization logic for widget */
-	protected abstract initialize(): void
+	protected initialize(): void {
+		// TODO properties
+	}
 
 	/** map of all registered widgets that are accessible */
 	private static registeredWidgets: Map<

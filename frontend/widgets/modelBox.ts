@@ -275,7 +275,10 @@ export class ModelBox extends Widget {
 
     private onInputFocusIn(focusEvent: FocusEvent): void {
         if(ModelBox.isDropdownVisible()) ModelBox.hideDropdown();
-        this.showDropdown();
+        if(this.properties.dropdownButton){
+            this.filterOptionVisibility("");
+        }
+        this.showDropdown(!this.properties.dropdownButton);
     }
 
     private onInputFocusOut(focusEvent: FocusEvent): void {
@@ -292,9 +295,9 @@ export class ModelBox extends Widget {
 
     /// Public functionality ---------------------------------------------------
 
-    public showDropdown(): void {
+    public showDropdown(filter: boolean = true): void {
         this.setSelectedOptionLI(null);
-        this.filterOptionVisibility();
+        if(filter) this.filterOptionVisibility();
         ModelBox.setDropdownList(this.optionListElement);
         ModelBox.setDropdownTarget(this);
         ModelBox.showDropdown(this.inputContainerElement);

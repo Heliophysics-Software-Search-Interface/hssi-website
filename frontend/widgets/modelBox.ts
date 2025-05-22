@@ -247,6 +247,7 @@ export class ModelBox extends Widget {
     /// Public functionality ---------------------------------------------------
 
     public showDropdown(): void {
+        this.setSelectedOptionLI(null);
         this.filterOptionVisibility();
         ModelBox.setDropdownList(this.optionListElement);
         ModelBox.setDropdownTarget(this);

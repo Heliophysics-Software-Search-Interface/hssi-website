@@ -67,10 +67,12 @@ export abstract class Widget {
 	/** custom initialization logic for widget */
 	protected initialize(): void {
 		this.collectData();
-		this.element.setAttribute(
-			requirementAttributeContainer, 
-			this.properties.requirementLevel
-		);
+		if(this.properties.requirement_level != undefined) {
+			this.element.setAttribute(
+				requirementAttributeContainer, 
+				this.properties.requirementLevel
+			);
+		}
 	}
 
 	/** map of all registered widgets that are accessible */

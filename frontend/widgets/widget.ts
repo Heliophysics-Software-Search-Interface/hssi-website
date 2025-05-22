@@ -2,7 +2,7 @@
  * Module that handles definition of base class for all widgets
  */
 
-import { requirementAttribute, RequirementLevel } from "../loader";
+import { requirementAttribute, requirementAttributeContainer, RequirementLevel } from "../loader";
 
 // names of values in data attributes
 export const propertiesDataValue = "json-properties";
@@ -67,6 +67,10 @@ export abstract class Widget {
 	/** custom initialization logic for widget */
 	protected initialize(): void {
 		this.collectData();
+		this.element.setAttribute(
+			requirementAttributeContainer, 
+			this.properties.requirementLevel
+		);
 	}
 
 	/** map of all registered widgets that are accessible */

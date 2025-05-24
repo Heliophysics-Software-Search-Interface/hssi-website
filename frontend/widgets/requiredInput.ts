@@ -184,15 +184,13 @@ export class RequiredInput {
 				container.getAttribute(requirementAttributeContainer)
 			);
 
-			if(elemReqLvl > RequirementLevel.OPTIONAL) {
-				const reqIn = new RequiredInput(
-					elem as FormElement, 
-					elemReqLvl, 
-					container as HTMLElement
-				)
-				this.all.push(reqIn);
-				this.elementMap.set(container, reqIn);
-			}
+			const reqIn = new RequiredInput(
+				elem as FormElement, 
+				elemReqLvl, 
+				container as HTMLElement
+			)
+			this.all.push(reqIn);
+			this.elementMap.set(container, reqIn);
 		}
 	}
 

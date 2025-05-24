@@ -98,15 +98,15 @@ class ModelObjectSelector(forms.TextInput):
         context = super().get_context(name, value, attrs)
 
         properties: dict = {
-            'requirement_level': self.requirement_level.value,
-            'case_sensitive_filtering': self.case_sensitive_filtering,
-            'multi_select': self.multi_select,
-            'filter_on_focus': self.filter_on_focus,
-            'dropdown_button': self.dropdown_button,
-            'dropdown_on_focus': self.dropdown_on_focus,
-            'dropdown_on_blank': self.dropdown_on_blank,
-            'option_tooltips': self.option_tooltips,
-            'new_object_field': self.new_object_field,
+            'requirementLevel': self.requirement_level.value,
+            'caseSensitiveFiltering': self.case_sensitive_filtering,
+            'multiSelect': self.multi_select,
+            'filterOnFocus': self.filter_on_focus,
+            'dropdownButton': self.dropdown_button,
+            'dropdownOnFocus': self.dropdown_on_focus,
+            'dropdownOnBlank': self.dropdown_on_blank,
+            'optionTooltips': self.option_tooltips,
+            'newObjectField': self.new_object_field,
         }
         context['widget']['properties'] = properties
         context['widget']['properties_json'] = json.dumps(properties)

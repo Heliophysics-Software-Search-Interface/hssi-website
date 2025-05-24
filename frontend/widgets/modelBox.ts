@@ -1,17 +1,13 @@
 import { 
-    Widget, widgetDataAttribute,
+    Widget, widgetDataAttribute, targetUuidAttribute
 } from "../loader";
 
 const optionDataValue = "json-options";
 
-/** style class name for dropdown element */
+// style names for managed elements
 const dropdownStyle = "widget-dropdown";
-
-/** style class name for tooltip element */
 const tooltipStyle = "widget-tooltip";
-
 const dropButtonStyle = "dropdown-button";
-
 const selectedStyle = "selected";
 
 /// Organizational types -------------------------------------------------------
@@ -42,17 +38,6 @@ export class ModelBox extends Widget {
     private selectedOptionLI: OptionLi = null;
     
     /// Restricted functionality -----------------------------------------------
-
-    private collectData(): void {
-
-        // get the json data for the options
-        this.options = 
-            JSON.parse(
-                this.element.querySelector(
-                    `script[${widgetDataAttribute}=${optionDataValue}]`
-                ).textContent
-            );
-    }
 
     private buildElements(): void {
 
@@ -90,9 +75,7 @@ export class ModelBox extends Widget {
         this.inputContainerElement.addEventListener("focusout", e => this.onInputFocusOut(e));
 
         // build dropdown button if applicable
-        // TODO dropdown button property
-        const dropdownButton = true;
-        if(dropdownButton) this.buildDropdownButton();
+        if(this.properties.dropdownButton) this.buildDropdownButton();
     }
 
     private buildDropdownButton(): void {
@@ -115,11 +98,10 @@ export class ModelBox extends Widget {
         // default to input value as filter
         if(filterString == null) filterString = this.inputElement.value;
 		
-        // TODO get property
-        const caseSensitiveFilter = false;
-		if (caseSensitiveFilter) {
+        // 
+		if (!this.properties.caseSensitiveFilter) {
             filterString = filterString.toLocaleUpperCase();
-		}
+        }
         
         // iterate through each option li showing options that pass the 
         // filter while hiding others
@@ -127,13 +109,41 @@ export class ModelBox extends Widget {
         this.filteredOptionLIs = [];
 		for (const index in this.allOptionLIs) {
             const optionLi = this.allOptionLIs[index];
-			const match = splitInput.some(
+			const match = splitInput.every(
                 word => optionLi.data.keywords.some(kw => kw?.includes(word))
             );
             const visible = (match || filterString.length <= 0);
 			optionLi.style.display = visible ? "block" : "none";
 			if (visible) this.filteredOptionLIs.push(optionLi);
 		}
+
+        // deselect if the selected option is filtered out
+        if(this.selectedOptionLI?.style.display === "none"){
+            this.setSelectedOptionLI(null);
+        }
+
+        // hide dropdown if no options are visible
+        if(this.filteredOptionLIs.length <= 0) {
+            ModelBox.hideDropdown();
+        }
+    }
+
+    private confirmInput(): void {
+        const targetUuid = this.inputElement.getAttribute(targetUuidAttribute);
+        if(targetUuid == null) {
+            this.inputElement.setAttribute(targetUuidAttribute, "0");
+        }
+    }
+
+    protected selectOption(option: Option = this.selectedOptionLI?.data): void {
+        if(option != null){
+            this.inputElement.value = option.name;
+            this.inputElement.setAttribute(targetUuidAttribute, option.id);
+            this.getRequiredInputInstance().applyValidityStyle();
+        }
+        else {
+            this.inputElement.removeAttribute(targetUuidAttribute);
+        }
     }
 
     protected setSelectedOptionLI(option: OptionLi): void {
@@ -158,11 +168,36 @@ export class ModelBox extends Widget {
 
         this.selectedOptionLI = option;
     }
+    
+    /** @override Implementation for {@link Widget.prototype.collectData} */
+    protected collectData(): void {
+        super.collectData();
 
-    /** Implementation for {@link Widget.prototype.initialize} */
+        // get the json data for the options
+        this.options = 
+            JSON.parse(
+                this.element.querySelector(
+                    `script[${widgetDataAttribute}=${optionDataValue}]`
+                ).textContent
+            );
+        
+        // enforce case insensitivity for keyword filtering
+        if(!this.properties.caseSensitiveFilter) {
+            for(let i0 = this.options.length - 1; i0 >= 0; i0--) {
+                if(this.options[i0] == null) continue;
+                for(let i1 = this.options[i0].keywords.length - 1; i1 >= 0; i1--) {
+                    if(this.options[i0].keywords[i1] == null) continue;
+                    this.options[i0].keywords[i1] = (
+                        this.options[i0].keywords[i1].toLocaleUpperCase()
+                    );
+                }
+            }
+        }
+    }
+
+    /** @override Implementation for {@link Widget.prototype.initialize} */
     protected initialize(): void {
 		super.initialize();
-        this.collectData();
         this.buildElements();
     }
 
@@ -174,9 +209,9 @@ export class ModelBox extends Widget {
 
     private onListClick(event: Event): void {
         const clickedOption = event.target;
-        // TODO handle selecting clicked option
         if(clickedOption instanceof HTMLLIElement){
             this.setSelectedOptionLI(clickedOption as OptionLi);
+            this.selectOption();
         }
         ModelBox.hideDropdown();
     }
@@ -189,7 +224,11 @@ export class ModelBox extends Widget {
     }
 
     private onInputValueChanged(_: Event): void {
+        this.selectOption(null);
         this.filterOptionVisibility();
+        if(!ModelBox.isDropdownVisible() && this.filteredOptionLIs.length > 0){
+            this.showDropdown();
+        }
     }
 
     private onInputKeyDown(keyEvent: KeyboardEvent): void {
@@ -214,10 +253,14 @@ export class ModelBox extends Widget {
                 }
                 break;
             case "Enter": 
-                if(ModelBox.isDropdownVisible()){
-                    keyEvent.preventDefault();
-                    // TODO select nav option
+                keyEvent.preventDefault();
+                if(ModelBox.isDropdownVisible() && this.selectedOptionIndex >= 0){
+                    this.selectOption();
                 }
+                else {
+                    this.confirmInput();
+                }
+                ModelBox.hideDropdown();
                 break;
 			case " ":
 				if (keyEvent.ctrlKey && !ModelBox.isDropdownVisible()) {
@@ -232,7 +275,10 @@ export class ModelBox extends Widget {
 
     private onInputFocusIn(focusEvent: FocusEvent): void {
         if(ModelBox.isDropdownVisible()) ModelBox.hideDropdown();
-        this.showDropdown();
+        if(this.properties.dropdownButton){
+            this.filterOptionVisibility("");
+        }
+        this.showDropdown(!this.properties.dropdownButton);
     }
 
     private onInputFocusOut(focusEvent: FocusEvent): void {
@@ -243,13 +289,15 @@ export class ModelBox extends Widget {
         if(!newFocus || !this.allOptionLIs.includes(newFocus as any)){
             ModelBox.hideDropdown();
         }
+
+        this.confirmInput();
     }
 
     /// Public functionality ---------------------------------------------------
 
-    public showDropdown(): void {
+    public showDropdown(filter: boolean = true): void {
         this.setSelectedOptionLI(null);
-        this.filterOptionVisibility();
+        if(filter) this.filterOptionVisibility();
         ModelBox.setDropdownList(this.optionListElement);
         ModelBox.setDropdownTarget(this);
         ModelBox.showDropdown(this.inputContainerElement);
@@ -287,6 +335,7 @@ export class ModelBox extends Widget {
 
     private static createTooltipElement(): void {
         this.tooltipElement = document.createElement("div");
+        this.tooltipElement.classList.add(tooltipStyle);
         this.tooltipElement.style.position = "absolute";
         this.tooltipElement.style.display = "none";
         this.tooltipElement.style.zIndex = "2000";

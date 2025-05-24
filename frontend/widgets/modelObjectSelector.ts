@@ -3,7 +3,7 @@
  */
 
 import { 
-	Widget, propertiesType, uidAttribute, typeAttribute, RequiredInput, 
+	Widget, propertiesDataValue, uidAttribute, typeAttribute, RequiredInput, 
 	requirementAttributeContainer, invalidManStyle, invalidRecStyle,
 	type BaseProperties,
 } from "../loader";
@@ -65,7 +65,7 @@ export class ModelObjectSelector extends Widget {
 		this.uid = this.element.getAttribute(uidAttribute);
 		const propertySpec = JSON.parse(
 			this.element.querySelector<HTMLOrSVGScriptElement>(
-				`script[${typeAttribute}=${propertiesType}]`
+				`script[${typeAttribute}=${propertiesDataValue}]`
 			).textContent
 		);
 		this.properties = {

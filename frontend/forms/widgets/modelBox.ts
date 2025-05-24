@@ -1,6 +1,6 @@
 import { 
     Widget, widgetDataAttribute, targetUuidAttribute
-} from "../loader";
+} from "../../loader";
 
 const optionDataValue = "json-options";
 

@@ -6,7 +6,7 @@ import {
 	Widget, propertiesDataValue, uidAttribute, typeAttribute, RequiredInput, 
 	requirementAttributeContainer, invalidManStyle, invalidRecStyle,
 	type BaseProperties,
-} from "../loader";
+} from "../../loader";
 
 const choicesType = "json-choices";
 const tooltipType = "option-tooltip";

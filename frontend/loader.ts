@@ -5,8 +5,8 @@
  * where they are defined.
  */
 
-export * from "./widgets/requiredInput";
-export * from "./widgets/widget";
-export * from "./widgets/widgetModel";
-export * from "./widgets/modelBox";
-export * from "./widgets/modelObjectSelector";
+export * from "./forms/requiredInput";
+export * from "./forms/widgets/widget";
+export * from "./forms/widgetModel";
+export * from "./forms/widgets/modelBox";
+export * from "./forms/widgets/modelObjectSelector";

@@ -3,7 +3,7 @@
  */
 
 import { 
-	RequiredInput, Widget, ModelBox, ModelObjectSelector
+	FieldRequirement, Widget, ModelBox, ModelObjectSelector
 } from "./loader";
 
 function main() {
@@ -19,7 +19,7 @@ function main() {
 	Widget.initializeWidgets(ModelObjectSelector);
 
 	// apply the requirement levels for the form widget requirements
-	setTimeout(() => RequiredInput.applyRequirementLevels(), 1000);
+	setTimeout(() => FieldRequirement.applyRequirementLevels(), 1000);
 }
 
 // call main when document DOM tree is finished building so that we can access

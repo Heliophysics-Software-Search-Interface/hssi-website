@@ -25,7 +25,7 @@ interface FormElement extends HTMLElement {
 	checkValidity: () => boolean;
 }
 
-export class RequiredInput {
+export class FieldRequirement {
 
 	public element: FormElement = null;
 	public elementContainer: HTMLElement = null;
@@ -137,10 +137,10 @@ export class RequiredInput {
 	 * contains all required widgets in a given form with a requirement level 
 	 * greater than OPTIONAL
 	*/
-	private static all: RequiredInput[] = [];
+	private static all: FieldRequirement[] = [];
 
 	/** map applicable elements to their corresponding required input object */
-	private static elementMap: Map<HTMLElement, RequiredInput> = new Map();
+	private static elementMap: Map<HTMLElement, FieldRequirement> = new Map();
 
 	/// Static methods ---------------------------------------------------------
 
@@ -167,7 +167,7 @@ export class RequiredInput {
 
 			const elemReqLvl = Number.parseInt(elem.getAttribute(requirementAttribute));
 			if(elemReqLvl > RequirementLevel.OPTIONAL) {
-				const reqIn = new RequiredInput(elem as FormElement, elemReqLvl);
+				const reqIn = new FieldRequirement(elem as FormElement, elemReqLvl);
 				this.all.push(reqIn);
 				this.elementMap.set(elem, reqIn);
 			}
@@ -184,7 +184,7 @@ export class RequiredInput {
 				container.getAttribute(requirementAttributeContainer)
 			);
 
-			const reqIn = new RequiredInput(
+			const reqIn = new FieldRequirement(
 				elem as FormElement, 
 				elemReqLvl, 
 				container as HTMLElement
@@ -224,9 +224,9 @@ export class RequiredInput {
 	}
 
 	/** 
-	 * get the associated {@link RequiredInput} object from a given html element
+	 * get the associated {@link FieldRequirement} object from a given html element
 	 */
-	public static getFromElement(element: HTMLElement): RequiredInput {
+	public static getFromElement(element: HTMLElement): FieldRequirement {
 		if(this.elementMap.has(element)) {
 			return this.elementMap.get(element);
 		}

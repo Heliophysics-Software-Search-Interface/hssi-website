@@ -6,7 +6,7 @@ type SerializedModel = {typeName: string, topField: string, subfields: Subfield[
 
 export type Subfield = {
 	name: string,
-	model: string | WidgetModel,
+	model: string | ModelField,
 	multi: boolean,
 } & { [key: string]: any };
 
@@ -14,7 +14,7 @@ export type Subfield = {
  * Represents a widget with attributes and a subfield layout that in theory 
  * should be able to handle infinite levels of depth
  */
-export class WidgetModel {
+export class ModelField {
 	
 	/** arbitrary attributes */
 	[key: string]: any;
@@ -40,12 +40,12 @@ export class WidgetModel {
 		return this.widgetType as WidgetType;
 	}
 	
-	private static modelMap: Map<string, WidgetModel> = new Map();
+	private static modelMap: Map<string, ModelField> = new Map();
 
 	public static BasicWidget(
 		type: WidgetType, multi: boolean = false, attrs: {[key: string]: any}
 	) {
-		const model = new WidgetModel();
+		const model = new ModelField();
 		model.widgetType = type;
 		model.topField = {
 			name: "self",
@@ -65,12 +65,12 @@ export class WidgetModel {
 	 * parse and register the given serialized models
 	 * @param serializedModels 
 	 */
-	public static parseModels(serializedModels: SerializedModel[]): WidgetModel[] {
-		const models: WidgetModel[] = [];
+	public static parseModels(serializedModels: SerializedModel[]): ModelField[] {
+		const models: ModelField[] = [];
 
 		// map model type names to model
 		for(const obj of serializedModels) {
-			const model = new WidgetModel();
+			const model = new ModelField();
 			for(const field in model){
 				model[field] = model[field];
 			}

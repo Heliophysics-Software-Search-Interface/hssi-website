@@ -2,7 +2,7 @@ import { Widget } from "../loader";
 
 type WidgetType = new (elem: HTMLElement) => Widget;
 
-type SerializedModel = {typeName: string, topField: string, subfields: Subfield[]};
+type SerializedField = {typeName: string, topField: string, subfields: Subfield[]};
 
 export type Subfield = {
 	name: string,
@@ -65,7 +65,7 @@ export class ModelField {
 	 * parse and register the given serialized models
 	 * @param serializedModels 
 	 */
-	public static parseModels(serializedModels: SerializedModel[]): ModelField[] {
+	public static parseModels(serializedModels: SerializedField[]): ModelField[] {
 		const models: ModelField[] = [];
 
 		// map model type names to model

@@ -1,13 +1,20 @@
 import json
 from django import forms
 
+from enum import Enum
 from typing import NamedTuple, Type
 from ..models import HssiModel
 
 ## Utility ---------------------------------------------------------------------
 
-def bool_js_string(value: bool) -> str:
-    return "true" if value else "false"
+class RequirementLevel(Enum):
+    OPTIONAL = 0
+    RECOMMENDED = 1
+    MANDATORY = 2
+
+    def __str__(self) -> str: return str(self.value)
+
+REQ_LVL_ATTR = "data-hssi-required"
 
 ## Combo box -------------------------------------------------------------------
 
@@ -33,15 +40,22 @@ class ModelObjectSelector(forms.TextInput):
     dropdown_button: bool = False
     dropdown_on_focus: bool = True
     dropdown_on_blank: bool = True
-    option_tooltips: bool = True,
-    new_object_field: str | None = None,
+    option_tooltips: bool = True
+    new_object_field: str | None = None
+    requirement_level: RequirementLevel = RequirementLevel.RECOMMENDED
 
-    def __init__(self, model: Type[HssiModel], attrs: dict = None):
+    def __init__(
+        self, model: Type[HssiModel], 
+        requirement: RequirementLevel = RequirementLevel.RECOMMENDED, 
+        attrs: dict = {}
+    ):
+        attrs[REQ_LVL_ATTR] = requirement
         super().__init__(attrs)
         self.case_sensitive_filtering = getattr(
             attrs, "case_sensitive_filtering", 
             self.case_sensitive_filtering
         )
+        self.requirement_level = requirement
         self.multi_select = attrs.get("multi_select", self.multi_select)
         self.filter_on_focus = attrs.get("filter_on_focus", self.filter_on_focus)
         self.dropdown_button = attrs.get("dropdown_button", self.dropdown_button)
@@ -51,10 +65,12 @@ class ModelObjectSelector(forms.TextInput):
 
     @classmethod
     def dropdown_selector(
-        cls, model: Type[HssiModel], mutli_select = False, attrs: dict = None
+        cls, model: Type[HssiModel], mutli_select = False, 
+        requirement: RequirementLevel = RequirementLevel.RECOMMENDED, 
+        attrs: dict = {}
     ) -> 'ModelObjectSelector':
         """ creates a dropdown selector for the given model """
-        return cls(model, {
+        return cls(model, requirement=requirement, attrs={
             'multi_select': mutli_select,
             'dropdown_button': True,
             'filter_on_focus': False,
@@ -63,10 +79,12 @@ class ModelObjectSelector(forms.TextInput):
     
     @classmethod
     def auto_textbox(
-        cls, model: Type[HssiModel], mutli_select = False, attrs: dict = None
+        cls, model: Type[HssiModel], mutli_select = False, 
+        requirement: RequirementLevel = RequirementLevel.RECOMMENDED, 
+        attrs: dict = {}
     ) -> 'ModelObjectSelector':
-        """ creates a dropdown selector for the given model"""
-        return cls(model, {
+        """ creates a dropdown selector for the given model """
+        return cls(model, requirement=requirement, attrs={
             'multi_select': mutli_select,
             'dropdown_on_blank': False,
             'dropdown_on_focus': False,
@@ -75,17 +93,23 @@ class ModelObjectSelector(forms.TextInput):
 
     @classmethod
     def modelbox(
-        cls, model: Type[HssiModel], mutli_select = False, attrs: dict = None
+        cls, model: Type[HssiModel], mutli_select = False, 
+        requirement: RequirementLevel = RequirementLevel.RECOMMENDED, 
+        attrs: dict = {}
     ) -> 'ModelObjectSelector':
-        return cls(model, {'multi_select': mutli_select, **(attrs or {}) })
-
-    def get_context(self, name, value, attrs) -> dict:
-        context = super().get_context(name, value, attrs)
-        context['widget']['case_sensitive_filtering'] = bool_js_string(
-            self.case_sensitive_filtering
+        return cls(
+            model, 
+            requirement=requirement, 
+            attrs={'multi_select': mutli_select, **(attrs or {}) }
         )
 
+    def get_context(self, name, value, attrs) -> dict:
+        attrs[REQ_LVL_ATTR] = self.requirement_level.value
+        context = super().get_context(name, value, attrs)
+
         properties: dict = {
+            'requirement_level': self.requirement_level.value,
+            'case_sensitive_filtering': self.case_sensitive_filtering,
             'multi_select': self.multi_select,
             'filter_on_focus': self.filter_on_focus,
             'dropdown_button': self.dropdown_button,

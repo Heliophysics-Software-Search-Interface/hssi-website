@@ -15,6 +15,26 @@
     flex-direction: column;
     gap: 1.2rem;
   }
+  .invalid-mandatory {
+    border: 2px solid red;
+  }
+  .invalid-mandatory.note {
+    border: 0;
+    color: red;
+    display: block;
+    font-size: 0.8em;
+    user-select: none;
+  }
+  .invalid-recommended {
+    border: 2px solid orange;
+  }
+  .invalid-recommended.note {
+    border: 0;
+    color: darkorange;
+    display: block;
+    font-size: 0.8em;
+    user-select: none;
+  }
   .tooltip-wrapper {
     position: relative;
     display: inline-block;
@@ -77,7 +97,10 @@
             <div class="explanation-text">
               {{ field.field.tt_explanation|default:"Enter a value for this field." }}
             </div>
-            {{ field }}
+            {{ field }} 
+            {% if field.html_name == "field_consent" %}
+              <span style="user-select: none;"> I agree </span>
+            {% endif %}
             {% if field.errors %}
                 <div class="error">{{ field.errors }}</div>
             {% endif %}

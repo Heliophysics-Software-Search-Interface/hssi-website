@@ -2,6 +2,8 @@
  * Module that handles definition of base class for all widgets
  */
 
+import { RequirementLevel } from "../loader";
+
 /** 
  * name of the attribute on the html element that contains JSON properties 
  * for widget configuration 
@@ -12,6 +14,10 @@ export const uidAttribute = "data-hssi-uid";
 /** name of attribute on html element that specifies the wudget type */
 export const widgetAttribute = "data-hssi-widget";
 export const typeAttribute = "data-hssi-type";
+
+export interface BaseProperties extends Record<string, any> {
+	requirement_level: RequirementLevel;
+}
 
 /**
  * Base class for all widgets
@@ -25,11 +31,11 @@ export abstract class Widget {
 	public element: HTMLElement | null = null;
 
 	/** holds congfiguration properties for the widget */
-	public properties: Record<string, any> = {};
+	public properties: BaseProperties = {} as any;
 
 	public constructor(elem: HTMLElement) {
 		this.element = elem;
-		this.setDefaultProperties()
+		this.properties = this.getDefaultProperties()
 
 		// parse all the properties defined in the data property attribute of 
 		// the top-level element for the widget and apply them to this class
@@ -43,7 +49,11 @@ export abstract class Widget {
 	}
 
 	/** set default properties on the widget */
-	protected abstract setDefaultProperties(): void
+	protected getDefaultProperties(): BaseProperties {
+		return {
+			requirement_level: RequirementLevel.OPTIONAL,
+		};
+	}
 
 	/** custom initialization logic for widget */
 	protected abstract initialize(): void
@@ -81,8 +91,10 @@ export abstract class Widget {
 			widgetClass, 
 			document.querySelectorAll(`[${widgetAttribute}='${widgetClass.name}']`),
 		);
-		console.log("found " + widgets.length + " with " + `[${widgetAttribute}='${widgetClass.name}']`)
+		
 		for(const widget of widgets) widget.initialize();
+		console.log("Initialized " + widgets.length)
+
 		return widgets;
 	}
 }

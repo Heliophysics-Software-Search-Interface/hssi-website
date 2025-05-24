@@ -3,7 +3,10 @@
  */
 
 import { 
-	Widget, propertiesType, uidAttribute, typeAttribute 
+	Widget, propertiesType, uidAttribute, typeAttribute,
+	requirementAttributeContainer, invalidManStyle, invalidRecStyle,
+	type BaseProperties,
+	RequiredInput, 
 } from "../loader";
 
 const choicesType = "json-choices";
@@ -31,6 +34,7 @@ export class ModelObjectSelector extends Widget {
 	public static widgets: ModelObjectSelector[] = [];
 
 	private uid: string = "";
+	private inputContainer: HTMLElement = null;
 	private input: HTMLInputElement = null;
 	private optionList: HTMLUListElement = null;
 	private tooltip: HTMLDivElement = null;
@@ -39,8 +43,9 @@ export class ModelObjectSelector extends Widget {
 	private allChoices: Choice[] = [];
 	private allInputs: HTMLInputElement[] = [];
 
-	protected setDefaultProperties(): void {
-		this.properties = {
+	protected getDefaultProperties(): BaseProperties {
+		return {
+			... super.getDefaultProperties(),
 			case_sensitive_filtering: false,
     		multi_select: false,
     		filter_on_focus: true,
@@ -64,7 +69,10 @@ export class ModelObjectSelector extends Widget {
 				`script[${typeAttribute}=${propertiesType}]`
 			).textContent
 		);
-		for(const prop in propertySpec) this.properties[prop] = propertySpec[prop];
+		this.properties = {
+			...this.properties,
+			...propertySpec,
+		}
 
 		// find option list element and properly append it
 		this.optionList = this.element.querySelector("ul") as HTMLUListElement;
@@ -82,6 +90,12 @@ export class ModelObjectSelector extends Widget {
 		this.input.removeAttribute("autocomplete");
 		this.input.spellcheck = false;
 		this.allInputs.push(this.input);
+		this.inputContainer = this.input.parentElement;
+
+		// set requirement level
+		this.inputContainer.setAttribute(
+			requirementAttributeContainer, this.properties.requirement_level.toString()
+		);
 
 		// find the tooltip element
 		this.tooltip = this.element.querySelector(
@@ -116,7 +130,6 @@ export class ModelObjectSelector extends Widget {
 			li.innerText = choice.name;
 			this.optionList.appendChild(li);
 
-			console.log(this.properties);
 			li.addEventListener("click", () => this.selectOption(li, false));
 			if (this.properties.option_tooltips) {
 				li.addEventListener("mouseenter", e => this.showTooltip(li, e.clientX + window.scrollX));
@@ -205,12 +218,13 @@ export class ModelObjectSelector extends Widget {
 			case 'Backspace':
 				if(this.input.value.length <= 0 && this.allInputs.length > 1) {
 					let index = this.allInputs.indexOf(evt.target as any);
-					if(index <= 0){
-						this.allInputs[1].focus();
-					}
-					else {
+					if(index > 0){
+						this.allInputs[index].parentElement.remove();
+						this.allInputs.splice(index, 1);
 						index -= 1;
-						this.allInputs[index].focus();
+						this.input = this.allInputs[index];
+						this.input.focus();
+						this.input.value += " ";
 					}
 				}
 				break;
@@ -278,12 +292,19 @@ export class ModelObjectSelector extends Widget {
 
 	/** Finalizes input value, adds input if multiselect is enabled */
 	private confirmInput(focusNext: boolean = true): void {
+		if (this.input.value.trim().length <= 0) {
+			this.hideOptions();
+			return;
+		}
 		if (this.properties.multi_select) {
 			const lastInput = this.allInputs[this.allInputs.length - 1];
 			if (this.input !== lastInput) {
 				this.input = lastInput;
 			} else {
 				const clone = this.input.parentElement.cloneNode(true) as HTMLElement;
+				clone.removeAttribute(requirementAttributeContainer);
+				clone.classList.remove(invalidManStyle);
+				clone.classList.remove(invalidRecStyle);
 				this.addEvents(clone);
 				const newInput = clone.querySelector("input")!;
 				newInput.value = "";
@@ -299,6 +320,9 @@ export class ModelObjectSelector extends Widget {
 			this.input.setAttribute("data-id", "-1");
 			this.hideOptions();
 		}
+
+		// recheck for styling if validation is required
+		RequiredInput.getFromElement(this.inputContainer)?.applyValidityStyle();
 	}
 
 	/** Shows a tooltip near the hovered option */

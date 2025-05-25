@@ -1,7 +1,5 @@
 /** */
 
-import { Widget } from "../loader";
-
 export const requirementAttribute = "data-hssi-required";
 export const requirementAttributeContainer = "data-hssi-required-container";
 

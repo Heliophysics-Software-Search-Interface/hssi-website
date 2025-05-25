@@ -1,14 +1,10 @@
-import { RequirementLevel, Widget } from "../loader";
-
-const labelStyle = "custom-label";
-const tooltipWrapperStyle = "tooltip-wrapper";
-const tooltipIconStyle = "tooltip-icon";
-const tooltipTextStyle = "tooltip-text";
-const explanationTextStyle = "explanation-text";
+import { 
+	RequirementLevel, Widget, ModelSubfield
+} from "../loader";
 
 type WidgetType = new (elem: HTMLElement) => Widget;
 
-type PropertyContainer = {
+export type PropertyContainer = {
 
 	/** the title that will be shown above the field, if not specified field name will be used */
 	label?: string,
@@ -25,6 +21,11 @@ type SerializedFieldStructure = {
 	typeName: string, 
 	subfields: SerializedSubfield[]
 };
+
+type ModelFieldStructureInstance = {
+	topField: ModelSubfield,
+	subFields: ModelSubfield[],
+}
 
 export type SerializedSubfield = {
 	name: string,
@@ -62,6 +63,21 @@ export class ModelFieldStructure {
 		}
 
 		return this.widgetType as WidgetType;
+	}
+
+	/** create fields for the whole structure */
+	public generateInstance(): ModelFieldStructureInstance {
+		const subfields: ModelSubfield[] = [];
+
+		const topField = ModelSubfield.parse(this.topField);
+		for(const sub of this.subfields) {
+			subfields.push(ModelSubfield.parse(sub));
+		}
+
+		return {
+			topField: topField,
+			subFields: subfields,
+		};
 	}
 	
 	private static fieldStructureMap: Map<string, ModelFieldStructure> = new Map();
@@ -124,134 +140,4 @@ export class ModelFieldStructure {
 
 		return models;
 	}
-}
-
-/**
- * represents a single field in the db model and information related to 
- * rendering/interacting with it in the form
- */
-export class ModelSubfield {
-
-	public name: string = "";
-
-	public type: ModelFieldStructure = null;
-
-	public requirement: RequirementLevel = RequirementLevel.OPTIONAL;
-	
-	public properties: PropertyContainer = {};
-
-	private containerElement: HTMLDivElement = null;
-
-	private labelElement: HTMLLabelElement = null;
-
-	private explanationElement: HTMLDivElement = null;
-
-	private widget: Widget = null;
-
-	public get multi(): boolean { return false; }
-
-	public constructor(
-		name: string, 
-		type: ModelFieldStructure, 
-		requirement: RequirementLevel = RequirementLevel.OPTIONAL,
-		properties: PropertyContainer = {},
-	) {
-		this.name = name;
-		this.type = type;
-		this.requirement = requirement;
-		this.properties = properties;
-	}
-
-	private buildFieldInfo(targetDiv: HTMLDivElement): void {
-
-		// create the label text
-		this.labelElement = document.createElement("label");
-		this.labelElement.innerHTML = this.properties.label ?? this.name;
-		this.labelElement.classList.add(labelStyle);
-		targetDiv.appendChild(this.labelElement);
-
-		// create the "hover for info" icon
-		if(this.properties.tooltipBestPractice != null){
-			const ttbpWrapper = document.createElement("span") as HTMLSpanElement;
-			ttbpWrapper.classList.add(tooltipWrapperStyle);
-			
-			const ttbpIcon = document.createElement("span") as HTMLSpanElement;
-			ttbpIcon.classList.add(tooltipIconStyle);
-			ttbpIcon.innerText = "i";
-
-			const ttbpText = document.createElement("div") as HTMLDivElement;
-			ttbpIcon.classList.add(tooltipTextStyle);
-			ttbpText.innerText = this.properties.tooltipBestPractice;
-			
-			ttbpWrapper.appendChild(ttbpIcon);
-			ttbpWrapper.appendChild(ttbpText);
-			this.labelElement.appendChild(ttbpWrapper);
-			targetDiv.appendChild(ttbpWrapper);
-		}
-
-		// create the help text below the label if it exists
-		if(this.properties.tooltipExplanation != null){
-			this.explanationElement = document.createElement("div");
-			this.explanationElement.classList.add("explanation-text");
-			this.explanationElement.innerHTML = this.properties.tooltipExplanation;
-		}
-	}
-
-	private buildWidget(targetDiv: HTMLDivElement): void {
-		const widgetType = this.type.getWidgetType()
-		this.widget = new widgetType(document.createElement("div"));
-		targetDiv.appendChild(this.widget.element);
-	}
-
-	/** 
-	 * builds the html ui elements required to render and interact with this 
-	 * field for the db model
-	 * @param targetDiv the target container to build the ui inside of
-	 */
-	public buildInterface(targetDiv: HTMLDivElement): void {
-		this.containerElement = document.createElement("div");
-		
-		this.buildFieldInfo(this.containerElement);
-		this.buildWidget(this.containerElement);
-
-		targetDiv.appendChild(this.containerElement);
-	}
-
-	/** whether or not the field has already built its UI elements */
-	public isBuilt(): boolean {
-		return this.widget != null;
-	}
-
-	/** parse serialized subfield data into a functional subfield field object */
-	public static parse(data: SerializedSubfield): ModelSubfield {
-
-		// get field structure type if not yet parsed
-		let type = data.type; 
-		if(!(type instanceof ModelFieldStructure)) {
-			type =  ModelFieldStructure.getFieldStructure(type);
-			data.type = type;
-		}
-
-		// create and return the subfield object
-		if(!data.multi){
-			return new ModelSubfield(
-				data.name, 
-				type, 
-				data.requirement,
-				data.properties,
-			);
-		}
-		else {
-			return new ModelMultiSubfield(
-				data.name, 
-				type, 
-				data.requirement, 
-				data.properties
-			)
-		}
-	}
-}
-
-export class ModelMultiSubfield extends ModelSubfield {
-	public get multi(): boolean { return true; }
 }

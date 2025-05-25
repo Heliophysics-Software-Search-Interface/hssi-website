@@ -10,3 +10,6 @@ export * from "./forms/widgets/widget";
 export * from "./forms/modelField";
 export * from "./forms/widgets/modelBox";
 export * from "./forms/widgets/modelObjectSelector";
+
+export * from "./forms/modelField";
+export * from "./forms/modelSubfield";

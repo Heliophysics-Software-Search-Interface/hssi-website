@@ -1,5 +1,11 @@
 import { RequirementLevel, Widget } from "../loader";
 
+const labelStyle = "custom-label";
+const tooltipWrapperStyle = "tooltip-wrapper";
+const tooltipIconStyle = "tooltip-icon";
+const tooltipTextStyle = "tooltip-text";
+const explanationTextStyle = "explanation-text";
+
 type WidgetType = new (elem: HTMLElement) => Widget;
 
 type PropertyContainer = {
@@ -12,7 +18,7 @@ type PropertyContainer = {
 
 	/** the tooltip that appears on hover of the information icon */
 	tooltipBestPractice?: string,
-	
+
 } & { [key: string]: any };
 
 type SerializedFieldStructure = {
@@ -130,24 +136,71 @@ export class ModelSubfield {
 
 	public type: ModelFieldStructure = null;
 
-	public multi: boolean = false;
-
 	public requirement: RequirementLevel = RequirementLevel.OPTIONAL;
-
+	
 	public properties: PropertyContainer = {};
+
+	private containerElement: HTMLDivElement = null;
+
+	private labelElement: HTMLLabelElement = null;
+
+	private explanationElement: HTMLDivElement = null;
+
+	private widget: Widget = null;
+
+	public get multi(): boolean { return false; }
 
 	public constructor(
 		name: string, 
 		type: ModelFieldStructure, 
-		multi: boolean = false,
 		requirement: RequirementLevel = RequirementLevel.OPTIONAL,
 		properties: PropertyContainer = {},
 	) {
 		this.name = name;
 		this.type = type;
-		this.multi = multi;
 		this.requirement = requirement;
 		this.properties = properties;
+	}
+
+	private buildFieldInfo(targetDiv: HTMLDivElement): void {
+
+		// create the label text
+		this.labelElement = document.createElement("label");
+		this.labelElement.innerHTML = this.properties.label ?? this.name;
+		this.labelElement.classList.add(labelStyle);
+		targetDiv.appendChild(this.labelElement);
+
+		// create the "hover for info" icon
+		if(this.properties.tooltipBestPractice != null){
+			const ttbpWrapper = document.createElement("span") as HTMLSpanElement;
+			ttbpWrapper.classList.add(tooltipWrapperStyle);
+			
+			const ttbpIcon = document.createElement("span") as HTMLSpanElement;
+			ttbpIcon.classList.add(tooltipIconStyle);
+			ttbpIcon.innerText = "i";
+
+			const ttbpText = document.createElement("div") as HTMLDivElement;
+			ttbpIcon.classList.add(tooltipTextStyle);
+			ttbpText.innerText = this.properties.tooltipBestPractice;
+			
+			ttbpWrapper.appendChild(ttbpIcon);
+			ttbpWrapper.appendChild(ttbpText);
+			this.labelElement.appendChild(ttbpWrapper);
+			targetDiv.appendChild(ttbpWrapper);
+		}
+
+		// create the help text below the label if it exists
+		if(this.properties.tooltipExplanation != null){
+			this.explanationElement = document.createElement("div");
+			this.explanationElement.classList.add("explanation-text");
+			this.explanationElement.innerHTML = this.properties.tooltipExplanation;
+		}
+	}
+
+	private buildWidget(targetDiv: HTMLDivElement): void {
+		const widgetType = this.type.getWidgetType()
+		this.widget = new widgetType(document.createElement("div"));
+		targetDiv.appendChild(this.widget.element);
 	}
 
 	/** 
@@ -155,8 +208,18 @@ export class ModelSubfield {
 	 * field for the db model
 	 * @param targetDiv the target container to build the ui inside of
 	 */
-	public buildWidgets(targetDiv: HTMLDivElement): void {
+	public buildInterface(targetDiv: HTMLDivElement): void {
+		this.containerElement = document.createElement("div");
 		
+		this.buildFieldInfo(this.containerElement);
+		this.buildWidget(this.containerElement);
+
+		targetDiv.appendChild(this.containerElement);
+	}
+
+	/** whether or not the field has already built its UI elements */
+	public isBuilt(): boolean {
+		return this.widget != null;
 	}
 
 	/** parse serialized subfield data into a functional subfield field object */
@@ -170,13 +233,25 @@ export class ModelSubfield {
 		}
 
 		// create and return the subfield object
-		const field = new ModelSubfield(
-			data.name, 
-			type, 
-			data.multi,
-			data.requirement,
-			data.properties,
-		);
-		return field;
+		if(!data.multi){
+			return new ModelSubfield(
+				data.name, 
+				type, 
+				data.requirement,
+				data.properties,
+			);
+		}
+		else {
+			return new ModelMultiSubfield(
+				data.name, 
+				type, 
+				data.requirement, 
+				data.properties
+			)
+		}
 	}
+}
+
+export class ModelMultiSubfield extends ModelSubfield {
+	public get multi(): boolean { return true; }
 }

@@ -8,6 +8,7 @@ the exposed django model structure
 import json
 
 from django.db import models
+from django.db.models.fields import related
 from django.forms import widgets
 
 from ..util import RequirementLevel, REQ_LVL_ATTR
@@ -35,7 +36,7 @@ class ModelSubfield:
         return {
             'name': self.name,
             'type': self.type,
-            'requirement': self.requirement.value,
+            'requirement': self.requirement,
             'properties': self.properties,
             'multi': self.multi,
         }
@@ -46,20 +47,27 @@ class ModelSubfield:
     @classmethod
     def create(cls, field: models.Field) -> 'ModelSubfield':
         """ create a subfield based on a model field """
-        widget = field.widget
+
+        if field is None: return None
 
         subfield = ModelSubfield()
         subfield.name = field.name
-        match widget:
-            case widgets.TextInput(): subfield.type = "CharWidget"
-            case widgets.Textarea(): subfield.type = "TextAreaWidget"
-            case widgets.URLInput(): subfield.type = "UrlWidget"
-            case widgets.DateInput(): subfield.type = "DateWidget"
-            case widgets.CheckboxInput(): subfield.type = "CheckboxWidget"
-        subfield.requirement = widget.attrs.get(REQ_LVL_ATTR, RequirementLevel.OPTIONAL.value)
-        subfield.properties = widget.attrs.copy()
-        if field is models.ManyToManyField:
+
+        if isinstance(field, related.RelatedField):
             subfield.multi = True
+            subfield.type = field.related_model.__name__
+
+        else:
+            # TODO this form field stuff doesn't really do what I want
+            widget: widgets.Widget = field.formfield().widget
+            subfield.requirement = widget.attrs.get(REQ_LVL_ATTR, RequirementLevel.OPTIONAL.value)
+            subfield.properties = widget.attrs.copy()
+            match widget:
+                case widgets.TextInput(): subfield.type = "CharWidget"
+                case widgets.Textarea(): subfield.type = "TextAreaWidget"
+                case widgets.URLInput(): subfield.type = "UrlWidget"
+                case widgets.DateInput(): subfield.type = "DateWidget"
+                case widgets.CheckboxInput(): subfield.type = "CheckboxWidget"
         
         return subfield
 
@@ -75,13 +83,11 @@ class ModelStructure:
     @classmethod
     def create(cls, model: Type['HssiModel']) -> 'ModelStructure':
         """ create a model structure based on the given hssi model class """
-        structure = ModelStructure()
-        structure.top_field = model.get_top_field()
 
-        fields = model._meta.get_fields()
-        for field in fields:
-            if field == structure.top_field: continue
-            structure.subfields.append(ModelSubfield.create(field))
+        structure = ModelStructure()
+        structure.type_name = model.__name__
+        structure.top_field = ModelSubfield.create(model.get_top_field())
+        structure.subfields = model.get_subfields()
 
         return structure
     
@@ -91,7 +97,7 @@ class ModelStructure:
             "topField": self.top_field.serialized() if self.top_field else None,
             "subFields": [],
         }
-        serialized
+        return serialized
     
     def to_json(self) -> str:
         return json.dumps(self.serialized())

@@ -26,21 +26,22 @@ class HssiModel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     @classmethod
-    def get_top_field(cls) -> 'ModelSubfield':
+    def get_top_field(cls) -> models.Field:
         return None
     
     @classmethod
     def get_subfields(cls) -> list['ModelSubfield']:
         subfields = []
 
+        top_field = cls.get_top_field()
         fields = cls._meta.get_fields(include_parents=True, include_hidden=False)
         for field in fields:
-
-            # we don't want reverse or non-column fields
-            if field.auto_created or not field.concrete:
+            
+            # we don't want reverse or non-column fields (or the top field)
+            if field == top_field or field.auto_created or not field.concrete or not field.editable:
                 continue
 
-            #subfields.append(ModelSubfield.create(field))
+            subfields.append(ModelSubfield.create(field))
         
         return subfields
 
@@ -65,7 +66,7 @@ class ControlledList(HssiModel):
     def __str__(self): return self.name
 
     @classmethod
-    def get_top_field(cls): return cls.name
+    def get_top_field(cls): return cls._meta.get_field("name")
 
     def get_tooltip(self): return self.definition
 

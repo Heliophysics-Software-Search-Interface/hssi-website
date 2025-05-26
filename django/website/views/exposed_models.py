@@ -10,7 +10,7 @@ from ..models import (
 from ..models.structurizer import ModelStructure
 
 def get_model_structure(request: HttpRequest) -> JsonResponse:
-    structures = { "ModelStructures": [
+    structures = { "structures": [
         ModelStructure.create(Keyword).serialized(),
         ModelStructure.create(OperatingSystem).serialized(),
         ModelStructure.create(Phenomena).serialized(),

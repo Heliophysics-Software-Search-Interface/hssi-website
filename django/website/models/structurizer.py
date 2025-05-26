@@ -89,7 +89,10 @@ class ModelStructure:
         structure = ModelStructure()
         structure.type_name = model.__name__
         structure.top_field = ModelSubfield.create(model.get_top_field())
-        structure.subfields = model.get_subfields()
+        structure.subfields = [
+            ModelSubfield.create(subfield)
+            for subfield in model.get_subfields()
+        ] 
 
         return structure
     

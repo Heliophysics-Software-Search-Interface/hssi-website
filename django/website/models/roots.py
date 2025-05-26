@@ -2,8 +2,6 @@ import uuid
 from django.db import models
 from colorful.fields import RGBColorField
 
-from .structurizer import ModelSubfield
-
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .people import Person
@@ -30,7 +28,7 @@ class HssiModel(models.Model):
         return None
     
     @classmethod
-    def get_subfields(cls) -> list['ModelSubfield']:
+    def get_subfields(cls) -> list[models.Field]:
         subfields = []
 
         # get top field since we want to skip it
@@ -43,9 +41,7 @@ class HssiModel(models.Model):
             # we don't want reverse or non-column fields (or the top field)
             if field == top_field or field.auto_created or not field.concrete or not field.editable:
                 continue
-            
-            subfield = ModelSubfield.create(field)
-            subfields.append(subfield)
+            subfields.append(field)
         
         return subfields
 

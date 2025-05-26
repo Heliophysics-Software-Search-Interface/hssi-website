@@ -2,10 +2,13 @@ import uuid
 from django.db import models
 from colorful.fields import RGBColorField
 
+from ..forms.structurizer import ModelSubfield
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .people import Person
     from .auxillary_info import Functionality, Award, RelatedItem
+
 
 # Character length limits
 LEN_LONGNAME = 512
@@ -21,6 +24,25 @@ class InstrObsType(models.IntegerChoices):
 class HssiModel(models.Model):
     '''Base class for all models in the HSSI project'''
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    @classmethod
+    def get_top_field(cls) -> 'ModelSubfield':
+        return None
+    
+    @classmethod
+    def get_subfields(cls) -> list['ModelSubfield']:
+        subfields = []
+
+        fields = cls._meta.get_fields(include_parents=True, include_hidden=False)
+        for field in fields:
+
+            # we don't want reverse or non-column fields
+            if field.auto_created or not field.concrete:
+                continue
+
+            subfields.append(ModelSubfield.create(field))
+        
+        return subfields
 
     def get_search_terms(self) -> list[str]: 
         '''
@@ -41,6 +63,9 @@ class ControlledList(HssiModel):
     definition = models.TextField(blank=True, null=True)
 
     def __str__(self): return self.name
+
+    @classmethod
+    def get_top_field(cls): return cls.name
 
     def get_tooltip(self): return self.definition
 

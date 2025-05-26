@@ -36,7 +36,7 @@ class ModelSubfield:
         return {
             'name': self.name,
             'type': self.type,
-            'requirement': self.requirement,
+            'requirement': self.requirement.value,
             'properties': self.properties,
             'multi': self.multi,
         }
@@ -60,7 +60,9 @@ class ModelSubfield:
         else:
             # TODO this form field stuff doesn't really do what I want
             widget: widgets.Widget = field.formfield().widget
-            subfield.requirement = widget.attrs.get(REQ_LVL_ATTR, RequirementLevel.OPTIONAL.value)
+            subfield.requirement = RequirementLevel(
+                widget.attrs.get(REQ_LVL_ATTR, RequirementLevel.OPTIONAL.value)
+            )
             subfield.properties = widget.attrs.copy()
             match widget:
                 case widgets.TextInput(): subfield.type = "CharWidget"
@@ -95,7 +97,10 @@ class ModelStructure:
         serialized: dict = {
             "typeName": self.type_name,
             "topField": self.top_field.serialized() if self.top_field else None,
-            "subFields": [],
+            "subFields": [
+                subfield.serialized()
+                for subfield in self.subfields
+            ],
         }
         return serialized
     

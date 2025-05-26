@@ -33,15 +33,19 @@ class HssiModel(models.Model):
     def get_subfields(cls) -> list['ModelSubfield']:
         subfields = []
 
+        # get top field since we want to skip it
         top_field = cls.get_top_field()
+
+        # iterate through each field and create subfield structures for concrete model fields
         fields = cls._meta.get_fields(include_parents=True, include_hidden=False)
         for field in fields:
-            
+
             # we don't want reverse or non-column fields (or the top field)
             if field == top_field or field.auto_created or not field.concrete or not field.editable:
                 continue
-
-            subfields.append(ModelSubfield.create(field))
+            
+            subfield = ModelSubfield.create(field)
+            subfields.append(subfield)
         
         return subfields
 

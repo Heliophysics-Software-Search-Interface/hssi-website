@@ -32,7 +32,7 @@ class ModelSubfield:
 
     name: str = ""
     type: str = ""
-    requirement: RequirementLevel = RequirementLevel.OPTIONAL
+    requirement: RequirementLevel = RequirementLevel.OPTIONAL.value
     properties: dict = {}
     multi: bool = False
 
@@ -44,7 +44,7 @@ class ModelSubfield:
         return {
             'name': self.name,
             'type': self.type,
-            'requirement': self.requirement.value,
+            'requirement': self.requirement,
             'properties': self.properties,
             'multi': self.multi,
         }

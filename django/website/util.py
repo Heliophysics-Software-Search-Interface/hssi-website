@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import Enum, IntEnum
 
-class RequirementLevel(Enum):
+class RequirementLevel(IntEnum):
     OPTIONAL = 0
     RECOMMENDED = 1
     MANDATORY = 2

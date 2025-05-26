@@ -13,12 +13,12 @@ from django.forms import widgets
 
 from ..util import RequirementLevel, REQ_LVL_ATTR
 
-from enum import Enum
+from enum import StrEnum
 from typing import Type, TYPE_CHECKING
 if TYPE_CHECKING:
     from .roots import HssiModel
 
-class WidgetPrimitiveName(Enum[str]):
+class WidgetPrimitiveName(StrEnum):
     char = "CharWidget"
     textArea = "TextAreaWidget"
     url = "UrlWidget"
@@ -73,11 +73,11 @@ class ModelSubfield:
             )
             subfield.properties = widget.attrs.copy()
             match widget:
-                case widgets.TextInput(): subfield.type = WidgetPrimitiveName.char
-                case widgets.Textarea(): subfield.type = WidgetPrimitiveName.textArea
-                case widgets.URLInput(): subfield.type = WidgetPrimitiveName.url
-                case widgets.DateInput(): subfield.type = WidgetPrimitiveName.date
-                case widgets.CheckboxInput(): subfield.type = WidgetPrimitiveName.checkbox
+                case widgets.TextInput(): subfield.type = WidgetPrimitiveName.char.value
+                case widgets.Textarea(): subfield.type = WidgetPrimitiveName.textArea.value
+                case widgets.URLInput(): subfield.type = WidgetPrimitiveName.url.value
+                case widgets.DateInput(): subfield.type = WidgetPrimitiveName.date.value
+                case widgets.CheckboxInput(): subfield.type = WidgetPrimitiveName.checkbox.value
         
         return subfield
 

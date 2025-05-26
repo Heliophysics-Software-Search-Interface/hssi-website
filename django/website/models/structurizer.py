@@ -10,11 +10,11 @@ import json
 from django.db import models
 from django.forms import widgets
 
-from .controls import RequirementLevel, REQ_LVL_ATTR
+from ..util import RequirementLevel, REQ_LVL_ATTR
 
 from typing import Type, TYPE_CHECKING
 if TYPE_CHECKING:
-    from ..models import HssiModel
+    from .roots import HssiModel
 
 class ModelSubfield:
     """
@@ -73,7 +73,7 @@ class ModelStructure:
     subfields: list[ModelSubfield] = []
 
     @classmethod
-    def create(cls, model: Type[HssiModel]) -> 'ModelStructure':
+    def create(cls, model: Type['HssiModel']) -> 'ModelStructure':
         """ create a model structure based on the given hssi model class """
         structure = ModelStructure()
         structure.top_field = model.get_top_field()

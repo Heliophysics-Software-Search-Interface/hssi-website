@@ -1,7 +1,6 @@
 from django.urls import path
 
 from . import submissions, views
-from .views import submit
 
 
 app_name = 'website' # Defines app url namespace
@@ -13,7 +12,8 @@ urlpatterns = [
     path('news/', views.NewsView.as_view(), name='news'),
     path('news/rss/', views.NewsFeed()),
     path('news/<int:pk>/', views.NewsItemView.as_view(), name='news_item'),
-    path('submit/', submit.submit_resource),
+    path('submit/', views.submit.submit_resource),
+    path('model_structure/', views.exposed_models.get_model_structure),
     #path('submit/success/', submissions.success, name='submitted'),
     #path('submit/<id>/', submissions.edit, name="edit_submission"),
     path('team/', views.team, name="team"),

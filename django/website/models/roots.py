@@ -2,7 +2,7 @@ import uuid
 from django.db import models
 from colorful.fields import RGBColorField
 
-from ..forms.structurizer import ModelSubfield
+from .structurizer import ModelSubfield
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -40,7 +40,7 @@ class HssiModel(models.Model):
             if field.auto_created or not field.concrete:
                 continue
 
-            subfields.append(ModelSubfield.create(field))
+            #subfields.append(ModelSubfield.create(field))
         
         return subfields
 

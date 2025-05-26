@@ -303,6 +303,8 @@ export class ModelBox extends Widget {
         ModelBox.showDropdown(this.inputContainerElement);
     }
 
+    public getInputElement(): HTMLInputElement { return this.inputElement; }
+
     /// Dropdown and tooltip elements ------------------------------------------
 
     private static dropdownElement: HTMLDivElement = null;

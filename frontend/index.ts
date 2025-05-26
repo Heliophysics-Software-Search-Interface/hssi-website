@@ -3,20 +3,26 @@
  */
 
 import { 
-	FieldRequirement, Widget, ModelBox, ModelObjectSelector
+	FieldRequirement, CharWidget, UrlWidget, EmailWidget, DateWidget, 
+	TextAreaWidget, CheckboxWidget, Widget, ModelBox, ModelObjectSelector,
 } from "./loader";
 
 function main() {
 	
 	// register widgets that can be generated on clientside
 	Widget.registerWidgets(
+		CharWidget,
+		UrlWidget,
+		EmailWidget,
+		DateWidget,
+		CheckboxWidget,
+		TextAreaWidget,
 		ModelBox,
 		ModelObjectSelector,
 	)
 
 	// initialize all widgets
-	Widget.initializeWidgets(ModelBox);
-	Widget.initializeWidgets(ModelObjectSelector);
+	Widget.initializeRegisteredWidgets();
 
 	// apply the requirement levels for the form widget requirements
 	setTimeout(() => FieldRequirement.applyRequirementLevels(), 1000);

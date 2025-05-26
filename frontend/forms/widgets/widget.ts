@@ -75,6 +75,9 @@ export abstract class Widget {
 		}
 	}
 
+	/** return the element that the user interacts with for inputing data */
+	public abstract getInputElement(): HTMLInputElement;
+
 	/** get the requiredinput object associated with the widget */
 	public getRequiredInputInstance(): FieldRequirement {
 		return FieldRequirement.getFromElement(this.element);
@@ -123,6 +126,13 @@ export abstract class Widget {
 		console.log("Initialized " + widgets.length)
 
 		return widgets;
+	}
+
+	/** construct and initialize all previously registered widgets in a webpage */
+	public static initializeRegisteredWidgets(): void {
+		for(const widgetType of this.registeredWidgets.values()) {
+			this.initializeWidgets(widgetType);
+		}
 	}
 
 	/**

@@ -350,4 +350,6 @@ export class ModelObjectSelector extends Widget {
 	private hideTooltip(): void {
 		this.tooltip.style.display = "none";
 	}
+
+	public getInputElement(): HTMLInputElement { return this.input; }
 }

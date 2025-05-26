@@ -7,8 +7,10 @@ the exposed django model structure
 
 import json
 
-from django.db.models import fields
+from django.db import models
+from django.forms import widgets
 
+from .controls import RequirementLevel, REQ_LVL_ATTR
 
 from typing import Type, TYPE_CHECKING
 if TYPE_CHECKING:
@@ -19,14 +21,47 @@ class ModelSubfield:
     TODO
     """
 
+    name: str = ""
+    type: str = ""
+    requirement: RequirementLevel = RequirementLevel.OPTIONAL
+    properties: dict = {}
+    multi: bool = False
+
     def serialized(self) -> dict:
-        # TODO
-        return {}
+        """
+        return a serializeable dictionary representation of the data that this 
+        model subfield holds
+        """
+        return {
+            'name': self.name,
+            'type': self.type,
+            'requirement': self.requirement.value,
+            'properties': self.properties,
+            'multi': self.multi,
+        }
     
+    def to_json(self) -> str:
+        return json.dumps(self.serialized)
+
     @classmethod
-    def create(cls, field: fields.Field) -> 'ModelSubfield':
-        # TODO
-        pass
+    def create(cls, field: models.Field) -> 'ModelSubfield':
+        """ create a subfield based on a model field """
+        widget = field.widget
+
+        subfield = ModelSubfield()
+        subfield.name = field.name
+        match widget:
+            case widgets.TextInput(): subfield.type = "CharWidget"
+            case widgets.Textarea(): subfield.type = "TextAreaWidget"
+            case widgets.URLInput(): subfield.type = "UrlWidget"
+            case widgets.DateInput(): subfield.type = "DateWidget"
+            case widgets.CheckboxInput(): subfield.type = "CheckboxWidget"
+        subfield.requirement = widget.attrs.get(REQ_LVL_ATTR, RequirementLevel.OPTIONAL.value)
+        subfield.properties = widget.attrs.copy()
+        if field is models.ManyToManyField:
+            subfield.multi = True
+        
+        return subfield
 
 class ModelStructure:
     """
@@ -35,17 +70,18 @@ class ModelStructure:
     
     type_name: str = ""
     top_field: ModelSubfield | None = None
-    sub_fields: list[ModelSubfield] = []
+    subfields: list[ModelSubfield] = []
 
     @classmethod
     def create(cls, model: Type[HssiModel]) -> 'ModelStructure':
         """ create a model structure based on the given hssi model class """
         structure = ModelStructure()
+        structure.top_field = model.get_top_field()
 
         fields = model._meta.get_fields()
         for field in fields:
-            # TODO create structure
-            print(field.name, type(field))
+            if field == structure.top_field: continue
+            structure.subfields.append(ModelSubfield.create(field))
 
         return structure
     

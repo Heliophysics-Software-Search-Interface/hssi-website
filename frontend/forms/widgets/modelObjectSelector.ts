@@ -3,10 +3,10 @@
  */
 
 import { 
-	Widget, propertiesDataValue, uidAttribute, typeAttribute, RequiredInput, 
+	Widget, propertiesDataValue, uidAttribute, typeAttribute, FieldRequirement, 
 	requirementAttributeContainer, invalidManStyle, invalidRecStyle,
 	type BaseProperties,
-} from "../loader";
+} from "../../loader";
 
 const choicesType = "json-choices";
 const tooltipType = "option-tooltip";
@@ -321,7 +321,7 @@ export class ModelObjectSelector extends Widget {
 		}
 
 		// recheck for styling if validation is required
-		RequiredInput.getFromElement(this.inputContainer)?.applyValidityStyle();
+		FieldRequirement.getFromElement(this.inputContainer)?.applyValidityStyle();
 	}
 
 	/** Shows a tooltip near the hovered option */
@@ -350,4 +350,6 @@ export class ModelObjectSelector extends Widget {
 	private hideTooltip(): void {
 		this.tooltip.style.display = "none";
 	}
+
+	public getInputElement(): HTMLInputElement { return this.input; }
 }

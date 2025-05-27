@@ -4,7 +4,7 @@ from django import forms
 from enum import Enum
 from typing import NamedTuple, Type
 
-from . import RequirementLevel, REQ_LVL_ATTR
+from ...util import RequirementLevel, REQ_LVL_ATTR
 from ...models import HssiModel
 
 class ModelObjectChoice(NamedTuple):

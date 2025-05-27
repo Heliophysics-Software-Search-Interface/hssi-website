@@ -1,7 +1,8 @@
 from django import forms
 from django.forms.utils import ErrorList
 
-from ..forms import ModelObjectSelector, RequirementLevel, REQ_LVL_ATTR
+from ..forms import ModelObjectSelector
+from ..util import RequirementLevel, REQ_LVL_ATTR
 from ..models import (
     Person, Organization, ProgrammingLanguage, RelatedItem, InstrumentObservatory,
     InstrObsType, Phenomena, DataInput, Functionality, RepoStatus, License,

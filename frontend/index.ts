@@ -3,23 +3,35 @@
  */
 
 import { 
-	RequiredInput, Widget, ModelBox, ModelObjectSelector
+	FieldRequirement, CharWidget, NumberWidget, UrlWidget, EmailWidget, 
+	DateWidget, TextAreaWidget, CheckboxWidget, Widget, ModelBox, 
+	ModelObjectSelector, FormGenerator,
 } from "./loader";
 
 function main() {
 	
 	// register widgets that can be generated on clientside
 	Widget.registerWidgets(
+		CharWidget,
+		NumberWidget,
+		UrlWidget,
+		EmailWidget,
+		DateWidget,
+		CheckboxWidget,
+		TextAreaWidget,
 		ModelBox,
 		ModelObjectSelector,
 	)
 
+	// generate the forms
+	FormGenerator.generateForm(null);
+	
 	// initialize all widgets
-	Widget.initializeWidgets(ModelBox);
-	Widget.initializeWidgets(ModelObjectSelector);
+	Widget.initializeRegisteredWidgets();
 
 	// apply the requirement levels for the form widget requirements
-	setTimeout(() => RequiredInput.applyRequirementLevels(), 1000);
+	// TODO test and remove if the deferred call is needed, remove if not
+	setTimeout(() => FieldRequirement.applyRequirementLevels(), 1000);
 }
 
 // call main when document DOM tree is finished building so that we can access

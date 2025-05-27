@@ -5,8 +5,13 @@
  * where they are defined.
  */
 
-export * from "./widgets/requiredInput";
-export * from "./widgets/widget";
-export * from "./widgets/widgetModel";
-export * from "./widgets/modelBox";
-export * from "./widgets/modelObjectSelector";
+export * from "./forms/fieldRequirement";
+export * from "./forms/widgets/widget";
+export * from "./forms/modelFieldStructure";
+export * from "./forms/widgets/basicWidgets";
+export * from "./forms/widgets/modelBox";
+export * from "./forms/widgets/modelObjectSelector";
+
+export * from "./forms/modelFieldStructure";
+export * from "./forms/modelSubfield";
+export * from "./forms/formGenerator";

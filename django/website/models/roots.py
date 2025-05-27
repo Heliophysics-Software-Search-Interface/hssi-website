@@ -7,6 +7,7 @@ if TYPE_CHECKING:
     from .people import Person
     from .auxillary_info import Functionality, Award, RelatedItem
 
+
 # Character length limits
 LEN_LONGNAME = 512
 LEN_NAME = 100
@@ -21,6 +22,28 @@ class InstrObsType(models.IntegerChoices):
 class HssiModel(models.Model):
     '''Base class for all models in the HSSI project'''
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    @classmethod
+    def get_top_field(cls) -> models.Field:
+        return None
+    
+    @classmethod
+    def get_subfields(cls) -> list[models.Field]:
+        subfields = []
+
+        # get top field since we want to skip it
+        top_field = cls.get_top_field()
+
+        # iterate through each field and create subfield structures for concrete model fields
+        fields = cls._meta.get_fields(include_parents=True, include_hidden=False)
+        for field in fields:
+
+            # we don't want reverse or non-column fields (or the top field)
+            if field == top_field or field.auto_created or not field.concrete or not field.editable:
+                continue
+            subfields.append(field)
+        
+        return subfields
 
     def get_search_terms(self) -> list[str]: 
         '''
@@ -41,6 +64,9 @@ class ControlledList(HssiModel):
     definition = models.TextField(blank=True, null=True)
 
     def __str__(self): return self.name
+
+    @classmethod
+    def get_top_field(cls): return cls._meta.get_field("name")
 
     def get_tooltip(self): return self.definition
 

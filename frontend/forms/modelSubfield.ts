@@ -54,7 +54,8 @@ export class ModelSubfield {
 		targetDiv.appendChild(this.labelElement);
 
 		// create the "hover for info" icon
-		if(this.properties.tooltipBestPractice != null){
+		console.log(this.properties);
+		if(this.properties.tooltipBestPractise != null){
 			const ttbpWrapper = document.createElement("span") as HTMLSpanElement;
 			ttbpWrapper.classList.add(tooltipWrapperStyle);
 			
@@ -63,13 +64,12 @@ export class ModelSubfield {
 			ttbpIcon.innerText = "i";
 
 			const ttbpText = document.createElement("div") as HTMLDivElement;
-			ttbpIcon.classList.add(tooltipTextStyle);
-			ttbpText.innerText = this.properties.tooltipBestPractice;
+			ttbpText.classList.add(tooltipTextStyle);
+			ttbpText.innerText = this.properties.tooltipBestPractise;
 			
 			ttbpWrapper.appendChild(ttbpIcon);
 			ttbpWrapper.appendChild(ttbpText);
 			this.labelElement.appendChild(ttbpWrapper);
-			targetDiv.appendChild(ttbpWrapper);
 		}
 
 		// create the help text below the label if it exists
@@ -77,6 +77,7 @@ export class ModelSubfield {
 			this.explanationElement = document.createElement("div");
 			this.explanationElement.classList.add(explanationTextStyle);
 			this.explanationElement.innerHTML = this.properties.tooltipExplanation;
+			targetDiv.appendChild(this.explanationElement);
 		}
 	}
 
@@ -91,6 +92,13 @@ export class ModelSubfield {
 			return;
 		}
 		this.widget = new widgetType(document.createElement("div"));
+		if(this.properties.widgetProperties != null) {
+			this.widget.properties = { 
+				...this.widget.properties, 
+				...this.properties.widgetProperties,
+			}
+		}
+		this.widget.properties.requirementLevel = this.requirement;
 		this.widget.initialize();
 		targetDiv.appendChild(this.widget.element);
 	}

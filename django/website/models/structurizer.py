@@ -19,6 +19,13 @@ from typing import Type, TYPE_CHECKING
 if TYPE_CHECKING:
     from .roots import HssiModel
 
+FORM_CONFIG_ATTR = "form_config"
+
+# Monkey patching probably isn't the best way to do this, but makes it easy
+def form_config(field: models.Field, **kwargs) -> models.Field:
+    setattr(field, FORM_CONFIG_ATTR, kwargs)
+    return field
+
 class WidgetPrimitiveName(StrEnum):
     char = "CharWidget"
     number = "NumberWidget"
@@ -64,17 +71,21 @@ class ModelSubfield:
         subfield = ModelSubfield()
         subfield.name = field.name
 
+        # get custom widget properties if defined
+        properties: dict = {}
+        if hasattr(field, FORM_CONFIG_ATTR):
+            properties = properties | getattr(field, FORM_CONFIG_ATTR, {})
+
         if isinstance(field, related.RelatedField):
             subfield.multi = True
             subfield.type = field.related_model.__name__
 
         else:
-            # TODO this form field stuff doesn't really do what I want
             widget: widgets.Widget = field.formfield().widget
+            properties = widget.attrs | properties
             subfield.requirement = RequirementLevel(
-                widget.attrs.get(REQ_LVL_ATTR, RequirementLevel.OPTIONAL.value)
+                properties.get(REQ_LVL_ATTR, RequirementLevel.OPTIONAL.value)
             )
-            subfield.properties = widget.attrs.copy()
             match widget:
                 case widgets.TextInput(): subfield.type = WidgetPrimitiveName.char.value
                 case widgets.NumberInput(): subfield.type = WidgetPrimitiveName.number.value
@@ -84,6 +95,7 @@ class ModelSubfield:
                 case widgets.DateInput(): subfield.type = WidgetPrimitiveName.date.value
                 case widgets.CheckboxInput(): subfield.type = WidgetPrimitiveName.checkbox.value
         
+        subfield.properties = properties
         return subfield
 
 class ModelStructure:

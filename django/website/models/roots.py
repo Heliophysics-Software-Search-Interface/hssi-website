@@ -2,6 +2,9 @@ import uuid
 from django.db import models
 from colorful.fields import RGBColorField
 
+from .structurizer import form_config
+from ..util import RequirementLevel
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .people import Person
@@ -58,7 +61,17 @@ class HssiModel(models.Model):
 
 class ControlledList(HssiModel):
     '''Base class for all controlled lists in the HSSI project'''
-    name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
+    name = form_config(
+        models.CharField(max_length=LEN_NAME, blank=False, null=False),
+        # widgetType="ModelBox",
+        label="Name",
+        tooltipExplanation="The name of the controlled list item",
+        tooltipBestPractise="Human legible name",
+        widgetProperties = {
+            'requirementLevel': RequirementLevel.MANDATORY.value,
+        },
+    )
+
     identifier = models.URLField(blank=True, null=True)
     definition = models.TextField(blank=True, null=True)
 

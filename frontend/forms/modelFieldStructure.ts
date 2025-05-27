@@ -13,7 +13,7 @@ export type PropertyContainer = {
 	tooltipExplanation?: string,
 
 	/** the tooltip that appears on hover of the information icon */
-	tooltipBestPractice?: string,
+	tooltipBestPractise?: string,
 
 } & { [key: string]: any };
 

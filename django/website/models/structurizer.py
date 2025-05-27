@@ -112,7 +112,7 @@ class ModelStructure:
         subfields_prepend = [] if self.top_field is None else [self.top_field.serialized()]
         serialized: dict = {
             "typeName": self.type_name,
-            "subfields": [subfields_prepend, *[
+            "subfields": [*subfields_prepend, *[
                     subfield.serialized()
                     for subfield in self.subfields
             ]],

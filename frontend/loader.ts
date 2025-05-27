@@ -14,3 +14,4 @@ export * from "./forms/widgets/modelObjectSelector";
 
 export * from "./forms/modelFieldStructure";
 export * from "./forms/modelSubfield";
+export * from "./forms/formGenerator";

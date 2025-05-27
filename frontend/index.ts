@@ -5,6 +5,7 @@
 import { 
 	FieldRequirement, CharWidget, UrlWidget, EmailWidget, DateWidget, 
 	TextAreaWidget, CheckboxWidget, Widget, ModelBox, ModelObjectSelector,
+	FormGenerator,
 } from "./loader";
 
 function main() {
@@ -24,7 +25,11 @@ function main() {
 	// initialize all widgets
 	Widget.initializeRegisteredWidgets();
 
+	// generate the forms
+	FormGenerator.generateForm(null);
+
 	// apply the requirement levels for the form widget requirements
+	// TODO test and remove if the deferred call is needed, remove if not
 	setTimeout(() => FieldRequirement.applyRequirementLevels(), 1000);
 }
 

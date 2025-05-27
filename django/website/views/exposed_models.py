@@ -1,4 +1,5 @@
-from django.http import JsonResponse, HttpRequest
+from django.http import JsonResponse, HttpRequest, HttpResponse
+from django.shortcuts import render
 from ..forms import SubmissionForm
 from ..models import (
     Keyword, OperatingSystem, Phenomena, RepoStatus, Image,
@@ -35,3 +36,10 @@ def get_model_structure(request: HttpRequest) -> JsonResponse:
         ModelStructure.create(Software).serialized(),
     ]}
     return JsonResponse(structures)
+
+def model_form(request: HttpRequest, model_name: str) -> HttpResponse:
+    return render(
+        request, 
+        "forms/model_form_base.html", 
+        { "structure_name": model_name }
+    )

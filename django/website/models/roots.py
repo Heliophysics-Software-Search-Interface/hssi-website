@@ -7,7 +7,6 @@ if TYPE_CHECKING:
     from .people import Person
     from .auxillary_info import Functionality, Award, RelatedItem
 
-
 # Character length limits
 LEN_LONGNAME = 512
 LEN_NAME = 100
@@ -50,9 +49,9 @@ class HssiModel(models.Model):
         The search terms that are used for filtering autocomplete suggestions in 
         relevant form interfaces
         '''
-        return [str(self)]
+        return str(self).split()
 
-    def get_tooltip(self) -> str: return ""
+    def get_tooltip(self) -> str: return ''
 
     class Meta:
         abstract = True
@@ -69,6 +68,16 @@ class ControlledList(HssiModel):
     def get_top_field(cls): return cls._meta.get_field("name")
 
     def get_tooltip(self): return self.definition
+
+    def get_search_terms(self) -> list[str]:
+        return [
+            *self.name
+                .replace(',',' ')
+                .replace(';',' ')
+                .replace(':',' ')
+                .split(), 
+            self.identifier if self.identifier else '',
+        ]
 
     class Meta:
         ordering = ['name']
@@ -126,15 +135,13 @@ class Region(ControlledList):
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
-class InstrumentObservatory(HssiModel):
+class InstrumentObservatory(ControlledList):
     '''An observatory or scientific research instrument'''
     type = models.IntegerField(choices=InstrObsType.choices, default=InstrObsType.UNKNOWN)
-    name = models.CharField(max_length=LEN_LONGNAME)
     abbreviation = models.CharField(max_length=LEN_NAME, null=True, blank=True)
-    identifier = models.URLField(blank=True, null=True)
 
     def get_search_terms(self) -> list[str]:
-        terms = []
+        terms = super().get_search_terms()
         if self.abbreviation:
             terms.append(self.abbreviation)
         terms.extend(self.name.split(' '))

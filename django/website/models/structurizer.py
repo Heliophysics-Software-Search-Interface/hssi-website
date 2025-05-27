@@ -6,6 +6,7 @@ the exposed django model structure
 """
 
 import json
+import warnings
 
 from django.db import models
 from django.db.models.fields import related
@@ -109,6 +110,11 @@ class ModelStructure:
         return structure
     
     def serialized(self) -> dict:
+        if self.top_field is None:
+            warnings.warn(
+                f"Serializing model structure {self.type_name} without top_field", 
+                UserWarning,
+            )
         subfields_prepend = [] if self.top_field is None else [self.top_field.serialized()]
         serialized: dict = {
             "typeName": self.type_name,

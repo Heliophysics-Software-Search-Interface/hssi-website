@@ -3,9 +3,9 @@
  */
 
 import { 
-	FieldRequirement, CharWidget, UrlWidget, EmailWidget, DateWidget, 
-	TextAreaWidget, CheckboxWidget, Widget, ModelBox, ModelObjectSelector,
-	FormGenerator,
+	FieldRequirement, CharWidget, NumberWidget, UrlWidget, EmailWidget, 
+	DateWidget, TextAreaWidget, CheckboxWidget, Widget, ModelBox, 
+	ModelObjectSelector, FormGenerator,
 } from "./loader";
 
 function main() {
@@ -13,6 +13,7 @@ function main() {
 	// register widgets that can be generated on clientside
 	Widget.registerWidgets(
 		CharWidget,
+		NumberWidget,
 		UrlWidget,
 		EmailWidget,
 		DateWidget,

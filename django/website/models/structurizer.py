@@ -20,8 +20,10 @@ if TYPE_CHECKING:
 
 class WidgetPrimitiveName(StrEnum):
     char = "CharWidget"
+    number = "NumberWidget"
     textArea = "TextAreaWidget"
     url = "UrlWidget"
+    email = "EmailWidget"
     date = "DateWidget"
     checkbox = "CheckboxWidget"
 
@@ -74,8 +76,10 @@ class ModelSubfield:
             subfield.properties = widget.attrs.copy()
             match widget:
                 case widgets.TextInput(): subfield.type = WidgetPrimitiveName.char.value
+                case widgets.NumberInput(): subfield.type = WidgetPrimitiveName.number.value
                 case widgets.Textarea(): subfield.type = WidgetPrimitiveName.textArea.value
                 case widgets.URLInput(): subfield.type = WidgetPrimitiveName.url.value
+                case widgets.EmailInput(): subfield.type = WidgetPrimitiveName.email.value
                 case widgets.DateInput(): subfield.type = WidgetPrimitiveName.date.value
                 case widgets.CheckboxInput(): subfield.type = WidgetPrimitiveName.checkbox.value
         

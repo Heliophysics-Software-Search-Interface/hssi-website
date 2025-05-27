@@ -81,7 +81,7 @@ export class ModelSubfield {
 	}
 
 	private buildWidget(targetDiv: HTMLDivElement): void {
-		const widgetType = this.type.getWidgetType()
+		const widgetType = this.type.getWidgetType();
 		this.widget = new widgetType(document.createElement("div"));
 		targetDiv.appendChild(this.widget.element);
 	}
@@ -113,7 +113,6 @@ export class ModelSubfield {
 		// get field structure type if not yet parsed
 		let type = data.type; 
 		if(!(type instanceof ModelFieldStructure)) {
-			console.log(type, ModelFieldStructure.getFieldStructure(type));
 			type = ModelFieldStructure.getFieldStructure(type);
 			data.type = type;
 		}

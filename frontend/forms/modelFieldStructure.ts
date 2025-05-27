@@ -69,7 +69,7 @@ export class ModelFieldStructure {
 	public generateInstance(): ModelFieldStructureInstance {
 		const subfields: ModelSubfield[] = [];
 
-		const topField = ModelSubfield.parse(this.topField);
+		const topField = this.topField ? ModelSubfield.parse(this.topField) : null;
 		for(const sub of this.subfields) {
 			subfields.push(ModelSubfield.parse(sub));
 		}
@@ -86,23 +86,36 @@ export class ModelFieldStructure {
 		return this.fieldStructureMap.get(fieldType);
 	}
 
-	public static basicWidget(
-		type: WidgetType, 
-		requirement = RequirementLevel.OPTIONAL, 
-		multi: boolean = false, 
-		attrs: PropertyContainer,
-	) {
-		const model = new ModelFieldStructure();
-		model.widgetType = type;
-		model.topField = {
-			name: "SELF",
-			type: model,
-			multi: multi,
-			requirement: requirement,
-			properties: attrs,
+	// public static basicWidget(
+	// 	type: WidgetType, 
+	// 	requirement = RequirementLevel.OPTIONAL, 
+	// 	multi: boolean = false, 
+	// 	attrs: PropertyContainer,
+	// ): ModelFieldStructure {
+	// 	const model = new ModelFieldStructure();
+	// 	model.widgetType = type;
+	// 	model.topField = {
+	// 		name: "SELF",
+	// 		type: model,
+	// 		multi: multi,
+	// 		requirement: requirement,
+	// 		properties: attrs,
+	// 	}
+	// 	model.subfields.push(model.topField);
+	// 	return model;
+	// }
+
+	/**
+	 * create basic widget models from registered widgets and parse them as
+	 * model field structures
+	 */
+	public static parseBasicWidgetModels(): void {
+		for(const widgetType of Widget.getAllRegisteredWidgets()){
+			const structure = new ModelFieldStructure();
+			structure.typeName = widgetType.name;
+			structure.widgetType = widgetType;
+			this.fieldStructureMap.set(widgetType.name, structure)
 		}
-		model.subfields.push(model.topField);
-		return model;
 	}
 
 	/**
@@ -122,6 +135,7 @@ export class ModelFieldStructure {
 			// top field will always be first field in subfields
 			model.topField = obj.subfields.shift();
 			this.fieldStructureMap.set(model.typeName, model);
+			models.push(model);
 		}
 
 		// convert subfield types from strings to references

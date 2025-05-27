@@ -24,6 +24,10 @@ export class CharWidget extends InputWidget {
     protected getInputType(): string { return "text"; }
 }
 
+export class NumberWidget extends InputWidget{
+    protected getInputType(): string { return "number"; }
+}
+
 export class UrlWidget extends InputWidget {
     protected getInputType(): string { return "url"; }
 }

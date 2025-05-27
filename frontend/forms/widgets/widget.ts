@@ -18,6 +18,8 @@ export interface BaseProperties extends Record<string, any> {
 	requirement_level: RequirementLevel;
 }
 
+type WidgetType = new (elem: HTMLElement) => Widget;
+
 /**
  * Base class for all widgets
  */
@@ -140,9 +142,7 @@ export abstract class Widget {
 	 * @example
 	 * Widget.registerWidgets(MyWidgetA, MyWidgetB, ...);
 	 */
-	public static registerWidgets(
-		...widgetClasses: (new (elem: HTMLElement) => Widget)[]
-	): void {
+	public static registerWidgets(...widgetClasses: WidgetType[]): void {
 		for(const widgetClass of widgetClasses) {
 			this.registeredWidgets.set(widgetClass.name, widgetClass);
 		}
@@ -151,10 +151,18 @@ export abstract class Widget {
 	/** gets a registered widget type by name, if it exists, otherwise null */
 	public static getRegisteredWidget(
 		className: string
-	): new (elem: HTMLElement) => Widget {
+	): WidgetType {
 		if(this.registeredWidgets.has(className)) {
 			return this.registeredWidgets.get(className);
 		}
 		return null;
+	}
+
+	public static getAllRegisteredWidgets(): WidgetType[] {
+		const widgets: WidgetType[] = [];
+		for(const widget of this.registeredWidgets.values()) {
+			widgets.push(widget);
+		}
+		return widgets;
 	}
 }

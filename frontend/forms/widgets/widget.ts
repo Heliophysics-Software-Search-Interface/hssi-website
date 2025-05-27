@@ -58,16 +58,14 @@ export abstract class Widget {
 
 	/** collect data from json script elements */
 	protected collectData(): void {
-		this.properties = 
-			JSON.parse(
-				this.element.querySelector(
-					`script[${widgetDataAttribute}=${propertiesDataValue}]`
-				).textContent
-			);
+		const jsonElem = this.element.querySelector(
+			`script[${widgetDataAttribute}=${propertiesDataValue}]`
+		);
+		if(jsonElem != null) this.properties = JSON.parse(jsonElem.textContent);
 	}
 
 	/** custom initialization logic for widget */
-	protected initialize(): void {
+	public initialize(): void {
 		this.collectData();
 		if(this.properties.requirementLevel != undefined) {
 			this.element.setAttribute(

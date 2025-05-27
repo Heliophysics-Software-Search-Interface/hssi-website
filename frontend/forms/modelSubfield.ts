@@ -91,7 +91,9 @@ export class ModelSubfield {
 			return;
 		}
 		this.widget = new widgetType(document.createElement("div"));
+		this.widget.initialize();
 		targetDiv.appendChild(this.widget.element);
+		console.log(this.widget);
 	}
 
 	/** 

@@ -57,7 +57,7 @@ export class ModelObjectSelector extends Widget {
 	}
 
 	/** Initialize the widget instance */
-	protected initialize(): void {
+	public initialize(): void {
 		super.initialize();
 		ModelObjectSelector.widgets.push(this);
 

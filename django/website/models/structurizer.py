@@ -15,15 +15,19 @@ from django.forms import widgets
 from ..util import RequirementLevel, REQ_LVL_ATTR
 
 from enum import StrEnum
-from typing import Type, TYPE_CHECKING
+from typing import Type, TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from .roots import HssiModel
 
 FORM_CONFIG_ATTR = "form_config"
 
-# Monkey patching probably isn't the best way to do this, but makes it easy
 def form_config(field: models.Field, **kwargs) -> models.Field:
-    setattr(field, FORM_CONFIG_ATTR, kwargs)
+    '''
+    Allows for configuration of field properties to pass as model field 
+    structure to frontend for form generation
+    '''
+    config = getattr(field, FORM_CONFIG_ATTR, {})
+    setattr(field, FORM_CONFIG_ATTR, config | kwargs)
     return field
 
 class WidgetPrimitiveName(StrEnum):

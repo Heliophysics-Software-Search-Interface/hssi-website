@@ -81,7 +81,15 @@ export class ModelSubfield {
 	}
 
 	private buildWidget(targetDiv: HTMLDivElement): void {
+		if(!this.type){
+			console.error("Undefined subfield type!");
+			return;
+		}
 		const widgetType = this.type.getWidgetType();
+		if(widgetType == null) {
+			console.error(`Undefined type on '${this.name}'`);
+			return;
+		}
 		this.widget = new widgetType(document.createElement("div"));
 		targetDiv.appendChild(this.widget.element);
 	}

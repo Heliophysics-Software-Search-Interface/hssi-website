@@ -113,13 +113,15 @@ export class ModelSubfield {
 		// get field structure type if not yet parsed
 		let type = data.type; 
 		if(!(type instanceof ModelFieldStructure)) {
-			type =  ModelFieldStructure.getFieldStructure(type);
+			console.log(type, ModelFieldStructure.getFieldStructure(type));
+			type = ModelFieldStructure.getFieldStructure(type);
 			data.type = type;
 		}
 
 		// create and return the subfield object
+		let subfield: ModelSubfield = null;
 		if(!data.multi){
-			return new ModelSubfield(
+			subfield = new ModelSubfield(
 				data.name, 
 				type, 
 				data.requirement,
@@ -127,13 +129,14 @@ export class ModelSubfield {
 			);
 		}
 		else {
-			return new ModelMultiSubfield(
+			subfield = new ModelMultiSubfield(
 				data.name, 
 				type, 
 				data.requirement, 
 				data.properties
 			)
 		}
+		return subfield;
 	}
 }
 

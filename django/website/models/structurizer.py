@@ -105,13 +105,13 @@ class ModelStructure:
         return structure
     
     def serialized(self) -> dict:
+        subfields_prepend = [] if self.top_field is None else [self.top_field.serialized()]
         serialized: dict = {
             "typeName": self.type_name,
-            "topField": self.top_field.serialized() if self.top_field else None,
-            "subFields": [
-                subfield.serialized()
-                for subfield in self.subfields
-            ],
+            "subfields": [subfields_prepend, *[
+                    subfield.serialized()
+                    for subfield in self.subfields
+            ]],
         }
         return serialized
     

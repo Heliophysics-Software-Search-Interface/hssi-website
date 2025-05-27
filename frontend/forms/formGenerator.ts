@@ -1,5 +1,6 @@
 import { 
-    typeAttribute, ModelFieldStructure, ModelSubfield, widgetDataAttribute
+    typeAttribute, ModelFieldStructure, ModelSubfield, widgetDataAttribute,
+    type SerializedSubfield
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -43,18 +44,28 @@ export class FormGenerator {
      * generate a form from a given set of fields, or if not specified, tries 
      * to find json data about fields inside the text
      */
-    public static generateForm(fields: ModelSubfield[] = null): void {
+    public static async generateForm(fields: ModelSubfield[] = null): Promise<void> {
 
         // warn about singleton resetting
         if(this.formGenerator != null) {
             console.warn("form generator running multiple times on same page");
         }
-
+        
         // if there is no form, return early
         const form = document.querySelector(
             `form[${typeAttribute}=${generatedFormType}]`
         ) as HTMLFormElement;
         if(form == null) return;
+
+        // TODO placeholder form loading icon
+
+        // load structure data
+        if(this.structureData == null) { 
+            const data = await (await fetch(modelStructureUrl)).json();
+            const structureData = data as ModelStructureData;
+            this.structureData = structureData;
+            ModelFieldStructure.parseModels(this.structureData.structures);
+        }
 
         // otherwise get references to or create the form elements
         const generator = new FormGenerator();
@@ -71,37 +82,24 @@ export class FormGenerator {
         // get fields from html elements if not specified in function
         if(fields == null) {
             const dataElement: HTMLScriptElement = 
-                generator.formElement.querySelector(
+                document.querySelector(
                     `script[${widgetDataAttribute}=${structureNameData}]`
                 );
             if(dataElement) {
                 const structure = ModelFieldStructure.getFieldStructure(
                     dataElement.textContent.trim()
-                ).generateInstance();
-                const fields = [structure.topField, ...structure.subFields];
+                );
+                const fieldInstance = structure.generateInstance();
+                const fields = [fieldInstance.topField, ...fieldInstance.subFields];
                 generator.fields = fields;
+                console.log(structure.typeName, fieldInstance);
             }
+            else console.warn("No field data found in form");
         }
         else generator.fields = fields;
 
         // apply the singleton instance
         this.formGenerator = generator;
-        
-        // generate the form if structure data is already loaded
-        if(FormGenerator.structureData != null) { 
-            this.formGenerator.buildForm();
-        }
-
-        // otherwise get the structure data and then generate the form
-        else {
-            const request = fetch(modelStructureUrl);
-            request.then(response => response.json()).then(data => {
-                const structureData = data as ModelStructureData;
-                FormGenerator.structureData = structureData;
-                FormGenerator.formGenerator.buildForm();
-            }).catch(error => {
-                console.error(error);
-            });
-        }
+        this.formGenerator.buildForm();
     }
 }

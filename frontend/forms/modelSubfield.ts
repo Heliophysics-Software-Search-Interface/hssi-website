@@ -87,13 +87,12 @@ export class ModelSubfield {
 		}
 		const widgetType = this.type.getWidgetType();
 		if(widgetType == null) {
-			console.error(`Undefined type on '${this.name}'`);
+			console.error(`Undefined type on '${this.name}'`, this.type);
 			return;
 		}
 		this.widget = new widgetType(document.createElement("div"));
 		this.widget.initialize();
 		targetDiv.appendChild(this.widget.element);
-		console.log(this.widget);
 	}
 
 	/** 

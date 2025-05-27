@@ -2,7 +2,9 @@
  * Module that handles definition of base class for all widgets
  */
 
-import { FieldRequirement, requirementAttribute, requirementAttributeContainer, RequirementLevel } from "../../loader";
+import { 
+	FieldRequirement, requirementAttributeContainer, RequirementLevel 
+} from "../../loader";
 
 // names of values in data attributes
 export const propertiesDataValue = "json-properties";

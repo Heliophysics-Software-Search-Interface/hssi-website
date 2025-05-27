@@ -38,6 +38,9 @@ class Person(HssiModel):
             self.identifier
         ]
 
+    @classmethod
+    def get_top_field(cls) -> models.Field: return cls._meta.get_field("firstName")
+
     class Meta: 
         ordering = ['lastName', 'firstName']
         verbose_name_plural = 'People'
@@ -62,6 +65,9 @@ class Curator(HssiModel):
     submission_infos: models.Manager['SubmissionInfo']
     submission_infos_led: models.Manager['SubmissionInfo']
 
+    @classmethod
+    def get_top_field(cls) -> models.Field: return cls._meta.get_field("email")
+
     class Meta: ordering = ['person']
     def __str__(self): return str(self.person)
 
@@ -78,5 +84,8 @@ class Submitter(HssiModel):
     # specified for intellisense, defined in other models
     submission_infos: models.Manager['SubmissionInfo']
 
+    @classmethod
+    def get_top_field(cls) -> models.Field: return cls._meta.get_field("email")
+    
     class Meta: ordering = ['person']
     def __str__(self): return str(self.person)

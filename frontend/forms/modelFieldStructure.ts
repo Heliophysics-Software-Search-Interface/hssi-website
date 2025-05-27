@@ -79,7 +79,7 @@ export class ModelFieldStructure {
 		// find widget type if not yet parsed
 		if ((this.widgetType as any).prototype === undefined){
 			const widgetTypeName = this.widgetType as string;
-			this.widgetType = Widget.getRegisteredWidget(widgetTypeName);;
+			this.widgetType = Widget.getRegisteredWidget(widgetTypeName);
 		}
 
 		return this.widgetType as WidgetType;

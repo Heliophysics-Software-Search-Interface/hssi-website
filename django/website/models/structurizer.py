@@ -68,14 +68,12 @@ class ModelSubfield:
 
         if field is None: return None
 
-        subfield = ModelSubfield()
+        subfield = cls()
         subfield.name = field.name
 
         # get custom widget properties if defined
-        properties: dict = {}
-        if hasattr(field, FORM_CONFIG_ATTR):
-            properties = properties | getattr(field, FORM_CONFIG_ATTR, {})
-
+        properties: dict = getattr(field, FORM_CONFIG_ATTR, {})
+        
         if isinstance(field, related.RelatedField):
             subfield.multi = True
             subfield.type = field.related_model.__name__
@@ -86,14 +84,18 @@ class ModelSubfield:
             subfield.requirement = RequirementLevel(
                 properties.get(REQ_LVL_ATTR, RequirementLevel.OPTIONAL.value)
             )
-            match widget:
-                case widgets.TextInput(): subfield.type = WidgetPrimitiveName.char.value
-                case widgets.NumberInput(): subfield.type = WidgetPrimitiveName.number.value
-                case widgets.Textarea(): subfield.type = WidgetPrimitiveName.textArea.value
-                case widgets.URLInput(): subfield.type = WidgetPrimitiveName.url.value
-                case widgets.EmailInput(): subfield.type = WidgetPrimitiveName.email.value
-                case widgets.DateInput(): subfield.type = WidgetPrimitiveName.date.value
-                case widgets.CheckboxInput(): subfield.type = WidgetPrimitiveName.checkbox.value
+            widgetType = properties.get('widgetType', None)
+            if widgetType is not None:
+                subfield.type = widgetType
+            else: 
+                match widget:
+                    case widgets.TextInput(): subfield.type = WidgetPrimitiveName.char.value 
+                    case widgets.NumberInput(): subfield.type = WidgetPrimitiveName.number.value
+                    case widgets.Textarea(): subfield.type = WidgetPrimitiveName.textArea.value
+                    case widgets.URLInput(): subfield.type = WidgetPrimitiveName.url.value
+                    case widgets.EmailInput(): subfield.type = WidgetPrimitiveName.email.value
+                    case widgets.DateInput(): subfield.type = WidgetPrimitiveName.date.value
+                    case widgets.CheckboxInput(): subfield.type = WidgetPrimitiveName.checkbox.value
         
         subfield.properties = properties
         return subfield

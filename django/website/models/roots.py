@@ -65,15 +65,20 @@ class ControlledList(HssiModel):
         models.CharField(max_length=LEN_NAME, blank=False, null=False),
         # widgetType="ModelBox",
         label="Name",
-        tooltipExplanation="The name of the controlled list item",
-        tooltipBestPractise="Human legible name",
         widgetProperties = {
             'requirementLevel': RequirementLevel.MANDATORY.value,
         },
     )
 
-    identifier = models.URLField(blank=True, null=True)
-    definition = models.TextField(blank=True, null=True)
+    identifier = form_config(
+        models.URLField(blank=True, null=True),
+        label="Identifier",
+    )
+
+    definition = form_config(
+        models.TextField(blank=True, null=True),
+        label="Definition",
+    ) 
 
     def __str__(self): return self.name
 
@@ -122,6 +127,9 @@ class Image(HssiModel):
     url = models.URLField(blank=True, null=True)
     description = models.CharField(max_length=250)
 
+    @classmethod
+    def get_top_field(cls): return cls._meta.get_field("url")
+
     class Meta: ordering = ['description']
     def __str__(self): return self.url
 
@@ -150,7 +158,12 @@ class Region(ControlledList):
 
 class InstrumentObservatory(ControlledList):
     '''An observatory or scientific research instrument'''
-    type = models.IntegerField(choices=InstrObsType.choices, default=InstrObsType.UNKNOWN)
+    type = form_config(
+        models.IntegerField(choices=InstrObsType.choices, default=InstrObsType.UNKNOWN),
+        label="Type",
+        widgetType="NumberWidget",
+    )
+    
     abbreviation = models.CharField(max_length=LEN_NAME, null=True, blank=True)
 
     def get_search_terms(self) -> list[str]:
@@ -184,6 +197,9 @@ class License(HssiModel):
     # specified for intellisense, defined in other models
     relatedItems: models.Manager['RelatedItem']
 
+    @classmethod
+    def get_top_field(cls): return cls._meta.get_field("name")
+
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
@@ -205,6 +221,9 @@ class Organization(HssiModel):
     # specified for intellisense, defined in other models
     people: models.Manager['Person']
     awards: models.Manager['Award']
+
+    @classmethod
+    def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
 
     def get_search_terms(self) -> list[str]:
         return [

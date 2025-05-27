@@ -22,11 +22,11 @@ function main() {
 		ModelObjectSelector,
 	)
 
-	// initialize all widgets
-	Widget.initializeRegisteredWidgets();
-
 	// generate the forms
 	FormGenerator.generateForm(null);
+	
+	// initialize all widgets
+	Widget.initializeRegisteredWidgets();
 
 	// apply the requirement levels for the form widget requirements
 	// TODO test and remove if the deferred call is needed, remove if not

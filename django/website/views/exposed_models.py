@@ -40,6 +40,6 @@ def get_model_structure(request: HttpRequest) -> JsonResponse:
 def model_form(request: HttpRequest, model_name: str) -> HttpResponse:
     return render(
         request, 
-        "forms/model_form_base.html", 
+        "pages/model_form.html", 
         { "structure_name": model_name }
     )

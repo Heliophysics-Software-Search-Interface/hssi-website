@@ -2,7 +2,7 @@ from ..models import *
 from ..util import RequirementLevel
 from .names import *
 
-SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
+SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     "SubmissionForm",
 
     # ----- Sec 1 -----
@@ -384,7 +384,7 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
     ModelSubfield.define(
         name=FIELD_LOGO,
         type=TYPE_URL,
-        requirement=RequirementLevel.RECOMMENDED.value,
+        requirement=RequirementLevel.OPTIONAL.value,
         properties={
             PROP_LABEL: "Logo",
             PROP_TT_EXPL: TTEXPL_LOGO,
@@ -397,7 +397,7 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
     ModelSubfield.define(
         name="agree",
         type=TYPE_CHECKBOX,
-        requirement=RequirementLevel.RECOMMENDED.value,
+        requirement=RequirementLevel.MANDATORY.value,
         properties={
             PROP_LABEL: "Metadata License Agreement",
             PROP_TT_EXPL: "Agree that all metadata you've entered into this form will be freely available for searching and indexing or any other purpose",

@@ -3,7 +3,7 @@ import ast
 from django.apps import apps
 from django.http import JsonResponse, HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
-from ..forms import SUBMISSION_FORM_DATA
+from ..forms import SUBMISSION_FORM_FIELDS
 from ..models import (
     HssiModel, Keyword, OperatingSystem, Phenomena, RepoStatus, Image,
     ProgrammingLanguage, DataInput, FileFormat, Region,
@@ -37,7 +37,7 @@ def get_model_structure(request: HttpRequest) -> JsonResponse:
         # ModelStructure.create(SubmissionInfo).serialized(),
         ModelStructure.create(SoftwareVersion).serialized(),
         ModelStructure.create(Software).serialized(),
-        SUBMISSION_FORM_DATA.serialized(),
+        SUBMISSION_FORM_FIELDS.serialized(),
     ]}
     return JsonResponse(structures)
 

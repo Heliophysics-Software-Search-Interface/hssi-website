@@ -26,6 +26,38 @@ type ModelFieldStructureInstance = {
 	subFields: ModelSubfield[],
 }
 
+function deepMerge(target: any, source: any): any {
+
+	// If either is not an object (or is null), return a clone of source
+	if (
+		typeof target !== 'object' || typeof source !== 'object' || 
+		!target || !source
+	)
+        return structuredClone(source);
+
+	// Clone the target to avoid mutating the original
+    const result: any = structuredClone(target);
+
+	// Iterate through all keys in the source object
+    for (const key of Object.keys(source)) {
+
+		// If both target and source have the same key and both values are 
+		// objects, merge recursively
+        if (
+			key in result && 
+			typeof result[key] === 'object' && 
+			typeof source[key] === 'object'
+		) {
+            result[key] = deepMerge(result[key], source[key]);
+        } else {
+			// Otherwise, overwrite with a clone of the source value
+            result[key] = structuredClone(source[key]);
+        }
+    }
+
+    return result;
+}
+
 export type SerializedSubfield = {
 	name: string,
 	type: string | ModelFieldStructure,
@@ -105,25 +137,6 @@ export class ModelFieldStructure {
 		return this.fieldStructureMap.get(fieldType);
 	}
 
-	// public static basicWidget(
-	// 	type: WidgetType, 
-	// 	requirement = RequirementLevel.OPTIONAL, 
-	// 	multi: boolean = false, 
-	// 	attrs: PropertyContainer,
-	// ): ModelFieldStructure {
-	// 	const model = new ModelFieldStructure();
-	// 	model.widgetType = type;
-	// 	model.topField = {
-	// 		name: "SELF",
-	// 		type: model,
-	// 		multi: multi,
-	// 		requirement: requirement,
-	// 		properties: attrs,
-	// 	}
-	// 	model.subfields.push(model.topField);
-	// 	return model;
-	// }
-
 	/**
 	 * create basic widget models from registered widgets and parse them as
 	 * model field structures
@@ -160,10 +173,32 @@ export class ModelFieldStructure {
 
 		// convert subfield types from strings to references
 		for(const model of models){
+			if(model.topField != null && typeof model.topField.type === "string") {
+				const type = this.fieldStructureMap.get(model.topField.type);
+				// use properties from type as defaults
+				if (type.topField != null){
+					const mergedProperties = deepMerge(
+						type.topField.properties, 
+						model.topField.properties
+					)
+					model.topField.properties = mergedProperties;
+				}
+			}
 			for(const subfield of model.subfields) {
 				if(typeof subfield.type === "string") {
-					let type = this.fieldStructureMap.get(subfield.type);
-					if (type != null) subfield.type = type;
+					const type = this.fieldStructureMap.get(subfield.type);
+					if (type != null) {
+
+						// use properties from type as defaults
+						if (type.topField != null){
+							const mergedProperties = deepMerge(
+								type.topField.properties, 
+								subfield.properties
+							)
+							subfield.properties = mergedProperties;
+						}
+						subfield.type = type;
+					}
 					else console.error(
 						`Invalid type '${subfield.type}' on subfield ` + 
 						`'${subfield.name}' in model '${model.typeName}'`

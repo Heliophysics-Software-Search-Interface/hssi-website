@@ -297,7 +297,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
         type=SUBMISSION_FORM_ORGANIZATION.type_name,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
-            PROP_LABEL: "Publisher",
+            #PROP_LABEL: "Publisher",
             PROP_TT_EXPL: TTEXPL_PUBLISHER,
             PROP_TT_BEST: TTBEST_PUBLISHER,
             PROP_WIDGET_PROPS: {

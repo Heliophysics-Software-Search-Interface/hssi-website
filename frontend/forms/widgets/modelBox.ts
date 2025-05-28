@@ -230,7 +230,6 @@ export class ModelBox extends Widget {
      */
     public async builOptionsFromModel(modelName: string): Promise<void> {
         const data: ChoicesJsonStructure = await (await fetch(modelChoicesUrl + modelName)).json();
-        console.log(data);
         this.buildOptions(data.data.map(
             x => {
                 return {

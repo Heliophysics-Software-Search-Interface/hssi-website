@@ -20,6 +20,12 @@ export interface BaseProperties extends Record<string, any> {
 	requirementLevel: RequirementLevel;
 }
 
+export type AnyInputElement = (
+	HTMLInputElement |
+	HTMLTextAreaElement |
+	HTMLSelectElement
+)
+
 type WidgetType = new (elem: HTMLElement) => Widget;
 
 /**
@@ -78,7 +84,10 @@ export abstract class Widget {
 	}
 
 	/** return the element that the user interacts with for inputing data */
-	public abstract getInputElement(): HTMLInputElement;
+	public abstract getInputElement(): AnyInputElement;
+
+	/** returns the value that a user has input into the widget */
+	public getInputValue(): string { return this.getInputElement().value; }
 
 	/** get the requiredinput object associated with the widget */
 	public getRequiredInputInstance(): FieldRequirement {

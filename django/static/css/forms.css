@@ -2,13 +2,19 @@ form .indent {
     margin-left: 20px;
 }
 
-form details {
+form details:not([open]) {
     padding-left: 11px;
+    cursor: pointer;
 }
 
 form details[open] {
     border-left: solid 1px #3333;
-    padding-left: 10px;
+    padding: 10px;
+    padding-top: 0;
+}
+
+form details {
+    box-shadow: 0px 2px 5px #3333;
 }
 
 form .custom-label {

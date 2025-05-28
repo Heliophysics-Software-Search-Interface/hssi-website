@@ -31,7 +31,7 @@ export class ModelSubfield {
 
 	public get multi(): boolean { return false; }
 
-	public constructor(
+	protected constructor(
 		name: string, 
 		type: ModelFieldStructure, 
 		requirement: RequirementLevel = RequirementLevel.OPTIONAL,
@@ -114,6 +114,8 @@ export class ModelSubfield {
 
 		// create subfields when container expanded
 		this.subfieldContainer.addEventListener("click", e => this.onExpandSubfields(e));
+
+		this.hideSubfieldContianer();
 	}
 
 	private buildSubFields(): void{
@@ -129,10 +131,76 @@ export class ModelSubfield {
 		}
 	}
 
-	private onExpandSubfields(e: Event): void{
+	private onExpandSubfields(_: Event = null): void{
 		if(this.subfields.length < this.type.subfields.length){
 			this.buildSubFields();
 		}
+	}
+
+	/** 
+	 * expand the subfield container and show the content and build 
+	 * subfields if necessary 
+	 */
+	public expandSubfields(): void {
+		this.onExpandSubfields();
+		this.subfieldContainer.setAttribute("open", "");
+	}
+
+	/** shows the subfield container and expand button */
+	public showSubfieldContainer(): void {
+		if(this.subfields.length <= 0 || this.subfieldContainer == null) return;
+		this.subfieldContainer.style.display = "block";
+	}
+
+	/** hide and clear the subfield container and expand button */
+	public hideSubfieldContianer(): void {
+		if(this.subfieldContainer == null) return;
+		this.subfieldContainer.removeAttribute("open");
+		this.subfieldContainer.style.display = "none";
+		this.clearSubfields();
+	}
+
+	/** destroy the field and remove it from the form */
+	public destroy(): void {
+		this.clearSubfields();
+		if(this.widget != null){
+			if(this.widget.element != null){
+				this.widget.element.remove();
+			}
+		}
+		if(this.containerElement != null){
+			this.containerElement.remove();
+		}
+		this.widget = null;
+		this.containerElement = null;
+		this.labelElement = null;
+		this.explanationElement = null;
+		this.subfieldContainer = null;
+	}
+
+	/** destroy and clear all subfields from the form */
+	public clearSubfields(): void {
+		for(const field of this.subfields){
+			field.destroy();
+		}
+		this.subfields.length = 0;
+	}
+
+	/** true if the field should use data from it's subfields */
+	public hasSubfields(): boolean {
+		return this.subfields.length > 0;
+	}
+
+	/** get the data that the field has received from user input */
+	public getFieldData(): {[key: string]: any} | string {
+		if(!this.hasSubfields()) {
+			return this.widget?.getInputValue() ?? "";
+		}
+		const data: {[key: string]: any} = {};
+		for(const subfield of this.subfields){
+			data[subfield.name] = subfield.getFieldData();
+		}
+		return data
 	}
 
 	/** 

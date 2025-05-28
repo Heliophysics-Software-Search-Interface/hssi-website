@@ -1,5 +1,6 @@
 import { 
-    Widget, widgetDataAttribute, targetUuidAttribute
+    Widget, widgetDataAttribute, targetUuidAttribute,
+    type AnyInputElement
 } from "../../loader";
 
 const optionDataValue = "json-options";
@@ -301,7 +302,7 @@ export class ModelBox extends Widget {
         ModelBox.showDropdown(this.inputContainerElement);
     }
 
-    public getInputElement(): HTMLInputElement { return this.inputElement; }
+    public getInputElement(): AnyInputElement { return this.inputElement; }
 
     /// Dropdown and tooltip elements ------------------------------------------
 

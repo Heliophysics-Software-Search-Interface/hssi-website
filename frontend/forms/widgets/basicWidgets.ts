@@ -1,4 +1,4 @@
-import { Widget } from "../../loader";
+import { Widget, type AnyInputElement } from "../../loader";
 
 abstract class InputWidget extends Widget {
 
@@ -57,5 +57,5 @@ export class TextAreaWidget extends Widget {
         this.createElements();
     }
 
-    public getInputElement(): HTMLInputElement { return this.textAreaElement; }
+    public getInputElement(): AnyInputElement { return this.textAreaElement; }
 }

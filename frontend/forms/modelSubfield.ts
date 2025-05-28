@@ -54,7 +54,6 @@ export class ModelSubfield {
 		targetDiv.appendChild(this.labelElement);
 
 		// create the "hover for info" icon
-		console.log(this.properties);
 		if(this.properties.tooltipBestPractise != null){
 			const ttbpWrapper = document.createElement("span") as HTMLSpanElement;
 			ttbpWrapper.classList.add(tooltipWrapperStyle);
@@ -110,7 +109,7 @@ export class ModelSubfield {
 	 */
 	public buildInterface(targetDiv: HTMLDivElement): void {
 		this.containerElement = document.createElement("div");
-		
+
 		this.buildFieldInfo(this.containerElement);
 		this.buildWidget(this.containerElement);
 

@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.db.models.fields import related, related_descriptors
 from colorful.fields import RGBColorField
 
 from .structurizer import form_config
@@ -30,7 +31,11 @@ class HssiBase(models.base.ModelBase):
     def __new__(cls: type['HssiModel'], name, bases, attrs: dict[str, Any], **kwargs):
         new_cls = super().__new__(cls, name, bases, attrs, **kwargs)
         for key, val in new_cls.__dict__.items():
-            if isinstance(val, models.query_utils.DeferredAttribute):
+            if (
+                isinstance(val, models.query_utils.DeferredAttribute) or 
+                isinstance(val, related_descriptors.ForwardOneToOneDescriptor) or 
+                isinstance(val, related_descriptors.ForwardManyToOneDescriptor)
+            ):
                 setattr(val, "name", key)
         return new_cls
 

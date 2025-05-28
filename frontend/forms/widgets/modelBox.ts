@@ -174,12 +174,10 @@ export class ModelBox extends Widget {
         super.collectData();
 
         // get the json data for the options
-        this.options = 
-            JSON.parse(
-                this.element.querySelector(
-                    `script[${widgetDataAttribute}=${optionDataValue}]`
-                ).textContent
-            );
+        const jsonElem = this.element.querySelector(
+            `script[${widgetDataAttribute}=${optionDataValue}]`
+        );
+        if(jsonElem != null) this.options = JSON.parse(jsonElem.textContent);
         
         // enforce case insensitivity for keyword filtering
         if(!this.properties.caseSensitiveFilter) {
@@ -196,7 +194,7 @@ export class ModelBox extends Widget {
     }
 
     /** @override Implementation for {@link Widget.prototype.initialize} */
-    protected initialize(): void {
+    public initialize(): void {
 		super.initialize();
         this.buildElements();
     }

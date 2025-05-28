@@ -13,7 +13,7 @@ export type PropertyContainer = {
 	tooltipExplanation?: string,
 
 	/** the tooltip that appears on hover of the information icon */
-	tooltipBestPractice?: string,
+	tooltipBestPractise?: string,
 
 } & { [key: string]: any };
 
@@ -55,6 +55,26 @@ export class ModelFieldStructure {
 
 	/** get the top-level widget to display for this model */
 	public getWidgetType(): WidgetType {
+
+		// if the structure does not have a direct widget type, we can find it 
+		// through the top field
+		if(this.widgetType == null || this.widgetType === "") {
+			let widgetType = this.widgetType;
+			let structure: ModelFieldStructure = this;
+			while (widgetType == null || widgetType === "") {
+				if(structure?.topField == null) {
+					console.error("Widget type cannot be resolved for " + this.typeName);
+					return null;
+				}
+				let structureNext = this.topField.type;
+				if(!(structureNext instanceof ModelFieldStructure)){
+					structureNext = ModelFieldStructure.getFieldStructure(structureNext);
+				}
+				structure = structureNext;
+				widgetType = structureNext?.widgetType;
+			}
+			this.widgetType = widgetType;
+		}
 
 		// find widget type if not yet parsed
 		if ((this.widgetType as any).prototype === undefined){

@@ -2,11 +2,13 @@ import uuid
 from django.db import models
 from colorful.fields import RGBColorField
 
-from typing import TYPE_CHECKING
+from .structurizer import form_config
+from ..util import RequirementLevel
+
+from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from .people import Person
     from .auxillary_info import Functionality, Award, RelatedItem
-
 
 # Character length limits
 LEN_LONGNAME = 512
@@ -19,9 +21,40 @@ class InstrObsType(models.IntegerChoices):
     OBSERVATORY = 2, "Observatory"
     UNKNOWN = 3, "Unknown"
 
-class HssiModel(models.Model):
+class HssiBase(models.base.ModelBase):
+    '''
+    Used to hook into class generation for models to set name attributes for 
+    model fields. Stupid fucking hacky ass way to do it becuase django and 
+    python are inflexible. The things I do just to avoid hardcoding strings...
+    '''
+    def __new__(cls: type['HssiModel'], name, bases, attrs: dict[str, Any], **kwargs):
+        new_cls = super().__new__(cls, name, bases, attrs, **kwargs)
+        for key, val in new_cls.__dict__.items():
+            if isinstance(val, models.query_utils.DeferredAttribute):
+                setattr(val, "name", key)
+        return new_cls
+
+class HssiModel(models.Model, metaclass=HssiBase):
     '''Base class for all models in the HSSI project'''
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    def get_search_terms(self) -> list[str]: 
+        '''
+        The search terms that are used for filtering autocomplete suggestions in 
+        relevant form interfaces
+        '''
+        return str(self).split()
+
+    def get_tooltip(self) -> str: return ''
+
+    def __init_subclass__(cls) -> None:
+        cls._form_config_redef()
+        return super().__init_subclass__()
+    
+    @classmethod
+    def _form_config_redef(cls) -> None:
+        '''Redefine the form properties for fields here'''
+        pass
 
     @classmethod
     def get_top_field(cls) -> models.Field:
@@ -44,24 +77,30 @@ class HssiModel(models.Model):
             subfields.append(field)
         
         return subfields
-
-    def get_search_terms(self) -> list[str]: 
-        '''
-        The search terms that are used for filtering autocomplete suggestions in 
-        relevant form interfaces
-        '''
-        return [str(self)]
-
-    def get_tooltip(self) -> str: return ""
-
+    
     class Meta:
         abstract = True
 
 class ControlledList(HssiModel):
     '''Base class for all controlled lists in the HSSI project'''
-    name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
-    identifier = models.URLField(blank=True, null=True)
-    definition = models.TextField(blank=True, null=True)
+    name = form_config(
+        models.CharField(max_length=LEN_NAME, blank=False, null=False),
+        # widgetType="ModelBox",
+        label="Name",
+        widgetProperties = {
+            'requirementLevel': RequirementLevel.MANDATORY.value,
+        },
+    )
+
+    identifier = form_config(
+        models.URLField(blank=True, null=True),
+        label="Identifier",
+    )
+
+    definition = form_config(
+        models.TextField(blank=True, null=True),
+        label="Definition",
+    ) 
 
     def __str__(self): return self.name
 
@@ -70,21 +109,55 @@ class ControlledList(HssiModel):
 
     def get_tooltip(self): return self.definition
 
+    def get_search_terms(self) -> list[str]:
+        return [
+            *self.name
+                .replace(',',' ')
+                .replace(';',' ')
+                .replace(':',' ')
+                .split(), 
+            self.identifier if self.identifier else '',
+        ]
+
     class Meta:
         ordering = ['name']
         abstract = True
 
 ## Simple Root Models ----------------------------------------------------------
 
-class Keyword(ControlledList): pass
+class Keyword(ControlledList): 
+    @classmethod
+    def _form_config_redef(cls) -> None:
+        super()._form_config_redef()
+        form_config(
+            cls._meta.get_field(cls.name.name),
+            label="Keyword",
+            tooltipExplanation="General science keywords relevant for the software (e.g. from the AGU Index List of the UAT) not supported by other metadata fields.",
+            tooltipBestPractise="Begin typing the keyword in the box. Keywords listed in the UAT and AGU Index lists will appear in a dropdown list, please choose the correct one(s). If your keyword is not listed, please type it in.",
+        )
 
 class OperatingSystem(ControlledList):
     '''Operating system on which the software can run'''
-    pass
-
+    @classmethod
+    def _form_config_redef(cls) -> None:
+        super()._form_config_redef()
+        form_config(
+            cls._meta.get_field(cls.name.name),
+            label="Operating System",
+            tooltipExplanation="The operating systems the software supports.",
+            tooltipBestPractise="Please select all the operating systems the software can successfully be installed on.",
+        )
 class Phenomena(ControlledList):
     '''Solar phenomena that relate to the software'''
-    pass
+    @classmethod
+    def _form_config_redef(cls) -> None:
+        super()._form_config_redef()
+        form_config(
+            cls._meta.get_field(cls.name.name),
+            label="Related Phenomena",
+            tooltipExplanation="The phenomena the software supports science functionality for.",
+            tooltipBestPractise="Please select phenomena terms from a supported controlled vocabulary.",
+        )
 
 class RepoStatus(ControlledList):
     '''
@@ -93,12 +166,25 @@ class RepoStatus(ControlledList):
     '''
     image = models.URLField(blank=True, null=True)
 
+    @classmethod
+    def _form_config_redef(cls) -> None:
+        super()._form_config_redef()
+        form_config(
+            cls._meta.get_field(cls.name.name),
+            label="Development Status",
+            tooltipExplanation="The development status of the software.",
+            tooltipBestPractise="Please select the development status of the code repository from the list below. See repostatus.org for a description of the terms.",
+        )
+    
     class Meta: verbose_name_plural = "Repo Statuses"
 
 class Image(HssiModel):
     '''Reference to an image file and alt text description'''
     url = models.URLField(blank=True, null=True)
     description = models.CharField(max_length=250)
+
+    @classmethod
+    def get_top_field(cls): return cls._meta.get_field("url")
 
     class Meta: ordering = ['description']
     def __str__(self): return self.url
@@ -107,11 +193,31 @@ class ProgrammingLanguage(ControlledList):
     '''Primary Programming language used to develop the software'''
     version = models.CharField(max_length=LEN_NAME, blank=True, null=True)
 
+    @classmethod
+    def _form_config_redef(cls) -> None:
+        super()._form_config_redef()
+        form_config(
+            cls._meta.get_field(cls.name.name),
+            label="Programming Language",
+            tooltipExplanation="The computer programming languages most important for the software.",
+            tooltipBestPractise="Select the most important languages of the software (e.g. Python, Fortran, C), then enter any other needed details, e.g. the flavor of Fortran. This is not meant to be an exhaustive list.",
+        )
+
     def __str__(self): return self.name + (f" {self.version}" if self.version else "")
 
 class DataInput(ControlledList):
     '''Ways that the software can accept data as input'''
     abbreviation = models.CharField(max_length=LEN_ABBREVIATION, blank=True, null=True)
+
+    @classmethod
+    def _form_config_redef(cls) -> None:
+        super()._form_config_redef()
+        form_config(
+            cls._meta.get_field(cls.name.name),
+            label="Data Inputs",
+            tooltipExplanation="The data input source the software supports.",
+            tooltipBestPractise="Please select all the data input sources the software supports from the list. If a data input source your software supports is not listed, please select 'Other'. If the data input source is observatory specific, please select 'observatory-specific' and make sure to indicate the name of the observatory, mission, or group of instruments in the Related Observatory field.",
+        )
 
     def __str__(self): return self.name
 
@@ -119,22 +225,55 @@ class FileFormat(ControlledList):
     '''File formats that are supported as input or output types by the software'''
     extension = models.CharField(max_length=25, blank=False, null=False)
 
+    @classmethod
+    def _form_config_redef(cls) -> None:
+        super()._form_config_redef()
+        form_config(
+            cls._meta.get_field(cls.name.name),
+            label="File Formats",
+            tooltipExplanation="The file formats the software supports for data input or output.",
+            tooltipBestPractise="Please select all the file formats that your software supports for either input files or files the software generates. Only file formats supported by the software should be indicated.",
+        )
+
     def __str__(self): return self.extension + f" ({self.name})" if self.name else ""
 
 class Region(ControlledList):
     '''Region of the sun which relates to the software'''
+    @classmethod
+    def _form_config_redef(cls) -> None:
+        super()._form_config_redef()
+        form_config(
+            cls._meta.get_field(cls.name.name),
+            label="Related Regions",
+            tooltipExplanation="The physical region the software supports science functionality for.",
+            tooltipBestPractise="Please select all physical regions the software's functionality is commonly used or intended for.",
+        )
+    
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
-class InstrumentObservatory(HssiModel):
+class InstrumentObservatory(ControlledList):
     '''An observatory or scientific research instrument'''
-    type = models.IntegerField(choices=InstrObsType.choices, default=InstrObsType.UNKNOWN)
-    name = models.CharField(max_length=LEN_LONGNAME)
+    type = form_config(
+        models.IntegerField(choices=InstrObsType.choices, default=InstrObsType.UNKNOWN),
+        label="Type",
+        widgetType="NumberWidget",
+    )
+    
     abbreviation = models.CharField(max_length=LEN_NAME, null=True, blank=True)
-    identifier = models.URLField(blank=True, null=True)
+
+    @classmethod
+    def _form_config_redef(cls) -> None:
+        super()._form_config_redef()
+        form_config(
+            cls._meta.get_field(cls.name.name),
+            label="Instrument/Observatory",
+            tooltipExplanation="The instrument/observatory the software is designed to support.",
+            tooltipBestPractise="Begin typing the item's name in the box. Instruments/Observatories listed in the IVOA will appear in a dropdown list, please choose the correct one. If your instrument/observatory is not listed, please type in the full name.",
+        )
 
     def get_search_terms(self) -> list[str]:
-        terms = []
+        terms = super().get_search_terms()
         if self.abbreviation:
             terms.append(self.abbreviation)
         terms.extend(self.name.split(' '))
@@ -154,6 +293,15 @@ class FunctionCategory(ControlledList):
     # specified for intellisense, defined in Functionalities model
     functionalities: models.Manager['Functionality']
 
+    @classmethod
+    def _form_config_redef(cls) -> None:
+        super()._form_config_redef()
+        form_config(
+            cls._meta.get_field(cls.name.name),
+            label="Functionality",
+            tooltipExplanation="A category that contains functionalities.",
+        )
+
     class Meta: verbose_name_plural = "Function Categories"
     def __str__(self): return self.name
 
@@ -163,6 +311,9 @@ class License(HssiModel):
 
     # specified for intellisense, defined in other models
     relatedItems: models.Manager['RelatedItem']
+
+    @classmethod
+    def get_top_field(cls): return cls._meta.get_field("name")
 
     class Meta: ordering = ['name']
     def __str__(self): return self.name
@@ -185,6 +336,9 @@ class Organization(HssiModel):
     # specified for intellisense, defined in other models
     people: models.Manager['Person']
     awards: models.Manager['Award']
+
+    @classmethod
+    def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
 
     def get_search_terms(self) -> list[str]:
         return [

@@ -6,6 +6,7 @@ the exposed django model structure
 """
 
 import json
+import warnings
 
 from django.db import models
 from django.db.models.fields import related
@@ -14,9 +15,20 @@ from django.forms import widgets
 from ..util import RequirementLevel, REQ_LVL_ATTR
 
 from enum import StrEnum
-from typing import Type, TYPE_CHECKING
+from typing import Type, TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from .roots import HssiModel
+
+FORM_CONFIG_ATTR = "form_config"
+
+def form_config(field: models.Field, **kwargs) -> models.Field:
+    '''
+    Allows for configuration of field properties to pass as model field 
+    structure to frontend for form generation
+    '''
+    config = getattr(field, FORM_CONFIG_ATTR, {})
+    setattr(field, FORM_CONFIG_ATTR, config | kwargs)
+    return field
 
 class WidgetPrimitiveName(StrEnum):
     char = "CharWidget"
@@ -60,29 +72,36 @@ class ModelSubfield:
 
         if field is None: return None
 
-        subfield = ModelSubfield()
+        subfield = cls()
         subfield.name = field.name
 
+        # get custom widget properties if defined
+        properties: dict = getattr(field, FORM_CONFIG_ATTR, {})
+        
         if isinstance(field, related.RelatedField):
             subfield.multi = True
             subfield.type = field.related_model.__name__
 
         else:
-            # TODO this form field stuff doesn't really do what I want
             widget: widgets.Widget = field.formfield().widget
+            properties = widget.attrs | properties
             subfield.requirement = RequirementLevel(
-                widget.attrs.get(REQ_LVL_ATTR, RequirementLevel.OPTIONAL.value)
+                properties.get(REQ_LVL_ATTR, RequirementLevel.OPTIONAL.value)
             )
-            subfield.properties = widget.attrs.copy()
-            match widget:
-                case widgets.TextInput(): subfield.type = WidgetPrimitiveName.char.value
-                case widgets.NumberInput(): subfield.type = WidgetPrimitiveName.number.value
-                case widgets.Textarea(): subfield.type = WidgetPrimitiveName.textArea.value
-                case widgets.URLInput(): subfield.type = WidgetPrimitiveName.url.value
-                case widgets.EmailInput(): subfield.type = WidgetPrimitiveName.email.value
-                case widgets.DateInput(): subfield.type = WidgetPrimitiveName.date.value
-                case widgets.CheckboxInput(): subfield.type = WidgetPrimitiveName.checkbox.value
+            widgetType = properties.get('widgetType', None)
+            if widgetType is not None:
+                subfield.type = widgetType
+            else: 
+                match widget:
+                    case widgets.TextInput(): subfield.type = WidgetPrimitiveName.char.value 
+                    case widgets.NumberInput(): subfield.type = WidgetPrimitiveName.number.value
+                    case widgets.Textarea(): subfield.type = WidgetPrimitiveName.textArea.value
+                    case widgets.URLInput(): subfield.type = WidgetPrimitiveName.url.value
+                    case widgets.EmailInput(): subfield.type = WidgetPrimitiveName.email.value
+                    case widgets.DateInput(): subfield.type = WidgetPrimitiveName.date.value
+                    case widgets.CheckboxInput(): subfield.type = WidgetPrimitiveName.checkbox.value
         
+        subfield.properties = properties
         return subfield
 
 class ModelStructure:
@@ -109,10 +128,15 @@ class ModelStructure:
         return structure
     
     def serialized(self) -> dict:
+        if self.top_field is None:
+            warnings.warn(
+                f"Serializing model structure {self.type_name} without top_field", 
+                UserWarning,
+            )
         subfields_prepend = [] if self.top_field is None else [self.top_field.serialized()]
         serialized: dict = {
             "typeName": self.type_name,
-            "subfields": [subfields_prepend, *[
+            "subfields": [*subfields_prepend, *[
                     subfield.serialized()
                     for subfield in self.subfields
             ]],

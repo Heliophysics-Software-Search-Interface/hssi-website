@@ -57,7 +57,7 @@ export class ModelObjectSelector extends Widget {
 	}
 
 	/** Initialize the widget instance */
-	protected initialize(): void {
+	public initialize(): void {
 		super.initialize();
 		ModelObjectSelector.widgets.push(this);
 
@@ -93,7 +93,7 @@ export class ModelObjectSelector extends Widget {
 
 		// set requirement level
 		this.inputContainer.setAttribute(
-			requirementAttributeContainer, this.properties.requirement_level.toString()
+			requirementAttributeContainer, this.properties.requirementLevel.toString()
 		);
 
 		// find the tooltip element

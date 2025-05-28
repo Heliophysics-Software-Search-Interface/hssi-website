@@ -9,6 +9,7 @@ const structureNameData = "fields-structure-name";
 
 const modelStructureUrl = "/api/model_structure/";
 
+const formRowStyle = "form-row";
 
 type ModelStructureData = {
     structures: ModelFieldStructure[],
@@ -32,6 +33,7 @@ export class FormGenerator {
         // generate a row for each field
         for(const field of this.fields) {
             const formRow = document.createElement("div") as HTMLDivElement;
+            formRow.classList.add(formRowStyle);
             field.buildInterface(formRow);
             this.fieldContainer.appendChild(formRow);
         }
@@ -93,7 +95,6 @@ export class FormGenerator {
                 const fieldInstance = structure.generateInstance();
                 const fields = [fieldInstance.topField, ...fieldInstance.subFields];
                 generator.fields = fields;
-                console.log(structure.typeName, fieldInstance);
             }
             else console.warn("No field data found in form");
         }

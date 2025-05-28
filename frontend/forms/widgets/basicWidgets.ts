@@ -12,7 +12,7 @@ abstract class InputWidget extends Widget {
         this.element.appendChild(this.inputElement);
     }
 
-    protected initialize(): void {
+    public initialize(): void {
         super.initialize();
         this.createElements();
     }
@@ -52,7 +52,7 @@ export class TextAreaWidget extends Widget {
         this.element.appendChild(this.textAreaElement);
     }
 
-    protected initialize(): void {
+    public initialize(): void {
         super.initialize();
         this.createElements();
     }

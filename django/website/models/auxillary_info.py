@@ -30,6 +30,9 @@ class Award(HssiModel):
         related_name='awards'
     )
 
+    @classmethod
+    def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
+
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 

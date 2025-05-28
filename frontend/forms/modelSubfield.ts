@@ -1,5 +1,5 @@
 import {
-    ModelFieldStructure, RequirementLevel, Widget,
+	formRowStyle, ModelFieldStructure, RequirementLevel, Widget,
     type PropertyContainer, type SerializedSubfield,
 } from "../loader";
 
@@ -8,6 +8,7 @@ const tooltipWrapperStyle = "tooltip-wrapper";
 const tooltipIconStyle = "tooltip-icon";
 const tooltipTextStyle = "tooltip-text";
 const explanationTextStyle = "explanation-text";
+const indentStyle = "indent";
 
 /**
  * represents a single field in the db model and information related to 
@@ -16,20 +17,17 @@ const explanationTextStyle = "explanation-text";
 export class ModelSubfield {
 
 	public name: string = "";
-
 	public type: ModelFieldStructure = null;
-
 	public requirement: RequirementLevel = RequirementLevel.OPTIONAL;
-	
 	public properties: PropertyContainer = {};
 
 	private containerElement: HTMLDivElement = null;
-
 	private labelElement: HTMLLabelElement = null;
-
 	private explanationElement: HTMLDivElement = null;
-
 	private widget: Widget = null;
+
+	private subfieldContainer: HTMLDetailsElement = null;
+	private subfields: ModelSubfield[] = [];
 
 	public get multi(): boolean { return false; }
 
@@ -45,13 +43,13 @@ export class ModelSubfield {
 		this.properties = properties;
 	}
 
-	private buildFieldInfo(targetDiv: HTMLDivElement): void {
+	private buildFieldInfo(): void {
 
 		// create the label text
 		this.labelElement = document.createElement("label");
 		this.labelElement.innerHTML = this.properties.label ?? this.name;
 		this.labelElement.classList.add(labelStyle);
-		targetDiv.appendChild(this.labelElement);
+		this.containerElement.appendChild(this.labelElement);
 
 		// create the "hover for info" icon
 		if(this.properties.tooltipBestPractise != null){
@@ -76,11 +74,11 @@ export class ModelSubfield {
 			this.explanationElement = document.createElement("div");
 			this.explanationElement.classList.add(explanationTextStyle);
 			this.explanationElement.innerHTML = this.properties.tooltipExplanation;
-			targetDiv.appendChild(this.explanationElement);
+			this.containerElement.appendChild(this.explanationElement);
 		}
 	}
 
-	private buildWidget(targetDiv: HTMLDivElement): void {
+	private buildWidget(): void {
 		if(!this.type){
 			console.error("Undefined subfield type!");
 			return;
@@ -99,7 +97,42 @@ export class ModelSubfield {
 		}
 		this.widget.properties.requirementLevel = this.requirement;
 		this.widget.initialize();
-		targetDiv.appendChild(this.widget.element);
+		this.containerElement.appendChild(this.widget.element);
+	}
+
+	private buildSubfieldContainer(): void {
+
+		// don't need a subfield container if no subfields
+		if(this.type.subfields.length <= 0) return;
+
+		// create expandable details container
+		this.subfieldContainer = document.createElement("details");
+		const summary = document.createElement("summary");
+		this.subfieldContainer.appendChild(summary);
+		this.subfieldContainer.classList.add(indentStyle);
+		this.containerElement.appendChild(this.subfieldContainer);
+
+		// create subfields when container expanded
+		this.subfieldContainer.addEventListener("click", e => this.onExpandSubfields(e));
+	}
+
+	private buildSubFields(): void{
+
+		// parse and build each serialized subfield
+		for(const serializedField of this.type.subfields){
+			const field = ModelSubfield.parse(serializedField)
+			const row = document.createElement("div") as HTMLDivElement;
+			row.classList.add(formRowStyle)
+			field.buildInterface(row);
+			this.subfields.push(field);
+			this.subfieldContainer.appendChild(row);
+		}
+	}
+
+	private onExpandSubfields(e: Event): void{
+		if(this.subfields.length < this.type.subfields.length){
+			this.buildSubFields();
+		}
 	}
 
 	/** 
@@ -110,10 +143,10 @@ export class ModelSubfield {
 	public buildInterface(targetDiv: HTMLDivElement): void {
 		this.containerElement = document.createElement("div");
 
-		this.buildFieldInfo(this.containerElement);
-		this.buildWidget(this.containerElement);
+		this.buildFieldInfo();
+		this.buildWidget();
 
-		// TODO build subfields
+		this.buildSubfieldContainer();
 
 		targetDiv.appendChild(this.containerElement);
 	}

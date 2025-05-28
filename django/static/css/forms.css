@@ -1,3 +1,16 @@
+form .indent {
+    margin-left: 20px;
+}
+
+form details {
+    border-left: solid 1px #3338;
+    padding-left: 5px;
+}
+
+form .custom-label {
+    margin-top: 10px;
+}
+
 .widget-dropdown {
     margin: 0;
     padding: 0;

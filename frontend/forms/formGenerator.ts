@@ -9,7 +9,7 @@ const structureNameData = "fields-structure-name";
 
 const modelStructureUrl = "/api/model_structure/";
 
-const formRowStyle = "form-row";
+export const formRowStyle = "form-row";
 
 type ModelStructureData = {
     structures: ModelFieldStructure[],

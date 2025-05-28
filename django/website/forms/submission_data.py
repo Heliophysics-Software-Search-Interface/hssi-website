@@ -2,7 +2,6 @@ from ..models import *
 from ..util import RequirementLevel
 from .names import *
 
-
 SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
     "SubmissionForm",
 
@@ -14,6 +13,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
         requirement=RequirementLevel.MANDATORY.value, 
         properties={
             PROP_LABEL: "Submitter",
+            PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
+            PROP_TT_BEST: TTBEST_SUBMITTERNAME,
             PROP_WIDGET_PROPS: {
                 PROP_TARGET_MODEL: Submitter.__name__
             },
@@ -28,6 +29,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Persistent Identifier",
+            PROP_TT_EXPL: TTEXPL_PERSISTENTIDENTIFIER,
+            PROP_TT_BEST: TTBEST_PERSISTENTIDENTIFIER,
         },
         multi=False,
     ),
@@ -39,6 +42,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
         requirement=RequirementLevel.MANDATORY.value,
         properties={
             PROP_LABEL: "Code Repository",
+            PROP_TT_EXPL: TTEXPL_CODEREPOSITORYURL,
+            PROP_TT_BEST: TTBEST_CODEREPOSITORYURL,
         },
         multi=False,
     ),
@@ -50,6 +55,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
         requirement=RequirementLevel.MANDATORY.value,
         properties={
             PROP_LABEL: "Authors",
+            PROP_TT_EXPL: TTEXPL_AUTHORS,
+            PROP_TT_BEST: TTBEST_AUTHORS,
             PROP_WIDGET_PROPS: {
                 PROP_TARGET_MODEL: Person.__name__,
             },
@@ -64,6 +71,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
         requirement=RequirementLevel.MANDATORY.value,
         properties={
             PROP_LABEL: "Software Name",
+            PROP_TT_EXPL: TTEXPL_SOFTWARENAME,
+            PROP_TT_BEST: TTBEST_SOFTWARENAME,
         },
         multi=False,
     ),
@@ -74,16 +83,20 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
         requirement=RequirementLevel.MANDATORY.value,
         properties={
             PROP_LABEL: "Description",
+            PROP_TT_EXPL: TTEXPL_DESCRIPTION,
+            PROP_TT_BEST: TTBEST_DESCRIPTION,
         },
         multi=False,
     ),
     # Concise Description
     ModelSubfield.define(
-        name="conciseDescription",
+        name=FIELD_CONCISEDESCRIPTION,
         type=TYPE_TEXTAREA,
         requirement=RequirementLevel.OPTIONAL.value,
         properties={
             PROP_LABEL: "Concise Description",
+            PROP_TT_EXPL: TTEXPL_CONCISEDESCRIPTION,
+            PROP_TT_BEST: TTBEST_CONCISEDESCRIPTION,
         },
         multi=False,
     ),
@@ -94,6 +107,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Publication Date",
+            PROP_TT_EXPL: TTEXPL_PUBLICATIONDATE,
+            PROP_TT_BEST: TTBEST_PUBLICATIONDATE,
         },
         multi=False,
     ),
@@ -104,6 +119,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Publisher",
+            PROP_TT_EXPL: TTEXPL_PUBLISHER,
+            PROP_TT_BEST: TTBEST_PUBLISHER,
             PROP_WIDGET_PROPS: {
                 PROP_TARGET_MODEL: Organization.__name__,
             },
@@ -117,6 +134,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
         requirement=RequirementLevel.MANDATORY.value,
         properties={
             PROP_LABEL: "Version",
+            PROP_TT_EXPL: TTEXPL_VERSIONNUMBER,
+            PROP_TT_BEST: TTBEST_VERSIONNUMBER,
             PROP_WIDGET_PROPS: {
                 PROP_TARGET_MODEL: SoftwareVersion.__name__,
             },
@@ -130,6 +149,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Programming Language",
+            PROP_TT_EXPL: TTEXPL_PROGRAMMINGLANGUAGE,
+            PROP_TT_BEST: TTBEST_PROGRAMMINGLANGUAGE,
             PROP_WIDGET_PROPS: {
                 PROP_TARGET_MODEL: ProgrammingLanguage.__name__,
             },
@@ -143,6 +164,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "License",
+            PROP_TT_EXPL: TTEXPL_LICENSE,
+            PROP_TT_BEST: TTBEST_LICENSE,
             PROP_WIDGET_PROPS: {
                 PROP_TARGET_MODEL: License.__name__,
             },
@@ -152,196 +175,233 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
 
     # ----- Sec 2 -----
     # Keywords
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Reference Publication
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Functionality
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Documentation
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Data Inputs
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## File Formats
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Development Status
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Operating System
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Related Region
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Funder
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Awards
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
+    ModelSubfield.define(
+        name=FIELD_KEYWORDS,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Keywords",
+            PROP_TT_EXPL: TTEXPL_KEYWORDS,
+            PROP_TT_BEST: TTBEST_KEYWORDS,
+        },
+        multi=False,
+    ),
+    # Reference Publication
+    ModelSubfield.define(
+        name=FIELD_REFERENCEPUBLICATION,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Reference Publication",
+            PROP_TT_EXPL: TTEXPL_REFERENCEPUBLICATION,
+            PROP_TT_BEST: TTBEST_REFERENCEPUBLICATION,
+        },
+        multi=False,
+    ),
+    # Functionality
+    ModelSubfield.define(
+        name=FIELD_SOFTWAREFUNCTIONALITY,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Software Functionality",
+            PROP_TT_EXPL: TTEXPL_SOFTWAREFUNCTIONALITY,
+            PROP_TT_BEST: TTBEST_SOFTWAREFUNCTIONALITY,
+        },
+        multi=True,
+    ),
+    # Documentation
+    ModelSubfield.define(
+        name=FIELD_DOCUMENTATION,
+        type=TYPE_URL,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Documentation",
+            PROP_TT_EXPL: TTEXPL_DOCUMENTATION,
+            PROP_TT_BEST: TTBEST_DOCUMENTATION,
+        },
+        multi=False,
+    ),
+    # Data Inputs
+    ModelSubfield.define(
+        name=FIELD_DATAINPUTS,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Data Inputs",
+            PROP_TT_EXPL: TTEXPL_DATAINPUTS,
+            PROP_TT_BEST: TTBEST_DATAINPUTS,
+        },
+        multi=True,
+    ),
+    # File Formats
+    ModelSubfield.define(
+        name=FIELD_SUPPORTEDFILEFORMATS,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Supported File Formats",
+            PROP_TT_EXPL: TTEXPL_SUPPORTEDFILEFORMATS,
+            PROP_TT_BEST: TTBEST_SUPPORTEDFILEFORMATS,
+        },
+        multi=True,
+    ),
+    # Development Status
+    ModelSubfield.define(
+        name=FIELD_DEVELOPMENTSTATUS,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Development Status",
+            PROP_TT_EXPL: TTEXPL_DEVELOPMENTSTATUS,
+            PROP_TT_BEST: TTBEST_DEVELOPMENTSTATUS,
+        },
+        multi=False,
+    ),
+    # Operating System
+    ModelSubfield.define(
+        name=FIELD_OPERATINGSYSTEM,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Operating System",
+            PROP_TT_EXPL: TTEXPL_OPERATINGSYSTEM,
+            PROP_TT_BEST: TTBEST_OPERATINGSYSTEM,
+        },
+        multi=True,
+    ),
+    # Related Region
+    ModelSubfield.define(
+        name=FIELD_RELATEDREGION,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Related Region",
+            PROP_TT_EXPL: TTEXPL_RELATEDREGION,
+            PROP_TT_BEST: TTBEST_RELATEDREGION,
+        },
+        multi=True,
+    ),
+    # Funder
+    ModelSubfield.define(
+        name=FIELD_FUNDER,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Funder",
+            PROP_TT_EXPL: TTEXPL_FUNDER,
+            PROP_TT_BEST: TTBEST_FUNDER,
+        },
+        multi=False,
+    ),
+    # Awards
+    ModelSubfield.define(
+        name=FIELD_AWARDTITLE,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Award Title",
+            PROP_TT_EXPL: TTEXPL_AWARDTITLE,
+            PROP_TT_BEST: TTBEST_AWARDTITLE,
+        },
+        multi=True,
+    ),
 
-    ## ----- Sec 3 -----
-    ## Related Publications
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Related Datasets
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Related Software
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Related Instruments
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Interoperable Software
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Related Observatories
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
-    ## Logo
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
+    # ----- Sec 3 -----
+    # Related Publications
+    ModelSubfield.define(
+        name=FIELD_RELATEDPUBLICATIONS,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Related Publications",
+            PROP_TT_EXPL: TTEXPL_RELATEDPUBLICATIONS,
+            PROP_TT_BEST: TTBEST_RELATEDPUBLICATIONS,
+        },
+        multi=True,
+    ),
+    # Related Datasets
+    ModelSubfield.define(
+        name=FIELD_RELATEDDATASETS,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Related Datasets",
+            PROP_TT_EXPL: TTEXPL_RELATEDDATASETS,
+            PROP_TT_BEST: TTBEST_RELATEDDATASETS,
+        },
+        multi=True,
+    ),
+    # Related Software
+    ModelSubfield.define(
+        name=FIELD_RELATEDSOFTWARE,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Related Software",
+            PROP_TT_EXPL: TTEXPL_RELATEDSOFTWARE,
+            PROP_TT_BEST: TTBEST_RELATEDSOFTWARE,
+        },
+        multi=True,
+    ),
+    # Related Instruments
+    ModelSubfield.define(
+        name=FIELD_RELATEDINSTRUMENTS,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Related Instruments",
+            PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTS,
+            PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTS,
+        },
+        multi=True,
+    ),
+    # Interoperable Software
+    ModelSubfield.define(
+        name=FIELD_INTEROPERABLESOFTWARE,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Interpoerable Software",
+            PROP_TT_EXPL: TTEXPL_INTEROPERABLESOFTWARE,
+            PROP_TT_BEST: TTBEST_INTEROPERABLESOFTWARE,
+        },
+        multi=True,
+    ),
+    # Related Observatories
+    ModelSubfield.define(
+        name=FIELD_RELATEDOBSERVATORIES,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Related Observatories",
+            PROP_TT_EXPL: TTEXPL_RELATEDOBSERVATORIES,
+            PROP_TT_BEST: TTBEST_RELATEDOBSERVATORIES,
+        },
+        multi=True,
+    ),
+    # Logo
+    ModelSubfield.define(
+        name=FIELD_LOGO,
+        type=TYPE_URL,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Logo",
+            PROP_TT_EXPL: TTEXPL_LOGO,
+            PROP_TT_BEST: TTBEST_LOGO,
+        },
+        multi=False,
+    ),
 
-    ## Agreement
-    #ModelSubfield.define(
-    #    name="",
-    #    type="",
-    #    requirement=RequirementLevel.RECOMMENDED.value,
-    #    properties={
-    #        PROP_LABEL: "",
-    #    },
-    #    multi=False,
-    #),
+    # Agreement
+    ModelSubfield.define(
+        name="agree",
+        type=TYPE_CHECKBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Metadata License Agreement",
+            PROP_TT_EXPL: "Agree that all metadata you've entered into this form will be freely available for searching and indexing or any other purpose",
+        },
+        multi=False,
+    ),
 )

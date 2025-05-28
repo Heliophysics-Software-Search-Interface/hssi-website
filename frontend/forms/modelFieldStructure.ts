@@ -97,7 +97,7 @@ export class ModelFieldStructure {
 					console.error("Widget type cannot be resolved for " + this.typeName);
 					return null;
 				}
-				let structureNext = this.topField.type;
+				let structureNext = structure.topField.type;
 				if(!(structureNext instanceof ModelFieldStructure)){
 					structureNext = ModelFieldStructure.getFieldStructure(structureNext);
 				}
@@ -176,7 +176,7 @@ export class ModelFieldStructure {
 			if(model.topField != null && typeof model.topField.type === "string") {
 				const type = this.fieldStructureMap.get(model.topField.type);
 				// use properties from type as defaults
-				if (type.topField != null){
+				if (type != null && type.topField != null){
 					const mergedProperties = deepMerge(
 						type.topField.properties, 
 						model.topField.properties

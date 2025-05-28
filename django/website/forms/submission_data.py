@@ -2,20 +2,85 @@ from ..models import *
 from ..util import RequirementLevel
 from .names import *
 
+SUBMISSION_FORM_ORGANIZATION: ModelStructure = ModelStructure.define(
+	"SubmissionFormOrganization",
+	ModelSubfield.define(
+		name="organization",
+		type=TYPE_MODELBOX,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Organization",
+			PROP_WIDGET_PROPS: {
+				PROP_TARGET_MODEL: Organization.__name__,
+			},
+		},
+		multi=False,
+	),
+	ModelSubfield.define(
+		name="identifier",
+		type=TYPE_URL,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Identifier",
+            PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATIONIDENTIFIER,
+            PROP_TT_BEST: TTBEST_AUTHORAFFILIATIONIDENTIFIER,
+			PROP_WIDGET_PROPS: {
+				PROP_TARGET_MODEL: Organization.__name__,
+			},
+		},
+		multi=False,
+	),
+)
+
+SUBMISSION_FORM_PERSON: ModelStructure = ModelStructure.define(
+    "SubmissionFormPerson",
+	ModelSubfield.define(
+		name="name", 
+		type=TYPE_MODELBOX,
+		requirement=RequirementLevel.MANDATORY.value, 
+		properties={
+			PROP_LABEL: "Name",
+			PROP_WIDGET_PROPS: {
+				PROP_TARGET_MODEL: Person.__name__
+			},
+		},
+		multi=False,
+	),
+	ModelSubfield.define(
+        name="identifier",
+        type=TYPE_URL,
+        requirement=RequirementLevel.RECOMMENDED,
+        properties={
+            PROP_LABEL: "Identifier",
+            PROP_TT_EXPL: TTEXPL_AUTHORIDENTIFIER,
+            PROP_TT_BEST: TTBEST_AUTHORIDENTIFIER,
+		},
+        multi=False,
+	),
+	ModelSubfield.define(
+        name="affiliation",
+        type=SUBMISSION_FORM_ORGANIZATION.type_name,
+        requirement=RequirementLevel.RECOMMENDED,
+        properties={
+            PROP_LABEL: "Affiliation",
+            PROP_TT_EXPL: TTEXPL_AUTHORIDENTIFIER,
+            PROP_TT_BEST: TTBEST_AUTHORIDENTIFIER,
+		},
+        multi=False,
+	),
+)
+
 SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
 	"SubmissionFormSubmitter",
 	
 	ModelSubfield.define(
-		name=FIELD_SUBMITTERNAME, 
-		type=TYPE_CHAR,
+		name="Submitter", 
+		type=SUBMISSION_FORM_PERSON.type_name,
 		requirement=RequirementLevel.MANDATORY.value, 
 		properties={
 			PROP_LABEL: "Submitter Name",
 			PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
 			PROP_TT_BEST: TTBEST_SUBMITTERNAME,
-			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: Submitter.__name__
-			},
 		},
 		multi=False,
 	),
@@ -147,22 +212,6 @@ SUBMISSION_FORM_LICENSE: ModelStructure = ModelStructure.define(
 	),
 )
 
-SUBMISSION_FORM_ORGANIZATION: ModelStructure = ModelStructure.define(
-	"SubmissionFormOrganization",
-	ModelSubfield.define(
-		name=FIELD_PUBLISHER,
-		type=TYPE_MODELBOX,
-		requirement=RequirementLevel.RECOMMENDED.value,
-		properties={
-			PROP_LABEL: "Organization",
-			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: Organization.__name__,
-			},
-		},
-		multi=False,
-	),
-)
-
 SUBMISSION_FORM_AWARD: ModelStructure = ModelStructure.define(
 	"SubmissionFormAward",
 	ModelSubfield.define(
@@ -180,6 +229,8 @@ SUBMISSION_FORM_AWARD: ModelStructure = ModelStructure.define(
 		multi=True,
 	),
 )
+
+## FORM FIELD STRUCTURE DATA ---------------------------------------------------
 
 SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	"SubmissionForm",

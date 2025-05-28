@@ -8,7 +8,7 @@ from ..forms import (
     SUBMISSION_FORM_AWARD, SUBMISSION_FORM_DATASET, SUBMISSION_FORM_INSTRUMENT,
     SUBMISSION_FORM_LICENSE, SUBMISSION_FORM_ORGANIZATION, 
     SUBMISSION_FORM_PUBLICATION, SUBMISSION_FORM_REL_SOFTWARE, 
-    SUBMISSION_FORM_SUBMITTER, SUBMISSION_FORM_VERSION,
+    SUBMISSION_FORM_SUBMITTER, SUBMISSION_FORM_VERSION, SUBMISSION_FORM_PERSON
 )
 from ..models import (
     HssiModel, Keyword, OperatingSystem, Phenomena, RepoStatus, Image,
@@ -44,6 +44,7 @@ def get_model_structure(request: HttpRequest) -> JsonResponse:
         ModelStructure.create(SoftwareVersion).serialized(),
         ModelStructure.create(Software).serialized(),
         *[
+            SUBMISSION_FORM_PERSON.serialized(),
             SUBMISSION_FORM_OBSERVATORY.serialized(), 
             SUBMISSION_FORM_AUTHOR.serialized(), 
             SUBMISSION_FORM_AWARD.serialized(), 

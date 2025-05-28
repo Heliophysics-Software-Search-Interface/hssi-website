@@ -12,6 +12,10 @@ const tooltipStyle = "widget-tooltip";
 const dropButtonStyle = "dropdown-button";
 const selectedStyle = "selected";
 
+const modelChoicesUrl = "/api/model_choices/";
+
+type ChoicesJsonStructure = { data: [string, string, string[], string?][] }
+
 /// Organizational types -------------------------------------------------------
 
 interface OptionLi extends HTMLLIElement { data: Option; }
@@ -45,6 +49,9 @@ export class ModelBox extends Widget {
 
         // create and populate the dropdown list
         if(this.options != null) this.buildOptions(this.options);
+        if(this.properties.targetModel){
+            this.builOptionsFromModel(this.properties.targetModel);
+        }
 
         // create the input, container, and row elements
         this.inputElement = document.createElement("input");
@@ -171,6 +178,8 @@ export class ModelBox extends Widget {
     public initialize(): void {
 		super.initialize();
         this.buildElements();
+
+        console.log("initialized ModelBox", this.element)
     }
 
     /* builds the option element list from the given options */
@@ -190,8 +199,11 @@ export class ModelBox extends Widget {
             }
         }
 
+        // reset options
         if(this.optionListElement != null) this.optionListElement.remove();
         this.allOptionLIs.length = 0;
+        this.filteredOptionLIs.length = 0;
+        this.selectedOptionIndex = -1;
 
         // create and populate the dropdown list
         this.optionListElement = document.createElement("ul");
@@ -210,6 +222,24 @@ export class ModelBox extends Widget {
 
         this.optionListElement.addEventListener("click", e => this.onListClick(e));
         this.optionListElement.addEventListener("mouseover", e => this.onListMouseover(e));
+    }
+
+    /**
+     * gets the choice data from the specified model and builds it's own 
+     * options list based off that
+     */
+    public async builOptionsFromModel(modelName: string): Promise<void> {
+        const data: ChoicesJsonStructure = await (await fetch(modelChoicesUrl + modelName)).json();
+        console.log(data);
+        this.buildOptions(data.data.map(
+            x => {
+                return {
+                    id: x[0],
+                    name: x[1],
+                    keywords: x[2],
+                    tooltip: x[3],
+                }
+        }));
     }
     
     /// Event listeners --------------------------------------------------------

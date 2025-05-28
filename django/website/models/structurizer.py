@@ -79,8 +79,8 @@ class ModelSubfield:
         properties: dict = getattr(field, FORM_CONFIG_ATTR, {})
         
         if isinstance(field, related.RelatedField):
-            subfield.multi = True
-            subfield.type = field.related_model.__name__
+            subfield.multi = isinstance(field, related.ManyToManyField)
+            subfield.type = properties.get('widgetType', field.related_model.__name__)
 
         else:
             widget: widgets.Widget = field.formfield().widget

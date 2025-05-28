@@ -107,7 +107,7 @@ class ControlledList(HssiModel):
         models.CharField(max_length=LEN_NAME, blank=False, null=False),
         # widgetType="ModelBox",
         label="Name",
-        widgetProperties = {
+        widgetProperties={
             'requirementLevel': RequirementLevel.MANDATORY.value,
         },
     )
@@ -167,6 +167,7 @@ class OperatingSystem(ControlledList):
             tooltipExplanation="The operating systems the software supports.",
             tooltipBestPractise="Please select all the operating systems the software can successfully be installed on.",
         )
+
 class Phenomena(ControlledList):
     '''Solar phenomena that relate to the software'''
     @classmethod
@@ -364,10 +365,10 @@ class Organization(HssiModel):
     def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
 
     def get_search_terms(self) -> list[str]:
-        return [
-            self.name,
-            self.abbreviation
-        ]
+        terms = self.name.split()
+        if self.abbreviation:
+            terms.append(self.abbreviation)
+        return terms
 
     class Meta: ordering = ['name']
     def __str__(self): 

@@ -33,6 +33,10 @@ class Person(HssiModel):
         label="Affiliation",
         tooltipExplanation="The affiliation of the person, such as an institution or other entity.",
         tooltipBestPractise="Please enter the complete name of the affiliated entity without using acronyms (e.g. Center for Astrophysics Harvard & Smithsonian). If more than one affiliation, please enter them separately.",
+        widgetType="ModelBox",
+        widgetProperties={
+            "targetModel":"Organization"
+        }
     )
 
     # specified for intellisense, defined in other models

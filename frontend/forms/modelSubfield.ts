@@ -228,7 +228,7 @@ export class ModelSubfield {
 	public static parse(data: SerializedSubfield): ModelSubfield {
 
 		// get field structure type if not yet parsed
-		let type = data.type; 
+		let type = data.type;
 		if(!(type instanceof ModelFieldStructure)) {
 			type = ModelFieldStructure.getFieldStructure(type);
 			data.type = type;

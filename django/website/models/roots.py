@@ -260,7 +260,10 @@ class InstrumentObservatory(ControlledList):
         widgetType="NumberWidget",
     )
     
-    abbreviation = models.CharField(max_length=LEN_NAME, null=True, blank=True)
+    abbreviation = form_config(
+        models.CharField(max_length=LEN_NAME, null=True, blank=True),
+        label="Abbreviation",
+    )
 
     @classmethod
     def _form_config_redef(cls) -> None:

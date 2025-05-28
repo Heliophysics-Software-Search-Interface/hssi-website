@@ -106,14 +106,44 @@ SUBMISSION_FORM_VERSION: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_VERSIONNUMBER,
 		type=TYPE_CHAR,
-		requirement=RequirementLevel.MANDATORY.value,
+		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Version Number",
 			PROP_TT_EXPL: TTEXPL_VERSIONNUMBER,
 			PROP_TT_BEST: TTBEST_VERSIONNUMBER,
-			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: SoftwareVersion.__name__,
-			},
+		},
+		multi=False,
+	),
+	ModelSubfield.define(
+		name=FIELD_VERSIONDATE,
+		type=TYPE_DATE,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Version Date",
+			PROP_TT_EXPL: TTEXPL_VERSIONDATE,
+			PROP_TT_BEST: TTBEST_VERSIONDATE,
+		},
+		multi=False,
+	),
+	ModelSubfield.define(
+		name=FIELD_VERSIONDESCRIPTION,
+		type=TYPE_TEXTAREA,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Version Description",
+			PROP_TT_EXPL: TTEXPL_VERSIONDESCRIPTION,
+			PROP_TT_BEST: TTBEST_VERSIONDESCRIPTION,
+		},
+		multi=False,
+	),
+	ModelSubfield.define(
+		name=FIELD_VERSIONPID,
+		type=TYPE_URL,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Version PID",
+			PROP_TT_EXPL: TTEXPL_VERSIONPID,
+			PROP_TT_BEST: TTBEST_VERSIONPID,
 		},
 		multi=False,
 	),
@@ -124,7 +154,7 @@ SUBMISSION_FORM_PUBLICATION: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_REFERENCEPUBLICATION,
 		type=TYPE_URL,
-		requirement=RequirementLevel.MANDATORY.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Reference Publication",
 			PROP_TT_EXPL: TTEXPL_REFERENCEPUBLICATION,
@@ -139,7 +169,7 @@ SUBMISSION_FORM_REL_SOFTWARE: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_RELATEDSOFTWARE,
 		type=TYPE_URL,
-		requirement=RequirementLevel.MANDATORY.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Related Software",
 		},
@@ -153,9 +183,22 @@ SUBMISSION_FORM_INSTRUMENT: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_RELATEDINSTRUMENTS,
 		type=TYPE_CHAR,
-		requirement=RequirementLevel.MANDATORY.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Instrument Name",
+            PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTS,
+            PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTS,
+		},
+		multi=False,
+	),
+	ModelSubfield.define(
+		name=FIELD_RELATEDINSTRUMENTIDENTIFIER,
+		type=TYPE_URL,
+		requirement=RequirementLevel.OPTIONAL.value,
+		properties={
+			PROP_LABEL: "Instrument Identifier",
+            PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTIDENTIFIER,
+            PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTIDENTIFIER,
 		},
 		multi=False,
 	),
@@ -166,11 +209,22 @@ SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_RELATEDOBSERVATORIES,
 		type=TYPE_CHAR,
-		requirement=RequirementLevel.MANDATORY.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
-			PROP_LABEL: "Related Observatories",
+			PROP_LABEL: "Observatory Name",
 			PROP_TT_EXPL: TTEXPL_RELATEDOBSERVATORIES,
 			PROP_TT_BEST: TTBEST_RELATEDOBSERVATORIES,
+		},
+		multi=False,
+	),
+	ModelSubfield.define(
+		name=FIELD_RELATEDINSTRUMENTIDENTIFIER,
+		type=TYPE_URL,
+		requirement=RequirementLevel.OPTIONAL.value,
+		properties={
+			PROP_LABEL: "Observatory Identifier",
+            PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTIDENTIFIER,
+            PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTIDENTIFIER,
 		},
 		multi=False,
 	),
@@ -214,7 +268,7 @@ SUBMISSION_FORM_AWARD: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_AWARDTITLE,
 		type=TYPE_MODELBOX,
-		requirement=RequirementLevel.RECOMMENDED.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Award Title",
 			PROP_TT_EXPL: TTEXPL_AWARDTITLE,
@@ -224,6 +278,17 @@ SUBMISSION_FORM_AWARD: ModelStructure = ModelStructure.define(
 			},
 		},
 		multi=True,
+	),
+    ModelSubfield.define(
+        name=FIELD_AWARDNUMBER,
+        type=TYPE_CHAR,
+        requirement=RequirementLevel.RECOMMENDED,
+        properties={
+            PROP_LABEL: "Award Number",
+            PROP_TT_EXPL: TTEXPL_AWARDNUMBER,
+            PROP_TT_BEST: TTBEST_AWARDNUMBER,
+		},
+        multi=False,
 	),
 )
 
@@ -358,7 +423,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_VERSIONNUMBER,
 		type=SUBMISSION_FORM_VERSION.type_name,
-		requirement=RequirementLevel.MANDATORY.value,
+		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Version",
 			PROP_TT_EXPL: TTEXPL_VERSIONNUMBER,
@@ -405,7 +470,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_KEYWORDS,
 		type=TYPE_MODELBOX,
-		requirement=RequirementLevel.RECOMMENDED.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Keywords",
 			PROP_TT_EXPL: TTEXPL_KEYWORDS,
@@ -417,7 +482,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_REFERENCEPUBLICATION,
 		type=SUBMISSION_FORM_PUBLICATION.type_name,
-		requirement=RequirementLevel.RECOMMENDED.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Reference Publication",
 			PROP_TT_EXPL: TTEXPL_REFERENCEPUBLICATION,
@@ -453,7 +518,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_DATAINPUTS,
 		type=TYPE_MODELBOX,
-		requirement=RequirementLevel.RECOMMENDED.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Data Inputs",
 			PROP_TT_EXPL: TTEXPL_DATAINPUTS,
@@ -513,7 +578,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_FUNDER,
 		type=SUBMISSION_FORM_ORGANIZATION.type_name,
-		requirement=RequirementLevel.RECOMMENDED.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Funder",
 			PROP_TT_EXPL: TTEXPL_FUNDER,
@@ -525,7 +590,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_AWARDTITLE,
 		type=SUBMISSION_FORM_AWARD.type_name,
-		requirement=RequirementLevel.RECOMMENDED.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Award Title",
 			PROP_TT_EXPL: TTEXPL_AWARDTITLE,
@@ -539,7 +604,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_RELATEDPUBLICATIONS,
 		type=TYPE_MODELBOX,
-		requirement=RequirementLevel.RECOMMENDED.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Related Publications",
 			PROP_TT_EXPL: TTEXPL_RELATEDPUBLICATIONS,
@@ -551,7 +616,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_RELATEDDATASETS,
 		type=SUBMISSION_FORM_DATASET.type_name,
-		requirement=RequirementLevel.RECOMMENDED.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Related Datasets",
 			PROP_TT_EXPL: TTEXPL_RELATEDDATASETS,
@@ -563,7 +628,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_RELATEDSOFTWARE,
 		type=SUBMISSION_FORM_REL_SOFTWARE.type_name,
-		requirement=RequirementLevel.RECOMMENDED.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Related Software",
 			PROP_TT_EXPL: TTEXPL_RELATEDSOFTWARE,
@@ -587,7 +652,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_INTEROPERABLESOFTWARE,
 		type=SUBMISSION_FORM_REL_SOFTWARE.type_name,
-		requirement=RequirementLevel.RECOMMENDED.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Interpoerable Software",
 			PROP_TT_EXPL: TTEXPL_INTEROPERABLESOFTWARE,
@@ -599,7 +664,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_RELATEDOBSERVATORIES,
 		type=SUBMISSION_FORM_OBSERVATORY.type_name,
-		requirement=RequirementLevel.RECOMMENDED.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Related Observatories",
 			PROP_TT_EXPL: TTEXPL_RELATEDOBSERVATORIES,

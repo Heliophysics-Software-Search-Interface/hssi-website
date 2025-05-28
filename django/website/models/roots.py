@@ -6,7 +6,7 @@ from colorful.fields import RGBColorField
 from .structurizer import form_config
 from ..util import RequirementLevel
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, NamedTuple
 if TYPE_CHECKING:
     from .people import Person
     from .auxillary_info import Functionality, Award, RelatedItem
@@ -15,6 +15,13 @@ if TYPE_CHECKING:
 LEN_LONGNAME = 512
 LEN_NAME = 100
 LEN_ABBREVIATION = 5
+
+class ModelObjectChoice(NamedTuple):
+    id: str
+    name: str
+    keywords: list[str]
+    tooltip: str
+
 
 # Whether an entry in InstrumentObservatory is an instrument or an observatory
 class InstrObsType(models.IntegerChoices):
@@ -49,6 +56,14 @@ class HssiModel(models.Model, metaclass=HssiBase):
         relevant form interfaces
         '''
         return str(self).split()
+
+    def get_choice(self) -> ModelObjectChoice: 
+        return ModelObjectChoice(
+            str(self.id), 
+            str(self),
+            self.get_search_terms(),
+            self.get_tooltip(),
+        )
 
     def get_tooltip(self) -> str: return ''
 

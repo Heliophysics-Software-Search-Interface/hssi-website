@@ -43,11 +43,10 @@ class Person(HssiModel):
 
     # meta info that allows data in this model to be serialized to allow for user discovery
     def get_search_terms(self) -> list[str]:
-        return [
-            self.firstName,
-            self.lastName,
-            self.identifier
-        ]
+        terms = super().get_search_terms()
+        if self.identifier is not None:
+            terms.append(self.identifier)
+        return terms
 
     @classmethod
     def get_top_field(cls) -> models.Field: return cls._meta.get_field("firstName")

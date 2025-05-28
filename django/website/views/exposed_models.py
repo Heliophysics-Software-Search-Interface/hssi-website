@@ -1,8 +1,9 @@
-from django.http import JsonResponse, HttpRequest, HttpResponse
+from django.apps import apps
+from django.http import JsonResponse, HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from ..forms import SubmissionForm
 from ..models import (
-    Keyword, OperatingSystem, Phenomena, RepoStatus, Image,
+    HssiModel, Keyword, OperatingSystem, Phenomena, RepoStatus, Image,
     ProgrammingLanguage, DataInput, FileFormat, Region,
     InstrumentObservatory, FunctionCategory, License, Organization,
     Person, Curator, Submitter, Award, Functionality, RelatedItem,
@@ -11,7 +12,7 @@ from ..models import (
 from ..models.structurizer import ModelStructure
 
 def get_model_structure(request: HttpRequest) -> JsonResponse:
-    structures = { "structures": [
+    structures = { "data": [
         ModelStructure.create(Keyword).serialized(),
         ModelStructure.create(OperatingSystem).serialized(),
         ModelStructure.create(Phenomena).serialized(),
@@ -36,6 +37,27 @@ def get_model_structure(request: HttpRequest) -> JsonResponse:
         ModelStructure.create(Software).serialized(),
     ]}
     return JsonResponse(structures)
+
+def get_model_choices(
+        request: HttpRequest, 
+        model_name: str
+    ) -> JsonResponse | HttpResponseBadRequest:
+
+    app_label = Software._meta.app_label
+    model = apps.get_model(app_label, model_name)
+    if issubclass(model, HssiModel):
+        objs = model.objects.all()
+        data = {
+            "data": [
+                obj.get_choice()
+                for obj in objs
+            ]
+        }
+        return JsonResponse(data)
+        
+    return HttpResponseBadRequest(
+        f"Target model must inherit from {HssiModel.__name__}"
+    )
 
 def model_form(request: HttpRequest, model_name: str) -> HttpResponse:
     return render(

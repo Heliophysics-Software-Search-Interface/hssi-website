@@ -12,7 +12,7 @@ const modelStructureUrl = "/api/model_structure/";
 export const formRowStyle = "form-row";
 
 type ModelStructureData = {
-    structures: ModelFieldStructure[],
+    data: ModelFieldStructure[],
 }
 
 export class FormGenerator {
@@ -67,7 +67,7 @@ export class FormGenerator {
             const structureData = data as ModelStructureData;
             this.structureData = structureData;
             ModelFieldStructure.parseBasicWidgetModels();
-            ModelFieldStructure.parseModels(this.structureData.structures);
+            ModelFieldStructure.parseModels(this.structureData.data);
         }
 
         // otherwise get references to or create the form elements

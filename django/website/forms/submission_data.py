@@ -1,13 +1,7 @@
 from ..models import *
 from ..util import RequirementLevel
+from .names import *
 
-PROP_LABEL = "label"
-PROP_TT_EXPL = "tooltipExplanation"
-PROP_TT_BEST = "tooltipBestPractise"
-
-PROP_WIDGET_PROPS = "widgetProperties"
-PROP_TARGET_MODEL = "targetModel"
-PROP_MODEL_FILTER = "modelFilter"
 
 SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
     "SubmissionForm",
@@ -15,8 +9,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
     # ----- Sec 1 -----
     # Submitter
     ModelSubfield.define(
-        name="submitter", 
-        type="ModelBox", 
+        name=FIELD_SUBMITTERNAME, 
+        type=TYPE_MODELBOX, 
         requirement=RequirementLevel.MANDATORY.value, 
         properties={
             PROP_LABEL: "Submitter",
@@ -29,8 +23,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
 
     # PID
     ModelSubfield.define(
-        name="persistentIdentifier",
-        type="UrlWidget",
+        name=FIELD_PERSISTENTIDENTIFIER,
+        type=TYPE_URL,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Persistent Identifier",
@@ -40,8 +34,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
 
     # Code Repo
     ModelSubfield.define(
-        name="codeRepository",
-        type="UrlWidget",
+        name=FIELD_CODEREPOSITORYURL,
+        type=TYPE_URL,
         requirement=RequirementLevel.MANDATORY.value,
         properties={
             PROP_LABEL: "Code Repository",
@@ -51,8 +45,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
 
     # Authors
     ModelSubfield.define(
-        name="authors",
-        type="ModelBox",
+        name=FIELD_AUTHORS,
+        type=TYPE_MODELBOX,
         requirement=RequirementLevel.MANDATORY.value,
         properties={
             PROP_LABEL: "Authors",
@@ -65,8 +59,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
 
     # Software Name
     ModelSubfield.define(
-        name="softwareName",
-        type="CharWidget",
+        name=FIELD_SOFTWARENAME,
+        type=TYPE_CHAR,
         requirement=RequirementLevel.MANDATORY.value,
         properties={
             PROP_LABEL: "Software Name",
@@ -75,8 +69,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
     ),
     # Description
     ModelSubfield.define(
-        name="description",
-        type="TextAreaWidget",
+        name=FIELD_DESCRIPTION,
+        type=TYPE_TEXTAREA,
         requirement=RequirementLevel.MANDATORY.value,
         properties={
             PROP_LABEL: "Description",
@@ -86,7 +80,7 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
     # Concise Description
     ModelSubfield.define(
         name="conciseDescription",
-        type="TextAreaWidget",
+        type=TYPE_TEXTAREA,
         requirement=RequirementLevel.OPTIONAL.value,
         properties={
             PROP_LABEL: "Concise Description",
@@ -95,8 +89,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
     ),
     # Publication Date
     ModelSubfield.define(
-        name="publicationDate",
-        type="DateWidget",
+        name=FIELD_PUBLICATIONDATE,
+        type=TYPE_DATE,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Publication Date",
@@ -105,8 +99,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
     ),
     # Publisher
     ModelSubfield.define(
-        name="publisher",
-        type="ModelBox",
+        name=FIELD_PUBLISHER,
+        type=TYPE_MODELBOX,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Publisher",
@@ -118,8 +112,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
     ),
     # Version
     ModelSubfield.define(
-        name="version",
-        type="ModelBox",
+        name=FIELD_VERSIONNUMBER,
+        type=TYPE_MODELBOX,
         requirement=RequirementLevel.MANDATORY.value,
         properties={
             PROP_LABEL: "Version",
@@ -131,8 +125,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
     ),
     # Programming Language
     ModelSubfield.define(
-        name="programmingLanguage",
-        type="ModelBox",
+        name=FIELD_PROGRAMMINGLANGUAGE,
+        type=TYPE_MODELBOX,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Programming Language",
@@ -144,8 +138,8 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
     ),
     # License
     ModelSubfield.define(
-        name="license",
-        type="ModelBox",
+        name=FIELD_LICENSE,
+        type=TYPE_MODELBOX,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "License",

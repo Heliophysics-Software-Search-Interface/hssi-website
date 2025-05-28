@@ -3,7 +3,7 @@
  */
 
 import { 
-	FieldRequirement, requirementAttributeContainer, RequirementLevel 
+	FieldRequirement, ModelSubfield, requirementAttributeContainer, RequirementLevel 
 } from "../../loader";
 
 // names of values in data attributes
@@ -20,7 +20,13 @@ export interface BaseProperties extends Record<string, any> {
 	requirementLevel: RequirementLevel;
 }
 
-type WidgetType = new (elem: HTMLElement) => Widget;
+export type AnyInputElement = (
+	HTMLInputElement |
+	HTMLTextAreaElement |
+	HTMLSelectElement
+)
+
+export type WidgetType = new (elem: HTMLElement, field: ModelSubfield) => Widget;
 
 /**
  * Base class for all widgets
@@ -31,13 +37,16 @@ export abstract class Widget {
 	 * the root element of the widget, all widget related elements should 
 	 * be contained within this element 
 	 */
-	public element: HTMLElement | null = null;
+	public element: HTMLElement = null;
+
+	public parentField: ModelSubfield = null;
 
 	/** holds congfiguration properties for the widget */
 	public properties: BaseProperties = {} as any;
 
-	public constructor(elem: HTMLElement) {
+	public constructor(elem: HTMLElement, parentField: ModelSubfield) {
 		this.element = elem;
+		this.parentField = parentField;
 		this.properties = this.getDefaultProperties();
 
 		// parse all the properties defined in the data property attribute of 
@@ -78,7 +87,10 @@ export abstract class Widget {
 	}
 
 	/** return the element that the user interacts with for inputing data */
-	public abstract getInputElement(): HTMLInputElement;
+	public abstract getInputElement(): AnyInputElement;
+
+	/** returns the value that a user has input into the widget */
+	public getInputValue(): string { return this.getInputElement().value; }
 
 	/** get the requiredinput object associated with the widget */
 	public getRequiredInputInstance(): FieldRequirement {
@@ -86,9 +98,7 @@ export abstract class Widget {
 	}
 
 	/** map of all registered widgets that are accessible */
-	private static registeredWidgets: Map<
-		string, new (elem: HTMLElement) => Widget
-	> = new Map();
+	private static registeredWidgets: Map<string, WidgetType> = new Map();
 
 	/**
 	 * construct a set of widgets from a given set of elements
@@ -96,7 +106,7 @@ export abstract class Widget {
 	 * @param elements the elements to create widgets from
 	 */
 	private static getWidgetsFromElements(
-		widgetClass: new (elem: HTMLElement) => Widget,
+		widgetClass: WidgetType,
 		elements: Iterable<Element>,
 	): Array<Widget> {
 
@@ -104,7 +114,7 @@ export abstract class Widget {
 		const widgets: Array<Widget> = []
 		for(const element of elements) {
 			if(element instanceof HTMLElement){
-				const widget = new widgetClass(element);
+				const widget = new widgetClass(element, null);
 				widgets.push(widget);
 			}
 		}
@@ -115,9 +125,7 @@ export abstract class Widget {
 	 * construct and initialize all widgets of a given type in a webpage
 	 * @param widgetClass the widget type to initialize
 	 */
-	public static initializeWidgets(
-		widgetClass: new (elem: HTMLElement) => Widget,
-	): Array<Widget> {
+	public static initializeWidgets(widgetClass: WidgetType): Array<Widget> {
 		console.log("Initializing " + widgetClass.name + " widgets..")
 		const widgets = this.getWidgetsFromElements(
 			widgetClass, 

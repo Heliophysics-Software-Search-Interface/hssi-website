@@ -1,5 +1,7 @@
 import { 
-    Widget, widgetDataAttribute, targetUuidAttribute
+    Widget, widgetDataAttribute, targetUuidAttribute,
+    type AnyInputElement,
+    type BaseProperties
 } from "../../loader";
 
 const optionDataValue = "json-options";
@@ -9,6 +11,10 @@ const dropdownStyle = "widget-dropdown";
 const tooltipStyle = "widget-tooltip";
 const dropButtonStyle = "dropdown-button";
 const selectedStyle = "selected";
+
+const modelChoicesUrl = "/api/model_choices/";
+
+type ChoicesJsonStructure = { data: [string, string, string[], string?][] }
 
 /// Organizational types -------------------------------------------------------
 
@@ -42,19 +48,9 @@ export class ModelBox extends Widget {
     private buildElements(): void {
 
         // create and populate the dropdown list
-        this.allOptionLIs.length = 0;
-        this.optionListElement = document.createElement("ul");
-        for(const option of this.options) {
-            const li: OptionLi = document.createElement("li") as any;
-            li.data = option;
-            li.tabIndex = 0;
-            li.style.position = "relative";
-            li.style.display = "inline-block";
-			li.style.userSelect = "none";
-            
-            li.innerText = option.name;
-            this.allOptionLIs.push(li);
-            this.optionListElement.appendChild(li);
+        if(this.options != null) this.buildOptions(this.options);
+        if(this.properties.targetModel){
+            this.builOptionsFromModel(this.properties.targetModel);
         }
 
         // create the input, container, and row elements
@@ -67,8 +63,6 @@ export class ModelBox extends Widget {
         this.element.appendChild(this.inputContainerRowElement);
 
         // add event listeners
-        this.optionListElement.addEventListener("click", e => this.onListClick(e));
-        this.optionListElement.addEventListener("mouseover", e => this.onListMouseover(e));
         this.inputElement.addEventListener("input", e => this.onInputValueChanged(e));
         this.inputElement.addEventListener("keydown", e => this.onInputKeyDown(e));
         this.inputContainerElement.addEventListener("focusin", e => this.onInputFocusIn(e));
@@ -178,8 +172,21 @@ export class ModelBox extends Widget {
             `script[${widgetDataAttribute}=${optionDataValue}]`
         );
         if(jsonElem != null) this.options = JSON.parse(jsonElem.textContent);
-        
+    }
+
+    /** @override Implementation for {@link Widget.prototype.initialize} */
+    public initialize(): void {
+		super.initialize();
+        this.buildElements();
+
+        console.log("initialized ModelBox", this.element)
+    }
+
+    /* builds the option element list from the given options */
+    public buildOptions(options: Option[]): void {
+
         // enforce case insensitivity for keyword filtering
+        this.options = options;
         if(!this.properties.caseSensitiveFilter) {
             for(let i0 = this.options.length - 1; i0 >= 0; i0--) {
                 if(this.options[i0] == null) continue;
@@ -191,14 +198,50 @@ export class ModelBox extends Widget {
                 }
             }
         }
+
+        // reset options
+        if(this.optionListElement != null) this.optionListElement.remove();
+        this.allOptionLIs.length = 0;
+        this.filteredOptionLIs.length = 0;
+        this.selectedOptionIndex = -1;
+
+        // create and populate the dropdown list
+        this.optionListElement = document.createElement("ul");
+        for(const option of this.options) {
+            const li: OptionLi = document.createElement("li") as any;
+            li.data = option;
+            li.tabIndex = 0;
+            li.style.position = "relative";
+            li.style.display = "inline-block";
+			li.style.userSelect = "none";
+            
+            li.innerText = option.name;
+            this.allOptionLIs.push(li);
+            this.optionListElement.appendChild(li);
+        }
+
+        this.optionListElement.addEventListener("click", e => this.onListClick(e));
+        this.optionListElement.addEventListener("mouseover", e => this.onListMouseover(e));
     }
 
-    /** @override Implementation for {@link Widget.prototype.initialize} */
-    public initialize(): void {
-		super.initialize();
-        this.buildElements();
+    /**
+     * gets the choice data from the specified model and builds it's own 
+     * options list based off that
+     */
+    public async builOptionsFromModel(modelName: string): Promise<void> {
+        const data: ChoicesJsonStructure = await (await fetch(modelChoicesUrl + modelName)).json();
+        console.log(data);
+        this.buildOptions(data.data.map(
+            x => {
+                return {
+                    id: x[0],
+                    name: x[1],
+                    keywords: x[2],
+                    tooltip: x[3],
+                }
+        }));
     }
-
+    
     /// Event listeners --------------------------------------------------------
 
     private onDropdownButtonClick(_: Event): void {
@@ -301,7 +344,7 @@ export class ModelBox extends Widget {
         ModelBox.showDropdown(this.inputContainerElement);
     }
 
-    public getInputElement(): HTMLInputElement { return this.inputElement; }
+    public getInputElement(): AnyInputElement { return this.inputElement; }
 
     /// Dropdown and tooltip elements ------------------------------------------
 

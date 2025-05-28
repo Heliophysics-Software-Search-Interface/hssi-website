@@ -16,6 +16,12 @@ export enum RequirementLevel {
 	MANDATORY = 2,
 }
 
+const acceptableInputElementQueries = [
+	"input",
+	"textarea",
+	"select",
+];
+
 interface FormElement extends HTMLElement {
 	required: boolean;
 	type: string;
@@ -104,8 +110,10 @@ export class FieldRequirement {
 			case RequirementLevel.RECOMMENDED: className = invalidRecStyle; break;
 			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
 		}
-		this.getStyledElement().classList.remove(className);
-		this.noteElement.classList.remove(className);
+		if(className.length > 0){
+			this.getStyledElement().classList.remove(className);
+			this.noteElement.classList.remove(className);
+		}
 		this.noteElement.style.display = "none";
 	}
 
@@ -176,12 +184,23 @@ export class FieldRequirement {
 		for(const container of containers) {
 			if(!(container instanceof HTMLElement)) continue;
 
-			const elem = container.querySelector(`input`);
-			if(!elem) throw new Error("No input found in container with requirement attribute");
+			// find an acceptable element to consider the field input element
+			let elem: HTMLElement = null;
+			for(const query of acceptableInputElementQueries){
+				if(elem) break;
+				elem = container.querySelector(query);
+			}
+
+			// error if no acceptable input element was found
+			if(!elem) {
+				console.log(container);
+				throw new Error("No input found in container with requirement attribute");
+			}
+
+			// create the field requirement object and register it
 			const elemReqLvl = Number.parseInt(
 				container.getAttribute(requirementAttributeContainer)
 			);
-
 			const reqIn = new FieldRequirement(
 				elem as FormElement, 
 				elemReqLvl, 

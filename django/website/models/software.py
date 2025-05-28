@@ -175,9 +175,18 @@ class Software(HssiModel):
     class Meta:
         ordering = ['softwareName']
         verbose_name_plural = '  Software'
-    
+
     @classmethod
     def get_top_field(cls) -> models.Field: return cls._meta.get_field("softwareName")
+
+    @classmethod
+    def get_subfields(cls):
+        subfields = super().get_subfields()
+        for i, field in enumerate(subfields):
+            if field.name == cls.submissionInfo.name:
+                subfields.pop(i)
+                break
+        return subfields
 
     def __str__(self): return self.softwareName
 

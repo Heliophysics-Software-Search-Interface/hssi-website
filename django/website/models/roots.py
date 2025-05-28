@@ -1,11 +1,12 @@
 import uuid
 from django.db import models
+from django.db.models.fields import related, related_descriptors
 from colorful.fields import RGBColorField
 
 from .structurizer import form_config
 from ..util import RequirementLevel
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, NamedTuple
 if TYPE_CHECKING:
     from .people import Person
     from .auxillary_info import Functionality, Award, RelatedItem
@@ -14,6 +15,13 @@ if TYPE_CHECKING:
 LEN_LONGNAME = 512
 LEN_NAME = 100
 LEN_ABBREVIATION = 5
+
+class ModelObjectChoice(NamedTuple):
+    id: str
+    name: str
+    keywords: list[str]
+    tooltip: str
+
 
 # Whether an entry in InstrumentObservatory is an instrument or an observatory
 class InstrObsType(models.IntegerChoices):
@@ -30,7 +38,11 @@ class HssiBase(models.base.ModelBase):
     def __new__(cls: type['HssiModel'], name, bases, attrs: dict[str, Any], **kwargs):
         new_cls = super().__new__(cls, name, bases, attrs, **kwargs)
         for key, val in new_cls.__dict__.items():
-            if isinstance(val, models.query_utils.DeferredAttribute):
+            if (
+                isinstance(val, models.query_utils.DeferredAttribute) or 
+                isinstance(val, related_descriptors.ForwardOneToOneDescriptor) or 
+                isinstance(val, related_descriptors.ForwardManyToOneDescriptor)
+            ):
                 setattr(val, "name", key)
         return new_cls
 
@@ -44,6 +56,14 @@ class HssiModel(models.Model, metaclass=HssiBase):
         relevant form interfaces
         '''
         return str(self).split()
+
+    def get_choice(self) -> ModelObjectChoice: 
+        return ModelObjectChoice(
+            str(self.id), 
+            str(self),
+            self.get_search_terms(),
+            self.get_tooltip(),
+        )
 
     def get_tooltip(self) -> str: return ''
 
@@ -87,7 +107,7 @@ class ControlledList(HssiModel):
         models.CharField(max_length=LEN_NAME, blank=False, null=False),
         # widgetType="ModelBox",
         label="Name",
-        widgetProperties = {
+        widgetProperties={
             'requirementLevel': RequirementLevel.MANDATORY.value,
         },
     )
@@ -147,6 +167,7 @@ class OperatingSystem(ControlledList):
             tooltipExplanation="The operating systems the software supports.",
             tooltipBestPractise="Please select all the operating systems the software can successfully be installed on.",
         )
+
 class Phenomena(ControlledList):
     '''Solar phenomena that relate to the software'''
     @classmethod
@@ -260,7 +281,10 @@ class InstrumentObservatory(ControlledList):
         widgetType="NumberWidget",
     )
     
-    abbreviation = models.CharField(max_length=LEN_NAME, null=True, blank=True)
+    abbreviation = form_config(
+        models.CharField(max_length=LEN_NAME, null=True, blank=True),
+        label="Abbreviation",
+    )
 
     @classmethod
     def _form_config_redef(cls) -> None:
@@ -341,10 +365,10 @@ class Organization(HssiModel):
     def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
 
     def get_search_terms(self) -> list[str]:
-        return [
-            self.name,
-            self.abbreviation
-        ]
+        terms = self.name.split()
+        if self.abbreviation:
+            terms.append(self.abbreviation)
+        return terms
 
     class Meta: ordering = ['name']
     def __str__(self): 

@@ -1,8 +1,7 @@
 import { 
-	RequirementLevel, Widget, ModelSubfield
+	RequirementLevel, Widget, ModelSubfield,
+	type WidgetType
 } from "../loader";
-
-type WidgetType = new (elem: HTMLElement) => Widget;
 
 export type PropertyContainer = {
 

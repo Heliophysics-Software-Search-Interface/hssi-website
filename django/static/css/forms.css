@@ -3,8 +3,12 @@ form .indent {
 }
 
 form details {
-    border-left: solid 1px #3338;
-    padding-left: 5px;
+    padding-left: 11px;
+}
+
+form details[open] {
+    border-left: solid 1px #3333;
+    padding-left: 10px;
 }
 
 form .custom-label {

@@ -104,6 +104,22 @@ class ModelSubfield:
         subfield.properties = properties
         return subfield
 
+    @classmethod
+    def define(
+        cls, name: str, type: str, requirement: int, properties: dict, multi: bool
+    ) -> 'ModelSubfield':
+        
+        print(properties)
+
+        sf = ModelSubfield()
+        sf.name = name
+        sf.type = type
+        sf.requirement = requirement
+        sf.properties = properties,
+        sf.multi = multi
+
+        return sf
+
 class ModelStructure:
     """
     TODO
@@ -127,6 +143,18 @@ class ModelStructure:
 
         return structure
     
+    @classmethod
+    def define(cls, name: str, *fields: ModelSubfield) -> 'ModelStructure':
+
+        fields_list = list(fields)
+
+        structure = cls()
+        structure.type_name = name
+        structure.top_field = fields_list.pop(0)
+        structure.subfields = fields_list
+
+        return structure
+
     def serialized(self) -> dict:
         if self.top_field is None:
             warnings.warn(

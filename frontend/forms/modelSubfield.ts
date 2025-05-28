@@ -80,7 +80,7 @@ export class ModelSubfield {
 
 	private buildWidget(): void {
 		if(!this.type){
-			console.error("Undefined subfield type!");
+			console.error("Undefined subfield type!", this);
 			return;
 		}
 		const widgetType = this.type.getWidgetType();

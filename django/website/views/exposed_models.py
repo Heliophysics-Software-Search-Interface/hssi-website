@@ -1,3 +1,5 @@
+import ast
+
 from django.apps import apps
 from django.http import JsonResponse, HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
@@ -43,10 +45,17 @@ def get_model_choices(
         model_name: str
     ) -> JsonResponse | HttpResponseBadRequest:
 
+    filter_dict = request.GET.dict()
+    for key, val in filter_dict.items():
+        filter_dict[key] = ast.literal_eval(val)
+
     app_label = Software._meta.app_label
     model = apps.get_model(app_label, model_name)
     if issubclass(model, HssiModel):
-        objs = model.objects.all()
+        if filter_dict:
+            objs = model.objects.filter(**filter_dict)
+        else:
+            objs = model.objects.all()
         data = {
             "data": [
                 obj.get_choice()

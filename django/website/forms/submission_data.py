@@ -32,14 +32,45 @@ SUBMISSION_FORM_ORGANIZATION: ModelStructure = ModelStructure.define(
 	),
 )
 
-SUBMISSION_FORM_PERSON: ModelStructure = ModelStructure.define(
-    "SubmissionFormPerson",
+SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
+	"SubmissionFormSubmitter",
 	ModelSubfield.define(
-		name="name", 
+		name="Submitter", 
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.MANDATORY.value, 
 		properties={
-			PROP_LABEL: "Name",
+			PROP_LABEL: "Submitter Name",
+			PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
+			PROP_TT_BEST: TTBEST_SUBMITTERNAME,
+            PROP_WIDGET_PROPS:{
+                PROP_TARGET_MODEL: Person.__name__,
+			},
+		},
+		multi=False,
+	),
+	ModelSubfield.define(
+        name="Email",
+        type=TYPE_EMAIL,
+        requirement=RequirementLevel.MANDATORY.value,
+        properties={
+            PROP_LABEL: "Submitter Email",
+            PROP_TT_EXPL: TTEXPL_SUBMITTEREMAIL,
+            PROP_TT_BEST: TTBEST_SUBMITTEREMAIL,
+		},
+        multi=False
+	),
+)
+
+SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
+	"SubmissionFormAuthor",
+	ModelSubfield.define(
+		name=FIELD_AUTHORS, 
+		type=TYPE_MODELBOX,
+		requirement=RequirementLevel.MANDATORY.value, 
+		properties={
+			PROP_LABEL: "Authors",
+			PROP_TT_EXPL: TTEXPL_AUTHORS,
+			PROP_TT_BEST: TTBEST_AUTHORS,
 			PROP_WIDGET_PROPS: {
 				PROP_TARGET_MODEL: Person.__name__
 			},
@@ -67,40 +98,6 @@ SUBMISSION_FORM_PERSON: ModelStructure = ModelStructure.define(
             PROP_TT_BEST: TTBEST_AUTHORIDENTIFIER,
 		},
         multi=False,
-	),
-)
-
-SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
-	"SubmissionFormSubmitter",
-	
-	ModelSubfield.define(
-		name="Submitter", 
-		type=SUBMISSION_FORM_PERSON.type_name,
-		requirement=RequirementLevel.MANDATORY.value, 
-		properties={
-			PROP_LABEL: "Submitter Name",
-			PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
-			PROP_TT_BEST: TTBEST_SUBMITTERNAME,
-		},
-		multi=False,
-	),
-)
-
-SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
-	"SubmissionFormAuthor",
-	ModelSubfield.define(
-		name=FIELD_AUTHORS,
-		type=TYPE_MODELBOX,
-		requirement=RequirementLevel.MANDATORY.value,
-		properties={
-			PROP_LABEL: "Authors",
-			PROP_TT_EXPL: TTEXPL_AUTHORS,
-			PROP_TT_BEST: TTBEST_AUTHORS,
-			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: Person.__name__,
-			},
-		},
-		multi=False,
 	),
 )
 

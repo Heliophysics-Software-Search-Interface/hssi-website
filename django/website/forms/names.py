@@ -11,6 +11,7 @@ TYPE_CHAR = "CharWidget"
 TYPE_TEXTAREA = "TextAreaWidget"
 TYPE_URL = "UrlWidget"
 TYPE_DATE = "DateWidget"
+TYPE_EMAIL = "EmailWidget"
 TYPE_CHECKBOX = "CheckboxWidget"
 TYPE_MODELBOX = "ModelBox"
 

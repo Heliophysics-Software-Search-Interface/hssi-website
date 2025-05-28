@@ -63,10 +63,10 @@ export class FormGenerator {
 
         // load structure data
         if(this.structureData == null) { 
-            const data = await (await fetch(modelStructureUrl)).json();
+            const response = await fetch(modelStructureUrl);
+            const data = await response.json();
             const structureData = data as ModelStructureData;
             this.structureData = structureData;
-            console.log(this.structureData);
             ModelFieldStructure.parseBasicWidgetModels();
             ModelFieldStructure.parseModels(this.structureData.data);
         }

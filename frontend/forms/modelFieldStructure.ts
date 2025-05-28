@@ -152,7 +152,8 @@ export class ModelFieldStructure {
 			}
 
 			// top field will always be first field in subfields
-			model.topField = obj.subfields.shift();
+			model.subfields = [...obj.subfields];
+			model.topField = model.subfields.shift();
 			this.fieldStructureMap.set(model.typeName, model);
 			models.push(model);
 		}

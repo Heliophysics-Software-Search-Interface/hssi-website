@@ -2,6 +2,185 @@ from ..models import *
 from ..util import RequirementLevel
 from .names import *
 
+SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
+    "SubmissionFormSubmitter",
+    
+    ModelSubfield.define(
+        name=FIELD_SUBMITTERNAME, 
+        type=TYPE_CHAR,
+        requirement=RequirementLevel.MANDATORY.value, 
+        properties={
+            PROP_LABEL: "Submitter Name",
+            PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
+            PROP_TT_BEST: TTBEST_SUBMITTERNAME,
+            PROP_WIDGET_PROPS: {
+                PROP_TARGET_MODEL: Submitter.__name__
+            },
+        },
+        multi=False,
+    ),
+)
+
+SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
+    "SubmissionFormAuthor",
+    ModelSubfield.define(
+        name=FIELD_AUTHORS,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.MANDATORY.value,
+        properties={
+            PROP_LABEL: "Authors",
+            PROP_TT_EXPL: TTEXPL_AUTHORS,
+            PROP_TT_BEST: TTBEST_AUTHORS,
+            PROP_WIDGET_PROPS: {
+                PROP_TARGET_MODEL: Person.__name__,
+            },
+        },
+        multi=False,
+    ),
+)
+
+SUBMISSION_FORM_VERSION: ModelStructure = ModelStructure.define(
+    "SubmissionFormVersion",
+    ModelSubfield.define(
+        name=FIELD_VERSIONNUMBER,
+        type=TYPE_CHAR,
+        requirement=RequirementLevel.MANDATORY.value,
+        properties={
+            PROP_LABEL: "Version Number",
+            PROP_TT_EXPL: TTEXPL_VERSIONNUMBER,
+            PROP_TT_BEST: TTBEST_VERSIONNUMBER,
+            PROP_WIDGET_PROPS: {
+                PROP_TARGET_MODEL: SoftwareVersion.__name__,
+            },
+        },
+        multi=False,
+    ),
+)
+
+SUBMISSION_FORM_PUBLICATION: ModelStructure = ModelStructure.define(
+    "SubmissionFormPublication",
+    ModelSubfield.define(
+        name=FIELD_REFERENCEPUBLICATION,
+        type=TYPE_URL,
+        requirement=RequirementLevel.MANDATORY.value,
+        properties={
+            PROP_LABEL: "Reference Publication",
+            PROP_TT_EXPL: TTEXPL_REFERENCEPUBLICATION,
+            PROP_TT_BEST: TTBEST_REFERENCEPUBLICATION,
+        },
+        multi=False,
+    ),
+)
+
+SUBMISSION_FORM_REL_SOFTWARE: ModelStructure = ModelStructure.define(
+    "SubmissionFormRelSoftware",
+    ModelSubfield.define(
+        name=FIELD_RELATEDSOFTWARE,
+        type=TYPE_URL,
+        requirement=RequirementLevel.MANDATORY.value,
+        properties={
+            PROP_LABEL: "Related Software",
+        },
+        multi=False,
+    ),
+    
+)
+
+SUBMISSION_FORM_INSTRUMENT: ModelStructure = ModelStructure.define(
+    "SubmissionFormInstrument",
+    ModelSubfield.define(
+        name=FIELD_RELATEDINSTRUMENTS,
+        type=TYPE_CHAR,
+        requirement=RequirementLevel.MANDATORY.value,
+        properties={
+            PROP_LABEL: "Instrument Name",
+        },
+        multi=False,
+    ),
+)
+
+SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
+    "SubmissionFormObservatory",
+    ModelSubfield.define(
+        name=FIELD_RELATEDOBSERVATORIES,
+        type=TYPE_CHAR,
+        requirement=RequirementLevel.MANDATORY.value,
+        properties={
+            PROP_LABEL: "Related Observatories",
+            PROP_TT_EXPL: TTEXPL_RELATEDOBSERVATORIES,
+            PROP_TT_BEST: TTBEST_RELATEDOBSERVATORIES,
+        },
+        multi=False,
+    ),
+)
+
+SUBMISSION_FORM_DATASET: ModelStructure = ModelStructure.define(
+    "SubmissionFormDataset",
+    ModelSubfield.define(
+        name=FIELD_RELATEDDATASETS,
+        type=TYPE_URL,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Related Datasets",
+            PROP_TT_EXPL: TTEXPL_RELATEDDATASETS,
+            PROP_TT_BEST: TTBEST_RELATEDDATASETS,
+        },
+        multi=False,
+    ),
+)
+
+SUBMISSION_FORM_LICENSE: ModelStructure = ModelStructure.define(
+    "SubmissionFormLicense",
+    ModelSubfield.define(
+        name=FIELD_LICENSE,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "License",
+            PROP_TT_EXPL: TTEXPL_LICENSE,
+            PROP_TT_BEST: TTBEST_LICENSE,
+            PROP_WIDGET_PROPS: {
+                PROP_TARGET_MODEL: License.__name__,
+            },
+        },
+        multi=False,
+    ),
+)
+
+SUBMISSION_FORM_ORGANIZATION: ModelStructure = ModelStructure.define(
+    "SubmissionFormOrganization",
+    ModelSubfield.define(
+        name=FIELD_PUBLISHER,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Organization",
+            PROP_WIDGET_PROPS: {
+                PROP_TARGET_MODEL: Organization.__name__,
+            },
+        },
+        multi=False,
+    ),
+)
+
+SUBMISSION_FORM_AWARD: ModelStructure = ModelStructure.define(
+    "SubmissionFormAward",
+    ModelSubfield.define(
+        name=FIELD_AWARDTITLE,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.RECOMMENDED.value,
+        properties={
+            PROP_LABEL: "Award Title",
+            PROP_TT_EXPL: TTEXPL_AWARDTITLE,
+            PROP_TT_BEST: TTBEST_AWARDTITLE,
+            PROP_WIDGET_PROPS: {
+                PROP_TARGET_MODEL: Award.__name__,
+            },
+        },
+        multi=True,
+    ),
+)
+
 SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     "SubmissionForm",
 
@@ -9,15 +188,15 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     # Submitter
     ModelSubfield.define(
         name=FIELD_SUBMITTERNAME, 
-        type=TYPE_MODELBOX, 
+        type=SUBMISSION_FORM_SUBMITTER.type_name, 
         requirement=RequirementLevel.MANDATORY.value, 
         properties={
-            PROP_LABEL: "Submitter",
-            PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
-            PROP_TT_BEST: TTBEST_SUBMITTERNAME,
-            PROP_WIDGET_PROPS: {
-                PROP_TARGET_MODEL: Submitter.__name__
-            },
+        #    PROP_LABEL: "Submitter",
+        #    PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
+        #    PROP_TT_BEST: TTBEST_SUBMITTERNAME,
+        #    PROP_WIDGET_PROPS: {
+        #        PROP_TARGET_MODEL: Submitter.__name__
+        #    },
         },
         multi=True,
     ),
@@ -51,7 +230,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     # Authors
     ModelSubfield.define(
         name=FIELD_AUTHORS,
-        type=TYPE_MODELBOX,
+        type=SUBMISSION_FORM_AUTHOR.type_name,
         requirement=RequirementLevel.MANDATORY.value,
         properties={
             PROP_LABEL: "Authors",
@@ -115,7 +294,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     # Publisher
     ModelSubfield.define(
         name=FIELD_PUBLISHER,
-        type=TYPE_MODELBOX,
+        type=SUBMISSION_FORM_ORGANIZATION.type_name,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Publisher",
@@ -130,7 +309,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     # Version
     ModelSubfield.define(
         name=FIELD_VERSIONNUMBER,
-        type=TYPE_MODELBOX,
+        type=SUBMISSION_FORM_VERSION.type_name,
         requirement=RequirementLevel.MANDATORY.value,
         properties={
             PROP_LABEL: "Version",
@@ -160,7 +339,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     # License
     ModelSubfield.define(
         name=FIELD_LICENSE,
-        type=TYPE_MODELBOX,
+        type=SUBMISSION_FORM_LICENSE.type_name,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "License",
@@ -189,7 +368,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     # Reference Publication
     ModelSubfield.define(
         name=FIELD_REFERENCEPUBLICATION,
-        type=TYPE_MODELBOX,
+        type=SUBMISSION_FORM_PUBLICATION.type_name,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Reference Publication",
@@ -285,7 +464,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     # Funder
     ModelSubfield.define(
         name=FIELD_FUNDER,
-        type=TYPE_MODELBOX,
+        type=SUBMISSION_FORM_ORGANIZATION.type_name,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Funder",
@@ -297,7 +476,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     # Awards
     ModelSubfield.define(
         name=FIELD_AWARDTITLE,
-        type=TYPE_MODELBOX,
+        type=SUBMISSION_FORM_AWARD.type_name,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Award Title",
@@ -323,7 +502,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     # Related Datasets
     ModelSubfield.define(
         name=FIELD_RELATEDDATASETS,
-        type=TYPE_MODELBOX,
+        type=SUBMISSION_FORM_DATASET.type_name,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Related Datasets",
@@ -335,7 +514,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     # Related Software
     ModelSubfield.define(
         name=FIELD_RELATEDSOFTWARE,
-        type=TYPE_MODELBOX,
+        type=SUBMISSION_FORM_REL_SOFTWARE.type_name,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Related Software",
@@ -347,7 +526,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     # Related Instruments
     ModelSubfield.define(
         name=FIELD_RELATEDINSTRUMENTS,
-        type=TYPE_MODELBOX,
+        type=SUBMISSION_FORM_INSTRUMENT.type_name,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Related Instruments",
@@ -359,7 +538,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     # Interoperable Software
     ModelSubfield.define(
         name=FIELD_INTEROPERABLESOFTWARE,
-        type=TYPE_MODELBOX,
+        type=SUBMISSION_FORM_REL_SOFTWARE.type_name,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Interpoerable Software",
@@ -371,7 +550,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
     # Related Observatories
     ModelSubfield.define(
         name=FIELD_RELATEDOBSERVATORIES,
-        type=TYPE_MODELBOX,
+        type=SUBMISSION_FORM_OBSERVATORY.type_name,
         requirement=RequirementLevel.RECOMMENDED.value,
         properties={
             PROP_LABEL: "Related Observatories",

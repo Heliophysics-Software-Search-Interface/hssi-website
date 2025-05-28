@@ -115,7 +115,7 @@ export class ModelSubfield {
 		// create subfields when container expanded
 		this.subfieldContainer.addEventListener("click", e => this.onExpandSubfields(e));
 
-		this.hideSubfieldContianer();
+		// this.hideSubfieldContianer();
 	}
 
 	private buildSubFields(): void{

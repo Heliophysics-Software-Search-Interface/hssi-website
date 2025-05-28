@@ -88,7 +88,7 @@ export class ModelSubfield {
 			console.error(`Undefined type on '${this.name}'`, this.type);
 			return;
 		}
-		this.widget = new widgetType(document.createElement("div"));
+		this.widget = new widgetType(document.createElement("div"), this);
 		if(this.properties.widgetProperties != null) {
 			this.widget.properties = { 
 				...this.widget.properties, 

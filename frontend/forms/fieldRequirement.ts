@@ -110,8 +110,10 @@ export class FieldRequirement {
 			case RequirementLevel.RECOMMENDED: className = invalidRecStyle; break;
 			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
 		}
-		this.getStyledElement().classList.remove(className);
-		this.noteElement.classList.remove(className);
+		if(className.length > 0){
+			this.getStyledElement().classList.remove(className);
+			this.noteElement.classList.remove(className);
+		}
 		this.noteElement.style.display = "none";
 	}
 

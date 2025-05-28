@@ -113,7 +113,7 @@ class ModelSubfield:
         sf.name = name
         sf.type = type
         sf.requirement = requirement
-        sf.properties = properties,
+        sf.properties = properties
         sf.multi = multi
 
         return sf

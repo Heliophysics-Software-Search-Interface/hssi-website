@@ -16,7 +16,7 @@ SUBMISSION_FORM_DATA: ModelStructure = ModelStructure.define(
             PROP_LABEL: "Submitter",
             PROP_WIDGET_PROPS: {
                 PROP_TARGET_MODEL: Submitter.__name__
-            }
+            },
         },
         multi=True,
     ),

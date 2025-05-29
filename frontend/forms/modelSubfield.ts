@@ -132,9 +132,7 @@ export class ModelSubfield {
 	}
 
 	private onExpandSubfields(_: Event = null): void{
-		if(this.subfields.length < this.type.subfields.length){
-			this.buildSubFields();
-		}
+		if(!this.subfieldsAreBuilt()) this.buildSubFields();
 	}
 
 	/** 
@@ -142,6 +140,7 @@ export class ModelSubfield {
 	 * subfields if necessary 
 	 */
 	public expandSubfields(): void {
+		if(this.subfieldsExpanded()) return;
 		this.onExpandSubfields();
 		this.subfieldContainer.setAttribute("open", "");
 	}
@@ -189,6 +188,20 @@ export class ModelSubfield {
 	/** true if the field should use data from it's subfields */
 	public hasSubfields(): boolean {
 		return this.subfields.length > 0;
+	}
+
+	/** return true if the subfields are expanded and not hidden */
+	public subfieldsExpanded(): boolean {
+		if(this.subfieldContainer.style.display == "none") return false;
+		return this.subfieldContainer.hasAttribute("open");
+	}
+
+	/** 
+	 * returns true if the subfields have been built. Basically if the 
+	 * subfield container has ever been expanded or not
+	 */
+	public subfieldsAreBuilt(): boolean {
+		return this.subfields.length === this.type.subfields.length;
 	}
 
 	/** get the data that the field has received from user input */

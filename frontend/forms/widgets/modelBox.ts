@@ -140,6 +140,7 @@ export class ModelBox extends Widget {
     protected selectOption(option: Option = this.selectedOptionLI?.data): void {
         if(option != null){
             this.inputElement.value = option.name;
+            this.inputElement.dispatchEvent(new Event("input", { bubbles: true }));
             this.inputElement.setAttribute(targetUuidAttribute, option.id);
             this.getRequiredInputInstance().applyValidityStyle();
         }
@@ -186,8 +187,6 @@ export class ModelBox extends Widget {
     public initialize(): void {
 		super.initialize();
         this.buildElements();
-
-        console.log("initialized ModelBox", this.element)
     }
 
     /* builds the option element list from the given options */

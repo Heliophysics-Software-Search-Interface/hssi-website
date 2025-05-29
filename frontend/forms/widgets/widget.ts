@@ -3,7 +3,8 @@
  */
 
 import { 
-	FieldRequirement, ModelSubfield, requirementAttributeContainer, RequirementLevel 
+	FieldRequirement, ModelSubfield, requirementAttributeContainer, RequirementLevel, 
+	SimpleEvent
 } from "../../loader";
 
 // names of values in data attributes
@@ -33,32 +34,52 @@ export type WidgetType = new (elem: HTMLElement, field: ModelSubfield) => Widget
  */
 export abstract class Widget {
 
+	private lastValue: string = "";
+	private parentFieldsExpanded: boolean = false;
+	protected inputEntryCallbackID: number = 0;
+
 	/** 
 	 * the root element of the widget, all widget related elements should 
 	 * be contained within this element 
 	 */
 	public element: HTMLElement = null;
-
 	public parentField: ModelSubfield = null;
+	public onEnterValue: SimpleEvent<string> = new SimpleEvent();
 
 	/** holds congfiguration properties for the widget */
 	public properties: BaseProperties = {};
-
+	
+	/// Initialization ---------------------------------------------------------
+	
 	public constructor(elem: HTMLElement, parentField: ModelSubfield) {
-		this.element = elem;
-		this.element.setAttribute(widgetAttribute, (this as any).constructor.name)
-		this.parentField = parentField;
-		this.properties = this.getDefaultProperties();
-
-		// parse all the properties defined in the data property attribute of 
-		// the top-level element for the widget and apply them to this class
-		const propsJson = elem.getAttribute(propertiesDataValue)
-		if(propsJson != undefined) {
-			const propsObj = JSON.parse(propsJson)
-			for(const prop in propsObj) {
-				this.properties[prop] = propsObj[prop];
+			this.element = elem;
+			this.element.setAttribute(widgetAttribute, (this as any).constructor.name)
+			this.parentField = parentField;
+			this.properties = this.getDefaultProperties();
+	
+			// parse all the properties defined in the data property attribute of 
+			// the top-level element for the widget and apply them to this class
+			const propsJson = elem.getAttribute(propertiesDataValue)
+			if(propsJson != undefined) {
+				const propsObj = JSON.parse(propsJson)
+				for(const prop in propsObj) {
+					this.properties[prop] = propsObj[prop];
+				}
 			}
+	}
+	
+	protected checkForInputElementEventInit(): void {
+		const inputElem = this.getInputElement();
+
+		// TODO maybe kinda hacky to use set timeout here but meh
+		if(inputElem == null){	
+			setTimeout(()=>{ this.checkForInputElementEventInit(); }, 1000);
+			return;
 		}
+
+		const eventStr = inputElem instanceof HTMLSelectElement ? 
+			"change" : "input";
+		inputElem.addEventListener(eventStr, e => this.onInputChange(e));
 	}
 
 	/** set default properties on the widget */
@@ -85,7 +106,52 @@ export abstract class Widget {
 				this.properties.requirementLevel.toString(),
 			);
 		}
+
+		// TODO maybe kinda hacky to use set timeout here but meh
+		setTimeout(() => this.checkForInputElementEventInit());
 	}
+
+	/// Restricted functionality -----------------------------------------------
+
+	protected getValueEntryDelay(): number {
+		let delay = 0;
+		const inputElem = this.getInputElement();
+		if(inputElem instanceof HTMLTextAreaElement) delay = 0.5;
+		else if (inputElem instanceof HTMLInputElement){
+			if(["text", "email", "url", "password"].includes(inputElem.type)) {
+				delay = 500; // miliseconds
+			}
+		}
+		return delay;
+	}
+
+	protected triggerValueEntered(): void{
+		const inputValue: string = this.getInputValue();
+		this.onEnterValue.triggerEvent(inputValue);
+
+		// expand subfields if applicable and its first time a value is entered
+		if(this.parentField != null && !this.parentFieldsExpanded) {
+			this.parentField.expandSubfields();
+			this.parentFieldsExpanded = true;
+		}
+	}
+
+	protected onInputChange(event: Event): void {
+
+		// cancel previous callback if it exists
+		if(this.inputEntryCallbackID > 0){
+			clearTimeout(this.inputEntryCallbackID);
+			this.inputEntryCallbackID = 0;
+		}
+
+		// trigger valueEntered after a delay
+		setTimeout(() => {
+			this.triggerValueEntered();
+			this.inputEntryCallbackID = 0;
+		}, this.getValueEntryDelay());
+	}
+
+	/// Public functionality ---------------------------------------------------
 
 	/** return the element that the user interacts with for inputing data */
 	public abstract getInputElement(): AnyInputElement;
@@ -97,6 +163,8 @@ export abstract class Widget {
 	public getRequiredInputInstance(): FieldRequirement {
 		return FieldRequirement.getFromElement(this.element);
 	}
+
+	/// Static -----------------------------------------------------------------
 
 	/** map of all registered widgets that are accessible */
 	private static registeredWidgets: Map<string, WidgetType> = new Map();

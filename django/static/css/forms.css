@@ -25,6 +25,18 @@ form .multi-field-row + .multi-field-row {
     margin-top: 10px;
 }
 
+form .multi-field-row .multi-field-part {
+    width: calc(100% - 75px);
+    display: inline-block;
+}
+
+form .multi-field-row button {
+    vertical-align: top;
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 65px;
+}
+
 .widget-dropdown {
     margin: 0;
     padding: 0;

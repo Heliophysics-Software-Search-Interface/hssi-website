@@ -6,6 +6,7 @@ import {
 
 const labelStyle = "custom-label";
 const multiFieldRowStyle = "multi-field-row";
+const multiFieldPartStyle = "multi-field-part";
 const tooltipWrapperStyle = "tooltip-wrapper";
 const tooltipIconStyle = "tooltip-icon";
 const tooltipTextStyle = "tooltip-text";
@@ -311,6 +312,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 
 		// create field
 		const fieldContainer = document.createElement("div") as HTMLDivElement;
+		fieldContainer.classList.add(multiFieldPartStyle);
 		const field = this.createMultifield();
 		field.buildInterface(fieldContainer, false);
 

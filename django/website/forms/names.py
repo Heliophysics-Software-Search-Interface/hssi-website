@@ -2,10 +2,11 @@
 PROP_LABEL = "label"
 PROP_TT_EXPL = "tooltipExplanation"
 PROP_TT_BEST = "tooltipBestPractise"
-
 PROP_WIDGET_PROPS = "widgetProperties"
-PROP_TARGET_MODEL = "targetModel"
-PROP_MODEL_FILTER = "modelFilter"
+
+WPROP_TARGETMODEL = "targetModel"
+WPROP_MODELFILTER = "modelFilter"
+WPROP_DROPDOWNBUTTON = "dropdownButton"
 
 TYPE_CHAR = "CharWidget"
 TYPE_TEXTAREA = "TextAreaWidget"

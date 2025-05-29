@@ -11,7 +11,7 @@ SUBMISSION_FORM_ORGANIZATION: ModelStructure = ModelStructure.define(
 		properties={
 			PROP_LABEL: "Organization",
 			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: Organization.__name__,
+				WPROP_TARGETMODEL: Organization.__name__,
 			},
 		},
 		multi=False,
@@ -25,7 +25,7 @@ SUBMISSION_FORM_ORGANIZATION: ModelStructure = ModelStructure.define(
             PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATIONIDENTIFIER,
             PROP_TT_BEST: TTBEST_AUTHORAFFILIATIONIDENTIFIER,
 			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: Organization.__name__,
+				WPROP_TARGETMODEL: Organization.__name__,
 			},
 		},
 		multi=False,
@@ -43,7 +43,7 @@ SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
 			PROP_TT_BEST: TTBEST_SUBMITTERNAME,
             PROP_WIDGET_PROPS:{
-                PROP_TARGET_MODEL: Person.__name__,
+                WPROP_TARGETMODEL: Person.__name__,
 			},
 		},
 		multi=False,
@@ -72,7 +72,7 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_AUTHORS,
 			PROP_TT_BEST: TTBEST_AUTHORS,
 			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: Person.__name__
+				WPROP_TARGETMODEL: Person.__name__
 			},
 		},
 		multi=False,
@@ -256,7 +256,7 @@ SUBMISSION_FORM_LICENSE: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_LICENSE,
 			PROP_TT_BEST: TTBEST_LICENSE,
 			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: License.__name__,
+				WPROP_TARGETMODEL: License.__name__,
 			},
 		},
 		multi=False,
@@ -274,7 +274,7 @@ SUBMISSION_FORM_AWARD: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_AWARDTITLE,
 			PROP_TT_BEST: TTBEST_AWARDTITLE,
 			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: Award.__name__,
+				WPROP_TARGETMODEL: Award.__name__,
 			},
 		},
 		multi=True,
@@ -308,7 +308,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
 			PROP_TT_BEST: TTBEST_SUBMITTERNAME,
 			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: Submitter.__name__
+				WPROP_TARGETMODEL: Submitter.__name__
 			},
 		},
 		multi=True,
@@ -350,7 +350,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_AUTHORS,
 			PROP_TT_BEST: TTBEST_AUTHORS,
 			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: Person.__name__,
+				WPROP_TARGETMODEL: Person.__name__,
 			},
 		},
 		multi=False,
@@ -414,7 +414,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_PUBLISHER,
 			PROP_TT_BEST: TTBEST_PUBLISHER,
 			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: Organization.__name__,
+				WPROP_TARGETMODEL: Organization.__name__,
 			},
 		},
 		multi=False,
@@ -429,7 +429,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_VERSIONNUMBER,
 			PROP_TT_BEST: TTBEST_VERSIONNUMBER,
 			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: SoftwareVersion.__name__,
+				WPROP_TARGETMODEL: SoftwareVersion.__name__,
 			},
 		},
 		multi=False,
@@ -444,7 +444,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_PROGRAMMINGLANGUAGE,
 			PROP_TT_BEST: TTBEST_PROGRAMMINGLANGUAGE,
 			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: ProgrammingLanguage.__name__,
+				WPROP_TARGETMODEL: ProgrammingLanguage.__name__,
+                WPROP_DROPDOWNBUTTON: True,
 			},
 		},
 		multi=True,
@@ -459,7 +460,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_LICENSE,
 			PROP_TT_BEST: TTBEST_LICENSE,
 			PROP_WIDGET_PROPS: {
-				PROP_TARGET_MODEL: License.__name__,
+				WPROP_TARGETMODEL: License.__name__,
 			},
 		},
 		multi=False,
@@ -547,6 +548,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Development Status",
 			PROP_TT_EXPL: TTEXPL_DEVELOPMENTSTATUS,
 			PROP_TT_BEST: TTBEST_DEVELOPMENTSTATUS,
+            PROP_WIDGET_PROPS: {
+                WPROP_DROPDOWNBUTTON: True,
+			},
 		},
 		multi=False,
 	),
@@ -559,6 +563,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Operating System",
 			PROP_TT_EXPL: TTEXPL_OPERATINGSYSTEM,
 			PROP_TT_BEST: TTBEST_OPERATINGSYSTEM,
+            PROP_WIDGET_PROPS: {
+                WPROP_DROPDOWNBUTTON: True,
+			},
 		},
 		multi=True,
 	),

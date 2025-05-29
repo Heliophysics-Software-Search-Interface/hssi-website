@@ -17,7 +17,7 @@ export const typeAttribute = "data-hssi-type";
 export const targetUuidAttribute = "data-hssi-target-uuid";
 
 export interface BaseProperties extends Record<string, any> {
-	requirementLevel: RequirementLevel;
+	requirementLevel?: RequirementLevel;
 }
 
 export type AnyInputElement = (
@@ -42,10 +42,11 @@ export abstract class Widget {
 	public parentField: ModelSubfield = null;
 
 	/** holds congfiguration properties for the widget */
-	public properties: BaseProperties = {} as any;
+	public properties: BaseProperties = {};
 
 	public constructor(elem: HTMLElement, parentField: ModelSubfield) {
 		this.element = elem;
+		this.element.setAttribute(widgetAttribute, (this as any).constructor.name)
 		this.parentField = parentField;
 		this.properties = this.getDefaultProperties();
 

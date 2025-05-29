@@ -16,6 +16,12 @@ const modelChoicesUrl = "/api/model_choices/";
 
 type ChoicesJsonStructure = { data: [string, string, string[], string?][] }
 
+interface ModelBoxProperties extends BaseProperties {
+    targetModel?: string,
+    modelFilter?: string,
+    dropdownButton?: string,
+}
+
 /// Organizational types -------------------------------------------------------
 
 interface OptionLi extends HTMLLIElement { data: Option; }
@@ -42,6 +48,8 @@ export class ModelBox extends Widget {
     private filteredOptionLIs: OptionLi[] = [];
     private selectedOptionIndex: number = -1;
     private selectedOptionLI: OptionLi = null;
+
+    public properties: ModelBoxProperties = {};
     
     /// Restricted functionality -----------------------------------------------
 
@@ -318,7 +326,9 @@ export class ModelBox extends Widget {
         if(this.properties.dropdownButton){
             this.filterOptionVisibility("");
         }
-        this.showDropdown(!this.properties.dropdownButton);
+        if(this.properties.dropdownButton){
+            this.showDropdown(!this.properties.dropdownButton);
+        }
     }
 
     private onInputFocusOut(focusEvent: FocusEvent): void {

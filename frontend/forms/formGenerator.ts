@@ -16,7 +16,7 @@ type ModelStructureData = {
 }
 
 export class FormGenerator {
-    
+
     private formElement: HTMLFormElement = null;
     private fieldContainer: HTMLDivElement = null;
     private fields: ModelSubfield[] = [];
@@ -52,7 +52,7 @@ export class FormGenerator {
         if(this.formGenerator != null) {
             console.warn("form generator running multiple times on same page");
         }
-        
+
         // if there is no form, return early
         const form = document.querySelector(
             `form[${typeAttribute}=${generatedFormType}]`
@@ -63,7 +63,8 @@ export class FormGenerator {
 
         // load structure data
         if(this.structureData == null) { 
-            const data = await (await fetch(modelStructureUrl)).json();
+            const response = await fetch(modelStructureUrl);
+            const data = await response.json();
             const structureData = data as ModelStructureData;
             this.structureData = structureData;
             ModelFieldStructure.parseBasicWidgetModels();
@@ -103,5 +104,6 @@ export class FormGenerator {
         // apply the singleton instance
         this.formGenerator = generator;
         this.formGenerator.buildForm();
+        
     }
 }

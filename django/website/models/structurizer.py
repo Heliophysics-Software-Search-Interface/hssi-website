@@ -108,14 +108,12 @@ class ModelSubfield:
     def define(
         cls, name: str, type: str, requirement: int, properties: dict, multi: bool
     ) -> 'ModelSubfield':
-        
-        print(properties)
 
         sf = ModelSubfield()
         sf.name = name
         sf.type = type
         sf.requirement = requirement
-        sf.properties = properties,
+        sf.properties = properties
         sf.multi = multi
 
         return sf

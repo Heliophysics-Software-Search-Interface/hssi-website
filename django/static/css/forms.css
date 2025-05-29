@@ -21,7 +21,7 @@ form .custom-label {
     margin-top: 10px;
 }
 
-form .multi-field-part + .multi-field-part {
+form .multi-field-row + .multi-field-row {
     margin-top: 10px;
 }
 

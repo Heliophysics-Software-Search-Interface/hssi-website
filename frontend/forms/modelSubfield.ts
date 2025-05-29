@@ -5,7 +5,7 @@ import {
 } from "../loader";
 
 const labelStyle = "custom-label";
-const multiFieldPartStyle = "multi-field-part";
+const multiFieldRowStyle = "multi-field-row";
 const tooltipWrapperStyle = "tooltip-wrapper";
 const tooltipIconStyle = "tooltip-icon";
 const tooltipTextStyle = "tooltip-text";
@@ -289,7 +289,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 
 	private newItemButton: HTMLButtonElement = null;
 
-	protected getFieldContainer(): HTMLDivElement {
+	protected getRowContainer(): HTMLDivElement {
 		if(this.multiFieldContainerElement == null) this.buildMultiFieldContainer();
 		return this.multiFieldContainerElement;
 	}
@@ -304,10 +304,34 @@ export class ModelMultiSubfield extends ModelSubfield {
 	}
 
 	private buildNewMultifield(): void {
+
+		// create row for button to right of field
+		const multiRow = document.createElement("div") as HTMLDivElement;
+		multiRow.classList.add(multiFieldRowStyle);
+
+		// create field
+		const fieldContainer = document.createElement("div") as HTMLDivElement;
 		const field = this.createMultifield();
-		field.buildInterface(this.getFieldContainer(), false);
-		field.containerElement.classList.add(multiFieldPartStyle);
+		field.buildInterface(fieldContainer, false);
+
+		// create button for removing the field entry
+		const removeButton = document.createElement("button") as HTMLButtonElement;
+		removeButton.type = "button";
+		removeButton.innerText = "- remove";
+
+		// remove on click
+		removeButton.addEventListener("click", () => {
+			const fieldIndex = this.multiFields.indexOf(field);
+			this.multiFields.splice(fieldIndex, 1);
+			field.destroy();
+			multiRow.remove();
+		});
+
+		// add elements to root node
 		this.multiFields.push(field);
+		multiRow.appendChild(fieldContainer);
+		multiRow.appendChild(removeButton);
+		this.getRowContainer().appendChild(multiRow);
 	}
 
 	public buildInterface(

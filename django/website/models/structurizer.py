@@ -122,7 +122,7 @@ class ModelStructure:
     """
     TODO
     """
-    
+
     type_name: str = ""
     top_field: ModelSubfield | None = None
     subfields: list[ModelSubfield] = []
@@ -152,6 +152,26 @@ class ModelStructure:
         structure.subfields = fields_list
 
         return structure
+
+    def split(self, field_name: str, name_left: str, name_right: str) -> list['ModelStructure']:
+        """
+        split the field structure into two, starting at the field with 
+        the specified name
+        """
+        for i, field in enumerate(self.subfields):
+            if field.name == field_name:
+                structure1 = ModelStructure.define(
+                    name_left,
+                    self.top_field,
+                    *self.subfields[0:i],
+                )
+                structure2 = ModelStructure.define(
+                    name_right,
+                    *self.subfields[i:],
+                )
+                return [structure1, structure2]
+
+        return [self]
 
     def serialized(self) -> dict:
         if self.top_field is None:

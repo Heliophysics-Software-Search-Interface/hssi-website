@@ -4,7 +4,9 @@ from django.apps import apps
 from django.http import JsonResponse, HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from ..forms import (
-    SUBMISSION_FORM_FIELDS, SUBMISSION_FORM_OBSERVATORY, SUBMISSION_FORM_AUTHOR, 
+    SUBMISSION_FORM_FIELDS, SUBMISSION_FORM_FIELDS_1, SUBMISSION_FORM_FIELDS_2, 
+    SUBMISSION_FORM_FIELDS_3, SUBMISSION_FORM_FIELDS_AGREEMENT,
+    SUBMISSION_FORM_OBSERVATORY, SUBMISSION_FORM_AUTHOR, 
     SUBMISSION_FORM_AWARD, SUBMISSION_FORM_DATASET, SUBMISSION_FORM_INSTRUMENT,
     SUBMISSION_FORM_LICENSE, SUBMISSION_FORM_ORGANIZATION, 
     SUBMISSION_FORM_PUBLICATION, SUBMISSION_FORM_REL_SOFTWARE, 
@@ -55,8 +57,12 @@ def get_model_structure(request: HttpRequest) -> JsonResponse:
             SUBMISSION_FORM_REL_SOFTWARE.serialized(), 
             SUBMISSION_FORM_SUBMITTER.serialized(), 
             SUBMISSION_FORM_VERSION.serialized(),
+            SUBMISSION_FORM_FIELDS.serialized(),
+            SUBMISSION_FORM_FIELDS_1.serialized(),
+            SUBMISSION_FORM_FIELDS_2.serialized(),
+            SUBMISSION_FORM_FIELDS_3.serialized(),
+            SUBMISSION_FORM_FIELDS_AGREEMENT.serialized(),
         ],
-        SUBMISSION_FORM_FIELDS.serialized(),
     ]}
     return JsonResponse(structures)
 

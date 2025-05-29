@@ -10,6 +10,7 @@ const structureNameData = "fields-structure-name";
 const modelStructureUrl = "/api/model_structure/";
 
 export const formRowStyle = "form-row";
+export const formSeparatorStyle = "form-separator"
 
 type ModelStructureData = {
     data: ModelFieldStructure[],
@@ -31,15 +32,24 @@ export class FormGenerator {
         }
 
         // generate a row for each field
+        let i = 0;
+        const titles: string[] = [
+            "",
+            "Additional Data (click to expand)",
+            "Additional Metadata (click to expand)",
+            "",
+        ];
         for(const field of this.fields) {
             if(field instanceof Array){
-                this.buildFormSection(field, "Test");
+                this.buildFormSection(field, titles.shift(), i > 0 && i < this.fields.length - 1);
+                i++;
                 continue;
             }
             const formRow = document.createElement("div") as HTMLDivElement;
             formRow.classList.add(formRowStyle);
             field.buildInterface(formRow);
             this.fieldContainer.appendChild(formRow);
+            i++;
         }
     }
 
@@ -50,6 +60,7 @@ export class FormGenerator {
     ): void {
 
         const details = document.createElement(collapsible ? "details" : "div");
+        details.classList.add(formSeparatorStyle);
         const summary = document.createElement("summary");
         summary.innerText = title;
         details.appendChild(summary);

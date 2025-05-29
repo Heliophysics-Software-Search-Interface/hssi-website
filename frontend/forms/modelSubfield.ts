@@ -5,6 +5,7 @@ import {
 } from "../loader";
 
 const labelStyle = "custom-label";
+const multiFieldPartStyle = "multi-field-part";
 const tooltipWrapperStyle = "tooltip-wrapper";
 const tooltipIconStyle = "tooltip-icon";
 const tooltipTextStyle = "tooltip-text";
@@ -22,10 +23,10 @@ export class ModelSubfield {
 	public requirement: RequirementLevel = RequirementLevel.OPTIONAL;
 	public properties: PropertyContainer = {};
 	public widget: Widget = null;
+	public containerElement: HTMLDivElement = null;
 
 	private labelElement: HTMLLabelElement = null;
 	private explanationElement: HTMLDivElement = null;
-	protected containerElement: HTMLDivElement = null;
 
 	private subfieldContainer: HTMLDetailsElement = null;
 	private subfields: ModelSubfield[] = [];
@@ -297,6 +298,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 	private buildNewMultifield(): void {
 		const field = this.createMultifield();
 		field.buildInterface(this.getFieldContainer(), false);
+		field.containerElement.classList.add(multiFieldPartStyle);
 		this.multiFields.push(field);
 	}
 

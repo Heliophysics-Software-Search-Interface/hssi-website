@@ -85,4 +85,6 @@ form .multi-field-row button {
 
 [data-hssi-widget="ModelBox"] .dropdown-button {
     border-left: #ccc solid 1px;
+    margin-top: 0;
+    margin-left: 0;
 }

@@ -1,4 +1,5 @@
 <style>
+
   .form-wrapper {
     justify-content: center;
     margin: 120px;
@@ -78,35 +79,18 @@
       display: block;
   }
 </style>
+
 <div class="form-wrapper">
-  <p><h3>Test Form</h3></p>
-  <form method="post">
+  <form method="post" data-hssi-type="generated-form">
     {% csrf_token %}
-
-    {% for field in form %}
-        <div class="form-row">
-            <label for="{{ field.id_for_label }}" class="custom-label">
-                {{ field.label }}
-                <span class="tooltip-wrapper">
-                  <span class="tooltip-icon">i</span>
-                  <div class="tooltip-text">
-                    {{ field.field.tt_best_practice|default:"Enter a value for this field." }}
-                  </div>
-                </span>
-            </label>
-            <div class="explanation-text">
-              {{ field.field.tt_explanation|default:"Enter a value for this field." }}
-            </div>
-            {{ field }} 
-            {% if field.html_name == "field_consent" %}
-              <span style="user-select: none;"> I agree </span>
-            {% endif %}
-            {% if field.errors %}
-                <div class="error">{{ field.errors }}</div>
-            {% endif %}
-        </div>
-    {% endfor %}
-
-    <button type="submit">Submit</button>
+    {% block form_content %}
+    <div class="field-container" data-hssi-type="form-field-container">
+    </div>
+    {% endblock  %}
   </form>
+  {% block field_data %}
+  <script data-hssi-data="fields-structure-name" type="text/plain">
+    {{ structure_name|default:"" }}
+  </script>
+  {% endblock %}
 </div>

@@ -313,7 +313,6 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		},
 		multi=False,
 	),
-
 	# PID
 	ModelSubfield.define(
 		name=FIELD_PERSISTENTIDENTIFIER,
@@ -326,7 +325,6 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		},
 		multi=False,
 	),
-
 	# Code Repo
 	ModelSubfield.define(
 		name=FIELD_CODEREPOSITORYURL,
@@ -339,7 +337,6 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		},
 		multi=False,
 	),
-
 	# Authors
 	ModelSubfield.define(
 		name=FIELD_AUTHORS,
@@ -355,7 +352,6 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		},
 		multi=True,
 	),
-
 	# Software Name
 	ModelSubfield.define(
 		name=FIELD_SOFTWARENAME,

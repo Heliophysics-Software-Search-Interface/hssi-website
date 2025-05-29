@@ -57,7 +57,7 @@ SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
             PROP_TT_EXPL: TTEXPL_SUBMITTEREMAIL,
             PROP_TT_BEST: TTBEST_SUBMITTEREMAIL,
 		},
-        multi=False
+        multi=True
 	),
 )
 
@@ -97,7 +97,7 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
             PROP_TT_EXPL: TTEXPL_AUTHORIDENTIFIER,
             PROP_TT_BEST: TTBEST_AUTHORIDENTIFIER,
 		},
-        multi=False,
+        multi=True,
 	),
 )
 
@@ -311,7 +311,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 				WPROP_TARGETMODEL: Submitter.__name__
 			},
 		},
-		multi=True,
+		multi=False,
 	),
 
 	# PID
@@ -353,7 +353,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 				WPROP_TARGETMODEL: Person.__name__,
 			},
 		},
-		multi=False,
+		multi=True,
 	),
 
 	# Software Name
@@ -477,7 +477,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_KEYWORDS,
 			PROP_TT_BEST: TTBEST_KEYWORDS,
 		},
-		multi=False,
+		multi=True,
 	),
 	# Reference Publication
 	ModelSubfield.define(

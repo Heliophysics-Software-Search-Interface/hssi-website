@@ -142,7 +142,7 @@ export class ModelSubfield {
 	 * subfields if necessary 
 	 */
 	public expandSubfields(): void {
-		if(this.subfieldsExpanded()) return;
+		if(this.subfieldsExpanded() || this.subfieldsHidden()) return;
 		this.onExpandSubfields();
 		this.subfieldContainer.setAttribute("open", "");
 	}
@@ -194,8 +194,16 @@ export class ModelSubfield {
 
 	/** return true if the subfields are expanded and not hidden */
 	public subfieldsExpanded(): boolean {
-		if(this.subfieldContainer.style.display == "none") return false;
+		if(this.subfieldContainer == null) return false; 
+		if(this.subfieldContainer.style.display == "none") return false; 
 		return this.subfieldContainer.hasAttribute("open");
+	}
+
+	public subfieldsHidden(): boolean {
+		return( 
+			this.subfieldContainer == null || 
+			this.subfieldContainer.style.display == "none"
+		);
 	}
 
 	/** 

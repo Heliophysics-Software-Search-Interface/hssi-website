@@ -90,7 +90,8 @@
   </form>
   {% block field_data %}
   <script data-hssi-data="fields-structure-name" type="text/plain">
-    {{ structure_name|default:"" }}
+    {% if structure_name %}"{% endif %}{{ structure_name|default:"" }}{% if structure_name %}"{% endif %}
+    {% if structure_names %}[{% endif %}{% for name in structure_names %}"{{ name }}"{% if forloop.last %}{% else %},{% endif %}{% endfor %}{% if structure_names %}]{% endif %}
   </script>
   {% endblock %}
 </div>

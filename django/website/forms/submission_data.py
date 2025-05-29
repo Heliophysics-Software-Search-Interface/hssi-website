@@ -475,19 +475,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		},
 		multi=True,
 	),
-	# Reference Publication
-	ModelSubfield.define(
-		name=FIELD_REFERENCEPUBLICATION,
-		type=SUBMISSION_FORM_PUBLICATION.type_name,
-		requirement=RequirementLevel.OPTIONAL.value,
-		properties={
-			PROP_LABEL: "Reference Publication",
-			PROP_TT_EXPL: TTEXPL_REFERENCEPUBLICATION,
-			PROP_TT_BEST: TTBEST_REFERENCEPUBLICATION,
-		},
-		multi=False,
-	),
-	# Functionality
+    # Functionality
 	ModelSubfield.define(
 		name=FIELD_SOFTWAREFUNCTIONALITY,
 		type=TYPE_MODELBOX,
@@ -499,19 +487,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		},
 		multi=True,
 	),
-	# Documentation
-	ModelSubfield.define(
-		name=FIELD_DOCUMENTATION,
-		type=TYPE_URL,
-		requirement=RequirementLevel.RECOMMENDED.value,
-		properties={
-			PROP_LABEL: "Documentation",
-			PROP_TT_EXPL: TTEXPL_DOCUMENTATION,
-			PROP_TT_BEST: TTBEST_DOCUMENTATION,
-		},
-		multi=False,
-	),
-	# Data Inputs
+    # Data Inputs
 	ModelSubfield.define(
 		name=FIELD_DATAINPUTS,
 		type=TYPE_MODELBOX,
@@ -534,21 +510,6 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_SUPPORTEDFILEFORMATS,
 		},
 		multi=True,
-	),
-	# Development Status
-	ModelSubfield.define(
-		name=FIELD_DEVELOPMENTSTATUS,
-		type=TYPE_MODELBOX,
-		requirement=RequirementLevel.RECOMMENDED.value,
-		properties={
-			PROP_LABEL: "Development Status",
-			PROP_TT_EXPL: TTEXPL_DEVELOPMENTSTATUS,
-			PROP_TT_BEST: TTBEST_DEVELOPMENTSTATUS,
-            PROP_WIDGET_PROPS: {
-                WPROP_DROPDOWNBUTTON: True,
-			},
-		},
-		multi=False,
 	),
 	# Operating System
 	ModelSubfield.define(
@@ -576,6 +537,45 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_RELATEDREGION,
 		},
 		multi=True,
+	),
+	# Reference Publication
+	ModelSubfield.define(
+		name=FIELD_REFERENCEPUBLICATION,
+		type=SUBMISSION_FORM_PUBLICATION.type_name,
+		requirement=RequirementLevel.OPTIONAL.value,
+		properties={
+			PROP_LABEL: "Reference Publication",
+			PROP_TT_EXPL: TTEXPL_REFERENCEPUBLICATION,
+			PROP_TT_BEST: TTBEST_REFERENCEPUBLICATION,
+		},
+		multi=False,
+	),
+	# Development Status
+	ModelSubfield.define(
+		name=FIELD_DEVELOPMENTSTATUS,
+		type=TYPE_MODELBOX,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Development Status",
+			PROP_TT_EXPL: TTEXPL_DEVELOPMENTSTATUS,
+			PROP_TT_BEST: TTBEST_DEVELOPMENTSTATUS,
+            PROP_WIDGET_PROPS: {
+                WPROP_DROPDOWNBUTTON: True,
+			},
+		},
+		multi=False,
+	),
+	# Documentation
+	ModelSubfield.define(
+		name=FIELD_DOCUMENTATION,
+		type=TYPE_URL,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Documentation",
+			PROP_TT_EXPL: TTEXPL_DOCUMENTATION,
+			PROP_TT_BEST: TTBEST_DOCUMENTATION,
+		},
+		multi=False,
 	),
 	# Funder
 	ModelSubfield.define(
@@ -639,18 +639,6 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		},
 		multi=True,
 	),
-	# Related Instruments
-	ModelSubfield.define(
-		name=FIELD_RELATEDINSTRUMENTS,
-		type=SUBMISSION_FORM_INSTRUMENT.type_name,
-		requirement=RequirementLevel.RECOMMENDED.value,
-		properties={
-			PROP_LABEL: "Related Instruments",
-			PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTS,
-			PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTS,
-		},
-		multi=True,
-	),
 	# Interoperable Software
 	ModelSubfield.define(
 		name=FIELD_INTEROPERABLESOFTWARE,
@@ -660,6 +648,18 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Interpoerable Software",
 			PROP_TT_EXPL: TTEXPL_INTEROPERABLESOFTWARE,
 			PROP_TT_BEST: TTBEST_INTEROPERABLESOFTWARE,
+		},
+		multi=True,
+	),
+	# Related Instruments
+	ModelSubfield.define(
+		name=FIELD_RELATEDINSTRUMENTS,
+		type=SUBMISSION_FORM_INSTRUMENT.type_name,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Related Instruments",
+			PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTS,
+			PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTS,
 		},
 		multi=True,
 	),
@@ -700,3 +700,25 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+
+ # Split the subission form into 3 different sections:
+
+SUBMISSION_FORM_FIELDS_1 = SUBMISSION_FORM_FIELDS.split(
+    FIELD_KEYWORDS,
+    SUBMISSION_FORM_FIELDS.type_name + "_1", ""
+)[0]
+
+SUBMISSION_FORM_FIELDS_2 = SUBMISSION_FORM_FIELDS.split(
+    FIELD_KEYWORDS, "", 
+    SUBMISSION_FORM_FIELDS.type_name + "_2"
+)[1]
+
+SUBMISSION_FORM_FIELDS_3 = SUBMISSION_FORM_FIELDS_2.split(
+    FIELD_RELATEDPUBLICATIONS, "", 
+    SUBMISSION_FORM_FIELDS.type_name + "_3"
+)[1]
+
+SUBMISSION_FORM_FIELDS_AGREEMENT = SUBMISSION_FORM_FIELDS_3.split(
+    "agree", "",
+    SUBMISSION_FORM_FIELDS.type_name + "_agree"
+)[1]

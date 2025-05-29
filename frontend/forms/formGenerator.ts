@@ -19,7 +19,7 @@ export class FormGenerator {
 
     private formElement: HTMLFormElement = null;
     private fieldContainer: HTMLDivElement = null;
-    private fields: ModelSubfield[] = [];
+    private fields: (ModelSubfield | ModelSubfield[])[] = [];
 
     private buildForm(): void {
 
@@ -32,11 +32,36 @@ export class FormGenerator {
 
         // generate a row for each field
         for(const field of this.fields) {
+            if(field instanceof Array){
+                this.buildFormSection(field, "Test");
+                continue;
+            }
             const formRow = document.createElement("div") as HTMLDivElement;
             formRow.classList.add(formRowStyle);
             field.buildInterface(formRow);
             this.fieldContainer.appendChild(formRow);
         }
+    }
+
+    private buildFormSection(
+        fields: ModelSubfield[], 
+        title: string,
+        collapsible: boolean = true,
+    ): void {
+
+        const details = document.createElement(collapsible ? "details" : "div");
+        const summary = document.createElement("summary");
+        summary.innerText = title;
+        details.appendChild(summary);
+
+        for(const field of fields) {
+            const formRow = document.createElement("div") as HTMLDivElement;
+            formRow.classList.add(formRowStyle);
+            field.buildInterface(formRow);
+            details.appendChild(formRow);
+        }
+
+        this.fieldContainer.appendChild(details);
     }
 
     private static formGenerator: FormGenerator = null;
@@ -62,7 +87,7 @@ export class FormGenerator {
         // TODO placeholder form loading icon
 
         // load structure data
-        if(this.structureData == null) { 
+        if(this.structureData == null) {
             const response = await fetch(modelStructureUrl);
             const data = await response.json();
             const structureData = data as ModelStructureData;
@@ -90,12 +115,28 @@ export class FormGenerator {
                     `script[${widgetDataAttribute}=${structureNameData}]`
                 );
             if(dataElement) {
-                const structure = ModelFieldStructure.getFieldStructure(
-                    dataElement.textContent.trim()
-                );
-                const fieldInstance = structure.generateInstance();
-                const fields = [fieldInstance.topField, ...fieldInstance.subFields];
-                generator.fields = fields;
+                const content = JSON.parse(dataElement.textContent.trim());
+                if(content instanceof Array){
+                    const fieldSets: ModelSubfield[] = [];
+                    for(const structureName of content){
+                        const structure = ModelFieldStructure.getFieldStructure(structureName);
+                        if(structure == null){
+                            console.log(`structure is underfined for ${structureName}`);
+                        }
+                        const structInstance = structure.generateInstance();
+                        fieldSets.push([
+                            structInstance.topField, 
+                            ...structInstance.subFields
+                        ] as any);
+                    }
+                    generator.fields = fieldSets as any;
+                }
+                else{
+                    const structure = ModelFieldStructure.getFieldStructure(content);
+                    const fieldInstance = structure.generateInstance();
+                    const fields = [fieldInstance.topField, ...fieldInstance.subFields];
+                    generator.fields = fields;
+                }
             }
             else console.warn("No field data found in form");
         }

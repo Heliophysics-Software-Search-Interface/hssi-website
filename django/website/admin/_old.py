@@ -1,6 +1,7 @@
 import os, uuid
 
 from django import forms
+from django.apps import apps
 from django.conf import settings
 from django.contrib import admin
 from django.db import models
@@ -21,6 +22,7 @@ from ..models import *
 from ..views import migrate_db_old_to_new
 from .. import submissions
 from .csv_export import export_db_csv, import_db_csv
+from .fetch_vocab import JsonldConcept, get_data, get_concepts, MODEL_URL_MAP
 
 from django.db.models import F
 
@@ -55,7 +57,8 @@ class HssiAdminSite(admin.AdminSite):
             path('export_db_new/', view_export_db_new, name='export_db_new'),
             path('import_db_new/', view_import_db_new, name='import_db_new'),
             path('get_metadata/', view_get_metadata, name='get_metadata'),
-            path('migrate_old_to_new/', migrate_db_old_to_new, name="migrate_old_to_new")
+            path('migrate_old_to_new/', migrate_db_old_to_new, name="migrate_old_to_new"),
+            path('fetch_vocab/', fetch_vocab, name="fetch_vocab")
         ] + urls_base[-1:]
         return urls
 
@@ -130,6 +133,28 @@ def view_import_db_new(request: HttpRequest) -> HttpResponse:
         import_db_csv()
     
     # redirect to admin page
+    return redirect('admin:index')
+
+def fetch_vocab(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_superuser: return
+
+    app_label = ControlledList._meta.app_label
+    for model_name, url in MODEL_URL_MAP.items():
+        print(f"fetching vocab for {model_name}..")
+
+        concepts = JsonldConcept.from_concept_json(get_concepts(get_data(url)))
+        model = apps.get_model(app_label, model_name)
+
+        # cache all objects that were here before storing any, so we can remove 
+        # the old ones
+        old_objs = [x for x in model.objects.all()]
+    
+        for concept in concepts:
+            concept.to_model(model)
+
+        # remove old entries
+        for old_obj in old_objs: old_obj.delete()
+
     return redirect('admin:index')
 
 site = HssiAdminSite()

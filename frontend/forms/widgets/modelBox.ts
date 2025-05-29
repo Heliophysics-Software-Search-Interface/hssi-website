@@ -142,7 +142,7 @@ export class ModelBox extends Widget {
             this.inputElement.value = option.name;
             this.inputElement.dispatchEvent(new Event("input", { bubbles: true }));
             this.inputElement.setAttribute(targetUuidAttribute, option.id);
-            this.getRequiredInputInstance().applyValidityStyle();
+            this.getRequiredInputInstance()?.applyValidityStyle();
         }
         else {
             this.inputElement.removeAttribute(targetUuidAttribute);

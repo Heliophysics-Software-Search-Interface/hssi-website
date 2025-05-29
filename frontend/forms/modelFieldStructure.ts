@@ -26,7 +26,7 @@ type ModelFieldStructureInstance = {
 	subFields: ModelSubfield[],
 }
 
-function deepMerge(target: any, source: any): any {
+export function deepMerge(target: any, source: any): any {
 
 	// If either is not an object (or is null), return a clone of source
 	if (

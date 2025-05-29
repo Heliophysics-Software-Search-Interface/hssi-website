@@ -1,4 +1,5 @@
 import {
+	deepMerge,
 	formRowStyle, ModelFieldStructure, RequirementLevel, Widget,
     type PropertyContainer, type SerializedSubfield,
 } from "../loader";
@@ -20,11 +21,11 @@ export class ModelSubfield {
 	public type: ModelFieldStructure = null;
 	public requirement: RequirementLevel = RequirementLevel.OPTIONAL;
 	public properties: PropertyContainer = {};
+	public widget: Widget = null;
 
-	private containerElement: HTMLDivElement = null;
 	private labelElement: HTMLLabelElement = null;
 	private explanationElement: HTMLDivElement = null;
-	private widget: Widget = null;
+	protected containerElement: HTMLDivElement = null;
 
 	private subfieldContainer: HTMLDetailsElement = null;
 	private subfields: ModelSubfield[] = [];
@@ -43,7 +44,7 @@ export class ModelSubfield {
 		this.properties = properties;
 	}
 
-	private buildFieldInfo(): void {
+	protected buildFieldInfo(): void {
 
 		// create the label text
 		this.labelElement = document.createElement("label");
@@ -78,22 +79,22 @@ export class ModelSubfield {
 		}
 	}
 
-	private buildWidget(): void {
+	protected buildWidget(): void {
 		if(!this.type){
 			console.error("Undefined subfield type!", this);
 			return;
 		}
 		const widgetType = this.type.getWidgetType();
 		if(widgetType == null) {
-			console.error(`Unrecognized type on '${this.name}'`, this.type);
+			console.error(`Unrecognized widget type on '${this.name}'`, this.type);
 			return;
 		}
 		this.widget = new widgetType(document.createElement("div"), this);
 		if(this.properties.widgetProperties != null) {
-			this.widget.properties = { 
-				...this.widget.properties, 
-				...this.properties.widgetProperties,
-			}
+			this.widget.properties = deepMerge(
+				this.widget.properties, 
+				this.properties.widgetProperties
+			);
 		}
 		this.widget.properties.requirementLevel = this.requirement;
 		this.widget.initialize();
@@ -205,7 +206,7 @@ export class ModelSubfield {
 	}
 
 	/** get the data that the field has received from user input */
-	public getFieldData(): {[key: string]: any} | string {
+	public getFieldData(): {[key: string]: any} | string | any[] {
 		if(!this.hasSubfields()) {
 			return this.widget?.getInputValue() ?? "";
 		}
@@ -221,12 +222,14 @@ export class ModelSubfield {
 	 * field for the db model
 	 * @param targetDiv the target container to build the ui inside of
 	 */
-	public buildInterface(targetDiv: HTMLDivElement): void {
+	public buildInterface(
+		targetDiv: HTMLDivElement, 
+		buildFieldInfo: boolean = true,
+	): void {
 		this.containerElement = document.createElement("div");
 
-		this.buildFieldInfo();
+		if(buildFieldInfo) this.buildFieldInfo();
 		this.buildWidget();
-
 		this.buildSubfieldContainer();
 
 		targetDiv.appendChild(this.containerElement);
@@ -271,4 +274,83 @@ export class ModelSubfield {
 
 export class ModelMultiSubfield extends ModelSubfield {
 	public get multi(): boolean { return true; }
+
+	private multiFieldContainerElement: HTMLDivElement = null;
+	private multiFields: ModelSubfield[] = [];
+
+	private newItemButton: HTMLButtonElement = null;
+
+	protected getFieldContainer(): HTMLDivElement {
+		if(this.multiFieldContainerElement == null) this.buildMultiFieldContainer();
+		return this.multiFieldContainerElement;
+	}
+	
+	private createMultifield(): ModelSubfield {
+		return new ModelSubfield(
+			this.name, 
+			this.type, 
+			this.requirement, 
+			this.properties
+		);
+	}
+
+	private buildNewMultifield(): void {
+		const field = this.createMultifield();
+		field.buildInterface(this.getFieldContainer(), false);
+		this.multiFields.push(field);
+	}
+
+	public buildInterface(
+		targetDiv: HTMLDivElement, 
+		buildFieldInfo: boolean = true
+	): void {
+		this.containerElement = document.createElement("div");
+
+		if(buildFieldInfo) this.buildFieldInfo();
+		this.buildMultiFieldContainer();
+		this.buildNewMultifield();
+		this.buildNewItemButton();
+
+		targetDiv.appendChild(this.containerElement);
+	}
+
+	public destroy(): void {
+		super.destroy();
+		this.multiFields.length = 0;
+		this.multiFieldContainerElement = null;
+		this.newItemButton = null;
+	}
+
+	private buildMultiFieldContainer(): void {
+
+		// this has the potential to be built multiple times so its important 
+		// to check it hasn't already been built
+		if(this.multiFieldContainerElement != null) return;
+
+		this.multiFieldContainerElement = document.createElement("div");
+		this.containerElement.appendChild(this.multiFieldContainerElement);
+	}
+
+	private buildNewItemButton(): void{
+		this.newItemButton = document.createElement("button");
+		this.newItemButton.type = "button";
+		this.newItemButton.innerText = "+ add";
+		this.newItemButton.addEventListener(
+			"click", () => this.onNewItemPressed()
+		);
+		this.containerElement.appendChild(this.newItemButton);
+	}
+
+	private onNewItemPressed(): void {
+		this.buildNewMultifield();
+	}
+
+	public getFieldData(): { [key: string]: any; } | string | any[] {
+		const arr: any[] = [];
+		for(const field of this.multiFields) {
+			const fieldVal = field.getFieldData();
+			if(fieldVal != null && fieldVal !== "") arr.push(fieldVal);
+		}
+		return arr;
+	}
 }

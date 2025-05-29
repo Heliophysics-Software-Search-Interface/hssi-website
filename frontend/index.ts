@@ -4,8 +4,7 @@
 
 import { 
 	FieldRequirement, CharWidget, NumberWidget, UrlWidget, EmailWidget, 
-	DateWidget, TextAreaWidget, CheckboxWidget, Widget, ModelBox, 
-	ModelObjectSelector, FormGenerator,
+	DateWidget, TextAreaWidget, CheckboxWidget, Widget, ModelBox, FormGenerator,
 } from "./loader";
 
 function main() {
@@ -20,7 +19,6 @@ function main() {
 		CheckboxWidget,
 		TextAreaWidget,
 		ModelBox,
-		ModelObjectSelector,
 	)
 
 	// generate the forms

@@ -9,7 +9,7 @@ from ..forms import (
 def submit_resource(request):
     return render(
         request, 
-        "pages/model_form.html", 
+        "pages/submit.html", 
         { 
             "structure_names": [
                 SUBMISSION_FORM_FIELDS_1.type_name,

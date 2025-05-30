@@ -472,6 +472,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Keywords",
 			PROP_TT_EXPL: TTEXPL_KEYWORDS,
 			PROP_TT_BEST: TTBEST_KEYWORDS,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: Keyword.__name__,
+			},
 		},
 		multi=True,
 	),
@@ -484,6 +487,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Software Functionality",
 			PROP_TT_EXPL: TTEXPL_SOFTWAREFUNCTIONALITY,
 			PROP_TT_BEST: TTBEST_SOFTWAREFUNCTIONALITY,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: Functionality.__name__,
+			},
 		},
 		multi=True,
 	),
@@ -496,6 +502,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Data Inputs",
 			PROP_TT_EXPL: TTEXPL_DATAINPUTS,
 			PROP_TT_BEST: TTBEST_DATAINPUTS,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: DataInput.__name__,
+			},
 		},
 		multi=True,
 	),
@@ -508,6 +517,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Supported File Formats",
 			PROP_TT_EXPL: TTEXPL_SUPPORTEDFILEFORMATS,
 			PROP_TT_BEST: TTBEST_SUPPORTEDFILEFORMATS,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: FileFormat.__name__,
+			},
 		},
 		multi=True,
 	),
@@ -521,6 +533,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_OPERATINGSYSTEM,
 			PROP_TT_BEST: TTBEST_OPERATINGSYSTEM,
             PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: OperatingSystem.__name__,
                 WPROP_DROPDOWNBUTTON: True,
 			},
 		},
@@ -535,6 +548,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Region",
 			PROP_TT_EXPL: TTEXPL_RELATEDREGION,
 			PROP_TT_BEST: TTBEST_RELATEDREGION,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: Region.__name__,
+			},
 		},
 		multi=True,
 	),
@@ -560,6 +576,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_DEVELOPMENTSTATUS,
 			PROP_TT_BEST: TTBEST_DEVELOPMENTSTATUS,
             PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: RepoStatus.__name__,
                 WPROP_DROPDOWNBUTTON: True,
 			},
 		},
@@ -586,6 +603,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Funder",
 			PROP_TT_EXPL: TTEXPL_FUNDER,
 			PROP_TT_BEST: TTBEST_FUNDER,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: Organization.__name__,
+			},
 		},
 		multi=False,
 	),
@@ -598,6 +618,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Award Title",
 			PROP_TT_EXPL: TTEXPL_AWARDTITLE,
 			PROP_TT_BEST: TTBEST_AWARDTITLE,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: Award.__name__,
+			},
 		},
 		multi=True,
 	),
@@ -612,6 +635,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Publications",
 			PROP_TT_EXPL: TTEXPL_RELATEDPUBLICATIONS,
 			PROP_TT_BEST: TTBEST_RELATEDPUBLICATIONS,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: RelatedItem.__name__,
+			},
 		},
 		multi=True,
 	),
@@ -624,6 +650,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Datasets",
 			PROP_TT_EXPL: TTEXPL_RELATEDDATASETS,
 			PROP_TT_BEST: TTBEST_RELATEDDATASETS,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: RelatedItem.__name__,
+			},
 		},
 		multi=True,
 	),
@@ -636,6 +665,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Software",
 			PROP_TT_EXPL: TTEXPL_RELATEDSOFTWARE,
 			PROP_TT_BEST: TTBEST_RELATEDSOFTWARE,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: RelatedItem.__name__,
+			},
 		},
 		multi=True,
 	),
@@ -648,6 +680,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Interpoerable Software",
 			PROP_TT_EXPL: TTEXPL_INTEROPERABLESOFTWARE,
 			PROP_TT_BEST: TTBEST_INTEROPERABLESOFTWARE,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: RelatedItem.__name__,
+			},
 		},
 		multi=True,
 	),
@@ -660,6 +695,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Instruments",
 			PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTS,
 			PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTS,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: InstrumentObservatory.__name__,
+			},
 		},
 		multi=True,
 	),
@@ -672,6 +710,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Observatories",
 			PROP_TT_EXPL: TTEXPL_RELATEDOBSERVATORIES,
 			PROP_TT_BEST: TTBEST_RELATEDOBSERVATORIES,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: InstrumentObservatory.__name__,
+			},
 		},
 		multi=True,
 	),

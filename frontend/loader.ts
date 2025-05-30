@@ -15,4 +15,5 @@ export * from "./forms/widgets/modelBox";
 
 export * from "./forms/modelFieldStructure";
 export * from "./forms/modelSubfield";
+export * from "./forms/modelMultisubfield";
 export * from "./forms/formGenerator";

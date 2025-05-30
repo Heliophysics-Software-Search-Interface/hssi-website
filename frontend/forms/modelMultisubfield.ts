@@ -17,6 +17,8 @@ export class ModelMultiSubfield extends ModelSubfield {
 	private multiFields: ModelSubfield[] = [];
 	private newItemButton: HTMLButtonElement = null;
 
+	public get multi(): boolean { return true; }
+
 	protected getRowContainer(): HTMLDivElement {
 		if(this.multiFieldContainerElement == null) this.buildMultiFieldContainer();
 		return this.multiFieldContainerElement;
@@ -58,6 +60,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 			this.multiFields.splice(fieldIndex, 1);
 			field.destroy();
 			multiRow.remove();
+			this.requirement.applyRequirementWarningStyles();
 		});
 
 		// add elements to root node

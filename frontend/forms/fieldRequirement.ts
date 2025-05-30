@@ -24,6 +24,7 @@ export class FieldRequirement {
 
 	private _focusEnterListener: Function = null;
 	private _focusExitListener: Function = null;
+	private _eventTarget: HTMLElement = null;
 
 	public field: ModelSubfield = null;
 	public containerElement: HTMLElement = null;
@@ -55,9 +56,10 @@ export class FieldRequirement {
 		};
 		this._focusEnterListener = focusIn;
 		this._focusExitListener = focusout;
-
+		
 		this.containerElement.addEventListener("focusin", focusIn);
 		this.containerElement.addEventListener("focusout", focusout);
+		this._eventTarget = this.containerElement;
 	}
 
 	private createNoteElement(): void {
@@ -108,14 +110,14 @@ export class FieldRequirement {
 
 		// remove event listeners
 		if(this._focusEnterListener != null) {
-			this.containerElement.removeEventListener(
+			this._eventTarget.removeEventListener(
 				"focusin", 
 				this._focusEnterListener as any
 			);
 			this._focusEnterListener = null;
 		}
 		if(this._focusExitListener != null){
-			this.containerElement.removeEventListener(
+			this._eventTarget.removeEventListener(
 				"focusout", 
 				this._focusExitListener as any
 			);

@@ -222,6 +222,10 @@ export class ModelSubfield {
 		if(this.containerElement != null){
 			this.containerElement.remove();
 		}
+		if(this.requirement != null && !this.requirement.field.multi){
+			this.requirement.destroy();
+			this.requirement = null;
+		}
 		this.widget = null;
 		this.containerElement = null;
 		this.labelElement = null;

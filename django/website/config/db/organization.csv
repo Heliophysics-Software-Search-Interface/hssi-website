@@ -1,5 +1,1 @@
-id,name,abbreviation,type,website,identifier,parent_organization
-fb746b02-13e8-448a-8d33-812960261e76,National Aeronautics and Space Administration,NASA,4,https://www.nasa.gov/,https://ror.org/027ka1x80,
-97b7d0ea-56cc-4540-af08-cca04621142c,National Aeronautics and Space Administration - Goddard Space Flight Center,NASA - GSFC,4,https://www.nasa.gov/goddard/,https://ror.org/0171mag52,fb746b02-13e8-448a-8d33-812960261e76
-cf08fd54-7e03-49dc-99ec-0de99479d198,NumFocus,,6,,https://ror.org/004eyxv41,
-f80f0d02-9490-48f9-a477-e5ac5b38c79b,Zenodo,,3,https://zenodo.org/,https://zenodo.org/,
+id,name,abbreviation,website,identifier,parent_organization

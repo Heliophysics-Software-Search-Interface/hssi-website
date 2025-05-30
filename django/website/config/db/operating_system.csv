@@ -1,5 +1,1 @@
-id,name
-e15f9b0f-d7b9-45c5-9720-a49740f0e228,Linux
-626f1090-6473-42a9-b167-92afe3ad3b92,MacOS
-17202645-d43d-4bdc-aec3-9da12beab776,OS Independent
-c92fea32-b3ee-4f66-b3c6-9bd80012a856,Windows
+id,name,identifier,definition

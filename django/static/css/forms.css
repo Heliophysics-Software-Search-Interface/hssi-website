@@ -1,0 +1,213 @@
+form details.form-separator {
+    margin-top: 15px;
+    border-top: #3338 solid 2px;
+}
+
+form .form-separator > summary {
+    font-size: large;
+    user-select: none;
+}
+
+form div.form-separator > summary::marker {
+    content: none;
+}
+
+form .indent {
+    padding-left: 30px;
+}
+
+form .form-row details summary{
+    list-style: none;
+    height: 20px;
+    min-width: 20px;
+    position: absolute;
+    cursor: pointer;
+    left: -25px;
+    top: -30px;
+}
+
+form .form-row details>summary::after{
+    content: "▸";
+    position: relative;
+    right: -10px;
+    top: 0px;
+}
+
+form .form-row details[open]>summary::after{
+    content: "▼";
+    right: -8px;
+    top: 1px;
+}
+
+form .form-row details {
+    box-sizing: border-box;
+    position: relative;
+    box-shadow: 0px 2px 5px #3333;
+    border-left: solid 2px transparent;
+}
+
+form .form-row details[open] {
+    box-sizing: border-box;
+    border-color: #333;
+    padding: 10px;
+}
+
+form .form-row details[open].indent {
+    padding-left: 25px;
+}
+
+form .form-row {
+    margin-top: 10px;
+}
+
+form .multi-field-row + .multi-field-row {
+    margin-top: 10px;
+}
+
+form .multi-field-row .multi-field-part {
+    width: calc(100% - 40px);
+    display: inline-block;
+}
+
+form button {
+    cursor: pointer;
+    padding: 5px;
+    margin: 5px;
+    box-shadow: 0px 2px 5px #3333;
+}
+
+form .multi-field-row>button {
+    vertical-align: top;
+    margin-top: 5px;
+    margin-left: 10px;
+    width: 25px;
+    height: 25px;
+    color: orangered;
+    margin-right: 0;
+    box-sizing: border-box;
+}
+
+.widget-dropdown {
+    margin: 0;
+    padding: 0;
+    max-height: 200px;
+    border: 1px solid #ccc;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.widget-dropdown ul {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.widget-dropdown li {
+    padding: 8px;
+    padding-left: 16px;
+    cursor: pointer;
+}
+
+.widget-dropdown li.selected {
+    background:rgb(154, 181, 255);
+}
+
+.widget-tooltip {
+    display: none;
+    position: absolute;
+    background: #333;
+    color: white;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    white-space: normal;
+    max-width: 500px;
+    width: max-content;
+    top: 100%;
+    left: 0;
+    z-index: 2000;
+    pointer-events: none;
+}
+
+[data-hssi-widget="ModelBox"] {
+    position: relative;
+}
+
+[data-hssi-widget="ModelBox"] .dropdown-button {
+    border-left: #ccc solid 1px;
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+    box-shadow: none;
+}
+
+
+.form-wrapper {
+    justify-content: center;
+    margin: 120px;
+    padding: 25px;
+    margin-top: 0;
+}
+@media (max-width: 800px) {
+    .form-wrapper {
+        margin: 0;
+    }
+}
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+.invalid-mandatory {
+    border: 2px solid red;
+}
+.invalid-mandatory.note {
+    border: 0;
+    color: red;
+    display: block;
+    font-size: 0.8em;
+    user-select: none;
+}
+.invalid-recommended {
+    border: 2px solid orange;
+}
+.invalid-recommended.note {
+    border: 0;
+    color: darkorange;
+    display: block;
+    font-size: 0.8em;
+    user-select: none;
+}
+.tooltip-wrapper {
+    position: relative;
+    display: inline-block;
+}
+.tooltip-icon {
+    color: #72a7cf;
+    display: inline-block;
+    font-size: larger;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.tooltip-text {
+    display: none;
+    position: absolute;
+    background: #333;
+    color: white;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    white-space: normal;
+    max-width: 500px;
+    width: max-content;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+}
+.explanation-text {
+    font-size: smaller;
+    opacity: 50%;
+}
+.tooltip-icon:hover + .tooltip-text {
+    display: block;
+}

@@ -1,26 +1,11 @@
-{% extends 'site_base_template.html' %}
+{% extends 'pages/forms_base.html' %}
 
 {% load static %}
 
-{% load crispy_forms_tags %}
-
 {% block head %}
-
-    <link rel="stylesheet" href="{% static 'css/submissions.css' %}?v=2024-10-15" />
-    
-    <!-- 
-        We must create our own shared header scripts and css files for new form, since
-        none of this works for the new submission form, it was for legacy EMAC form:
-        
-    <script type="text/javascript" src="{% static 'js/categoryRendering.js' %}?v=2024-10-15"></script>
-    <script type="text/javascript" src="{% static 'js/submissions.js' %}?v=2024-10-15"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            rerenderCategoriesHierarchically('{{ category_hierarchy_json|safe }}', '{{ category_names_by_id_json|safe }}', '{{ selected_category_ids_json|safe }}');
-        });
-    </script>
-    -->
-  
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/submissions.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}" />
 {% endblock %}
 
 {% block title %}Resource Submission{% endblock %}
@@ -29,10 +14,31 @@
 
     <div class="small-12 container submission_form">
         <h3 class="page_title">Resource Submission</h3>
-        <p class="submission-text">This page allows developers to submit their model, tool, or resource for inclusion within the Heliophysics Software Search Interface website. Use the form below to let us know about your tool, including it's name, a brief description, the developers, what categories the resource falls under, and any relevant links, images, or credits that you'd like us to include.</p>
-        <p class="submission-text">After you submit your resource, a member of our team will be in touch to discuss a plan for including it on the site.</p>
-        <p class="submission-text"><span class="submission-note">NOTE:</span> All web-based submissions are expected to conform to <a href="https://www.w3.org/standards/" target="_blank">W3C standards</a>, must pass the W3C <a href="https://validator.w3.org" target="_blank">Markup</a> and <a href="https://jigsaw.w3.org/css-validator/" target="_blank">CSS</a> validation services, and must support all major cross-platform browsers (sc. <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> and <a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a>).</p>
-        {% include "forms/submission_base.html" with form=form %}
+        <p class="submission-text">
+            This page allows developers to submit their software for inclusion 
+            within the Heliophysics Software Search Interface website. Use the 
+            form below to let us know about your tool, including it's name, 
+            a brief description, the developers, what categories the resource 
+            falls under, and any relevant links, images, or credits that you'd 
+            like us to include.
+        </p>
+        <p class="submission-text">
+            After you submit your resource, a member of our team will be in 
+            touch to discuss a plan for including it on the site.
+        </p>
+        <p class="submission-text">
+            <span class="submission-note">NOTE:</span> 
+            All web-based submissions are expected to conform to 
+            <a href="https://www.w3.org/standards/" target="_blank">W3C standards</a>, 
+            must pass the W3C 
+            <a href="https://validator.w3.org" target="_blank">Markup</a> and 
+            <a href="https://jigsaw.w3.org/css-validator/" target="_blank">CSS</a> 
+            validation services, and must support all major cross-platform 
+            browsers (sc. 
+            <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> and 
+            <a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a>).
+        </p>
+        {% include "forms/model_base.html" %}
     </div>
 
 {% endblock %}

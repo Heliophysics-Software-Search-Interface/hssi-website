@@ -1,5 +1,5 @@
-id,name,version,organization
-591dc0e6-3562-4b79-ab00-2c8e30480cfb,C,,
-d345bb3e-aae2-411b-889c-3caf29d2b619,Fortran,,
-51461f15-7e1e-40cd-b9d2-b0aa34694154,Jupyter Notebook,,
-9a53f850-90e4-463a-8aef-f7f088a0253a,Python,,
+id,name,identifier,definition,version
+9566148b-3c9a-4a4b-ae3c-de0ddc11835f,C,,,
+747b6f9c-fe3a-4513-912a-d61544662c34,Fortran,,,
+9fc66613-d93e-4efe-83f6-831eba40916e,Jupyter Notebook,,,
+cfc9ccd9-0e2c-40ef-8fef-9cbba5349440,Python,,,

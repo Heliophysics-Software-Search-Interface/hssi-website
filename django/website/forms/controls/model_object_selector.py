@@ -3,20 +3,9 @@ from django import forms
 
 from enum import Enum
 from typing import NamedTuple, Type
-from ..models import HssiModel
 
-## Utility ---------------------------------------------------------------------
-
-class RequirementLevel(Enum):
-    OPTIONAL = 0
-    RECOMMENDED = 1
-    MANDATORY = 2
-
-    def __str__(self) -> str: return str(self.value)
-
-REQ_LVL_ATTR = "data-hssi-required"
-
-## Combo box -------------------------------------------------------------------
+from ...util import RequirementLevel, REQ_LVL_ATTR
+from ...models import HssiModel
 
 class ModelObjectChoice(NamedTuple):
     id: str
@@ -29,6 +18,7 @@ class ModelObjectSelector(forms.TextInput):
     allows the user to easily select one or multiple of the 
     instances of the model that the modelbox is associated with
     """
+    
     attrs: dict | None
     template_name: str = 'widgets/model_object_selector.html'
     model: Type[HssiModel] | None = None
@@ -108,15 +98,15 @@ class ModelObjectSelector(forms.TextInput):
         context = super().get_context(name, value, attrs)
 
         properties: dict = {
-            'requirement_level': self.requirement_level.value,
-            'case_sensitive_filtering': self.case_sensitive_filtering,
-            'multi_select': self.multi_select,
-            'filter_on_focus': self.filter_on_focus,
-            'dropdown_button': self.dropdown_button,
-            'dropdown_on_focus': self.dropdown_on_focus,
-            'dropdown_on_blank': self.dropdown_on_blank,
-            'option_tooltips': self.option_tooltips,
-            'new_object_field': self.new_object_field,
+            'requirementLevel': self.requirement_level.value,
+            'caseSensitiveFiltering': self.case_sensitive_filtering,
+            'multiSelect': self.multi_select,
+            'filterOnFocus': self.filter_on_focus,
+            'dropdownButton': self.dropdown_button,
+            'dropdownOnFocus': self.dropdown_on_focus,
+            'dropdownOnBlank': self.dropdown_on_blank,
+            'optionTooltips': self.option_tooltips,
+            'newObjectField': self.new_object_field,
         }
         context['widget']['properties'] = properties
         context['widget']['properties_json'] = json.dumps(properties)

@@ -24,6 +24,7 @@ export class FieldRequirement {
 
 	private _focusEnterListener: Function = null;
 	private _focusExitListener: Function = null;
+	private _mouseupListener: Function = null;
 	private _eventTarget: HTMLElement = null;
 
 	public field: ModelSubfield = null;
@@ -98,6 +99,27 @@ export class FieldRequirement {
 		this.noteElement.style.display = "none";
 	}
 
+	private applyStyles(): void {
+
+		// add invalid style
+		let className = "";
+		switch(this.level) {
+			case RequirementLevel.RECOMMENDED: className = invalidRecStyle; break;
+			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
+			default: return;
+		}
+
+		// add class to required element/container if applicable
+		this.getStyledElement().classList.add(className);
+		this.noteElement.classList.add(className);
+		this.noteElement.style.display = "block";
+		this.noteElement.innerText = this.getNoteText();
+	}
+
+	private hasFocus(): boolean {
+		return this._eventTarget.contains(document.activeElement);
+	}
+
 	/// Public methods ---------------------------------------------------------
 
 	/** returns the element that the invalid-* class style is applied to */
@@ -135,8 +157,8 @@ export class FieldRequirement {
 	 * it if it shouldn't be there 
 	 */
 	public applyRequirementWarningStyles(): void{
-		this.onFocusEnter(null);
-		this.onFocusExit(null);
+		if(this.field.hasValidInput()) this.removeStyles();
+		else this.applyStyles();
 	}
 
 	/// Event listeners --------------------------------------------------------
@@ -150,22 +172,18 @@ export class FieldRequirement {
 
 		// TODO apply styles on mouseup instead of here
 
-		// no need to add invalid styles if it is filled out
-		if(this.field.hasValidInput()) return;
-
-		// add invalid style
-		let className = "";
-		switch(this.level) {
-			case RequirementLevel.RECOMMENDED: className = invalidRecStyle; break;
-			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
-			default: return;
+		if(this._mouseupListener != null){
+			window.removeEventListener("mouseup", this._mouseupListener as any);
 		}
 
-		// add class to required element/container if applicable
-		this.getStyledElement().classList.add(className);
-		this.noteElement.classList.add(className);
-		this.noteElement.style.display = "block";
-		this.noteElement.innerText = this.getNoteText();
+		const mouseup = (e: MouseEvent) => {
+			if(!this.hasFocus()) this.applyRequirementWarningStyles();
+			window.removeEventListener("mouseup", this._mouseupListener as any);
+			this._mouseupListener = null;
+		};
+
+		window.addEventListener("mouseup", mouseup)
+		this._mouseupListener = mouseup;
 	}
 
 	/// Static properties ------------------------------------------------------

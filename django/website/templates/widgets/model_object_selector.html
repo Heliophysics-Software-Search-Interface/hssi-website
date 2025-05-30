@@ -1,123 +1,22 @@
-{% load unique_id %}
-{% unique_id "modelbox" as uid %}
-
-{% block widget_style %}
-<style>
-  .modelbox-container {
-    position: relative;
-  }
+{% comment %}
+  {% load unique_id %}
+  {% unique_id "modelbox" as uid %}
+{% endcomment %}
   
-  .modelbox-options {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    max-height: 200px;
-    overflow-y: auto;
-    background: white;
-    border: 1px solid #ccc;
-    border-top: none;
-    z-index: 1000;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  .modelbox-option-tooltip {
-    display: none;
-    position: absolute;
-    background: #333;
-    color: white;
-    padding: 6px 8px;
-    border-radius: 4px;
-    font-size: 0.9em;
-    white-space: normal;
-    max-width: 500px;
-    width: max-content;
-    top: 100%;
-    left: 0;
-    z-index: 2000;
-    pointer-events: none;
-  }
-
-  .modelbox-option-tooltip::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left:-6px;
-    border-width: 6px;
-    border-style: solid;
-    border-color: transparent #333 transparent transparent;
-  }
-
-  .modelbox-options li {
-    padding: 8px;
-    cursor: pointer;
-    position: relative;
-    display: inline-block;
-  }
-  
-  .modelbox-options li:hover {
-    background:rgb(154, 181, 255);
-  }
-
-  .modelbox-options li.highlighted {
-    background:rgb(154, 181, 255);
-  }
-</style>
-{% endblock %}
-
 <div 
   class="modelbox-container" 
-  data-hssi-widget="ModelObjectSelector"
+  data-hssi-widget="ModelBox"
   data-hssi-uid="{{ uid }}"
 >
-<div>
-    {% block input_element %}
-    <div style="position: relative; display: block;">
-      <input 
-        type="search" 
-        autocomplete="off"
-        autocorrect="off"
-        name="{{ widget.name }}" 
-        value=""
-        {% include "django/forms/widgets/attrs.html" %}
-        class="modelbox-input {{ uid }}-input"
-      >
-      <button 
-        type="button"
-        style="
-        position:absolute;
-        right: 0;
-        top: 0;
-        translateY(-50%);
-        height: 100%;
-        aspect-ratio: 1;
-        border-left: #ccc solid 1px;
-        "
-        class="dropdown-btn {{ uid }}-dropdown-btn"
-        data-hssi-type="dropdown-button"
-      >▼</button>
-    </div>
-    {% endblock %}
-  </div>
-  {% block aux_element %}
-  <ul 
-    class="modelbox-options {{ uid }}-options" 
-    style="display: none;"
-  > </ul>
+  {% block input_element %}
+  {% endblock %}
+  {% block aux_elements %}
   {% endblock %}
   {% block widget_data %}
-  <div 
-    class="modelbox-option-tooltip modelbox-op-tt-{{ uuid }}" 
-    data-hssi-type="option-tooltip"
-  > option tooltip </div>
-  <script type="application/json" data-hssi-type="json-properties">
+  <script type="application/json" data-hssi-data="json-properties">
     {{ widget.properties_json|safe }}
   </script>
-  <script type="application/json" data-hssi-type="json-choices">
+  <script type="application/json" data-hssi-data="json-options">
     {{ widget.choices_json|safe }}
   </script>
   {% endblock %}

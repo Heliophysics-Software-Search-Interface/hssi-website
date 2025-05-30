@@ -1,0 +1,19 @@
+{% extends 'pages/forms_base.html' %}
+
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/submissions.css' %}" />
+{% endblock %}
+
+{% block title %}&#39;{{ structure_name|default:"Anonymous" }}&#39; Form{% endblock %}
+
+{% block page_content %}
+
+    <div class="small-12 container submission_form">
+        <h3 class="page_title">&#39;{{ structure_name|default:"Anonymous" }}&#39; Model Form</h3>
+        {% include "forms/model_base.html" %}
+    </div>
+
+{% endblock %}

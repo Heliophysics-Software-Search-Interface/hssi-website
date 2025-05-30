@@ -1,7 +1,5 @@
 /** */
 
-import { Widget } from "../loader";
-
 export const requirementAttribute = "data-hssi-required";
 export const requirementAttributeContainer = "data-hssi-required-container";
 
@@ -18,6 +16,12 @@ export enum RequirementLevel {
 	MANDATORY = 2,
 }
 
+const acceptableInputElementQueries = [
+	"input",
+	"textarea",
+	"select",
+];
+
 interface FormElement extends HTMLElement {
 	required: boolean;
 	type: string;
@@ -25,7 +29,7 @@ interface FormElement extends HTMLElement {
 	checkValidity: () => boolean;
 }
 
-export class RequiredInput {
+export class FieldRequirement {
 
 	public element: FormElement = null;
 	public elementContainer: HTMLElement = null;
@@ -106,8 +110,10 @@ export class RequiredInput {
 			case RequirementLevel.RECOMMENDED: className = invalidRecStyle; break;
 			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
 		}
-		this.getStyledElement().classList.remove(className);
-		this.noteElement.classList.remove(className);
+		if(className.length > 0){
+			this.getStyledElement().classList.remove(className);
+			this.noteElement.classList.remove(className);
+		}
 		this.noteElement.style.display = "none";
 	}
 
@@ -137,10 +143,10 @@ export class RequiredInput {
 	 * contains all required widgets in a given form with a requirement level 
 	 * greater than OPTIONAL
 	*/
-	private static all: RequiredInput[] = [];
+	private static all: FieldRequirement[] = [];
 
 	/** map applicable elements to their corresponding required input object */
-	private static elementMap: Map<HTMLElement, RequiredInput> = new Map();
+	private static elementMap: Map<HTMLElement, FieldRequirement> = new Map();
 
 	/// Static methods ---------------------------------------------------------
 
@@ -167,7 +173,7 @@ export class RequiredInput {
 
 			const elemReqLvl = Number.parseInt(elem.getAttribute(requirementAttribute));
 			if(elemReqLvl > RequirementLevel.OPTIONAL) {
-				const reqIn = new RequiredInput(elem as FormElement, elemReqLvl);
+				const reqIn = new FieldRequirement(elem as FormElement, elemReqLvl);
 				this.all.push(reqIn);
 				this.elementMap.set(elem, reqIn);
 			}
@@ -178,21 +184,30 @@ export class RequiredInput {
 		for(const container of containers) {
 			if(!(container instanceof HTMLElement)) continue;
 
-			const elem = container.querySelector(`input`);
-			if(!elem) throw new Error("No input found in container with requirement attribute");
+			// find an acceptable element to consider the field input element
+			let elem: HTMLElement = null;
+			for(const query of acceptableInputElementQueries){
+				if(elem) break;
+				elem = container.querySelector(query);
+			}
+
+			// error if no acceptable input element was found
+			if(!elem) {
+				console.log(container);
+				throw new Error("No input found in container with requirement attribute");
+			}
+
+			// create the field requirement object and register it
 			const elemReqLvl = Number.parseInt(
 				container.getAttribute(requirementAttributeContainer)
 			);
-
-			if(elemReqLvl > RequirementLevel.OPTIONAL) {
-				const reqIn = new RequiredInput(
-					elem as FormElement, 
-					elemReqLvl, 
-					container as HTMLElement
-				)
-				this.all.push(reqIn);
-				this.elementMap.set(container, reqIn);
-			}
+			const reqIn = new FieldRequirement(
+				elem as FormElement, 
+				elemReqLvl, 
+				container as HTMLElement
+			)
+			this.all.push(reqIn);
+			this.elementMap.set(container, reqIn);
 		}
 	}
 
@@ -226,9 +241,9 @@ export class RequiredInput {
 	}
 
 	/** 
-	 * get the associated {@link RequiredInput} object from a given html element
+	 * get the associated {@link FieldRequirement} object from a given html element
 	 */
-	public static getFromElement(element: HTMLElement): RequiredInput {
+	public static getFromElement(element: HTMLElement): FieldRequirement {
 		if(this.elementMap.has(element)) {
 			return this.elementMap.get(element);
 		}

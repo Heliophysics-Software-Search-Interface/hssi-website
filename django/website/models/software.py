@@ -29,6 +29,9 @@ class SoftwareVersion(HssiModel):
     # specified for intellisense, defined in Software model
     software_current: models.Manager['Software']
 
+    @classmethod
+    def get_top_field(cls) -> models.Field: return cls._meta.get_field("number")
+
     class Meta: ordering = ['number']
     def __str__(self): return self.number
 
@@ -172,7 +175,19 @@ class Software(HssiModel):
     class Meta:
         ordering = ['softwareName']
         verbose_name_plural = '  Software'
-    
+
+    @classmethod
+    def get_top_field(cls) -> models.Field: return cls._meta.get_field("softwareName")
+
+    @classmethod
+    def get_subfields(cls):
+        subfields = super().get_subfields()
+        for i, field in enumerate(subfields):
+            if field.name == cls.submissionInfo.name:
+                subfields.pop(i)
+                break
+        return subfields
+
     def __str__(self): return self.softwareName
 
     '''if the software is visible on the website'''
@@ -184,7 +199,7 @@ class Software(HssiModel):
             return False
 
 class VisibleSoftware(models.Model):
-    '''Stores ids '''
+    '''Stores ids'''
     id = models.OneToOneField(
         Software, 
         on_delete=models.CASCADE, 

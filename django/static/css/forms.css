@@ -1,0 +1,108 @@
+form .indent {
+    padding-left: 20px;
+}
+
+form details.form-separator {
+    margin-top: 15px;
+    border-top: #3338 solid 2px;
+}
+
+form .form-separator > summary {
+    font-size: large;
+    user-select: none;
+}
+
+form div.form-separator > summary::marker {
+    content: none;
+}
+
+form .form-row details:not([open]) {
+    padding-left: 11px;
+    cursor: pointer;
+}
+
+form .form-row details[open] {
+    border-left: solid 1px #3333;
+    padding: 10px;
+    padding-top: 0;
+}
+
+form .form-row details {
+    box-shadow: 0px 2px 5px #3333;
+}
+
+form .form-row {
+    margin-top: 10px;
+}
+
+form .multi-field-row + .multi-field-row {
+    margin-top: 10px;
+}
+
+form .multi-field-row .multi-field-part {
+    width: calc(100% - 75px);
+    display: inline-block;
+}
+
+form button {
+    cursor: pointer;
+}
+
+form .multi-field-row button {
+    vertical-align: top;
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 65px;
+}
+
+.widget-dropdown {
+    margin: 0;
+    padding: 0;
+    max-height: 200px;
+    border: 1px solid #ccc;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.widget-dropdown ul {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.widget-dropdown li {
+    padding: 8px;
+    padding-left: 16px;
+    cursor: pointer;
+}
+
+.widget-dropdown li.selected {
+    background:rgb(154, 181, 255);
+}
+
+.widget-tooltip {
+    display: none;
+    position: absolute;
+    background: #333;
+    color: white;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    white-space: normal;
+    max-width: 500px;
+    width: max-content;
+    top: 100%;
+    left: 0;
+    z-index: 2000;
+    pointer-events: none;
+}
+
+[data-hssi-widget="ModelBox"] {
+    position: relative;
+}
+
+[data-hssi-widget="ModelBox"] .dropdown-button {
+    border-left: #ccc solid 1px;
+    margin-top: 0;
+    margin-left: 0;
+}

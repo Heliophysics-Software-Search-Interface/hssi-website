@@ -1,5 +1,9 @@
 /** */
 
+import { 
+	type ModelSubfield,
+} from "../loader";
+
 export const requirementAttribute = "data-hssi-required";
 export const requirementAttributeContainer = "data-hssi-required-container";
 
@@ -16,54 +20,46 @@ export enum RequirementLevel {
 	MANDATORY = 2,
 }
 
-const acceptableInputElementQueries = [
-	"input",
-	"textarea",
-	"select",
-];
-
-interface FormElement extends HTMLElement {
-	required: boolean;
-	type: string;
-	value: string;
-	checkValidity: () => boolean;
-}
-
 export class FieldRequirement {
 
-	public element: FormElement = null;
-	public elementContainer: HTMLElement = null;
+	private _focusEnterListener: Function = null;
+	private _focusExitListener: Function = null;
+	private _eventTarget: HTMLElement = null;
+
+	public field: ModelSubfield = null;
+	public containerElement: HTMLElement = null;
 	public noteElement: HTMLDivElement = null;
-	public requirementLevel: RequirementLevel = RequirementLevel.OPTIONAL;
+	public level: RequirementLevel = RequirementLevel.OPTIONAL;
 	
 	public constructor(
-		element: FormElement, 
-		requirementLevel: RequirementLevel, 
-		container: HTMLElement = null
+		field: ModelSubfield,
+		requirementLevel: RequirementLevel,
 	) {
-		this.elementContainer = container
-		this.element = element;
-		this.requirementLevel = requirementLevel;
+		this.field = field;
+		this.containerElement = field.containerElement;
+		this.level = requirementLevel;
 		this.createNoteElement();
+		this.addEventListeners();
+		FieldRequirement.all.push(this);
 	}
 
 	/// Private methods --------------------------------------------------------
 
-	private isValidNonNull(): boolean {
-		if(this.element instanceof HTMLInputElement) {
-			switch(this.element.type) {
-				case "text": case "email": case "url": case "tel": case "search": 
-				case "number": case "date": case "datetime-local": case "month": 
-				case "week": case "time": case "color": case "range": 
-					return this.element.checkValidity() && this.element.value.trim().length > 0;
-				case "checkbox": case "radio":
-					return this.element.checkValidity() && (this.element as any).checked;
-			}
-		}
-		else if (this.element instanceof HTMLTextAreaElement) {
-			return this.element.checkValidity() && this.element.value.trim().length > 0;
-		}
-		return true;
+	/** add focus event listeners */ 
+	private addEventListeners(): void {
+
+		const focusIn = (e: FocusEvent) => {
+			this.onFocusEnter(e);
+		};
+		const focusout = (e: FocusEvent) => {
+			this.onFocusExit(e);
+		};
+		this._focusEnterListener = focusIn;
+		this._focusExitListener = focusout;
+		
+		this.containerElement.addEventListener("focusin", focusIn);
+		this.containerElement.addEventListener("focusout", focusout);
+		this._eventTarget = this.containerElement;
 	}
 
 	private createNoteElement(): void {
@@ -74,11 +70,11 @@ export class FieldRequirement {
 	}
 
 	private getNoteText(): string {
-		const valid = this.isValidNonNull();
-		if(valid || this.requirementLevel == RequirementLevel.OPTIONAL) return "";
+		const valid = this.field.hasValidInput();
+		if(valid || this.level == RequirementLevel.OPTIONAL) return "";
 
 		let note = "";
-		switch(this.requirementLevel){
+		switch(this.level){
 			case RequirementLevel.MANDATORY: 
 				note = "This field is mandatory";
 				break;
@@ -89,24 +85,9 @@ export class FieldRequirement {
 		return note;
 	}
 
-	/// Public methods ---------------------------------------------------------
-
-	/** returns the element that the invalid-* class style is applied to */
-	public getStyledElement(): HTMLElement {
-		return this.elementContainer ?? this.element;
-	}
-
-	public applyValidityStyle(): void{
-		this.onFocusEnter(null);
-		this.onFocusExit(null);
-	}
-
-	/// Event listeners --------------------------------------------------------
-
-	private onFocusEnter(_e: FocusEvent): void {
-		// remove invalid style
+	private removeStyles(): void {
 		let className = "";
-		switch(this.requirementLevel) {
+		switch(this.level) {
 			case RequirementLevel.RECOMMENDED: className = invalidRecStyle; break;
 			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
 		}
@@ -117,17 +98,67 @@ export class FieldRequirement {
 		this.noteElement.style.display = "none";
 	}
 
+	/// Public methods ---------------------------------------------------------
+
+	/** returns the element that the invalid-* class style is applied to */
+	public getStyledElement(): HTMLElement {
+		return this.containerElement;
+	}
+
+	/** destroy object and remove elements from dom */
+	public destroy(): void{
+
+		// remove event listeners
+		if(this._focusEnterListener != null) {
+			this._eventTarget.removeEventListener(
+				"focusin", 
+				this._focusEnterListener as any
+			);
+			this._focusEnterListener = null;
+		}
+		if(this._focusExitListener != null){
+			this._eventTarget.removeEventListener(
+				"focusout", 
+				this._focusExitListener as any
+			);
+			this._focusExitListener = null;
+		}
+
+		this.removeStyles();
+		let index = FieldRequirement.all.indexOf(this);
+		if (index >= 0) FieldRequirement.all.splice(index, 1);
+		this.noteElement?.remove();
+	}
+
+	/** 
+	 * highlight and put warning message on field if applicable or removes 
+	 * it if it shouldn't be there 
+	 */
+	public applyRequirementWarningStyles(): void{
+		this.onFocusEnter(null);
+		this.onFocusExit(null);
+	}
+
+	/// Event listeners --------------------------------------------------------
+
+	private onFocusEnter(_e: FocusEvent): void {
+		// remove invalid style
+		this.removeStyles();
+	}
+
 	private onFocusExit(_e: FocusEvent): void {
 
+		// TODO apply styles on mouseup instead of here
+
 		// no need to add invalid styles if it is filled out
-		if(this.isValidNonNull()) return;
+		if(this.field.hasValidInput()) return;
 
 		// add invalid style
 		let className = "";
-		switch(this.requirementLevel) {
-			case RequirementLevel.OPTIONAL: return;
+		switch(this.level) {
 			case RequirementLevel.RECOMMENDED: className = invalidRecStyle; break;
 			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
+			default: return;
 		}
 
 		// add class to required element/container if applicable
@@ -145,108 +176,11 @@ export class FieldRequirement {
 	*/
 	private static all: FieldRequirement[] = [];
 
-	/** map applicable elements to their corresponding required input object */
-	private static elementMap: Map<HTMLElement, FieldRequirement> = new Map();
-
 	/// Static methods ---------------------------------------------------------
 
-	/** finds all required widgets in the document and stores them */
-	private static findRequiredInputs(): void {
-		this.all.length = 0;
-
-		// query for individual inpputs with specified requirement levels
-		const elements = document.querySelectorAll(`[${requirementAttribute}]`);
-		for(const elem of elements) {
-
-			// must be a form element
-			if(!(elem instanceof HTMLInputElement)) 
-				if (!(elem instanceof HTMLTextAreaElement)) 
-					if (!(elem instanceof HTMLSelectElement))
-						continue;
-
-			// we don't want to double count inputs that are children of containers
-			const container = elem.closest(`[${requirementAttributeContainer}]`);
-			if(container != null) {
-				elem.removeAttribute(requirementAttribute);
-				continue;
-			}
-
-			const elemReqLvl = Number.parseInt(elem.getAttribute(requirementAttribute));
-			if(elemReqLvl > RequirementLevel.OPTIONAL) {
-				const reqIn = new FieldRequirement(elem as FormElement, elemReqLvl);
-				this.all.push(reqIn);
-				this.elementMap.set(elem, reqIn);
-			}
+	public static applyStylesForAll(): void {
+		for(const req of FieldRequirement.all) {
+			req.applyRequirementWarningStyles();
 		}
-
-		// query for all containers (for widgets with potential multi input elements)
-		const containers = document.querySelectorAll(`[${requirementAttributeContainer}]`);
-		for(const container of containers) {
-			if(!(container instanceof HTMLElement)) continue;
-
-			// find an acceptable element to consider the field input element
-			let elem: HTMLElement = null;
-			for(const query of acceptableInputElementQueries){
-				if(elem) break;
-				elem = container.querySelector(query);
-			}
-
-			// error if no acceptable input element was found
-			if(!elem) {
-				console.log(container);
-				throw new Error("No input found in container with requirement attribute");
-			}
-
-			// create the field requirement object and register it
-			const elemReqLvl = Number.parseInt(
-				container.getAttribute(requirementAttributeContainer)
-			);
-			const reqIn = new FieldRequirement(
-				elem as FormElement, 
-				elemReqLvl, 
-				container as HTMLElement
-			)
-			this.all.push(reqIn);
-			this.elementMap.set(container, reqIn);
-		}
-	}
-
-	public static applyRequirementLevels(): void {
-
-		// iterate through all inputs
-		this.findRequiredInputs();
-		console.log("found " + this.all.length + " required inputs");
-		for(const input of this.all) {
-
-			// enforce required attribute if mandatory
-			if(input.requirementLevel == RequirementLevel.MANDATORY) {
-				input.element.required = true;
-			}
-
-			// remove required attribute if it is not mandatory
-			else {
-				input.element.required = false;
-			}
-
-			// add focus event listeners
-			if(input.requirementLevel > RequirementLevel.OPTIONAL) {
-				input.element.addEventListener("focusin", (e) => {
-					input.onFocusEnter(e);
-				});
-				input.element.addEventListener("focusout", (e) => {
-					input.onFocusExit(e);
-				});
-			}
-		}
-	}
-
-	/** 
-	 * get the associated {@link FieldRequirement} object from a given html element
-	 */
-	public static getFromElement(element: HTMLElement): FieldRequirement {
-		if(this.elementMap.has(element)) {
-			return this.elementMap.get(element);
-		}
-		return null;
 	}
 }

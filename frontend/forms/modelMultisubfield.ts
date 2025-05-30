@@ -1,7 +1,6 @@
 import {
-	deepMerge,
-	formRowStyle, ModelFieldStructure, RequirementLevel, Widget, ModelSubfield,
-    type PropertyContainer, type SerializedSubfield,
+	FieldRequirement, ModelSubfield,
+	RequirementLevel,
 } from "../loader";
 
 const multiFieldRowStyle = "multi-field-row";
@@ -27,7 +26,6 @@ export class ModelMultiSubfield extends ModelSubfield {
 		return new ModelSubfield(
 			this.name, 
 			this.type, 
-			this.requirement, 
 			this.properties
 		);
 	}
@@ -43,6 +41,11 @@ export class ModelMultiSubfield extends ModelSubfield {
 		fieldContainer.classList.add(multiFieldPartStyle);
 		const field = this.createMultifield();
 		field.buildInterface(fieldContainer, false);
+
+		// use the requirement object for the multifield instead of each part 
+		// having its own requirement
+		field.requirement.destroy();
+		field.requirement = this.requirement;
 
 		// create button for removing the field entry
 		const removeButton = document.createElement("button") as HTMLButtonElement;
@@ -69,10 +72,14 @@ export class ModelMultiSubfield extends ModelSubfield {
 		// this has the potential to be built multiple times so its important 
 		// to check it hasn't already been built
 		if(this.multiFieldContainerElement != null) return;
+		
+		this.controlContainerElement = document.createElement("div");
+		this.containerElement.appendChild(this.controlContainerElement);
 
 		this.multiFieldContainerElement = document.createElement("div");
 		this.multiFieldContainerElement.classList.add(multiFieldContainerStyle)
-		this.containerElement.appendChild(this.multiFieldContainerElement);
+		this.controlContainerElement.appendChild(this.multiFieldContainerElement);
+
 	}
 
 	private buildNewItemButton(): void{
@@ -82,7 +89,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.newItemButton.addEventListener(
 			"click", () => this.onNewItemPressed()
 		);
-		this.containerElement.appendChild(this.newItemButton);
+		this.controlContainerElement.appendChild(this.newItemButton);
 	}
 
 	private onNewItemPressed(): void {
@@ -103,6 +110,14 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.buildNewItemButton();
 
 		targetDiv.appendChild(this.containerElement);
+
+		this.requirement = new FieldRequirement(
+			this, this.properties.requirementLevel ?? RequirementLevel.OPTIONAL
+		);
+		this.requirement.containerElement = this.controlContainerElement;
+		for(const field of this.multiFields){
+			field.requirement = this.requirement;
+		}
 	}
 
 	public destroy(): void {
@@ -110,6 +125,13 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.multiFields.length = 0;
 		this.multiFieldContainerElement = null;
 		this.newItemButton = null;
+	}
+
+	public hasValidInput(): boolean {
+		for(const field of this.multiFields){
+			if(field.hasValidInput()) return true;
+		}
+		return false;
 	}
 
 	public getFieldData(): { [key: string]: any; } | string | any[] {

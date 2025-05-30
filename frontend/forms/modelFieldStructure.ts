@@ -4,15 +4,13 @@ import {
 } from "../loader";
 
 export type PropertyContainer = {
-
 	/** the title that will be shown above the field, if not specified field name will be used */
 	label?: string,
-
 	/** the small font explanation that will be shown below the label */
 	tooltipExplanation?: string,
-
 	/** the tooltip that appears on hover of the information icon */
 	tooltipBestPractise?: string,
+	requirementLevel?: RequirementLevel,
 
 } & { [key: string]: any };
 

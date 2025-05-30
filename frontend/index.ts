@@ -23,10 +23,6 @@ function main() {
 
 	// generate the forms
 	FormGenerator.generateForm(null);
-
-	// apply the requirement levels for the form widget requirements
-	// TODO test and remove if the deferred call is needed, remove if not
-	setTimeout(() => FieldRequirement.applyRequirementLevels(), 1000);
 }
 
 // call main when document DOM tree is finished building so that we can access

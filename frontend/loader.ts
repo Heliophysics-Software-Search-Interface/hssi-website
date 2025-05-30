@@ -5,6 +5,8 @@
  * where they are defined.
  */
 
+export * from "./simpleEvent";
+
 export * from "./forms/fieldRequirement";
 export * from "./forms/widgets/widget";
 export * from "./forms/modelFieldStructure";

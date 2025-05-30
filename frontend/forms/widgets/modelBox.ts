@@ -16,6 +16,12 @@ const modelChoicesUrl = "/api/model_choices/";
 
 type ChoicesJsonStructure = { data: [string, string, string[], string?][] }
 
+interface ModelBoxProperties extends BaseProperties {
+    targetModel?: string,
+    modelFilter?: string,
+    dropdownButton?: string,
+}
+
 /// Organizational types -------------------------------------------------------
 
 interface OptionLi extends HTMLLIElement { data: Option; }
@@ -42,6 +48,8 @@ export class ModelBox extends Widget {
     private filteredOptionLIs: OptionLi[] = [];
     private selectedOptionIndex: number = -1;
     private selectedOptionLI: OptionLi = null;
+
+    public properties: ModelBoxProperties = {};
     
     /// Restricted functionality -----------------------------------------------
 
@@ -132,8 +140,9 @@ export class ModelBox extends Widget {
     protected selectOption(option: Option = this.selectedOptionLI?.data): void {
         if(option != null){
             this.inputElement.value = option.name;
+            this.inputElement.dispatchEvent(new Event("input", { bubbles: true }));
             this.inputElement.setAttribute(targetUuidAttribute, option.id);
-            this.getRequiredInputInstance().applyValidityStyle();
+            this.getRequiredInputInstance()?.applyValidityStyle();
         }
         else {
             this.inputElement.removeAttribute(targetUuidAttribute);
@@ -178,8 +187,6 @@ export class ModelBox extends Widget {
     public initialize(): void {
 		super.initialize();
         this.buildElements();
-
-        console.log("initialized ModelBox", this.element)
     }
 
     /* builds the option element list from the given options */
@@ -318,7 +325,9 @@ export class ModelBox extends Widget {
         if(this.properties.dropdownButton){
             this.filterOptionVisibility("");
         }
-        this.showDropdown(!this.properties.dropdownButton);
+        if(this.properties.dropdownButton){
+            this.showDropdown(!this.properties.dropdownButton);
+        }
     }
 
     private onInputFocusOut(focusEvent: FocusEvent): void {

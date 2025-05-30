@@ -7,11 +7,15 @@ import {
 const labelStyle = "custom-label";
 const multiFieldRowStyle = "multi-field-row";
 const multiFieldPartStyle = "multi-field-part";
+const multiFieldContainerStyle = "multifield-container";
 const tooltipWrapperStyle = "tooltip-wrapper";
 const tooltipIconStyle = "tooltip-icon";
 const tooltipTextStyle = "tooltip-text";
 const explanationTextStyle = "explanation-text";
+const subfieldContainerStyle = "subfield-container";
 const indentStyle = "indent";
+
+const faInfoCircle = "<i class='fa fa-info-circle'></i>";
 
 /**
  * represents a single field in the db model and information related to 
@@ -61,7 +65,7 @@ export class ModelSubfield {
 			
 			const ttbpIcon = document.createElement("span") as HTMLSpanElement;
 			ttbpIcon.classList.add(tooltipIconStyle);
-			ttbpIcon.innerText = "i";
+			ttbpIcon.innerHTML = faInfoCircle;
 
 			const ttbpText = document.createElement("div") as HTMLDivElement;
 			ttbpText.classList.add(tooltipTextStyle);
@@ -110,6 +114,7 @@ export class ModelSubfield {
 
 		// create expandable details container
 		this.subfieldContainer = document.createElement("details");
+		this.subfieldContainer.classList.add(subfieldContainerStyle);
 		const summary = document.createElement("summary");
 		this.subfieldContainer.appendChild(summary);
 		this.subfieldContainer.classList.add(indentStyle);
@@ -319,7 +324,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		// create button for removing the field entry
 		const removeButton = document.createElement("button") as HTMLButtonElement;
 		removeButton.type = "button";
-		removeButton.innerText = "- remove";
+		removeButton.innerHTML = "<i class='fa fa-close'></i>";
 
 		// remove on click
 		removeButton.addEventListener("click", () => {
@@ -364,6 +369,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		if(this.multiFieldContainerElement != null) return;
 
 		this.multiFieldContainerElement = document.createElement("div");
+		this.multiFieldContainerElement.classList.add(multiFieldContainerStyle)
 		this.containerElement.appendChild(this.multiFieldContainerElement);
 	}
 

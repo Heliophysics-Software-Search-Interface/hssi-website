@@ -102,7 +102,7 @@ export class ModelSubfield {
 		}
 
 		// create the "hover for info" icon
-		if(this.properties.tooltipBestPractise != null){
+		if(this.properties.tooltipExplanation != null){
 			const ttbpWrapper = document.createElement("span") as HTMLSpanElement;
 			ttbpWrapper.classList.add(tooltipWrapperStyle);
 			
@@ -120,7 +120,7 @@ export class ModelSubfield {
 		}
 
 		// create the help text below the label if it exists
-		if(this.properties.tooltipExplanation != null){
+		if(this.properties.tooltipBestPractise != null){
 			this.explanationElement = document.createElement("div");
 			this.explanationElement.classList.add(explanationTextStyle);
 			this.explanationElement.innerHTML = this.properties.tooltipBestPractise;

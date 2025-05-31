@@ -11,6 +11,7 @@ const tooltipIconStyle = "tooltip-icon";
 const tooltipTextStyle = "tooltip-text";
 const explanationTextStyle = "explanation-text";
 const subfieldContainerStyle = "subfield-container";
+const requiredIndicatorStyle = "required-indicator";
 const indentStyle = "indent";
 
 const faInfoCircle = "<i class='fa fa-info-circle'></i>";
@@ -92,6 +93,13 @@ export class ModelSubfield {
 		this.labelElement.innerHTML = this.properties.label ?? this.name;
 		this.labelElement.classList.add(labelStyle);
 		this.containerElement.appendChild(this.labelElement);
+
+		if(this.properties.requirementLevel >= 2) {
+			this.labelElement.innerHTML = (
+				this.labelElement.innerHTML + 
+				` <span class=${requiredIndicatorStyle}>*</span>`
+			);
+		}
 
 		// create the "hover for info" icon
 		if(this.properties.tooltipBestPractise != null){

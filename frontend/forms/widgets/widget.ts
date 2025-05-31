@@ -157,12 +157,7 @@ export abstract class Widget {
 	public abstract getInputElement(): AnyInputElement;
 
 	/** returns the value that a user has input into the widget */
-	public getInputValue(): string { return this.getInputElement().value; }
-
-	/** get the requiredinput object associated with the widget */
-	public getRequiredInputInstance(): FieldRequirement {
-		return FieldRequirement.getFromElement(this.element);
-	}
+	public getInputValue(): string { return this.getInputElement().value.trim(); }
 
 	/// Static -----------------------------------------------------------------
 

@@ -2,6 +2,7 @@ import {
 	deepMerge, formRowStyle, ModelFieldStructure, RequirementLevel, 
 	Widget, ModelMultiSubfield,
     type PropertyContainer, type SerializedSubfield,
+	FieldRequirement,
 } from "../loader";
 
 const labelStyle = "custom-label";
@@ -22,11 +23,12 @@ export class ModelSubfield {
 
 	public name: string = "";
 	public type: ModelFieldStructure = null;
-	public requirement: RequirementLevel = RequirementLevel.OPTIONAL;
 	public properties: PropertyContainer = {};
 	public widget: Widget = null;
 	public containerElement: HTMLDivElement = null;
+	public requirement: FieldRequirement = null;
 
+	protected controlContainerElement: HTMLDivElement = null;
 	private labelElement: HTMLLabelElement = null;
 	private explanationElement: HTMLDivElement = null;
 
@@ -35,16 +37,52 @@ export class ModelSubfield {
 
 	public get multi(): boolean { return false; }
 
+	/// Initialization ---------------------------------------------------------
+
 	protected constructor(
 		name: string, 
 		type: ModelFieldStructure, 
-		requirement: RequirementLevel = RequirementLevel.OPTIONAL,
 		properties: PropertyContainer = {},
 	) {
 		this.name = name;
 		this.type = type;
-		this.requirement = requirement;
 		this.properties = properties;
+	}
+
+	private buildSubfieldContainer(): void {
+
+		// don't need a subfield container if no subfields
+		if(this.type.subfields.length <= 0) return;
+
+		// create expandable details container
+		this.subfieldContainer = document.createElement("details");
+		this.subfieldContainer.classList.add(subfieldContainerStyle);
+		const summary = document.createElement("summary");
+		this.subfieldContainer.appendChild(summary);
+		this.subfieldContainer.classList.add(indentStyle);
+		this.controlContainerElement.appendChild(this.subfieldContainer);
+
+		// create subfields when container expanded
+		this.subfieldContainer.addEventListener("click", e => this.onExpandSubfields(e));
+
+		// this.hideSubfieldContianer();
+	}
+
+	private buildSubFields(): void{
+
+		// parse and build each serialized subfield
+		for(const serializedField of this.type.subfields){
+			const field = ModelSubfield.parse(serializedField)
+			const row = document.createElement("div") as HTMLDivElement;
+			row.classList.add(formRowStyle)
+			field.buildInterface(row);
+			this.subfields.push(field);
+			this.subfieldContainer.appendChild(row);
+		}
+	}
+
+	private onExpandSubfields(_: Event = null): void{
+		if(!this.subfieldsAreBuilt()) this.buildSubFields();
 	}
 
 	protected buildFieldInfo(): void {
@@ -99,45 +137,54 @@ export class ModelSubfield {
 				this.properties.widgetProperties
 			);
 		}
-		this.widget.properties.requirementLevel = this.requirement;
 		this.widget.initialize();
-		this.containerElement.appendChild(this.widget.element);
+		this.controlContainerElement.appendChild(this.widget.element);
 	}
 
-	private buildSubfieldContainer(): void {
-
-		// don't need a subfield container if no subfields
-		if(this.type.subfields.length <= 0) return;
-
-		// create expandable details container
-		this.subfieldContainer = document.createElement("details");
-		this.subfieldContainer.classList.add(subfieldContainerStyle);
-		const summary = document.createElement("summary");
-		this.subfieldContainer.appendChild(summary);
-		this.subfieldContainer.classList.add(indentStyle);
-		this.containerElement.appendChild(this.subfieldContainer);
-
-		// create subfields when container expanded
-		this.subfieldContainer.addEventListener("click", e => this.onExpandSubfields(e));
-
-		// this.hideSubfieldContianer();
-	}
-
-	private buildSubFields(): void{
-
-		// parse and build each serialized subfield
-		for(const serializedField of this.type.subfields){
-			const field = ModelSubfield.parse(serializedField)
-			const row = document.createElement("div") as HTMLDivElement;
-			row.classList.add(formRowStyle)
-			field.buildInterface(row);
-			this.subfields.push(field);
-			this.subfieldContainer.appendChild(row);
+	/** 
+	 * builds the html ui elements required to render and interact with this 
+	 * field for the db model
+	 * @param targetDiv the target container to build the ui inside of
+	 */
+	public buildInterface(
+		targetDiv: HTMLDivElement, 
+		buildFieldInfo: boolean = true,
+	): void {
+		if(this.containerElement != null) {
+			console.warn(`Interface for ${this.name} is already built`);
+			return;
 		}
+		this.containerElement = document.createElement("div");
+
+		if(buildFieldInfo) this.buildFieldInfo();
+
+		this.controlContainerElement = document.createElement("div");
+		this.buildWidget();
+		this.buildSubfieldContainer();
+		this.containerElement.appendChild(this.controlContainerElement);
+
+		targetDiv.appendChild(this.containerElement);
+		this.requirement = new FieldRequirement(
+			this, this.properties.requirementLevel ?? RequirementLevel.OPTIONAL
+		);
+		this.requirement.containerElement = this.controlContainerElement;
 	}
 
-	private onExpandSubfields(_: Event = null): void{
-		if(!this.subfieldsAreBuilt()) this.buildSubFields();
+	/// Public functionality ---------------------------------------------------
+
+	public meetsRequirementLevel(): boolean {
+		if(
+			this.requirement == null || 
+			this.requirement.level == RequirementLevel.OPTIONAL
+		) {
+			return true;
+		}
+		return this.hasValidInput();
+	}
+
+	public hasValidInput(): boolean {
+		const value = this.widget?.getInputValue();
+		return value != null && value.length > 0;
 	}
 
 	/** 
@@ -174,6 +221,10 @@ export class ModelSubfield {
 		}
 		if(this.containerElement != null){
 			this.containerElement.remove();
+		}
+		if(this.requirement != null && !this.requirement.field.multi){
+			this.requirement.destroy();
+			this.requirement = null;
 		}
 		this.widget = null;
 		this.containerElement = null;
@@ -229,24 +280,6 @@ export class ModelSubfield {
 		return data
 	}
 
-	/** 
-	 * builds the html ui elements required to render and interact with this 
-	 * field for the db model
-	 * @param targetDiv the target container to build the ui inside of
-	 */
-	public buildInterface(
-		targetDiv: HTMLDivElement, 
-		buildFieldInfo: boolean = true,
-	): void {
-		this.containerElement = document.createElement("div");
-
-		if(buildFieldInfo) this.buildFieldInfo();
-		this.buildWidget();
-		this.buildSubfieldContainer();
-
-		targetDiv.appendChild(this.containerElement);
-	}
-
 	/** whether or not the field has already built its UI elements */
 	public isBuilt(): boolean {
 		return this.widget != null;
@@ -268,18 +301,18 @@ export class ModelSubfield {
 			subfield = new ModelSubfield(
 				data.name, 
 				type, 
-				data.requirement,
 				data.properties,
 			);
 		}
 		else {
 			subfield = new ModelMultiSubfield(
 				data.name, 
-				type, 
-				data.requirement, 
+				type,
 				data.properties
 			)
 		}
+		subfield.properties.requirementLevel = data.requirement;
+
 		return subfield;
 	}
 }

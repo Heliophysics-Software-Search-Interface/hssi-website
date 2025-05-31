@@ -19,6 +19,7 @@ type ModelStructureData = {
 export class FormGenerator {
 
     private formElement: HTMLFormElement = null;
+    private submitElement: HTMLInputElement = null;
     private fieldContainer: HTMLDivElement = null;
     private fields: (ModelSubfield | ModelSubfield[])[] = [];
 
@@ -51,6 +52,12 @@ export class FormGenerator {
             this.fieldContainer.appendChild(formRow);
             i++;
         }
+
+        // generate submit button
+        this.submitElement = document.createElement("input");
+        this.submitElement.type = "submit";
+        this.submitElement.innerText = "Submit";
+        this.formElement.appendChild(this.submitElement);
     }
 
     private buildFormSection(

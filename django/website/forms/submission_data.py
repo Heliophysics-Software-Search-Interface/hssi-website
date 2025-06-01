@@ -736,7 +736,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		requirement=RequirementLevel.MANDATORY.value,
 		properties={
 			PROP_LABEL: "Metadata License Agreement",
-			PROP_TT_EXPL: "Agree that all metadata you've entered into this form will be freely available for searching and indexing or any other purpose",
+			PROP_TT_BEST: "Agree that all metadata you've entered into this form will be freely available for searching and indexing or any other purpose",
 		},
 		multi=False,
 	),

@@ -1,8 +1,8 @@
 import {
 	deepMerge, formRowStyle, ModelFieldStructure, RequirementLevel, 
-	Widget, ModelMultiSubfield,
-    type PropertyContainer, type SerializedSubfield,
-	FieldRequirement,
+	Widget, ModelMultiSubfield, FieldRequirement,
+    type PropertyContainer, type SerializedSubfield, type JSONValue,
+	type JSONObject,
 } from "../loader";
 
 const labelStyle = "custom-label";
@@ -11,6 +11,7 @@ const tooltipIconStyle = "tooltip-icon";
 const tooltipTextStyle = "tooltip-text";
 const explanationTextStyle = "explanation-text";
 const subfieldContainerStyle = "subfield-container";
+const requiredIndicatorStyle = "required-indicator";
 const indentStyle = "indent";
 
 const faInfoCircle = "<i class='fa fa-info-circle'></i>";
@@ -93,8 +94,15 @@ export class ModelSubfield {
 		this.labelElement.classList.add(labelStyle);
 		this.containerElement.appendChild(this.labelElement);
 
+		if(this.properties.requirementLevel >= 2) {
+			this.labelElement.innerHTML = (
+				this.labelElement.innerHTML + 
+				` <span class=${requiredIndicatorStyle}>*</span>`
+			);
+		}
+
 		// create the "hover for info" icon
-		if(this.properties.tooltipBestPractise != null){
+		if(this.properties.tooltipExplanation != null){
 			const ttbpWrapper = document.createElement("span") as HTMLSpanElement;
 			ttbpWrapper.classList.add(tooltipWrapperStyle);
 			
@@ -112,7 +120,7 @@ export class ModelSubfield {
 		}
 
 		// create the help text below the label if it exists
-		if(this.properties.tooltipExplanation != null){
+		if(this.properties.tooltipBestPractise != null){
 			this.explanationElement = document.createElement("div");
 			this.explanationElement.classList.add(explanationTextStyle);
 			this.explanationElement.innerHTML = this.properties.tooltipBestPractise;
@@ -260,6 +268,10 @@ export class ModelSubfield {
 		);
 	}
 
+	public getSubfields(): ModelSubfield[] {
+		return this.subfields;
+	}
+
 	/** 
 	 * returns true if the subfields have been built. Basically if the 
 	 * subfield container has ever been expanded or not
@@ -269,11 +281,12 @@ export class ModelSubfield {
 	}
 
 	/** get the data that the field has received from user input */
-	public getFieldData(): {[key: string]: any} | string | any[] {
+	public getFieldData(): JSONValue {
 		if(!this.hasSubfields()) {
 			return this.widget?.getInputValue() ?? "";
 		}
-		const data: {[key: string]: any} = {};
+		const data: JSONObject = {};
+		data[this.name] = this.widget?.getInputValue() ?? "";
 		for(const subfield of this.subfields){
 			data[subfield.name] = subfield.getFieldData();
 		}

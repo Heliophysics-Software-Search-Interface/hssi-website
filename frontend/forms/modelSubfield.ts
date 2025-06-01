@@ -1,8 +1,8 @@
 import {
 	deepMerge, formRowStyle, ModelFieldStructure, RequirementLevel, 
-	Widget, ModelMultiSubfield,
-    type PropertyContainer, type SerializedSubfield,
-	FieldRequirement,
+	Widget, ModelMultiSubfield, FieldRequirement,
+    type PropertyContainer, type SerializedSubfield, type JSONValue,
+	type JSONObject,
 } from "../loader";
 
 const labelStyle = "custom-label";
@@ -268,6 +268,10 @@ export class ModelSubfield {
 		);
 	}
 
+	public getSubfields(): ModelSubfield[] {
+		return this.subfields;
+	}
+
 	/** 
 	 * returns true if the subfields have been built. Basically if the 
 	 * subfield container has ever been expanded or not
@@ -277,11 +281,12 @@ export class ModelSubfield {
 	}
 
 	/** get the data that the field has received from user input */
-	public getFieldData(): {[key: string]: any} | string | any[] {
+	public getFieldData(): JSONValue {
 		if(!this.hasSubfields()) {
 			return this.widget?.getInputValue() ?? "";
 		}
-		const data: {[key: string]: any} = {};
+		const data: JSONObject = {};
+		data[this.name] = this.widget?.getInputValue() ?? "";
 		for(const subfield of this.subfields){
 			data[subfield.name] = subfield.getFieldData();
 		}

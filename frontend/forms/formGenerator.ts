@@ -1,6 +1,6 @@
 import { 
     typeAttribute, ModelFieldStructure, ModelSubfield, widgetDataAttribute,
-    type SerializedSubfield
+    type JSONValue, type JSONObject
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -82,6 +82,37 @@ export class FormGenerator {
         this.fieldContainer.appendChild(details);
     }
 
+    private onSubmit(e: SubmitEvent){
+
+        // check to see all required elements are filled out
+        if(!this.formElement.reportValidity()) return;
+
+        e.preventDefault();
+
+        console.log(this.getJsonData());
+    }
+
+    private getJsonData(): JSONValue{
+
+        // get all subfields into a linear array
+        const subfields: ModelSubfield[] = [];
+        let outerFields: ModelSubfield[][] = this.fields as any;
+        if(outerFields.length > 0 && !(outerFields[0] instanceof Array)) {
+            outerFields = [outerFields] as any;
+        }
+        for(const outerField of outerFields){
+            for(const innerField of outerField) subfields.push(innerField);
+        }
+
+        // append all field data to an array
+        const data: JSONObject = {};
+        for(const field of subfields){
+            data[field.name] = field.getFieldData();
+        }
+        
+        return data;
+    }
+
     private static formGenerator: FormGenerator = null;
     private static structureData: ModelStructureData = null;
 
@@ -113,8 +144,8 @@ export class FormGenerator {
             ModelFieldStructure.parseBasicWidgetModels();
             ModelFieldStructure.parseModels(this.structureData.data);
         }
-
-        // otherwise get references to or create the form elements
+        
+        // get references to or create the form elements
         const generator = new FormGenerator();
         generator.formElement = form;
         generator.fieldContainer = generator.formElement.querySelector(
@@ -126,6 +157,9 @@ export class FormGenerator {
             generator.formElement.appendChild(generator.fieldContainer);
         }
         
+        // override form submission event
+        form.addEventListener("submit", e => generator.onSubmit(e));
+
         // get fields from html elements if not specified in function
         if(fields == null) {
             const dataElement: HTMLScriptElement = 

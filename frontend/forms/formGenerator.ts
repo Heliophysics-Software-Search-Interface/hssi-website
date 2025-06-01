@@ -6,6 +6,7 @@ import {
 const generatedFormType = "generated-form";
 const formFieldsType = "form-field-container";
 const structureNameData = "fields-structure-name";
+const csrfTokenName = "csrfmiddlewaretoken"
 
 const modelStructureUrl = "/api/model_structure/";
 
@@ -89,7 +90,34 @@ export class FormGenerator {
 
         e.preventDefault();
 
-        console.log(this.getJsonData());
+        const data = this.getJsonData();
+        const response = fetch(this.formElement.action, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": this.getCsrfTokenValue(),
+            },
+            body: JSON.stringify(data),
+        });
+
+        console.log("data submitted");
+        response.then(async (data) => {
+            const jsondata = await data.json();
+            console.log("RECIEVED", jsondata);
+        });
+    }
+
+    private getCsrfTokenValue(): string {
+        const token = (
+            this.formElement.querySelector(
+                `[name=${csrfTokenName}]`
+            ) as HTMLInputElement
+        );
+        if(token == null) {
+            console.error("CSRF Token not found for form", this);
+            return null;
+        }
+        return token.value;
     }
 
     private getJsonData(): JSONValue{

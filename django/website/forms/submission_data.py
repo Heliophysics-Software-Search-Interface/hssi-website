@@ -94,8 +94,8 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
         requirement=RequirementLevel.RECOMMENDED,
         properties={
             PROP_LABEL: "Affiliation",
-            PROP_TT_EXPL: TTEXPL_AUTHORIDENTIFIER,
-            PROP_TT_BEST: TTBEST_AUTHORIDENTIFIER,
+            PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATION,
+            PROP_TT_BEST: TTBEST_AUTHORAFFILIATION,
 		},
         multi=True,
 	),

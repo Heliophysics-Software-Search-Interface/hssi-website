@@ -5,6 +5,7 @@
  * where they are defined.
  */
 
+export * from "./util";
 export * from "./simpleEvent";
 
 export * from "./forms/fieldRequirement";

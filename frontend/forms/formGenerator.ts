@@ -1,11 +1,13 @@
 import { 
     typeAttribute, ModelFieldStructure, ModelSubfield, widgetDataAttribute,
-    type SerializedSubfield
+    type JSONValue, type JSONObject,
+    RequirementLevel
 } from "../loader";
 
 const generatedFormType = "generated-form";
 const formFieldsType = "form-field-container";
 const structureNameData = "fields-structure-name";
+const csrfTokenName = "csrfmiddlewaretoken"
 
 const modelStructureUrl = "/api/model_structure/";
 
@@ -19,6 +21,7 @@ type ModelStructureData = {
 export class FormGenerator {
 
     private formElement: HTMLFormElement = null;
+    private submitElement: HTMLInputElement = null;
     private fieldContainer: HTMLDivElement = null;
     private fields: (ModelSubfield | ModelSubfield[])[] = [];
 
@@ -51,6 +54,12 @@ export class FormGenerator {
             this.fieldContainer.appendChild(formRow);
             i++;
         }
+
+        // generate submit button
+        this.submitElement = document.createElement("input");
+        this.submitElement.type = "submit";
+        this.submitElement.innerText = "Submit";
+        this.formElement.appendChild(this.submitElement);
     }
 
     private buildFormSection(
@@ -73,6 +82,121 @@ export class FormGenerator {
         }
 
         this.fieldContainer.appendChild(details);
+    }
+
+    private onSubmit(e: SubmitEvent): void{
+
+        // we don't want the default html form functionality submiting anything
+        e.preventDefault();
+
+        // check to see all required elements are filled out
+        if(!this.validateFieldRequirements()) {
+            console.log("form fields not valid!");
+            return;
+        }
+
+        // submit the data from the form fields as a JSON string
+        const data = this.getJsonData();
+        const response = fetch(this.formElement.action, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": this.getCsrfTokenValue(),
+            },
+            body: JSON.stringify(data),
+        });
+
+        // debug to see if data was received
+        console.log("data submitted");
+        response.then(async (data) => {
+            const jsondata = await data.json();
+            console.log("RECIEVED", jsondata);
+        });
+    }
+
+    private validateFieldRequirements(): boolean {
+        const fields = this.getAllRelevantFields();
+
+        let valid = true;
+        let firstInvalidField: ModelSubfield = null;
+        for(const field of fields){
+            field.requirement.applyRequirementWarningStyles();
+            if(field.requirement.level >= RequirementLevel.MANDATORY){
+                if(!field.hasValidInput()){
+                    firstInvalidField = firstInvalidField ?? field;
+                    valid = false;
+                }
+            }
+        }
+
+        firstInvalidField?.containerElement.scrollIntoView({
+            behavior: "smooth", 
+            block: "start"
+        });
+        return valid;
+    }
+
+    private getCsrfTokenValue(): string {
+        const token = (
+            this.formElement.querySelector(
+                `[name=${csrfTokenName}]`
+            ) as HTMLInputElement
+        );
+        if(token == null) {
+            console.error("CSRF Token not found for form", this);
+            return null;
+        }
+        return token.value;
+    }
+
+    private getJsonData(): JSONValue{
+
+        // get all subfields into a linear array
+        const subfields: ModelSubfield[] = [];
+        let outerFields: ModelSubfield[][] = this.fields as any;
+        if(outerFields.length > 0 && !(outerFields[0] instanceof Array)) {
+            outerFields = [outerFields] as any;
+        }
+        for(const outerField of outerFields){
+            for(const innerField of outerField) subfields.push(innerField);
+        }
+
+        // append all field data to an array
+        const data: JSONObject = {};
+        for(const field of subfields){
+            data[field.name] = field.getFieldData();
+        }
+        
+        return data;
+    }
+
+    private getRootFields(): ModelSubfield[] {
+        if(this.fields.length <= 0) return [];
+        const fields: ModelSubfield[] = [];
+
+        for(const field of this.fields){
+            if(field instanceof Array) fields.push(...field);
+            else fields.push(field);
+        }
+
+        return fields;
+    }
+
+    private getAllRelevantFields(): ModelSubfield[] {
+        const rootFields = this.getRootFields();
+        const fields: ModelSubfield[] = [];
+
+        for(const rootField of rootFields){
+            fields.push(rootField);
+            if(
+                rootField.requirement.level >= RequirementLevel.MANDATORY && 
+                rootField.hasValidInput()
+            ){
+                ModelSubfield.getSubfieldsRecursive(rootField, true, fields);
+            }
+        }
+
+        return fields;
     }
 
     private static formGenerator: FormGenerator = null;
@@ -106,8 +230,8 @@ export class FormGenerator {
             ModelFieldStructure.parseBasicWidgetModels();
             ModelFieldStructure.parseModels(this.structureData.data);
         }
-
-        // otherwise get references to or create the form elements
+        
+        // get references to or create the form elements
         const generator = new FormGenerator();
         generator.formElement = form;
         generator.fieldContainer = generator.formElement.querySelector(
@@ -119,6 +243,9 @@ export class FormGenerator {
             generator.formElement.appendChild(generator.fieldContainer);
         }
         
+        // override form submission event
+        form.addEventListener("submit", e => generator.onSubmit(e));
+
         // get fields from html elements if not specified in function
         if(fields == null) {
             const dataElement: HTMLScriptElement = 

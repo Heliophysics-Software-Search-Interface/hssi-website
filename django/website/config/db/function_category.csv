@@ -1,1 +1,8 @@
 id,name,identifier,definition,abbreviation,backgroundColor,textColor
+f86ef743-942a-4ec8-9c9e-4dccbe512a87,Data Processing and Analysis,,,Data,#613583,#ffffff
+a6be4c1b-e86f-4dff-8f37-8454ab6c095b,Data Reduction,,,Reduc,#63452c,#ffffff
+007d6234-98eb-40b9-af10-82bf44105254,Data Visualization,,,Vis,#a51d2d,#ffffff
+5e35d447-f325-464c-978b-88a43a1a5172,Mission-Related Software,,,Missn,#26a269,#ffffff
+5b1aac07-0adc-45cc-96f3-f264daf8b2f0,ML/AI Codes,,,ML AI,#e5a50a,#000000
+0491da4e-9706-4600-90fa-58f264d97f0a,Models and Simulation,,,MdSim,#1a5fb4,#ffffff
+769e4e9d-c06b-4fb5-b17c-f2207cc24930,Servers and Environments,,,Servs,#c64600,#ffffff

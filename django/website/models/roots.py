@@ -256,7 +256,7 @@ class FileFormat(ControlledList):
             tooltipBestPractise="Please select all the file formats that your software supports for either input files or files the software generates. Only file formats supported by the software should be indicated.",
         )
 
-    def __str__(self): return self.extension + f" ({self.name})" if self.name else ""
+    def __str__(self): return self.name + f" ({self.extension})" if self.extension else ""
 
 class Region(ControlledList):
     '''Region of the sun which relates to the software'''

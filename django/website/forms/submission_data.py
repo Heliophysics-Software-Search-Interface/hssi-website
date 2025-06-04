@@ -94,8 +94,8 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
         requirement=RequirementLevel.RECOMMENDED,
         properties={
             PROP_LABEL: "Affiliation",
-            PROP_TT_EXPL: TTEXPL_AUTHORIDENTIFIER,
-            PROP_TT_BEST: TTBEST_AUTHORIDENTIFIER,
+            PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATION,
+            PROP_TT_BEST: TTBEST_AUTHORAFFILIATION,
 		},
         multi=True,
 	),
@@ -690,7 +690,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_RELATEDINSTRUMENTS,
 		type=SUBMISSION_FORM_INSTRUMENT.type_name,
-		requirement=RequirementLevel.RECOMMENDED.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Related Instruments",
 			PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTS,
@@ -736,7 +736,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		requirement=RequirementLevel.MANDATORY.value,
 		properties={
 			PROP_LABEL: "Metadata License Agreement",
-			PROP_TT_EXPL: "Agree that all metadata you've entered into this form will be freely available for searching and indexing or any other purpose",
+			PROP_TT_BEST: "Agree that all metadata you've entered into this form will be freely available for searching and indexing or any other purpose",
 		},
 		multi=False,
 	),

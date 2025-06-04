@@ -690,7 +690,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_RELATEDINSTRUMENTS,
 		type=SUBMISSION_FORM_INSTRUMENT.type_name,
-		requirement=RequirementLevel.RECOMMENDED.value,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Related Instruments",
 			PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTS,

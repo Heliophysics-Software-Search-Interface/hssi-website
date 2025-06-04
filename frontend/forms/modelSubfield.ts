@@ -297,6 +297,28 @@ export class ModelSubfield {
 	public isBuilt(): boolean {
 		return this.widget != null;
 	}
+		
+	/** returns the subfields and the subfields within those subfields, etc */
+	public static getSubfieldsRecursive(
+		subfield: ModelSubfield, 
+		onlyRelevant: boolean = true,
+		returnVal: ModelSubfield[] = []
+	): ModelSubfield[] {
+
+		for(const field of subfield.subfields){
+			returnVal.push(field);
+			if(
+				(
+					field.requirement.level >= RequirementLevel.MANDATORY && 
+					field.hasValidInput()
+				) || !onlyRelevant
+			){
+				this.getSubfieldsRecursive(field, onlyRelevant, returnVal);
+			}
+		}
+
+		return returnVal;
+	}
 
 	/** parse serialized subfield data into a functional subfield field object */
 	public static parse(data: SerializedSubfield): ModelSubfield {

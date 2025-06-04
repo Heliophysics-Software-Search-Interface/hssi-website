@@ -1,6 +1,7 @@
 import { 
     typeAttribute, ModelFieldStructure, ModelSubfield, widgetDataAttribute,
-    type JSONValue, type JSONObject
+    type JSONValue, type JSONObject,
+    RequirementLevel
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -83,13 +84,18 @@ export class FormGenerator {
         this.fieldContainer.appendChild(details);
     }
 
-    private onSubmit(e: SubmitEvent){
+    private onSubmit(e: SubmitEvent): void{
 
-        // check to see all required elements are filled out
-        if(!this.formElement.reportValidity()) return;
-
+        // we don't want the default html form functionality submiting anything
         e.preventDefault();
 
+        // check to see all required elements are filled out
+        if(!this.validateFieldRequirements()) {
+            console.log("form fields not valid!");
+            return;
+        }
+
+        // submit the data from the form fields as a JSON string
         const data = this.getJsonData();
         const response = fetch(this.formElement.action, {
             method: "POST",
@@ -100,11 +106,34 @@ export class FormGenerator {
             body: JSON.stringify(data),
         });
 
+        // debug to see if data was received
         console.log("data submitted");
         response.then(async (data) => {
             const jsondata = await data.json();
             console.log("RECIEVED", jsondata);
         });
+    }
+
+    private validateFieldRequirements(): boolean {
+        const fields = this.getAllRelevantFields();
+
+        let valid = true;
+        let firstInvalidField: ModelSubfield = null;
+        for(const field of fields){
+            field.requirement.applyRequirementWarningStyles();
+            if(field.requirement.level >= RequirementLevel.MANDATORY){
+                if(!field.hasValidInput()){
+                    firstInvalidField = firstInvalidField ?? field;
+                    valid = false;
+                }
+            }
+        }
+
+        firstInvalidField?.containerElement.scrollIntoView({
+            behavior: "smooth", 
+            block: "start"
+        });
+        return valid;
     }
 
     private getCsrfTokenValue(): string {
@@ -139,6 +168,35 @@ export class FormGenerator {
         }
         
         return data;
+    }
+
+    private getRootFields(): ModelSubfield[] {
+        if(this.fields.length <= 0) return [];
+        const fields: ModelSubfield[] = [];
+
+        for(const field of this.fields){
+            if(field instanceof Array) fields.push(...field);
+            else fields.push(field);
+        }
+
+        return fields;
+    }
+
+    private getAllRelevantFields(): ModelSubfield[] {
+        const rootFields = this.getRootFields();
+        const fields: ModelSubfield[] = [];
+
+        for(const rootField of rootFields){
+            fields.push(rootField);
+            if(
+                rootField.requirement.level >= RequirementLevel.MANDATORY && 
+                rootField.hasValidInput()
+            ){
+                ModelSubfield.getSubfieldsRecursive(rootField, true, fields);
+            }
+        }
+
+        return fields;
     }
 
     private static formGenerator: FormGenerator = null;

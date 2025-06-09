@@ -13,6 +13,7 @@ urlpatterns = [
     path('news/rss/', views.NewsFeed()),
     path('news/<int:pk>/', views.NewsItemView.as_view(), name='news_item'),
     path('submit/', views.submit.submit_resource),
+    path('submit/submit_data', views.submit.submit_post),
     path('api/model_structure/', views.exposed_models.get_model_structure),
     path('api/model_choices/<str:model_name>/', views.exposed_models.get_model_choices),
     path('api/model_form/<str:model_name>/', views.exposed_models.model_form),

@@ -1,4 +1,7 @@
+import json
+
 from django.shortcuts import render, HttpResponse
+from django.http import HttpRequest, HttpResponseBadRequest, JsonResponse
 from ..forms import (
     SUBMISSION_FORM_FIELDS_1,
     SUBMISSION_FORM_FIELDS_2,
@@ -6,7 +9,7 @@ from ..forms import (
     SUBMISSION_FORM_FIELDS_AGREEMENT,
 )
 
-def submit_resource(request):
+def submit_resource(request: HttpRequest) -> HttpResponse:
     return render(
         request, 
         "pages/submit.html", 
@@ -19,3 +22,14 @@ def submit_resource(request):
             ],
         }
     )
+
+def submit_post(request: HttpRequest) -> HttpResponse:
+    if request.method != "POST":
+        return HttpResponseBadRequest("POST expected")
+    
+    # parse request body to json
+    encoding = request.encoding or "utf-8"
+    data = request.body.decode(encoding)
+    json_data = json.loads(data)
+
+    return JsonResponse(json_data)

@@ -157,6 +157,9 @@ form {
     flex-direction: column;
     gap: 1.2rem;
 }
+.required-indicator {
+    color: red;
+}
 .invalid-mandatory {
     border: 2px solid red;
 }

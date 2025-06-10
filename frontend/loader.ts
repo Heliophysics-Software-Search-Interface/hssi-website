@@ -8,6 +8,8 @@
 export * from "./util";
 export * from "./simpleEvent";
 
+export * from "./ui/spinner";
+
 export * from "./forms/fieldRequirement";
 export * from "./forms/widgets/widget";
 export * from "./forms/widgets/basicWidgets";

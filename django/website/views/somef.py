@@ -1,15 +1,24 @@
-import subprocess, json
+import subprocess, json, uuid
 
 from django.http import response, request
 
 def describe_view(req: request.HttpRequest):
     
-    process = subprocess.run(["somef", "describe", "-r", (
+    tempfname = "/" + str(uuid.uuid4()) + ".json"
+
+    # run the somef command to extract metadata
+    process = subprocess.run(["somef", "describe", "-t", "0.7", "-r", (
             req.GET.get(
                 "target", 
                 "https://github.com/Heliophysics-Software-Search-Interface/hssi-website")
-        ), "-o", "/test.json"]
+        ), "-o", tempfname],
     )
-    process = subprocess.run(["cat", "/test.json"], stdout=subprocess.PIPE)
 
-    return response.JsonResponse({"value": process.stdout.decode('utf-8')})
+    # parse the data from somef to JSON data
+    process = subprocess.run(["cat", tempfname], stdout=subprocess.PIPE)
+    data = json.loads(process.stdout.decode('utf-8'))
+
+    # remove the temporary file
+    subprocess.run(["rm", tempfname])
+
+    return response.JsonResponse(data)

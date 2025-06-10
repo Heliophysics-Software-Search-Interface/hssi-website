@@ -19,6 +19,7 @@ RUN apt-get update && \
     apt-get install git -y
 
 RUN pip install --use-deprecated=legacy-resolver git+https://github.com/Heliophysics-Software-Search-Interface/hssi-somef@master
+RUN somef configure -a
 
 WORKDIR /extensions/pip-requirements
 WORKDIR /extensions/pre-launch-scripts

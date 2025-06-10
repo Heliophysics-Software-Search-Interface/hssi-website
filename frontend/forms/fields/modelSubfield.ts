@@ -3,7 +3,7 @@ import {
 	Widget, ModelMultiSubfield, FieldRequirement,
     type PropertyContainer, type SerializedSubfield, type JSONValue,
 	type JSONObject,
-} from "../loader";
+} from "../../loader";
 
 const labelStyle = "custom-label";
 const tooltipWrapperStyle = "tooltip-wrapper";

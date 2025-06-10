@@ -10,12 +10,11 @@ export * from "./simpleEvent";
 
 export * from "./forms/fieldRequirement";
 export * from "./forms/widgets/widget";
-export * from "./forms/modelFieldStructure";
 export * from "./forms/widgets/basicWidgets";
 export * from "./forms/widgets/modelBox";
 export * from "./forms/widgets/autofillForm";
 
-export * from "./forms/modelFieldStructure";
-export * from "./forms/modelSubfield";
-export * from "./forms/modelMultisubfield";
+export * from "./forms/fields/modelFieldStructure";
+export * from "./forms/fields/modelSubfield";
+export * from "./forms/fields/modelMultisubfield";
 export * from "./forms/formGenerator";

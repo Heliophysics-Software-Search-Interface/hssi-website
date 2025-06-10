@@ -1,7 +1,7 @@
 import {
 	FieldRequirement, ModelSubfield,
 	RequirementLevel,
-} from "../loader";
+} from "../../loader";
 
 const multiFieldRowStyle = "multi-field-row";
 const multiFieldPartStyle = "multi-field-part";

@@ -8,6 +8,8 @@ const multiFieldRowStyle = "multi-field-row";
 const multiFieldPartStyle = "multi-field-part";
 const multiFieldContainerStyle = "multifield-container";
 
+type MultiField = ModelSubfield & {destroyRow?: () => void };
+
 /**
  * A special type of {@link ModelSubfield} which can be used to dynamically 
  * allow users to add multiple entries of the same type to a field
@@ -15,7 +17,7 @@ const multiFieldContainerStyle = "multifield-container";
 export class ModelMultiSubfield extends ModelSubfield {
 
 	private multiFieldContainerElement: HTMLDivElement = null;
-	private multiFields: ModelSubfield[] = [];
+	private multiFields: MultiField[] = [];
 	private newItemButton: HTMLButtonElement = null;
 
 	public get multi(): boolean { return true; }
@@ -42,7 +44,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		// create field
 		const fieldContainer = document.createElement("div") as HTMLDivElement;
 		fieldContainer.classList.add(multiFieldPartStyle);
-		const field = this.createMultifield();
+		const field = this.createMultifield() as MultiField;
 		field.buildInterface(fieldContainer, false);
 
 		// use the requirement object for the multifield instead of each part 
@@ -56,13 +58,14 @@ export class ModelMultiSubfield extends ModelSubfield {
 		removeButton.innerHTML = "<i class='fa fa-close'></i>";
 
 		// remove on click
-		removeButton.addEventListener("click", () => {
+		field.destroyRow = () => {
 			const fieldIndex = this.multiFields.indexOf(field);
 			this.multiFields.splice(fieldIndex, 1);
 			field.destroy();
 			multiRow.remove();
 			this.requirement.applyRequirementWarningStyles();
-		});
+		}
+		removeButton.addEventListener("click", field.destroyRow);
 
 		// add elements to root node
 		this.multiFields.push(field);
@@ -133,9 +136,19 @@ export class ModelMultiSubfield extends ModelSubfield {
 		}
 	}
 
+	public applyValidityStyles(): void {
+		if(this.requirement == null) return;
+		this.requirement.applyRequirementWarningStyles();
+		for(const multifield of this.multiFields){
+			for(const subfield of multifield.getSubfields()){
+				subfield.applyValidityStyles();
+			}
+		}
+	}
+
 	public clearMultifields(): void {
 		for(const field of this.multiFields){
-			field.destroy();
+			field.destroyRow();
 		}
 		this.multiFields.length = 0;
 	}
@@ -162,4 +175,5 @@ export class ModelMultiSubfield extends ModelSubfield {
 		}
 		return arr;
 	}
+	
 }

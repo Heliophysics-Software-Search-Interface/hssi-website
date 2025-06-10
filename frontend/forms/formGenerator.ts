@@ -136,6 +136,11 @@ export class FormGenerator {
         return valid;
     }
 
+    private updateAllFieldValidityStyles(): void {
+        const fields = this.getAllRelevantFields();
+        for(const field of fields) field.applyValidityStyles();
+    }
+
     private getCsrfTokenValue(): string {
         const token = (
             this.formElement.querySelector(
@@ -287,13 +292,14 @@ export class FormGenerator {
     }
 
     public static fillForm(data: JSONObject): void {
+        const fields = this.instance.getRootFields();
         for(const key in data) {
             const value = data[key];
-            const fields = this.instance.getRootFields();
             const field = fields.find(f => f.name === key);
             if(field) {
                 field.fillField(value);
             }
         }
+        this.instance.updateAllFieldValidityStyles();
     }
 }

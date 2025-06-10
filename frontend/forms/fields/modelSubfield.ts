@@ -180,6 +180,14 @@ export class ModelSubfield {
 
 	/// Public functionality ---------------------------------------------------
 
+	public applyValidityStyles(): void {
+		if(this.requirement == null) return;
+		this.requirement.applyRequirementWarningStyles();
+		for(const subfield of this.subfields){
+			subfield.applyValidityStyles();
+		}
+	}
+
 	public fillField(data: JSONValue): void {
 		
 		if(data instanceof Array) {

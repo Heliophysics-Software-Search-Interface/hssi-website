@@ -1,4 +1,4 @@
-import { InputWidget } from "../../loader";
+import { InputWidget, Spinner } from "../../loader";
 
 const describeApiEndpoint = "/api/describe";
 
@@ -31,12 +31,20 @@ export class AutofillFormUrlWidget extends InputWidget {
             this.parentField.requirement.applyRequirementWarningStyles();
             return;
         }
+        
+        const targetUrl = this.inputElement.value.trim();
+        const requestUrl = describeApiEndpoint + `?target=${targetUrl}`;
 
-        const requestUrl = (
-            describeApiEndpoint + 
-            `?target=${this.inputElement.value}`
-        );
-        const data = await (await fetch(requestUrl)).json();
-        console.log(`described repo at ${this.inputElement.value}`, data);
+        try {
+            Spinner.showSpinner("Fetching metadata from repository, this may take a moment");
+            const data = await (await fetch(requestUrl)).json();
+            console.log(`described repo at ${this.inputElement.value}`, data);
+            Spinner.hideSpinner();
+        } 
+
+        catch (e) {
+            Spinner.hideSpinner();
+            console.error(`Error fetching metadata from ${targetUrl}:`, e);
+        }
     }
 }

@@ -81,5 +81,3 @@ export class Spinner {
         this.instance.hide();
     }
 }
-
-(window as any).Spinner = Spinner;

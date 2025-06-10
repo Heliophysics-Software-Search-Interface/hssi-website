@@ -1,6 +1,7 @@
 import {
 	FieldRequirement, ModelSubfield,
 	RequirementLevel,
+	type JSONArray,
 } from "../../loader";
 
 const multiFieldRowStyle = "multi-field-row";
@@ -99,6 +100,15 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.buildNewMultifield();
 	}
 
+	public fillMultiFields(data: JSONArray): void {
+		this.clearMultifields();
+		for(let i = 0; i < data.length; i++){
+			const value = data[i];
+			this.buildNewMultifield();
+			this.multiFields[i].fillField(value);
+		}
+	}
+
     /// Overriden funcitonality ------------------------------------------------
 
 	public buildInterface(
@@ -121,6 +131,13 @@ export class ModelMultiSubfield extends ModelSubfield {
 		for(const field of this.multiFields){
 			field.requirement = this.requirement;
 		}
+	}
+
+	public clearMultifields(): void {
+		for(const field of this.multiFields){
+			field.destroy();
+		}
+		this.multiFields.length = 0;
 	}
 
 	public destroy(): void {

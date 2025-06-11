@@ -62,11 +62,12 @@ def codemeta_to_formdict(data: dict) -> dict:
     form_authors = []
     data_authors = data.get("authors", [])
     for entry in data_authors:
-        form_entry = {}
         result = entry.get("result", {})
-        form_entry[names.FIELD_AUTHORS] = result.get("name", "")
-        form_entry[names.FIELD_AUTHORIDENTIFIER] = result.get("url", "")
-        form_authors.append(form_entry)
+        if result:
+            author = {}
+            author[names.FIELD_AUTHORS] = result.get("name", "")
+            author[names.FIELD_AUTHORIDENTIFIER] = result.get("url", "")
+            form_authors.append(author)
     if form_authors: formdict[names.FIELD_AUTHORS] = form_authors
     
     # search for software name

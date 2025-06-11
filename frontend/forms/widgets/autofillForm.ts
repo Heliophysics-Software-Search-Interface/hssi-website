@@ -1,6 +1,6 @@
-import { InputWidget, Spinner } from "../../loader";
+import { FormGenerator, InputWidget, Spinner } from "../../loader";
 
-const describeApiEndpoint = "/api/describe";
+const describeApiEndpoint = "/api/describe_form";
 
 export class AutofillFormUrlWidget extends InputWidget {
 
@@ -39,6 +39,7 @@ export class AutofillFormUrlWidget extends InputWidget {
             Spinner.showSpinner("Fetching metadata from repository, this may take a moment");
             const data = await (await fetch(requestUrl)).json();
             console.log(`described repo at ${this.inputElement.value}`, data);
+            FormGenerator.fillForm(data);
             Spinner.hideSpinner();
         } 
 

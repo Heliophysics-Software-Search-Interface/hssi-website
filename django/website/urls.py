@@ -18,6 +18,7 @@ urlpatterns = [
     path('api/model_choices/<str:model_name>/', views.exposed_models.get_model_choices),
     path('api/model_form/<str:model_name>/', views.exposed_models.model_form),
     path('api/describe', views.somef.describe_view),
+    path('api/describe_form', views.somef.form_fill_view),
     #path('submit/success/', submissions.success, name='submitted'),
     #path('submit/<id>/', submissions.edit, name="edit_submission"),
     path('team/', views.team, name="team"),

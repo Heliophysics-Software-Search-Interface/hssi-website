@@ -1,6 +1,6 @@
 import { Widget, type AnyInputElement } from "../../loader";
 
-abstract class InputWidget extends Widget {
+export abstract class InputWidget extends Widget {
 
     protected inputElement: HTMLInputElement;
 

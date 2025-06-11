@@ -136,6 +136,11 @@ export class FormGenerator {
         return valid;
     }
 
+    private updateAllFieldValidityStyles(): void {
+        const fields = this.getAllRelevantFields();
+        for(const field of fields) field.applyValidityStyles();
+    }
+
     private getCsrfTokenValue(): string {
         const token = (
             this.formElement.querySelector(
@@ -199,7 +204,7 @@ export class FormGenerator {
         return fields;
     }
 
-    private static formGenerator: FormGenerator = null;
+    private static instance: FormGenerator = null;
     private static structureData: ModelStructureData = null;
 
     /** 
@@ -209,7 +214,7 @@ export class FormGenerator {
     public static async generateForm(fields: ModelSubfield[] = null): Promise<void> {
 
         // warn about singleton resetting
-        if(this.formGenerator != null) {
+        if(this.instance != null) {
             console.warn("form generator running multiple times on same page");
         }
 
@@ -281,8 +286,20 @@ export class FormGenerator {
         else generator.fields = fields;
 
         // apply the singleton instance
-        this.formGenerator = generator;
-        this.formGenerator.buildForm();
+        this.instance = generator;
+        this.instance.buildForm();
         
+    }
+
+    public static fillForm(data: JSONObject): void {
+        const fields = this.instance.getRootFields();
+        for(const key in data) {
+            const value = data[key];
+            const field = fields.find(f => f.name === key);
+            if(field) {
+                field.fillField(value);
+            }
+        }
+        this.instance.updateAllFieldValidityStyles();
     }
 }

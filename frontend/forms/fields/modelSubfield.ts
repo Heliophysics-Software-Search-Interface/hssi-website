@@ -3,7 +3,7 @@ import {
 	Widget, ModelMultiSubfield, FieldRequirement,
     type PropertyContainer, type SerializedSubfield, type JSONValue,
 	type JSONObject,
-} from "../loader";
+} from "../../loader";
 
 const labelStyle = "custom-label";
 const tooltipWrapperStyle = "tooltip-wrapper";
@@ -180,6 +180,54 @@ export class ModelSubfield {
 
 	/// Public functionality ---------------------------------------------------
 
+	public applyValidityStyles(): void {
+		if(this.requirement == null) return;
+		this.requirement.applyRequirementWarningStyles();
+		for(const subfield of this.subfields){
+			subfield.applyValidityStyles();
+		}
+	}
+
+	public fillField(data: JSONValue): void {
+		
+		if(data instanceof Array) {
+			if(this instanceof ModelMultiSubfield) this.fillMultiFields(data);
+			else {
+				console.warn(`Data for ${this.name} is an array but field is not multi`);
+			}
+			return;
+		}
+
+		if(this.widget == null) {
+			console.warn(`Widget for ${this.name} is not built yet`);
+			return;
+		}
+
+		// if its a nested field data
+		else if(data instanceof Object) {
+			this.expandSubfields();
+			const fields = this.getSubfields();
+			for(const key in data){
+				const value = data[key];
+
+				// check each field/subfield of this field and apply the data
+				if(this.name === key) {
+					this.fillField(value);
+					continue;
+				}
+				for(const subfield of fields){
+					if(subfield.name === key){
+						subfield.fillField(value);
+						break;
+					}
+				}
+			}
+		}
+
+		// it's a non-recursive value (almost certainly a string)
+		else this.widget.getInputElement().value = data.toString();
+	}
+
 	public meetsRequirementLevel(): boolean {
 		if(
 			this.requirement == null || 
@@ -262,7 +310,7 @@ export class ModelSubfield {
 	}
 
 	public subfieldsHidden(): boolean {
-		return( 
+		return(
 			this.subfieldContainer == null || 
 			this.subfieldContainer.style.display == "none"
 		);

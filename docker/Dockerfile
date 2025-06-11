@@ -6,7 +6,7 @@ ENV REFRESHED_AT=2025-01-15
 ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && \
-    apt-get -y install gcc libpq-dev logrotate procps && \
+    apt-get -y install gcc g++ libpq-dev logrotate procps && \
     rm -rf /var/lib/apt/lists/*
 
 ADD django-requirements.pip .

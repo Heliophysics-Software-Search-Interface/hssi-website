@@ -36,14 +36,14 @@ def describe_view(req: request.HttpRequest) -> response.JsonResponse:
 def form_fill_view(req: request.HttpRequest) -> response.HttpResponse:
     return response.HttpResponse(
         json.dumps(
-            codemeta_to_formdict(
+            somef_to_formdict(
                 json.loads(describe_view(req).content.decode('utf-8'))
             )
         ),
         content_type="application/json"
     )
 
-def codemeta_to_formdict(data: dict) -> dict:
+def somef_to_formdict(data: dict) -> dict:
     """
     converts all fields in the specified codemeta json ld dict, to a dict
     that is compatible for filling out the submission form fields
@@ -172,7 +172,7 @@ def codemeta_to_formdict(data: dict) -> dict:
             formdict[names.FIELD_VERSIONNUMBER][names.FIELD_VERSIONDATE] = form_verdate
 
     # Programming Languages
-    data_proglangs = data.get("programming_language", [])
+    data_proglangs = data.get("programming_languages", [])
     form_proglangs = []
     for entry in data_proglangs:
         result = entry.get("result", None)

@@ -1,8 +1,9 @@
 import subprocess, json, uuid, urllib.parse
-from difflib import SequenceMatcher
 import dateutil.parser
-from packaging import version
 import re
+from functools import reduce
+from difflib import SequenceMatcher
+from packaging import version
 
 from django.http import response, request
 
@@ -97,27 +98,28 @@ def somef_to_formdict(data: dict) -> dict:
 
     # search for description
     data_desc = data.get("description", [])
-    form_desc = ""
+    form_descs = []
     confidence = 0
     for entry in data_desc:
         result = entry.get("result", None)
         res_conf = entry.get("confidence", 0)
-        if result and res_conf >= confidence:
+        if result:
             val = result.get("value", None)
             if val:
                 # if the descriptions have similar confidence
-                if abs(res_conf - confidence) < 0.02:
-                    # use the more confident choice them if they are similar,
-                    # otherwise combine them together
-                    similarity = SequenceMatcher(None, form_desc, val).ratio()
-                    if similarity > 0.8: 
-                        form_desc = val if res_conf > confidence else form_desc
-                    else: form_desc += "\n" + val
+                if abs(res_conf - confidence) <= 0.1:
+                    # skip if they are similar, otherwise combine them together
+                    similarity = reduce(
+                        lambda acc, x: max(acc, SequenceMatcher(None, x, val).ratio()),
+                        form_descs, 0
+                    )
+                    if similarity > 0.8: continue
+                    else: form_descs.append(val)
                     confidence = max(res_conf, confidence)
-                else: 
-                    form_desc = val
+                elif res_conf > confidence: 
+                    form_descs = [val]
                     confidence = res_conf
-    if form_desc: formdict[names.FIELD_DESCRIPTION] = form_desc
+    if form_descs: formdict[names.FIELD_DESCRIPTION] = '\n'.join(form_descs)
 
     # search for publication date
     data_pubdate = data.get("date_created", [])

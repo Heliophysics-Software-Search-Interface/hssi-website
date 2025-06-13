@@ -25,7 +25,6 @@ body {
   box-shadow: 5px 5px 10px #333;
 }
 
-
 .hssi-spinner-popup h5 {
   margin-bottom: 10px;
 }
@@ -46,4 +45,33 @@ body {
 
 .hssi-spinner-popup.targeted p {
   margin: 0;
+}
+
+.hssi-popup-dialogue {
+  background-color: #ececec;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 15px;
+  border-radius: 5px;
+  box-shadow: 5px 5px 10px #333;
+  max-width: 600px;
+}
+
+.hssi-popup-header {
+  background-color: #e3e3e3;
+  font-size: large;
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.hssi-popup-header button {
+  color: orangered;
+  text-shadow: #3338 1px 1px 3px;
+  cursor: pointer;
+}
+
+.hssi-popup-content {
+  margin: 15px;
 }

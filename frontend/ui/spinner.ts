@@ -1,5 +1,5 @@
+export const stylePopupBackdrop = "hssi-spinner-backdrop";
 const styleSpinnerPopup = "hssi-spinner-popup";
-const styleSpinnerBackdrop = "hssi-spinner-backdrop";
 const faSpinner = "<i class='fa fa-spinner fa-spin'></i>";
 
 export class Spinner {
@@ -13,7 +13,7 @@ export class Spinner {
     private constructor() {
 
         this.backdropElement = document.createElement("div");
-        this.backdropElement.classList.add(styleSpinnerBackdrop);
+        this.backdropElement.classList.add(stylePopupBackdrop);
         this.backdropElement.style.top = "0";
         this.backdropElement.style.left = "0";
         this.backdropElement.style.width = "100vw";

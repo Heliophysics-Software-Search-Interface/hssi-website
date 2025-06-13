@@ -9,6 +9,7 @@ export * from "./util";
 export * from "./simpleEvent";
 
 export * from "./ui/spinner";
+export * from "./ui/popupDialogue";
 
 export * from "./forms/fieldRequirement";
 export * from "./forms/widgets/widget";

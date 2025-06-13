@@ -5,6 +5,7 @@ import {
 	type JSONArray,
 } from "../../loader";
 
+export const faCloseIcon = "<i class='fa fa-close'></i>";
 const multiFieldRowStyle = "multi-field-row";
 const multiFieldPartStyle = "multi-field-part";
 const multiFieldContainerStyle = "multifield-container";
@@ -56,7 +57,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		// create button for removing the field entry
 		const removeButton = document.createElement("button") as HTMLButtonElement;
 		removeButton.type = "button";
-		removeButton.innerHTML = "<i class='fa fa-close'></i>";
+		removeButton.innerHTML = faCloseIcon;
 
 		// remove on click
 		field.destroyRow = () => {

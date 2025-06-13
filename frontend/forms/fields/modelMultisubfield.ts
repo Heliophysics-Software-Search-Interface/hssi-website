@@ -1,6 +1,7 @@
 import {
 	FieldRequirement, ModelSubfield,
 	RequirementLevel,
+	type AnyInputElement,
 	type JSONArray,
 } from "../../loader";
 
@@ -176,4 +177,16 @@ export class ModelMultiSubfield extends ModelSubfield {
 		return arr;
 	}
 	
+	public getInputElement(): AnyInputElement {
+		for(let i = 1; i >= 0; i--) {
+			for(const field of this.multiFields) {
+				const input = field.getInputElement();
+				if(input){
+					if(i > 0 && input.validationMessage.length <= 0) continue;
+					return input;
+				}
+			}
+		}
+		return null;
+	}
 }

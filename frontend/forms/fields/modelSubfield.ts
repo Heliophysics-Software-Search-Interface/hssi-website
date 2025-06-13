@@ -3,6 +3,7 @@ import {
 	Widget, ModelMultiSubfield, FieldRequirement,
     type PropertyContainer, type SerializedSubfield, type JSONValue,
 	type JSONObject,
+	type AnyInputElement,
 } from "../../loader";
 
 const labelStyle = "custom-label";
@@ -240,7 +241,12 @@ export class ModelSubfield {
 
 	public hasValidInput(): boolean {
 		const value = this.widget?.getInputValue();
-		return value != null && value.length > 0;
+		if(value == null || value.length <= 0) return false;
+
+		const inputElem = this.widget?.getInputElement();
+		if(inputElem) return inputElem.checkValidity();
+
+		return true;
 	}
 
 	/** 
@@ -318,6 +324,10 @@ export class ModelSubfield {
 
 	public getSubfields(): ModelSubfield[] {
 		return this.subfields;
+	}
+
+	public getInputElement(): AnyInputElement {
+		return this.widget?.getInputElement() ?? null;
 	}
 
 	/** 

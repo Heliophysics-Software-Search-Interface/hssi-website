@@ -18,7 +18,7 @@ export class PopupDialogue {
         return "Popup Dialogue";
     }
 
-    public constructor() {
+    protected constructor() {
         this.createElement();
         this.createHeader();
         this.createContent();
@@ -65,10 +65,6 @@ export class PopupDialogue {
         const content = document.createElement("div");
         content.classList.add(stylePopupContent);
         this.contentElement = content;
-        this.contentElement.innerText = (
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do " +
-            "eiusmod tempor incididunt ut labore et dolore magna aliqua."
-        )
         this.element.appendChild(content);
     }
 

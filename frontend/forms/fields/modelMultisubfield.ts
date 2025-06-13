@@ -3,6 +3,7 @@ import {
 	RequirementLevel,
 	type AnyInputElement,
 	type JSONArray,
+	type JSONValue,
 } from "../../loader";
 
 export const faCloseIcon = "<i class='fa fa-close'></i>";
@@ -112,6 +113,11 @@ export class ModelMultiSubfield extends ModelSubfield {
 			this.buildNewMultifield();
 			this.multiFields[i].fillField(value);
 		}
+	}
+
+	public addNewMultifieldWithValue(value: JSONValue): void {
+		this.buildNewMultifield();
+		this.multiFields[this.multiFields.length - 1].fillField(value);
 	}
 
     /// Overriden funcitonality ------------------------------------------------

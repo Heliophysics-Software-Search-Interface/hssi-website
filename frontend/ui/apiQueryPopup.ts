@@ -19,8 +19,8 @@ export abstract class ApiQueryPopup extends PopupDialogue {
     
     protected targetField: ModelSubfield = null;
     protected formElement: HTMLFormElement = null;
-    protected queryInputElement: HTMLInputElement = this.queryInputElement ?? null;
-    protected resultBox: HTMLDivElement = this.resultBox ?? null;
+    protected queryInputElement!: HTMLInputElement;
+    protected resultBox!: HTMLDivElement;
 
     protected abstract get endpoint(): string;
 
@@ -34,6 +34,11 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         super.createContent();
         this.createQueryForm();
         this.createResultBox();
+        this.onShow.addListener(() => {
+            this.queryInputElement.focus();
+            this.queryInputElement.value = "";
+            this.clearResults();
+        });
     }
 
     /** the form which will be used to submit queries to the external api */
@@ -104,6 +109,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
             const results = await this.getQueryResults(query);
             console.log("Query results: ", results);
             this.handleQueryResults(results);
+            this.centerPopupHorizontally();
             Spinner.hideSpinner(this.resultBox);
         } 
         catch(e) { 
@@ -114,8 +120,8 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 
     /** empty all search results from the query search box */
     public clearResults(): void {
-        for(const row of this.resultBox.children){
-            row.remove();
+        while(this.resultBox.firstChild) {
+            this.resultBox.removeChild(this.resultBox.firstChild);
         }
     }
 }

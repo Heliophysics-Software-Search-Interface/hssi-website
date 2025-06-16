@@ -1,5 +1,5 @@
 import { 
-    stylePopupBackdrop, faCloseIcon,
+    stylePopupBackdrop, faCloseIcon, SimpleEvent,
 } from "../loader";
 
 export const stylePopupDialogue = "hssi-popup-dialogue";
@@ -14,14 +14,18 @@ export class PopupDialogue {
     protected titleElement: HTMLElement = null;
     protected contentElement: HTMLDivElement = null;
 
+    protected onShow: SimpleEvent = new SimpleEvent();
+
     protected get title(): string {
         return "Popup Dialogue";
     }
 
     protected constructor() {
-        this.createElement();
-        this.createHeader();
-        this.createContent();
+        setTimeout(() => {
+            this.createElement();
+            this.createHeader();
+            this.createContent();
+        }, 0);
     }
 
     protected createElement(): void {
@@ -71,10 +75,15 @@ export class PopupDialogue {
     public centerPopup(): void {
         if(this.element == null) return;
 
-        const adjustedWidth = window.innerWidth - this.element.offsetWidth;
+        this.centerPopupHorizontally();
         const adjustedHeight = window.innerHeight - this.element.offsetHeight;
-        this.element.style.left = `${adjustedWidth / 2 + window.scrollX}px`;
         this.element.style.top = `${adjustedHeight / 2 + window.scrollY}px`;
+    }
+    
+    public centerPopupHorizontally(): void {
+        if(this.element == null) return;
+        const adjustedWidth = window.innerWidth - this.element.offsetWidth;
+        this.element.style.left = `${adjustedWidth / 2 + window.scrollX}px`;
     }
 
     /// Static -----------------------------------------------------------------
@@ -111,6 +120,7 @@ export class PopupDialogue {
             this.hidePopup();
         }
         this.showBackdrop();
+        popup.onShow.triggerEvent();
         this.currentPopup = popup;
         this.currentPopup.element.style.display = "block";
         this.currentPopup.centerPopup();

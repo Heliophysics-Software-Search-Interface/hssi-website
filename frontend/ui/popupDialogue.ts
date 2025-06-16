@@ -15,6 +15,7 @@ export class PopupDialogue {
     protected contentElement: HTMLDivElement = null;
 
     protected onShow: SimpleEvent = new SimpleEvent();
+    protected onHide: SimpleEvent = new SimpleEvent();
 
     protected get title(): string {
         return "Popup Dialogue";
@@ -129,6 +130,7 @@ export class PopupDialogue {
     public static hidePopup(): void {
         if(this.currentPopup) {
             this.currentPopup.element.style.display = "none";
+            this.currentPopup.onHide.triggerEvent();
             this.currentPopup = null;
         }
         this.getBackdrop().style.display = "none";

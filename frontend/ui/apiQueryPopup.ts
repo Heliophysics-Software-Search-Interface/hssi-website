@@ -38,8 +38,10 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         this.createResultBox();
         this.onShow.addListener(() => {
             this.queryInputElement.focus();
-            this.queryInputElement.value = "";
             this.clearResults();
+        });
+        this.onHide.addListener(() => {
+            this.queryInputElement.value = "";
         });
     }
 
@@ -128,6 +130,12 @@ export abstract class ApiQueryPopup extends PopupDialogue {
             console.error(e);
             Spinner.hideSpinner(this.resultBox); 
         }
+    }
+
+    public withQuery(query: string): ApiQueryPopup {
+        this.queryInputElement.value = query;
+        this.submitQuery(query);
+        return this;
     }
 
     /** empty all search results from the query search box */

@@ -4,6 +4,8 @@ import {
 } from '../loader';
 
 const styleResultBox = "hssi-query-results";
+const styleRow = "row";
+const styleColumn = "column";
 export const faSearchIcon = "<i class='fa fa-search'></i>";
 
 export type ApiQueryResult = {
@@ -77,18 +79,12 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 
     protected addResultRow(result: ApiQueryResult): void {
         const row = document.createElement("div") as HTMLDivElement;
-        row.style.width = "100%";
-        row.style.display = "flex";
-        row.style.gap = "5px";
+        row.classList.add(styleRow);
 
         const leftColumn = document.createElement("div") as HTMLDivElement;
-        leftColumn.style.textAlign = "left";
+        leftColumn.classList.add(styleColumn);
         const rightColumn = document.createElement("div") as HTMLDivElement;
-        rightColumn.style.textAlign = "right";
-        rightColumn.style.display = "flex";
-        rightColumn.style.flexDirection = "column";
-        rightColumn.style.justifyContent = "center";
-        rightColumn.style.marginLeft = "auto";
+        rightColumn.classList.add(styleColumn);
 
         leftColumn.appendChild(result.textContent);
         

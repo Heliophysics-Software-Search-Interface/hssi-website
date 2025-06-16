@@ -76,7 +76,7 @@ body {
 }
 
 .hssi-popup-dialogue .hssi-query-results>div:nth-child(even) {
-  background: #3332;
+  background: #3331;
 }
 
 .hssi-popup-dialogue .hssi-query-results button {
@@ -90,6 +90,24 @@ body {
 .hssi-popup-dialogue .hssi-query-results button:hover {
   background-color: #3338;
   color: white;
+}
+
+.hssi-popup-dialogue .hssi-query-results .row {
+  display: flex;
+  width: 100%;
+  gap: 5px;
+}
+
+.hssi-popup-dialogue .hssi-query-results .column {
+  text-align: left;
+}
+
+.hssi-popup-dialogue .hssi-query-results .row>.column:nth-last-child(1) {
+  text-align: right;
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .hssi-popup-header {

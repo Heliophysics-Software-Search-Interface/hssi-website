@@ -1,9 +1,12 @@
 import {
 	FieldRequirement, ModelSubfield,
 	RequirementLevel,
+	type AnyInputElement,
 	type JSONArray,
+	type JSONValue,
 } from "../../loader";
 
+export const faCloseIcon = "<i class='fa fa-close'></i>";
 const multiFieldRowStyle = "multi-field-row";
 const multiFieldPartStyle = "multi-field-part";
 const multiFieldContainerStyle = "multifield-container";
@@ -55,7 +58,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		// create button for removing the field entry
 		const removeButton = document.createElement("button") as HTMLButtonElement;
 		removeButton.type = "button";
-		removeButton.innerHTML = "<i class='fa fa-close'></i>";
+		removeButton.innerHTML = faCloseIcon;
 
 		// remove on click
 		field.destroyRow = () => {
@@ -110,6 +113,11 @@ export class ModelMultiSubfield extends ModelSubfield {
 			this.buildNewMultifield();
 			this.multiFields[i].fillField(value);
 		}
+	}
+
+	public addNewMultifieldWithValue(value: JSONValue): void {
+		this.buildNewMultifield();
+		this.multiFields[this.multiFields.length - 1].fillField(value);
 	}
 
     /// Overriden funcitonality ------------------------------------------------
@@ -176,4 +184,16 @@ export class ModelMultiSubfield extends ModelSubfield {
 		return arr;
 	}
 	
+	public getInputElement(): AnyInputElement {
+		for(let i = 1; i >= 0; i--) {
+			for(const field of this.multiFields) {
+				const input = field.getInputElement();
+				if(input){
+					if(i > 0 && input.validationMessage.length <= 0) continue;
+					return input;
+				}
+			}
+		}
+		return null;
+	}
 }

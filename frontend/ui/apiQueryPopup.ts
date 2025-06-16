@@ -77,12 +77,26 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 
     protected addResultRow(result: ApiQueryResult): void {
         const row = document.createElement("div") as HTMLDivElement;
-        row.appendChild(result.textContent);
+        row.style.width = "100%";
+        row.style.display = "flex";
+        row.style.gap = "5px";
+
+        const leftColumn = document.createElement("div") as HTMLDivElement;
+        leftColumn.style.textAlign = "left";
+        const rightColumn = document.createElement("div") as HTMLDivElement;
+        rightColumn.style.textAlign = "right";
+        rightColumn.style.display = "flex";
+        rightColumn.style.flexDirection = "column";
+        rightColumn.style.justifyContent = "center";
+        rightColumn.style.marginLeft = "auto";
+
+        leftColumn.appendChild(result.textContent);
         
         const link = document.createElement("a") as HTMLAnchorElement;
+        link.innerText = result.id;
         link.href = result.id;
         link.target = "_blank";
-        row.appendChild(link);
+        leftColumn.appendChild(link);
 
         const selectButton = document.createElement("button") as HTMLButtonElement;
         selectButton.type = "button";
@@ -96,8 +110,10 @@ export abstract class ApiQueryPopup extends PopupDialogue {
             }
             PopupDialogue.hidePopup();
         });
-        row.appendChild(selectButton);
+        rightColumn.appendChild(selectButton);
 
+        row.appendChild(leftColumn);
+        row.appendChild(rightColumn);
         this.resultBox.appendChild(row);
     }
 

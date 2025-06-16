@@ -65,12 +65,31 @@ body {
 .hssi-popup-dialogue button {
   width: auto;
   align-self: start;
+  background-color: #ececec;
 }
 
 .hssi-popup-dialogue .hssi-query-results {
+  padding: 5px;
   margin-top: 10px;
   outline: 1px solid #3333;
   min-height: 50px;
+}
+
+.hssi-popup-dialogue .hssi-query-results>div:nth-child(even) {
+  background: #3332;
+}
+
+.hssi-popup-dialogue .hssi-query-results button {
+  border-radius: 5px;
+  outline: 1px solid #3338;
+  color: black;
+  padding: 5px;
+  margin: 5px;
+}
+
+.hssi-popup-dialogue .hssi-query-results button:hover {
+  background-color: #3338;
+  color: white;
 }
 
 .hssi-popup-header {

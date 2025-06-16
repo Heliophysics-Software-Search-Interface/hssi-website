@@ -77,12 +77,24 @@ export class FieldRequirement {
 		let note = "";
 		switch(this.level){
 			case RequirementLevel.MANDATORY: 
-				note = "This field is mandatory";
+				note = "Mandatory";
 				break;
 			case RequirementLevel.RECOMMENDED: 
-				note = "This field is recommended";
+				note = "Recommended";
+				break;
+			default:
+				note = "Invalid";
 				break;
 		}
+
+		const vNote = this.field.getInputElement()?.validationMessage ?? "";
+		if(note.length > 0 && vNote.length > 0) {
+			note += " - " + vNote;
+			if(this.level < RequirementLevel.MANDATORY) {
+				"(Or leave blank if not applicable)";
+			}
+		}
+
 		return note;
 	}
 

@@ -3,8 +3,9 @@
  */
 
 import { 
-	FieldRequirement, CharWidget, NumberWidget, UrlWidget, EmailWidget, 
-	DateWidget, TextAreaWidget, CheckboxWidget, Widget, ModelBox, FormGenerator,
+	CharWidget, NumberWidget, UrlWidget, EmailWidget, DateWidget, 
+	TextAreaWidget, CheckboxWidget, Widget, AutofillFormUrlWidget, 
+	ModelBox, FormGenerator,
 } from "./loader";
 
 function main() {
@@ -18,6 +19,7 @@ function main() {
 		DateWidget,
 		CheckboxWidget,
 		TextAreaWidget,
+		AutofillFormUrlWidget,
 		ModelBox,
 	)
 

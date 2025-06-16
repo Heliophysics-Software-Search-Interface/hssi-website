@@ -6,7 +6,7 @@ ENV REFRESHED_AT=2025-01-15
 ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && \
-    apt-get -y install gcc libpq-dev logrotate procps && \
+    apt-get -y install gcc g++ libpq-dev logrotate procps && \
     rm -rf /var/lib/apt/lists/*
 
 ADD django-requirements.pip .
@@ -15,7 +15,11 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r django-requirements.pip
 
 RUN apt-get update && \
-    apt-get install -y nginx
+    apt-get install -y nginx && \
+    apt-get install git -y
+
+RUN pip install --use-deprecated=legacy-resolver git+https://github.com/Heliophysics-Software-Search-Interface/hssi-somef@master
+RUN somef configure -a
 
 WORKDIR /extensions/pip-requirements
 WORKDIR /extensions/pre-launch-scripts

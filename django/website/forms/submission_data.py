@@ -298,6 +298,18 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	"SubmissionForm",
 
 	# ----- Sec 1 -----
+	# Code Repo
+	ModelSubfield.define(
+		name=FIELD_CODEREPOSITORYURL,
+		type=TYPE_AUTOFILLFORMURL,
+		requirement=RequirementLevel.MANDATORY.value,
+		properties={
+			PROP_LABEL: "Code Repository",
+			PROP_TT_EXPL: TTEXPL_CODEREPOSITORYURL,
+			PROP_TT_BEST: TTBEST_CODEREPOSITORYURL,
+		},
+		multi=False,
+	),
 	# Submitter
 	ModelSubfield.define(
 		name=FIELD_SUBMITTERNAME, 
@@ -322,18 +334,6 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Persistent Identifier",
 			PROP_TT_EXPL: TTEXPL_PERSISTENTIDENTIFIER,
 			PROP_TT_BEST: TTBEST_PERSISTENTIDENTIFIER,
-		},
-		multi=False,
-	),
-	# Code Repo
-	ModelSubfield.define(
-		name=FIELD_CODEREPOSITORYURL,
-		type=TYPE_URL,
-		requirement=RequirementLevel.MANDATORY.value,
-		properties={
-			PROP_LABEL: "Code Repository",
-			PROP_TT_EXPL: TTEXPL_CODEREPOSITORYURL,
-			PROP_TT_BEST: TTBEST_CODEREPOSITORYURL,
 		},
 		multi=False,
 	),

@@ -1,7 +1,7 @@
 import { 
 	RequirementLevel, Widget, ModelSubfield,
 	type WidgetType
-} from "../loader";
+} from "../../loader";
 
 export type PropertyContainer = {
 	/** the title that will be shown above the field, if not specified field name will be used */

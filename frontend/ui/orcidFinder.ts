@@ -1,7 +1,6 @@
 import { 
     ApiQueryPopup, 
-    type ApiQueryResult, 
-    type JSONArray, type JSONObject, type JSONValue 
+    type ApiQueryResult, type JSONObject, type JSONValue 
 } from "../loader";
 
 const queryMaxRows = 50;
@@ -17,9 +16,7 @@ type orcidItem = {
 
 export class OrcidFinder extends ApiQueryPopup {
     
-    public override get title(): string {
-        return "ORCID Finder";
-    }
+    public override get title(): string { return "ORCID Finder"; }
 
     protected override get endpoint(): string {
         return "https://pub.orcid.org/v3.0/expanded-search/";

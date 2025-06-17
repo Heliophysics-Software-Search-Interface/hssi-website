@@ -138,7 +138,7 @@ SUBMISSION_FORM_VERSION: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_VERSIONPID,
-		type=TYPE_URL,
+		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Version PID",
@@ -153,7 +153,7 @@ SUBMISSION_FORM_PUBLICATION: ModelStructure = ModelStructure.define(
 	"SubmissionFormPublication",
 	ModelSubfield.define(
 		name=FIELD_REFERENCEPUBLICATION,
-		type=TYPE_URL,
+		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Reference Publication",
@@ -168,7 +168,7 @@ SUBMISSION_FORM_REL_SOFTWARE: ModelStructure = ModelStructure.define(
 	"SubmissionFormRelSoftware",
 	ModelSubfield.define(
 		name=FIELD_RELATEDSOFTWARE,
-		type=TYPE_URL,
+		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Related Software",
@@ -234,7 +234,7 @@ SUBMISSION_FORM_DATASET: ModelStructure = ModelStructure.define(
 	"SubmissionFormDataset",
 	ModelSubfield.define(
 		name=FIELD_RELATEDDATASETS,
-		type=TYPE_URL,
+		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Related Datasets",
@@ -328,7 +328,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# PID
 	ModelSubfield.define(
 		name=FIELD_PERSISTENTIDENTIFIER,
-		type=TYPE_URL,
+		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Persistent Identifier",
@@ -629,7 +629,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Related Publications
 	ModelSubfield.define(
 		name=FIELD_RELATEDPUBLICATIONS,
-		type=TYPE_MODELBOX,
+		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Related Publications",

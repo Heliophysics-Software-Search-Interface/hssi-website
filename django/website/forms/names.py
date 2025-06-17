@@ -17,6 +17,7 @@ TYPE_CHECKBOX = "CheckboxWidget"
 TYPE_AUTOFILLFORMURL = "AutofillFormUrlWidget"
 TYPE_ROR = "RorWidget"
 TYPE_ORCID = "OrcidWidget"
+TYPE_DATACITEDOI = "DataciteDoiWidget"
 TYPE_MODELBOX = "ModelBox"
 
 FIELD_PERSISTENTIDENTIFIER = "persistentIdentifier"

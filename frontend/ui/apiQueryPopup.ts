@@ -132,6 +132,14 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         }
     }
 
+    public setTarget(field: ModelSubfield, useParentField: boolean = true): ApiQueryPopup {
+        this.targetField = field;
+        if (useParentField && field.parent) {
+            this.withQuery(field.parent.getInputElement().value.trim());
+        }
+        return this;
+    }
+
     public withQuery(query: string): ApiQueryPopup {
         this.queryInputElement.value = query;
         this.submitQuery(query);

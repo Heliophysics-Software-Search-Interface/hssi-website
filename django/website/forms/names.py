@@ -15,6 +15,7 @@ TYPE_DATE = "DateWidget"
 TYPE_EMAIL = "EmailWidget"
 TYPE_CHECKBOX = "CheckboxWidget"
 TYPE_AUTOFILLFORMURL = "AutofillFormUrlWidget"
+TYPE_ROR = "RorWidget"
 TYPE_MODELBOX = "ModelBox"
 
 FIELD_PERSISTENTIDENTIFIER = "persistentIdentifier"

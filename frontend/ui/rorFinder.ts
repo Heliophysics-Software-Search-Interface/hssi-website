@@ -64,7 +64,7 @@ function sortNames(names: RorName[]): RorSortedNames {
 /** interactive popup that allows a user to search for ROR ids by name */
 export class RorFinder extends ApiQueryPopup {
 
-    override get title(): string {
+    public override get title(): string {
         return "ROR Finder";
     }
 

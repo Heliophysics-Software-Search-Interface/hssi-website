@@ -9,7 +9,7 @@ import {
 	ModelBox, FormGenerator, RorWidget, 
 
 	// etc
-	RorFinder,
+	RorFinder, OrcidFinder,
 } from "./loader";
 
 function main() {
@@ -33,6 +33,7 @@ function main() {
 
 	// TODO smarter initialization
 	RorFinder.getInstance();
+	OrcidFinder.getInstance();
 }
 
 // call main when document DOM tree is finished building so that we can access

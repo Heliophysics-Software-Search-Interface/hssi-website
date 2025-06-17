@@ -4,6 +4,8 @@ import {
 } from '../loader';
 
 const styleResultBox = "hssi-query-results";
+const styleRow = "row";
+const styleColumn = "column";
 export const faSearchIcon = "<i class='fa fa-search'></i>";
 
 export type ApiQueryResult = {
@@ -19,8 +21,8 @@ export abstract class ApiQueryPopup extends PopupDialogue {
     
     protected targetField: ModelSubfield = null;
     protected formElement: HTMLFormElement = null;
-    protected queryInputElement: HTMLInputElement = this.queryInputElement ?? null;
-    protected resultBox: HTMLDivElement = this.resultBox ?? null;
+    protected queryInputElement!: HTMLInputElement;
+    protected resultBox!: HTMLDivElement;
 
     protected abstract get endpoint(): string;
 
@@ -34,6 +36,13 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         super.createContent();
         this.createQueryForm();
         this.createResultBox();
+        this.onShow.addListener(() => {
+            this.queryInputElement.focus();
+            this.clearResults();
+        });
+        this.onHide.addListener(() => {
+            this.queryInputElement.value = "";
+        });
     }
 
     /** the form which will be used to submit queries to the external api */
@@ -72,12 +81,20 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 
     protected addResultRow(result: ApiQueryResult): void {
         const row = document.createElement("div") as HTMLDivElement;
-        row.appendChild(result.textContent);
+        row.classList.add(styleRow);
+
+        const leftColumn = document.createElement("div") as HTMLDivElement;
+        leftColumn.classList.add(styleColumn);
+        const rightColumn = document.createElement("div") as HTMLDivElement;
+        rightColumn.classList.add(styleColumn);
+
+        leftColumn.appendChild(result.textContent);
         
         const link = document.createElement("a") as HTMLAnchorElement;
+        link.innerText = result.id;
         link.href = result.id;
         link.target = "_blank";
-        row.appendChild(link);
+        leftColumn.appendChild(link);
 
         const selectButton = document.createElement("button") as HTMLButtonElement;
         selectButton.type = "button";
@@ -91,8 +108,10 @@ export abstract class ApiQueryPopup extends PopupDialogue {
             }
             PopupDialogue.hidePopup();
         });
-        row.appendChild(selectButton);
+        rightColumn.appendChild(selectButton);
 
+        row.appendChild(leftColumn);
+        row.appendChild(rightColumn);
         this.resultBox.appendChild(row);
     }
 
@@ -104,6 +123,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
             const results = await this.getQueryResults(query);
             console.log("Query results: ", results);
             this.handleQueryResults(results);
+            this.centerPopupHorizontally();
             Spinner.hideSpinner(this.resultBox);
         } 
         catch(e) { 
@@ -112,10 +132,24 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         }
     }
 
+    public setTarget(field: ModelSubfield, useParentField: boolean = true): ApiQueryPopup {
+        this.targetField = field;
+        if (useParentField && field.parent) {
+            this.withQuery(field.parent.getInputElement().value.trim());
+        }
+        return this;
+    }
+
+    public withQuery(query: string): ApiQueryPopup {
+        this.queryInputElement.value = query;
+        this.submitQuery(query);
+        return this;
+    }
+
     /** empty all search results from the query search box */
     public clearResults(): void {
-        for(const row of this.resultBox.children){
-            row.remove();
+        while(this.resultBox.firstChild) {
+            this.resultBox.removeChild(this.resultBox.firstChild);
         }
     }
 }

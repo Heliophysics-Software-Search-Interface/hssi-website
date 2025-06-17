@@ -28,17 +28,31 @@ function sortNames(names: RorName[]): RorSortedNames {
         acronym: null,
         labels: []
     };
-    for(const name of names) {
-        if(name.lang !== "en") continue;
-        if(name.types.includes("ror_display")) {
-            sortedNames.displayName = name;
+
+    // loop allows us to prioritize english names first
+    let onlyEnglish = true;
+    while(true){
+
+        // try to sort names into relevant categories
+        for(const name of names) {
+            if(onlyEnglish && name.lang !== "en") continue;
+            if(name.types.includes("ror_display")) {
+                sortedNames.displayName = name;
+            }
+            else if(name.types.includes("acronym")) {
+                sortedNames.acronym = name;
+            }
+            else if(name.types.includes("label")) {
+                sortedNames.labels.push(name);
+                if(!sortedNames.displayName) sortedNames.displayName = name;
+            }
         }
-        else if(name.types.includes("acronym")) {
-            sortedNames.acronym = name;
-        }
-        else if(name.types.includes("label")) {
-            sortedNames.labels.push(name);
-            if(!sortedNames.displayName) sortedNames.displayName = name;
+
+        // only try other languages if english is not available
+        if (!onlyEnglish) break;
+        else {
+            if (!sortedNames.displayName) onlyEnglish = false;
+            else break;
         }
     }
     return sortedNames;
@@ -70,9 +84,12 @@ export class RorFinder extends ApiQueryPopup {
         if(data.items){
             const items = data.items as JSONArray;
             for(const obj of items) {
-                console.log(obj);
                 const item = obj as RorItem;
                 const names = sortNames(item.names);
+                
+                // skip items without any name
+                if(!names.displayName) continue;
+
                 const content = document.createElement("div") as HTMLDivElement;
                 content.innerText = names.displayName.value;
                 if(names.acronym){

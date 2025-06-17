@@ -3,9 +3,13 @@
  */
 
 import { 
+	// widgets to initialize
 	CharWidget, NumberWidget, UrlWidget, EmailWidget, DateWidget, 
 	TextAreaWidget, CheckboxWidget, Widget, AutofillFormUrlWidget, 
-	ModelBox, FormGenerator,
+	ModelBox, FormGenerator, RorWidget, 
+
+	// etc
+	RorFinder,
 } from "./loader";
 
 function main() {
@@ -20,11 +24,15 @@ function main() {
 		CheckboxWidget,
 		TextAreaWidget,
 		AutofillFormUrlWidget,
+		RorWidget,
 		ModelBox,
 	)
 
 	// generate the forms
 	FormGenerator.generateForm(null);
+
+	// TODO smarter initialization
+	RorFinder.getInstance();
 }
 
 // call main when document DOM tree is finished building so that we can access

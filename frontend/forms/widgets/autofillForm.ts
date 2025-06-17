@@ -1,6 +1,7 @@
 import { FormGenerator, InputWidget, Spinner } from "../../loader";
 
 const describeApiEndpoint = "/api/describe_form";
+export const faMagicIcon = "<i class='fa fa-magic'></i>";
 
 export class AutofillFormUrlWidget extends InputWidget {
 
@@ -11,7 +12,7 @@ export class AutofillFormUrlWidget extends InputWidget {
 
     private createAutofillButton(): void {
         const autofillButton = document.createElement("button");
-        autofillButton.innerHTML = "<i class='fa fa-magic'></i> autofill";
+        autofillButton.innerHTML = faMagicIcon + " autofill";
         autofillButton.title = (
             "Fetch metadata from the specified repository " + 
             "and use it to autofill the fields in the form"

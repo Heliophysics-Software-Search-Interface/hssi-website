@@ -18,6 +18,7 @@ export * from "./forms/widgets/widget";
 export * from "./forms/widgets/basicWidgets";
 export * from "./forms/widgets/modelBox";
 export * from "./forms/widgets/autofillForm";
+export * from "./forms/widgets/findIdWidget";
 
 export * from "./forms/fields/modelFieldStructure";
 export * from "./forms/fields/modelSubfield";

@@ -18,7 +18,7 @@ SUBMISSION_FORM_ORGANIZATION: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name="identifier",
-		type=TYPE_URL,
+		type=TYPE_ROR,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Identifier",

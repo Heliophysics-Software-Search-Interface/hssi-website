@@ -38,6 +38,7 @@ export class RorWidget extends FindIdWidget {
 export class OrcidWidget extends FindIdWidget {
     protected override onFindButtonPressed(): void {
         const orcidPopup = OrcidFinder.getInstance();
-        orcidPopup
+        orcidPopup.setTarget(this.parentField);
+        PopupDialogue.showPopup(orcidPopup);
     }
 }

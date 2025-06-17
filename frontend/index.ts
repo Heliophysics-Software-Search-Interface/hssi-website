@@ -6,7 +6,7 @@ import {
 	// widgets to initialize
 	CharWidget, NumberWidget, UrlWidget, EmailWidget, DateWidget, 
 	TextAreaWidget, CheckboxWidget, Widget, AutofillFormUrlWidget, 
-	ModelBox, FormGenerator, RorWidget, 
+	ModelBox, FormGenerator, RorWidget, OrcidWidget,
 
 	// etc
 	RorFinder, OrcidFinder,
@@ -25,6 +25,7 @@ function main() {
 		TextAreaWidget,
 		AutofillFormUrlWidget,
 		RorWidget,
+		OrcidWidget,
 		ModelBox,
 	)
 

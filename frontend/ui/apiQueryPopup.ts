@@ -1,6 +1,7 @@
 import { 
     PopupDialogue, ModelSubfield, Spinner, ModelMultiSubfield,
     type JSONValue,
+    type JSONObject,
 } from '../loader';
 
 const styleResultBox = "hssi-query-results";
@@ -23,6 +24,8 @@ export abstract class ApiQueryPopup extends PopupDialogue {
     protected formElement: HTMLFormElement = null;
     protected queryInputElement!: HTMLInputElement;
     protected resultBox!: HTMLDivElement;
+
+    protected get contentType(): string { return "application/json" };
 
     protected abstract get endpoint(): string;
 
@@ -75,7 +78,23 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         this.contentElement.appendChild(this.resultBox);
     }
 
-    protected abstract getQueryResults(query: string): Promise<JSONValue>;
+    protected abstract getQueryUrl(query: string): string;
+
+    protected getRequestHeaders(): Record<string, string> {
+        return { "Content-Type": this.contentType };
+    }
+
+    protected async getQueryResults(query: string): Promise<JSONValue> {
+        const response = await fetch(this.getQueryUrl(query), {
+            method: "GET",
+            headers: this.getRequestHeaders(),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
+        }
+        return data;
+    }
 
     protected abstract handleQueryResults(results: JSONValue): void;
 

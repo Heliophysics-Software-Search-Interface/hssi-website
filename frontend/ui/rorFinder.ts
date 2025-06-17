@@ -1,4 +1,7 @@
-import { ApiQueryPopup, type JSONArray, type JSONObject, type JSONValue } from "../loader";
+import { 
+    ApiQueryPopup, 
+    type JSONArray, type JSONObject, type JSONValue 
+} from "../loader";
 
 type RorItem = JSONObject & {
     id: string;
@@ -69,14 +72,16 @@ export class RorFinder extends ApiQueryPopup {
         return "https://api.ror.org/v2/organizations";
     }
 
-    protected override async getQueryResults(query: string): Promise<JSONValue> {
-        const queryUrl = this.endpoint + `?query=${query}`;
-        const response = await fetch(queryUrl, { method: "GET" });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
-        }
-        return data;
+    protected override getQueryUrl(query: string): string {
+        return this.endpoint + `?query=${query}`;
+    }
+
+    protected override getRequestHeaders(): Record<string, string> {
+        const headers = super.getRequestHeaders();
+        // TODO implement auth token without exposing it to frontend
+        // (should probably implement a backend api endpoint for orcid searches)
+        // headers["Authorization"] = `Bearer ${0}`;
+        return headers;
     }
 
     protected override handleQueryResults(results: JSONValue): void {

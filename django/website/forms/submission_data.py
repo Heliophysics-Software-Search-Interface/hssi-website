@@ -79,7 +79,7 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
         name="identifier",
-        type=TYPE_URL,
+        type=TYPE_ORCID,
         requirement=RequirementLevel.RECOMMENDED,
         properties={
             PROP_LABEL: "Identifier",

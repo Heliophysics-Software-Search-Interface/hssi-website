@@ -1,5 +1,6 @@
 import { 
-    OrcidFinder, PopupDialogue, RorFinder, UrlWidget, faMagicIcon 
+    OrcidFinder, PopupDialogue, RorFinder, DoiDataciteFinder, 
+    UrlWidget, faMagicIcon
 } from "../../loader"
 
 export abstract class FindIdWidget extends UrlWidget {
@@ -40,5 +41,13 @@ export class OrcidWidget extends FindIdWidget {
         const orcidPopup = OrcidFinder.getInstance();
         orcidPopup.setTarget(this.parentField);
         PopupDialogue.showPopup(orcidPopup);
+    }
+}
+
+export class DataciteDoiWidget extends FindIdWidget {
+    protected override onFindButtonPressed(): void {
+        const popup = DoiDataciteFinder.getInstance();
+        popup.setTarget(this.parentField);
+        PopupDialogue.showPopup(popup);
     }
 }

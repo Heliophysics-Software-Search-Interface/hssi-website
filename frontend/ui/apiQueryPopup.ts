@@ -125,6 +125,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
             else if (this.targetField instanceof ModelMultiSubfield){
                 this.targetField.addNewMultifieldWithValue(result.id);
             }
+            this.targetField.requirement.applyRequirementWarningStyles();
             PopupDialogue.hidePopup();
         });
         rightColumn.appendChild(selectButton);

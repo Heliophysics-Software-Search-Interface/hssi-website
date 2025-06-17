@@ -12,7 +12,7 @@ export class AutofillFormUrlWidget extends InputWidget {
 
     private createAutofillButton(): void {
         const autofillButton = document.createElement("button");
-        autofillButton.innerHTML = faMagicIcon;
+        autofillButton.innerHTML = faMagicIcon + " autofill";
         autofillButton.title = (
             "Fetch metadata from the specified repository " + 
             "and use it to autofill the fields in the form"

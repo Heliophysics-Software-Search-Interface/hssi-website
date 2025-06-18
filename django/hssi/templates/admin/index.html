@@ -35,6 +35,12 @@
         <input type="submit" value="Import Database (new)">
       </form>
     </li>
+    <li>
+      <form action="{% url 'admin:fetch_vocab' %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Fetch Vocab">
+      </form>
+    </li>
   </ul>
 </div>
 {% endblock %}c

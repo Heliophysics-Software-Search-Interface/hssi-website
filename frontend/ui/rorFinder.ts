@@ -3,7 +3,7 @@ import {
     type JSONArray, type JSONObject, type JSONValue 
 } from "../loader";
 
-type RorItem = JSONObject & {
+export type RorItem = JSONObject & {
     id: string;
     names: RorName[];
 };
@@ -87,7 +87,7 @@ export class RorFinder extends ApiQueryPopup {
     protected override handleQueryResults(results: JSONValue): void {
         const data: any = results as any;
         if(data.items){
-            const items = data.items as JSONArray;
+            const items = data.items as JSONObject[];
             for(const obj of items) {
                 const item = obj as RorItem;
                 const names = sortNames(item.names);
@@ -100,7 +100,11 @@ export class RorFinder extends ApiQueryPopup {
                 if(names.acronym){
                     content.innerText += ` (${names.acronym.value})`;
                 }
-                this.addResultRow({ id: item.id, textContent: content });
+                this.addResultRow({ 
+                    id: item.id, 
+                    textContent: content,
+                    jsonData: obj,
+                });
             }
         }
     }

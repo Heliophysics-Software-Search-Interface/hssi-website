@@ -44,13 +44,20 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
                             formData.description = desc_text
                         }
                     }
-                    else formData.description = desc_text;
-                    if(formData.description && formData.conciseDescription){
-                        break;
+                    else if(!formData.description) {
+                        formData.description = desc_text;
+                    }
+                    if (formData.descriptionType === "Abstract"){
+                        formData.description = desc_text;
                     }
                 }
+                if(!formData.conciseDescription && formData.description){
+                    formData.conciseDescription = (
+                        formData.description as string
+                    ).substring(0, 200);
+                }
             }
-
+        
             // authors
             if(attrs.creators){
                 const authors: JSONArray<JSONObject> = [];
@@ -82,17 +89,19 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
                         const affiliations = [] as JSONArray;
                         for(const affil of creator.affiliation as string[]){
                             const affiliation = {} as JSONObject;
-                            affiliation.affiliation = affil
+                            affiliation.authorAffiliation = affil;
                             affiliations.push(affiliation);
                         }
-                        author.affiliation = affiliations;
+                        author.authorAffiliation = affiliations;
                     }
 
                     // author identifier
                     if(creator.nameIdentifiers){
                         for(const nameId of creator.nameIdentifiers as JSONObject[]){
                             if(nameId.nameIdentifierScheme === "ORCID"){
-                                author.identifier = orcidUrlPrefix + nameId.nameIdentifier;
+                                author.authorIdentifier = (
+                                    orcidUrlPrefix + nameId.nameIdentifier
+                                );
                                 break;
                             }
                         }
@@ -133,9 +142,9 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
             // funders
             if(funders){
                 for(const funder of funders){
-                    formData.funder = funder.funder;
-                    formData.funderIdentifier = funder.funderIdentifier;
-                    break;
+                    // TODO multifield
+                    formData.funder = funder;
+                    break; 
                 }
             }
 

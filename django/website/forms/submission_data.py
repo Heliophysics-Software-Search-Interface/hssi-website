@@ -2,28 +2,94 @@ from ..models import *
 from ..util import RequirementLevel
 from .names import *
 
-SUBMISSION_FORM_ORGANIZATION: ModelStructure = ModelStructure.define(
-	"SubmissionFormOrganization",
+SUBMISSION_FORM_AFFILIATION: ModelStructure = ModelStructure.define(
+	"SubmissionFormAffiliation",
 	ModelSubfield.define(
-		name="organization",
+		name=FIELD_AUTHORAFFILIATION,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Organization",
 			PROP_WIDGET_PROPS: {
+                PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATION,
+                PROP_TT_BEST: TTBEST_AUTHORAFFILIATION,
 				WPROP_TARGETMODEL: Organization.__name__,
 			},
 		},
 		multi=False,
 	),
 	ModelSubfield.define(
-		name="identifier",
+		name=FIELD_AUTHORAFFILIATIONIDENTIFIER,
 		type=TYPE_ROR,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Identifier",
             PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATIONIDENTIFIER,
             PROP_TT_BEST: TTBEST_AUTHORAFFILIATIONIDENTIFIER,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: Organization.__name__,
+			},
+		},
+		multi=False,
+	),
+)
+
+SUBMISSION_FORM_PUBLISHER: ModelStructure = ModelStructure.define(
+	"SubmissionFormFunder",
+	ModelSubfield.define(
+		name=FIELD_PUBLISHER,
+		type=TYPE_MODELBOX,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Organization",
+			PROP_WIDGET_PROPS: {
+            	PROP_TT_EXPL: TTEXPL_PUBLISHER,
+            	PROP_TT_BEST: TTBEST_PUBLISHER,
+				WPROP_TARGETMODEL: Organization.__name__,
+			},
+		},
+		multi=False,
+	),
+	ModelSubfield.define(
+		name=FIELD_FUNDERIDENTIFIER,
+		type=TYPE_ROR,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Identifier",
+            PROP_TT_EXPL: TTEXPL_PUBLISHERIDENTIFIER,
+            PROP_TT_BEST: TTBEST_PUBLISHERIDENTIFIER,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: Organization.__name__,
+			},
+		},
+		multi=False,
+	),
+)
+
+SUBMISSION_FORM_FUNDER: ModelStructure = ModelStructure.define(
+	"SubmissionFormFunder",
+	ModelSubfield.define(
+		name=FIELD_FUNDER,
+		type=TYPE_MODELBOX,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Organization",
+			PROP_WIDGET_PROPS: {
+            	PROP_TT_EXPL: TTEXPL_FUNDER,
+            	PROP_TT_BEST: TTBEST_FUNDER,
+				WPROP_TARGETMODEL: Organization.__name__,
+			},
+		},
+		multi=False,
+	),
+	ModelSubfield.define(
+		name=FIELD_FUNDERIDENTIFIER,
+		type=TYPE_ROR,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Identifier",
+            PROP_TT_EXPL: TTEXPL_FUNDERIDENTIFIER,
+            PROP_TT_BEST: TTBEST_FUNDERIDENTIFIER,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Organization.__name__,
 			},
@@ -78,7 +144,7 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 	ModelSubfield.define(
-        name="identifier",
+        name=FIELD_AUTHORIDENTIFIER,
         type=TYPE_ORCID,
         requirement=RequirementLevel.RECOMMENDED,
         properties={
@@ -89,8 +155,8 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
         multi=False,
 	),
 	ModelSubfield.define(
-        name="affiliation",
-        type=SUBMISSION_FORM_ORGANIZATION.type_name,
+        name=FIELD_AUTHORAFFILIATION,
+        type=SUBMISSION_FORM_AFFILIATION.type_name,
         requirement=RequirementLevel.RECOMMENDED,
         properties={
             PROP_LABEL: "Affiliation",
@@ -403,7 +469,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Publisher
 	ModelSubfield.define(
 		name=FIELD_PUBLISHER,
-		type=SUBMISSION_FORM_ORGANIZATION.type_name,
+		type=SUBMISSION_FORM_FUNDER.type_name,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Publisher",
@@ -597,7 +663,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Funder
 	ModelSubfield.define(
 		name=FIELD_FUNDER,
-		type=SUBMISSION_FORM_ORGANIZATION.type_name,
+		type=SUBMISSION_FORM_FUNDER.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Funder",

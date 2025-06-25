@@ -2,6 +2,7 @@ import {
     PopupDialogue, ModelSubfield, Spinner, ModelMultiSubfield,
     type JSONValue,
     type JSONObject,
+    fetchTimeout,
 } from '../loader';
 
 const styleResultBox = "hssi-query-results";
@@ -91,21 +92,15 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         if(this.isBusy){
             throw new Error("Busy - Cannot send requests right now!");
         }
-
-        // timeout after 10 seconds
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 10000);
         
         this.isBusy = true;
         try{
-            const response = await fetch(this.getQueryUrl(query), {
-                signal: controller.signal,
+            const response = await fetchTimeout(this.getQueryUrl(query), {
                 method: "GET",
                 headers: this.getRequestHeaders(),
             });
             const data = await response.json();
             this.isBusy = false;
-            clearTimeout(timeout);
 
             if (!response.ok) {
                 throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);

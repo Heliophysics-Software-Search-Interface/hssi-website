@@ -25,6 +25,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
     protected formElement: HTMLFormElement = null;
     protected queryInputElement!: HTMLInputElement;
     protected resultBox!: HTMLDivElement;
+    private isBusy: boolean = false;
 
     protected get contentType(): string { return "application/json" };
 
@@ -87,15 +88,34 @@ export abstract class ApiQueryPopup extends PopupDialogue {
     }
 
     protected async getQueryResults(query: string): Promise<JSONValue> {
-        const response = await fetch(this.getQueryUrl(query), {
-            method: "GET",
-            headers: this.getRequestHeaders(),
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
+        if(this.isBusy){
+            throw new Error("Busy - Cannot send requests right now!");
         }
-        return data;
+
+        // timeout after 10 seconds
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+        
+        this.isBusy = true;
+        try{
+            const response = await fetch(this.getQueryUrl(query), {
+                signal: controller.signal,
+                method: "GET",
+                headers: this.getRequestHeaders(),
+            });
+            const data = await response.json();
+            this.isBusy = false;
+            clearTimeout(timeout);
+
+            if (!response.ok) {
+                throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
+            }
+            return data;
+        }
+        catch(e) {
+            this.isBusy = false;
+            throw(e);
+        }
     }
 
     protected abstract handleQueryResults(results: JSONValue): void;
@@ -141,6 +161,10 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 
     /** submit a query to the api to fetch some search results */
     public async submitQuery(query: string): Promise<void> {
+        if(this.isBusy) {
+            console.warn("Attempt to submit query while busy");
+            return;
+        }
         this.clearResults();
         Spinner.showSpinner("", this.resultBox);
         try{

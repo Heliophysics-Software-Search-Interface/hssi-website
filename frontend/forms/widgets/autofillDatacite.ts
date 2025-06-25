@@ -23,6 +23,9 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
             // PID
             formData.persistentIdentifier = attrs.url;
 
+            // publisher
+            formData.publisher = attrs.publisher;
+
             // software name
             if(data.attributes.titles){
                 for(const title of attrs.titles as JSONObject[]){
@@ -98,6 +101,52 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
                     authors.push(author);
                 }
                 formData.authors = authors;
+            }
+
+            // license
+            if(attrs.rightsList){
+                for(const rights of attrs.rightsList as JSONObject[]){
+                    formData.license = rights.rights || rights.rightsIdentifier;
+                    if(formData.license) break;
+                }
+            }
+            
+            // awards
+            const funders = [] as {funder?: string, funderIdentifier?: string}[];
+            if(attrs.fundingReferences) {
+                const awards = [] as JSONArray<JSONObject>;
+                for(const fundRef of attrs.fundingReferences as JSONObject[]){
+                    const award = {} as JSONObject;
+                    award.awardTitle = fundRef.awardTitle;
+                    award.awardNumber = fundRef.awardNumber;
+                    if(fundRef.funderIdentifier || fundRef.funderName){
+                        funders.push({
+                            funder: fundRef.funderName as string,
+                            funderIdentifier: fundRef.funderIdentifier as string,
+                        });
+                    }
+                    awards.push(award);
+                }
+                formData.awardTitle = awards;
+            }
+
+            // funders
+            if(funders){
+                for(const funder of funders){
+                    formData.funder = funder.funder;
+                    formData.funderIdentifier = funder.funderIdentifier;
+                    break;
+                }
+            }
+
+            // documentation
+            if(attrs.relatedIdentifiers){
+                for(const relId of attrs.relatedIdentifiers as JSONObject[]){
+                    if(relId.relationType === "IsDocumentedBy"){
+                        formData.documentation = relId.relatedIdentifier;
+                        if(formData.documentation) break;
+                    }
+                }
             }
         }
 

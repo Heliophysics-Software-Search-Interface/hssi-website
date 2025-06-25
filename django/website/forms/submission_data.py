@@ -298,10 +298,22 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	"SubmissionForm",
 
 	# ----- Sec 1 -----
+	# PID
+	ModelSubfield.define(
+		name=FIELD_PERSISTENTIDENTIFIER,
+		type=TYPE_AUTOFILLDATACITE,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Persistent Identifier",
+			PROP_TT_EXPL: TTEXPL_PERSISTENTIDENTIFIER,
+			PROP_TT_BEST: TTBEST_PERSISTENTIDENTIFIER,
+		},
+		multi=False,
+	),
 	# Code Repo
 	ModelSubfield.define(
 		name=FIELD_CODEREPOSITORYURL,
-		type=TYPE_AUTOFILLFORMURL,
+		type=TYPE_AUTOFILLSOMEF,
 		requirement=RequirementLevel.MANDATORY.value,
 		properties={
 			PROP_LABEL: "Code Repository",
@@ -322,18 +334,6 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Submitter.__name__
 			},
-		},
-		multi=False,
-	),
-	# PID
-	ModelSubfield.define(
-		name=FIELD_PERSISTENTIDENTIFIER,
-		type=TYPE_DATACITEDOI,
-		requirement=RequirementLevel.RECOMMENDED.value,
-		properties={
-			PROP_LABEL: "Persistent Identifier",
-			PROP_TT_EXPL: TTEXPL_PERSISTENTIDENTIFIER,
-			PROP_TT_BEST: TTBEST_PERSISTENTIDENTIFIER,
 		},
 		multi=False,
 	),

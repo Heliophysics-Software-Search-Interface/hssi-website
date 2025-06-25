@@ -291,13 +291,25 @@ export class FormGenerator {
         
     }
 
-    public static fillForm(data: JSONObject): void {
+    /**
+     * fills the form with all the specified data in the form of {key:value}
+     * where keys represent the field name
+     * @param data the data to fill the form fields with
+     * @param overwrite_values whether or not fields which already have data should be overwritten
+     */
+    public static fillForm(
+        data: JSONObject, 
+        overwrite_values: boolean = false
+    ): void {
+
         const fields = this.instance.getRootFields();
         for(const key in data) {
             const value = data[key];
             const field = fields.find(f => f.name === key);
             if(field) {
-                field.fillField(value);
+                if (overwrite_values || !field.hasValidInput()) {
+                    field.fillField(value);
+                }
             }
         }
         this.instance.updateAllFieldValidityStyles();

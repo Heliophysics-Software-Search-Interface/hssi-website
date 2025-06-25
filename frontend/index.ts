@@ -5,11 +5,12 @@
 import { 
 	// widgets to initialize
 	CharWidget, NumberWidget, UrlWidget, EmailWidget, DateWidget, 
-	TextAreaWidget, CheckboxWidget, Widget, AutofillFormUrlWidget, 
+	TextAreaWidget, CheckboxWidget, Widget, AutofillSomefWidget, 
 	ModelBox, FormGenerator, RorWidget, OrcidWidget, DataciteDoiWidget,
+	AutofillDataciteWidget,
 
 	// etc
-	RorFinder, OrcidFinder, DoiDataciteFinder,
+	RorFinder, OrcidFinder, DoiDataciteFinder, 
 } from "./loader";
 
 function main() {
@@ -23,11 +24,12 @@ function main() {
 		DateWidget,
 		CheckboxWidget,
 		TextAreaWidget,
-		AutofillFormUrlWidget,
 		RorWidget,
 		OrcidWidget,
 		DataciteDoiWidget,
 		ModelBox,
+		AutofillSomefWidget,
+		AutofillDataciteWidget,
 	)
 
 	// generate the forms

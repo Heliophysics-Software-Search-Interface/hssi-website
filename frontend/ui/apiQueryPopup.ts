@@ -10,6 +10,7 @@ const styleColumn = "column";
 export const faSearchIcon = "<i class='fa fa-search'></i>";
 
 export type ApiQueryResult = {
+    jsonData: JSONObject;
     textContent: HTMLDivElement;
     id: string;
 }
@@ -40,7 +41,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         this.createQueryForm();
         this.createResultBox();
         this.onShow.addListener(() => {
-            this.queryInputElement.focus();
+            setTimeout(() => this.queryInputElement.focus(), 0);
             this.clearResults();
         });
         this.onHide.addListener(() => {
@@ -69,6 +70,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
     protected createQueryInput(): void {
         this.queryInputElement = document.createElement("input") as HTMLInputElement;
         this.queryInputElement.type = "text";
+        this.queryInputElement.placeholder = "Enter search term"
         this.formElement.appendChild(this.queryInputElement);
     }
 
@@ -120,7 +122,9 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         selectButton.innerHTML = "Select";
         selectButton.addEventListener("click", () => {
             if(!this.targetField.multi){
-                this.targetField.getInputElement().value = result.id;
+                const inputElem = this.targetField.getInputElement();
+                inputElem.value = result.id;
+                inputElem.data = result.jsonData;
             }
             else if (this.targetField instanceof ModelMultiSubfield){
                 this.targetField.addNewMultifieldWithValue(result.id);
@@ -162,7 +166,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 
     public withQuery(query: string): ApiQueryPopup {
         this.queryInputElement.value = query;
-        this.submitQuery(query);
+        if(query) this.submitQuery(query);
         return this;
     }
 

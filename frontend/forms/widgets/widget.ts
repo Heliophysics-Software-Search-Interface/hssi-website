@@ -3,8 +3,8 @@
  */
 
 import { 
-	FieldRequirement, ModelSubfield, requirementAttributeContainer, RequirementLevel, 
-	SimpleEvent
+	ModelSubfield, requirementAttributeContainer, RequirementLevel, SimpleEvent,
+	type JSONObject
 } from "../../loader";
 
 // names of values in data attributes
@@ -25,7 +25,7 @@ export type AnyInputElement = (
 	HTMLInputElement |
 	HTMLTextAreaElement |
 	HTMLSelectElement
-)
+) & { data?: JSONObject }
 
 export type WidgetType = new (elem: HTMLElement, field: ModelSubfield) => Widget;
 

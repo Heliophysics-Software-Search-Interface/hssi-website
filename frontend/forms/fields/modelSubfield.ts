@@ -244,9 +244,9 @@ export class ModelSubfield {
 
 	public hasValidInput(): boolean {
 		const value = this.widget?.getInputValue();
-		if(value == null || value.length <= 0) return false;
+		if(!value) return false;
 
-		const inputElem = this.widget?.getInputElement();
+		const inputElem = this.getInputElement();
 		if(inputElem) return inputElem.checkValidity();
 
 		return true;

@@ -58,6 +58,58 @@ body {
   max-width: 600px;
 }
 
+.hssi-popup-dialogue form {
+  row-gap: 0;
+}
+
+.hssi-popup-dialogue button {
+  width: auto;
+  align-self: start;
+  background-color: #ececec;
+}
+
+.hssi-popup-dialogue .hssi-query-results {
+  padding: 5px;
+  margin-top: 10px;
+  outline: 1px solid #3333;
+  min-height: 50px;
+}
+
+.hssi-popup-dialogue .hssi-query-results>div:nth-child(even) {
+  background: #3331;
+}
+
+.hssi-popup-dialogue .hssi-query-results button {
+  border-radius: 5px;
+  outline: 1px solid #3338;
+  color: black;
+  padding: 5px;
+  margin: 5px;
+}
+
+.hssi-popup-dialogue .hssi-query-results button:hover {
+  background-color: #3338;
+  color: white;
+}
+
+.hssi-popup-dialogue .hssi-query-results .row {
+  display: flex;
+  width: 100%;
+  gap: 5px;
+}
+
+.hssi-popup-dialogue .hssi-query-results .column {
+  text-align: left;
+}
+
+.hssi-popup-dialogue .hssi-query-results .row>.column:nth-last-child(1) {
+  text-align: right;
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .hssi-popup-header {
   background-color: #e3e3e3;
   font-size: large;
@@ -74,4 +126,8 @@ body {
 
 .hssi-popup-content {
   margin: 15px;
+}
+
+.hssi-popup-dialogue input {
+  margin-bottom: 0;
 }

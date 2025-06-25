@@ -33,10 +33,12 @@ export class ModelSubfield {
 	protected controlContainerElement: HTMLDivElement = null;
 	private labelElement: HTMLLabelElement = null;
 	private explanationElement: HTMLDivElement = null;
-
+	
 	private subfieldContainer: HTMLDetailsElement = null;
 	private subfields: ModelSubfield[] = [];
+	private parentField: ModelSubfield = null;
 
+	public get parent(): ModelSubfield { return this.parentField; }
 	public get multi(): boolean { return false; }
 
 	/// Initialization ---------------------------------------------------------
@@ -78,6 +80,7 @@ export class ModelSubfield {
 			const row = document.createElement("div") as HTMLDivElement;
 			row.classList.add(formRowStyle)
 			field.buildInterface(row);
+			field.parentField = this;
 			this.subfields.push(field);
 			this.subfieldContainer.appendChild(row);
 		}

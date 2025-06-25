@@ -12,12 +12,15 @@ export * from "./ui/spinner";
 export * from "./ui/popupDialogue";
 export * from "./ui/apiQueryPopup";
 export * from "./ui/rorFinder";
+export * from "./ui/orcidFinder";
+export * from "./ui/doiDataciteFinder";
 
 export * from "./forms/fieldRequirement";
 export * from "./forms/widgets/widget";
 export * from "./forms/widgets/basicWidgets";
 export * from "./forms/widgets/modelBox";
 export * from "./forms/widgets/autofillForm";
+export * from "./forms/widgets/findIdWidget";
 
 export * from "./forms/fields/modelFieldStructure";
 export * from "./forms/fields/modelSubfield";

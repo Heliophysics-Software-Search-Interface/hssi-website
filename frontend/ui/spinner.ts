@@ -157,6 +157,7 @@ export class Spinner {
         }
 
         // create a spinner targeted over one html element
+        this.hideSpinner(target);
         const spinner = this.createTargetedSpinner(target);
         this.spinnerMap.set(target, spinner);
         spinner.show();

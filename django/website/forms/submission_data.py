@@ -373,6 +373,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Persistent Identifier",
 			PROP_TT_EXPL: TTEXPL_PERSISTENTIDENTIFIER,
 			PROP_TT_BEST: TTBEST_PERSISTENTIDENTIFIER,
+            PROP_WIDGET_PROPS: {
+                WPROP_RESULTFILTERS: ["software", "concept"]
+			}
 		},
 		multi=False,
 	),

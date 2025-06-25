@@ -1,5 +1,6 @@
 import { 
     ApiQueryPopup, 
+    propResultFilters, 
     type ApiQueryResult, type JSONArray, type JSONObject, type JSONValue 
 } from "../loader";
 
@@ -21,8 +22,15 @@ type DataciteAttributes = JSONObject & {
     subjects: JSONArray,
     contributors: JSONArray,
     language: string | null,
-    types: JSONObject,
-    relatedIdentifiers: JSONArray,
+    types: JSONObject & { 
+        resourceType: String,
+        resourceTypeGeneral: string,
+    },
+    relatedIdentifiers: JSONArray< JSONObject & {
+        relatedIdentifier?: string,
+        relatedIdentifierType?: string,
+        relationType: string,
+    }>,
     relatedItems: JSONArray,
     rightsList: JSONArray,
     descriptions: JSONArray,
@@ -62,7 +70,15 @@ export class DoiDataciteFinder extends ApiQueryPopup {
     }
 
     protected override handleQueryResults(results: JSONValue): void {
-        const items = (results as JSONObject).data as DataciteItem[];
+        
+        // get filtered results
+        let items = (results as JSONObject).data as DataciteItem[];
+        const filters = this.targetField.widget.properties[propResultFilters]
+        if(filters) {
+            if(items.length > 250) items.splice(250);
+            items = this.filterResults(items, filters) as any;
+        }
+
         for(const item of items) {
             const content = document.createElement("div");
             const title = (item.attributes.titles[0]["title"] ?? "Unknown").toString();

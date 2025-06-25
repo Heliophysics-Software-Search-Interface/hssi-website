@@ -7,6 +7,7 @@ PROP_WIDGET_PROPS = "widgetProperties"
 WPROP_TARGETMODEL = "targetModel"
 WPROP_MODELFILTER = "modelFilter"
 WPROP_DROPDOWNBUTTON = "dropdownButton"
+WPROP_RESULTFILTERS = "resultFilters"
 
 TYPE_CHAR = "CharWidget"
 TYPE_TEXTAREA = "TextAreaWidget"

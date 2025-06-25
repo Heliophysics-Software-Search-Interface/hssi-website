@@ -3,12 +3,15 @@ import {
     type JSONValue,
     type JSONObject,
     fetchTimeout,
+    type JSONArray,
+    type DataciteItem,
 } from '../loader';
 
 const styleResultBox = "hssi-query-results";
 const styleRow = "row";
 const styleColumn = "column";
 export const faSearchIcon = "<i class='fa fa-search'></i>";
+export const propResultFilters = "resultFilters";
 
 export type ApiQueryResult = {
     jsonData: JSONObject;
@@ -152,6 +155,45 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         row.appendChild(leftColumn);
         row.appendChild(rightColumn);
         this.resultBox.appendChild(row);
+    }
+
+    /// filtering resutls ------------------------------------------------------
+
+    protected filterResults(results_in: JSONArray, filters: string[]): JSONArray{
+        console.log(`Filtering ${results_in.length} results...`);
+        let results = results_in;
+        for(const filter of filters){
+            console.log(`Applying ${filter} filter`);
+            results = (
+                (this as any)
+                [`resultsFiltered_${filter}`] as (x:JSONArray)=>JSONArray
+            )(results);
+            console.log(results);
+        }
+        console.log("Filtered results", results);
+        return results;
+    }
+
+    protected resultsFiltered_software(
+        results_in: JSONArray<DataciteItem>
+    ): JSONArray<DataciteItem>{
+        return results_in.filter(x => {
+            return x.attributes?.types?.resourceTypeGeneral === "Software";
+        });
+    }
+
+    protected resultsFiltered_concept(
+        results_in: JSONArray<DataciteItem>
+    ): JSONArray<DataciteItem> {
+        return results_in.filter(x => {
+            if(x.attributes?.relatedIdentifiers){
+                for(const relId of x.attributes.relatedIdentifiers){
+                   if (relId.relationType === "IsVersionOf") return false;
+                   if (relId.relationType === "HasVersion") return true;
+                }
+            }
+            return true;
+        });
     }
 
     /** submit a query to the api to fetch some search results */

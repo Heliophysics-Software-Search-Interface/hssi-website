@@ -7,18 +7,19 @@ export interface JSONArray<T = JSONValue> extends Array<T> {}
  * merge two objects together, recursively
  * @param target merge into this object
  * @param source values from this object will overwrite target values
+ * @param inPlace if true, nothing will be cloned, so inputs may be modified
  */
-export function deepMerge(target: any, source: any): any {
+export function deepMerge(target: any, source: any, inPlace: boolean = false): any {
 
     // If either is not an object (or is null), return a clone of source
     if (
         typeof target !== 'object' || typeof source !== 'object' || 
         !target || !source
     )
-        return structuredClone(source);
+        return inPlace ? source : structuredClone(source);
 
     // Clone the target to avoid mutating the original
-    const result: any = structuredClone(target);
+    const result: any = inPlace ? target : structuredClone(target);
 
     // Iterate through all keys in the source object
     for (const key of Object.keys(source)) {
@@ -30,10 +31,10 @@ export function deepMerge(target: any, source: any): any {
             typeof result[key] === 'object' && 
             typeof source[key] === 'object'
         ) {
-            result[key] = deepMerge(result[key], source[key]);
+            result[key] = deepMerge(result[key], source[key], inPlace);
         } else {
             // Otherwise, overwrite with a clone of the source value
-            result[key] = structuredClone(source[key]);
+            result[key] = inPlace ? source[key] : structuredClone(source[key]);
         }
     }
 
@@ -53,7 +54,11 @@ export async function fetchTimeout(
     timeout: number = 10
 ) {
     const controller = new AbortController();
-    const reqInit = deepMerge(init as JSONObject, {signal: controller.signal});
+    const reqInit = deepMerge(
+        init as JSONObject, 
+        {signal: controller.signal}, 
+        true
+    );
     const timeoutId = setTimeout(() => controller.abort(), timeout * 1000);
     const result = await fetch(input, reqInit);
     clearTimeout(timeoutId);

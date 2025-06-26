@@ -157,6 +157,14 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
                     }
                 }
             }
+
+            // version
+            if(attrs.version){
+                formData.versionNumber = {
+                    versionNumber: attrs.version,
+                    versionDate: attrs.updated?.split('T')[0],
+                };
+            }
         }
 
         console.log(formData);

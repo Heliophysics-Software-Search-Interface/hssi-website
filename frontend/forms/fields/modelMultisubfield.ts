@@ -115,6 +115,13 @@ export class ModelMultiSubfield extends ModelSubfield {
 		}
 	}
 
+	public clearMultifields(): void {
+		for(const field of this.multiFields.toReversed()){
+			field.destroyRow();
+		}
+		this.multiFields.length = 0;
+	}
+
 	public addNewMultifieldWithValue(value: JSONValue): void {
 		this.buildNewMultifield();
 		this.multiFields[this.multiFields.length - 1].fillField(value);
@@ -154,18 +161,16 @@ export class ModelMultiSubfield extends ModelSubfield {
 		}
 	}
 
-	public clearMultifields(): void {
-		for(const field of this.multiFields){
-			field.destroyRow();
-		}
-		this.multiFields.length = 0;
-	}
-
 	public destroy(): void {
 		super.destroy();
 		this.multiFields.length = 0;
 		this.multiFieldContainerElement = null;
 		this.newItemButton = null;
+	}
+
+	public override clearField(): void {
+		this.clearMultifields();
+		this.requirement.removeStyles();
 	}
 
 	public hasValidInput(): boolean {

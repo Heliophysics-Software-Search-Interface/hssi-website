@@ -192,6 +192,23 @@ export class ModelSubfield {
 		}
 	}
 
+	public clearField(): void {
+		
+		// clear input value
+		let input = this.getInputElement();
+		if(input) input.value = "";
+
+		// clear/collapse all subfield values
+		for(const subfield of this.getSubfields()) {
+			subfield.clearField();
+			subfield.collapseSubfields();
+			subfield.requirement.removeStyles();
+		}
+
+		this.collapseSubfields();
+		this.requirement.removeStyles();
+	}
+
 	public fillField(data: JSONValue): void {
 		
 		if(data instanceof Array) {
@@ -260,6 +277,11 @@ export class ModelSubfield {
 		if(this.subfieldsExpanded() || this.subfieldsHidden()) return;
 		this.onExpandSubfields();
 		this.subfieldContainer.setAttribute("open", "");
+	}
+
+	public collapseSubfields(): void {
+		if(!this.subfieldsExpanded() || this.subfieldsHidden()) return;
+		this.subfieldContainer.removeAttribute("open");
 	}
 
 	/** shows the subfield container and expand button */

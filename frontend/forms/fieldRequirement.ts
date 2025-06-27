@@ -98,7 +98,7 @@ export class FieldRequirement {
 		return note;
 	}
 
-	private removeStyles(): void {
+	public removeStyles(): void {
 		let className = "";
 		switch(this.level) {
 			case RequirementLevel.RECOMMENDED: className = invalidRecStyle; break;

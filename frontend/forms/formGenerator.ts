@@ -314,4 +314,13 @@ export class FormGenerator {
         }
         this.instance.updateAllFieldValidityStyles();
     }
+
+    public static clearForm(): void {
+        const fields = this.instance.getRootFields();
+        for(const field of fields) {
+            field.clearField();
+        }
+    }
 }
+
+(window as any).clearGeneratedForm = FormGenerator.clearForm.bind(FormGenerator);

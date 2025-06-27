@@ -1,7 +1,8 @@
 import { 
     typeAttribute, ModelFieldStructure, ModelSubfield, widgetDataAttribute,
     type JSONValue, type JSONObject,
-    RequirementLevel
+    RequirementLevel,
+    ConfirmDialogue
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -321,6 +322,16 @@ export class FormGenerator {
             field.clearField();
         }
     }
+
+    public static async clearFormWithConfirmation(): Promise<void> {
+        if(await ConfirmDialogue.getConfirmation()){
+            this.clearForm();
+            console.log("Form cleared");
+        }
+        else console.log("Form clear cancelled");
+    }
 }
 
-(window as any).clearGeneratedForm = FormGenerator.clearForm.bind(FormGenerator);
+(window as any).clearGeneratedForm = (
+    FormGenerator.clearFormWithConfirmation.bind(FormGenerator)
+);

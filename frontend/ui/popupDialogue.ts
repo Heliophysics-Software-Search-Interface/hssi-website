@@ -116,6 +116,11 @@ export class PopupDialogue {
         backdrop.style.display = "block";
     }
 
+    /** return true if there is already a popup being currently shown */
+    public static popupIsShown(): boolean {
+        return !!this.currentPopup;
+    }
+
     public static showPopup(popup: PopupDialogue): void {
         if(this.currentPopup) {
             this.hidePopup();

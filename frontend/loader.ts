@@ -10,6 +10,7 @@ export * from "./simpleEvent";
 
 export * from "./ui/spinner";
 export * from "./ui/popupDialogue";
+export * from "./ui/confirmDialogue";
 export * from "./ui/apiQueryPopup";
 export * from "./ui/rorFinder";
 export * from "./ui/orcidFinder";

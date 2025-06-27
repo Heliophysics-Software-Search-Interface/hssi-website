@@ -79,7 +79,7 @@ body {
   background: #3331;
 }
 
-.hssi-popup-dialogue .hssi-query-results button {
+.hssi-popup-dialogue .hssi-popup-content button {
   border-radius: 5px;
   outline: 1px solid #3338;
   color: black;
@@ -87,7 +87,7 @@ body {
   margin: 5px;
 }
 
-.hssi-popup-dialogue .hssi-query-results button:hover {
+.hssi-popup-dialogue .hssi-popup-content button:hover {
   background-color: #3338;
   color: white;
 }

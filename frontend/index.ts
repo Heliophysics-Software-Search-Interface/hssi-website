@@ -10,7 +10,8 @@ import {
 	AutofillDataciteWidget,
 
 	// etc
-	RorFinder, OrcidFinder, DoiDataciteFinder, 
+	RorFinder, OrcidFinder, DoiDataciteFinder,
+	ConfirmDialogue, 
 } from "./loader";
 
 function main() {
@@ -36,6 +37,7 @@ function main() {
 	FormGenerator.generateForm(null);
 
 	// TODO smarter initialization
+	ConfirmDialogue.validateInstance();
 	RorFinder.getInstance();
 	OrcidFinder.getInstance();
 	DoiDataciteFinder.getInstance();

@@ -2,7 +2,8 @@ import {
     typeAttribute, ModelFieldStructure, ModelSubfield, widgetDataAttribute,
     type JSONValue, type JSONObject,
     RequirementLevel,
-    ConfirmDialogue
+    ConfirmDialogue,
+    ModelMultiSubfield
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -323,7 +324,19 @@ export class FormGenerator {
         }
     }
 
-    public static async clearFormWithConfirmation(): Promise<void> {
+    public static collapseFormFields(): void {
+        for(const field of this.instance.getRootFields()){
+            field.collapseSubfields();
+        }
+    }
+
+    public static expandFormFields(): void {
+        for(const field of this.instance.getRootFields()){
+            field.expandSubfields();
+        }
+    }
+
+    public static async clearFormConfirm(): Promise<void> {
         if(await ConfirmDialogue.getConfirmation()){
             this.clearForm();
             console.log("Form cleared");
@@ -332,6 +345,7 @@ export class FormGenerator {
     }
 }
 
-(window as any).clearGeneratedForm = (
-    FormGenerator.clearFormWithConfirmation.bind(FormGenerator)
-);
+const win = window as any;
+win.clearGeneratedForm = FormGenerator.clearFormConfirm.bind(FormGenerator);
+win.collapseGeneratedForm = FormGenerator.collapseFormFields.bind(FormGenerator);
+win.expandGeneratedForm = FormGenerator.expandFormFields.bind(FormGenerator);

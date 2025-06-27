@@ -122,6 +122,18 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.multiFields.length = 0;
 	}
 
+	public expandMultiFields(): void {
+		for(const field of this.multiFields){
+			field.expandSubfields();
+		}
+	}
+
+	public collapseMultiFields(): void {
+		for(const field of this.multiFields){
+			field.collapseSubfields();
+		}
+	}
+
 	public addNewMultifieldWithValue(value: JSONValue): void {
 		this.buildNewMultifield();
 		this.multiFields[this.multiFields.length - 1].fillField(value);
@@ -159,6 +171,16 @@ export class ModelMultiSubfield extends ModelSubfield {
 				subfield.applyValidityStyles();
 			}
 		}
+	}
+
+	public expandSubfields(): void {
+		super.expandSubfields();
+		this.expandMultiFields();
+	}
+
+	public collapseSubfields(): void {
+		super.collapseSubfields();
+		this.collapseMultiFields();
 	}
 
 	public destroy(): void {

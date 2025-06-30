@@ -19,6 +19,10 @@ type DataciteAttributes = JSONObject & {
     publisher: string,
     container: JSONObject,
     publicationYear: Number,
+    dates: JSONArray<JSONObject & {
+        date: string,
+        dateType: string,
+    }>,
     subjects: JSONArray,
     contributors: JSONArray,
     language: string | null,

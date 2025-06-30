@@ -64,3 +64,9 @@ export async function fetchTimeout(
     clearTimeout(timeoutId);
     return result;
 }
+
+export function extractDoi(url: string): string {
+    const split = url.split("doi.org/");
+    if(split.length > 1) return split[1];
+    return url;
+}

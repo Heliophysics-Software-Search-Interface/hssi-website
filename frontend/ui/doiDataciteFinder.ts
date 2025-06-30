@@ -32,8 +32,22 @@ type DataciteAttributes = JSONObject & {
     },
     relatedIdentifiers: JSONArray< JSONObject & {
         relatedIdentifier?: string,
-        relatedIdentifierType?: string,
-        relationType: string,
+        relatedIdentifierType?: string & (
+            "URL" |
+            "DOI" 
+        ),
+        resourceTypeGeneral?: string & (
+            "Software" |
+            "JournalArticle"
+        ),
+        relationType: string & (
+            "IsDescribedBy" |
+            "IsNewVersionOf" |
+            "HasVersion" |
+            "HasMetadata" |
+            "IsDocumentedBy" |
+            "IsDerivedFrom" 
+        ),
     }>,
     relatedItems: JSONArray,
     rightsList: JSONArray,

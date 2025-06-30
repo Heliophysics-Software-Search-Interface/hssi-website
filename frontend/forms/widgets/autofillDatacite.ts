@@ -180,15 +180,29 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 			}
 		}
 
-		// documentation
+		// documentation, ref publication, rel publications
+		const relPubs: string[] = [];
 		if(attrs.relatedIdentifiers){
-			for(const relId of attrs.relatedIdentifiers as JSONObject[]){
+			for(const relId of attrs.relatedIdentifiers){
+				// docs
 				if(relId.relationType === "IsDocumentedBy"){
 					formData.documentation = relId.relatedIdentifier;
 					if(formData.documentation) break;
 				}
+
+				// ref pub
+				if(relId.resourceTypeGeneral === "JournalArticle"){
+					if(
+						!formData.referencePublication && 
+						relId.relationType === "IsDescribedBy"
+					) formData.referencePublication = relId.relatedIdentifier;
+					else{
+						relPubs.push(relId.relatedIdentifier);
+					}
+				}
 			}
 		}
+		if(relPubs) formData.relatedPublications = relPubs;
 
 		// version
 		if(attrs.version){

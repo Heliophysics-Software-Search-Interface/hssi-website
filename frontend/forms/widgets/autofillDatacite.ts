@@ -198,6 +198,19 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 			};
 		}
 
+		// keywords
+		if(attrs.subjects){
+			formData.keywords = [];
+			for(const item of attrs.subjects as {subject: string}[]){
+				// capitalize first char and skip empty/whitespace strings
+				let subject = item.subject;
+				subject = subject.trim();
+				if(subject.length <= 0) continue;
+				subject = subject[0].toLocaleUpperCase() + subject.slice(1);
+				formData.keywords.push(subject);
+			}
+		}
+
 		console.log(formData);
 		FormGenerator.fillForm(formData);
 

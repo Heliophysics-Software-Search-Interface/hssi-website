@@ -40,11 +40,13 @@
         </p>
         <div class="form-controls"> 
             <h4> Submission Form </h4>
-            <button type="button" onclick="clearGeneratedForm()">Clear Form</button> 
-            &nbsp;
-            <button type="button" onclick="collapseGeneratedForm()">Collapse Fields</button>
-            &nbsp;
-            <button type="button" onclick="expandGeneratedForm()">Expand Fields</button>
+            <div>
+                <button type="button" onclick="clearGeneratedForm()">Clear Form</button> 
+                &nbsp;
+                <button type="button" onclick="collapseGeneratedForm()">Collapse Fields</button>
+                &nbsp;
+                <button type="button" onclick="expandGeneratedForm()">Expand Fields</button>
+            </div>
         </div>
         {% include "forms/model_base.html" %}
     </div>

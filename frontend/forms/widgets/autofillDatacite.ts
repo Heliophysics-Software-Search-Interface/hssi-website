@@ -30,8 +30,10 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		if(!data?.attributes) { 
 			Spinner.hideSpinner(); 
 			console.error("Error parsing datacite api data", data);
-			return; 
+			return null;
 		}
+
+		return data;
 	}
 
 	private async handleAutofill(): Promise<void> {

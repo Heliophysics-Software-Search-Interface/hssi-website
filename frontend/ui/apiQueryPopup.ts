@@ -5,6 +5,7 @@ import {
     fetchTimeout,
     type JSONArray,
     type DataciteItem,
+    type AnyInputElement,
 } from '../loader';
 
 const styleResultBox = "hssi-query-results";
@@ -25,10 +26,11 @@ export type ApiQueryResult = {
  */
 export abstract class ApiQueryPopup extends PopupDialogue {
     
-    protected targetField: ModelSubfield = null;
+    protected targetField: ModelSubfield | AnyInputElement = null;
     protected formElement: HTMLFormElement = null;
-    protected queryInputElement!: HTMLInputElement;
-    protected resultBox!: HTMLDivElement;
+    protected queryInputElement: HTMLInputElement = null;
+    protected resultBox: HTMLDivElement = null;
+    protected filters: string[] = [];
     private isBusy: boolean = false;
 
     protected get contentType(): string { return "application/json" };
@@ -51,6 +53,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         });
         this.onHide.addListener(() => {
             this.queryInputElement.value = "";
+            this.filters.length = 0;
         });
     }
 
@@ -139,7 +142,14 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         selectButton.type = "button";
         selectButton.innerHTML = "Select";
         selectButton.addEventListener("click", () => {
-            if(!this.targetField.multi){
+            if(this.targetField instanceof HTMLElement){
+                const inputElem = this.targetField as AnyInputElement;
+                inputElem.value = result.id;
+                inputElem.data = result.jsonData;
+                PopupDialogue.hidePopup();
+                return;
+            }
+            else if(!this.targetField.multi){
                 const inputElem = this.targetField.getInputElement();
                 inputElem.value = result.id;
                 inputElem.data = result.jsonData;
@@ -157,12 +167,12 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         this.resultBox.appendChild(row);
     }
 
-    /// filtering resutls ------------------------------------------------------
+    /// filtering results ------------------------------------------------------
 
-    protected filterResults(results_in: JSONArray, filters: string[]): JSONArray{
+    protected filterResults(results_in: JSONArray): JSONArray{
         console.log(`Filtering ${results_in.length} results...`);
         let results = results_in;
-        for(const filter of filters){
+        for(const filter of this.filters){
             console.log(`Applying ${filter} filter`);
             results = (
                 (this as any)
@@ -217,9 +227,12 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         }
     }
 
-    public setTarget(field: ModelSubfield, useParentField: boolean = true): ApiQueryPopup {
+    public setTarget(
+        field: ModelSubfield | AnyInputElement, 
+        useParentField: boolean = true
+    ): ApiQueryPopup {
         this.targetField = field;
-        if (useParentField && field.parent) {
+        if (field instanceof ModelSubfield && useParentField && field.parent) {
             this.withQuery(field.parent.getInputElement().value.trim());
         }
         return this;
@@ -228,6 +241,11 @@ export abstract class ApiQueryPopup extends PopupDialogue {
     public withQuery(query: string): ApiQueryPopup {
         this.queryInputElement.value = query;
         if(query) this.submitQuery(query);
+        return this;
+    }
+
+    public withFilters(filters: string[]): ApiQueryPopup {
+        if(filters) this.filters.push(...filters);
         return this;
     }
 

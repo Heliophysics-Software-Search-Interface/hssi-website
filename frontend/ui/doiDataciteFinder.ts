@@ -1,5 +1,6 @@
 import { 
     ApiQueryPopup, 
+    ModelSubfield, 
     propResultFilters, 
     type ApiQueryResult, type JSONArray, type JSONObject, type JSONValue 
 } from "../loader";
@@ -43,6 +44,7 @@ type DataciteAttributes = JSONObject & {
         relationType: string & (
             "IsDescribedBy" |
             "IsNewVersionOf" |
+            "IsVersionOf" |
             "HasVersion" |
             "HasMetadata" |
             "IsDocumentedBy" |
@@ -91,10 +93,9 @@ export class DoiDataciteFinder extends ApiQueryPopup {
         
         // get filtered results
         let items = (results as JSONObject).data as DataciteItem[];
-        const filters = this.targetField.widget.properties[propResultFilters]
-        if(filters) {
+        if(this.filters) {
             if(items.length > 250) items.splice(250);
-            items = this.filterResults(items, filters) as any;
+            items = this.filterResults(items) as any;
         }
 
         for(const item of items) {

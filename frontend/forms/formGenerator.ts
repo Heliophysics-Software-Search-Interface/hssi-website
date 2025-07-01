@@ -38,12 +38,15 @@ export class FormGenerator {
 
         // generate a row for each field
         let i = 0;
+
+        // TODO generalize the titles somehow
         const titles: string[] = [
             "",
             "Additional Data (click to expand)",
             "Additional Metadata (click to expand)",
             "",
         ];
+        
         for(const field of this.fields) {
             if(field instanceof Array){
                 this.buildFormSection(field, titles.shift(), i > 0 && i < this.fields.length - 1);

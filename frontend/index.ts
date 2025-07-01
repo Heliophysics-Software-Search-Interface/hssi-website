@@ -7,7 +7,7 @@ import {
 	CharWidget, NumberWidget, UrlWidget, EmailWidget, DateWidget, 
 	TextAreaWidget, CheckboxWidget, Widget, AutofillSomefWidget, 
 	ModelBox, FormGenerator, RorWidget, OrcidWidget, DataciteDoiWidget,
-	AutofillDataciteWidget,
+	AutofillDataciteWidget, AutofillDialoge,
 
 	// etc
 	RorFinder, OrcidFinder, DoiDataciteFinder,
@@ -38,6 +38,7 @@ function main() {
 
 	// TODO smarter initialization
 	ConfirmDialogue.validateInstance();
+	AutofillDialoge.validateInstance();
 	RorFinder.getInstance();
 	OrcidFinder.getInstance();
 	DoiDataciteFinder.getInstance();

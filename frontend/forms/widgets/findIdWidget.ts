@@ -1,6 +1,7 @@
 import { 
     OrcidFinder, PopupDialogue, RorFinder, DoiDataciteFinder, 
-    UrlWidget, faMagicIcon
+    UrlWidget, faMagicIcon,
+    propResultFilters
 } from "../../loader"
 
 export abstract class FindIdWidget extends UrlWidget {
@@ -30,24 +31,27 @@ export abstract class FindIdWidget extends UrlWidget {
 
 export class RorWidget extends FindIdWidget {
     protected override onFindButtonPressed(): void {
-        const rorPopup = RorFinder.getInstance();
-        rorPopup.setTarget(this.parentField);
+        const rorPopup = RorFinder.getInstance()
+            .setTarget(this.parentField)
+            .withFilters(this.properties[propResultFilters]);
         PopupDialogue.showPopup(rorPopup);
     }
 }
 
 export class OrcidWidget extends FindIdWidget {
     protected override onFindButtonPressed(): void {
-        const orcidPopup = OrcidFinder.getInstance();
-        orcidPopup.setTarget(this.parentField);
+        const orcidPopup = OrcidFinder.getInstance()
+            .setTarget(this.parentField)
+            .withFilters(this.properties[propResultFilters]);
         PopupDialogue.showPopup(orcidPopup);
     }
 }
 
 export class DataciteDoiWidget extends FindIdWidget {
     protected override onFindButtonPressed(): void {
-        const popup = DoiDataciteFinder.getInstance();
-        popup.setTarget(this.parentField);
+        const popup = DoiDataciteFinder.getInstance()
+            .setTarget(this.parentField)
+            .withFilters(this.properties[propResultFilters]);
         PopupDialogue.showPopup(popup);
     }
 }

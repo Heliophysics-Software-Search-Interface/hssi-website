@@ -364,10 +364,25 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	"SubmissionForm",
 
 	# ----- Sec 1 -----
+	# Submitter
+	ModelSubfield.define(
+		name=FIELD_SUBMITTERNAME, 
+		type=SUBMISSION_FORM_SUBMITTER.type_name, 
+		requirement=RequirementLevel.MANDATORY.value, 
+		properties={
+			PROP_LABEL: "Submitter",
+			PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
+			PROP_TT_BEST: TTBEST_SUBMITTERNAME,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: Submitter.__name__
+			},
+		},
+		multi=False,
+	),
 	# PID
 	ModelSubfield.define(
 		name=FIELD_PERSISTENTIDENTIFIER,
-		type=TYPE_AUTOFILLDATACITE,
+		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Persistent Identifier",
@@ -382,27 +397,12 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Code Repo
 	ModelSubfield.define(
 		name=FIELD_CODEREPOSITORYURL,
-		type=TYPE_AUTOFILLSOMEF,
+		type=TYPE_URL,
 		requirement=RequirementLevel.MANDATORY.value,
 		properties={
 			PROP_LABEL: "Code Repository",
 			PROP_TT_EXPL: TTEXPL_CODEREPOSITORYURL,
 			PROP_TT_BEST: TTBEST_CODEREPOSITORYURL,
-		},
-		multi=False,
-	),
-	# Submitter
-	ModelSubfield.define(
-		name=FIELD_SUBMITTERNAME, 
-		type=SUBMISSION_FORM_SUBMITTER.type_name, 
-		requirement=RequirementLevel.MANDATORY.value, 
-		properties={
-			PROP_LABEL: "Submitter",
-			PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
-			PROP_TT_BEST: TTBEST_SUBMITTERNAME,
-			PROP_WIDGET_PROPS: {
-				WPROP_TARGETMODEL: Submitter.__name__
-			},
 		},
 		multi=False,
 	),

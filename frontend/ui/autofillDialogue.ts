@@ -7,7 +7,6 @@ import {
 
 export class AutofillDialoge extends PopupDialogue {
 
-    private formElement: HTMLFormElement = null;
     private dataciteDoiElement: AnyInputElement = null;
     private repoUrlElement: HTMLInputElement = null;
     protected override get title(): string { return "Autofill from External Metadata" }
@@ -60,8 +59,17 @@ export class AutofillDialoge extends PopupDialogue {
     protected override createContent(): void {
         super.createContent();
         const content = this.contentElement;
+        const text = document.createElement("p");
+        text.innerText = (
+            "Enter the DOI or DOI URL for your software and/or the " +
+            "URL to your remotely hosted git repository and press 'autofill'" +
+            "to fetch metadata and automatically fill out the form. " + 
+            "We are able to fetch significantly more data from the Datacite " + 
+            "API than any git remote hosting service's API, so DOI is " + 
+            "preferred over repository URL."
+        );
+        
         const form = document.createElement("form");
-
         const doiLabel = document.createElement("label");
         doiLabel.innerText = "DOI";
         const doiElem = document.createElement("input");
@@ -86,7 +94,6 @@ export class AutofillDialoge extends PopupDialogue {
         submitButton.type = "submit";
         
         form.addEventListener("submit", e => this.onSubmit(e));
-        this.formElement = form;
         this.dataciteDoiElement = doiElem;
         this.repoUrlElement = repoElem;
 
@@ -96,6 +103,7 @@ export class AutofillDialoge extends PopupDialogue {
         form.appendChild(repoLabel);
         form.appendChild(repoElem);
         form.appendChild(submitButton);
+        content.appendChild(text);
         content.appendChild(form);
 
         this.onShow.addListener(() => this.onShown());

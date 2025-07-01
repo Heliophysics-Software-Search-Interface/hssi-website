@@ -13,11 +13,10 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 
 	protected autofillButton: HTMLButtonElement = null;
 	
-	private async handleAutofill(): Promise<void> {
+	private async getApiData(): Promise<DataciteItem> {
+
 		const inputElem = this.parentField.getInputElement();
 		let data = inputElem.data as DataciteItem;
-
-		Spinner.showSpinner();
 
 		const doi = extractDoi(inputElem.value.trim());
 		const dataDoi = data?.attributes?.doi;
@@ -25,13 +24,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		// if data was not stored in field (through find button), we need to
 		// query the datacite api
 		if(doi && doi != dataDoi) {
-			console.log("Looking up datacite entry...");
-			const queryUrl = dataciteEntryApiEndpoint + doi;
-			try{
-				data = (
-					await (await fetchTimeout(queryUrl)).json()
-				).data as DataciteItem;
-			}
+			try{ data = await AutofillDataciteWidget.getApiDataFromDoi(doi); }
 			catch(e) { console.error(e); }
 		}
 		if(!data?.attributes) { 
@@ -39,7 +32,54 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 			console.error("Error parsing datacite api data", data);
 			return; 
 		}
+	}
+
+	private async handleAutofill(): Promise<void> {
+		Spinner.showSpinner();
+
+		const data = await this.getApiData();
+
+		// parse the datacite api data
+		try { AutofillDataciteWidget.autofillFromApiData(data); }
+		catch(e){ console.error(e); }
+
+		Spinner.hideSpinner();
+	}
+
+	private buildAutofillButton(): void {
+		this.autofillButton = document.createElement("button");
+		this.autofillButton.type = "button";
+		this.autofillButton.innerHTML = faMagicIcon + " autofill";
+		this.autofillButton.addEventListener(
+			"click", () => this.handleAutofill()
+		);
+
+		this.element.appendChild(this.autofillButton);
+	}
+
+	override initialize(): void {
+		super.initialize();
+		this.buildAutofillButton();
+	}
+
+	/// Static -----------------------------------------------------------------
+
+	public static async getApiDataFromDoi(doiUrl: string): Promise<DataciteItem> {
 		
+		const doi = extractDoi(doiUrl);
+		
+		console.log("Looking up datacite entry...", doi);
+		const queryUrl = dataciteEntryApiEndpoint + doi;
+		
+		let data: DataciteItem = (
+			await (await fetchTimeout(queryUrl)).json()
+		).data as DataciteItem;
+
+		return data;
+	}
+
+	public static autofillFromApiData(data: DataciteItem): void {
+
 		console.log("Parsing datacite api data", data);
 		const formData = {} as JSONObject;
 		const attrs = data.attributes;
@@ -227,23 +267,5 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 
 		console.log(formData);
 		FormGenerator.fillForm(formData);
-
-		Spinner.hideSpinner();
-	}
-
-	private buildAutofillButton(): void {
-		this.autofillButton = document.createElement("button");
-		this.autofillButton.type = "button";
-		this.autofillButton.innerHTML = faMagicIcon + " autofill";
-		this.autofillButton.addEventListener(
-			"click", () => this.handleAutofill()
-		);
-
-		this.element.appendChild(this.autofillButton);
-	}
-
-	override initialize(): void {
-		super.initialize();
-		this.buildAutofillButton();
 	}
 }

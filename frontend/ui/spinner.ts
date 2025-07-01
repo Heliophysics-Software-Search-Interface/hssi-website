@@ -139,10 +139,11 @@ export class Spinner {
     private static createTargetedSpinner(target: HTMLElement): Spinner {
         const spinner = new Spinner();
         spinner.targetElement = target;
-        const zIndex = Number.parseInt(window.getComputedStyle(target).zIndex);
-        spinner.backdropElement.style.zIndex = (zIndex + 10).toString();
+        const zIndex = Number.parseInt(window.getComputedStyle(target).zIndex) || 100000;
+        console.log(window.getComputedStyle(target));
+        spinner.backdropElement.style.zIndex = (zIndex + 100).toString();
         spinner.backdropElement.classList.add("targeted");
-        spinner.popupElement.style.zIndex = (zIndex + 11).toString();
+        spinner.popupElement.style.zIndex = (zIndex + 101).toString();
         spinner.popupElement.classList.add("targeted");
         return spinner;
     }
@@ -159,6 +160,7 @@ export class Spinner {
         // create a spinner targeted over one html element
         this.hideSpinner(target);
         const spinner = this.createTargetedSpinner(target);
+        console.log(spinner);
         this.spinnerMap.set(target, spinner);
         spinner.show();
         this.updateSpinners();

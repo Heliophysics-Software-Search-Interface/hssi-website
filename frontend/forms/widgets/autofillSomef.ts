@@ -1,6 +1,6 @@
 import { FormGenerator, InputWidget, Spinner } from "../../loader";
 
-const describeApiEndpoint = "/api/describe_form";
+export const describeApiEndpoint = "/api/describe_form";
 export const faMagicIcon = "<i class='fa fa-magic'></i>";
 
 export class AutofillSomefWidget extends InputWidget {

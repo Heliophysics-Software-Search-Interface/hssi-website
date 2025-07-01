@@ -1,5 +1,6 @@
 import {
-    DataciteDoiWidget, DoiDataciteFinder, faMagicIcon, PopupDialogue, propResultFilters, UrlWidget,
+    AutofillDataciteWidget,
+    DataciteDoiWidget, describeApiEndpoint, DoiDataciteFinder, faMagicIcon, FormGenerator, PopupDialogue, propResultFilters, Spinner, UrlWidget,
     type AnyInputElement,
     type JSONObject,
 } from "../loader";
@@ -11,9 +12,37 @@ export class AutofillDialoge extends PopupDialogue {
     private repoUrlElement: HTMLInputElement = null;
     protected override get title(): string { return "Autofill from External Metadata" }
 
-    private onSubmit(e: Event): void {
+    private async onSubmit(e: Event): Promise<void> {
         e.preventDefault();
-        console.log("Not Implemented");
+
+        const dataciteDoiVal = this.dataciteDoiElement.value.trim();
+        const repoUrlVal = this.repoUrlElement.value.trim();
+        if(!dataciteDoiVal && !repoUrlVal) return;
+
+        PopupDialogue.hidePopup();
+        
+        if(dataciteDoiVal){
+            Spinner.showSpinner();
+            try{
+                AutofillDataciteWidget.autofillFromApiData(
+                    await AutofillDataciteWidget.getApiDataFromDoi(dataciteDoiVal)
+                );
+            }
+            catch(e) { console.error(e); }
+            Spinner.hideSpinner();
+        }
+
+        if(repoUrlVal){
+            Spinner.showSpinner("Fetching metadata from repository, this may take a moment");
+            try{
+                const requestUrl = describeApiEndpoint + `?target=${repoUrlVal}`
+                const data = await (await fetch(requestUrl)).json();
+                console.log(`described repo at ${repoUrlVal}`, data);
+                FormGenerator.fillForm(data);
+            }
+            catch(e){ console.error(e); }
+            Spinner.hideSpinner();
+        }
     }
 
     private onShown(): void {
@@ -32,6 +61,7 @@ export class AutofillDialoge extends PopupDialogue {
         const doiElem = document.createElement("input");
 
         const findDoiButton = document.createElement("button");
+        findDoiButton.type = "button";
         findDoiButton.innerHTML = faMagicIcon + " find";
         findDoiButton.addEventListener("click", e => {
             PopupDialogue.showPopup(
@@ -76,6 +106,7 @@ export class AutofillDialoge extends PopupDialogue {
     public static openAutofillDialogue(): void {
         this.validateInstance();
         PopupDialogue.showPopup(this.instance);
+        console.log("open aoutofill dialogue");
     }
 }
 

@@ -31,7 +31,7 @@ export class ModelSubfield {
 	public requirement: FieldRequirement = null;
 
 	protected controlContainerElement: HTMLDivElement = null;
-	private labelElement: HTMLLabelElement = null;
+	protected labelElement: HTMLLabelElement = null;
 	private explanationElement: HTMLDivElement = null;
 	
 	private subfieldContainer: HTMLDetailsElement = null;

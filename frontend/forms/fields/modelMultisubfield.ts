@@ -22,6 +22,9 @@ export class ModelMultiSubfield extends ModelSubfield {
 	private multiFieldContainerElement: HTMLDivElement = null;
 	private multiFields: MultiField[] = [];
 	private newItemButton: HTMLButtonElement = null;
+	private hideButton: HTMLButtonElement = null;
+	private hiddenText: HTMLDivElement = null;
+	private isCollapsed: boolean = false;
 
 	public get multi(): boolean { return true; }
 
@@ -126,6 +129,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		for(const field of this.multiFields){
 			field.expandSubfields();
 		}
+		this.expandField();
 	}
 
 	public collapseMultiFields(): void {
@@ -137,6 +141,51 @@ export class ModelMultiSubfield extends ModelSubfield {
 	public addNewMultifieldWithValue(value: JSONValue): void {
 		this.buildNewMultifield();
 		this.multiFields[this.multiFields.length - 1].fillField(value);
+	}
+
+	public collapseField() {
+		if(this.isCollapsed) return;
+		this.collapseMultiFields();
+
+		this.multiFieldContainerElement.style.overflow = "hidden";
+		this.multiFieldContainerElement.style.maxHeight = "0";
+		this.newItemButton.style.display = "none";
+		this.hideButton.innerText = "show";
+
+		this.hiddenText.style.display = "block";
+		this.isCollapsed = true;
+	}
+
+	public expandField(){
+		if(!this.isCollapsed) return;
+
+		this.multiFieldContainerElement.style.removeProperty("max-height");
+		this.multiFieldContainerElement.style.removeProperty("overflow");
+		this.newItemButton.style.display = "block";
+		this.hideButton.innerText = "hide";
+
+		this.hiddenText.style.display = "none";
+		this.isCollapsed = false;
+	}
+
+	private buildHideButton() {
+		const hideButton = document.createElement('button');
+		this.hideButton = hideButton;
+
+		hideButton.innerText = "hide";
+		hideButton.type = "button";
+		hideButton.addEventListener("click", () => {
+			if(this.isCollapsed) this.expandField();
+			else this.collapseField();
+		});
+		this.labelElement.appendChild(hideButton);
+
+		const hiddenText = document.createElement('div');
+		this.hiddenText = hiddenText;
+		hiddenText.innerText = "-- hidden --";
+		hiddenText.style.display = "none";
+
+		this.newItemButton.parentElement.appendChild(hiddenText);
 	}
 
     /// Overriden funcitonality ------------------------------------------------
@@ -151,6 +200,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.buildMultiFieldContainer();
 		this.buildNewMultifield();
 		this.buildNewItemButton();
+		this.buildHideButton();
 
 		targetDiv.appendChild(this.containerElement);
 

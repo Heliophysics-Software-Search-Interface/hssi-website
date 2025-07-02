@@ -564,30 +564,48 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	),
     # Data Inputs
 	ModelSubfield.define(
-		name=FIELD_DATAINPUTS,
+		name=FIELD_DATASOURCES,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
-			PROP_LABEL: "Data Inputs",
-			PROP_TT_EXPL: TTEXPL_DATAINPUTS,
-			PROP_TT_BEST: TTBEST_DATAINPUTS,
+			PROP_LABEL: "Data Sources",
+			PROP_TT_EXPL: TTEXPL_DATASOURCES,
+			PROP_TT_BEST: TTEXPL_DATASOURCES,
             PROP_WIDGET_PROPS: {
                 WPROP_TARGETMODEL: DataInput.__name__,
+                WPROP_DROPDOWNBUTTON: True,
 			},
 		},
 		multi=True,
 	),
-	# File Formats
+	# File Formats - input
 	ModelSubfield.define(
-		name=FIELD_SUPPORTEDFILEFORMATS,
+		name=FIELD_INPUTFORMATS,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
-			PROP_LABEL: "Supported File Formats",
-			PROP_TT_EXPL: TTEXPL_SUPPORTEDFILEFORMATS,
-			PROP_TT_BEST: TTBEST_SUPPORTEDFILEFORMATS,
+			PROP_LABEL: "Input File Formats",
+			PROP_TT_EXPL: TTEXPL_INPUTFORMATS,
+			PROP_TT_BEST: TTBEST_INPUTFORMATS,
             PROP_WIDGET_PROPS: {
                 WPROP_TARGETMODEL: FileFormat.__name__,
+                WPROP_DROPDOWNBUTTON: True,
+			},
+		},
+		multi=True,
+	),
+	# File Formats - output
+	ModelSubfield.define(
+		name=FIELD_OUTPUTFORMATS,
+		type=TYPE_MODELBOX,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Output File Formats",
+			PROP_TT_EXPL: TTEXPL_INPUTFORMATS,
+			PROP_TT_BEST: TTBEST_INPUTFORMATS,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: FileFormat.__name__,
+                WPROP_DROPDOWNBUTTON: True,
 			},
 		},
 		multi=True,

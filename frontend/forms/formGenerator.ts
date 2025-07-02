@@ -334,6 +334,7 @@ export class FormGenerator {
             }
         }
         this.instance.updateAllFieldValidityStyles();
+        this.expandFormFields();
     }
 
     public static clearForm(): void {
@@ -341,6 +342,7 @@ export class FormGenerator {
         for(const field of fields) {
             field.clearField();
         }
+        this.collapseFormFields();
     }
 
     public static collapseFormFields(): void {

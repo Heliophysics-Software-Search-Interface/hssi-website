@@ -49,7 +49,7 @@ class Software(HssiModel):
         on_delete=models.CASCADE, 
         null=True, 
         blank=True, 
-        related_name='softwares'
+        related_name='softwares_published'
     )
     authors = models.ManyToManyField(Person, related_name='softwares')
     relatedInstruments = models.ManyToManyField(
@@ -79,15 +79,20 @@ class Software(HssiModel):
         related_name='softwares'
     )
     documentation = models.URLField(blank=True, null=True)
-    dataInputs = models.ManyToManyField(
+    dataSources = models.ManyToManyField(
         DataInput, 
         blank=True,
         related_name='softwares'
     )
-    supportedFileFormats = models.ManyToManyField(
+    inputFormats = models.ManyToManyField(
         FileFormat, 
         blank=True, 
-        related_name='softwares'
+        related_name='softwares_to'
+    ),
+    outputFormats = models.ManyToManyField(
+        FileFormat, 
+        blank=True, 
+        related_name='softwares_from'
     )
     relatedPublications = models.TextField(blank=True, null=True)
     relatedDatasets = models.ManyToManyField(
@@ -138,6 +143,11 @@ class Software(HssiModel):
         'self',
         blank=True,
         symmetrical=True
+    )
+    funder = models.ManyToManyField(
+        Organization,
+        blank=True,
+        related_name="softwares_funded"
     )
     award = models.ForeignKey(
         Award,

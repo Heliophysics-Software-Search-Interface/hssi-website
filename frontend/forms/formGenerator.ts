@@ -334,7 +334,7 @@ export class FormGenerator {
             }
         }
         this.instance.updateAllFieldValidityStyles();
-        this.expandFormFields();
+        this.instance.openFieldSections();
     }
 
     public static clearForm(): void {

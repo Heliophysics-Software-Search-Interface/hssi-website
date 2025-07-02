@@ -26,6 +26,7 @@ export class FormGenerator {
     private submitElement: HTMLInputElement = null;
     private fieldContainer: HTMLDivElement = null;
     private fields: (ModelSubfield | ModelSubfield[])[] = [];
+    private fieldSections: HTMLDetailsElement[] = [];
 
     private buildForm(): void {
 
@@ -86,6 +87,9 @@ export class FormGenerator {
             details.appendChild(formRow);
         }
 
+        if(details instanceof HTMLDetailsElement) {
+            this.fieldSections.push(details);
+        }
         this.fieldContainer.appendChild(details);
     }
 
@@ -207,6 +211,18 @@ export class FormGenerator {
         }
 
         return fields;
+    }
+
+    private openFieldSections(): void {
+        for(const section of this.fieldSections) {
+            section.setAttribute("open", "");
+        }
+    }
+
+    private closeFieldSections(): void {
+        for(const section of this.fieldSections) {
+            section.removeAttribute("open");
+        }
     }
 
     private static instance: FormGenerator = null;
@@ -331,9 +347,11 @@ export class FormGenerator {
         for(const field of this.instance.getRootFields()){
             field.collapseSubfields();
         }
+        this.instance.closeFieldSections();
     }
 
     public static expandFormFields(): void {
+        this.instance.openFieldSections();
         for(const field of this.instance.getRootFields()){
             field.expandSubfields();
         }

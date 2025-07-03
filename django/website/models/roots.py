@@ -169,6 +169,18 @@ class OperatingSystem(ControlledList):
             tooltipBestPractise="Please select all the operating systems the software can successfully be installed on.",
         )
 
+class CpuArchitecture(ControlledList):
+    '''CPU Architecture on which the software can run'''
+    @classmethod
+    def _form_config_redef(cls) -> None:
+        super()._form_config_redef()
+        form_config(
+            cls._meta.get_field(cls.name.name),
+            label="CPU Architecture",
+            tooltipExplanation="",
+            tooltipBestPractise="",
+        )
+
 class Phenomena(ControlledList):
     '''Solar phenomena that relate to the software'''
     @classmethod

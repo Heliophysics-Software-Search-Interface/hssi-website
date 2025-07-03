@@ -9,7 +9,7 @@ import json
 
 from ..models import (
     ControlledList, DataInput, License, OperatingSystem, ProgrammingLanguage,
-    FileFormat, RepoStatus
+    FileFormat, RepoStatus, CpuArchitecture,
 )
 
 from typing import Type, Any
@@ -27,6 +27,7 @@ MODEL_URL_MAP={
     DataInput.__name__: URL_DATAINPUTS,
     License.__name__: URL_LICENSES,
     OperatingSystem.__name__: URL_OPERATINGSYSTEMS,
+    CpuArchitecture.__name__: URL_CPUARCHITECTURES,
     ProgrammingLanguage.__name__: URL_PROGRAMMINGLANGUAGES,
     FileFormat.__name__: URL_SUPPORTEDFILEFORMATS,
     RepoStatus.__name__: URL_REPOSTATUS,

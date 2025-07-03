@@ -14,19 +14,22 @@ from ..models import (
 
 from typing import Type, Any
 
-URL_BASE = "https://raw.githubusercontent.com/Heliophysics-Software-Search-Interface/HSSI-vocab/main/jsonld/"
-URL_DATAINPUTS = "https://raw.githubusercontent.com/Heliophysics-Software-Search-Interface/HSSI-vocab/main/jsonld/DataInputs.json"
-URL_LICENSE = URL_BASE + "DataInputs.json"
-URL_OPERATINGSYSTEM = URL_BASE + "DataInputs.json"
-URL_SUPPORTEDFILEFORMATS = URL_BASE + "DataInputs.json"
+URL_REPOSTATUS = "https://www.repostatus.org/badges/latest/ontology.jsonld"
+URL_HSSIBASE = "https://raw.githubusercontent.com/Heliophysics-Software-Search-Interface/HSSI-vocab/main/jsonld/"
+URL_CPUARCHITECTURES = URL_HSSIBASE + "CPUArchitectures.json"
+URL_DATAINPUTS = URL_HSSIBASE + "DataSources.json"
+URL_LICENSES = URL_HSSIBASE + "Licenses.json"
+URL_OPERATINGSYSTEMS = URL_HSSIBASE + "OperatingSystems.json"
+URL_SUPPORTEDFILEFORMATS = URL_HSSIBASE + "OutputFileFormats.json"
+URL_PROGRAMMINGLANGUAGES = URL_HSSIBASE + "ProgrammingLanguages.json"
 
 MODEL_URL_MAP={
-    DataInput.__name__: "https://raw.githubusercontent.com/Heliophysics-Software-Search-Interface/HSSI-vocab/main/jsonld/DataInputs.json",
-    License.__name__: "https://raw.githubusercontent.com/Heliophysics-Software-Search-Interface/HSSI-vocab/main/jsonld/License.json",
-    OperatingSystem.__name__: "https://raw.githubusercontent.com/Heliophysics-Software-Search-Interface/HSSI-vocab/main/jsonld/OperatingSystem.json",
-    ProgrammingLanguage.__name__: "https://raw.githubusercontent.com/Heliophysics-Software-Search-Interface/HSSI-vocab/main/jsonld/ProgrammingLanguages.json",
-    FileFormat.__name__: "https://raw.githubusercontent.com/Heliophysics-Software-Search-Interface/HSSI-vocab/main/jsonld/SupportedFileFormats.json",
-    RepoStatus.__name__: "https://www.repostatus.org/badges/latest/ontology.jsonld",
+    DataInput.__name__: URL_DATAINPUTS,
+    License.__name__: URL_LICENSES,
+    OperatingSystem.__name__: URL_OPERATINGSYSTEMS,
+    ProgrammingLanguage.__name__: URL_PROGRAMMINGLANGUAGES,
+    FileFormat.__name__: URL_SUPPORTEDFILEFORMATS,
+    RepoStatus.__name__: URL_REPOSTATUS,
 }
 
 def get_data(url: str) -> dict | list:

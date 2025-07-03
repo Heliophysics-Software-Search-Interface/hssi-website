@@ -7,10 +7,11 @@ import {
 	CharWidget, NumberWidget, UrlWidget, EmailWidget, DateWidget, 
 	TextAreaWidget, CheckboxWidget, Widget, AutofillSomefWidget, 
 	ModelBox, FormGenerator, RorWidget, OrcidWidget, DataciteDoiWidget,
-	AutofillDataciteWidget,
+	AutofillDataciteWidget, AutofillDialoge,
 
 	// etc
-	RorFinder, OrcidFinder, DoiDataciteFinder, 
+	RorFinder, OrcidFinder, DoiDataciteFinder,
+	ConfirmDialogue, 
 } from "./loader";
 
 function main() {
@@ -36,6 +37,8 @@ function main() {
 	FormGenerator.generateForm(null);
 
 	// TODO smarter initialization
+	ConfirmDialogue.validateInstance();
+	AutofillDialoge.validateInstance();
 	RorFinder.getInstance();
 	OrcidFinder.getInstance();
 	DoiDataciteFinder.getInstance();

@@ -2,12 +2,17 @@ import {
     PopupDialogue, ModelSubfield, Spinner, ModelMultiSubfield,
     type JSONValue,
     type JSONObject,
+    fetchTimeout,
+    type JSONArray,
+    type DataciteItem,
+    type AnyInputElement,
 } from '../loader';
 
 const styleResultBox = "hssi-query-results";
 const styleRow = "row";
 const styleColumn = "column";
 export const faSearchIcon = "<i class='fa fa-search'></i>";
+export const propResultFilters = "resultFilters";
 
 export type ApiQueryResult = {
     jsonData: JSONObject;
@@ -21,10 +26,12 @@ export type ApiQueryResult = {
  */
 export abstract class ApiQueryPopup extends PopupDialogue {
     
-    protected targetField: ModelSubfield = null;
+    protected targetField: ModelSubfield | AnyInputElement = null;
     protected formElement: HTMLFormElement = null;
-    protected queryInputElement!: HTMLInputElement;
-    protected resultBox!: HTMLDivElement;
+    protected queryInputElement: HTMLInputElement = null;
+    protected resultBox: HTMLDivElement = null;
+    protected filters: string[] = [];
+    private isBusy: boolean = false;
 
     protected get contentType(): string { return "application/json" };
 
@@ -46,6 +53,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         });
         this.onHide.addListener(() => {
             this.queryInputElement.value = "";
+            this.filters.length = 0;
         });
     }
 
@@ -87,15 +95,28 @@ export abstract class ApiQueryPopup extends PopupDialogue {
     }
 
     protected async getQueryResults(query: string): Promise<JSONValue> {
-        const response = await fetch(this.getQueryUrl(query), {
-            method: "GET",
-            headers: this.getRequestHeaders(),
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
+        if(this.isBusy){
+            throw new Error("Busy - Cannot send requests right now!");
         }
-        return data;
+        
+        this.isBusy = true;
+        try{
+            const response = await fetchTimeout(this.getQueryUrl(query), {
+                method: "GET",
+                headers: this.getRequestHeaders(),
+            });
+            const data = await response.json();
+            this.isBusy = false;
+
+            if (!response.ok) {
+                throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
+            }
+            return data;
+        }
+        catch(e) {
+            this.isBusy = false;
+            throw(e);
+        }
     }
 
     protected abstract handleQueryResults(results: JSONValue): void;
@@ -121,7 +142,14 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         selectButton.type = "button";
         selectButton.innerHTML = "Select";
         selectButton.addEventListener("click", () => {
-            if(!this.targetField.multi){
+            if(this.targetField instanceof HTMLElement){
+                const inputElem = this.targetField as AnyInputElement;
+                inputElem.value = result.id;
+                inputElem.data = result.jsonData;
+                PopupDialogue.hidePopup();
+                return;
+            }
+            else if(!this.targetField.multi){
                 const inputElem = this.targetField.getInputElement();
                 inputElem.value = result.id;
                 inputElem.data = result.jsonData;
@@ -139,8 +167,51 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         this.resultBox.appendChild(row);
     }
 
+    /// filtering results ------------------------------------------------------
+
+    protected filterResults(results_in: JSONArray): JSONArray{
+        console.log(`Filtering ${results_in.length} results...`);
+        let results = results_in;
+        for(const filter of this.filters){
+            console.log(`Applying ${filter} filter`);
+            results = (
+                (this as any)
+                [`resultsFiltered_${filter}`] as (x:JSONArray)=>JSONArray
+            )(results);
+            console.log(results);
+        }
+        console.log("Filtered results", results);
+        return results;
+    }
+
+    protected resultsFiltered_software(
+        results_in: JSONArray<DataciteItem>
+    ): JSONArray<DataciteItem>{
+        return results_in.filter(x => {
+            return x.attributes?.types?.resourceTypeGeneral === "Software";
+        });
+    }
+
+    protected resultsFiltered_concept(
+        results_in: JSONArray<DataciteItem>
+    ): JSONArray<DataciteItem> {
+        return results_in.filter(x => {
+            if(x.attributes?.relatedIdentifiers){
+                for(const relId of x.attributes.relatedIdentifiers){
+                   if (relId.relationType === "IsVersionOf") return false;
+                   if (relId.relationType === "HasVersion") return true;
+                }
+            }
+            return true;
+        });
+    }
+
     /** submit a query to the api to fetch some search results */
     public async submitQuery(query: string): Promise<void> {
+        if(this.isBusy) {
+            console.warn("Attempt to submit query while busy");
+            return;
+        }
         this.clearResults();
         Spinner.showSpinner("", this.resultBox);
         try{
@@ -156,9 +227,12 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         }
     }
 
-    public setTarget(field: ModelSubfield, useParentField: boolean = true): ApiQueryPopup {
+    public setTarget(
+        field: ModelSubfield | AnyInputElement, 
+        useParentField: boolean = true
+    ): ApiQueryPopup {
         this.targetField = field;
-        if (useParentField && field.parent) {
+        if (field instanceof ModelSubfield && useParentField && field.parent) {
             this.withQuery(field.parent.getInputElement().value.trim());
         }
         return this;
@@ -167,6 +241,11 @@ export abstract class ApiQueryPopup extends PopupDialogue {
     public withQuery(query: string): ApiQueryPopup {
         this.queryInputElement.value = query;
         if(query) this.submitQuery(query);
+        return this;
+    }
+
+    public withFilters(filters: string[]): ApiQueryPopup {
+        if(filters) this.filters.push(...filters);
         return this;
     }
 

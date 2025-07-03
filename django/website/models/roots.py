@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any, NamedTuple
 if TYPE_CHECKING:
     from .people import Person
     from .auxillary_info import Functionality, Award, RelatedItem
+    from .software import Software
 
 # Character length limits
 LEN_LONGNAME = 512
@@ -246,6 +247,10 @@ class FileFormat(ControlledList):
     '''File formats that are supported as input or output types by the software'''
     extension = models.CharField(max_length=25, blank=False, null=False)
 
+    # specified for intellisense, defined in other models
+    softwares_to: models.Manager['Software']
+    softwares_from: models.Manager['Software']
+
     @classmethod
     def _form_config_redef(cls) -> None:
         super()._form_config_redef()
@@ -360,6 +365,8 @@ class Organization(HssiModel):
     # specified for intellisense, defined in other models
     people: models.Manager['Person']
     awards: models.Manager['Award']
+    softwares_published: models.Manager['Software']
+    softwares_funded: models.Manager['Software']
 
     @classmethod
     def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")

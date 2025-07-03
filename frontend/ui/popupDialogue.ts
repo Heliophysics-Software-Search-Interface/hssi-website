@@ -90,7 +90,8 @@ export class PopupDialogue {
     /// Static -----------------------------------------------------------------
 
     private static backdropElement: HTMLDivElement = null;
-    private static currentPopup: PopupDialogue = null;
+    private static popupStack: PopupDialogue[] = [];
+    private static get currentPopup(): PopupDialogue { return this.popupStack.at(-1); };
 
     private static getBackdrop(): HTMLDivElement {
         if(!this.backdropElement) {
@@ -116,14 +117,20 @@ export class PopupDialogue {
         backdrop.style.display = "block";
     }
 
+    /** return true if there is already a popup being currently shown */
+    public static popupIsShown(): boolean {
+        return !!this.currentPopup;
+    }
+
     public static showPopup(popup: PopupDialogue): void {
-        if(this.currentPopup) {
-            this.hidePopup();
-        }
+        // if(this.currentPopup) {
+        //     this.hidePopup();
+        // }
         this.showBackdrop();
         popup.onShow.triggerEvent();
-        this.currentPopup = popup;
+        this.popupStack.push(popup);
         this.currentPopup.element.style.display = "block";
+        this.currentPopup.element.style.zIndex = `${100000 + 10 * this.popupStack.length}`;
         this.currentPopup.centerPopup();
     }
 
@@ -131,9 +138,9 @@ export class PopupDialogue {
         if(this.currentPopup) {
             this.currentPopup.element.style.display = "none";
             this.currentPopup.onHide.triggerEvent();
-            this.currentPopup = null;
+            this.popupStack.pop();
         }
-        this.getBackdrop().style.display = "none";
+        if(!this.currentPopup) this.getBackdrop().style.display = "none";
     }
 }
 

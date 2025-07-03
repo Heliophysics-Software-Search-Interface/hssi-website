@@ -10,7 +10,7 @@ const labelStyle = "custom-label";
 const tooltipWrapperStyle = "tooltip-wrapper";
 const tooltipIconStyle = "tooltip-icon";
 const tooltipTextStyle = "tooltip-text";
-const explanationTextStyle = "explanation-text";
+export const explanationTextStyle = "explanation-text";
 const subfieldContainerStyle = "subfield-container";
 const requiredIndicatorStyle = "required-indicator";
 const indentStyle = "indent";
@@ -31,12 +31,14 @@ export class ModelSubfield {
 	public requirement: FieldRequirement = null;
 
 	protected controlContainerElement: HTMLDivElement = null;
-	private labelElement: HTMLLabelElement = null;
+	protected labelElement: HTMLLabelElement = null;
 	private explanationElement: HTMLDivElement = null;
-
+	
 	private subfieldContainer: HTMLDetailsElement = null;
 	private subfields: ModelSubfield[] = [];
+	private parentField: ModelSubfield = null;
 
+	public get parent(): ModelSubfield { return this.parentField; }
 	public get multi(): boolean { return false; }
 
 	/// Initialization ---------------------------------------------------------
@@ -78,6 +80,7 @@ export class ModelSubfield {
 			const row = document.createElement("div") as HTMLDivElement;
 			row.classList.add(formRowStyle)
 			field.buildInterface(row);
+			field.parentField = this;
 			this.subfields.push(field);
 			this.subfieldContainer.appendChild(row);
 		}
@@ -189,6 +192,23 @@ export class ModelSubfield {
 		}
 	}
 
+	public clearField(): void {
+		
+		// clear input value
+		let input = this.getInputElement();
+		if(input) input.value = "";
+
+		// clear/collapse all subfield values
+		for(const subfield of this.getSubfields()) {
+			subfield.clearField();
+			subfield.collapseSubfields();
+			subfield.requirement.removeStyles();
+		}
+
+		this.collapseSubfields();
+		this.requirement.removeStyles();
+	}
+
 	public fillField(data: JSONValue): void {
 		
 		if(data instanceof Array) {
@@ -241,9 +261,9 @@ export class ModelSubfield {
 
 	public hasValidInput(): boolean {
 		const value = this.widget?.getInputValue();
-		if(value == null || value.length <= 0) return false;
+		if(!value) return false;
 
-		const inputElem = this.widget?.getInputElement();
+		const inputElem = this.getInputElement();
 		if(inputElem) return inputElem.checkValidity();
 
 		return true;
@@ -257,6 +277,11 @@ export class ModelSubfield {
 		if(this.subfieldsExpanded() || this.subfieldsHidden()) return;
 		this.onExpandSubfields();
 		this.subfieldContainer.setAttribute("open", "");
+	}
+
+	public collapseSubfields(): void {
+		if(!this.subfieldsExpanded() || this.subfieldsHidden()) return;
+		this.subfieldContainer.removeAttribute("open");
 	}
 
 	/** shows the subfield container and expand button */

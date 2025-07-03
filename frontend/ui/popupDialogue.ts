@@ -1,5 +1,5 @@
 import { 
-    stylePopupBackdrop, faCloseIcon,
+    stylePopupBackdrop, faCloseIcon, SimpleEvent,
 } from "../loader";
 
 export const stylePopupDialogue = "hssi-popup-dialogue";
@@ -14,14 +14,19 @@ export class PopupDialogue {
     protected titleElement: HTMLElement = null;
     protected contentElement: HTMLDivElement = null;
 
+    protected onShow: SimpleEvent = new SimpleEvent();
+    protected onHide: SimpleEvent = new SimpleEvent();
+
     protected get title(): string {
         return "Popup Dialogue";
     }
 
     protected constructor() {
-        this.createElement();
-        this.createHeader();
-        this.createContent();
+        setTimeout(() => {
+            this.createElement();
+            this.createHeader();
+            this.createContent();
+        }, 0);
     }
 
     protected createElement(): void {
@@ -71,16 +76,22 @@ export class PopupDialogue {
     public centerPopup(): void {
         if(this.element == null) return;
 
-        const adjustedWidth = window.innerWidth - this.element.offsetWidth;
+        this.centerPopupHorizontally();
         const adjustedHeight = window.innerHeight - this.element.offsetHeight;
-        this.element.style.left = `${adjustedWidth / 2 + window.scrollX}px`;
         this.element.style.top = `${adjustedHeight / 2 + window.scrollY}px`;
+    }
+    
+    public centerPopupHorizontally(): void {
+        if(this.element == null) return;
+        const adjustedWidth = window.innerWidth - this.element.offsetWidth;
+        this.element.style.left = `${adjustedWidth / 2 + window.scrollX}px`;
     }
 
     /// Static -----------------------------------------------------------------
 
     private static backdropElement: HTMLDivElement = null;
-    private static currentPopup: PopupDialogue = null;
+    private static popupStack: PopupDialogue[] = [];
+    private static get currentPopup(): PopupDialogue { return this.popupStack.at(-1); };
 
     private static getBackdrop(): HTMLDivElement {
         if(!this.backdropElement) {
@@ -106,22 +117,30 @@ export class PopupDialogue {
         backdrop.style.display = "block";
     }
 
+    /** return true if there is already a popup being currently shown */
+    public static popupIsShown(): boolean {
+        return !!this.currentPopup;
+    }
+
     public static showPopup(popup: PopupDialogue): void {
-        if(this.currentPopup) {
-            this.hidePopup();
-        }
+        // if(this.currentPopup) {
+        //     this.hidePopup();
+        // }
         this.showBackdrop();
-        this.currentPopup = popup;
+        popup.onShow.triggerEvent();
+        this.popupStack.push(popup);
         this.currentPopup.element.style.display = "block";
+        this.currentPopup.element.style.zIndex = `${100000 + 10 * this.popupStack.length}`;
         this.currentPopup.centerPopup();
     }
 
     public static hidePopup(): void {
         if(this.currentPopup) {
             this.currentPopup.element.style.display = "none";
-            this.currentPopup = null;
+            this.currentPopup.onHide.triggerEvent();
+            this.popupStack.pop();
         }
-        this.getBackdrop().style.display = "none";
+        if(!this.currentPopup) this.getBackdrop().style.display = "none";
     }
 }
 

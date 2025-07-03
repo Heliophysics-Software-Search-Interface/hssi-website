@@ -1,5 +1,5 @@
 import { 
-	RequirementLevel, Widget, ModelSubfield,
+	RequirementLevel, Widget, ModelSubfield, deepMerge,
 	type WidgetType
 } from "../../loader";
 
@@ -22,38 +22,6 @@ type SerializedFieldStructure = {
 type ModelFieldStructureInstance = {
 	topField: ModelSubfield,
 	subFields: ModelSubfield[],
-}
-
-export function deepMerge(target: any, source: any): any {
-
-	// If either is not an object (or is null), return a clone of source
-	if (
-		typeof target !== 'object' || typeof source !== 'object' || 
-		!target || !source
-	)
-        return structuredClone(source);
-
-	// Clone the target to avoid mutating the original
-    const result: any = structuredClone(target);
-
-	// Iterate through all keys in the source object
-    for (const key of Object.keys(source)) {
-
-		// If both target and source have the same key and both values are 
-		// objects, merge recursively
-        if (
-			key in result && 
-			typeof result[key] === 'object' && 
-			typeof source[key] === 'object'
-		) {
-            result[key] = deepMerge(result[key], source[key]);
-        } else {
-			// Otherwise, overwrite with a clone of the source value
-            result[key] = structuredClone(source[key]);
-        }
-    }
-
-    return result;
 }
 
 export type SerializedSubfield = {

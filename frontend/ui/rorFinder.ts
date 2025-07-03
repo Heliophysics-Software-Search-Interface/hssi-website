@@ -1,6 +1,9 @@
-import { ApiQueryPopup, type JSONArray, type JSONObject, type JSONValue } from "../loader";
+import { 
+    ApiQueryPopup, 
+    type JSONArray, type JSONObject, type JSONValue 
+} from "../loader";
 
-type RorItem = JSONObject & {
+export type RorItem = JSONObject & {
     id: string;
     names: RorName[];
 };
@@ -28,17 +31,31 @@ function sortNames(names: RorName[]): RorSortedNames {
         acronym: null,
         labels: []
     };
-    for(const name of names) {
-        if(name.lang !== "en") continue;
-        if(name.types.includes("ror_display")) {
-            sortedNames.displayName = name;
+
+    // loop allows us to prioritize english names first
+    let onlyEnglish = true;
+    while(true){
+
+        // try to sort names into relevant categories
+        for(const name of names) {
+            if(onlyEnglish && name.lang !== "en") continue;
+            if(name.types.includes("ror_display")) {
+                sortedNames.displayName = name;
+            }
+            else if(name.types.includes("acronym")) {
+                sortedNames.acronym = name;
+            }
+            else if(name.types.includes("label")) {
+                sortedNames.labels.push(name);
+                if(!sortedNames.displayName) sortedNames.displayName = name;
+            }
         }
-        else if(name.types.includes("acronym")) {
-            sortedNames.acronym = name;
-        }
-        else if(name.types.includes("label")) {
-            sortedNames.labels.push(name);
-            if(!sortedNames.displayName) sortedNames.displayName = name;
+
+        // only try other languages if english is not available
+        if (!onlyEnglish) break;
+        else {
+            if (!sortedNames.displayName) onlyEnglish = false;
+            else break;
         }
     }
     return sortedNames;
@@ -47,7 +64,7 @@ function sortNames(names: RorName[]): RorSortedNames {
 /** interactive popup that allows a user to search for ROR ids by name */
 export class RorFinder extends ApiQueryPopup {
 
-    override get title(): string {
+    public override get title(): string {
         return "ROR Finder";
     }
 
@@ -55,30 +72,39 @@ export class RorFinder extends ApiQueryPopup {
         return "https://api.ror.org/v2/organizations";
     }
 
-    protected override async getQueryResults(query: string): Promise<JSONValue> {
-        const queryUrl = this.endpoint + `?query=${query}`;
-        const response = await fetch(queryUrl, { method: "GET" });
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(`Error fetching data: ${response.status} ${response.statusText}`);
-        }
-        return data;
+    protected override getQueryUrl(query: string): string {
+        return this.endpoint + `?query=${query}`;
+    }
+
+    protected override getRequestHeaders(): Record<string, string> {
+        const headers = super.getRequestHeaders();
+        // TODO implement auth token without exposing it to frontend
+        // (should probably implement a backend api endpoint for orcid searches)
+        // headers["Authorization"] = `Bearer ${0}`;
+        return headers;
     }
 
     protected override handleQueryResults(results: JSONValue): void {
         const data: any = results as any;
         if(data.items){
-            const items = data.items as JSONArray;
+            const items = data.items as JSONObject[];
             for(const obj of items) {
-                console.log(obj);
                 const item = obj as RorItem;
                 const names = sortNames(item.names);
+                
+                // skip items without any name
+                if(!names.displayName) continue;
+
                 const content = document.createElement("div") as HTMLDivElement;
                 content.innerText = names.displayName.value;
                 if(names.acronym){
                     content.innerText += ` (${names.acronym.value})`;
                 }
-                this.addResultRow({ id: item.id, textContent: content });
+                this.addResultRow({ 
+                    id: item.id, 
+                    textContent: content,
+                    jsonData: obj,
+                });
             }
         }
     }

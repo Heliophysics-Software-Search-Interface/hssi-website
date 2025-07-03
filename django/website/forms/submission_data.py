@@ -2,28 +2,94 @@ from ..models import *
 from ..util import RequirementLevel
 from .names import *
 
-SUBMISSION_FORM_ORGANIZATION: ModelStructure = ModelStructure.define(
-	"SubmissionFormOrganization",
+SUBMISSION_FORM_AFFILIATION: ModelStructure = ModelStructure.define(
+	"SubmissionFormAffiliation",
 	ModelSubfield.define(
-		name="organization",
+		name=FIELD_AUTHORAFFILIATION,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Organization",
 			PROP_WIDGET_PROPS: {
+                PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATION,
+                PROP_TT_BEST: TTBEST_AUTHORAFFILIATION,
 				WPROP_TARGETMODEL: Organization.__name__,
 			},
 		},
 		multi=False,
 	),
 	ModelSubfield.define(
-		name="identifier",
-		type=TYPE_URL,
+		name=FIELD_AUTHORAFFILIATIONIDENTIFIER,
+		type=TYPE_ROR,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Identifier",
             PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATIONIDENTIFIER,
             PROP_TT_BEST: TTBEST_AUTHORAFFILIATIONIDENTIFIER,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: Organization.__name__,
+			},
+		},
+		multi=False,
+	),
+)
+
+SUBMISSION_FORM_PUBLISHER: ModelStructure = ModelStructure.define(
+	"SubmissionFormFunder",
+	ModelSubfield.define(
+		name=FIELD_PUBLISHER,
+		type=TYPE_MODELBOX,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Organization",
+			PROP_WIDGET_PROPS: {
+            	PROP_TT_EXPL: TTEXPL_PUBLISHER,
+            	PROP_TT_BEST: TTBEST_PUBLISHER,
+				WPROP_TARGETMODEL: Organization.__name__,
+			},
+		},
+		multi=False,
+	),
+	ModelSubfield.define(
+		name=FIELD_FUNDERIDENTIFIER,
+		type=TYPE_ROR,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Identifier",
+            PROP_TT_EXPL: TTEXPL_PUBLISHERIDENTIFIER,
+            PROP_TT_BEST: TTBEST_PUBLISHERIDENTIFIER,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: Organization.__name__,
+			},
+		},
+		multi=False,
+	),
+)
+
+SUBMISSION_FORM_FUNDER: ModelStructure = ModelStructure.define(
+	"SubmissionFormFunder",
+	ModelSubfield.define(
+		name=FIELD_FUNDER,
+		type=TYPE_MODELBOX,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Organization",
+			PROP_WIDGET_PROPS: {
+            	PROP_TT_EXPL: TTEXPL_FUNDER,
+            	PROP_TT_BEST: TTBEST_FUNDER,
+				WPROP_TARGETMODEL: Organization.__name__,
+			},
+		},
+		multi=False,
+	),
+	ModelSubfield.define(
+		name=FIELD_FUNDERIDENTIFIER,
+		type=TYPE_ROR,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Identifier",
+            PROP_TT_EXPL: TTEXPL_FUNDERIDENTIFIER,
+            PROP_TT_BEST: TTBEST_FUNDERIDENTIFIER,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Organization.__name__,
 			},
@@ -78,8 +144,8 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 	ModelSubfield.define(
-        name="identifier",
-        type=TYPE_URL,
+        name=FIELD_AUTHORIDENTIFIER,
+        type=TYPE_ORCID,
         requirement=RequirementLevel.RECOMMENDED,
         properties={
             PROP_LABEL: "Identifier",
@@ -89,8 +155,8 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
         multi=False,
 	),
 	ModelSubfield.define(
-        name="affiliation",
-        type=SUBMISSION_FORM_ORGANIZATION.type_name,
+        name=FIELD_AUTHORAFFILIATION,
+        type=SUBMISSION_FORM_AFFILIATION.type_name,
         requirement=RequirementLevel.RECOMMENDED,
         properties={
             PROP_LABEL: "Affiliation",
@@ -138,7 +204,7 @@ SUBMISSION_FORM_VERSION: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_VERSIONPID,
-		type=TYPE_URL,
+		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Version PID",
@@ -153,7 +219,7 @@ SUBMISSION_FORM_PUBLICATION: ModelStructure = ModelStructure.define(
 	"SubmissionFormPublication",
 	ModelSubfield.define(
 		name=FIELD_REFERENCEPUBLICATION,
-		type=TYPE_URL,
+		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Reference Publication",
@@ -168,7 +234,7 @@ SUBMISSION_FORM_REL_SOFTWARE: ModelStructure = ModelStructure.define(
 	"SubmissionFormRelSoftware",
 	ModelSubfield.define(
 		name=FIELD_RELATEDSOFTWARE,
-		type=TYPE_URL,
+		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Related Software",
@@ -234,7 +300,7 @@ SUBMISSION_FORM_DATASET: ModelStructure = ModelStructure.define(
 	"SubmissionFormDataset",
 	ModelSubfield.define(
 		name=FIELD_RELATEDDATASETS,
-		type=TYPE_URL,
+		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Related Datasets",
@@ -298,18 +364,6 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	"SubmissionForm",
 
 	# ----- Sec 1 -----
-	# Code Repo
-	ModelSubfield.define(
-		name=FIELD_CODEREPOSITORYURL,
-		type=TYPE_AUTOFILLFORMURL,
-		requirement=RequirementLevel.MANDATORY.value,
-		properties={
-			PROP_LABEL: "Code Repository",
-			PROP_TT_EXPL: TTEXPL_CODEREPOSITORYURL,
-			PROP_TT_BEST: TTBEST_CODEREPOSITORYURL,
-		},
-		multi=False,
-	),
 	# Submitter
 	ModelSubfield.define(
 		name=FIELD_SUBMITTERNAME, 
@@ -328,12 +382,27 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# PID
 	ModelSubfield.define(
 		name=FIELD_PERSISTENTIDENTIFIER,
-		type=TYPE_URL,
+		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Persistent Identifier",
 			PROP_TT_EXPL: TTEXPL_PERSISTENTIDENTIFIER,
 			PROP_TT_BEST: TTBEST_PERSISTENTIDENTIFIER,
+            PROP_WIDGET_PROPS: {
+                WPROP_RESULTFILTERS: ["software", "concept"]
+			}
+		},
+		multi=False,
+	),
+	# Code Repo
+	ModelSubfield.define(
+		name=FIELD_CODEREPOSITORYURL,
+		type=TYPE_URL,
+		requirement=RequirementLevel.MANDATORY.value,
+		properties={
+			PROP_LABEL: "Code Repository",
+			PROP_TT_EXPL: TTEXPL_CODEREPOSITORYURL,
+			PROP_TT_BEST: TTBEST_CODEREPOSITORYURL,
 		},
 		multi=False,
 	),
@@ -403,7 +472,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Publisher
 	ModelSubfield.define(
 		name=FIELD_PUBLISHER,
-		type=SUBMISSION_FORM_ORGANIZATION.type_name,
+		type=SUBMISSION_FORM_FUNDER.type_name,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Publisher",
@@ -495,30 +564,48 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	),
     # Data Inputs
 	ModelSubfield.define(
-		name=FIELD_DATAINPUTS,
+		name=FIELD_DATASOURCES,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
-			PROP_LABEL: "Data Inputs",
-			PROP_TT_EXPL: TTEXPL_DATAINPUTS,
-			PROP_TT_BEST: TTBEST_DATAINPUTS,
+			PROP_LABEL: "Data Sources",
+			PROP_TT_EXPL: TTEXPL_DATASOURCES,
+			PROP_TT_BEST: TTEXPL_DATASOURCES,
             PROP_WIDGET_PROPS: {
                 WPROP_TARGETMODEL: DataInput.__name__,
+                WPROP_DROPDOWNBUTTON: True,
 			},
 		},
 		multi=True,
 	),
-	# File Formats
+	# File Formats - input
 	ModelSubfield.define(
-		name=FIELD_SUPPORTEDFILEFORMATS,
+		name=FIELD_INPUTFORMATS,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
-			PROP_LABEL: "Supported File Formats",
-			PROP_TT_EXPL: TTEXPL_SUPPORTEDFILEFORMATS,
-			PROP_TT_BEST: TTBEST_SUPPORTEDFILEFORMATS,
+			PROP_LABEL: "Input File Formats",
+			PROP_TT_EXPL: TTEXPL_INPUTFORMATS,
+			PROP_TT_BEST: TTBEST_INPUTFORMATS,
             PROP_WIDGET_PROPS: {
                 WPROP_TARGETMODEL: FileFormat.__name__,
+                WPROP_DROPDOWNBUTTON: True,
+			},
+		},
+		multi=True,
+	),
+	# File Formats - output
+	ModelSubfield.define(
+		name=FIELD_OUTPUTFORMATS,
+		type=TYPE_MODELBOX,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Output File Formats",
+			PROP_TT_EXPL: TTEXPL_INPUTFORMATS,
+			PROP_TT_BEST: TTBEST_INPUTFORMATS,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: FileFormat.__name__,
+                WPROP_DROPDOWNBUTTON: True,
 			},
 		},
 		multi=True,
@@ -597,7 +684,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Funder
 	ModelSubfield.define(
 		name=FIELD_FUNDER,
-		type=SUBMISSION_FORM_ORGANIZATION.type_name,
+		type=SUBMISSION_FORM_FUNDER.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Funder",
@@ -629,7 +716,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Related Publications
 	ModelSubfield.define(
 		name=FIELD_RELATEDPUBLICATIONS,
-		type=TYPE_MODELBOX,
+		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Related Publications",

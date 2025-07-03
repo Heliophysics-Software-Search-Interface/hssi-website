@@ -1,7 +1,9 @@
 import { 
     typeAttribute, ModelFieldStructure, ModelSubfield, widgetDataAttribute,
     type JSONValue, type JSONObject,
-    RequirementLevel
+    RequirementLevel,
+    ConfirmDialogue,
+    ModelMultiSubfield
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -24,6 +26,7 @@ export class FormGenerator {
     private submitElement: HTMLInputElement = null;
     private fieldContainer: HTMLDivElement = null;
     private fields: (ModelSubfield | ModelSubfield[])[] = [];
+    private fieldSections: HTMLDetailsElement[] = [];
 
     private buildForm(): void {
 
@@ -36,12 +39,15 @@ export class FormGenerator {
 
         // generate a row for each field
         let i = 0;
+
+        // TODO generalize the titles somehow
         const titles: string[] = [
             "",
             "Additional Data (click to expand)",
             "Additional Metadata (click to expand)",
             "",
         ];
+        
         for(const field of this.fields) {
             if(field instanceof Array){
                 this.buildFormSection(field, titles.shift(), i > 0 && i < this.fields.length - 1);
@@ -81,6 +87,9 @@ export class FormGenerator {
             details.appendChild(formRow);
         }
 
+        if(details instanceof HTMLDetailsElement) {
+            this.fieldSections.push(details);
+        }
         this.fieldContainer.appendChild(details);
     }
 
@@ -204,6 +213,18 @@ export class FormGenerator {
         return fields;
     }
 
+    private openFieldSections(): void {
+        for(const section of this.fieldSections) {
+            section.setAttribute("open", "");
+        }
+    }
+
+    private closeFieldSections(): void {
+        for(const section of this.fieldSections) {
+            section.removeAttribute("open");
+        }
+    }
+
     private static instance: FormGenerator = null;
     private static structureData: ModelStructureData = null;
 
@@ -291,15 +312,63 @@ export class FormGenerator {
         
     }
 
-    public static fillForm(data: JSONObject): void {
+    /**
+     * fills the form with all the specified data in the form of {key:value}
+     * where keys represent the field name
+     * @param data the data to fill the form fields with
+     * @param overwrite_values whether or not fields which already have data should be overwritten
+     */
+    public static fillForm(
+        data: JSONObject, 
+        overwrite_values: boolean = false
+    ): void {
+
         const fields = this.instance.getRootFields();
         for(const key in data) {
             const value = data[key];
             const field = fields.find(f => f.name === key);
             if(field) {
-                field.fillField(value);
+                if (overwrite_values || !field.hasValidInput()) {
+                    field.fillField(value);
+                }
             }
         }
         this.instance.updateAllFieldValidityStyles();
+        this.instance.openFieldSections();
+    }
+
+    public static clearForm(): void {
+        const fields = this.instance.getRootFields();
+        for(const field of fields) {
+            field.clearField();
+        }
+        this.collapseFormFields();
+    }
+
+    public static collapseFormFields(): void {
+        for(const field of this.instance.getRootFields()){
+            field.collapseSubfields();
+        }
+        this.instance.closeFieldSections();
+    }
+
+    public static expandFormFields(): void {
+        this.instance.openFieldSections();
+        for(const field of this.instance.getRootFields()){
+            field.expandSubfields();
+        }
+    }
+
+    public static async clearFormConfirm(): Promise<void> {
+        if(await ConfirmDialogue.getConfirmation()){
+            this.clearForm();
+            console.log("Form cleared");
+        }
+        else console.log("Form clear cancelled");
     }
 }
+
+const win = window as any;
+win.clearGeneratedForm = FormGenerator.clearFormConfirm.bind(FormGenerator);
+win.collapseGeneratedForm = FormGenerator.collapseFormFields.bind(FormGenerator);
+win.expandGeneratedForm = FormGenerator.expandFormFields.bind(FormGenerator);

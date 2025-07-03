@@ -1,77 +1,147 @@
 body {
-  margin: 0;
-  padding: 0;
+	margin: 0;
+	padding: 0;
 }
 
 .hssi-spinner-backdrop {
-  background-color: #3338;
-  box-shadow: inset 0 0 20px #000;
+	background-color: #3338;
+	box-shadow: inset 0 0 20px #000;
 }
 
 .hssi-spinner-backdrop.targeted {
-  background-color: #3338;
-  box-shadow: none;
+	background-color: #3338;
+	box-shadow: none;
 }
 
 .hssi-spinner-popup {
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  padding: 15px;
-  padding-bottom: 5px;
-  border-radius: 5px;
-  box-shadow: 5px 5px 10px #333;
+	background-color: #333;
+	color: #fff;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+	padding: 15px;
+	padding-bottom: 5px;
+	border-radius: 5px;
+	box-shadow: 5px 5px 10px #333;
 }
 
 .hssi-spinner-popup h5 {
-  margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 
 .hssi-spinner-popup.targeted {
-  background-color: transparent;
-  padding: 0;
-  padding-bottom: 0;
-  border-radius: 0;
-  box-shadow: none;
+	background-color: transparent;
+	padding: 0;
+	padding-bottom: 0;
+	border-radius: 0;
+	box-shadow: none;
 }
 
 .hssi-spinner-popup.targeted h5 {
-  text-shadow: 0 0 10px #000;
-  font-weight: bolder;
-  margin: 0;
+	text-shadow: 0 0 10px #000;
+	font-weight: bolder;
+	margin: 0;
 }
 
 .hssi-spinner-popup.targeted p {
-  margin: 0;
+	margin: 0;
 }
 
 .hssi-popup-dialogue {
-  background-color: #ececec;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 15px;
-  border-radius: 5px;
-  box-shadow: 5px 5px 10px #333;
-  max-width: 600px;
+	background-color: #ececec;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+	padding-bottom: 15px;
+	border-radius: 5px;
+	box-shadow: 5px 5px 10px #333;
+	max-width: 600px;
+}
+
+.hssi-popup-dialogue form {
+	row-gap: 0;
+}
+
+.hssi-popup-dialogue button {
+	width: auto;
+	align-self: start;
+	background-color: #ececec;
+}
+
+.hssi-popup-dialogue .hssi-query-results {
+	padding: 5px;
+	margin-top: 10px;
+	outline: 1px solid #3333;
+	min-height: 50px;
+}
+
+.hssi-popup-dialogue .hssi-query-results>div:nth-child(even) {
+	background: #3331;
+}
+
+.hssi-popup-dialogue .hssi-popup-content button {
+	border-radius: 5px;
+	outline: 1px solid #3338;
+	color: black;
+	padding: 5px;
+	margin: 5px;
+}
+
+.hssi-popup-dialogue .hssi-popup-content button:hover {
+	background-color: #3338;
+	color: white;
+}
+
+.hssi-popup-dialogue .hssi-query-results .row {
+	display: flex;
+	width: 100%;
+	gap: 5px;
+}
+
+.hssi-popup-dialogue .hssi-query-results .column {
+	text-align: left;
+}
+
+.hssi-popup-dialogue .hssi-query-results .row>.column:nth-last-child(1) {
+	text-align: right;
+	margin-left: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 
 .hssi-popup-header {
-  background-color: #e3e3e3;
-  font-size: large;
-  font-weight: bold;
-  border-radius: 5px;
-  padding: 10px;
+	background-color: #e3e3e3;
+	font-size: large;
+	font-weight: bold;
+	border-radius: 5px;
+	padding: 10px;
+}
+
+.hssi-popup-title {
+	padding-left: 15px;
+	padding-right: 15px;
 }
 
 .hssi-popup-header button {
-  color: orangered;
-  text-shadow: #3338 1px 1px 3px;
-  cursor: pointer;
+	color: orangered;
+	text-shadow: #3338 1px 1px 3px;
+	cursor: pointer;
 }
 
 .hssi-popup-content {
-  margin: 15px;
+	margin: 15px;
+}
+
+.hssi-popup-dialogue form label {
+	text-align: left;
+	margin-top: 10px;
+	font-weight: bold;
+}
+
+.hssi-popup-dialogue form input {
+	margin-bottom: 0;
+}
+.hssi-popup-dialogue form input:last-of-type {
+	margin-bottom: 20px;
 }

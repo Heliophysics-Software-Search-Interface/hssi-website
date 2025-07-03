@@ -6,6 +6,7 @@
   flex-wrap: nowrap;
   justify-content: space-between;
   background: #2f2c2c;
+  z-index: 1001;
 }
 
 .site-name-short {

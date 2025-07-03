@@ -3,9 +3,15 @@
  */
 
 import { 
+	// widgets to initialize
 	CharWidget, NumberWidget, UrlWidget, EmailWidget, DateWidget, 
-	TextAreaWidget, CheckboxWidget, Widget, AutofillFormUrlWidget, 
-	ModelBox, FormGenerator,
+	TextAreaWidget, CheckboxWidget, Widget, AutofillSomefWidget, 
+	ModelBox, FormGenerator, RorWidget, OrcidWidget, DataciteDoiWidget,
+	AutofillDataciteWidget, AutofillDialoge,
+
+	// etc
+	RorFinder, OrcidFinder, DoiDataciteFinder,
+	ConfirmDialogue, 
 } from "./loader";
 
 function main() {
@@ -19,12 +25,23 @@ function main() {
 		DateWidget,
 		CheckboxWidget,
 		TextAreaWidget,
-		AutofillFormUrlWidget,
+		RorWidget,
+		OrcidWidget,
+		DataciteDoiWidget,
 		ModelBox,
+		AutofillSomefWidget,
+		AutofillDataciteWidget,
 	)
 
 	// generate the forms
 	FormGenerator.generateForm(null);
+
+	// TODO smarter initialization
+	ConfirmDialogue.validateInstance();
+	AutofillDialoge.validateInstance();
+	RorFinder.getInstance();
+	OrcidFinder.getInstance();
+	DoiDataciteFinder.getInstance();
 }
 
 // call main when document DOM tree is finished building so that we can access

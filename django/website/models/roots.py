@@ -169,6 +169,18 @@ class OperatingSystem(ControlledList):
             tooltipBestPractise="Please select all the operating systems the software can successfully be installed on.",
         )
 
+class CpuArchitecture(ControlledList):
+    '''CPU Architecture on which the software can run'''
+    @classmethod
+    def _form_config_redef(cls) -> None:
+        super()._form_config_redef()
+        form_config(
+            cls._meta.get_field(cls.name.name),
+            label="CPU Architecture",
+            tooltipExplanation="",
+            tooltipBestPractise="",
+        )
+
 class Phenomena(ControlledList):
     '''Solar phenomena that relate to the software'''
     @classmethod
@@ -261,7 +273,7 @@ class FileFormat(ControlledList):
             tooltipBestPractise="Please select all the file formats that your software supports for either input files or files the software generates. Only file formats supported by the software should be indicated.",
         )
 
-    def __str__(self): return self.name + f" ({self.extension})" if self.extension else ""
+    def __str__(self): return self.name + (f" ({self.extension})" if self.extension else "")
 
 class Region(ControlledList):
     '''Region of the sun which relates to the software'''

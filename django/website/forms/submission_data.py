@@ -11,8 +11,8 @@ SUBMISSION_FORM_AFFILIATION: ModelStructure = ModelStructure.define(
 		properties={
 			PROP_LABEL: "Organization",
 			PROP_WIDGET_PROPS: {
-                PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATION,
-                PROP_TT_BEST: TTBEST_AUTHORAFFILIATION,
+				PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATION,
+				PROP_TT_BEST: TTBEST_AUTHORAFFILIATION,
 				WPROP_TARGETMODEL: Organization.__name__,
 			},
 		},
@@ -24,8 +24,8 @@ SUBMISSION_FORM_AFFILIATION: ModelStructure = ModelStructure.define(
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Identifier",
-            PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATIONIDENTIFIER,
-            PROP_TT_BEST: TTBEST_AUTHORAFFILIATIONIDENTIFIER,
+			PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATIONIDENTIFIER,
+			PROP_TT_BEST: TTBEST_AUTHORAFFILIATIONIDENTIFIER,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Organization.__name__,
 			},
@@ -43,8 +43,8 @@ SUBMISSION_FORM_PUBLISHER: ModelStructure = ModelStructure.define(
 		properties={
 			PROP_LABEL: "Organization",
 			PROP_WIDGET_PROPS: {
-            	PROP_TT_EXPL: TTEXPL_PUBLISHER,
-            	PROP_TT_BEST: TTBEST_PUBLISHER,
+				PROP_TT_EXPL: TTEXPL_PUBLISHER,
+				PROP_TT_BEST: TTBEST_PUBLISHER,
 				WPROP_TARGETMODEL: Organization.__name__,
 			},
 		},
@@ -56,8 +56,8 @@ SUBMISSION_FORM_PUBLISHER: ModelStructure = ModelStructure.define(
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Identifier",
-            PROP_TT_EXPL: TTEXPL_PUBLISHERIDENTIFIER,
-            PROP_TT_BEST: TTBEST_PUBLISHERIDENTIFIER,
+			PROP_TT_EXPL: TTEXPL_PUBLISHERIDENTIFIER,
+			PROP_TT_BEST: TTBEST_PUBLISHERIDENTIFIER,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Organization.__name__,
 			},
@@ -75,8 +75,8 @@ SUBMISSION_FORM_FUNDER: ModelStructure = ModelStructure.define(
 		properties={
 			PROP_LABEL: "Organization",
 			PROP_WIDGET_PROPS: {
-            	PROP_TT_EXPL: TTEXPL_FUNDER,
-            	PROP_TT_BEST: TTBEST_FUNDER,
+				PROP_TT_EXPL: TTEXPL_FUNDER,
+				PROP_TT_BEST: TTBEST_FUNDER,
 				WPROP_TARGETMODEL: Organization.__name__,
 			},
 		},
@@ -88,8 +88,8 @@ SUBMISSION_FORM_FUNDER: ModelStructure = ModelStructure.define(
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Identifier",
-            PROP_TT_EXPL: TTEXPL_FUNDERIDENTIFIER,
-            PROP_TT_BEST: TTBEST_FUNDERIDENTIFIER,
+			PROP_TT_EXPL: TTEXPL_FUNDERIDENTIFIER,
+			PROP_TT_BEST: TTBEST_FUNDERIDENTIFIER,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Organization.__name__,
 			},
@@ -108,22 +108,22 @@ SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Submitter Name",
 			PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
 			PROP_TT_BEST: TTBEST_SUBMITTERNAME,
-            PROP_WIDGET_PROPS:{
-                WPROP_TARGETMODEL: Person.__name__,
+			PROP_WIDGET_PROPS:{
+				WPROP_TARGETMODEL: Person.__name__,
 			},
 		},
 		multi=False,
 	),
 	ModelSubfield.define(
-        name="Email",
-        type=TYPE_EMAIL,
-        requirement=RequirementLevel.MANDATORY.value,
-        properties={
-            PROP_LABEL: "Submitter Email",
-            PROP_TT_EXPL: TTEXPL_SUBMITTEREMAIL,
-            PROP_TT_BEST: TTBEST_SUBMITTEREMAIL,
+		name="Email",
+		type=TYPE_EMAIL,
+		requirement=RequirementLevel.MANDATORY.value,
+		properties={
+			PROP_LABEL: "Submitter Email",
+			PROP_TT_EXPL: TTEXPL_SUBMITTEREMAIL,
+			PROP_TT_BEST: TTBEST_SUBMITTEREMAIL,
 		},
-        multi=True
+		multi=True
 	),
 )
 
@@ -144,26 +144,26 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 	ModelSubfield.define(
-        name=FIELD_AUTHORIDENTIFIER,
-        type=TYPE_ORCID,
-        requirement=RequirementLevel.RECOMMENDED,
-        properties={
-            PROP_LABEL: "Identifier",
-            PROP_TT_EXPL: TTEXPL_AUTHORIDENTIFIER,
-            PROP_TT_BEST: TTBEST_AUTHORIDENTIFIER,
+		name=FIELD_AUTHORIDENTIFIER,
+		type=TYPE_ORCID,
+		requirement=RequirementLevel.RECOMMENDED,
+		properties={
+			PROP_LABEL: "Identifier",
+			PROP_TT_EXPL: TTEXPL_AUTHORIDENTIFIER,
+			PROP_TT_BEST: TTBEST_AUTHORIDENTIFIER,
 		},
-        multi=False,
+		multi=False,
 	),
 	ModelSubfield.define(
-        name=FIELD_AUTHORAFFILIATION,
-        type=SUBMISSION_FORM_AFFILIATION.type_name,
-        requirement=RequirementLevel.RECOMMENDED,
-        properties={
-            PROP_LABEL: "Affiliation",
-            PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATION,
-            PROP_TT_BEST: TTBEST_AUTHORAFFILIATION,
+		name=FIELD_AUTHORAFFILIATION,
+		type=SUBMISSION_FORM_AFFILIATION.type_name,
+		requirement=RequirementLevel.RECOMMENDED,
+		properties={
+			PROP_LABEL: "Affiliation",
+			PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATION,
+			PROP_TT_BEST: TTBEST_AUTHORAFFILIATION,
 		},
-        multi=True,
+		multi=True,
 	),
 )
 
@@ -252,8 +252,8 @@ SUBMISSION_FORM_INSTRUMENT: ModelStructure = ModelStructure.define(
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Instrument Name",
-            PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTS,
-            PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTS,
+			PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTS,
+			PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTS,
 		},
 		multi=False,
 	),
@@ -263,8 +263,8 @@ SUBMISSION_FORM_INSTRUMENT: ModelStructure = ModelStructure.define(
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Instrument Identifier",
-            PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTIDENTIFIER,
-            PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTIDENTIFIER,
+			PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTIDENTIFIER,
+			PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTIDENTIFIER,
 		},
 		multi=False,
 	),
@@ -289,8 +289,8 @@ SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Observatory Identifier",
-            PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTIDENTIFIER,
-            PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTIDENTIFIER,
+			PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTIDENTIFIER,
+			PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTIDENTIFIER,
 		},
 		multi=False,
 	),
@@ -345,16 +345,16 @@ SUBMISSION_FORM_AWARD: ModelStructure = ModelStructure.define(
 		},
 		multi=True,
 	),
-    ModelSubfield.define(
-        name=FIELD_AWARDNUMBER,
-        type=TYPE_CHAR,
-        requirement=RequirementLevel.RECOMMENDED,
-        properties={
-            PROP_LABEL: "Award Number",
-            PROP_TT_EXPL: TTEXPL_AWARDNUMBER,
-            PROP_TT_BEST: TTBEST_AWARDNUMBER,
+	ModelSubfield.define(
+		name=FIELD_AWARDNUMBER,
+		type=TYPE_CHAR,
+		requirement=RequirementLevel.RECOMMENDED,
+		properties={
+			PROP_LABEL: "Award Number",
+			PROP_TT_EXPL: TTEXPL_AWARDNUMBER,
+			PROP_TT_BEST: TTBEST_AWARDNUMBER,
 		},
-        multi=False,
+		multi=False,
 	),
 )
 
@@ -388,8 +388,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Persistent Identifier",
 			PROP_TT_EXPL: TTEXPL_PERSISTENTIDENTIFIER,
 			PROP_TT_BEST: TTBEST_PERSISTENTIDENTIFIER,
-            PROP_WIDGET_PROPS: {
-                WPROP_RESULTFILTERS: ["software", "concept"]
+			PROP_WIDGET_PROPS: {
+				WPROP_RESULTFILTERS: ["software", "concept"]
 			}
 		},
 		multi=False,
@@ -510,7 +510,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_PROGRAMMINGLANGUAGE,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: ProgrammingLanguage.__name__,
-                WPROP_DROPDOWNBUTTON: True,
+				WPROP_DROPDOWNBUTTON: True,
 			},
 		},
 		multi=True,
@@ -541,13 +541,13 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Keywords",
 			PROP_TT_EXPL: TTEXPL_KEYWORDS,
 			PROP_TT_BEST: TTBEST_KEYWORDS,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: Keyword.__name__,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: Keyword.__name__,
 			},
 		},
 		multi=True,
 	),
-    # Functionality
+	# Functionality
 	ModelSubfield.define(
 		name=FIELD_SOFTWAREFUNCTIONALITY,
 		type=TYPE_MODELBOX,
@@ -556,13 +556,13 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Software Functionality",
 			PROP_TT_EXPL: TTEXPL_SOFTWAREFUNCTIONALITY,
 			PROP_TT_BEST: TTBEST_SOFTWAREFUNCTIONALITY,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: Functionality.__name__,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: Functionality.__name__,
 			},
 		},
 		multi=True,
 	),
-    # Data Inputs
+	# Data Inputs
 	ModelSubfield.define(
 		name=FIELD_DATASOURCES,
 		type=TYPE_MODELBOX,
@@ -571,9 +571,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Data Sources",
 			PROP_TT_EXPL: TTEXPL_DATASOURCES,
 			PROP_TT_BEST: TTEXPL_DATASOURCES,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: DataInput.__name__,
-                WPROP_DROPDOWNBUTTON: True,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: DataInput.__name__,
+				WPROP_DROPDOWNBUTTON: True,
 			},
 		},
 		multi=True,
@@ -587,9 +587,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Input File Formats",
 			PROP_TT_EXPL: TTEXPL_INPUTFORMATS,
 			PROP_TT_BEST: TTBEST_INPUTFORMATS,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: FileFormat.__name__,
-                WPROP_DROPDOWNBUTTON: True,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: FileFormat.__name__,
+				WPROP_DROPDOWNBUTTON: True,
 			},
 		},
 		multi=True,
@@ -603,9 +603,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Output File Formats",
 			PROP_TT_EXPL: TTEXPL_INPUTFORMATS,
 			PROP_TT_BEST: TTBEST_INPUTFORMATS,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: FileFormat.__name__,
-                WPROP_DROPDOWNBUTTON: True,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: FileFormat.__name__,
+				WPROP_DROPDOWNBUTTON: True,
 			},
 		},
 		multi=True,
@@ -619,9 +619,25 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Operating System",
 			PROP_TT_EXPL: TTEXPL_OPERATINGSYSTEM,
 			PROP_TT_BEST: TTBEST_OPERATINGSYSTEM,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: OperatingSystem.__name__,
-                WPROP_DROPDOWNBUTTON: True,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: OperatingSystem.__name__,
+				WPROP_DROPDOWNBUTTON: True,
+			},
+		},
+		multi=True,
+	),
+	# CPU Architecture
+	ModelSubfield.define(
+		name=FIELD_CPUARCHITECTURE,
+		type=TYPE_MODELBOX,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "CPU Architecture",
+			PROP_TT_EXPL: TTEXPL_CPUARCHITECTURE,
+			PROP_TT_BEST: TTBEST_CPUARCHITECTURE,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: CpuArchitecture.__name__,
+				WPROP_DROPDOWNBUTTON: True,
 			},
 		},
 		multi=True,
@@ -635,8 +651,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Region",
 			PROP_TT_EXPL: TTEXPL_RELATEDREGION,
 			PROP_TT_BEST: TTBEST_RELATEDREGION,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: Region.__name__,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: Region.__name__,
 			},
 		},
 		multi=True,
@@ -662,9 +678,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Development Status",
 			PROP_TT_EXPL: TTEXPL_DEVELOPMENTSTATUS,
 			PROP_TT_BEST: TTBEST_DEVELOPMENTSTATUS,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: RepoStatus.__name__,
-                WPROP_DROPDOWNBUTTON: True,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: RepoStatus.__name__,
+				WPROP_DROPDOWNBUTTON: True,
 			},
 		},
 		multi=False,
@@ -690,8 +706,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Funder",
 			PROP_TT_EXPL: TTEXPL_FUNDER,
 			PROP_TT_BEST: TTBEST_FUNDER,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: Organization.__name__,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: Organization.__name__,
 			},
 		},
 		multi=False,
@@ -705,8 +721,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Award Title",
 			PROP_TT_EXPL: TTEXPL_AWARDTITLE,
 			PROP_TT_BEST: TTBEST_AWARDTITLE,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: Award.__name__,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: Award.__name__,
 			},
 		},
 		multi=True,
@@ -722,8 +738,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Publications",
 			PROP_TT_EXPL: TTEXPL_RELATEDPUBLICATIONS,
 			PROP_TT_BEST: TTBEST_RELATEDPUBLICATIONS,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: RelatedItem.__name__,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: RelatedItem.__name__,
 			},
 		},
 		multi=True,
@@ -737,8 +753,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Datasets",
 			PROP_TT_EXPL: TTEXPL_RELATEDDATASETS,
 			PROP_TT_BEST: TTBEST_RELATEDDATASETS,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: RelatedItem.__name__,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: RelatedItem.__name__,
 			},
 		},
 		multi=True,
@@ -752,8 +768,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Software",
 			PROP_TT_EXPL: TTEXPL_RELATEDSOFTWARE,
 			PROP_TT_BEST: TTBEST_RELATEDSOFTWARE,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: RelatedItem.__name__,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: RelatedItem.__name__,
 			},
 		},
 		multi=True,
@@ -764,11 +780,11 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		type=SUBMISSION_FORM_REL_SOFTWARE.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
-			PROP_LABEL: "Interpoerable Software",
+			PROP_LABEL: "Interoperable Software",
 			PROP_TT_EXPL: TTEXPL_INTEROPERABLESOFTWARE,
 			PROP_TT_BEST: TTBEST_INTEROPERABLESOFTWARE,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: RelatedItem.__name__,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: RelatedItem.__name__,
 			},
 		},
 		multi=True,
@@ -782,8 +798,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Instruments",
 			PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTS,
 			PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTS,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: InstrumentObservatory.__name__,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: InstrumentObservatory.__name__,
 			},
 		},
 		multi=True,
@@ -797,8 +813,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Observatories",
 			PROP_TT_EXPL: TTEXPL_RELATEDOBSERVATORIES,
 			PROP_TT_BEST: TTBEST_RELATEDOBSERVATORIES,
-            PROP_WIDGET_PROPS: {
-                WPROP_TARGETMODEL: InstrumentObservatory.__name__,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: InstrumentObservatory.__name__,
 			},
 		},
 		multi=True,
@@ -832,19 +848,19 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
  # Split the subission form into 3 different sections:
 
 [SUBMISSION_FORM_FIELDS_1, SUBMISSION_FORM_FIELDS_2] = SUBMISSION_FORM_FIELDS.split(
-    FIELD_KEYWORDS,
-    SUBMISSION_FORM_FIELDS.type_name + "_1", 
-    SUBMISSION_FORM_FIELDS.type_name + "_2",
+	FIELD_KEYWORDS,
+	SUBMISSION_FORM_FIELDS.type_name + "_1", 
+	SUBMISSION_FORM_FIELDS.type_name + "_2",
 )
 
 [SUBMISSION_FORM_FIELDS_2, SUBMISSION_FORM_FIELDS_3] = SUBMISSION_FORM_FIELDS_2.split(
-    FIELD_RELATEDPUBLICATIONS,
-    SUBMISSION_FORM_FIELDS.type_name + "_2",
-    SUBMISSION_FORM_FIELDS.type_name + "_3",
+	FIELD_RELATEDPUBLICATIONS,
+	SUBMISSION_FORM_FIELDS.type_name + "_2",
+	SUBMISSION_FORM_FIELDS.type_name + "_3",
 )
 
 [SUBMISSION_FORM_FIELDS_3, SUBMISSION_FORM_FIELDS_AGREEMENT] = SUBMISSION_FORM_FIELDS_3.split(
-    "agree", 
-    SUBMISSION_FORM_FIELDS.type_name + "_3",
-    SUBMISSION_FORM_FIELDS.type_name + "_agree",
+	"agree", 
+	SUBMISSION_FORM_FIELDS.type_name + "_3",
+	SUBMISSION_FORM_FIELDS.type_name + "_agree",
 )

@@ -50,18 +50,49 @@ def get_data(url: str) -> dict | list:
         str_data = str_data.replace('“', '"').replace('”', '"')
     return json.loads(str_data)
 
-def get_data_turtle(url: str) -> rdflib.Graph:
+def get_data_turtle(url: str) -> dict | list:
     req = requests.get(url)
     graph = rdflib.Graph()
     try:
         graph.parse(data=req.text, format='turtle')
     except Exception as e:
         print(f"Error parsing turtle data from {url}: {e}")
-    json_data = graph.serialize(format='json-ld')
-    print(json_data)
-    print(json.loads(json_data))
-    
-    return graph
+    json_data = parse_ttl_jsonld(json.loads(graph.serialize(format='json-ld')))
+    return json_data
+
+def parse_ttl_jsonld(data: list[dict[str, Any]]) -> dict | list:
+    parsed = []
+    for entry in data:
+        new = {}
+        if entry['@type']:
+            new['@type'] = entry['@type']
+            types = entry['@type']
+            if types is str: types = [types]
+            for type in types:
+                ntype = type.split('#')[-1]
+                new['@type'] = ntype
+                break
+        for entry_key, entry_value in entry.items():
+            newkey = ttl_spl_str(entry_key)
+            newval = entry_value
+            split_val = not newkey.startswith('@')
+            if isinstance(newval, list): newval = newval[0]
+            if isinstance(newval, dict): # TODO HERE
+                if '@id' in newval: split_val = False
+                newval = newval.get('@value', newval) or newval.get('@id', newval)
+            if split_val: newval = ttl_spl_str(entry_value)
+            
+            new[newkey] = newval
+        
+        parsed.append(new)
+
+    return parsed
+
+def ttl_spl_str(data_str: str) -> str:
+    splitstr = data_str.split('#')
+    if len(splitstr) > 1:
+        return splitstr[-1]
+    return data_str
 
 def get_concepts(data: dict | list[dict]) -> list[dict]:
     if isinstance(data, dict):

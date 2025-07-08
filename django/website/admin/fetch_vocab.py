@@ -12,6 +12,8 @@ from ..models import (
     FileFormat, RepoStatus, CpuArchitecture, FunctionCategory
 )
 
+import rdflib
+
 from typing import Type, Any
 
 URL_REPOSTATUS = "https://www.repostatus.org/badges/latest/ontology.jsonld"
@@ -38,6 +40,7 @@ MODEL_URL_MAP={
 }
 
 def get_data(url: str) -> dict | list:
+    if url.endswith('.ttl'): return get_data_turtle(url)
     req = requests.get(url)
     try:
         return req.json()
@@ -46,6 +49,19 @@ def get_data(url: str) -> dict | list:
         str_data: str = req.text
         str_data = str_data.replace('“', '"').replace('”', '"')
     return json.loads(str_data)
+
+def get_data_turtle(url: str) -> rdflib.Graph:
+    req = requests.get(url)
+    graph = rdflib.Graph()
+    try:
+        graph.parse(data=req.text, format='turtle')
+    except Exception as e:
+        print(f"Error parsing turtle data from {url}: {e}")
+    json_data = graph.serialize(format='json-ld')
+    print(json_data)
+    print(json.loads(json_data))
+    
+    return graph
 
 def get_concepts(data: dict | list[dict]) -> list[dict]:
     if isinstance(data, dict):
@@ -64,7 +80,7 @@ def parse_jsonld(target_type: Type[ControlledList], data: dict):
     obj.name = ""
     obj.save()
 
-class JsonldConcept:
+class DataListConcept:
     pref_label: str = ""
     definition: str = ""
 
@@ -80,12 +96,12 @@ class JsonldConcept:
         print(f"saved object {obj.name} to {model}")
     
     @classmethod
-    def from_concept_json(cls, concepts: list[dict[str, Any]]) -> list['JsonldConcept']:
+    def from_concept_serialized(cls, concepts: list[dict[str, Any]]) -> list['DataListConcept']:
         vals = []
         for concept in concepts:
             label = concept.get('prefLabel')
             definition = concept.get('definition')
-            conc = JsonldConcept()
+            conc = DataListConcept()
 
             did_write = False
             if label is not None:

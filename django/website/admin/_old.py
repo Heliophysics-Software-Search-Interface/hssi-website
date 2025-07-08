@@ -22,7 +22,7 @@ from ..models import *
 from ..views import migrate_db_old_to_new
 from .. import submissions
 from .csv_export import export_db_csv, import_db_csv
-from .fetch_vocab import JsonldConcept, get_data, get_concepts, MODEL_URL_MAP
+from .fetch_vocab import DataListConcept, get_data, get_concepts, MODEL_URL_MAP
 
 from django.db.models import F
 
@@ -142,7 +142,7 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
     for model_name, url in MODEL_URL_MAP.items():
         print(f"fetching vocab for {model_name}..")
 
-        concepts = JsonldConcept.from_concept_json(get_concepts(get_data(url)))
+        concepts = DataListConcept.from_concept_serialized(get_concepts(get_data(url)))
         model = apps.get_model(app_label, model_name)
 
         # cache all objects that were here before storing any, so we can remove 

@@ -9,7 +9,7 @@ from ..util import RequirementLevel
 from typing import TYPE_CHECKING, Any, NamedTuple
 if TYPE_CHECKING:
     from .people import Person
-    from .auxillary_info import Functionality, Award, RelatedItem
+    from .auxillary_info import Award, RelatedItem
     from .software import Software
 
 # Character length limits
@@ -332,7 +332,11 @@ class FunctionCategory(ControlledList):
     textColor = RGBColorField("Text Color", default="#000000", blank=True, null=True)
 
     # specified for intellisense, defined in Functionalities model
-    functionalities: models.Manager['Functionality']
+    children = models.ManyToManyField(
+        'FunctionCategory',
+        blank=True,
+        related_name='parent_categories',
+    )
 
     @classmethod
     def _form_config_redef(cls) -> None:

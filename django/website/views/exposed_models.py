@@ -16,7 +16,7 @@ from ..models import (
     HssiModel, Keyword, OperatingSystem, Phenomena, RepoStatus, Image,
     ProgrammingLanguage, DataInput, FileFormat, Region,
     InstrumentObservatory, FunctionCategory, License, Organization,
-    Person, Curator, Submitter, Award, Functionality, RelatedItem,
+    Person, Curator, Submitter, Award, RelatedItem,
     SubmissionInfo, SoftwareVersion, Software,
 )
 from ..models.structurizer import ModelStructure
@@ -40,7 +40,7 @@ def get_model_structure(request: HttpRequest) -> JsonResponse:
         # ModelStructure.create(Curator).serialized(),
         ModelStructure.create(Submitter).serialized(),
         ModelStructure.create(Award).serialized(),
-        ModelStructure.create(Functionality).serialized(),
+        # ModelStructure.create(Functionality).serialized(),
         ModelStructure.create(RelatedItem).serialized(),
         # ModelStructure.create(SubmissionInfo).serialized(),
         ModelStructure.create(SoftwareVersion).serialized(),

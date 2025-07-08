@@ -14,6 +14,7 @@ pandas
 matplotlib
 tablib
 nltk
+rdflib # to parse .ttl files
 
 # analytics:
 google-api-core

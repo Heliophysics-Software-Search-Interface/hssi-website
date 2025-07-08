@@ -9,19 +9,22 @@ import json
 
 from ..models import (
     ControlledList, DataInput, License, OperatingSystem, ProgrammingLanguage,
-    FileFormat, RepoStatus, CpuArchitecture,
+    FileFormat, RepoStatus, CpuArchitecture, FunctionCategory
 )
 
 from typing import Type, Any
 
 URL_REPOSTATUS = "https://www.repostatus.org/badges/latest/ontology.jsonld"
-URL_HSSIBASE = "https://raw.githubusercontent.com/Heliophysics-Software-Search-Interface/HSSI-vocab/main/jsonld/"
-URL_CPUARCHITECTURES = URL_HSSIBASE + "CPUArchitectures.json"
-URL_DATAINPUTS = URL_HSSIBASE + "DataSources.json"
-URL_LICENSES = URL_HSSIBASE + "Licenses.json"
-URL_OPERATINGSYSTEMS = URL_HSSIBASE + "OperatingSystems.json"
-URL_SUPPORTEDFILEFORMATS = URL_HSSIBASE + "OutputFileFormats.json"
-URL_PROGRAMMINGLANGUAGES = URL_HSSIBASE + "ProgrammingLanguages.json"
+URL_HSSIBASE = "https://raw.githubusercontent.com/Heliophysics-Software-Search-Interface/HSSI-vocab/main/"
+URL_JSONBASE = URL_HSSIBASE + "jsonld/"
+URL_TTLBASE = URL_HSSIBASE + "ttl/"
+URL_CPUARCHITECTURES = URL_JSONBASE + "CPUArchitectures.json"
+URL_DATAINPUTS = URL_JSONBASE + "DataSources.json"
+URL_LICENSES = URL_JSONBASE + "Licenses.json"
+URL_OPERATINGSYSTEMS = URL_JSONBASE + "OperatingSystems.json"
+URL_SUPPORTEDFILEFORMATS = URL_JSONBASE + "OutputFileFormats.json"
+URL_PROGRAMMINGLANGUAGES = URL_JSONBASE + "ProgrammingLanguages.json"
+URL_FUNCTIONCATEGORIES = URL_TTLBASE + "softwareFunctionality-v0.3.ttl"
 
 MODEL_URL_MAP={
     DataInput.__name__: URL_DATAINPUTS,
@@ -31,6 +34,7 @@ MODEL_URL_MAP={
     ProgrammingLanguage.__name__: URL_PROGRAMMINGLANGUAGES,
     FileFormat.__name__: URL_SUPPORTEDFILEFORMATS,
     RepoStatus.__name__: URL_REPOSTATUS,
+    FunctionCategory.__name__: URL_FUNCTIONCATEGORIES,
 }
 
 def get_data(url: str) -> dict | list:

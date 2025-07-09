@@ -336,6 +336,7 @@ class FunctionCategory(ControlledList):
         'FunctionCategory',
         blank=True,
         related_name='parent_categories',
+        symmetrical=False,
     )
 
     @classmethod

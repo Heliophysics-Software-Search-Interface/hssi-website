@@ -144,6 +144,16 @@ class ControlledList(HssiModel):
         ordering = ['name']
         abstract = True
 
+class ControlledGraphList(ControlledList):
+    children = models.ManyToManyField(
+        'FunctionCategory',
+        blank=True,
+        related_name='parent_categories',
+        symmetrical=False,
+    )
+
+    parent_categories: models.Manager['ControlledGraphList']
+
 ## Simple Root Models ----------------------------------------------------------
 
 class Keyword(ControlledList): 
@@ -330,14 +340,6 @@ class FunctionCategory(ControlledList):
     abbreviation = models.CharField(max_length=5, null=True, blank=True)
     backgroundColor = RGBColorField("Background Color", default="#FFFFFF", blank=True, null=True)
     textColor = RGBColorField("Text Color", default="#000000", blank=True, null=True)
-
-    # specified for intellisense, defined in Functionalities model
-    children = models.ManyToManyField(
-        'FunctionCategory',
-        blank=True,
-        related_name='parent_categories',
-        symmetrical=False,
-    )
 
     @classmethod
     def _form_config_redef(cls) -> None:

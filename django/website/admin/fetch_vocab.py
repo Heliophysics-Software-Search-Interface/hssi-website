@@ -67,7 +67,6 @@ def parse_ttl_jsonld(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
 	Parse the turtle file data (which should be exported as a json-ld) into a 
 	proper json data format.
 	"""
-	print(json.dumps(data, indent=2))
 	parsed = []
 
 	# TODO we should probably remove this entire intermediary step of 

@@ -157,6 +157,7 @@ def parse_jsonld(target_type: Type[ControlledList], data: dict):
 class DataListConcept:
 	pref_label: str = ""
 	definition: str = ""
+	identifier: str = ""
 
 	def __init__(self):
 		self.pref_label = ""
@@ -166,6 +167,7 @@ class DataListConcept:
 		obj = model()
 		obj.name = self.pref_label
 		obj.definition = self.definition
+		obj.identifier = self.identifier
 		obj.save()
 		print(f"saved object {obj.name} to {model}")
 	
@@ -175,15 +177,19 @@ class DataListConcept:
 		for concept in concepts:
 			label = concept.get('prefLabel')
 			definition = concept.get('definition')
+			identifier = concept.get('@id')
 			conc = DataListConcept()
 
 			did_write = False
-			if label is not None:
+			if label:
 				did_write = True
 				conc.pref_label = label
-			if definition is not None:
+			if definition:
 				did_write = True
 				conc.definition = definition
+			if identifier:
+				did_write = True
+				conc.identifier = identifier
 			
 			if did_write:
 				vals.append(conc)
@@ -194,6 +200,7 @@ def link_concept_children(
 	concept_data: list[dict[str, Any]], 
 	child_field_name: str = "broader"
 ):
+	print(f"Linking {model.__name__} children with '{child_field_name}' field")
 	objs = model.objects.all()
 	for obj in objs:
 		concept = next((
@@ -207,4 +214,5 @@ def link_concept_children(
 			child_obj = model.objects.filter(identifier=child_id).first()
 			if child_obj is None: continue
 			obj.children.add(child_obj)
+			print(f"Linked '{obj.name}' with child '{child_obj.name}'")
 	obj.save()

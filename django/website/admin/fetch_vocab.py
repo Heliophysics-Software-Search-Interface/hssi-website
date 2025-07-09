@@ -73,29 +73,35 @@ def parse_ttl_jsonld(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
 	# converting the ttl to a json then parsing the json, and instead 
 	# just parse the ttl directly with rdflib
 
-	# get the name of the class that inherits from Concept
-	class_name = ""
-	for entry in data:
-		val = entry.get('@type', None)
-		if val:
-			while isinstance(val, list): val = val[0]
-			val = ttl_spl_str(val)
-			if val == "Class":
-				sckey = "subClassOf"
-				for key in entry.keys():
-					nkey = ttl_spl_str(key)
-					if nkey == "subClassOf":
-						sckey = key
-						break
-				nval = entry.get(sckey, None)
-				if nval:
-					while isinstance(nval, list): nval = nval[0]
-					if isinstance(nval, dict): 
-						nval = nval.get('@id') or nval.get('@value')
-					nval = ttl_spl_str(nval)
-					if nval == "Concept":
-						class_name = val
-						break
+	# get the names of the classes that inherit from Concept
+	class_names = ["Class", "Concept"]
+	cnfound = True
+	while cnfound:
+		cnfound = False
+		for entry in data:
+			val = entry.get('@type', None)
+			id = entry.get('@id', None)
+			if id and val:
+				while isinstance(val, list): val = val[0]
+				val = ttl_spl_str(val)
+				if val == "Class":
+					sckey = "subClassOf"
+					for key in entry.keys():
+						nkey = ttl_spl_str(key)
+						if nkey == "subClassOf":
+							sckey = key
+							break
+					nval = entry.get(sckey, None)
+					if nval:
+						while isinstance(nval, list): nval = nval[0]
+						if isinstance(nval, dict): 
+							nval = nval.get('@id') or nval.get('@value')
+						nval = ttl_spl_str(nval)
+						if nval in class_names:
+							id = ttl_spl_str(id)
+							if id not in class_names:
+								cnfound = True
+								class_names.append(id)
 
 	for entry in data:
 		new = {}
@@ -103,7 +109,7 @@ def parse_ttl_jsonld(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
 		if etype:
 			while isinstance(etype, list): etype = etype[0]
 			etype = ttl_spl_str(etype)
-			if etype == class_name: etype = "Concept"
+			if etype in class_names: etype = "Concept"
 			new['@type'] = etype
 		for entry_key, entry_value in entry.items():
 			if entry_key == '@type': continue
@@ -122,7 +128,6 @@ def parse_ttl_jsonld(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
 				while isinstance(newval, list): newval = newval[0]
 			if split_val and delistify: newval = ttl_spl_str(newval)
 			new[newkey] = newval
-			new['@type'] = "Concept" # TODO try to parse the type properly
 		parsed.append(new)
 	return parsed
 

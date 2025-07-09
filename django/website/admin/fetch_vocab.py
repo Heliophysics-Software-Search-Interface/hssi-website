@@ -69,17 +69,45 @@ def parse_ttl_jsonld(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
 	"""
 	print(json.dumps(data, indent=2))
 	parsed = []
+
+	# TODO we should probably remove this entire intermediary step of 
+	# converting the ttl to a json then parsing the json, and instead 
+	# just parse the ttl directly with rdflib
+
+	# get the name of the class that inherits from Concept
+	class_name = ""
+	for entry in data:
+		val = entry.get('@type', None)
+		if val:
+			while isinstance(val, list): val = val[0]
+			val = ttl_spl_str(val)
+			if val == "Class":
+				sckey = "subClassOf"
+				for key in entry.keys():
+					nkey = ttl_spl_str(key)
+					if nkey == "subClassOf":
+						sckey = key
+						break
+				nval = entry.get(sckey, None)
+				if nval:
+					while isinstance(nval, list): nval = nval[0]
+					if isinstance(nval, dict): 
+						nval = nval.get('@id') or nval.get('@value')
+					nval = ttl_spl_str(nval)
+					if nval == "Concept":
+						class_name = val
+						break
+
 	for entry in data:
 		new = {}
-		if entry['@type']:
-			new['@type'] = entry['@type']
-			types = entry['@type']
-			if types is str: types = [types]
-			for type in types:
-				ntype = type.split('#')[-1]
-				new['@type'] = ntype
-				break
+		etype = entry.get('@type', None)
+		if etype:
+			while isinstance(etype, list): etype = etype[0]
+			etype = ttl_spl_str(etype)
+			if etype == class_name: etype = "Concept"
+			new['@type'] = etype
 		for entry_key, entry_value in entry.items():
+			if entry_key == '@type': continue
 			newkey = ttl_spl_str(entry_key)
 			newval = entry_value
 			split_val = not newkey.startswith('@')
@@ -88,7 +116,7 @@ def parse_ttl_jsonld(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
 				while isinstance(newval, list): newval = newval[0]
 			if isinstance(newval, dict):
 				if '@id' in newval: split_val = False
-				newval = newval.get('@value', None) or newval.get('@id', None) or newval
+				newval = newval.get('@value') or newval.get('@id') or newval
 				if isinstance(newval, dict):
 					if len(newval) > 0: newval = newval.values()[0]
 			if delistify:

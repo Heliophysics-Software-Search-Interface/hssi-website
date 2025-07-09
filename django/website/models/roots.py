@@ -145,14 +145,15 @@ class ControlledList(HssiModel):
         abstract = True
 
 class ControlledGraphList(ControlledList):
-    children = models.ManyToManyField(
-        'FunctionCategory',
-        blank=True,
-        related_name='parent_categories',
-        symmetrical=False,
-    )
+    
+    # these are just editor hints, we still need to define child as a 
+    # ManyToManyField in any subclasses and set related='parent_nodes'
+    children: models.Manager['ControlledGraphList']
+    parent_nodes: models.Manager['ControlledGraphList']
 
-    parent_categories: models.Manager['ControlledGraphList']
+    class Meta:
+        ordering = ['name']
+        abstract = True
 
 ## Simple Root Models ----------------------------------------------------------
 
@@ -336,10 +337,17 @@ class InstrumentObservatory(ControlledList):
 
 ## Complex Root Models ---------------------------------------------------------
 
-class FunctionCategory(ControlledList):
+class FunctionCategory(ControlledGraphList):
     abbreviation = models.CharField(max_length=5, null=True, blank=True)
     backgroundColor = RGBColorField("Background Color", default="#FFFFFF", blank=True, null=True)
     textColor = RGBColorField("Text Color", default="#000000", blank=True, null=True)
+
+    children = models.ManyToManyField(
+        'self',
+        blank=True,
+        related_name='parent_nodes',
+        symmetrical=False,
+    )
 
     @classmethod
     def _form_config_redef(cls) -> None:

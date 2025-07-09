@@ -202,21 +202,22 @@ class DataListConcept:
 def link_concept_children(
 	model: type[ControlledGraphList], 
 	concept_data: list[dict[str, Any]], 
-	child_field_name: str = "broader"
+	parent_field_name: str = "broader"
 ):
-	print(f"Linking {model.__name__} children with '{child_field_name}' field")
+	print(f"Linking {model.__name__} children with '{parent_field_name}' field")
 	objs = model.objects.all()
 	for obj in objs:
 		concept = next((
 			c for c in concept_data if c['@id'] == obj.identifier
 		), None)
 		if concept is None: continue
-		children = concept.get(child_field_name, [])
-		for child in children:
-			child_id = child.get('@id')
-			if child_id is None: continue
-			child_obj = model.objects.filter(identifier=child_id).first()
-			if child_obj is None: continue
-			obj.children.add(child_obj)
-			print(f"Linked '{obj.name}' with child '{child_obj.name}'")
-	obj.save()
+		parents = concept.get(parent_field_name, [])
+		for parent in parents:
+			parent_id = parent.get('@id')
+			if parent_id is None: continue
+			parent_obj = model.objects.filter(identifier=parent_id).first()
+			if parent_obj is None: continue
+			parent_obj.children.add(obj)
+			print(f"Linked '{parent_obj.name}' with child '{obj.name}'")
+	for obj in objs: obj.save()
+			

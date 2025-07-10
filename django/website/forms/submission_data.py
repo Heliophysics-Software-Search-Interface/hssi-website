@@ -557,7 +557,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_SOFTWAREFUNCTIONALITY,
 			PROP_TT_BEST: TTBEST_SOFTWAREFUNCTIONALITY,
 			PROP_WIDGET_PROPS: {
-				WPROP_TARGETMODEL: Functionality.__name__,
+				WPROP_TARGETMODEL: FunctionCategory.__name__,
 			},
 		},
 		multi=True,

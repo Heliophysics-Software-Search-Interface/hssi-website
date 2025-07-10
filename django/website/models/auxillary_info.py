@@ -54,39 +54,6 @@ class Award(HssiModel):
     class Meta: ordering = ['name']
     def __str__(self): return self.name
 
-class Functionality(ControlledList):
-    '''A type of functionality supported by the software'''
-    abbreviation = form_config(
-        models.CharField(max_length=5, blank=True, null=True),
-        label="Abbreviation",
-    )
-
-    category = form_config(
-        models.ForeignKey(
-            FunctionCategory, 
-            on_delete=models.CASCADE, 
-            null=True, 
-            blank=True, 
-            related_name='functionalities'
-        ),
-        label="Category",
-        tooltipExplanation="",
-        tooltipBestPractise="",
-    )
-
-    @classmethod
-    def _form_config_redef(cls) -> None:
-        super()._form_config_redef()
-        form_config(
-            cls._meta.get_field(cls.name.name),
-            label="Software Functionality",
-            tooltipExplanation="The type of software.",
-            tooltipBestPractise="Select all types of software functionalities that apply to the software.",
-        )
-
-    class Meta: verbose_name_plural = "Functionalities"
-    def __str__(self): return self.name
-
 class RelatedItem(ControlledList):
     type = form_config(
         models.IntegerField(

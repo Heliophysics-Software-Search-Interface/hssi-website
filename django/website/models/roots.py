@@ -9,7 +9,7 @@ from ..util import RequirementLevel
 from typing import TYPE_CHECKING, Any, NamedTuple
 if TYPE_CHECKING:
     from .people import Person
-    from .auxillary_info import Functionality, Award, RelatedItem
+    from .auxillary_info import Award, RelatedItem
     from .software import Software
 
 # Character length limits
@@ -121,7 +121,7 @@ class ControlledList(HssiModel):
     definition = form_config(
         models.TextField(blank=True, null=True),
         label="Definition",
-    ) 
+    )
 
     def __str__(self): return self.name
 
@@ -139,6 +139,22 @@ class ControlledList(HssiModel):
                 .split(), 
             self.identifier if self.identifier else '',
         ]
+
+    class Meta:
+        ordering = ['name']
+        abstract = True
+
+class ControlledGraphList(ControlledList):
+    
+    # these are just editor hints, we still need to define child as a 
+    # ManyToManyField in any subclasses and set related='parent_nodes'
+    children: models.Manager['ControlledGraphList']
+    parent_nodes: models.Manager['ControlledGraphList']
+
+    @classmethod
+    def get_parent_nodes(cls) -> models.QuerySet['ControlledGraphList']:
+        ''' Returns all objects that have at least one child '''
+        return cls.objects.filter(children__isnull=False).distinct()
 
     class Meta:
         ordering = ['name']
@@ -326,13 +342,17 @@ class InstrumentObservatory(ControlledList):
 
 ## Complex Root Models ---------------------------------------------------------
 
-class FunctionCategory(ControlledList):
+class FunctionCategory(ControlledGraphList):
     abbreviation = models.CharField(max_length=5, null=True, blank=True)
     backgroundColor = RGBColorField("Background Color", default="#FFFFFF", blank=True, null=True)
     textColor = RGBColorField("Text Color", default="#000000", blank=True, null=True)
 
-    # specified for intellisense, defined in Functionalities model
-    functionalities: models.Manager['Functionality']
+    children = models.ManyToManyField(
+        'self',
+        blank=True,
+        related_name='parent_nodes',
+        symmetrical=False,
+    )
 
     @classmethod
     def _form_config_redef(cls) -> None:

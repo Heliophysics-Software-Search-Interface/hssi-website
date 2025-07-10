@@ -4,7 +4,7 @@ from import_export.admin import ImportExportModelAdmin
 from ..models.people import Person, Curator
 from ..models.software import Software, VisibleSoftware, SoftwareVersion
 from ..models.submission_info import SubmissionInfo
-from ..models.auxillary_info import Functionality, RelatedItem, Award
+from ..models.auxillary_info import RelatedItem, Award
 from ..models.roots import (
     FunctionCategory, OperatingSystem, Phenomena, Keyword, Image, 
     Organization, License, InstrumentObservatory, RepoStatus, DataInput,
@@ -84,10 +84,6 @@ class SubmitterAdmin(ImportExportModelAdmin): resource_class = SubmitterResource
 class AwardResource(resources.ModelResource):
     class Meta: model = Award
 class AwardAdmin(ImportExportModelAdmin): resource_class = AwardResource
-
-class FunctionalityResource(resources.ModelResource):
-    class Meta: model = Functionality
-class FunctionalityAdmin(ImportExportModelAdmin): resource_class = FunctionalityResource
 
 class DatasetResource(resources.ModelResource):
     class Meta: model = RelatedItem

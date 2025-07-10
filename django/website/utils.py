@@ -19,7 +19,6 @@ def organized_categories_json():
 
     return json.dumps(category_hierarchy), json.dumps(category_names_by_id)
 
-
 def organized_collections_json():
 
     collections = Collection.objects.filter(parents__isnull=True).order_by('name')

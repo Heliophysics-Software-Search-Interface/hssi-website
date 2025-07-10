@@ -22,7 +22,9 @@ from ..models import *
 from ..views import migrate_db_old_to_new
 from .. import submissions
 from .csv_export import export_db_csv, import_db_csv
-from .fetch_vocab import JsonldConcept, get_data, get_concepts, MODEL_URL_MAP
+from .fetch_vocab import (
+    DataListConcept, link_concept_children, get_data, get_concepts, MODEL_URL_MAP
+)
 
 from django.db.models import F
 
@@ -142,7 +144,8 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
     for model_name, url in MODEL_URL_MAP.items():
         print(f"fetching vocab for {model_name}..")
 
-        concepts = JsonldConcept.from_concept_json(get_concepts(get_data(url)))
+        concept_data = get_concepts(get_data(url))
+        concepts = DataListConcept.from_concept_serialized(concept_data)
         model = apps.get_model(app_label, model_name)
 
         # cache all objects that were here before storing any, so we can remove 
@@ -151,6 +154,9 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
     
         for concept in concepts:
             concept.to_model(model)
+        
+        if issubclass(model, ControlledGraphList):
+            link_concept_children(model, concept_data)
 
         # remove old entries
         for old_obj in old_objs: old_obj.delete()
@@ -673,7 +679,6 @@ site.register(ProgrammingLanguage, admin_class=ProgrammingLanguageAdmin)
 site.register(VisibleSoftware, admin_class=VisibleSoftwareAdmin)
 site.register(InstrumentObservatory, admin_class=InstrumentObservatoryAdmin)
 site.register(SoftwareVersion, admin_class=SoftwareVersionAdmin)
-site.register(Functionality, admin_class=FunctionalityAdmin)
 site.register(FunctionCategory, admin_class=FunctionCategoryAdmin)
 site.register(Person, admin_class=PersonAdmin)
 site.register(Curator, admin_class=CuratorAdmin)

@@ -121,7 +121,7 @@ class ControlledList(HssiModel):
     definition = form_config(
         models.TextField(blank=True, null=True),
         label="Definition",
-    ) 
+    )
 
     def __str__(self): return self.name
 
@@ -150,6 +150,11 @@ class ControlledGraphList(ControlledList):
     # ManyToManyField in any subclasses and set related='parent_nodes'
     children: models.Manager['ControlledGraphList']
     parent_nodes: models.Manager['ControlledGraphList']
+
+    @classmethod
+    def get_parent_nodes(cls) -> models.QuerySet['ControlledGraphList']:
+        ''' Returns all objects that have at least one child '''
+        return cls.objects.filter(children__isnull=False).distinct()
 
     class Meta:
         ordering = ['name']

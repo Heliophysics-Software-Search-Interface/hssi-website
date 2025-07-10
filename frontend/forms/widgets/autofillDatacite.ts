@@ -1,13 +1,14 @@
-import { 
-	DataciteDoiWidget, extractDoi, faMagicIcon,
-	fetchTimeout,
-	FormGenerator,
+import {
+	DataciteDoiWidget, extractDoi, faMagicIcon, fetchTimeout, FormGenerator,
 	Spinner,
-	type DataciteItem, type JSONArray, type JSONObject,
+	type DataciteItem, type JSONArray, type JSONObject, type SubmissionFormData,
 } from "../../loader"
 
 const orcidUrlPrefix = "https://orcid.org/";
 const dataciteEntryApiEndpoint = "https://api.datacite.org/dois/";
+
+// TODO implement proper json-ld parsing through:
+// https://github.com/digitalbazaar/jsonld.js/tree/main
 
 export class AutofillDataciteWidget extends DataciteDoiWidget {
 
@@ -83,19 +84,21 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 	public static autofillFromApiData(data: DataciteItem): void {
 
 		console.log("Parsing datacite api data", data);
-		const formData = {} as JSONObject;
+		const formData = {} as SubmissionFormData;
 		const attrs = data.attributes;
 
 		// PID
 		formData.persistentIdentifier = attrs.url;
 
 		// publisher
-		formData.publisher = attrs.publisher;
+		formData.publisher = {
+			publisher: attrs.publisher,
+		}
 
 		// software name
 		if(data.attributes.titles){
 				for(const title of attrs.titles as JSONObject[]){
-					formData.softwareName = title.title;
+					formData.softwareName = title.title as string;
 					break;
 				}
 		}
@@ -113,7 +116,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 					else if(!formData.description) {
 						formData.description = desc_text;
 					}
-					if (formData.descriptionType === "Abstract"){
+					if (desc.descriptionType === "Abstract"){
 						formData.description = desc_text;
 					}
 				}
@@ -181,7 +184,9 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		// license
 		if(attrs.rightsList){
 				for(const rights of attrs.rightsList as JSONObject[]){
-					formData.license = rights.rights || rights.rightsIdentifier;
+					formData.license = (
+						rights.rights || rights.rightsIdentifier
+					) as string;
 					if(formData.license) break;
 				}
 		}
@@ -207,11 +212,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 
 		// funders
 		if(funders){
-				for(const funder of funders){
-					// TODO multifield
-					formData.funder = funder;
-					break; 
-				}
+			formData.funder = funders
 		}
 
 		// publication date

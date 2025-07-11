@@ -6,6 +6,7 @@ import {
 
 const orcidUrlPrefix = "https://orcid.org/";
 const doiUrlPrefix = "https://doi.org/";
+const rorUrlPrefix = "https://ror.org/";
 const dataciteEntryApiEndpoint = "https://api.datacite.org/dois/";
 
 const resTypeGensPublication = [
@@ -213,7 +214,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 				}
 		}
 		
-		// awards
+		// awards, funders
 		const funders = [] as {funder?: string, funderIdentifier?: string}[];
 		if(attrs.fundingReferences) {
 				const awards = [] as JSONArray<JSONObject>;
@@ -222,9 +223,27 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 					award.awardTitle = fundRef.awardTitle;
 					award.awardNumber = fundRef.awardNumber;
 					if(fundRef.funderIdentifier || fundRef.funderName){
-						funders.push({
+						// crossref doi (not a ror)
+						const funderId = (
+							doiUrlPrefix + fundRef.funderIdentifier as string
+						);
+
+						// ensure no duplicate funders
+						let addFunder = true;
+						for(const prevFunder of funders){
+							if(
+								prevFunder.funderIdentifier == funderId || 
+								prevFunder.funder == fundRef.funderName
+							){
+								addFunder = false;
+								break;
+							}
+						}
+						if(addFunder) funders.push({
 							funder: fundRef.funderName as string,
-							funderIdentifier: fundRef.funderIdentifier as string,
+							// fund id is invalid - datacite uses crossref ids 
+							// for organizations instead of rors
+							// funderIdentifier: funderId, 
 						});
 					}
 					awards.push(award);
@@ -233,9 +252,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		}
 
 		// funders
-		if(funders){
-			formData.funder = funders
-		}
+		if(funders) formData.funder = funders;
 
 		// publication date
 		if(attrs.dates){

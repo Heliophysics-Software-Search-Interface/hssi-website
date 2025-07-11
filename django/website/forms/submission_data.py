@@ -51,7 +51,7 @@ SUBMISSION_FORM_PUBLISHER: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 	ModelSubfield.define(
-		name=FIELD_FUNDERIDENTIFIER,
+		name=FIELD_PUBLISHERIDENTIFIER,
 		type=TYPE_ROR,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -472,7 +472,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Publisher
 	ModelSubfield.define(
 		name=FIELD_PUBLISHER,
-		type=SUBMISSION_FORM_FUNDER.type_name,
+		type=SUBMISSION_FORM_PUBLISHER.type_name,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Publisher",
@@ -710,7 +710,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 				WPROP_TARGETMODEL: Organization.__name__,
 			},
 		},
-		multi=False,
+		multi=True,
 	),
 	# Awards
 	ModelSubfield.define(

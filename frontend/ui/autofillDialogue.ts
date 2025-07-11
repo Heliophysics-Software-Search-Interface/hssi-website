@@ -73,6 +73,7 @@ export class AutofillDialoge extends PopupDialogue {
         const doiLabel = document.createElement("label");
         doiLabel.innerText = "DOI";
         const doiElem = document.createElement("input");
+        doiElem.type = "url";
 
         const findDoiButton = document.createElement("button");
         findDoiButton.type = "button";
@@ -88,6 +89,7 @@ export class AutofillDialoge extends PopupDialogue {
         const repoLabel = document.createElement("label");
         repoLabel.innerText = "Repository URL";
         const repoElem = document.createElement("input");
+        repoElem.type = "url";
         
         const submitButton = document.createElement("button");
         submitButton.innerText = "autofill";
@@ -120,7 +122,6 @@ export class AutofillDialoge extends PopupDialogue {
     public static openAutofillDialogue(): void {
         this.validateInstance();
         PopupDialogue.showPopup(this.instance);
-        console.log("open aoutofill dialogue");
     }
 }
 

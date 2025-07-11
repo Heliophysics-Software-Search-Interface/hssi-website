@@ -1,13 +1,37 @@
-import { 
-	DataciteDoiWidget, extractDoi, faMagicIcon,
-	fetchTimeout,
-	FormGenerator,
+import {
+	DataciteDoiWidget, extractDoi, faMagicIcon, fetchTimeout, FormGenerator,
 	Spinner,
-	type DataciteItem, type JSONArray, type JSONObject,
+	type DataciteItem, type JSONArray, type JSONObject, type SubmissionFormData,
 } from "../../loader"
 
 const orcidUrlPrefix = "https://orcid.org/";
+const doiUrlPrefix = "https://doi.org/";
+const rorUrlPrefix = "https://ror.org/";
 const dataciteEntryApiEndpoint = "https://api.datacite.org/dois/";
+
+const resTypeGensPublication = [
+	"journalarticle",
+	"bookchapter",
+	"conferencepaper",
+	"conferenceproceeding",
+	"datapaper",
+	"dissertation",
+	"peerreview",
+	"preprint",
+	"scholarlyarticle",
+	"studyregistration",
+];
+const resTypeGensSoftware = [
+	"softwaresourcecode",
+	"softwareapplication",
+	"software",
+];
+const resTypeGensDataset = [
+	"dataset",
+]
+
+// TODO implement proper json-ld parsing through:
+// https://github.com/digitalbazaar/jsonld.js/tree/main
 
 export class AutofillDataciteWidget extends DataciteDoiWidget {
 
@@ -83,19 +107,21 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 	public static autofillFromApiData(data: DataciteItem): void {
 
 		console.log("Parsing datacite api data", data);
-		const formData = {} as JSONObject;
+		const formData = {} as SubmissionFormData;
 		const attrs = data.attributes;
 
 		// PID
-		formData.persistentIdentifier = attrs.url;
+		formData.persistentIdentifier = doiUrlPrefix + data.id;
 
 		// publisher
-		formData.publisher = attrs.publisher;
+		formData.publisher = {
+			publisher: attrs.publisher,
+		}
 
 		// software name
 		if(data.attributes.titles){
 				for(const title of attrs.titles as JSONObject[]){
-					formData.softwareName = title.title;
+					formData.softwareName = title.title as string;
 					break;
 				}
 		}
@@ -113,7 +139,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 					else if(!formData.description) {
 						formData.description = desc_text;
 					}
-					if (formData.descriptionType === "Abstract"){
+					if (desc.descriptionType === "Abstract"){
 						formData.description = desc_text;
 					}
 				}
@@ -181,12 +207,14 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		// license
 		if(attrs.rightsList){
 				for(const rights of attrs.rightsList as JSONObject[]){
-					formData.license = rights.rights || rights.rightsIdentifier;
+					formData.license = (
+						rights.rights || rights.rightsIdentifier
+					) as string;
 					if(formData.license) break;
 				}
 		}
 		
-		// awards
+		// awards, funders
 		const funders = [] as {funder?: string, funderIdentifier?: string}[];
 		if(attrs.fundingReferences) {
 				const awards = [] as JSONArray<JSONObject>;
@@ -195,9 +223,27 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 					award.awardTitle = fundRef.awardTitle;
 					award.awardNumber = fundRef.awardNumber;
 					if(fundRef.funderIdentifier || fundRef.funderName){
-						funders.push({
+						// crossref doi (not a ror)
+						const funderId = (
+							doiUrlPrefix + fundRef.funderIdentifier as string
+						);
+
+						// ensure no duplicate funders
+						let addFunder = true;
+						for(const prevFunder of funders){
+							if(
+								prevFunder.funderIdentifier == funderId || 
+								prevFunder.funder == fundRef.funderName
+							){
+								addFunder = false;
+								break;
+							}
+						}
+						if(addFunder) funders.push({
 							funder: fundRef.funderName as string,
-							funderIdentifier: fundRef.funderIdentifier as string,
+							// fund id is invalid - datacite uses crossref ids 
+							// for organizations instead of rors
+							// funderIdentifier: funderId, 
 						});
 					}
 					awards.push(award);
@@ -206,13 +252,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		}
 
 		// funders
-		if(funders){
-				for(const funder of funders){
-					// TODO multifield
-					formData.funder = funder;
-					break; 
-				}
-		}
+		if(funders) formData.funder = funders;
 
 		// publication date
 		if(attrs.dates){
@@ -222,36 +262,71 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 			}
 		}
 
-		// documentation, ref publication, rel publications
+		// documentation, code repo url, ref publication, rel publications, 
+		// rel software, rel datasets
 		const relPubs: string[] = [];
+		const relSoftware: string[] = [];
+		const relData: string[] = [];
 		if(attrs.relatedIdentifiers){
 			for(const relId of attrs.relatedIdentifiers){
 				// docs
 				if(relId.relationType === "IsDocumentedBy"){
-					formData.documentation = relId.relatedIdentifier;
-					if(formData.documentation) break;
+					if(!formData.documentation){
+						formData.documentation = relId.relatedIdentifier;
+					}
 				}
 
-				// ref pub
-				if(relId.resourceTypeGeneral === "JournalArticle"){
-					if(
-						!formData.referencePublication && 
-						relId.relationType === "IsDescribedBy"
-					) formData.referencePublication = relId.relatedIdentifier;
-					else{
-						relPubs.push(relId.relatedIdentifier);
+				// code repository url
+				else if(relId.relationType === "IsDerivedFrom") {
+					if(relId.relatedIdentifierType === "URL"){
+						formData.codeRepositoryURL = relId.relatedIdentifier;
+					}
+				}
+
+				// reference/related publication
+				const resTypeGen = relId.resourceTypeGeneral?.toLocaleLowerCase();
+				if(resTypeGen){
+					if(resTypeGen in resTypeGensPublication){
+						if(
+							!formData.referencePublication && 
+							relId.relationType === "IsDescribedBy"
+						) formData.referencePublication = relId.relatedIdentifier;
+						else{
+							relPubs.push(relId.relatedIdentifier);
+						}
+					}
+
+					// related datasets
+					else if(resTypeGen in resTypeGensDataset){
+						relData.push(relId.relatedIdentifier);
+					}
+
+					// related software
+					else if(resTypeGen in resTypeGensSoftware){
+						relSoftware.push(relId.relatedIdentifier);
 					}
 				}
 			}
 		}
-		if(relPubs) formData.relatedPublications = relPubs;
+
+		// set the related identifiers
+		if(relPubs) formData.relatedPublications = relPubs.map(doi => doiUrlPrefix + doi);
+		if(relSoftware) formData.relatedSoftware = relSoftware.map(doi => doiUrlPrefix + doi);
+		if(relData) formData.relatedDatasets = relData.map(doi => doiUrlPrefix + doi);
 
 		// version
 		if(attrs.version){
 			formData.versionNumber = {
 				versionNumber: attrs.version,
 				versionDate: attrs.updated?.split('T')[0],
+				// innaccurate - gives concept doi, and we cannot find newest 
+				// version doi without multiple api queries
+				// versionPID: doiUrlPrefix + data.id, 
 			};
+			const desc = formData.description || formData.conciseDescription;
+			if(desc) {
+				formData.versionNumber.versionDescription = desc
+			}
 		}
 
 		// keywords

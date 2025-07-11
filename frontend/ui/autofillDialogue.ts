@@ -120,7 +120,6 @@ export class AutofillDialoge extends PopupDialogue {
     public static openAutofillDialogue(): void {
         this.validateInstance();
         PopupDialogue.showPopup(this.instance);
-        console.log("open aoutofill dialogue");
     }
 }
 

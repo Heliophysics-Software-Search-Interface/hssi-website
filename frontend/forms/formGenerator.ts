@@ -127,7 +127,7 @@ export class FormGenerator {
         // generate submit button
         this.submitElement = document.createElement("input");
         this.submitElement.type = "submit";
-        this.submitElement.innerText = "Submit";
+        this.submitElement.value = "Submit";
         this.formElement.appendChild(this.submitElement);
     }
 

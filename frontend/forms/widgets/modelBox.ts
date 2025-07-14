@@ -3,7 +3,8 @@ import {
 	type AnyInputElement,
 	type BaseProperties,
 	getStringSimilarity,
-	type JSONObject
+	type JSONObject,
+	fetchTimeout
 } from "../../loader";
 
 const optionDataValue = "json-options";
@@ -240,16 +241,22 @@ export class ModelBox extends Widget {
 	 * options list based off that
 	 */
 	public async builOptionsFromModel(modelName: string): Promise<void> {
-		const data: ChoicesJsonStructure = await (await fetch(modelChoicesUrl + modelName)).json();
-		this.buildOptions(data.data.map(
-			x => {
+		let optionData: Option[] = ModelBox.optionMap.get(modelName);
+		if(!optionData){
+			const data: ChoicesJsonStructure = await (
+				await fetchTimeout(modelChoicesUrl + modelName)
+			).json();
+			optionData = data.data.map(x => {
 				return {
 					id: x[0],
 					name: x[1],
 					keywords: x[2],
 					tooltip: x[3],
 				}
-		}));
+			});
+			ModelBox.optionMap.set(modelName, optionData);
+		}
+		this.buildOptions(optionData);
 	}
 	
 	/// Event listeners --------------------------------------------------------
@@ -408,6 +415,7 @@ export class ModelBox extends Widget {
 
 	/// Dropdown and tooltip elements ------------------------------------------
 
+	protected static optionMap: Map<string, Option[]> = new Map();
 	private static dropdownElement: HTMLDivElement = null;
 	private static tooltipElement: HTMLDivElement = null;
 

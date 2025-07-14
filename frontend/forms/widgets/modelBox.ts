@@ -1,5 +1,5 @@
 import { 
-	Widget, widgetDataAttribute, targetUuidAttribute,
+	Widget, widgetDataAttribute,
 	type AnyInputElement,
 	type BaseProperties,
 	getStringSimilarity,
@@ -134,23 +134,15 @@ export class ModelBox extends Widget {
 		}
 	}
 
-	private confirmInput(): void {
-		const targetUuid = this.inputElement.getAttribute(targetUuidAttribute);
-		if(targetUuid == null) {
-			this.inputElement.setAttribute(targetUuidAttribute, "0");
-		}
-	}
-
 	protected selectOption(option: Option = this.selectedOptionLI?.data): void {
 		if(option != null){
 			this.inputElement.value = option.name;
 			this.inputElement.data = option;
-			this.inputElement.dispatchEvent(new Event("input", { bubbles: true }));
-			this.inputElement.setAttribute(targetUuidAttribute, option.id);
+			// this.inputElement.dispatchEvent(new Event("input", { bubbles: true }));
 			this.parentField?.requirement.applyRequirementWarningStyles();
 		}
 		else {
-			this.inputElement.removeAttribute(targetUuidAttribute);
+			this.inputElement.data = null;
 		}
 	}
 
@@ -315,9 +307,6 @@ export class ModelBox extends Widget {
 				if(ModelBox.isDropdownVisible() && this.selectedOptionIndex >= 0){
 					this.selectOption();
 				}
-				else {
-					this.confirmInput();
-				}
 				ModelBox.hideDropdown();
 				break;
 			case " ":
@@ -349,8 +338,6 @@ export class ModelBox extends Widget {
 		if(!newFocus || !this.allOptionLIs.includes(newFocus as any)){
 			ModelBox.hideDropdown();
 		}
-
-		this.confirmInput();
 	}
 
 	private findMatchingOption(value: string, threshold: number = 0): Option {

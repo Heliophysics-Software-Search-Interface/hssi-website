@@ -4,6 +4,7 @@ import {
     type PropertyContainer, type SerializedSubfield, type JSONValue,
 	type JSONObject,
 	type AnyInputElement,
+	ModelBox,
 } from "../../loader";
 
 const labelStyle = "custom-label";
@@ -259,6 +260,14 @@ export class ModelSubfield {
 	}
 
 	public hasValidInput(): boolean {
+		if(this.widget instanceof ModelBox){
+			if(!this.widget.properties.allowNewEntries){
+				if(!this.getInputElement().data){
+					return false;
+				}
+			}
+		}
+		
 		const value = this.widget?.getInputValue();
 		if(!value) return false;
 

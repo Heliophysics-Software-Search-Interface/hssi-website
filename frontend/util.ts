@@ -65,10 +65,17 @@ export async function fetchTimeout(
 	return result;
 }
 
-/** extract the doi id from an identifier URL */
+/** extract the doi from an identifier URL */
 export function extractDoi(url: string): string {
 	const split = url.split("doi.org/");
-	if (split.length > 1) return split[1];
+	if (split.length > 1) return split.at(-1);
+	return url;
+}
+
+/** extract an orcid id from an identifier URL */
+export function extractOrcId(url: string): string {
+	const split = url.split("orcid.org/");
+	if (split.length > 1) return split.at(-1);
 	return url;
 }
 

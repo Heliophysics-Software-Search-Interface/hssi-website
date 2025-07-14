@@ -538,6 +538,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: License.__name__,
 				WPROP_DROPDOWNBUTTON: True,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=False,

@@ -162,6 +162,10 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Affiliation",
 			PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATION,
 			PROP_TT_BEST: TTBEST_AUTHORAFFILIATION,
+            PROP_WIDGET_PROPS: {
+                WPROP_TARGETMODEL: Organization.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
+			}
 		},
 		multi=True,
 	),

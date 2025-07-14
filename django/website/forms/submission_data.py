@@ -306,6 +306,9 @@ SUBMISSION_FORM_DATASET: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Datasets",
 			PROP_TT_EXPL: TTEXPL_RELATEDDATASETS,
 			PROP_TT_BEST: TTBEST_RELATEDDATASETS,
+            PROP_WIDGET_PROPS: {
+                WPROP_ALLOWNEWENTRIES: True,
+            }
 		},
 		multi=False,
 	),
@@ -374,7 +377,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
 			PROP_TT_BEST: TTBEST_SUBMITTERNAME,
 			PROP_WIDGET_PROPS: {
-				WPROP_TARGETMODEL: Submitter.__name__
+				WPROP_TARGETMODEL: Submitter.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=False,
@@ -417,6 +421,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_AUTHORS,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Person.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=True,
@@ -480,6 +485,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_PUBLISHER,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Organization.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=False,
@@ -495,6 +501,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_VERSIONNUMBER,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: SoftwareVersion.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=False,
@@ -526,6 +533,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_LICENSE,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: License.__name__,
+				WPROP_DROPDOWNBUTTON: True,
 			},
 		},
 		multi=False,
@@ -543,6 +551,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_KEYWORDS,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Keyword.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=True,
@@ -708,6 +717,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_FUNDER,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Organization.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=True,
@@ -723,6 +733,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_AWARDTITLE,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Award.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=True,
@@ -740,6 +751,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_RELATEDPUBLICATIONS,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: RelatedItem.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=True,
@@ -755,6 +767,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_RELATEDDATASETS,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: RelatedItem.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=True,
@@ -770,6 +783,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_RELATEDSOFTWARE,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: RelatedItem.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=True,
@@ -785,6 +799,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_INTEROPERABLESOFTWARE,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: RelatedItem.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=True,
@@ -800,6 +815,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTS,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: InstrumentObservatory.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=True,
@@ -815,6 +831,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_RELATEDOBSERVATORIES,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: InstrumentObservatory.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			},
 		},
 		multi=True,

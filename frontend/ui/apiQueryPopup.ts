@@ -144,7 +144,10 @@ export abstract class ApiQueryPopup extends PopupDialogue {
         selectButton.addEventListener("click", () => {
             if(this.targetField instanceof HTMLElement){
                 const inputElem = this.targetField as AnyInputElement;
-                inputElem.value = result.id;
+                if(this.targetField instanceof ModelSubfield) {
+                    this.targetField.setValue(result.id);
+                }
+                else inputElem.value = result.id;
                 inputElem.data = result.jsonData;
                 PopupDialogue.hidePopup();
                 return;

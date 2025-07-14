@@ -387,7 +387,7 @@ export class ModelBox extends Widget {
 			return;
 		}
 
-		const matchThreshold = this.properties.allowNewEntries ? 1 : 0.5;
+		const matchThreshold = this.properties.allowNewEntries ? 1 : 0;
 		const match = this.findMatchingOption(value, matchThreshold);
 		if(match) {
 			super.setValue(match.name);

@@ -379,10 +379,7 @@ export class ModelBox extends Widget {
 	/// Public functionality ---------------------------------------------------
 
 	public override setValue(value: string): void {
-		console.log(`setting ${this.parentField.name}, value to ${value}`)
-
 		if(!this.options) {
-			console.log(this.parentField.name, " has no options, building..")
 			super.setValue(value);
 			this.builOptionsFromModel(this.properties.targetModel).then(
 				() => this.setValue(value)
@@ -390,7 +387,7 @@ export class ModelBox extends Widget {
 			return;
 		}
 
-		const matchThreshold = this.properties.allowNewEntries ? 0 : 1;
+		const matchThreshold = this.properties.allowNewEntries ? 1 : 0.5;
 		const match = this.findMatchingOption(value, matchThreshold);
 		if(match) {
 			super.setValue(match.name);

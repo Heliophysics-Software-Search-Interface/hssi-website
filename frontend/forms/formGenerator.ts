@@ -335,6 +335,10 @@ export class FormGenerator {
         this.instance.openFieldSections();
     }
 
+    public static getStructureData(): ModelStructureData{
+        return this.structureData;
+    }
+
     public static clearForm(): void {
         const fields = this.instance.getRootFields();
         for(const field of fields) {

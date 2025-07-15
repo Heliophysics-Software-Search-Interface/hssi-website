@@ -102,3 +102,12 @@ export function getStringSimilarity(a: string, b: string) {
 	const dist = dp[m][n];
 	return 1 - dist / Math.max(m, n); // similarity score
 }
+
+/** like 'keyof' but recursively includes keys of nested types */
+export type NestedKeys<T, Prefix extends string = ""> = {
+	[K in keyof T]: T[K] extends object
+	? T[K] extends Function
+	? `${Prefix}${K & string}`
+	: `${Prefix}${K & string}` | NestedKeys<T[K], "">
+	: `${Prefix}${K & string}`;
+}[keyof T];

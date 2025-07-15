@@ -123,6 +123,7 @@ class ModelStructure:
     TODO
     """
 
+    target_model: type['HssiModel'] = None
     type_name: str = ""
     top_field: ModelSubfield | None = None
     subfields: list[ModelSubfield] = []
@@ -132,6 +133,7 @@ class ModelStructure:
         """ create a model structure based on the given hssi model class """
 
         structure = ModelStructure()
+        structure.target_model = model
         structure.type_name = model.__name__
         structure.top_field = ModelSubfield.create(model.get_top_field())
         structure.subfields = [
@@ -142,11 +144,16 @@ class ModelStructure:
         return structure
     
     @classmethod
-    def define(cls, name: str, *fields: ModelSubfield) -> 'ModelStructure':
+    def define(cls, 
+        target_model: type['HssiModel'],  
+        name: str, 
+        *fields: ModelSubfield
+    ) -> 'ModelStructure':
 
         fields_list = list(fields)
 
         structure = cls()
+        structure.target_model = target_model
         structure.type_name = name
         structure.top_field = fields_list.pop(0)
         structure.subfields = fields_list
@@ -161,11 +168,13 @@ class ModelStructure:
         for i, field in enumerate(self.subfields):
             if field.name == field_name:
                 structure1 = ModelStructure.define(
+                    self.target_model,
                     name_left,
                     self.top_field,
                     *self.subfields[0:i],
                 )
                 structure2 = ModelStructure.define(
+                    self.target_model,
                     name_right,
                     *self.subfields[i:],
                 )
@@ -181,6 +190,7 @@ class ModelStructure:
             )
         subfields_prepend = [] if self.top_field is None else [self.top_field.serialized()]
         serialized: dict = {
+            "targetModel": self.target_model.__name__,
             "typeName": self.type_name,
             "subfields": [*subfields_prepend, *[
                     subfield.serialized()

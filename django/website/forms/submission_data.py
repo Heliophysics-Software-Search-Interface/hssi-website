@@ -2,7 +2,8 @@ from ..models import *
 from ..util import RequirementLevel
 from .names import *
 
-SUBMISSION_FORM_AFFILIATION: ModelStructure = ModelStructure.define(
+SUBMISSION_FORM_AFFILIATION: ModelStructure = ModelStructure.define( 
+    Organization,
 	"SubmissionFormAffiliation",
 	ModelSubfield.define(
 		name=FIELD_AUTHORAFFILIATION,
@@ -35,7 +36,8 @@ SUBMISSION_FORM_AFFILIATION: ModelStructure = ModelStructure.define(
 )
 
 SUBMISSION_FORM_PUBLISHER: ModelStructure = ModelStructure.define(
-	"SubmissionFormFunder",
+    Organization,
+	"SubmissionFormPublisher",
 	ModelSubfield.define(
 		name=FIELD_PUBLISHER,
 		type=TYPE_MODELBOX,
@@ -67,6 +69,7 @@ SUBMISSION_FORM_PUBLISHER: ModelStructure = ModelStructure.define(
 )
 
 SUBMISSION_FORM_FUNDER: ModelStructure = ModelStructure.define(
+    Organization,
 	"SubmissionFormFunder",
 	ModelSubfield.define(
 		name=FIELD_FUNDER,
@@ -99,6 +102,7 @@ SUBMISSION_FORM_FUNDER: ModelStructure = ModelStructure.define(
 )
 
 SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
+    Submitter,
 	"SubmissionFormSubmitter",
 	ModelSubfield.define(
 		name="Submitter", 
@@ -128,6 +132,7 @@ SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
 )
 
 SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
+    Person,
 	"SubmissionFormAuthor",
 	ModelSubfield.define(
 		name=FIELD_AUTHORS, 
@@ -172,6 +177,7 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 )
 
 SUBMISSION_FORM_VERSION: ModelStructure = ModelStructure.define(
+    SoftwareVersion,
 	"SubmissionFormVersion",
 	ModelSubfield.define(
 		name=FIELD_VERSIONNUMBER,
@@ -220,6 +226,7 @@ SUBMISSION_FORM_VERSION: ModelStructure = ModelStructure.define(
 )
 
 SUBMISSION_FORM_PUBLICATION: ModelStructure = ModelStructure.define(
+    RelatedItem,
 	"SubmissionFormPublication",
 	ModelSubfield.define(
 		name=FIELD_REFERENCEPUBLICATION,
@@ -235,6 +242,7 @@ SUBMISSION_FORM_PUBLICATION: ModelStructure = ModelStructure.define(
 )
 
 SUBMISSION_FORM_REL_SOFTWARE: ModelStructure = ModelStructure.define(
+    RelatedItem,
 	"SubmissionFormRelSoftware",
 	ModelSubfield.define(
 		name=FIELD_RELATEDSOFTWARE,
@@ -249,6 +257,7 @@ SUBMISSION_FORM_REL_SOFTWARE: ModelStructure = ModelStructure.define(
 )
 
 SUBMISSION_FORM_INSTRUMENT: ModelStructure = ModelStructure.define(
+    InstrumentObservatory,
 	"SubmissionFormInstrument",
 	ModelSubfield.define(
 		name=FIELD_RELATEDINSTRUMENTS,
@@ -275,6 +284,7 @@ SUBMISSION_FORM_INSTRUMENT: ModelStructure = ModelStructure.define(
 )
 
 SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
+    InstrumentObservatory,
 	"SubmissionFormObservatory",
 	ModelSubfield.define(
 		name=FIELD_RELATEDOBSERVATORIES,
@@ -301,6 +311,7 @@ SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
 )
 
 SUBMISSION_FORM_DATASET: ModelStructure = ModelStructure.define(
+    RelatedItem,
 	"SubmissionFormDataset",
 	ModelSubfield.define(
 		name=FIELD_RELATEDDATASETS,
@@ -319,6 +330,7 @@ SUBMISSION_FORM_DATASET: ModelStructure = ModelStructure.define(
 )
 
 SUBMISSION_FORM_LICENSE: ModelStructure = ModelStructure.define(
+    License,
 	"SubmissionFormLicense",
 	ModelSubfield.define(
 		name=FIELD_LICENSE,
@@ -337,6 +349,7 @@ SUBMISSION_FORM_LICENSE: ModelStructure = ModelStructure.define(
 )
 
 SUBMISSION_FORM_AWARD: ModelStructure = ModelStructure.define(
+    Award,
 	"SubmissionFormAward",
 	ModelSubfield.define(
 		name=FIELD_AWARDTITLE,
@@ -368,6 +381,7 @@ SUBMISSION_FORM_AWARD: ModelStructure = ModelStructure.define(
 ## FORM FIELD STRUCTURE DATA ---------------------------------------------------
 
 SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
+    Software,
 	"SubmissionForm",
 
 	# ----- Sec 1 -----

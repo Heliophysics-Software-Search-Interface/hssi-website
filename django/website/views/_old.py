@@ -32,7 +32,7 @@ from ..forms import FeedbackForm
 from ..models import (
     Category, NewsItem, NewsItemStatus, Resource, TeamMember, ToolType, 
     Collection, InLitResource, Submission, SubmissionStatus, QualitySpec,
-    FunctionCategory, Functionality
+    FunctionCategory
 )
 # from ..admin import isInlit
 from ..constants import SaveType
@@ -157,7 +157,7 @@ def selected_resource_context(request):
     collections = Collection.objects.filter(parents=None)
     in_lit_resources = InLitResource.objects.filter(is_published=True)
     function_categories = FunctionCategory.objects.all()
-    functionalities = Functionality.objects.filter(category__in=function_categories)
+    # functionalities = Functionality.objects.filter(category__in=function_categories)
     
     related_resource = None
     selected_collection = None
@@ -286,7 +286,7 @@ def selected_resource_context(request):
             QualitySpec.GOOD.get_img_url()
         ],
         'function_categories': function_categories,
-        'functionalities': functionalities,
+        # 'functionalities': functionalities,
         'categories': categories,
         'selected_category_ids': selected_category_ids,
         'selected_resources': selected_resources,

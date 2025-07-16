@@ -5,12 +5,12 @@ from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 
 from .people import Person
-from .auxillary_info import Functionality, RelatedItem, Award
+from .auxillary_info import RelatedItem, Award
 from .submission_info import SubmissionInfo
 from .roots import ( LEN_NAME, HssiModel,
     RepoStatus, OperatingSystem, Keyword, Image, Phenomena, Organization, 
     License, InstrumentObservatory, ProgrammingLanguage, FileFormat, 
-    Region, DataInput
+    Region, DataInput, FunctionCategory
 )
 
 class SoftwareVersion(HssiModel):
@@ -74,7 +74,7 @@ class Software(HssiModel):
     description = models.TextField(blank=True, null=True)
     conciseDescription = models.TextField(max_length=200, blank=True, null=True)
     softwareFunctionality = models.ManyToManyField(
-        Functionality, 
+        FunctionCategory, 
         blank=True, 
         related_name='softwares'
     )

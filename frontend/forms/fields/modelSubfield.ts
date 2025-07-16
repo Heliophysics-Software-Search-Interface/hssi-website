@@ -4,6 +4,7 @@ import {
     type PropertyContainer, type SerializedSubfield, type JSONValue,
 	type JSONObject,
 	type AnyInputElement,
+	ModelBox,
 } from "../../loader";
 
 const labelStyle = "custom-label";
@@ -195,8 +196,7 @@ export class ModelSubfield {
 	public clearField(): void {
 		
 		// clear input value
-		let input = this.getInputElement();
-		if(input) input.value = "";
+		this.setValue("");
 
 		// clear/collapse all subfield values
 		for(const subfield of this.getSubfields()) {
@@ -246,7 +246,7 @@ export class ModelSubfield {
 		}
 
 		// it's a non-recursive value (almost certainly a string)
-		else this.widget.getInputElement().value = data.toString();
+		else this.setValue(data.toString());
 	}
 
 	public meetsRequirementLevel(): boolean {
@@ -260,6 +260,14 @@ export class ModelSubfield {
 	}
 
 	public hasValidInput(): boolean {
+		if(this.widget instanceof ModelBox){
+			if(!this.widget.properties.allowNewEntries){
+				if(!this.getInputElement().data){
+					return false;
+				}
+			}
+		}
+		
 		const value = this.widget?.getInputValue();
 		if(!value) return false;
 
@@ -353,6 +361,10 @@ export class ModelSubfield {
 
 	public getInputElement(): AnyInputElement {
 		return this.widget?.getInputElement() ?? null;
+	}
+
+	public setValue(value: string): void {
+		this.widget?.setValue(value);
 	}
 
 	/** 

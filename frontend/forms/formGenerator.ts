@@ -1,9 +1,7 @@
 import { 
     typeAttribute, ModelFieldStructure, ModelSubfield, widgetDataAttribute,
-    type JSONValue, type JSONObject,
-    RequirementLevel,
-    ConfirmDialogue,
-    ModelMultiSubfield
+    RequirementLevel, ConfirmDialogue, 
+    type SubmissionFormData, type JSONValue, type JSONObject,
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -64,7 +62,7 @@ export class FormGenerator {
         // generate submit button
         this.submitElement = document.createElement("input");
         this.submitElement.type = "submit";
-        this.submitElement.innerText = "Submit";
+        this.submitElement.value = "Submit";
         this.formElement.appendChild(this.submitElement);
     }
 
@@ -319,13 +317,13 @@ export class FormGenerator {
      * @param overwrite_values whether or not fields which already have data should be overwritten
      */
     public static fillForm(
-        data: JSONObject, 
+        data: SubmissionFormData, 
         overwrite_values: boolean = false
     ): void {
 
         const fields = this.instance.getRootFields();
         for(const key in data) {
-            const value = data[key];
+            const value = data[key as keyof typeof data];
             const field = fields.find(f => f.name === key);
             if(field) {
                 if (overwrite_values || !field.hasValidInput()) {
@@ -335,6 +333,10 @@ export class FormGenerator {
         }
         this.instance.updateAllFieldValidityStyles();
         this.instance.openFieldSections();
+    }
+
+    public static getStructureData(): ModelStructureData{
+        return this.structureData;
     }
 
     public static clearForm(): void {

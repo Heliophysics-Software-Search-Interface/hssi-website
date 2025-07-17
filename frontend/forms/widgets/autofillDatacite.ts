@@ -207,9 +207,10 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		// license
 		if(attrs.rightsList){
 				for(const rights of attrs.rightsList as JSONObject[]){
-					formData.license = (
-						rights.rights || rights.rightsIdentifier
-					) as string;
+					formData.license = {
+						license: (rights.rights || rights.rightsIdentifier) as string,
+						licenseURI: (rights.rightsUri || rights.schemeUri) as string,
+					}
 					if(formData.license) break;
 				}
 		}

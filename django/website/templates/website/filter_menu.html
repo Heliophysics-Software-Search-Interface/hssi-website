@@ -36,7 +36,7 @@
             {% endfor %}
         </ul>
     </li>
-    <!--
+    {% comment %}
     {% if selected_filter_ids and tag.id not in selected_filter_ids and not selected_subfilter_ids %}
     <li class="unselected_filter filter_menu">
     {% elif selected_filter_ids and tag.id in selected_filter_ids %}
@@ -67,7 +67,7 @@
             </ul>
         {% endif %}
     </li>
-    -->
+    {% endcomment %}
     {% endfor %}
 </ul>
 

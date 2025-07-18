@@ -15,6 +15,7 @@ export type ZenodoApiItem = {
 	doi_url: string,
 	metadata: JSONObject & {
 		custom: JSONObject & {
+			"code:codeRepository": string,
 			"code:programmingLanguage": {
 				id: string,
 				title: JSONObject & {

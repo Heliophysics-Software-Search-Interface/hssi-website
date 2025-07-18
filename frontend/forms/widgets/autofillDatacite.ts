@@ -340,6 +340,10 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 			}
 		}
 
+		// code repo url try #2 (zenodo)
+		const repoUrl = zenodoData?.metadata?.custom["code:codeRepository"];
+		if(repoUrl) formData.codeRepositoryURL = repoUrl;
+
 		// set the related identifiers
 		if(relPubs) formData.relatedPublications = relPubs.map(doi => doiUrlPrefix + doi);
 		if(relSoftware) formData.relatedSoftware = relSoftware.map(doi => doiUrlPrefix + doi);

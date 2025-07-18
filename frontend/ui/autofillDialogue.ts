@@ -62,7 +62,7 @@ export class AutofillDialoge extends PopupDialogue {
         const text = document.createElement("p");
         text.innerText = (
             "Enter the DOI or DOI URL for your software and/or the " +
-            "URL to your remotely hosted git repository and press 'autofill'" +
+            "URL to your remotely hosted git repository and press 'autofill' " +
             "to fetch metadata and automatically fill out the form. " + 
             "We are able to fetch significantly more data from the Datacite " + 
             "API than any git remote hosting service's API, so DOI is " + 

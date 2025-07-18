@@ -2,9 +2,9 @@ from ..models import *
 from ..util import RequirementLevel
 from .names import *
 
-SUBMISSION_FORM_AFFILIATION: ModelStructure = ModelStructure.define( 
+SUBMISSION_FORM_AUTHOR_AFFILIATION: ModelStructure = ModelStructure.define(
 	Organization,
-	"SubmissionFormAffiliation",
+	"SubmissionFormAuthorAffiliation",
 	ModelSubfield.define(
 		name=FIELD_AUTHORAFFILIATION,
 		type=TYPE_MODELBOX,
@@ -27,6 +27,39 @@ SUBMISSION_FORM_AFFILIATION: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Identifier",
 			PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATIONIDENTIFIER,
 			PROP_TT_BEST: TTBEST_AUTHORAFFILIATIONIDENTIFIER,
+			PROP_WIDGET_PROPS: {
+				WPROP_TARGETMODEL: Organization.__name__,
+			},
+		},
+		multi=False,
+	),
+)
+
+SUBMISSION_FORM_CONTRIBUTOR_AFFILIATION: ModelStructure = ModelStructure.define(
+	Organization,
+	"SubmissionFormContributorAffiliation",
+	ModelSubfield.define(
+		name=FIELD_CONTRIBUTORAFFILIATION,
+		type=TYPE_MODELBOX,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Organization",
+			PROP_WIDGET_PROPS: {
+				PROP_TT_EXPL: TTEXPL_CONTRIBUTORAFFILIATION,
+				PROP_TT_BEST: TTBEST_CONTRIBUTORAFFILIATION,
+				WPROP_TARGETMODEL: Organization.__name__,
+			},
+		},
+		multi=False,
+	),
+	ModelSubfield.define(
+		name=FIELD_CONTRIBUTORAFFILIATIONIDENTIFIER,
+		type=TYPE_ROR,
+		requirement=RequirementLevel.RECOMMENDED.value,
+		properties={
+			PROP_LABEL: "Identifier",
+			PROP_TT_EXPL: TTEXPL_CONTRIBUTORAFFILIATIONIDENTIFIER,
+			PROP_TT_BEST: TTBEST_CONTRIBUTORAFFILIATIONIDENTIFIER,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Organization.__name__,
 			},
@@ -161,7 +194,7 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_AUTHORAFFILIATION,
-		type=SUBMISSION_FORM_AFFILIATION.type_name,
+		type=SUBMISSION_FORM_AUTHOR_AFFILIATION.type_name,
 		requirement=RequirementLevel.RECOMMENDED,
 		properties={
 			PROP_LABEL: "Affiliation",
@@ -182,9 +215,11 @@ SUBMISSION_FORM_CONTRIBUTOR: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_CONTRIBUTOR, 
 		type=TYPE_MODELBOX,
-		requirement=RequirementLevel.MANDATORY.value, 
+		requirement=RequirementLevel.OPTIONAL.value, 
 		properties={
 			PROP_LABEL: "Contributors",
+			PROP_TT_EXPL: TTEXPL_CONTRIBUTOR,
+			PROP_TT_BEST: TTBEST_CONTRIBUTOR,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Person.__name__
 			},
@@ -194,18 +229,22 @@ SUBMISSION_FORM_CONTRIBUTOR: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_CONTRIBUTORIDENTIFIER,
 		type=TYPE_ORCID,
-		requirement=RequirementLevel.RECOMMENDED,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Identifier",
+			PROP_TT_EXPL: TTEXPL_CONTRIBUTORIDENTIFIER,
+			PROP_TT_BEST: TTBEST_CONTRIBUTORIDENTIFIER,
 		},
 		multi=False,
 	),
 	ModelSubfield.define(
 		name=FIELD_CONTRIBUTORAFFILIATION,
-		type=SUBMISSION_FORM_AFFILIATION.type_name,
-		requirement=RequirementLevel.RECOMMENDED,
+		type=SUBMISSION_FORM_CONTRIBUTOR_AFFILIATION.type_name,
+		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Affiliation",
+			PROP_TT_EXPL: TTEXPL_CONTRIBUTORAFFILIATION,
+			PROP_TT_BEST: TTBEST_CONTRIBUTORAFFILIATION,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: Organization.__name__,
 				WPROP_ALLOWNEWENTRIES: True,

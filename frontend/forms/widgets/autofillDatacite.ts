@@ -2,10 +2,12 @@ import {
 	DataciteDoiWidget, extractDoi, faMagicIcon, fetchTimeout, FormGenerator,
 	Spinner,
 	type DataciteItem, type JSONArray, type JSONObject, type SubmissionFormData,
+	type ZenodoApiItem,
 } from "../../loader"
 
 const orcidUrlPrefix = "https://orcid.org/";
 const doiUrlPrefix = "https://doi.org/";
+const zenodoApiPrefix = "https://zenodo.org/api/records/";
 const rorUrlPrefix = "https://ror.org/";
 const dataciteEntryApiEndpoint = "https://api.datacite.org/dois/";
 
@@ -37,6 +39,16 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 
 	protected autofillButton: HTMLButtonElement = null;
 	
+	private getDoi(): string {
+		const inputElem = this.parentField.getInputElement();
+		let data = inputElem.data as DataciteItem;
+
+		const doi = extractDoi(inputElem.value.trim());
+		const dataDoi = data?.attributes?.doi;
+
+		return doi || dataDoi;
+	}
+
 	private async getApiData(): Promise<DataciteItem> {
 
 		const inputElem = this.parentField.getInputElement();
@@ -64,9 +76,12 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		Spinner.showSpinner();
 
 		const data = await this.getApiData();
+		const zenodoData = await AutofillDataciteWidget.getZenodoApiDataFromDoi(
+			this.getDoi()
+		);
 
 		// parse the datacite api data
-		try { AutofillDataciteWidget.autofillFromApiData(data); }
+		try { AutofillDataciteWidget.autofillFromApiData(data, zenodoData); }
 		catch(e){ console.error(e); }
 
 		Spinner.hideSpinner();
@@ -104,14 +119,29 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		return data;
 	}
 
-	public static autofillFromApiData(data: DataciteItem): void {
+	public static async getZenodoApiDataFromDoi(
+		doiUrl: string
+	): Promise<ZenodoApiItem> {
+		const zenodoRecord = doiUrl.toLowerCase().split("zenodo.").at(-1);
+		const zenodoApiUrl = zenodoApiPrefix + zenodoRecord;
+		const zenodoData: ZenodoApiItem = await (await fetchTimeout(zenodoApiUrl)).json();
+		return zenodoData;
+	}
+
+	public static autofillFromApiData(
+		data: DataciteItem, 
+		zenodoData: ZenodoApiItem = {} as any,
+	): void {
 
 		console.log("Parsing datacite api data", data);
 		const formData = {} as SubmissionFormData;
 		const attrs = data.attributes;
 
+		if(!zenodoData) zenodoData = {} as any;
+
 		// PID
-		formData.persistentIdentifier = doiUrlPrefix + data.id;
+		const doi = zenodoData.conceptdoi || data.id;
+		formData.persistentIdentifier = doiUrlPrefix + doi;
 
 		// publisher
 		formData.publisher = {
@@ -328,6 +358,9 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 			if(desc) {
 				formData.versionNumber.versionDescription = desc
 			}
+			if(zenodoData?.doi){
+				formData.versionNumber.versionPID = doiUrlPrefix + zenodoData.doi;
+			}
 		}
 
 		// keywords
@@ -340,6 +373,22 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 				if(subject.length <= 0) continue;
 				subject = subject[0].toLocaleUpperCase() + subject.slice(1);
 				formData.keywords.push(subject);
+			}
+		}
+
+		// repo status
+		const devStatus = zenodoData?.metadata?.custom["code:developmentStatus"];
+		if(devStatus){
+			formData.developmentStatus = devStatus.title?.en || devStatus.id;
+		}
+
+		// programming languages
+		const progLangs = zenodoData?.metadata?.custom["code:programmingLanguage"];
+		if(progLangs){
+			formData.programmingLanguage = [];
+			for(const lang of progLangs){
+				const langName = lang.title?.en || lang.id;
+				formData.programmingLanguage.push(langName);
 			}
 		}
 

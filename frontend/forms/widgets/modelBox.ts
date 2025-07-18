@@ -353,7 +353,8 @@ export class ModelBox extends Widget {
 
 		let option: Option = null;
 		let matchScore: number = threshold;
-		for(const opdata of this.options){
+		for(let i = this.options.length - 1; i >= 0; i--){
+			const opdata = this.options[i];
 			if(value in opdata.keywords){
 				return opdata;
 			}

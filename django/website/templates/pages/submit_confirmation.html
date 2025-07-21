@@ -1,0 +1,26 @@
+{% extends 'pages/forms_base.html' %}
+
+{% load static %}
+
+{% block head %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/submissions.css' %}" />
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}" />
+{% endblock %}
+
+{% block title %}Submission Confirmation{% endblock %}
+
+{% block page_content %}
+
+	<div class="small-12 container submission_form">
+		<h3 class="page_title">Submission Confirmation</h3>
+		<p class="submission-text">
+			Thank you for your submission!
+		</p>
+		<p class="submission-text">
+			After review, a member of our team will be in touch to discuss 
+			the next steps.
+		</p>
+	</div>
+
+{% endblock %}

@@ -138,7 +138,7 @@ SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
 	Submitter,
 	"SubmissionFormSubmitter",
 	ModelSubfield.define(
-		name="Submitter", 
+		name=FIELD_SUBMITTERNAME, 
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.MANDATORY.value, 
 		properties={
@@ -152,7 +152,7 @@ SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 	ModelSubfield.define(
-		name="Email",
+		name=FIELD_SUBMITTEREMAIL,
 		type=TYPE_EMAIL,
 		requirement=RequirementLevel.MANDATORY.value,
 		properties={

@@ -56,30 +56,35 @@ def submit_data(request: HttpRequest) -> HttpResponse:
 	return redirect(f"/submit/submitted?id={str(submisison_id)}")
 
 def handle_submission_data(data: dict) -> uuid.UUID:
-	software = Software.objects.create()
+	software = Software()
 
-	# TODO handle database logic
+	software.persistentIdentifier = data.get(FIELD_PERSISTENTIDENTIFIER)
+	software.codeRepositoryUrl = data.get(FIELD_CODEREPOSITORYURL)
+	software.softwareName = data.get(FIELD_SOFTWARENAME)
+	software.description = data.get(FIELD_DESCRIPTION)
+	software.conciseDescription = data.get(FIELD_CONCISEDESCRIPTION)
 
 	## SUBMISSION
-	submission = SubmissionInfo.objects.create()
+	submission = SubmissionInfo()
 
 	submitter_data: dict = data.get(FIELD_SUBMITTERNAME)
 	submitter_name: str = submitter_data.get(FIELD_SUBMITTERNAME)
 	submitter_lastname = submitter_name.split()[-1]
 	submitter_firstname = submitter_name.replace(submitter_lastname, '').strip()
 
-	submitter_person = Person.objects.create()
+	submitter_person = Person()
 	submitter_person.lastName = submitter_lastname
 	submitter_person.firstName = submitter_firstname
 	submitter_person.save()
 	
 	submitter_emails = submitter_data.get(FIELD_SUBMITTEREMAIL)
+	print(submitter_emails)
 
 	# TODO handle multi
 	if isinstance(submitter_emails, list):
 		submitter_emails = submitter_emails[0]
 
-	submitter = Submitter.objects.create()
+	submitter = Submitter()
 	submitter.email = submitter_emails
 	submitter.person = submitter_person
 	submitter.save()
@@ -93,55 +98,38 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	submission.save()
 	software.submissionInfo = submission
 
-	## --
+	## LICENSE
 
-	software.persistentIdentifier = data.get(FIELD_PERSISTENTIDENTIFIER)
-	software.codeRepositoryUrl = data.get(FIELD_CODEREPOSITORYURL)
-	
-	## AUTHORS
+	license_data: dict = data.get(FIELD_LICENSE)
+	if license_data:
+		license_name = license_data.get(FIELD_LICENSE)
+		try:
+			uid = UUID(license_name)
+			license = License.objects.get(pk=uid)
+			software.license = license
+		except Exception:
+			license = License.objects.filter(name=license_name).first()
+			if not license:
+				license_url = license_data.get(FIELD_LICENSEURI)
+				license = License.objects.filter(url=license_url).first()
+			if license: software.license = license
 
-	author_datas: list[dict] = data.get(FIELD_AUTHORS)
-	for author_data in author_datas:
-		author = Person.objects.create()
-		author.identifier = author_data.get(FIELD_AUTHORIDENTIFIER)
-		
-		author_name: str = author_data.get(FIELD_AUTHORS)
-		author_lastname = author_name.split()[-1]
-		author_firstname = author_name.replace(author_lastname).strip()
+	## DEV STATUS
 
-		author.lastName = author_lastname
-		author.firstName = author_firstname
-
-		affiliation_data: dict = author_data.get(FIELD_AUTHORAFFILIATION)
-		if affiliation_data:
-			affiliation_name = affiliation_data.get(FIELD_AUTHORAFFILIATION)
-			affiliation_id = affiliation_data.get(FIELD_AUTHORAFFILIATIONIDENTIFIER)
-
-			affiliation = Organization.objects.create()
-			affiliation.name = affiliation_name
-			affiliation.identifier = affiliation_id
-			affiliation.save()
-			author.affiliation = affiliation
-
-		author.save()
-		software.authors.add(author)
-
-	## --
-
-	software.softwareName = data.get(FIELD_SOFTWARENAME)
-	software.description = data.get(FIELD_DESCRIPTION)
-	software.conciseDescription = data.get(FIELD_CONCISEDESCRIPTION)
-
-	pub_date = data.get(FIELD_PUBLICATIONDATE)
-	if pub_date: 
-		pub_date = datetime.datetime.strptime(pub_date, '%Y-%m-%d').date()
-		software.publicationDate = pub_date
+	devstatus = data.get(FIELD_DEVELOPMENTSTATUS)
+	try:
+		uid = UUID(devstatus)
+		devstatus = RepoStatus.objects.get(pk=uid)
+		software.developmentStatus = devstatus
+	except Exception:
+		devstatus = RepoStatus.objects.filter(name=devstatus).first()
+		software.developmentStatus = devstatus
 	
 	## PUBLISHER
 
 	publisher_data: dict = data.get(FIELD_PUBLISHER)
 	if publisher_data:
-		publisher = Organization.objects.create()
+		publisher = Organization()
 		publisher.name = publisher_data.get(FIELD_PUBLISHER)
 		publisher.identifier = publisher_data.get(FIELD_PUBLISHERIDENTIFIER)
 		publisher.save()
@@ -152,16 +140,55 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 
 	version_data: dict = data.get(FIELD_VERSIONNUMBER)
 	if version_data:
-		version = SoftwareVersion.objects.create()
+		version = SoftwareVersion()
 		version.number = version_data.get(FIELD_VERSIONNUMBER)
 
 		version_date = version_data.get(FIELD_VERSIONDATE)
 		if version_date:
-			version_date = datetime.datetime.strptime(pub_date, '%Y-%m-%d').date()
+			version_date = datetime.datetime.strptime(version_date, '%Y-%m-%d').date()
 			version.release_date = version_date
 
 		version.description = version_data.get(FIELD_VERSIONDESCRIPTION)
 		version.version_pid = version_data.get(FIELD_VERSIONPID)
+
+	# software needs to be inside database table before any values are added to
+	# any of its M2M fields
+	software.save()
+
+	## AUTHORS
+
+	author_datas: list[dict] = data.get(FIELD_AUTHORS)
+	for author_data in author_datas:
+		author = Person()
+		author.identifier = author_data.get(FIELD_AUTHORIDENTIFIER)
+		
+		author_name: str = author_data.get(FIELD_AUTHORS)
+		author_lastname = author_name.split()[-1]
+		author_firstname = author_name.replace(author_lastname, '').strip()
+
+		author.lastName = author_lastname
+		author.firstName = author_firstname
+		author.save()
+
+		affiliation_datas: dict = author_data.get(FIELD_AUTHORAFFILIATION)
+		if affiliation_datas:
+			for affiliation_data in affiliation_datas:
+				affiliation_name = affiliation_data.get(FIELD_AUTHORAFFILIATION)
+				affiliation_id = affiliation_data.get(FIELD_AUTHORAFFILIATIONIDENTIFIER)
+
+				affiliation = Organization()
+				affiliation.name = affiliation_name
+				affiliation.identifier = affiliation_id
+				affiliation.save()
+				author.affiliation.add(affiliation)
+
+		author.save()
+		software.authors.add(author)
+
+	pub_date = data.get(FIELD_PUBLICATIONDATE)
+	if pub_date: 
+		pub_date = datetime.datetime.strptime(pub_date, '%Y-%m-%d').date()
+		software.publicationDate = pub_date
 
 	## PROGRAMMING LANGUAGES
 	# TODO make programming language in software model multi
@@ -175,36 +202,10 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 				software.programmingLanguage = lang_ref
 				break
 		except Exception:
-			lang_ref = ProgrammingLanguage.objects.get(name=lang)
+			lang_ref = ProgrammingLanguage.objects.filter(name=lang).first()
 			if lang_ref: 
 				software.programmingLanguage = lang_ref
 				break
 	
-	## LICENSE
-
-	license_data: dict = data.get(FIELD_LICENSE)
-	if license_data:
-		try:
-			uid = UUID(license_data.get(FIELD_LICENSE))
-			license = License.objects.get(pk=uid)
-			software.license = license
-		except Exception:
-			license = License.objects.get(name=license_data.get(FIELD_LICENSE))
-			if not license:
-				license = License.objects.get(url=license_data.get(FIELD_LICENSEURI))
-			if license: software.license = license
-
-	## DEV STATUS
-
-	devstatus = data.get(FIELD_DEVELOPMENTSTATUS)
-	try:
-		uid = UUID(devstatus)
-		devstatus = RepoStatus.objects.get(pk=uid)
-		software.developmentStatus = devstatus
-	except Exception:
-		devstatus = RepoStatus.objects.get(devstatus)
-		software.developmentStatus = devstatus
-
-	print(software)
 	software.save()
 	return submission.id

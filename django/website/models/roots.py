@@ -23,15 +23,6 @@ class ModelObjectChoice(NamedTuple):
 	keywords: list[str]
 	tooltip: str
 
-	def to_dict(self):
-		return {
-			"id": self.id,
-			"name": self.name,
-			"keywords": self.keywords,
-			"tooltip": self.tooltip
-		}
-
-
 # Whether an entry in InstrumentObservatory is an instrument or an observatory
 class InstrObsType(models.IntegerChoices):
 	INSTRUMENT = 1, "Instrument"

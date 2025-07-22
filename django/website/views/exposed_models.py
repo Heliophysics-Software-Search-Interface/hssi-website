@@ -87,7 +87,7 @@ def get_model_choices(
 			objs = model.objects.all()
 		data = {
 			"data": [
-				obj.get_choice().to_dict()
+				obj.get_choice()
 				for obj in objs
 			]
 		}

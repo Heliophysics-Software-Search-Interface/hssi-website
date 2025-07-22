@@ -62,7 +62,7 @@ class Person(HssiModel):
 	def __str__(self): 
 		name = self.firstName + " " + self.lastName
 		if self.identifier:
-			name += f"({str.split(self.identifier, "orcid.org/")[-1]})"
+			name += f" ({str.split(self.identifier, "orcid.org/")[-1]})"
 		return name
 
 	def to_str_lastname_firstname(self) -> str:

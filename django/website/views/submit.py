@@ -136,7 +136,6 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 		software.publisher = publisher
 
 	## VERSION
-	# TODO remove software foreign key field in SoftwareVersion model
 
 	version_data: dict = data.get(FIELD_VERSIONNUMBER)
 	if version_data:
@@ -192,21 +191,16 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 		software.publicationDate = pub_date
 
 	## PROGRAMMING LANGUAGES
-	# TODO make programming language in software model multi
 
 	proglangs = data.get(FIELD_PROGRAMMINGLANGUAGE)
 	for lang in proglangs:
 		try:
 			uid = UUID(lang)
 			lang_ref = ProgrammingLanguage.objects.get(pk=uid)
-			if lang_ref:
-				software.programmingLanguage = lang_ref
-				break
+			if lang_ref: software.programmingLanguage.add(lang_ref)
 		except Exception:
 			lang_ref = ProgrammingLanguage.objects.filter(name=lang).first()
-			if lang_ref: 
-				software.programmingLanguage = lang_ref
-				break
+			if lang_ref: software.programmingLanguage.add(lang_ref)
 	
 	software.save()
 	return submission.id

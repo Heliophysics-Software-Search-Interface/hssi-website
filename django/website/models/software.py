@@ -30,10 +30,8 @@ class SoftwareVersion(HssiModel):
 	def __str__(self): return self.number
 
 class Software(HssiModel):
-	programmingLanguage = models.ForeignKey(
+	programmingLanguage = models.ManyToManyField(
 		ProgrammingLanguage,
-		on_delete=models.CASCADE, 
-		null=True, 
 		blank=True, 
 		related_name='softwares'
 	)

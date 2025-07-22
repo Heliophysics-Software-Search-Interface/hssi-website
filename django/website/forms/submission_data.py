@@ -675,6 +675,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_KEYWORDS,
 			PROP_TT_BEST: TTBEST_KEYWORDS,
 			PROP_WIDGET_PROPS: {
+                WPROP_DROPDOWNBUTTON: True,
 				WPROP_TARGETMODEL: Keyword.__name__,
 				WPROP_ALLOWNEWENTRIES: True,
 			},
@@ -691,6 +692,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_SOFTWAREFUNCTIONALITY,
 			PROP_TT_BEST: TTBEST_SOFTWAREFUNCTIONALITY,
 			PROP_WIDGET_PROPS: {
+                WPROP_DROPDOWNBUTTON: True,
 				WPROP_TARGETMODEL: FunctionCategory.__name__,
 			},
 		},
@@ -786,6 +788,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_RELATEDREGION,
 			PROP_TT_BEST: TTBEST_RELATEDREGION,
 			PROP_WIDGET_PROPS: {
+                WPROP_DROPDOWNBUTTON: True,
 				WPROP_TARGETMODEL: Region.__name__,
 			},
 		},
@@ -973,18 +976,6 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		},
 		multi=False,
 	),
-
-	# Agreement
-	ModelSubfield.define(
-		name="agree",
-		type=TYPE_CHECKBOX,
-		requirement=RequirementLevel.MANDATORY.value,
-		properties={
-			PROP_LABEL: "Metadata License Agreement",
-			PROP_TT_BEST: "Agree that all metadata you've entered into this form will be freely available for searching and indexing or any other purpose",
-		},
-		multi=False,
-	),
 )
 
  # Split the subission form into 3 different sections:
@@ -999,10 +990,4 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	FIELD_RELATEDPUBLICATIONS,
 	SUBMISSION_FORM_FIELDS.type_name + "_2",
 	SUBMISSION_FORM_FIELDS.type_name + "_3",
-)
-
-[SUBMISSION_FORM_FIELDS_3, SUBMISSION_FORM_FIELDS_AGREEMENT] = SUBMISSION_FORM_FIELDS_3.split(
-	"agree", 
-	SUBMISSION_FORM_FIELDS.type_name + "_3",
-	SUBMISSION_FORM_FIELDS.type_name + "_agree",
 )

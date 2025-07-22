@@ -1,4 +1,3 @@
-import uuid
 from django.db import models
 
 from .structurizer import form_config
@@ -50,7 +49,7 @@ class Person(HssiModel):
 		terms = super().get_search_terms()
 		if self.identifier:
 			terms.append(self.identifier)
-			terms.append({str.split(self.identifier, "orcid.org/")[-1]})
+			terms.append(str.split(self.identifier, "orcid.org/")[-1])
 		return terms
 
 	@classmethod

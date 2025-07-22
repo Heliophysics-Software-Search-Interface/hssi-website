@@ -10,8 +10,7 @@ from django.http import (
 from ..forms import (
 	SUBMISSION_FORM_FIELDS_1,
 	SUBMISSION_FORM_FIELDS_2,
-	SUBMISSION_FORM_FIELDS_3,
-	SUBMISSION_FORM_FIELDS_AGREEMENT,
+	SUBMISSION_FORM_FIELDS_3
 )
 from ..models import *
 from ..forms.names import *
@@ -24,8 +23,7 @@ def view_form(request: HttpRequest) -> HttpResponse:
 			"structure_names": [
 				SUBMISSION_FORM_FIELDS_1.type_name,
 				SUBMISSION_FORM_FIELDS_2.type_name,
-				SUBMISSION_FORM_FIELDS_3.type_name,
-				SUBMISSION_FORM_FIELDS_AGREEMENT.type_name,
+				SUBMISSION_FORM_FIELDS_3.type_name
 			],
 		}
 	)

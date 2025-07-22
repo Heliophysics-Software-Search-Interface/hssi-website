@@ -3,6 +3,9 @@ import {
 	RequirementLevel, ConfirmDialogue, 
 	type SubmissionFormData, type JSONValue, type JSONObject,
 	fetchTimeout,
+	labelStyle,
+	requiredIndicatorStyle,
+	explanationTextStyle,
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -26,6 +29,8 @@ export class FormGenerator {
 	private fieldContainer: HTMLDivElement = null;
 	private fields: (ModelSubfield | ModelSubfield[])[] = [];
 	private fieldSections: HTMLDetailsElement[] = [];
+	private hasAgreement: boolean = true;
+	private agreementElement: HTMLInputElement = null;
 
 	private buildForm(): void {
 
@@ -49,7 +54,7 @@ export class FormGenerator {
 		
 		for(const field of this.fields) {
 			if(field instanceof Array){
-				this.buildFormSection(field, titles.shift(), i > 0 && i < this.fields.length - 1);
+				this.buildFormSection(field, titles.shift(), i > 0);
 				i++;
 				continue;
 			}
@@ -58,6 +63,43 @@ export class FormGenerator {
 			field.buildInterface(formRow);
 			this.fieldContainer.appendChild(formRow);
 			i++;
+		}
+
+		if(this.hasAgreement){
+			const div = document.createElement("div");
+			
+			const header = document.createElement("div");
+			header.classList.add(labelStyle);
+			header.innerText = "Metadata Agreement ";
+
+			const req = document.createElement("span");
+			req.classList.add(requiredIndicatorStyle);
+			req.innerText = "*";
+			header.appendChild(req);
+
+			const para = document.createElement("div");
+			para.classList.add(explanationTextStyle);
+			para.innerText = ("By submitting this form, you acknowledge and " + 
+				"agree that any metadata you provide is submitted voluntarily " +
+				"and becomes part of the public domain. You waive all rights, " +
+				"claims, and interests to the submitted metadata, and grant " +
+				"unrestricted use, reproduction, modification, and distribution " +
+				"rights to the receiving party or its designees." 
+			);
+
+			const label = document.createElement("label");
+			this.agreementElement = document.createElement("input");
+			this.agreementElement.type = "checkbox"
+			label.appendChild(this.agreementElement);
+
+			const bold = document.createElement("b");
+			bold.innerText = " I agree";
+			label.appendChild(bold);
+			
+			div.appendChild(header);
+			div.appendChild(para);
+			div.appendChild(label);
+			this.formElement.appendChild(div);
 		}
 
 		// generate submit button

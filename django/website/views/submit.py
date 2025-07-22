@@ -65,6 +65,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	software.conciseDescription = data.get(FIELD_CONCISEDESCRIPTION)
 
 	## SUBMISSION
+	
 	submission = SubmissionInfo()
 
 	submitter_data: dict = data.get(FIELD_SUBMITTERNAME)
@@ -77,23 +78,22 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	submitter_person.firstName = submitter_firstname
 	submitter_person.save()
 	
-	submitter_emails = submitter_data.get(FIELD_SUBMITTEREMAIL)
-	print(submitter_emails)
-
-	# TODO handle multi
-	if isinstance(submitter_emails, list):
-		submitter_emails = submitter_emails[0]
-
-	submitter = Submitter()
-	submitter.email = submitter_emails
-	submitter.person = submitter_person
-	submitter.save()
-
 	submission.dateModified = date.today()
 	submission.modificationDescription = "Initial submission"
 	submission.metadataVersionNumber = "0.1.0"
 	submission.submissionDate = date.today()
 	submission.internalStatusNote = "Not assigned or reviewed"
+
+	# submission must exist in db before any values can be added to m2m field
+	submission.save()
+	
+	submitter_emails = submitter_data.get(FIELD_SUBMITTEREMAIL)
+	for submitter_email in submitter_emails:
+		submitter = Submitter()
+		submitter.email = submitter_email
+		submitter.person = submitter_person
+		submitter.save()
+		submission.submitter.add(submitter)
 
 	submission.save()
 	software.submissionInfo = submission
@@ -152,7 +152,8 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 		version.version_pid = version_data.get(FIELD_VERSIONPID)
 
 	# software needs to be inside database table before any values are added to
-	# any of its M2M fields
+	# any of its M2M fields or other fields with foreign keys that need to 
+	# reference it
 	software.save()
 
 	## AUTHORS

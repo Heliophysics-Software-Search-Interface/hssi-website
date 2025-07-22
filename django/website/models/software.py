@@ -19,12 +19,6 @@ class SoftwareVersion(HssiModel):
 	release_date = models.DateField(blank=True, null=True)
 	description = models.TextField(blank=True, null=True)
 	version_pid = models.URLField(blank=True, null=True)
-	software: models.ForeignKey['Software'] = models.ForeignKey(
-		'Software',
-		on_delete=models.CASCADE,
-		blank=True, null=True,
-		related_name='versions'
-	)
 	
 	# specified for intellisense, defined in Software model
 	software_current: models.Manager['Software']

@@ -114,8 +114,9 @@ export class FormGenerator {
 			body: JSON.stringify(data),
 		});
 
-		// debug to see if data was received
 		console.log("data submitted!");
+		console.log(data);
+		
 		response.then(response => {
 			if(response.redirected) window.location.href = response.url;
 		});

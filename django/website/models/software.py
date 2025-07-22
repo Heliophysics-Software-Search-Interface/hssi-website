@@ -103,7 +103,7 @@ class Software(HssiModel):
 	developmentStatus = models.ForeignKey(
 		RepoStatus,
 		on_delete=models.CASCADE,
-		null=False, blank=False,
+		null=True, blank=True,
 		related_name='softwares'
 	)
 	operatingSystem = models.ManyToManyField(

@@ -1,16 +1,19 @@
 import json
+import uuid
 
 from django.shortcuts import render, redirect, HttpResponse
 from django.http import (
 	HttpRequest, HttpResponseBadRequest, 
-	JsonResponse, HttpResponseRedirect
+	JsonResponse, HttpResponseRedirect, HttpResponseServerError,
 )
+
 from ..forms import (
 	SUBMISSION_FORM_FIELDS_1,
 	SUBMISSION_FORM_FIELDS_2,
 	SUBMISSION_FORM_FIELDS_3,
 	SUBMISSION_FORM_FIELDS_AGREEMENT,
 )
+from ..models import *
 
 def view_form(request: HttpRequest) -> HttpResponse:
 	return render(
@@ -45,8 +48,16 @@ def submit_data(request: HttpRequest) -> HttpResponse:
 	data = request.body.decode(encoding)
 	json_data = json.loads(data)
 
-	# TODO parse json_data and save to database
+	# try handle json_data and save to database
 	print("recieved form data", json_data)
-	submisison_id: str = ""
+	submisison_id = handle_submission_data(json_data)
 
-	return redirect(f"/submit/submitted?id={submisison_id}")
+	return redirect(f"/submit/submitted?id={str(submisison_id)}")
+
+def handle_submission_data(data: dict) -> uuid.UUID:
+	submission = Submission.objects.create()
+
+	# TODO handle database logic
+
+	submission.save()
+	return submission.id

@@ -65,48 +65,50 @@ export class FormGenerator {
 			i++;
 		}
 
-		if(this.hasAgreement){
-			const div = document.createElement("div");
-			
-			const header = document.createElement("div");
-			header.classList.add(labelStyle);
-			header.innerText = "Metadata Agreement ";
-
-			const req = document.createElement("span");
-			req.classList.add(requiredIndicatorStyle);
-			req.innerText = "*";
-			header.appendChild(req);
-
-			const para = document.createElement("div");
-			para.classList.add(explanationTextStyle);
-			para.innerText = ("By submitting this form, you acknowledge and " + 
-				"agree that any metadata you provide is submitted voluntarily " +
-				"and becomes part of the public domain. You waive all rights, " +
-				"claims, and interests to the submitted metadata, and grant " +
-				"unrestricted use, reproduction, modification, and distribution " +
-				"rights to the receiving party or its designees." 
-			);
-
-			const label = document.createElement("label");
-			this.agreementElement = document.createElement("input");
-			this.agreementElement.type = "checkbox"
-			label.appendChild(this.agreementElement);
-
-			const bold = document.createElement("b");
-			bold.innerText = " I agree";
-			label.appendChild(bold);
-			
-			div.appendChild(header);
-			div.appendChild(para);
-			div.appendChild(label);
-			this.formElement.appendChild(div);
-		}
+		if(this.hasAgreement) this.buildAgreement();
 
 		// generate submit button
 		this.submitElement = document.createElement("input");
 		this.submitElement.type = "submit";
 		this.submitElement.value = "Submit";
 		this.formElement.appendChild(this.submitElement);
+	}
+
+	private buildAgreement(): void{
+		const div = document.createElement("div");
+		
+		const header = document.createElement("div");
+		header.classList.add(labelStyle);
+		header.innerText = "Metadata Agreement ";
+
+		const req = document.createElement("span");
+		req.classList.add(requiredIndicatorStyle);
+		req.innerText = "*";
+		header.appendChild(req);
+
+		const para = document.createElement("div");
+		para.classList.add(explanationTextStyle);
+		para.innerText = ("By submitting this form, you acknowledge and " + 
+			"agree that any metadata you provide is submitted voluntarily " +
+			"and becomes part of the public domain. You waive all rights, " +
+			"claims, and interests to the submitted metadata, and grant " +
+			"unrestricted use, reproduction, modification, and distribution " +
+			"rights to the receiving party or its designees." 
+		);
+
+		const label = document.createElement("label");
+		this.agreementElement = document.createElement("input");
+		this.agreementElement.type = "checkbox"
+		label.appendChild(this.agreementElement);
+
+		const bold = document.createElement("b");
+		bold.innerText = " I agree";
+		label.appendChild(bold);
+		
+		div.appendChild(header);
+		div.appendChild(para);
+		div.appendChild(label);
+		this.formElement.appendChild(div);
 	}
 
 	private buildFormSection(

@@ -1,123 +1,123 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en" dir="ltr" style="overflow: inherit;">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <style>
-            div.template-body {
-                font-family: Arial, sans-serif;
-                background-color: #ECF0F1;
-                padding-bottom: 100px;
-            }
-            div.logo-header {
-                background-color: #ECF0F1;
-                padding: 20px 0 10px 0;
-                text-align: center;
-            }
-            div.email-body {
-                background-color: #FDFEFE;
-                padding: 10px 50px;
-                display: block;
-                width: 80%;
-                margin-left: auto;
-                margin-right: auto;
-            }
-            h1 {
-                font-size: 30px;
-                text-align: center;
-            }
-            div.link-footer {
-                margin: 28px auto 0 auto;
-                text-align: center;
-            }
-            div.footer-row {
-                margin: 22px 0 8px 0;
-            }
-            a.link {
-                text-decoration: none;
-            }
-            span.icon-link {
-                padding: 21px 12px 6px 12px;
-            }
-            a.link img {
-                height: 22px;
-            }
-            a.new-flag {
-                color: red;
-                font-size:75%; 
-                transform: rotate(-30deg);
-                display: inline-block;
-                font-weight: bold;
-                vertical-align: super;
-                margin-left: -20px;
-            }
-            a.upd-flag {
-                color: blue;
-                font-size:75%; 
-                transform: rotate(-30deg);
-                display: inline-block;
-                font-weight: bold;
-                vertical-align: super;
-                margin-left: -40px;
-            }
-        </style>
-        {% block head %}
-        {% endblock %}
-        <style>
-            @media screen and (max-width: 450px) {
-                div.template-body {
-                    padding-bottom: 50px !important;
-                }
-                div.email-body {
-                    width: 90% !important;
-                    padding: 10px !important;
-                }
-                h1 {
-                    font-size: 25px !important;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div class="template-body">
-            <div class="logo-header">
-                <a class="logo-link" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/" title="Home">
-                    <img class="logo" src="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/static/images/logo-image.png" alt="Logo">
-                </a>
-            </div>
-            <div class="email-body">
-                {% block email_content %}
-                {% endblock %}
-                <div class="link-footer">
-                    <div class="footer-row">
-                        <a class="link" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}" target="_blank" title="Home" style="text-decoration: none;font-size: 12px;color: white;background-color: #565858;padding: 6.4px 9.6px 4.8px 9.6px;border-radius: 4.8px;">
-                            HOME
-                        </a>
-                        &nbsp;
-                        <a class="link" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/submit" target="_blank" title="Submit a resource" style="text-decoration: none;font-size: 12px;color: white;background-color: #565858;padding: 6.4px 9.6px 4.8px 9.6px;border-radius: 4.8px;">
-                            SUBMIT A RESOURCE
-                        </a>
-                    </div>
-                    <div class="footer-row">
-                        <span class="icon-link">
-                            <a class="link icon" href="https://bsky.app/" target="_blank" title="Bluesky">
-                                <img src="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/static/images/bluesky_logo_black_email.png" alt="Visit our Bluesky account" />
-                            </a>
-                        </span>
-                        &nbsp;
-                        <span class="icon-link">
-                            <a class="link icon" href="https://www.youtube.com/" target="_blank" title="YouTube">
-                                <img src="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/static/images/youtube_dark_icon_email.png" alt="Visit our YouTube channel" />
-                            </a>
-                        </span>
-                        &nbsp;
-                        <span class="icon-link">
-                            <a class="link icon" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/news/rss" target="_blank" title="RSS Newsfeed">
-                                <img src="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/images/rss_black_icon_email.png" alt="Subscribe to news via RSS" />
-                            </a>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </body>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<style>
+			div.template-body {
+				font-family: Arial, sans-serif;
+				background-color: #ECF0F1;
+				padding-bottom: 100px;
+			}
+			div.logo-header {
+				background-color: #ECF0F1;
+				padding: 20px 0 10px 0;
+				text-align: center;
+			}
+			div.email-body {
+				background-color: #FDFEFE;
+				padding: 10px 50px;
+				display: block;
+				width: 80%;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			h1 {
+				font-size: 30px;
+				text-align: center;
+			}
+			div.link-footer {
+				margin: 28px auto 0 auto;
+				text-align: center;
+			}
+			div.footer-row {
+				margin: 22px 0 8px 0;
+			}
+			a.link {
+				text-decoration: none;
+			}
+			span.icon-link {
+				padding: 21px 12px 6px 12px;
+			}
+			a.link img {
+				height: 22px;
+			}
+			a.new-flag {
+				color: red;
+				font-size:75%; 
+				transform: rotate(-30deg);
+				display: inline-block;
+				font-weight: bold;
+				vertical-align: super;
+				margin-left: -20px;
+			}
+			a.upd-flag {
+				color: blue;
+				font-size:75%; 
+				transform: rotate(-30deg);
+				display: inline-block;
+				font-weight: bold;
+				vertical-align: super;
+				margin-left: -40px;
+			}
+		</style>
+		{% block head %}
+		{% endblock %}
+		<style>
+			@media screen and (max-width: 450px) {
+				div.template-body {
+					padding-bottom: 50px !important;
+				}
+				div.email-body {
+					width: 90% !important;
+					padding: 10px !important;
+				}
+				h1 {
+					font-size: 25px !important;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="template-body">
+			<div class="logo-header">
+				<a class="logo-link" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/" title="Home">
+					<img class="logo" src="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/static/images/logo-image.png" alt="Logo">
+				</a>
+			</div>
+			<div class="email-body">
+				{% block email_content %}
+				{% endblock %}
+				<div class="link-footer">
+					<div class="footer-row">
+						<a class="link" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}" target="_blank" title="Home" style="text-decoration: none;font-size: 12px;color: white;background-color: #565858;padding: 6.4px 9.6px 4.8px 9.6px;border-radius: 4.8px;">
+							HOME
+						</a>
+						&nbsp;
+						<a class="link" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/submit" target="_blank" title="Submit a resource" style="text-decoration: none;font-size: 12px;color: white;background-color: #565858;padding: 6.4px 9.6px 4.8px 9.6px;border-radius: 4.8px;">
+							SUBMIT A RESOURCE
+						</a>
+					</div>
+					<div class="footer-row">
+						<span class="icon-link">
+							<a class="link icon" href="https://bsky.app/" target="_blank" title="Bluesky">
+								<img src="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/static/images/bluesky_logo_black_email.png" alt="Visit our Bluesky account" />
+							</a>
+						</span>
+						&nbsp;
+						<span class="icon-link">
+							<a class="link icon" href="https://www.youtube.com/" target="_blank" title="YouTube">
+								<img src="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/static/images/youtube_dark_icon_email.png" alt="Visit our YouTube channel" />
+							</a>
+						</span>
+						&nbsp;
+						<span class="icon-link">
+							<a class="link icon" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/news/rss" target="_blank" title="RSS Newsfeed">
+								<img src="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/images/rss_black_icon_email.png" alt="Subscribe to news via RSS" />
+							</a>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>

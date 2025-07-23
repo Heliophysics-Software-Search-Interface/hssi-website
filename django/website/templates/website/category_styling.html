@@ -1,84 +1,84 @@
 <style>
-    {% for category in categories %}
-        .label.{{category.abbreviation}} {
-            background: {{category.theme_color}};
-            color: {{category.text_color}};
-        }
-        .filter-chip.{{category.abbreviation}} {
-            background: {{category.theme_color}};
-            border-color: {{category.theme_color}};
-            color: {{category.text_color}};
-        }
-        div.description-modal.category .description .cat_name .fa-circle.{{category.abbreviation}} {
-            color: {{category.theme_color}};
-        }
-    {% endfor %}
-    {% for tooltype in tool_types %}
-        .filter-chip.{{tooltype.abbreviation}} {
-            background: {{tooltype.theme_color}};
-            border-color: {{tooltype.theme_color}};
-            color: {{tooltype.text_color}};
-        }
-        .label.{{tooltype.abbreviation}} {
-            background: {{tooltype.theme_color}};
-            color: {{tooltype.text_color}};
-        }
-    {% endfor %}
-    {% for collection in collections %}
-        .filter-chip.{{collection.abbreviation}} {
-            background: {{collection.theme_color}};
-            border-color: {{collection.theme_color}};
-            color: {{collection.text_color}};
-        }
-        .label.{{collection.abbreviation}} {
-            background: {{collection.theme_color}};
-            color: {{collection.text_color}};
-        }
-        div.description-modal.collection .description .cat_name .fa-circle.{{collection.abbreviation}} {
-            color: {{collection.theme_color}};
-        }
-    {% endfor %}
+	{% for category in categories %}
+		.label.{{category.abbreviation}} {
+			background: {{category.theme_color}};
+			color: {{category.text_color}};
+		}
+		.filter-chip.{{category.abbreviation}} {
+			background: {{category.theme_color}};
+			border-color: {{category.theme_color}};
+			color: {{category.text_color}};
+		}
+		div.description-modal.category .description .cat_name .fa-circle.{{category.abbreviation}} {
+			color: {{category.theme_color}};
+		}
+	{% endfor %}
+	{% for tooltype in tool_types %}
+		.filter-chip.{{tooltype.abbreviation}} {
+			background: {{tooltype.theme_color}};
+			border-color: {{tooltype.theme_color}};
+			color: {{tooltype.text_color}};
+		}
+		.label.{{tooltype.abbreviation}} {
+			background: {{tooltype.theme_color}};
+			color: {{tooltype.text_color}};
+		}
+	{% endfor %}
+	{% for collection in collections %}
+		.filter-chip.{{collection.abbreviation}} {
+			background: {{collection.theme_color}};
+			border-color: {{collection.theme_color}};
+			color: {{collection.text_color}};
+		}
+		.label.{{collection.abbreviation}} {
+			background: {{collection.theme_color}};
+			color: {{collection.text_color}};
+		}
+		div.description-modal.collection .description .cat_name .fa-circle.{{collection.abbreviation}} {
+			color: {{collection.theme_color}};
+		}
+	{% endfor %}
 
-    @media screen and (min-width: 1024px) and (max-width: 1375px) {
-        {% for category in categories %}
-            .category_name.{{category.abbreviation}} {
-                border-bottom: 4px solid {{category.theme_color}};
-                padding-left: 0;
-            }
-        {% endfor %}
-        {% for tooltype in tool_types %}
-            .category_name.{{tooltype.abbreviation}} {
-                border-bottom: 4px solid {{tooltype.theme_color}};
-                padding-left: 0;
-            }
-        {% endfor %}
-        {% for collection in collections %}
-            .category_name.{{collection.abbreviation}} {
-                border-bottom: 4px solid {{collection.theme_color}};
-                padding-left: 0;
-            }
-        {% endfor %}
-    }
+	@media screen and (min-width: 1024px) and (max-width: 1375px) {
+		{% for category in categories %}
+			.category_name.{{category.abbreviation}} {
+				border-bottom: 4px solid {{category.theme_color}};
+				padding-left: 0;
+			}
+		{% endfor %}
+		{% for tooltype in tool_types %}
+			.category_name.{{tooltype.abbreviation}} {
+				border-bottom: 4px solid {{tooltype.theme_color}};
+				padding-left: 0;
+			}
+		{% endfor %}
+		{% for collection in collections %}
+			.category_name.{{collection.abbreviation}} {
+				border-bottom: 4px solid {{collection.theme_color}};
+				padding-left: 0;
+			}
+		{% endfor %}
+	}
 
-    @media screen and (min-width: 640px) and (max-width: 940px) {
-        {% for category in categories %}
-            .category_name.{{category.abbreviation}} {
-                border-bottom: 4px solid {{category.theme_color}};
-                padding-left: 0;
-            }
-        {% endfor %}
-        {% for tooltype in tool_types %}
-            .category_name.{{tooltype.abbreviation}} {
-                border-bottom: 4px solid {{tooltype.theme_color}};
-                padding-left: 0;
-            }
-        {% endfor %}
-        {% for collection in collections %}
-            .category_name.{{collection.abbreviation}} {
-                border-bottom: 4px solid {{collection.theme_color}};
-                padding-left: 0;
-            }
-        {% endfor %}
-    }
-    
+	@media screen and (min-width: 640px) and (max-width: 940px) {
+		{% for category in categories %}
+			.category_name.{{category.abbreviation}} {
+				border-bottom: 4px solid {{category.theme_color}};
+				padding-left: 0;
+			}
+		{% endfor %}
+		{% for tooltype in tool_types %}
+			.category_name.{{tooltype.abbreviation}} {
+				border-bottom: 4px solid {{tooltype.theme_color}};
+				padding-left: 0;
+			}
+		{% endfor %}
+		{% for collection in collections %}
+			.category_name.{{collection.abbreviation}} {
+				border-bottom: 4px solid {{collection.theme_color}};
+				padding-left: 0;
+			}
+		{% endfor %}
+	}
+	
 </style>

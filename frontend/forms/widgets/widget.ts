@@ -4,7 +4,8 @@
 
 import { 
 	ModelSubfield, requirementAttributeContainer, RequirementLevel, SimpleEvent,
-	type JSONObject
+	type JSONObject,
+	type JSONValue
 } from "../../loader";
 
 // names of values in data attributes

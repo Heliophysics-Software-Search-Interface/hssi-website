@@ -5,9 +5,9 @@
 
 {% block head %}
 
-    <link rel="stylesheet" href="{% static 'css/blog.css' %}?v=2024-10-15" />
-    <link rel="stylesheet" href="{% static 'css/media.css' %}?v=2024-10-15" />
-    
+	<link rel="stylesheet" href="{% static 'css/blog.css' %}?v=2024-10-15" />
+	<link rel="stylesheet" href="{% static 'css/media.css' %}?v=2024-10-15" />
+	
 {% endblock %}
 <!-- END HEAD -->
 
@@ -15,44 +15,44 @@
 {% block page_content %}
 
 <div class="small-6 medium-12 large-12 container">
-    <div>
-        <h1 class="news_title">
-            News Feed
-            <span class="rss_sub">
-                <a href="/news/rss">
-                    <img class="rss_img" src="{% static 'images/rss.png' %}" alt="Subscribe to news via RSS">
-                </a>
-            </span>
-        </h1>
-        <p>We will periodically make announcements on this News page and simultaneously through our RSS feed.</p>
-    </div>
-    <div class="card_container">
-        {% for news_item in object_list %}
-        <div class="card callout medium">
-            <div class="card-body">
-                <h2 class="card-title">{{ news_item.title }}</h2>
-                <p class="card-text text-muted h6">{{ news_item.author }} | {{ news_item.published_on}} </p>
-                <div class="card-desc">{{ news_item.content | safe }}</div>
-                <a href="{% url 'website:news_item' news_item.pk  %}" id="abc" class="btn-c btn btn-primary" >Read More &rarr;</a>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
+	<div>
+		<h1 class="news_title">
+			News Feed
+			<span class="rss_sub">
+				<a href="/news/rss">
+					<img class="rss_img" src="{% static 'images/rss.png' %}" alt="Subscribe to news via RSS">
+				</a>
+			</span>
+		</h1>
+		<p>We will periodically make announcements on this News page and simultaneously through our RSS feed.</p>
+	</div>
+	<div class="card_container">
+		{% for news_item in object_list %}
+		<div class="card callout medium">
+			<div class="card-body">
+				<h2 class="card-title">{{ news_item.title }}</h2>
+				<p class="card-text text-muted h6">{{ news_item.author }} | {{ news_item.published_on}} </p>
+				<div class="card-desc">{{ news_item.content | safe }}</div>
+				<a href="{% url 'website:news_item' news_item.pk  %}" id="abc" class="btn-c btn btn-primary" >Read More &rarr;</a>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
 </div>
 
 {% endblock %} 
 
 {% block scripts %}
 <script>
-    
-    $('.card-body .card-desc').each(function() {
-        var entryTitle = $(this).text().trim();
+	
+	$('.card-body .card-desc').each(function() {
+		var entryTitle = $(this).text().trim();
 
-        if (entryTitle.length > 250) {
-            var chopCharacter = entryTitle.substring(0, 250) + "…";
-            $(this).text(chopCharacter);
-        } 
-    });
-    
+		if (entryTitle.length > 250) {
+			var chopCharacter = entryTitle.substring(0, 250) + "…";
+			$(this).text(chopCharacter);
+		} 
+	});
+	
 </script>
 {% endblock %}

@@ -14,24 +14,24 @@
 {% block page_content %}
 
 <div class="container">
-    <div>
-        <h1 class="page_title"> Share Your Feedback! </h1>
-    </div>
-    <div class="feedback_container">
-        <p class="feedback-description">Please submit any questions that are not answered sufficiently on the <a href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/FAQ">FAQ page</a>.</p>
-        <ul> You can:
-            <li>Suggest new tools that you would like us to “recruit”.</li>
-            <li>Suggest new categories that we should include, or adjustments to the current categories.</li>
-            <li>Suggest new features for the website overall.</li>
-        </ul>
-        <p>Also, we are asking the broader community to help us prioritize which tools to develop into new web-accessible applications.<br/> Please vote for the tools which you would be most interested in accessing from a web interface on the <a href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/vote">Vote page</a>.</p>
-        <form id="feedback_form" method="POST" action="{% url 'website:feedback' %}">
-            {% csrf_token %} {{ form.as_p }}
-            <div class="feedback_button">
-                <input id="feedback_submit" type="submit" class="hollow button" value="Submit"/>
-            </div>
-        </form>
-    </div>
+	<div>
+		<h1 class="page_title"> Share Your Feedback! </h1>
+	</div>
+	<div class="feedback_container">
+		<p class="feedback-description">Please submit any questions that are not answered sufficiently on the <a href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/FAQ">FAQ page</a>.</p>
+		<ul> You can:
+			<li>Suggest new tools that you would like us to “recruit”.</li>
+			<li>Suggest new categories that we should include, or adjustments to the current categories.</li>
+			<li>Suggest new features for the website overall.</li>
+		</ul>
+		<p>Also, we are asking the broader community to help us prioritize which tools to develop into new web-accessible applications.<br/> Please vote for the tools which you would be most interested in accessing from a web interface on the <a href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/vote">Vote page</a>.</p>
+		<form id="feedback_form" method="POST" action="{% url 'website:feedback' %}">
+			{% csrf_token %} {{ form.as_p }}
+			<div class="feedback_button">
+				<input id="feedback_submit" type="submit" class="hollow button" value="Submit"/>
+			</div>
+		</form>
+	</div>
 </div>
 
 {% endblock %}

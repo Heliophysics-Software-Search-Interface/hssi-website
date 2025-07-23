@@ -188,7 +188,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.newItemButton.parentElement.appendChild(hiddenText);
 	}
 
-    /// Overriden funcitonality ------------------------------------------------
+	/// Overriden funcitonality ------------------------------------------------
 
 	public override buildInterface(
 		targetDiv: HTMLDivElement, 

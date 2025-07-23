@@ -536,7 +536,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		},
 		multi=True,
 	),	
-    # Contributors
+	# Contributors
 	ModelSubfield.define(
 		name=FIELD_CONTRIBUTOR,
 		type=SUBMISSION_FORM_CONTRIBUTOR.type_name,
@@ -675,7 +675,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_KEYWORDS,
 			PROP_TT_BEST: TTBEST_KEYWORDS,
 			PROP_WIDGET_PROPS: {
-                WPROP_DROPDOWNBUTTON: True,
+				WPROP_DROPDOWNBUTTON: True,
 				WPROP_TARGETMODEL: Keyword.__name__,
 				WPROP_ALLOWNEWENTRIES: True,
 			},
@@ -692,7 +692,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_SOFTWAREFUNCTIONALITY,
 			PROP_TT_BEST: TTBEST_SOFTWAREFUNCTIONALITY,
 			PROP_WIDGET_PROPS: {
-                WPROP_DROPDOWNBUTTON: True,
+				WPROP_DROPDOWNBUTTON: True,
 				WPROP_TARGETMODEL: FunctionCategory.__name__,
 			},
 		},
@@ -788,7 +788,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_RELATEDREGION,
 			PROP_TT_BEST: TTBEST_RELATEDREGION,
 			PROP_WIDGET_PROPS: {
-                WPROP_DROPDOWNBUTTON: True,
+				WPROP_DROPDOWNBUTTON: True,
 				WPROP_TARGETMODEL: Region.__name__,
 			},
 		},

@@ -1,111 +1,111 @@
 .form-control {
-  margin-bottom: 0;
-  border-color: #bfc2da;
-  border-radius: 23px;
+	margin-bottom: 0;
+	border-color: #bfc2da;
+	border-radius: 23px;
 }
 
 .form-control:hover {
-  margin-bottom: 0;
-  border-color: #10beea;
-  border-radius: 23px;
+	margin-bottom: 0;
+	border-color: #10beea;
+	border-radius: 23px;
 }
 
 .container {
-  margin: 0 auto;
-  padding: 12px;
-  margin-top: 10px;
-  margin-bottom: 11px;
-  border-radius: 4px;
-  width: 80%;
-  background-color: #ececec;
+	margin: 0 auto;
+	padding: 12px;
+	margin-top: 10px;
+	margin-bottom: 11px;
+	border-radius: 4px;
+	width: 80%;
+	background-color: #ececec;
 }
 
 .submission-text {
-  font-size: 16px;
-  padding-top: 10px;
+	font-size: 16px;
+	padding-top: 10px;
 }
 
 .submission_form input, textarea{
-  margin-bottom: 0;
+	margin-bottom: 0;
 }
 
 .submission_form label {
-  font-size: 16px;
-  font-weight: 500;
+	font-size: 16px;
+	font-weight: 500;
 }
 
 .checkbox label {
-  font-weight: 400;
-  font-size: 16px;
+	font-weight: 400;
+	font-size: 16px;
 }
 
 .asteriskField {
-  color: red;
+	color: red;
 }
 
 .help-block {
-  font-size: 12px;
+	font-size: 12px;
 }
 
 .invalid-feedback 
 {
-  color: red;
+	color: red;
 }
 
 .submission_title{
-  text-align: center;
-  font-size: 30px;
-  color: red;
+	text-align: center;
+	font-size: 30px;
+	color: red;
 }
 
 .submission_detail{
-  background-color: #f1eded;
-  max-width: 50%;
-  margin: 0 auto;
-  margin-bottom: 100px;
-  padding: 10px 25px;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 7px;
-  text-align: center;
+	background-color: #f1eded;
+	max-width: 50%;
+	margin: 0 auto;
+	margin-bottom: 100px;
+	padding: 10px 25px;
+	font-size: 14px;
+	font-weight: 500;
+	border-radius: 7px;
+	text-align: center;
 }
 
 .subcategory {
-  margin-left: 3em;
+	margin-left: 3em;
 }
 
 .button.save {
-  color: #ec6708;
-  border: 1px solid #ec6708;
+	color: #ec6708;
+	border: 1px solid #ec6708;
 }
 
 .button.cancel {
-  color: #767676;
-  border: 1px solid #767676;
+	color: #767676;
+	border: 1px solid #767676;
 }
 
 #div_id_private_code_or_data_link {
-  display: none;
+	display: none;
 }
 
 span[id^="error"][id$="subscriber_email"]{
-    color:red;
+		color:red;
 }
 
 @media screen and (max-width: 1024px) {
-  .container {
-    width: 95%;
-  }
+	.container {
+		width: 95%;
+	}
 }
 
 /* max-width 40em is the show-for-small-only/hide-for-small-only breakpoint */
 @media screen and (max-width: 40em) {
-  .submission-text,
-  .submission_form label {
-    font-size: 11pt;
-  }
-  .container {
-    width: 100%;
-    margin: 0 auto;
-  }
+	.submission-text,
+	.submission_form label {
+		font-size: 11pt;
+	}
+	.container {
+		width: 100%;
+		margin: 0 auto;
+	}
 }

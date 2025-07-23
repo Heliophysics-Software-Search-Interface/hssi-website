@@ -39,11 +39,11 @@ div.white-background {
 	margin-top: -1px;
 	width: 100%;
 }
-  
+	
 .logo-image img {
 	height: 80px;
 }
-  
+	
 .logo-image {
 	margin: 1rem;
 }
@@ -65,7 +65,7 @@ div.white-background {
 .footer-section {
 	background-color: #000000;
 }
-  
+	
 footer {
 	border-top: 9px solid #9a2333;
 	min-height: 30px;
@@ -75,7 +75,7 @@ footer {
 	padding: 1.5rem 1.5rem 1.5rem 6rem;
 	font-size: 14px;
 }
-  
+	
 .navbar-footer a{
 	color: white;
 	font-weight: 500;
@@ -90,7 +90,7 @@ footer {
 	margin-right: -12px;
 	padding-left: 12px;
 }
-  
+	
 .menu.align-right li {
 	min-width: 205px;
 }

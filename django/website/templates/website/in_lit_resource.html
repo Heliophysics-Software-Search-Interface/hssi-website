@@ -5,63 +5,63 @@
 <a class="anchor-set anchor-name" name="{{resource.id}}"></a>
 
 <div class="callout medium resource-info in-lit collapsed" data-resource-id="{{resource.id}}">
-    {# header / top section #}
-    <div class="resource-header-row">
-        <div>
-            <div class="resource_name">
-                {{resource.name}}
-            </div>
-            <p class="resource_info">
-            {{resource.credits|markdownify}}
-            {% for category in resource.categories.all %}
-                {% if not category.has_parents %}
-                <label class="label {{category.abbreviation}}">
-                    <input class="label {{category.abbreviation}} resource_info_label" type="checkbox" name="category_checkbox" value="{{category.id}}"
-                    {% if category.id in selected_category_ids %} checked {% endif %} >
-                    {{category.abbreviation}}
-                </label>
-                {% endif %}
-            {% endfor %}
-            </p>
-        </div>
-    </div>
-    {# bottom section #}
-    <div class="grid-x">
-        {# description #}
-        <div class="small-8 medium-8 large-8">
-            <div class="resource_description">
-            {{resource.description|markdownify}}
-            </div>
-            <div class="resource-details hide-for-small-only">
-                <p class="resource_code">
-                    Code Language(s): {{resource.code_languages}}
-                </p>
-            </div>
-        </div>
-        <div class="text-right small-4 medium-4 large-4 in-lit-buttons hide-for-small-only">
-            {% if resource.download_link %}
-                <a class="hollow button download_btn" id="{{resource.id}}_download_link_inlit" href="{{resource.download_link}}" data-tooltip tabindex="1" title="View and download the source code to run the tool locally" data-position="bottom" data-alignment="right">Code</a>
-            {% endif %}
-            {% if resource.download_data_link %}
-                <a class="hollow button download_data_btn" id="{{resource.id}}_download_data_link_inlit" href="{{resource.download_data_link}}" data-tooltip tabindex="1" title="View and download output or input files for this resource" data-position="bottom" data-alignment="right">Data</a>
-            {% endif %}
-            {% if resource.launch_link %}
-                <a class="hollow button launch_btn" id="{{resource.id}}_launch_link_inlit" href="{{resource.launch_link}}" data-tooltip tabindex="1" title="Open the tool's web application" data-position="bottom" data-alignment="right">WebApp</a>
-            {% endif %}
-        </div>
-    </div>
+	{# header / top section #}
+	<div class="resource-header-row">
+		<div>
+			<div class="resource_name">
+				{{resource.name}}
+			</div>
+			<p class="resource_info">
+			{{resource.credits|markdownify}}
+			{% for category in resource.categories.all %}
+				{% if not category.has_parents %}
+				<label class="label {{category.abbreviation}}">
+					<input class="label {{category.abbreviation}} resource_info_label" type="checkbox" name="category_checkbox" value="{{category.id}}"
+					{% if category.id in selected_category_ids %} checked {% endif %} >
+					{{category.abbreviation}}
+				</label>
+				{% endif %}
+			{% endfor %}
+			</p>
+		</div>
+	</div>
+	{# bottom section #}
+	<div class="grid-x">
+		{# description #}
+		<div class="small-8 medium-8 large-8">
+			<div class="resource_description">
+			{{resource.description|markdownify}}
+			</div>
+			<div class="resource-details hide-for-small-only">
+				<p class="resource_code">
+					Code Language(s): {{resource.code_languages}}
+				</p>
+			</div>
+		</div>
+		<div class="text-right small-4 medium-4 large-4 in-lit-buttons hide-for-small-only">
+			{% if resource.download_link %}
+				<a class="hollow button download_btn" id="{{resource.id}}_download_link_inlit" href="{{resource.download_link}}" data-tooltip tabindex="1" title="View and download the source code to run the tool locally" data-position="bottom" data-alignment="right">Code</a>
+			{% endif %}
+			{% if resource.download_data_link %}
+				<a class="hollow button download_data_btn" id="{{resource.id}}_download_data_link_inlit" href="{{resource.download_data_link}}" data-tooltip tabindex="1" title="View and download output or input files for this resource" data-position="bottom" data-alignment="right">Data</a>
+			{% endif %}
+			{% if resource.launch_link %}
+				<a class="hollow button launch_btn" id="{{resource.id}}_launch_link_inlit" href="{{resource.launch_link}}" data-tooltip tabindex="1" title="Open the tool's web application" data-position="bottom" data-alignment="right">WebApp</a>
+			{% endif %}
+		</div>
+	</div>
 
-    <div class="arrow">
-        <i id="icon" class="fa fa-angle-down rotate"></i>
-    </div>
+	<div class="arrow">
+		<i id="icon" class="fa fa-angle-down rotate"></i>
+	</div>
 </div>
-    
+	
 <div class="child-category-list" data-resource-id="{{resource.id}}">
-    {% for category in resource.categories.all %}
-        {% if category.has_parents %}
-            {% for parent in category.parents.all %}
-                <div data-category="{{category.id}}" data-parent="{{parent.id}}"></div>
-            {% endfor %}
-        {% endif %}
-    {% endfor %}
+	{% for category in resource.categories.all %}
+		{% if category.has_parents %}
+			{% for parent in category.parents.all %}
+				<div data-category="{{category.id}}" data-parent="{{parent.id}}"></div>
+			{% endfor %}
+		{% endif %}
+	{% endfor %}
 </div>

@@ -1,12 +1,8 @@
 import { 
 	typeAttribute, ModelFieldStructure, ModelSubfield, widgetDataAttribute,
-	RequirementLevel, ConfirmDialogue, 
+	RequirementLevel, ConfirmDialogue, fetchTimeout, labelStyle,
+	requiredIndicatorStyle, explanationTextStyle, Spinner,
 	type SubmissionFormData, type JSONValue, type JSONObject,
-	fetchTimeout,
-	labelStyle,
-	requiredIndicatorStyle,
-	explanationTextStyle,
-	PopupDialogue,
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -161,6 +157,8 @@ export class FormGenerator {
 			return;
 		}
 
+		Spinner.showSpinner();
+
 		// submit the data from the form fields as a JSON string
 		const data = this.getJsonData();
 		const response = fetchTimeout(this.formElement.action, {
@@ -176,8 +174,11 @@ export class FormGenerator {
 		console.log(data);
 		
 		response.then(response => {
+			Spinner.hideSpinner();
 			if(response.redirected) window.location.href = response.url;
 		});
+		response.catch(() => Spinner.hideSpinner());
+		response.finally(() => Spinner.hideSpinner());
 	}
 
 	private validateFieldRequirements(): boolean {
@@ -220,27 +221,6 @@ export class FormGenerator {
 		return token.value;
 	}
 
-	private getJsonData(): JSONValue{
-
-		// get all subfields into a linear array
-		const subfields: ModelSubfield[] = [];
-		let outerFields: ModelSubfield[][] = this.fields as any;
-		if(outerFields.length > 0 && !(outerFields[0] instanceof Array)) {
-			outerFields = [outerFields] as any;
-		}
-		for(const outerField of outerFields){
-			for(const innerField of outerField) subfields.push(innerField);
-		}
-
-		// append all field data to an array
-		const data: JSONObject = {};
-		for(const field of subfields){
-			data[field.name] = field.getFieldData();
-		}
-		
-		return data;
-	}
-
 	private getRootFields(): ModelSubfield[] {
 		if(this.fields.length <= 0) return [];
 		const fields: ModelSubfield[] = [];
@@ -280,6 +260,27 @@ export class FormGenerator {
 		for(const section of this.fieldSections) {
 			section.removeAttribute("open");
 		}
+	}
+
+	public getJsonData(): JSONValue{
+
+		// get all subfields into a linear array
+		const subfields: ModelSubfield[] = [];
+		let outerFields: ModelSubfield[][] = this.fields as any;
+		if(outerFields.length > 0 && !(outerFields[0] instanceof Array)) {
+			outerFields = [outerFields] as any;
+		}
+		for(const outerField of outerFields){
+			for(const innerField of outerField) subfields.push(innerField);
+		}
+
+		// append all field data to an array
+		const data: JSONObject = {};
+		for(const field of subfields){
+			data[field.name] = field.getFieldData();
+		}
+		
+		return data;
 	}
 
 	private static instance: FormGenerator = null;

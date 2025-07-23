@@ -7,28 +7,28 @@
 <style>
 
 circle.inputoutput {
-  fill:#D7DBDD;
-  stroke: #fff;
-  stroke-width: 1.5px;
+	fill:#D7DBDD;
+	stroke: #fff;
+	stroke-width: 1.5px;
 }
 
 circle.main {
-  fill:#85C1E9;
-  stroke: #fff;
-  stroke-width: 1.5px;
-  opacity: 0;
+	fill:#85C1E9;
+	stroke: #fff;
+	stroke-width: 1.5px;
+	opacity: 0;
 }
 .parent {
-  width:500px;
-  height:500px;
-  position: relative;
+	width:500px;
+	height:500px;
+	position: relative;
 }
 .tooltip{
-  width:300px;
-  height:100px;
-  position:absolute;
+	width:300px;
+	height:100px;
+	position:absolute;
 /*  left:800px;
-  top:500px;*/
+	top:500px;*/
 }
 
 </style>
@@ -42,357 +42,357 @@ circle.main {
 
 // set the dimensions and margins of the graph
 const margin = {top: 10, right: 30, bottom: 30, left: 40},
-  width = 400 - margin.left - margin.right,
-  height = 400 - margin.top - margin.bottom;
+	width = 400 - margin.left - margin.right,
+	height = 400 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
 const svg = d3.select("#my_dataviz")
 .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
 .append("g")
-  .attr("transform",
-        `translate(${margin.left}, ${margin.top})`);
+	.attr("transform",
+				`translate(${margin.left}, ${margin.top})`);
 
 function filterJson(json, value) {
-  var index;
-  for (var i in json["nodes"]) {
-    if (json["nodes"][i]["name"] == value) {
-        index = json["nodes"][i]["id"];
-    }
-  }
-  // console.log(index)
-  var link_result = [];
-  var c = 0;
-  var c2 = 0;
-  var c3 = 0;
-  var inputs = [];
-  var outputs = [];
-  for (var i in json["links"]) {
-    if (json["links"][i]["source"] == index || json["links"][i]["target"] == index) {
-      var obj = {};
-      obj["source"] = json["links"][i]["source"];
-      obj["target"] = json["links"][i]["target"];
-      link_result[c] = obj;
-      c++;
-    }
-    if (json["links"][i]["source"] == index){
-      outputs[c2] = json["links"][i]["target"];
-      c2++;
-    }
-    if (json["links"][i]["target"] == index){
-      inputs[c3] = json["links"][i]["source"];
-      c3++;
-    }
-  }
+	var index;
+	for (var i in json["nodes"]) {
+		if (json["nodes"][i]["name"] == value) {
+				index = json["nodes"][i]["id"];
+		}
+	}
+	// console.log(index)
+	var link_result = [];
+	var c = 0;
+	var c2 = 0;
+	var c3 = 0;
+	var inputs = [];
+	var outputs = [];
+	for (var i in json["links"]) {
+		if (json["links"][i]["source"] == index || json["links"][i]["target"] == index) {
+			var obj = {};
+			obj["source"] = json["links"][i]["source"];
+			obj["target"] = json["links"][i]["target"];
+			link_result[c] = obj;
+			c++;
+		}
+		if (json["links"][i]["source"] == index){
+			outputs[c2] = json["links"][i]["target"];
+			c2++;
+		}
+		if (json["links"][i]["target"] == index){
+			inputs[c3] = json["links"][i]["source"];
+			c3++;
+		}
+	}
 
-  var node_result = [];
-  c = 0;
-  for (var i in json["nodes"]) {
-    for (var j in link_result){
-      if (json["nodes"][i]["id"] == link_result[j]["source"] || json["nodes"][i]["id"] == link_result[j]["target"]) {
-        node_result[c] = json["nodes"][i];
-        c++;
-      }
-    }
-  }
-  node_result = node_result.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
-  return [node_result, link_result, inputs, outputs, index];
+	var node_result = [];
+	c = 0;
+	for (var i in json["nodes"]) {
+		for (var j in link_result){
+			if (json["nodes"][i]["id"] == link_result[j]["source"] || json["nodes"][i]["id"] == link_result[j]["target"]) {
+				node_result[c] = json["nodes"][i];
+				c++;
+			}
+		}
+	}
+	node_result = node_result.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i);
+	return [node_result, link_result, inputs, outputs, index];
 }
 
 function onchange(event, sv) {
-  svg.selectAll("*").remove();
-  d3.selectAll('.tooltip').style('opacity', .0);
-  var div = d3.select('#my_dataviz').append('div')
-    .attr('class', 'tooltip')
-    .attr("z-index", 2)
-    .style('opacity', 0);
+	svg.selectAll("*").remove();
+	d3.selectAll('.tooltip').style('opacity', .0);
+	var div = d3.select('#my_dataviz').append('div')
+		.attr('class', 'tooltip')
+		.attr("z-index", 2)
+		.style('opacity', 0);
 
-  if (typeof sv == 'undefined'){
-    selectValue = d3.select('select').property('value');
+	if (typeof sv == 'undefined'){
+		selectValue = d3.select('select').property('value');
 
-  }
-  else{
-    selectValue = sv;
-  }
-  create_graph(DATA, selectValue, div);
+	}
+	else{
+		selectValue = sv;
+	}
+	create_graph(DATA, selectValue, div);
 
 }
 
 function create_graph(data, value, div){
-  // console.log(selectValue)
-  var filtered_data = filterJson(data, selectValue)
-  var filtered_nodes = filtered_data[0]
-  var filtered_links = filtered_data[1]
-  var inputs = filtered_data[2]
-  var outputs = filtered_data[3]
-  var main_index = filtered_data[4]
+	// console.log(selectValue)
+	var filtered_data = filterJson(data, selectValue)
+	var filtered_nodes = filtered_data[0]
+	var filtered_links = filtered_data[1]
+	var inputs = filtered_data[2]
+	var outputs = filtered_data[3]
+	var main_index = filtered_data[4]
 
-  svg.append("svg:defs").selectAll("marker")
-    .data(["end"]) // Different link/path types can be defined here
-    .enter().append("svg:marker") // This section adds in the arrows
-    .attr("id", String)
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", function(d){
-      return 22
-    })
-    .attr("refY", 0)
-    .attr("markerWidth", 15)
-    .attr("markerHeight", 15)
-    .attr("orient", "auto")
-    .append("svg:path")
-    // .style("fill", "#000000")
-    // .style("stroke-width", "2px")
-    .attr("d", "M0,-5L10,0L0,5");
+	svg.append("svg:defs").selectAll("marker")
+		.data(["end"]) // Different link/path types can be defined here
+		.enter().append("svg:marker") // This section adds in the arrows
+		.attr("id", String)
+		.attr("viewBox", "0 -5 10 10")
+		.attr("refX", function(d){
+			return 22
+		})
+		.attr("refY", 0)
+		.attr("markerWidth", 15)
+		.attr("markerHeight", 15)
+		.attr("orient", "auto")
+		.append("svg:path")
+		// .style("fill", "#000000")
+		// .style("stroke-width", "2px")
+		.attr("d", "M0,-5L10,0L0,5");
 
-  // Initialize the links
-  var link = svg.append("g")
-    .selectAll("path")
-    .data(filtered_links)
-    .enter()
-    .append("path")
-      .style("stroke", "#000000")
-      .style("fill", "none")
-      .attr("marker-end",  "url(#end)")
-    .on('mouseover', function(d, i) {
-      d3.selectAll("path").style("stroke", "#000000")
-      // d3.selectAll("path").style("stroke-width", "2px")
-      d3.select(this).style("stroke", "#008000")
-      // d3.select(this).style("stroke-width", "5px")
-      const[x, y] = d3.pointer(event);
-      var code = "None"
-      for (var j in data["links"]){
-        if (data["links"][j]["source"] == i["source"]["id"] && data["links"][j]["target"] == i["target"]["id"]){
-          code = data["links"][j]["code"]
-          }
-        }
-      div.transition()
-          .duration(200)
-          .style('opacity', .9);
-      div.html('<h3>' + "Connection Codes (" + i["source"]["name"] + " to " + i["target"]["name"] + ')</h3>' + '<p>' + code + '</p>')
-        .style('left', (400) + 'px')
-        .style('top', (200) + 'px');
-      });
+	// Initialize the links
+	var link = svg.append("g")
+		.selectAll("path")
+		.data(filtered_links)
+		.enter()
+		.append("path")
+			.style("stroke", "#000000")
+			.style("fill", "none")
+			.attr("marker-end",  "url(#end)")
+		.on('mouseover', function(d, i) {
+			d3.selectAll("path").style("stroke", "#000000")
+			// d3.selectAll("path").style("stroke-width", "2px")
+			d3.select(this).style("stroke", "#008000")
+			// d3.select(this).style("stroke-width", "5px")
+			const[x, y] = d3.pointer(event);
+			var code = "None"
+			for (var j in data["links"]){
+				if (data["links"][j]["source"] == i["source"]["id"] && data["links"][j]["target"] == i["target"]["id"]){
+					code = data["links"][j]["code"]
+					}
+				}
+			div.transition()
+					.duration(200)
+					.style('opacity', .9);
+			div.html('<h3>' + "Connection Codes (" + i["source"]["name"] + " to " + i["target"]["name"] + ')</h3>' + '<p>' + code + '</p>')
+				.style('left', (400) + 'px')
+				.style('top', (200) + 'px');
+			});
 
-  var input_label =  svg.append("text")
-     .attr("y", 100)//magic number here
-     .attr("x", 20)
-     .attr('text-anchor', 'middle')
-     // .attr("class", "myLabel")//easy to style with CSS
-     .text("Inputs");
+	var input_label =  svg.append("text")
+		 .attr("y", 100)//magic number here
+		 .attr("x", 20)
+		 .attr('text-anchor', 'middle')
+		 // .attr("class", "myLabel")//easy to style with CSS
+		 .text("Inputs");
 
-  var main_label =  svg.append("text")
-     .attr("y", 200)//magic number here
-     .attr("x", 20)
-     .attr('text-anchor', 'middle')
-     // .attr("class", "myLabel")//easy to style with CSS
-     .text("Main");
+	var main_label =  svg.append("text")
+		 .attr("y", 200)//magic number here
+		 .attr("x", 20)
+		 .attr('text-anchor', 'middle')
+		 // .attr("class", "myLabel")//easy to style with CSS
+		 .text("Main");
 
-  var output_label =  svg.append("text")
-     .attr("y", 300)//magic number here
-     .attr("x", 20)
-     .attr('text-anchor', 'middle')
-     // .attr("class", "myLabel")//easy to style with CSS
-     .text("Outputs");
+	var output_label =  svg.append("text")
+		 .attr("y", 300)//magic number here
+		 .attr("x", 20)
+		 .attr('text-anchor', 'middle')
+		 // .attr("class", "myLabel")//easy to style with CSS
+		 .text("Outputs");
 
  var circle = svg.selectAll("circle")
-    .data(filtered_nodes)
-    .enter()
-    .append("g")
+		.data(filtered_nodes)
+		.enter()
+		.append("g")
 
-  circle.append("circle")
-    .attr("r", 20)
-    .attr("class", function(d){
-      if (d["id"] == main_index){
-        return "main";
-      }
-      else{
-        return "inputoutput";
-      }
+	circle.append("circle")
+		.attr("r", 20)
+		.attr("class", function(d){
+			if (d["id"] == main_index){
+				return "main";
+			}
+			else{
+				return "inputoutput";
+			}
 
-     })
-    .on("click", function(d, i) { onchange(0,i["name"]) })
-    .on('mouseover', function(d) {d3.select(this).style("cursor", "pointer"); });
-  circle.append("text").text(function(d){
-      if (d["id"] != main_index){
-        return d["name"]
-      }
-      else {
-        console.log("Selected tool " + d["name"])
-      }
-    })
-    .attr('dx', 0)
-    .attr("dy", 0)
-    .style("font-weight", "bold")
-    .style("text-anchor", "middle")
-    .on("click", function(d, i) { onchange(0,i["name"]) })
-    .on("mouseout", function(d) {d3.select(this).style("cursor", "default"); })
+		 })
+		.on("click", function(d, i) { onchange(0,i["name"]) })
+		.on('mouseover', function(d) {d3.select(this).style("cursor", "pointer"); });
+	circle.append("text").text(function(d){
+			if (d["id"] != main_index){
+				return d["name"]
+			}
+			else {
+				console.log("Selected tool " + d["name"])
+			}
+		})
+		.attr('dx', 0)
+		.attr("dy", 0)
+		.style("font-weight", "bold")
+		.style("text-anchor", "middle")
+		.on("click", function(d, i) { onchange(0,i["name"]) })
+		.on("mouseout", function(d) {d3.select(this).style("cursor", "default"); })
 
 var node = svg.selectAll("foreignObject")
-    .data(filtered_nodes)
-    .enter()
-    .append("g");
+		.data(filtered_nodes)
+		.enter()
+		.append("g");
 node.append("foreignObject")
-    // .attr("height","416px")
-    // .attr("width", "721px")
-    .style("opacity", function(d){
-      if (d["id"] != main_index){
-        return 0;
-      }
-      else {
-        return 1;
-      }
-    })
-    .attr("width", function(d){
-      if (d["id"] != main_index){
-        return "0px";
-      }
-      else {
-        return "100px";
-      }
-    })
-    .attr("height", function(d){
-      if (d["id"] != main_index){
-        return "0px";
-      }
-      else {
-        return "100px";
-      }
-    })
-    .append("xhtml:div")
-    // .attr('xmlns','http://www.w3.org/1999/xhtml')
-    // .attr('class','test')
-    .html(function(d){
-      return "Tile " + d["name"]
-    })
-    // .on("click", function(d, i) { onchange(0,i["name"]) })
+		// .attr("height","416px")
+		// .attr("width", "721px")
+		.style("opacity", function(d){
+			if (d["id"] != main_index){
+				return 0;
+			}
+			else {
+				return 1;
+			}
+		})
+		.attr("width", function(d){
+			if (d["id"] != main_index){
+				return "0px";
+			}
+			else {
+				return "100px";
+			}
+		})
+		.attr("height", function(d){
+			if (d["id"] != main_index){
+				return "0px";
+			}
+			else {
+				return "100px";
+			}
+		})
+		.append("xhtml:div")
+		// .attr('xmlns','http://www.w3.org/1999/xhtml')
+		// .attr('class','test')
+		.html(function(d){
+			return "Tile " + d["name"]
+		})
+		// .on("click", function(d, i) { onchange(0,i["name"]) })
 
-  const simulation = d3.forceSimulation(filtered_nodes)                 // Force algorithm is applied to data.nodes
-    .force("link", d3.forceLink()                               // This force provides links between nodes
-      .id(function(d) { return d.id; })                     // This provide  the id of a node
-      .links(filtered_links)                                    // and this the list of links
-    )
-    .force("charge", d3.forceManyBody().strength(-500*Math.max(inputs.length, outputs.length))) // This adds repulsion between nodes.
-    .force("xPositon", d3.forceX(width / 2))     // This force attracts nodes to the center of the svg area
-    .force("yPosition", d3.forceY(function(d){
-      if (inputs.indexOf(d["id"]) != -1){
-        return 100
-      } else if (outputs.indexOf(d["id"]) != -1){
-        return 300
-      } else if (d["id"] == main_index){
-        return 200
-      } else{
-        return 400
-      }
+	const simulation = d3.forceSimulation(filtered_nodes)                 // Force algorithm is applied to data.nodes
+		.force("link", d3.forceLink()                               // This force provides links between nodes
+			.id(function(d) { return d.id; })                     // This provide  the id of a node
+			.links(filtered_links)                                    // and this the list of links
+		)
+		.force("charge", d3.forceManyBody().strength(-500*Math.max(inputs.length, outputs.length))) // This adds repulsion between nodes.
+		.force("xPositon", d3.forceX(width / 2))     // This force attracts nodes to the center of the svg area
+		.force("yPosition", d3.forceY(function(d){
+			if (inputs.indexOf(d["id"]) != -1){
+				return 100
+			} else if (outputs.indexOf(d["id"]) != -1){
+				return 300
+			} else if (d["id"] == main_index){
+				return 200
+			} else{
+				return 400
+			}
 
 
-    }).strength(5))
-    .stop();
-    simulation.tick(300);
-    // node.attr("cx", function(d) { return d.x; }).attr("cy", function(d) { return d.y; })
-    node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-    circle.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-    link.attr("d", function(d) {
-      var dx = d.target.x - d.source.x,
-        dy = d.target.y - d.source.y,
-        dr = 0;
-      return "M" +
-        d.source.x + "," +
-        d.source.y + "A" +
-        dr + "," + dr + " 0 0,1 " +
-        d.target.x + "," +
-        d.target.y;
-    });
+		}).strength(5))
+		.stop();
+		simulation.tick(300);
+		// node.attr("cx", function(d) { return d.x; }).attr("cy", function(d) { return d.y; })
+		node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+		circle.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+		link.attr("d", function(d) {
+			var dx = d.target.x - d.source.x,
+				dy = d.target.y - d.source.y,
+				dr = 0;
+			return "M" +
+				d.source.x + "," +
+				d.source.y + "A" +
+				dr + "," + dr + " 0 0,1 " +
+				d.target.x + "," +
+				d.target.y;
+		});
 
 }
 
 var demo_data = {
-  "nodes": [
-    {
-      "id": 1,
-      "name": "A",
-      "tile": "tile.png"
-    },
-    {
-      "id": 2,
-      "name": "B",
-      "tile": "tile.png"
-    },
-    {
-      "id": 3,
-      "name": "C",
-      "tile": "tile.png"
-    },
-    {
-      "id": 4,
-      "name": "D",
-      "tile": "tile.png"
-    },
-    {
-      "id": 5,
-      "name": "E",
-      "tile": "tile.png"
-    },
-    {
-      "id": 6,
-      "name": "F",
-      "tile": "tile.png"
-    },
-        {
-      "id": 7,
-      "name": "G",
-      "tile": "tile.png"
-    },
-    {
-      "id": 8,
-      "name": "H",
-      "tile": "tile.png"
-    },
-    {
-      "id": 9,
-      "name": "I",
-      "tile": "tile.png"
-    }
+	"nodes": [
+		{
+			"id": 1,
+			"name": "A",
+			"tile": "tile.png"
+		},
+		{
+			"id": 2,
+			"name": "B",
+			"tile": "tile.png"
+		},
+		{
+			"id": 3,
+			"name": "C",
+			"tile": "tile.png"
+		},
+		{
+			"id": 4,
+			"name": "D",
+			"tile": "tile.png"
+		},
+		{
+			"id": 5,
+			"name": "E",
+			"tile": "tile.png"
+		},
+		{
+			"id": 6,
+			"name": "F",
+			"tile": "tile.png"
+		},
+				{
+			"id": 7,
+			"name": "G",
+			"tile": "tile.png"
+		},
+		{
+			"id": 8,
+			"name": "H",
+			"tile": "tile.png"
+		},
+		{
+			"id": 9,
+			"name": "I",
+			"tile": "tile.png"
+		}
 
-  ],
-  "links": [
+	],
+	"links": [
 
-    {
-      "source": 1,
-      "target": 3,
-      "code": "Code 1"
-    },
-    {
-      "source": 2,
-      "target": 3,
-      "code": "Code 2"
-    },
-    {
-      "source": 3,
-      "target": 4,
-      "code": "Code 3"
-    },
-    {
-      "source": 5,
-      "target": 7,
-      "code": "Code 4"
-    },
-    {
-      "source": 6,
-      "target": 7,
-      "code": "Code 5"
-    },
-    {
-      "source": 7,
-      "target": 8,
-      "code": "Code 6"
-    },
-    {
-      "source": 7,
-      "target": 9,
-      "code": "Code 7"
-    }
-  ]
+		{
+			"source": 1,
+			"target": 3,
+			"code": "Code 1"
+		},
+		{
+			"source": 2,
+			"target": 3,
+			"code": "Code 2"
+		},
+		{
+			"source": 3,
+			"target": 4,
+			"code": "Code 3"
+		},
+		{
+			"source": 5,
+			"target": 7,
+			"code": "Code 4"
+		},
+		{
+			"source": 6,
+			"target": 7,
+			"code": "Code 5"
+		},
+		{
+			"source": 7,
+			"target": 8,
+			"code": "Code 6"
+		},
+		{
+			"source": 7,
+			"target": 9,
+			"code": "Code 7"
+		}
+	]
 };
 
 <!--d3.json(demo_data).then( function( data) {-->
@@ -401,14 +401,14 @@ let choices = demo_data["nodes"].map(a => a.name);
 
 var select = d3.select('#my_dataviz')
 .append('select')
-  .attr('class','select')
-  .on('change',onchange)
+	.attr('class','select')
+	.on('change',onchange)
 
 var options = select
 .selectAll('option')
 .data(choices).enter()
 .append('option')
-    .text(function (d) { return d; });
+		.text(function (d) { return d; });
 
 DATA = demo_data
 

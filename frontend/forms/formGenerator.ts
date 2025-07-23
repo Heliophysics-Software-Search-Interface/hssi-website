@@ -220,27 +220,6 @@ export class FormGenerator {
 		return token.value;
 	}
 
-	private getJsonData(): JSONValue{
-
-		// get all subfields into a linear array
-		const subfields: ModelSubfield[] = [];
-		let outerFields: ModelSubfield[][] = this.fields as any;
-		if(outerFields.length > 0 && !(outerFields[0] instanceof Array)) {
-			outerFields = [outerFields] as any;
-		}
-		for(const outerField of outerFields){
-			for(const innerField of outerField) subfields.push(innerField);
-		}
-
-		// append all field data to an array
-		const data: JSONObject = {};
-		for(const field of subfields){
-			data[field.name] = field.getFieldData();
-		}
-		
-		return data;
-	}
-
 	private getRootFields(): ModelSubfield[] {
 		if(this.fields.length <= 0) return [];
 		const fields: ModelSubfield[] = [];
@@ -280,6 +259,27 @@ export class FormGenerator {
 		for(const section of this.fieldSections) {
 			section.removeAttribute("open");
 		}
+	}
+
+	public getJsonData(): JSONValue{
+
+		// get all subfields into a linear array
+		const subfields: ModelSubfield[] = [];
+		let outerFields: ModelSubfield[][] = this.fields as any;
+		if(outerFields.length > 0 && !(outerFields[0] instanceof Array)) {
+			outerFields = [outerFields] as any;
+		}
+		for(const outerField of outerFields){
+			for(const innerField of outerField) subfields.push(innerField);
+		}
+
+		// append all field data to an array
+		const data: JSONObject = {};
+		for(const field of subfields){
+			data[field.name] = field.getFieldData();
+		}
+		
+		return data;
 	}
 
 	private static instance: FormGenerator = null;

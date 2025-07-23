@@ -385,7 +385,7 @@ export class ModelSubfield {
 		for(const subfield of this.subfields){
 			data[subfield.name] = subfield.getFieldData();
 		}
-		return data
+		return data;
 	}
 
 	/** whether or not the field has already built its UI elements */

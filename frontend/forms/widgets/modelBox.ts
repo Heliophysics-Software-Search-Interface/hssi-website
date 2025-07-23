@@ -4,7 +4,8 @@ import {
 	type BaseProperties,
 	getStringSimilarity,
 	type JSONObject,
-	fetchTimeout
+	fetchTimeout,
+	type JSONValue
 } from "../../loader";
 
 const optionDataValue = "json-options";
@@ -52,6 +53,7 @@ export class ModelBox extends Widget {
 	private filteredOptionLIs: OptionLi[] = [];
 	private selectedOptionIndex: number = -1;
 	private selectedOptionLI: OptionLi = null;
+	private selectedOption: Option = null;
 
 	public properties: ModelBoxProperties = {};
 	
@@ -387,6 +389,7 @@ export class ModelBox extends Widget {
 		const match = this.findMatchingOption(value, matchThreshold);
 		if(match) {
 			super.setValue(match.name);
+			
 			this.inputElement.data = match;
 		}
 		else {
@@ -405,6 +408,14 @@ export class ModelBox extends Widget {
 	}
 
 	public getInputElement(): AnyInputElement { return this.inputElement; }
+
+	override getInputValue(): string {
+		const inputElem = this.getInputElement();
+		if(inputElem?.data?.id){
+			return inputElem.data.id as string;
+		}
+		return super.getInputValue();
+	}
 
 	/// Dropdown and tooltip elements ------------------------------------------
 

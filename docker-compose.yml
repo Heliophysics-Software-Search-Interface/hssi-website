@@ -1,43 +1,51 @@
-{
-	"services": {
-		"hssi": {
-			"build": "./docker",
-			"image": "hssi",
-			"container_name": "HSSI",
-			"depends_on": ["website_db"],
-			"ports": ["80:80"],
-			"volumes": [
-				"./django:/django",
-				"./django/static:/static",
-				"../../logs/nginx:/var/log/nginx",
-				"./config/nginx/logrotate:/etc/logrotate.d/nginx",
-				"./config/django:/config/django",
-				"./config/nginx:/etc/nginx/conf.d",
-				"./pip-requirements:/extensions/pip-requirements"
-			],
-			"environment": [
-				"SUPERUSER_NAME=$SUPERUSER_NAME",
-				"SUPERUSER_PWD=$SUPERUSER_PWD",
-				"PROJECT_NAME=hssi",
-				"APP_NAME=website",
-				"GUNICORN_WORKERS=4",
-				"GUNICORN_BACKLOG=4096",
-				"GUNICORN_BIND=0.0.0.0:8000",
-				"GUNICORN_TIMEOUT=3600"
-			]
-		},
-		"website_db": {
-			"image": "postgres",
-			"container_name": "website_db",
-			"environment": [
-				"POSTGRES_PASSWORD=$SUPERUSER_PWD"
-			],
-			"volumes": [
-				"website_db_data:/var/lib/postgresql/data"
-			]
-		}
-	},
-	"volumes": {
-		"website_db_data": {}
-	}
-}
+services:
+    hssi:
+        build: ./docker
+        image: hssi
+        container_name: HSSI
+        depends_on:
+            - website_db
+        ports:
+            - "80:80"
+        volumes:
+            - ./django:/django
+            - ./django/static:/static
+            - ../../logs/nginx:/var/log/nginx
+            - ./config/nginx/logrotate:/etc/logrotate.d/nginx
+            - ./config/django:/config/django
+            - ./config/nginx:/etc/nginx/conf.d
+            - ./pip-requirements:/extensions/pip-requirements
+        environment:
+            - SUPERUSER_NAME=$SUPERUSER_NAME
+            - SUPERUSER_PWD=$SUPERUSER_PWD
+            - PROJECT_NAME=hssi
+            - APP_NAME=website
+            - GUNICORN_WORKERS=4
+            - GUNICORN_BACKLOG=4096
+            - GUNICORN_BIND=0.0.0.0:8000
+            - GUNICORN_TIMEOUT=3600
+
+    website_db:
+        image: postgres
+        container_name: website_db
+        environment: 
+            - POSTGRES_PASSWORD=$SUPERUSER_PWD
+        # To persist db data, uncomment the following volumes statement, and see the outer 
+        # volumes section below:
+        volumes:
+            - website_db_data:/var/lib/postgresql/data
+
+
+# To persist db data, uncomment at least the next two lines, and see the further note below
+volumes: 
+    website_db_data:  # NOTE that this statement alone persists data in Docker's volume storage 
+                # area. To clear this data entirely, use: docker volume rm site_website_db_data
+                # To persist elsewhere, uncomment the following, and make sure a directory 
+                # exists at the desired location as specified by "device:"
+        # driver_opts:
+        #     type: none
+        #     device: data/db
+        #     o: bind   
+    # nginx-proxy-conf:
+    # nginx-proxy-shared-html:
+    # nginx-proxy-vhosts:

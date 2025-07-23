@@ -6,6 +6,7 @@ import {
 	labelStyle,
 	requiredIndicatorStyle,
 	explanationTextStyle,
+	PopupDialogue,
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -136,6 +137,10 @@ export class FormGenerator {
 		this.fieldContainer.appendChild(details);
 	}
 
+	private userHasAgreed(): boolean{
+		return !this.hasAgreement || this.agreementElement.checked;
+	}
+
 	private onSubmit(e: SubmitEvent): void{
 
 		// we don't want the default html form functionality submiting anything
@@ -144,6 +149,15 @@ export class FormGenerator {
 		// check to see all required elements are filled out
 		if(!this.validateFieldRequirements()) {
 			console.log("form fields not valid!");
+			return;
+		}
+
+		if(!this.userHasAgreed()){
+			ConfirmDialogue.getConfirmation(
+				"Error - You must agree to the given terms, please check the " +
+				"'I agree' checkbox located at the bottom of the form.", 
+				"Metadata Agreement", "ok", "cancel"
+			);
 			return;
 		}
 

@@ -1,12 +1,8 @@
 import { 
 	typeAttribute, ModelFieldStructure, ModelSubfield, widgetDataAttribute,
-	RequirementLevel, ConfirmDialogue, 
+	RequirementLevel, ConfirmDialogue, fetchTimeout, labelStyle,
+	requiredIndicatorStyle, explanationTextStyle, Spinner,
 	type SubmissionFormData, type JSONValue, type JSONObject,
-	fetchTimeout,
-	labelStyle,
-	requiredIndicatorStyle,
-	explanationTextStyle,
-	PopupDialogue,
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -161,6 +157,8 @@ export class FormGenerator {
 			return;
 		}
 
+		Spinner.showSpinner();
+
 		// submit the data from the form fields as a JSON string
 		const data = this.getJsonData();
 		const response = fetchTimeout(this.formElement.action, {
@@ -176,8 +174,11 @@ export class FormGenerator {
 		console.log(data);
 		
 		response.then(response => {
+			Spinner.hideSpinner();
 			if(response.redirected) window.location.href = response.url;
 		});
+		response.catch(() => Spinner.hideSpinner());
+		response.finally(() => Spinner.hideSpinner());
 	}
 
 	private validateFieldRequirements(): boolean {

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 # Character length limits
 LEN_LONGNAME = 512
-LEN_NAME = 100
+LEN_NAME = 256
 LEN_ABBREVIATION = 5
 
 class ModelObjectChoice(NamedTuple):
@@ -22,7 +22,6 @@ class ModelObjectChoice(NamedTuple):
 	name: str
 	keywords: list[str]
 	tooltip: str
-
 
 # Whether an entry in InstrumentObservatory is an instrument or an observatory
 class InstrObsType(models.IntegerChoices):

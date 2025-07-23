@@ -209,6 +209,14 @@ export class ModelBox extends Widget {
 		this.filteredOptionLIs.length = 0;
 		this.selectedOptionIndex = -1;
 
+		// move "other" option to last in the list
+		let otherIndex = options.findIndex(x => {
+			return "other" == x.name.trim().toLocaleLowerCase();
+		});
+		if(otherIndex >= 0){
+			options.push(options.splice(otherIndex, 1)[0]);
+		}
+
 		// create and populate the dropdown list
 		this.optionListElement = document.createElement("ul");
 		for(const option of this.options) {
@@ -345,7 +353,8 @@ export class ModelBox extends Widget {
 
 		let option: Option = null;
 		let matchScore: number = threshold;
-		for(const opdata of this.options){
+		for(let i = this.options.length - 1; i >= 0; i--){
+			const opdata = this.options[i];
 			if(value in opdata.keywords){
 				return opdata;
 			}

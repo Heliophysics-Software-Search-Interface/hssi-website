@@ -31,8 +31,11 @@ export type SubmissionFormData = {
 		versionDescription?: string,
 		versionPID?: string,
 	},
-	programmingLanguage?: string,
-	license?: string,
+	programmingLanguage?: string[],
+	license?: {
+		license?: string,
+		licenseURI?: string,
+	},
 	keywords?: string[],
 	softwareFunctionality?: string[],
 	dataSources?: string[],

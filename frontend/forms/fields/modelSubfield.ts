@@ -7,13 +7,13 @@ import {
 	ModelBox,
 } from "../../loader";
 
-const labelStyle = "custom-label";
+export const labelStyle = "custom-label";
 const tooltipWrapperStyle = "tooltip-wrapper";
 const tooltipIconStyle = "tooltip-icon";
 const tooltipTextStyle = "tooltip-text";
 export const explanationTextStyle = "explanation-text";
 const subfieldContainerStyle = "subfield-container";
-const requiredIndicatorStyle = "required-indicator";
+export const requiredIndicatorStyle = "required-indicator";
 const indentStyle = "indent";
 
 const faInfoCircle = "<i class='fa fa-info-circle'></i>";

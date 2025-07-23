@@ -6,24 +6,24 @@ register = template.Library()
 
 @register.filter    
 def is_under_development(resource):
-    return resource.is_under_development()
+	return resource.is_under_development()
 
 @register.filter    
 def submission_name(id):
-    submission = Submission.objects.get(id=id)
-    return submission.name
+	submission = Submission.objects.get(id=id)
+	return submission.name
 
 @register.filter    
 def id_values_list(queryset):
-    return list(queryset.values_list('id', flat=True))
+	return list(queryset.values_list('id', flat=True))
 
 @register.filter    
 def intersection(list1, list2):
-    return set(list1) & set(list2)
+	return set(list1) & set(list2)
 
 @register.filter
 def index(sequence, i):
-    try:
-        return sequence[int(i)]
-    except (IndexError, ValueError, TypeError):
-        return ""
+	try:
+		return sequence[int(i)]
+	except (IndexError, ValueError, TypeError):
+		return ""

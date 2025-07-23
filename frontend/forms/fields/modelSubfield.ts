@@ -1,18 +1,19 @@
 import {
 	deepMerge, formRowStyle, ModelFieldStructure, RequirementLevel, 
 	Widget, ModelMultiSubfield, FieldRequirement,
-    type PropertyContainer, type SerializedSubfield, type JSONValue,
+	type PropertyContainer, type SerializedSubfield, type JSONValue,
 	type JSONObject,
 	type AnyInputElement,
+	ModelBox,
 } from "../../loader";
 
-const labelStyle = "custom-label";
+export const labelStyle = "custom-label";
 const tooltipWrapperStyle = "tooltip-wrapper";
 const tooltipIconStyle = "tooltip-icon";
 const tooltipTextStyle = "tooltip-text";
 export const explanationTextStyle = "explanation-text";
 const subfieldContainerStyle = "subfield-container";
-const requiredIndicatorStyle = "required-indicator";
+export const requiredIndicatorStyle = "required-indicator";
 const indentStyle = "indent";
 
 const faInfoCircle = "<i class='fa fa-info-circle'></i>";
@@ -195,8 +196,7 @@ export class ModelSubfield {
 	public clearField(): void {
 		
 		// clear input value
-		let input = this.getInputElement();
-		if(input) input.value = "";
+		this.setValue("");
 
 		// clear/collapse all subfield values
 		for(const subfield of this.getSubfields()) {
@@ -246,7 +246,7 @@ export class ModelSubfield {
 		}
 
 		// it's a non-recursive value (almost certainly a string)
-		else this.widget.getInputElement().value = data.toString();
+		else this.setValue(data.toString());
 	}
 
 	public meetsRequirementLevel(): boolean {
@@ -260,6 +260,14 @@ export class ModelSubfield {
 	}
 
 	public hasValidInput(): boolean {
+		if(this.widget instanceof ModelBox){
+			if(!this.widget.properties.allowNewEntries){
+				if(!this.getInputElement().data){
+					return false;
+				}
+			}
+		}
+		
 		const value = this.widget?.getInputValue();
 		if(!value) return false;
 
@@ -355,6 +363,10 @@ export class ModelSubfield {
 		return this.widget?.getInputElement() ?? null;
 	}
 
+	public setValue(value: string): void {
+		this.widget?.setValue(value);
+	}
+
 	/** 
 	 * returns true if the subfields have been built. Basically if the 
 	 * subfield container has ever been expanded or not
@@ -373,7 +385,7 @@ export class ModelSubfield {
 		for(const subfield of this.subfields){
 			data[subfield.name] = subfield.getFieldData();
 		}
-		return data
+		return data;
 	}
 
 	/** whether or not the field has already built its UI elements */

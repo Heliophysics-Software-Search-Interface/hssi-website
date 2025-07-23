@@ -3,56 +3,62 @@
 {% load static %}
 
 {% block head %}
-    {{ block.super }}
-    <link rel="stylesheet" href="{% static 'css/submissions.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/forms.css' %}" />
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/submissions.css' %}" />
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}" />
 {% endblock %}
 
 {% block title %}Resource Submission{% endblock %}
 
 {% block page_content %}
 
-    <div class="small-12 container submission_form">
-        <h3 class="page_title">Resource Submission</h3>
-        <p class="submission-text">
-            This page allows developers to submit their software for inclusion 
-            within the Heliophysics Software Search Interface website. Use the 
-            form below to let us know about your tool, including it's name, 
-            a brief description, the developers, what categories the resource 
-            falls under, and any relevant links, images, or credits that you'd 
-            like us to include.
-        </p>
-        <p class="submission-text">
-            After you submit your resource, a member of our team will be in 
-            touch to discuss a plan for including it on the site.
-        </p>
-        <p class="submission-text">
-            <span class="submission-note">NOTE:</span> 
-            All web-based submissions are expected to conform to 
-            <a href="https://www.w3.org/standards/" target="_blank">W3C standards</a>, 
-            must pass the W3C 
-            <a href="https://validator.w3.org" target="_blank">Markup</a> and 
-            <a href="https://jigsaw.w3.org/css-validator/" target="_blank">CSS</a> 
-            validation services, and must support all major cross-platform 
-            browsers (sc. 
-            <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> and 
-            <a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a>).
-        </p>
-        <div class="form-controls"> 
-            <h4> Submission Form </h4>
-            <div>
-                <button type="button" onclick="openAutofillDialogue()">
-                    <i class="fa fa-magic"></i> Autofill fields
-                </button>
-                &nbsp;
-                <button type="button" onclick="clearGeneratedForm()">Clear Form</button> 
-                &nbsp;
-                <button type="button" onclick="collapseGeneratedForm()">Collapse All</button>
-                &nbsp;
-                <button type="button" onclick="expandGeneratedForm()">Expand All</button>
-            </div>
-        </div>
-        {% include "forms/model_base.html" %}
-    </div>
+	<div class="small-12 container submission_form">
+		<h3 class="page_title">Resource Submission</h3>
+		<p class="submission-text">
+			This page allows developers to submit their software for inclusion 
+			within the Heliophysics Software Search Interface website. Use the 
+			form below to let us know about your tool, including it's name, 
+			a brief description, the developers, what categories the resource 
+			falls under, and any relevant links, images, or credits that you'd 
+			like us to include.
+		</p>
+		<p class="submission-text">
+			After you submit your resource, a member of our team will be in 
+			touch to discuss a plan for including it on the site.
+		</p>
+		{% comment %}
+		<p class="submission-text">
+			All web-based submissions are expected to conform to 
+			<a href="https://www.w3.org/standards/" target="_blank">W3C standards</a>, 
+			must pass the W3C 
+			<a href="https://validator.w3.org" target="_blank">Markup</a> and 
+			<a href="https://jigsaw.w3.org/css-validator/" target="_blank">CSS</a> 
+			validation services, and must support all major cross-platform 
+			browsers (sc. 
+			<a href="https://www.google.com/chrome/" target="_blank">Chrome</a> and 
+			<a href="https://www.mozilla.org/firefox/" target="_blank">Firefox</a>).
+		</p>
+		{% endcomment %}
+		<p class="submission-text">
+			<b>NOTE:</b> If the 'Autofill fields' feature is used, please 
+			ensure that all auto-filled fields are accurate before submitting 
+			the entry.
+		</p>
+		<div class="form-controls"> 
+			<h4> Submission Form </h4>
+			<div>
+				<button type="button" onclick="openAutofillDialogue()">
+					<i class="fa fa-magic"></i> Autofill fields
+				</button>
+				&nbsp;
+				<button type="button" onclick="clearGeneratedForm()">Clear Form</button> 
+				&nbsp;
+				<button type="button" onclick="collapseGeneratedForm()">Collapse All</button>
+				&nbsp;
+				<button type="button" onclick="expandGeneratedForm()">Expand All</button>
+			</div>
+		</div>
+		{% include "forms/model_base.html" %}
+	</div>
 
 {% endblock %}

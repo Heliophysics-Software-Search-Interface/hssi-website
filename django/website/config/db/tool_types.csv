@@ -1,17 +1,1 @@
 id,abbreviation,theme_color,text_color,description,children,name
-6fa788bb-083c-484d-9477-198f397b697f,ASCI,#000000,#ffffff,,,ASCII
-8870ec66-4dfe-4089-be3b-0e779256a6f6,Bin,#000000,#ffffff,,,Binary
-ab99db1a-e456-4beb-a4dc-8eaf13a8a26b,CDAw,#000000,#ffffff,,,Cdaweb
-cb333f7d-c7a4-4997-b989-94cce6ef4a5f,CDF,#000000,#ffffff,,,CDF
-6d1c0676-89fd-468f-b4e8-6f63073146f8,CSV,#000000,#ffffff,,,CSV
-dae51c8c-b490-4a9e-8f47-bb095f3686ea,Fido,#000000,#ffffff,,,Fido
-a49c1891-56cc-43cb-ad11-af68e8bf0d9c,FITS,#000000,#ffffff,,,FITS
-9a6a9d11-dd5e-4a35-b665-17e7ffc454b2,HAPI,#000000,#ffffff,,,Hapi
-877df2c5-3d67-4f5b-a434-6f5c0d9b18e9,HDF5,#000000,#ffffff,,,HDF5
-44ac9c84-92bf-400c-b570-375f1ffcc5e9,IDLs,#000000,#ffffff,,,IDL Save
-405bae03-9827-4cad-9ba0-50e88e0090db,IOfm,#a51d2d,#ffffff,,"6fa788bb-083c-484d-9477-198f397b697f,8870ec66-4dfe-4089-be3b-0e779256a6f6,cb333f7d-c7a4-4997-b989-94cce6ef4a5f,6d1c0676-89fd-468f-b4e8-6f63073146f8,a49c1891-56cc-43cb-ad11-af68e8bf0d9c,877df2c5-3d67-4f5b-a434-6f5c0d9b18e9,44ac9c84-92bf-400c-b570-375f1ffcc5e9,10fdfa88-64f4-4e53-95ab-9bc726c1739b",(In/Out)put Formats
-41825845-1f85-464b-aa7e-64213032dc36,InSc,#c64600,#ffffff,,"ab99db1a-e456-4beb-a4dc-8eaf13a8a26b,dae51c8c-b490-4a9e-8f47-bb095f3686ea,9a6a9d11-dd5e-4a35-b665-17e7ffc454b2,2b2b3a20-a45b-4f47-8873-3c31de612e34,688e1dad-544d-415a-acca-61514acdf0c8,be0006a4-0511-4a68-acd3-5c8ec52fa67c",Input Sources
-2b2b3a20-a45b-4f47-8873-3c31de612e34,Locl,#000000,#ffffff,,,Local
-10fdfa88-64f4-4e53-95ab-9bc726c1739b,nCDF,#000000,#ffffff,,,NetCDF
-688e1dad-544d-415a-acca-61514acdf0c8,Remt,#000000,#ffffff,,,Remote
-be0006a4-0511-4a68-acd3-5c8ec52fa67c,SSCw,#000000,#ffffff,,,Sscweb

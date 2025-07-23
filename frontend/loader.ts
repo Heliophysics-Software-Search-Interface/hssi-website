@@ -28,4 +28,5 @@ export * from "./forms/widgets/autofillDatacite";
 export * from "./forms/fields/modelFieldStructure";
 export * from "./forms/fields/modelSubfield";
 export * from "./forms/fields/modelMultisubfield";
+export * from "./forms/formSubmission";
 export * from "./forms/formGenerator";

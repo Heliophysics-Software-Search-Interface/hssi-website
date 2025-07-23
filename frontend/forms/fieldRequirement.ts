@@ -1,6 +1,8 @@
 /** */
 
 import { 
+	ModelBox,
+	ModelMultiSubfield,
 	type ModelSubfield,
 } from "../loader";
 
@@ -87,11 +89,22 @@ export class FieldRequirement {
 				break;
 		}
 
-		const vNote = this.field.getInputElement()?.validationMessage ?? "";
+		let vNote = this.field.getInputElement()?.validationMessage ?? "";
+		let fields = (this.field as ModelMultiSubfield).multiFields || [this.field];
+		for(const field of fields){
+			if(field.widget instanceof ModelBox){
+				if(!field.widget.properties.allowNewEntries){
+					if(!field.getInputElement().data){
+						vNote = "Please select an item from the dropdown list";
+					}
+				}
+			}
+		}
+		
 		if(note.length > 0 && vNote.length > 0) {
 			note += " - " + vNote;
 			if(this.level < RequirementLevel.MANDATORY) {
-				"(Or leave blank if not applicable)";
+				" (Or leave blank if not applicable)";
 			}
 		}
 

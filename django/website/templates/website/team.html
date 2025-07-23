@@ -14,57 +14,57 @@
 {% get_static_prefix as STATIC_PREFIX %}
 
 <div class="small-6 medium-12 large-12 container">
-    <div class="team-description">
-        <h1 class="page_title">Our Team</h1>
-        <p>
-            Here is some information about our team members.
-        </p>
-    </div>
-    <div class="team_container">
-        {% for team_member in team %}
-            <div class="callout medium team-info">
-                {% if team_member.member_image %}
-                    <img class="p_img" src="{{STATIC_PREFIX}}{{team_member.member_image.url}}">
-                {% endif %}
-                <div class="p_name">
-                    {% if team_member.personal_url %}
-                    <a href="{{team_member.personal_url}}" class="personal-url" target="_blank">{{team_member.name}}</a>
-                    {% else %}
-                    {{team_member.name}}
-                    {% endif %}
-                    <br/>
-                    <span class="p_desc">{{team_member.description}}</span>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+	<div class="team-description">
+		<h1 class="page_title">Our Team</h1>
+		<p>
+			Here is some information about our team members.
+		</p>
+	</div>
+	<div class="team_container">
+		{% for team_member in team %}
+			<div class="callout medium team-info">
+				{% if team_member.member_image %}
+					<img class="p_img" src="{{STATIC_PREFIX}}{{team_member.member_image.url}}">
+				{% endif %}
+				<div class="p_name">
+					{% if team_member.personal_url %}
+					<a href="{{team_member.personal_url}}" class="personal-url" target="_blank">{{team_member.name}}</a>
+					{% else %}
+					{{team_member.name}}
+					{% endif %}
+					<br/>
+					<span class="p_desc">{{team_member.description}}</span>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
 
-    <div class="my-accordion-section">
-        <div class="my-accordion-header-bar">
-            <div class="page_title alumni-title">Our Alumni</div>
-            <div class="caret-container">
-                <span class="caret"></span>
-            </div>
-        </div>
-        <div class="team_container my-accordion-content">
-            {% for team_member in alumni %}
-            <div class="callout medium team-info">
-                {% if team_member.member_image %}
-                <img class="p_img" src="{{STATIC_PREFIX}}{{team_member.member_image.url}}">
-                {% endif %}
-                <div class="p_name">
-                    {% if team_member.personal_url %}
-                    <a href="{{team_member.personal_url}}" class="personal-url" target="_blank">{{team_member.name}}</a>
-                    {% else %}
-                    {{team_member.name}}
-                    {% endif %}
-                    <br />
-                    <span class="p_desc">{{team_member.description}}</span>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+	<div class="my-accordion-section">
+		<div class="my-accordion-header-bar">
+			<div class="page_title alumni-title">Our Alumni</div>
+			<div class="caret-container">
+				<span class="caret"></span>
+			</div>
+		</div>
+		<div class="team_container my-accordion-content">
+			{% for team_member in alumni %}
+			<div class="callout medium team-info">
+				{% if team_member.member_image %}
+				<img class="p_img" src="{{STATIC_PREFIX}}{{team_member.member_image.url}}">
+				{% endif %}
+				<div class="p_name">
+					{% if team_member.personal_url %}
+					<a href="{{team_member.personal_url}}" class="personal-url" target="_blank">{{team_member.name}}</a>
+					{% else %}
+					{{team_member.name}}
+					{% endif %}
+					<br />
+					<span class="p_desc">{{team_member.description}}</span>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
 </div>
 
 {% endblock %} 

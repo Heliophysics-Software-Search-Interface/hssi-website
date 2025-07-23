@@ -20,11 +20,11 @@ type MultiField = ModelSubfield & {destroyRow?: () => void };
 export class ModelMultiSubfield extends ModelSubfield {
 
 	private multiFieldContainerElement: HTMLDivElement = null;
-	private multiFields: MultiField[] = [];
 	private newItemButton: HTMLButtonElement = null;
 	private hideButton: HTMLButtonElement = null;
 	private hiddenText: HTMLDivElement = null;
 	private isCollapsed: boolean = false;
+	public multiFields: MultiField[] = [];
 
 	public get multi(): boolean { return true; }
 
@@ -188,9 +188,9 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.newItemButton.parentElement.appendChild(hiddenText);
 	}
 
-    /// Overriden funcitonality ------------------------------------------------
+	/// Overriden funcitonality ------------------------------------------------
 
-	public buildInterface(
+	public override buildInterface(
 		targetDiv: HTMLDivElement, 
 		buildFieldInfo: boolean = true
 	): void {
@@ -213,7 +213,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		}
 	}
 
-	public applyValidityStyles(): void {
+	public override applyValidityStyles(): void {
 		if(this.requirement == null) return;
 		this.requirement.applyRequirementWarningStyles();
 		for(const multifield of this.multiFields){
@@ -223,17 +223,17 @@ export class ModelMultiSubfield extends ModelSubfield {
 		}
 	}
 
-	public expandSubfields(): void {
+	public override expandSubfields(): void {
 		super.expandSubfields();
 		this.expandMultiFields();
 	}
 
-	public collapseSubfields(): void {
+	public override collapseSubfields(): void {
 		super.collapseSubfields();
 		this.collapseMultiFields();
 	}
 
-	public destroy(): void {
+	public override destroy(): void {
 		super.destroy();
 		this.multiFields.length = 0;
 		this.multiFieldContainerElement = null;
@@ -245,14 +245,16 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.requirement.removeStyles();
 	}
 
-	public hasValidInput(): boolean {
+	public override hasValidInput(): boolean {
+		let hasAnyInput = false;
 		for(const field of this.multiFields){
-			if(field.hasValidInput()) return true;
+			if(!field.hasValidInput()) return false;
+			hasAnyInput = true;
 		}
-		return false;
+		return hasAnyInput;
 	}
 
-	public getFieldData(): { [key: string]: any; } | string | any[] {
+	public override getFieldData(): { [key: string]: any; } | string | any[] {
 		const arr: any[] = [];
 		for(const field of this.multiFields) {
 			const fieldVal = field.getFieldData();
@@ -261,7 +263,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		return arr;
 	}
 	
-	public getInputElement(): AnyInputElement {
+	public override getInputElement(): AnyInputElement {
 		for(let i = 1; i >= 0; i--) {
 			for(const field of this.multiFields) {
 				const input = field.getInputElement();

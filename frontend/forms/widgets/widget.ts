@@ -4,7 +4,8 @@
 
 import { 
 	ModelSubfield, requirementAttributeContainer, RequirementLevel, SimpleEvent,
-	type JSONObject
+	type JSONObject,
+	type JSONValue
 } from "../../loader";
 
 // names of values in data attributes
@@ -15,7 +16,6 @@ export const uidAttribute = "data-hssi-uid";
 export const widgetAttribute = "data-hssi-widget";
 export const widgetDataAttribute = "data-hssi-data";
 export const typeAttribute = "data-hssi-type";
-export const targetUuidAttribute = "data-hssi-target-uuid";
 
 export interface BaseProperties extends Record<string, any> {
 	requirementLevel?: RequirementLevel;
@@ -68,11 +68,15 @@ export abstract class Widget {
 			}
 	}
 	
+	public setValue(value: string): void{
+		this.getInputElement().value = value;
+	}
+
 	protected checkForInputElementEventInit(): void {
 		const inputElem = this.getInputElement();
 
 		// TODO maybe kinda hacky to use set timeout here but meh
-		if(inputElem == null){	
+		if(inputElem == null){
 			setTimeout(()=>{ this.checkForInputElementEventInit(); }, 1000);
 			return;
 		}
@@ -114,12 +118,12 @@ export abstract class Widget {
 	/// Restricted functionality -----------------------------------------------
 
 	protected getValueEntryDelay(): number {
-		let delay = 0;
+		let delay = 50;
 		const inputElem = this.getInputElement();
-		if(inputElem instanceof HTMLTextAreaElement) delay = 0.5;
+		if(inputElem instanceof HTMLTextAreaElement) delay = 500;
 		else if (inputElem instanceof HTMLInputElement){
 			if(["text", "email", "url", "password"].includes(inputElem.type)) {
-				delay = 500; // miliseconds
+				delay = 500; // milliseconds
 			}
 		}
 		return delay;

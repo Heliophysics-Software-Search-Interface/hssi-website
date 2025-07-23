@@ -1,8 +1,8 @@
 from django.apps import AppConfig
 
 class WebsiteConfig(AppConfig):
-    name = 'website'
+	name = 'website'
 
-    # def ready(self):
-    #     import website.signals
+	# def ready(self):
+	#     import website.signals
 

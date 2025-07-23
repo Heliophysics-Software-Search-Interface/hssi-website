@@ -1,7 +1,7 @@
 import {
 	deepMerge, formRowStyle, ModelFieldStructure, RequirementLevel, 
 	Widget, ModelMultiSubfield, FieldRequirement,
-    type PropertyContainer, type SerializedSubfield, type JSONValue,
+	type PropertyContainer, type SerializedSubfield, type JSONValue,
 	type JSONObject,
 	type AnyInputElement,
 	ModelBox,

@@ -3,44 +3,44 @@
 {% block sidebar %}
 {{ block.super }}
 <div class="module" id="recent-actions-module">
-  <h2>HSSI ACTIONS</h2>
-  <ul>
-    <li>
-      <form action="{% url 'admin:export_db' %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="Export Database">
-      </form>
-    </li>
-    <li>
-      <form action="{% url 'admin:import_db' %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="Import Database">
-      </form>
-    </li>
-    <li>
-      <form action="{% url 'admin:migrate_old_to_new' %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="Migrate Old DB to New">
-      </form>
-    </li>
-    <li>
-      <form action="{% url 'admin:export_db_new' %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="Export Database (new)">
-      </form>
-    </li>
-    <li>
-      <form action="{% url 'admin:import_db_new' %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="Import Database (new)">
-      </form>
-    </li>
-    <li>
-      <form action="{% url 'admin:fetch_vocab' %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="Fetch Vocab">
-      </form>
-    </li>
-  </ul>
+	<h2>HSSI ACTIONS</h2>
+	<ul>
+		<li>
+			<form action="{% url 'admin:export_db' %}" method="POST">
+				{% csrf_token %}
+				<input type="submit" value="Export Database">
+			</form>
+		</li>
+		<li>
+			<form action="{% url 'admin:import_db' %}" method="POST">
+				{% csrf_token %}
+				<input type="submit" value="Import Database">
+			</form>
+		</li>
+		<li>
+			<form action="{% url 'admin:migrate_old_to_new' %}" method="POST">
+				{% csrf_token %}
+				<input type="submit" value="Migrate Old DB to New">
+			</form>
+		</li>
+		<li>
+			<form action="{% url 'admin:export_db_new' %}" method="POST">
+				{% csrf_token %}
+				<input type="submit" value="Export Database (new)">
+			</form>
+		</li>
+		<li>
+			<form action="{% url 'admin:import_db_new' %}" method="POST">
+				{% csrf_token %}
+				<input type="submit" value="Import Database (new)">
+			</form>
+		</li>
+		<li>
+			<form action="{% url 'admin:fetch_vocab' %}" method="POST">
+				{% csrf_token %}
+				<input type="submit" value="Fetch Vocab">
+			</form>
+		</li>
+	</ul>
 </div>
 {% endblock %}

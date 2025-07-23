@@ -1,32 +1,32 @@
 <div class="form-wrapper">
-  <p><h3>Test Form</h3></p>
-  <form method="post">
-    {% csrf_token %}
+	<p><h3>Test Form</h3></p>
+	<form method="post">
+		{% csrf_token %}
 
-    {% for field in form %}
-        <div class="form-row">
-            <label for="{{ field.id_for_label }}" class="custom-label">
-                {{ field.label }}
-                <span class="tooltip-wrapper">
-                  <span class="tooltip-icon">i</span>
-                  <div class="tooltip-text">
-                    {{ field.field.tt_best_practice|default:"Enter a value for this field." }}
-                  </div>
-                </span>
-            </label>
-            <div class="explanation-text">
-              {{ field.field.tt_explanation|default:"Enter a value for this field." }}
-            </div>
-            {{ field }} 
-            {% if field.html_name == "field_consent" %}
-              <span style="user-select: none;"> I agree </span>
-            {% endif %}
-            {% if field.errors %}
-                <div class="error">{{ field.errors }}</div>
-            {% endif %}
-        </div>
-    {% endfor %}
+		{% for field in form %}
+				<div class="form-row">
+						<label for="{{ field.id_for_label }}" class="custom-label">
+								{{ field.label }}
+								<span class="tooltip-wrapper">
+									<span class="tooltip-icon">i</span>
+									<div class="tooltip-text">
+										{{ field.field.tt_best_practice|default:"Enter a value for this field." }}
+									</div>
+								</span>
+						</label>
+						<div class="explanation-text">
+							{{ field.field.tt_explanation|default:"Enter a value for this field." }}
+						</div>
+						{{ field }} 
+						{% if field.html_name == "field_consent" %}
+							<span style="user-select: none;"> I agree </span>
+						{% endif %}
+						{% if field.errors %}
+								<div class="error">{{ field.errors }}</div>
+						{% endif %}
+				</div>
+		{% endfor %}
 
-    <button type="submit">Submit</button>
-  </form>
+		<button type="submit">Submit</button>
+	</form>
 </div>

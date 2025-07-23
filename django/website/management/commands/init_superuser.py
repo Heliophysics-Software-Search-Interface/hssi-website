@@ -9,13 +9,13 @@ from hssi.settings import ADMIN_EMAIL, SUPERUSER_PWD, SUPERUSER_NAME
 
 class Command(BaseCommand):
 
-    help = "Initializes the Superuser"
+	help = "Initializes the Superuser"
 
-    def handle(self, *args, **options):
+	def handle(self, *args, **options):
 
-        print("Checking for Superuser...")
-        if User.objects.filter(username=SUPERUSER_NAME).count()==0:
-            User.objects.create_superuser(SUPERUSER_NAME, ADMIN_EMAIL, SUPERUSER_PWD)
-            print("Superuser created")
-        else:
-            print("Superuser already exists")
+		print("Checking for Superuser...")
+		if User.objects.filter(username=SUPERUSER_NAME).count()==0:
+			User.objects.create_superuser(SUPERUSER_NAME, ADMIN_EMAIL, SUPERUSER_PWD)
+			print("Superuser created")
+		else:
+			print("Superuser already exists")

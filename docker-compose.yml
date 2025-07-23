@@ -1,5 +1,4 @@
 services:
-            
     hssi:
         build: ./docker
         image: hssi

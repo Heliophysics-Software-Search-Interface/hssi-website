@@ -1,40 +1,40 @@
 {% if related_resource %}
-    <!-- HIGHLIGHTED RESOURCE CONTENT -->
-    {% include "website/resource.html" with resource=related_resource highlighted="True" %}
-    <!-- END HIGHLIGHTED RESOURCE CONTENT -->
-    {% if selected_resources.count %}
-    <div class="related-resource-list">
-        <div class="related-resource-header resource_name">Related Resources:</div>
-        {% for resource in selected_resources %}
-            {% include "website/resource.html" %}
-        {% endfor %}
-    </div>
-    {% endif %}
+	<!-- HIGHLIGHTED RESOURCE CONTENT -->
+	{% include "website/resource.html" with resource=related_resource highlighted="True" %}
+	<!-- END HIGHLIGHTED RESOURCE CONTENT -->
+	{% if selected_resources.count %}
+	<div class="related-resource-list">
+		<div class="related-resource-header resource_name">Related Resources:</div>
+		{% for resource in selected_resources %}
+			{% include "website/resource.html" %}
+		{% endfor %}
+	</div>
+	{% endif %}
 {% elif selected_collection %}
-    {% include "website/collection.html" with collection=selected_collection %}
-    {% if selected_resources.count %}
-    <div class="collection-resources-list">
-        {% for resource in selected_resources %}
-            {% include "website/resource.html" %}
-        {% endfor %}
-    </div>
-    {% endif %}
+	{% include "website/collection.html" with collection=selected_collection %}
+	{% if selected_resources.count %}
+	<div class="collection-resources-list">
+		{% for resource in selected_resources %}
+			{% include "website/resource.html" %}
+		{% endfor %}
+	</div>
+	{% endif %}
 {% else %}
-    <!-- SELECTED RESOURCES LIST -->
-    {% for resource in selected_resources %}
-        {% if resource.is_inlit %}
-            {% include "website/in_lit_resource.html" %}
-        {% else %}
-            {% include "website/resource.html" %}
-        {% endif %}
-    {% endfor %}
-    {% if in_lit_resources %}
-    <div class="in-lit-header" id="in-lit-header">Other resources in the literature:</div>
-        {% for resource in in_lit_resources %}
-            {% include "website/in_lit_resource.html" %}
-        {% endfor %}
-    {% endif %}
-    <!-- END SELECTED RESOURCES LIST -->
+	<!-- SELECTED RESOURCES LIST -->
+	{% for resource in selected_resources %}
+		{% if resource.is_inlit %}
+			{% include "website/in_lit_resource.html" %}
+		{% else %}
+			{% include "website/resource.html" %}
+		{% endif %}
+	{% endfor %}
+	{% if in_lit_resources %}
+	<div class="in-lit-header" id="in-lit-header">Other resources in the literature:</div>
+		{% for resource in in_lit_resources %}
+			{% include "website/in_lit_resource.html" %}
+		{% endfor %}
+	{% endif %}
+	<!-- END SELECTED RESOURCES LIST -->
 {% endif %}
 
 

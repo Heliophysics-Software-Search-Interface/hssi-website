@@ -95,6 +95,10 @@ export class ModelBox extends Widget {
 			this.listenerUnset = this.parentField.onValueChanged.addListener(() => {
 				this.unsetInputElementData();
 			});
+			
+			// TODO this isn't working for submitter field for some reason? 
+			// submitter field seems to have no subfields even though there 
+			// is an email subfield
 			this.listenerUnsetChild = this.parentField.onChildValueChanged.addListener(() => {
 				this.unsetInputElementData();
 			});

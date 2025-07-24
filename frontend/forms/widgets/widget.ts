@@ -50,6 +50,8 @@ export abstract class Widget {
 	/** holds congfiguration properties for the widget */
 	public properties: BaseProperties = {};
 	
+	public onValueChanged: SimpleEvent = new SimpleEvent();
+
 	/// Initialization ---------------------------------------------------------
 	
 	public constructor(elem: HTMLElement, parentField: ModelSubfield) {

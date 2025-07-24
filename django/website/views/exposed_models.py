@@ -14,7 +14,7 @@ from ..forms import (
 )
 from ..models import (
 	HssiModel, Keyword, OperatingSystem, Phenomena, RepoStatus, Image,
-	ProgrammingLanguage, DataInput, FileFormat, Region,
+	ProgrammingLanguage, DataInput, CpuArchitecture,  FileFormat, Region,
 	InstrumentObservatory, FunctionCategory, License, Organization,
 	Person, Curator, Submitter, Award, RelatedItem,
 	SubmissionInfo, SoftwareVersion, Software,
@@ -30,6 +30,7 @@ def get_model_structure(request: HttpRequest) -> JsonResponse:
 		ModelStructure.create(Image).serialized(),
 		ModelStructure.create(ProgrammingLanguage).serialized(),
 		ModelStructure.create(DataInput).serialized(),
+		ModelStructure.create(CpuArchitecture).serialized(),
 		ModelStructure.create(FileFormat).serialized(),
 		ModelStructure.create(Region).serialized(),
 		ModelStructure.create(InstrumentObservatory).serialized(),

@@ -794,6 +794,21 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		},
 		multi=True,
 	),
+    # Related Phenomena
+    ModelSubfield.define(
+        name=FIELD_RELATEDPHENOMENA,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.OPTIONAL.value,
+        properties={
+            PROP_LABEL: "Related Phenomena",
+			PROP_TT_EXPL: TTEXPL_RELATEDPHENOMENA,
+            PROP_TT_BEST: TTBEST_RELATEDPHENOMENA,
+            PROP_WIDGET_PROPS:{
+                WPROP_DROPDOWNBUTTON: True
+			}
+		},
+        multi=True,
+	),
 	# Reference Publication
 	ModelSubfield.define(
 		name=FIELD_REFERENCEPUBLICATION,

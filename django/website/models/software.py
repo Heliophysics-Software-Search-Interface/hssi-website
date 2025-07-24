@@ -10,7 +10,7 @@ from .submission_info import SubmissionInfo
 from .roots import ( LEN_NAME, HssiModel,
 	RepoStatus, OperatingSystem, Keyword, Image, Phenomena, Organization, 
 	License, InstrumentObservatory, ProgrammingLanguage, FileFormat, 
-	Region, DataInput, FunctionCategory
+	Region, DataInput, FunctionCategory, CpuArchitecture
 )
 
 class SoftwareVersion(HssiModel):
@@ -62,7 +62,12 @@ class Software(HssiModel):
 		related_name='software_current'
 	)
 	persistentIdentifier = models.URLField(blank=True, null=True)
-	referencePublication = models.URLField(blank=True, null=True)
+	referencePublication = models.ForeignKey(
+		RelatedItem,
+		on_delete=models.CASCADE,
+		blank=True, null=True,
+		related_name="softwares_published"
+	)
 	description = models.TextField(blank=True, null=True)
 	conciseDescription = models.TextField(max_length=200, blank=True, null=True)
 	softwareFunctionality = models.ManyToManyField(
@@ -79,18 +84,27 @@ class Software(HssiModel):
 	inputFormats = models.ManyToManyField(
 		FileFormat, 
 		blank=True, 
-		related_name='softwares_to'
-	),
+		related_name='softwares_in'
+	)
 	outputFormats = models.ManyToManyField(
 		FileFormat, 
 		blank=True, 
-		related_name='softwares_from'
+		related_name='softwares_out'
 	)
-	relatedPublications = models.TextField(blank=True, null=True)
+	cpuArchitecture = models.ManyToManyField(
+		CpuArchitecture,
+		blank=True,
+		related_name='softwares'
+	)
+	relatedPublications = models.ManyToManyField(
+		RelatedItem,
+		blank=True,
+		related_name='softwares_referenced'
+	)
 	relatedDatasets = models.ManyToManyField(
 		RelatedItem,
 		blank=True,
-		related_name='softwares'
+		related_name='softwares_data'
 	)
 	developmentStatus = models.ForeignKey(
 		RepoStatus,
@@ -127,24 +141,22 @@ class Software(HssiModel):
 		related_name='softwares'
 	)
 	relatedSoftware = models.ManyToManyField(
-		'self',
+		RelatedItem,
 		blank=True,
-		symmetrical=True
+		related_name='softwares_related'
 	)
 	interoperableSoftware = models.ManyToManyField(
-		'self',
+		RelatedItem,
 		blank=True,
-		symmetrical=True
+		related_name='softwares_interoperable'
 	)
 	funder = models.ManyToManyField(
 		Organization,
 		blank=True,
 		related_name="softwares_funded"
 	)
-	award = models.ForeignKey(
+	award = models.ManyToManyField(
 		Award,
-		on_delete=models.CASCADE, 
-		null=True, 
 		blank=True, 
 		related_name='softwares'
 	)

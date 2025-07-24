@@ -19,6 +19,7 @@ export const typeAttribute = "data-hssi-type";
 
 export interface BaseProperties extends Record<string, any> {
 	requirementLevel?: RequirementLevel;
+	maxLength?: number;
 }
 
 export type AnyInputElement = (
@@ -49,6 +50,8 @@ export abstract class Widget {
 	/** holds congfiguration properties for the widget */
 	public properties: BaseProperties = {};
 	
+	public onValueChanged: SimpleEvent = new SimpleEvent();
+
 	/// Initialization ---------------------------------------------------------
 	
 	public constructor(elem: HTMLElement, parentField: ModelSubfield) {
@@ -153,6 +156,8 @@ export abstract class Widget {
 			this.triggerValueEntered();
 			this.inputEntryCallbackID = 0;
 		}, this.getValueEntryDelay());
+
+		if(this.parentField) this.parentField.onValueChanged.triggerEvent();
 	}
 
 	/// Public functionality ---------------------------------------------------
@@ -162,6 +167,10 @@ export abstract class Widget {
 
 	/** returns the value that a user has input into the widget */
 	public getInputValue(): string { return this.getInputElement().value.trim(); }
+
+	public destroy(): void {
+		this.element.remove();
+	}
 
 	/// Static -----------------------------------------------------------------
 

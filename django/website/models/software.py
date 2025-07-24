@@ -21,7 +21,7 @@ class SoftwareVersion(HssiModel):
 	version_pid = models.URLField(blank=True, null=True)
 	
 	# specified for intellisense, defined in Software model
-	software_current: models.Manager['Software']
+	software: models.Manager['Software']
 
 	@classmethod
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("number")
@@ -59,7 +59,7 @@ class Software(HssiModel):
 		SoftwareVersion,
 		on_delete=models.CASCADE,
 		blank=True, null=True,
-		related_name='software_current'
+		related_name='software'
 	)
 	persistentIdentifier = models.URLField(blank=True, null=True)
 	referencePublication = models.ForeignKey(
@@ -213,7 +213,7 @@ class Software(HssiModel):
 			return False
 
 class VisibleSoftware(models.Model):
-	'''Stores ids'''
+	'''Stores ids to flag softwares with the given ids as visible'''
 	id = models.OneToOneField(
 		Software, 
 		on_delete=models.CASCADE, 

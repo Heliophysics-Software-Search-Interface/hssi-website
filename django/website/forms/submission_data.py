@@ -583,6 +583,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Concise Description",
 			PROP_TT_EXPL: TTEXPL_CONCISEDESCRIPTION,
 			PROP_TT_BEST: TTBEST_CONCISEDESCRIPTION,
+            PROP_WIDGET_PROPS: {
+                WPROP_MAXLENGTH: 200,
+			}
 		},
 		multi=False,
 	),

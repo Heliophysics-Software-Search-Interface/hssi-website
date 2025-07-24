@@ -124,6 +124,11 @@ form .multi-field-row>button {
 	box-sizing: border-box;
 }
 
+form .option-valid {
+	background-color: #EFE;
+	font-weight: bold;
+}
+
 .widget-dropdown {
 	margin: 0;
 	padding: 0;
@@ -148,7 +153,6 @@ form .multi-field-row>button {
 .widget-dropdown li.selected {
 	background:rgb(154, 181, 255);
 }
-
 .widget-tooltip {
 	display: none;
 	position: absolute;

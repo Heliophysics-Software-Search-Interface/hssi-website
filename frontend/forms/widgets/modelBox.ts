@@ -15,6 +15,7 @@ const dropdownStyle = "widget-dropdown";
 const tooltipStyle = "widget-tooltip";
 const dropButtonStyle = "dropdown-button";
 const selectedStyle = "selected";
+const optionValidStyle = "option-valid";
 
 const modelChoicesUrl = "/api/model_choices/";
 
@@ -53,7 +54,8 @@ export class ModelBox extends Widget {
 	private filteredOptionLIs: OptionLi[] = [];
 	private selectedOptionIndex: number = -1;
 	private selectedOptionLI: OptionLi = null;
-	private selectedOption: Option = null;
+	private listenerUnset: (x: any) => any = null;
+	private listenerUnsetChild: (x: any) => any = null;
 
 	public properties: ModelBoxProperties = {};
 	
@@ -75,7 +77,7 @@ export class ModelBox extends Widget {
 		this.inputContainerRowElement = document.createElement("div");
 		this.inputContainerRowElement.append(this.inputContainerElement);
 		this.element.appendChild(this.inputContainerRowElement);
-		
+
 		// enforce max length
 		const maxLength = this.properties?.maxLength ?? 100;
 		this.inputElement.setAttribute("maxlength", maxLength.toString());
@@ -88,6 +90,29 @@ export class ModelBox extends Widget {
 
 		// build dropdown button if applicable
 		if(this.properties.dropdownButton) this.buildDropdownButton();
+
+		if(this.parentField){
+			this.listenerUnset = this.parentField.onValueChanged.addListener(() => {
+				this.unsetInputElementData();
+			});
+			this.listenerUnsetChild = this.parentField.onChildValueChanged.addListener(() => {
+				this.unsetInputElementData();
+			});
+		}
+	}
+
+	private unsetInputElementData(): void{
+		const elem = this.getInputElement();
+		if(elem.data) {
+			elem.data = null;
+			this.updateValidModelStyle();
+		}
+	}
+
+	private updateValidModelStyle(): void{
+		const elem = this.getInputElement();
+		if(elem.data) elem.classList.add(optionValidStyle);
+		else elem.classList.remove(optionValidStyle);
 	}
 
 	private buildDropdownButton(): void {
@@ -150,6 +175,7 @@ export class ModelBox extends Widget {
 		else {
 			this.inputElement.data = null;
 		}
+		this.updateValidModelStyle();
 	}
 
 	protected setSelectedOptionLI(option: OptionLi): void {
@@ -419,6 +445,14 @@ export class ModelBox extends Widget {
 			return inputElem.data.id as string;
 		}
 		return super.getInputValue();
+	}
+
+	override destroy(): void {
+		if(this.parentField){
+			this.parentField.onValueChanged.removeListener(this.listenerUnset);
+			this.parentField.onChildValueChanged.removeListener(this.listenerUnsetChild);
+		}
+		super.destroy();
 	}
 
 	/// Dropdown and tooltip elements ------------------------------------------

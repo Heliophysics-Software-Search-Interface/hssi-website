@@ -5,6 +5,7 @@ import {
 	type JSONObject,
 	type AnyInputElement,
 	ModelBox,
+	SimpleEvent,
 } from "../../loader";
 
 export const labelStyle = "custom-label";
@@ -42,6 +43,9 @@ export class ModelSubfield {
 	public get parent(): ModelSubfield { return this.parentField; }
 	public get multi(): boolean { return false; }
 
+	public onValueChanged: SimpleEvent = new SimpleEvent();
+	public onChildValueChanged: SimpleEvent = new SimpleEvent();
+
 	/// Initialization ---------------------------------------------------------
 
 	protected constructor(
@@ -52,6 +56,13 @@ export class ModelSubfield {
 		this.name = name;
 		this.type = type;
 		this.properties = properties;
+
+		this.onValueChanged.addListener(() => {
+			if(this.parent) this.parent.onChildValueChanged.triggerEvent();
+		});
+		this.onChildValueChanged.addListener(() =>{
+			if(this.parent) this.parent.onChildValueChanged.triggerEvent();
+		});
 	}
 
 	private buildSubfieldContainer(): void {
@@ -309,11 +320,7 @@ export class ModelSubfield {
 	/** destroy the field and remove it from the form */
 	public destroy(): void {
 		this.clearSubfields();
-		if(this.widget != null){
-			if(this.widget.element != null){
-				this.widget.element.remove();
-			}
-		}
+		this.widget?.destroy();
 		if(this.containerElement != null){
 			this.containerElement.remove();
 		}

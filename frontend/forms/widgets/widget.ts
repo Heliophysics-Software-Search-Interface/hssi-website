@@ -154,6 +154,8 @@ export abstract class Widget {
 			this.triggerValueEntered();
 			this.inputEntryCallbackID = 0;
 		}, this.getValueEntryDelay());
+
+		if(this.parentField) this.parentField.onValueChanged.triggerEvent();
 	}
 
 	/// Public functionality ---------------------------------------------------
@@ -163,6 +165,10 @@ export abstract class Widget {
 
 	/** returns the value that a user has input into the widget */
 	public getInputValue(): string { return this.getInputElement().value.trim(); }
+
+	public destroy(): void {
+		this.element.remove();
+	}
 
 	/// Static -----------------------------------------------------------------
 

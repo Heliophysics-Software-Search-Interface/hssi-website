@@ -29,7 +29,7 @@ class Award(HssiModel):
 	)
 
 	identifier = form_config(
-		models.CharField(blank=True, null=True),
+		models.CharField(max_length=LEN_NAME, blank=True, null=True),
 		label="Award Number",
 		tooltipExplanation="The award number or other identifier associated with the award.",
 		tooltipBestPractise="Please copy the identifier associated with the award here, e.g. NNG19PQ28C. This is used by funding agencies and organizations to track the impact of their funding.",

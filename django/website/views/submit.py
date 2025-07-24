@@ -63,8 +63,19 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	software.conciseDescription = data.get(FIELD_CONCISEDESCRIPTION)
 	software.documentation = data.get(FIELD_DOCUMENTATION)
 
-	# TODO get from/store in related objects model?
-	software.referencePublication = data.get(FIELD_REFERENCEPUBLICATION) 
+	## REFERENCE PUBLICATION
+
+	refpub = data.get(FIELD_REFERENCEPUBLICATION)
+	if refpub:
+		refpub_ref = RelatedItem.objects.filter(identifier=refpub).first()
+		if refpub_ref: software.referencePublication = refpub_ref
+		else:
+			refpublication = RelatedItem()
+			refpublication.name = "UNKNOWN"
+			refpublication.identifier = refpub
+			refpublication.type = RelatedItemType.PUBLICATION
+			refpublication.save()
+			software.referencePublication = refpublication
 
 	## DEVELOPMENT STATUS
 
@@ -309,10 +320,15 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	for architecture in architectures:
 		try:
 			uid = UUID(architecture)
-			# TODO add cpu architecture field to software model
+			software.cpuArchitecture.add(CpuArchitecture.objects.get(pk=uid))
 		except:
 			arcref = CpuArchitecture.objects.filter(name=architecture).first()
-			# TODO add cpu architecture field to software model
+			if arcref: software.cpuArchitecture.add(arcref)
+			else:
+				arc = CpuArchitecture()
+				arc.name = architecture
+				arc.save()
+				software.cpuArchitecture.add(arc)
 
 	## RELATED REGION
 
@@ -332,14 +348,22 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 
 	## AWARDS
 	
-	awards = data.get(FIELD_AWARDTITLE)
-	for award in awards:
+	award_datas: list[dict] = data.get(FIELD_AWARDTITLE)
+	for award_data in award_datas:
+		award_name = award_data.get(FIELD_AWARDTITLE)
 		try:
-			uid = UUID(award)
-			software.award = Award.objects.get(pk=uid)
-			# TODO change software award field to be manytomany field
+			uid = UUID(award_name)
+			software.award.add(Award.objects.get(pk=uid))
 		except Exception:
-			pass
+			award_num = award_data.get(FIELD_AWARDNUMBER)
+			award_ref = Award.objects.filter(identifier=award_num).first()
+			if award_ref: software.award.add(award_ref)
+			else:
+				award = Award()
+				award.name = award_name
+				award.identifier = award_num
+				award.save()
+				software.award.add(award)
 
 	## FUNDER
 
@@ -368,16 +392,23 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	for relpub in relpubs:
 		try:
 			uid = UUID(relpub)
-			# TODO make related publications many to many field
+			software.relatedPublications.add(RelatedItem.objects.get(pk=uid))
 		except:
-			pass
+			relpub_ref = RelatedItem.objects.filter(identifier=relpub).first()
+			if relpub_ref: software.relatedPublications.add(reldat_ref)
+			else:
+				relatedpub = RelatedItem()
+				relatedpub.name = "UNKNOWN"
+				relatedpub.identifier = relpub
+				relatedpub.type = RelatedItemType.PUBLICATION
+				relatedpub.save()
+				software.relatedPublications.add(relatedpub)
 	
 	reldatas: list[str] = data.get(FIELD_RELATEDDATASETS)
 	for reldat in reldatas:
 		try:
 			uid = UUID(reldat)
 			software.relatedDatasets.add(RelatedItem.objects.get(pk=uid))
-			# TODO remove redeclaration of RelatedItem.identifier
 		except Exception:
 			reldat_ref = RelatedItem.objects.filter(
 				identifier=reldat, 

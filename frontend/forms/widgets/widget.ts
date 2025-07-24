@@ -19,6 +19,7 @@ export const typeAttribute = "data-hssi-type";
 
 export interface BaseProperties extends Record<string, any> {
 	requirementLevel?: RequirementLevel;
+	maxLength?: number;
 }
 
 export type AnyInputElement = (

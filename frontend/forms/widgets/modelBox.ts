@@ -75,6 +75,10 @@ export class ModelBox extends Widget {
 		this.inputContainerRowElement = document.createElement("div");
 		this.inputContainerRowElement.append(this.inputContainerElement);
 		this.element.appendChild(this.inputContainerRowElement);
+		
+		// enforce max length
+		const maxLength = this.properties?.maxLength ?? 100;
+		this.inputElement.setAttribute("maxlength", maxLength.toString());
 
 		// add event listeners
 		this.inputElement.addEventListener("input", e => this.onInputValueChanged(e));

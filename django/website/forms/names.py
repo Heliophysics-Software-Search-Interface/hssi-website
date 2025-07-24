@@ -4,6 +4,7 @@ PROP_TT_EXPL = "tooltipExplanation"
 PROP_TT_BEST = "tooltipBestPractise"
 PROP_WIDGET_PROPS = "widgetProperties"
 
+WPROP_MAXLENGTH = "maxLength"
 WPROP_TARGETMODEL = "targetModel"
 WPROP_MODELFILTER = "modelFilter"
 WPROP_DROPDOWNBUTTON = "dropdownButton"

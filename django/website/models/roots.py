@@ -14,7 +14,8 @@ if TYPE_CHECKING:
 
 # Character length limits
 LEN_LONGNAME = 512
-LEN_NAME = 256
+LEN_NAME = 128
+LEN_SHORTNAME = 16
 LEN_ABBREVIATION = 5
 
 class ModelObjectChoice(NamedTuple):
@@ -161,7 +162,7 @@ class ControlledGraphList(ControlledList):
 
 ## Simple Root Models ----------------------------------------------------------
 
-class Keyword(ControlledList): 
+class Keyword(ControlledList):
 	@classmethod
 	def _form_config_redef(cls) -> None:
 		super()._form_config_redef()
@@ -383,13 +384,12 @@ class License(HssiModel):
 	
 	class Meta: ordering = ['name']
 	def __str__(self): return self.name
-	
 
 class Organization(HssiModel):
 	'''A legal entity such as university, agency, or company'''
 
 	name = models.CharField(max_length=LEN_NAME)
-	abbreviation = models.CharField(max_length=20, null=True, blank=True)
+	abbreviation = models.CharField(max_length=LEN_SHORTNAME, null=True, blank=True)
 	website = models.URLField(blank=True, null=True)
 	identifier = models.URLField(blank=True, null=True)
 	parent_organization = models.ForeignKey(
@@ -419,7 +419,7 @@ class Organization(HssiModel):
 		return terms
 
 	class Meta: ordering = ['name']
-	def __str__(self): 
+	def __str__(self):
 		if self.abbreviation:
 			return f"{self.name} ({self.abbreviation})"
 		return self.name

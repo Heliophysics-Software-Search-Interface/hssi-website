@@ -288,6 +288,12 @@ export class ModelSubfield {
 		return true;
 	}
 
+	public hasValidFormatValue(): boolean {
+		const inputElem = this.getInputElement();
+		if(inputElem) return inputElem.checkValidity();
+		return true;
+	}
+
 	/** 
 	 * expand the subfield container and show the content and build 
 	 * subfields if necessary 

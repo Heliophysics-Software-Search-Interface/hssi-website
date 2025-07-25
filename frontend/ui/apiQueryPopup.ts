@@ -6,6 +6,8 @@ import {
 	type JSONArray,
 	type DataciteItem,
 	type AnyInputElement,
+	FindIdWidget,
+	FormGenerator,
 } from '../loader';
 
 const styleResultBox = "hssi-query-results";
@@ -144,21 +146,25 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 		selectButton.addEventListener("click", () => {
 			if(this.targetField instanceof HTMLElement){
 				const inputElem = this.targetField as AnyInputElement;
-				if(this.targetField instanceof ModelSubfield) {
-					this.targetField.setValue(result.id);
-				}
-				else inputElem.value = result.id;
+				inputElem.value = result.id;
 				inputElem.data = result.jsonData;
 				PopupDialogue.hidePopup();
 				return;
 			}
-			else if(!this.targetField.multi){
-				const inputElem = this.targetField.getInputElement();
-				inputElem.value = result.id;
-				inputElem.data = result.jsonData;
-			}
-			else if (this.targetField instanceof ModelMultiSubfield){
-				this.targetField.addNewMultifieldWithValue(result.id);
+			else if(this.targetField instanceof ModelSubfield) {
+				this.targetField.setValue(result.id);
+				const targetWidget = this.targetField.widget;
+				if(targetWidget instanceof FindIdWidget){
+					targetWidget.onDataSelected(result.jsonData);
+				}
+				if(!this.targetField.multi){
+					const inputElem = this.targetField.getInputElement();
+					inputElem.value = result.id;
+					inputElem.data = result.jsonData;
+				}
+				else if (this.targetField instanceof ModelMultiSubfield){
+					this.targetField.addNewMultifieldWithValue(result.id);
+				}
 			}
 			this.targetField.requirement.applyRequirementWarningStyles();
 			PopupDialogue.hidePopup();

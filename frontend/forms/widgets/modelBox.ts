@@ -17,7 +17,8 @@ const dropButtonStyle = "dropdown-button";
 const selectedStyle = "selected";
 const optionValidStyle = "option-valid";
 
-const modelChoicesUrl = "/api/model_choices/";
+const modelsUrl = "/api/models/";
+const modelChoicesSlug = "/choices/";
 
 type ChoicesJsonStructure = { data: [string, string, string[], string?][] }
 
@@ -280,7 +281,7 @@ export class ModelBox extends Widget {
 		let optionData: Option[] = ModelBox.optionMap.get(modelName);
 		if(!optionData){
 			const data: ChoicesJsonStructure = await (
-				await fetchTimeout(modelChoicesUrl + modelName)
+				await fetchTimeout(modelsUrl + modelName + modelChoicesSlug)
 			).json();
 			optionData = data.data.map(x => {
 				return {
@@ -464,6 +465,7 @@ export class ModelBox extends Widget {
 	protected static optionMap: Map<string, Option[]> = new Map();
 	private static dropdownElement: HTMLDivElement = null;
 	private static tooltipElement: HTMLDivElement = null;
+	private static repositionDropdownInterval: number = 0;
 
 	protected static getDropdownElement(): HTMLDivElement {
 		if(this.dropdownElement == null) this.createDropdownElement();
@@ -518,8 +520,15 @@ export class ModelBox extends Widget {
 	 * specified element
 	 */
 	private static showDropdown(from: HTMLElement): void {
-		this.positionDropdownElement(from);
-		this.getDropdownElement().style.display = "block";
+		this.repositionDropdownInterval = setInterval(() => this.showDropdownRecurse(from), 100);
+		this.showDropdownRecurse(from);
+	}
+
+	private static showDropdownRecurse(from: HTMLElement): void{
+		if(this.repositionDropdownInterval){
+			this.positionDropdownElement(from);
+			this.getDropdownElement().style.display = "block";
+		}
 	}
 
 	/**
@@ -547,6 +556,10 @@ export class ModelBox extends Widget {
 
 	public static hideDropdown(): void {
 		this.getDropdownElement().style.display = "none";
+		if(this.repositionDropdownInterval){
+			clearInterval(this.repositionDropdownInterval);
+			this.repositionDropdownInterval = 0;
+		}
 	}
 
 	/**

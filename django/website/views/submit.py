@@ -203,8 +203,15 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 		if author_match: author = author_match
 		else:
 			author_name: str = author_data.get(FIELD_AUTHORS)
-			author_lastname = author_name.split()[-1]
-			author_firstname = author_name.replace(author_lastname, '').strip()
+			author_spl: str = author_name.split(',')
+			author_lastname = ""
+			author_firstname = ""
+			if len(author_spl) > 1:
+				author_firstname = author_spl[-1]
+				author_lastname = author_spl[0]
+			else:	
+				author_lastname = author_name.split()[-1]
+				author_firstname = author_name.replace(author_lastname, '').strip()
 			author.lastName = author_lastname
 			author.firstName = author_firstname
 			author.save()

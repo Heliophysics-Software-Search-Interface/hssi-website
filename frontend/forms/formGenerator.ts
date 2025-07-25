@@ -10,7 +10,7 @@ const formFieldsType = "form-field-container";
 const structureNameData = "fields-structure-name";
 const csrfTokenName = "csrfmiddlewaretoken"
 
-const modelStructureUrl = "/api/model_structure/";
+const modelStructureUrl = "/api/models/structures/";
 
 export const formRowStyle = "form-row";
 export const formSeparatorStyle = "form-separator"

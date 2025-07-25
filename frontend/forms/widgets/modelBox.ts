@@ -17,7 +17,8 @@ const dropButtonStyle = "dropdown-button";
 const selectedStyle = "selected";
 const optionValidStyle = "option-valid";
 
-const modelChoicesUrl = "/api/model_choices/";
+const modelsUrl = "/api/models/";
+const modelChoicesSlug = "/choices/";
 
 type ChoicesJsonStructure = { data: [string, string, string[], string?][] }
 
@@ -280,7 +281,7 @@ export class ModelBox extends Widget {
 		let optionData: Option[] = ModelBox.optionMap.get(modelName);
 		if(!optionData){
 			const data: ChoicesJsonStructure = await (
-				await fetchTimeout(modelChoicesUrl + modelName)
+				await fetchTimeout(modelsUrl + modelName + modelChoicesSlug)
 			).json();
 			optionData = data.data.map(x => {
 				return {

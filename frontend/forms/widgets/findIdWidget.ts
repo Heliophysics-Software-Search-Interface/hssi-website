@@ -13,6 +13,10 @@ export abstract class FindIdWidget extends UrlWidget {
 
 	protected buildFindButton(): void {
 		
+		let rowContainer = document.createElement("div");
+		rowContainer.style.display = "flex";
+		rowContainer.style.verticalAlign = "center";
+
 		this.findButton = document.createElement("button");
 		this.findButton.type = "button";
 		this.findButton.innerHTML = faMagicIcon + " " + this.findButtonText;
@@ -20,7 +24,11 @@ export abstract class FindIdWidget extends UrlWidget {
 			this.onFindButtonPressed();
 		});
 
-		this.element.appendChild(this.findButton);
+		this.inputElement.style.flex = "1";
+		rowContainer.appendChild(this.findButton);
+		rowContainer.appendChild(this.inputElement);
+
+		this.element.appendChild(rowContainer);
 	}
 
 	override initialize(): void {

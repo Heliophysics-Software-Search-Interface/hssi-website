@@ -20,8 +20,6 @@ urlpatterns = [
 	path('api/models/<str:model_name>/form/', views.exposed_models.model_form),
 	path('api/describe', views.somef.describe_view),
 	path('api/describe_form', views.somef.form_fill_view),
-	#path('submit/success/', submissions.success, name='submitted'),
-	#path('submit/<id>/', submissions.edit, name="edit_submission"),
 	path('team/', views.team, name="team"),
 	path('export/', views.export_search_results, name='export_seach_results')
 ]

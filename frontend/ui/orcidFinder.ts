@@ -5,7 +5,7 @@ import {
 
 const queryMaxRows = 50;
 
-export type orcidItem = {
+export type OrcidItem = {
 	email: string[],
 	"family-names": string,
 	"given-names": string,
@@ -32,7 +32,7 @@ export class OrcidFinder extends ApiQueryPopup {
 	}
 
 	protected override handleQueryResults(results: JSONValue): void {
-		const items = (results as JSONObject)["expanded-result"] as orcidItem[];
+		const items = (results as JSONObject)["expanded-result"] as OrcidItem[];
 		if(items == null) return;
 
 		for(const item of items) {

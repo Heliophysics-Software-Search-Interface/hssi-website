@@ -1,7 +1,9 @@
 import { 
 	OrcidFinder, PopupDialogue, RorFinder, DoiDataciteFinder, 
-	UrlWidget, faMagicIcon,
-	propResultFilters
+	UrlWidget, faMagicIcon, propResultFilters,
+	type JSONObject,
+	type OrcidItem,
+	ModelMultiSubfield
 } from "../../loader"
 
 export abstract class FindIdWidget extends UrlWidget {
@@ -10,6 +12,7 @@ export abstract class FindIdWidget extends UrlWidget {
 	protected get findButtonText(): string { return "find"; }
 
 	protected abstract onFindButtonPressed(): void;
+	public onDataSelected(data: JSONObject): void { }
 
 	protected buildFindButton(): void {
 		
@@ -53,6 +56,36 @@ export class OrcidWidget extends FindIdWidget {
 			.setTarget(this.parentField)
 			.withFilters(this.properties[propResultFilters]);
 		PopupDialogue.showPopup(orcidPopup);
+	}
+
+	override onDataSelected(data: JSONObject): void {
+		super.onDataSelected(data);
+
+		// we need to find a field that could be the affiliation field of the 
+		// author, since we don't know exactly the sibling field structure, 
+		// we will have to assume that the first multifield found is the 
+		// affiliation field
+		const field = this.parentField;
+		const siblings = field.parent?.getSubfields() ?? [];
+		let affiliationField: ModelMultiSubfield = null;
+		for(const sibling of siblings){
+			if(sibling instanceof ModelMultiSubfield){
+				affiliationField = sibling;
+			}
+		}
+		
+		// don't do anything if there's no affiliation, or if affiliations are 
+		// already filled out by the user
+		if(!affiliationField || affiliationField.hasValidInput()) return;
+		
+		// fill the affiliations given the data from orcid
+		const orcidData = data as OrcidItem
+		const affiliationNames = orcidData["institution-name"];
+		affiliationField.clearField();
+		for(const affilName of affiliationNames){
+			const field = affiliationField.addNewMultifieldWithValue(affilName);
+			field.expandSubfields();
+		}
 	}
 }
 

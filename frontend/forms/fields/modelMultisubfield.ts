@@ -41,7 +41,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		);
 	}
 
-	private buildNewMultifield(): void {
+	private buildNewMultifield(): ModelSubfield {
 
 		// create row for button to right of field
 		const multiRow = document.createElement("div") as HTMLDivElement;
@@ -78,6 +78,8 @@ export class ModelMultiSubfield extends ModelSubfield {
 		multiRow.appendChild(fieldContainer);
 		multiRow.appendChild(removeButton);
 		this.getRowContainer().appendChild(multiRow);
+
+		return field;
 	}
 
 	private buildMultiFieldContainer(): void {
@@ -138,9 +140,10 @@ export class ModelMultiSubfield extends ModelSubfield {
 		}
 	}
 
-	public addNewMultifieldWithValue(value: JSONValue): void {
-		this.buildNewMultifield();
-		this.multiFields[this.multiFields.length - 1].fillField(value);
+	public addNewMultifieldWithValue(value: JSONValue): ModelSubfield {
+		const field = this.buildNewMultifield();
+		field.fillField(value);
+		return field;
 	}
 
 	public collapseField() {

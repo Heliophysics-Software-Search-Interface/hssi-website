@@ -34,6 +34,7 @@ export abstract class FindIdWidget extends UrlWidget {
 	override initialize(): void {
 		super.initialize();
 		this.buildFindButton();
+		this.inputElement.placeholder = "Use 'find' button or paste URL";
 	}
 }
 

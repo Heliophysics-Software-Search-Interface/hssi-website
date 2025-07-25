@@ -2,7 +2,6 @@ from django.urls import path
 
 from . import submissions, views
 
-
 app_name = 'website' # Defines app url namespace
 urlpatterns = [
 	path('', views.published_resources, name="published_resources"),

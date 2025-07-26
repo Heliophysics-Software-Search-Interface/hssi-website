@@ -257,7 +257,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 			uid = UUID(kw)
 			software.programmingLanguage.add(Keyword.objects.get(pk=uid))
 		except Exception:
-			kw_ref = Keyword.objects.filter(pk=uid).first()
+			kw_ref = Keyword.objects.filter(name=kw).first()
 			if kw_ref: software.keywords.add(kw_ref)
 			else:
 				keyword = Keyword()

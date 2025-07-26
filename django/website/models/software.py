@@ -4,6 +4,7 @@ from typing import Callable
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 
+from ..util import *
 from .people import Person
 from .auxillary_info import RelatedItem, Award
 from .submission_info import SubmissionInfo
@@ -30,6 +31,7 @@ class SoftwareVersion(HssiModel):
 	def __str__(self): return self.number
 
 class Software(HssiModel):
+	access = AccessLevel.PUBLIC
 	programmingLanguage = models.ManyToManyField(
 		ProgrammingLanguage,
 		blank=True, 
@@ -214,6 +216,7 @@ class Software(HssiModel):
 
 class VisibleSoftware(models.Model):
 	'''Stores ids to flag softwares with the given ids as visible'''
+	access = AccessLevel.ADMIN
 	id = models.OneToOneField(
 		Software, 
 		on_delete=models.CASCADE, 

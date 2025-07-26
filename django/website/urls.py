@@ -17,6 +17,7 @@ urlpatterns = [
 	path('api/models/structures/', views.exposed_models.get_model_structure),
 	path('api/models/<str:model_name>/choices/', views.exposed_models.get_model_choices),
 	path('api/models/<str:model_name>/form/', views.exposed_models.model_form),
+	path('api/models/<str:model_name>/rows/<str:uid>', views.model_rows.get_model_row),
 	path('api/describe', views.somef.describe_view),
 	path('api/describe_form', views.somef.form_fill_view),
 	path('team/', views.team, name="team"),

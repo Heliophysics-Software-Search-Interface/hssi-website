@@ -1,5 +1,6 @@
 from django.db import models
 
+from ..util import *
 from .structurizer import form_config
 from .roots import HssiModel, Organization, LEN_NAME
 
@@ -14,6 +15,7 @@ if TYPE_CHECKING:
 	from .submission_info import SubmissionInfo
 
 class Person(HssiModel):
+	access = AccessLevel.ADMIN
 	'''Metadata to hold needed information about someone'''
 	firstName = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
 	lastName = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
@@ -70,6 +72,7 @@ class Person(HssiModel):
 		return f"{self.lastName}, {self.firstName}"
 
 class Curator(HssiModel):
+	access = AccessLevel.ADMIN
 	'''A user who is able to curate submissions'''
 	email = form_config(
 		models.EmailField(null=False, blank=False),
@@ -100,6 +103,7 @@ class Curator(HssiModel):
 	def __str__(self): return str(self.person)
 
 class Submitter(HssiModel):
+	access = AccessLevel.ADMIN
 	'''A person who has submitted a software'''
 	email = form_config(
 		models.EmailField(null=False, blank=False),

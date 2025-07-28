@@ -17,6 +17,10 @@ export type OrcidItem = {
 export class OrcidFinder extends ApiQueryPopup {
 	
 	public override get title(): string { return "ORCID Finder"; }
+	
+	protected override get description(): string { return (
+		"Enter someone's name to find their ORCID."
+	); };
 
 	protected override get endpoint(): string {
 		return "https://pub.orcid.org/v3.0/expanded-search/";

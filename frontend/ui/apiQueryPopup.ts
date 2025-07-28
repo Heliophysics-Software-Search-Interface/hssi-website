@@ -34,7 +34,8 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 	protected resultBox: HTMLDivElement = null;
 	protected filters: string[] = [];
 	private isBusy: boolean = false;
-
+	
+	protected get description(): string { return "" };
 	protected get contentType(): string { return "application/json" };
 
 	protected abstract get endpoint(): string;
@@ -47,6 +48,11 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 
 	protected override createContent(): void {
 		super.createContent();
+		if(this.description){
+			const descElem = document.createElement("p");
+			descElem.innerText = this.description;
+			this.contentElement.appendChild(descElem);
+		}
 		this.createQueryForm();
 		this.createResultBox();
 		this.onShow.addListener(() => {

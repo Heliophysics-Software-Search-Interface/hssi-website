@@ -375,17 +375,18 @@ SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
 		},
 		multi=False,
 	),
-	ModelSubfield.define(
-		name=FIELD_RELATEDINSTRUMENTIDENTIFIER,
-		type=TYPE_URL,
-		requirement=RequirementLevel.OPTIONAL.value,
-		properties={
-			PROP_LABEL: "Observatory Identifier",
-			PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTIDENTIFIER,
-			PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTIDENTIFIER,
-		},
-		multi=False,
-	),
+    # TODO implement when observatory identifier is standardized
+	# ModelSubfield.define(
+	# 	name=FIELD_RELATEDINSTRUMENTIDENTIFIER,
+	# 	type=TYPE_URL,
+	# 	requirement=RequirementLevel.OPTIONAL.value,
+	# 	properties={
+	#		PROP_LABEL: "Observatory Identifier",
+	#		PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTIDENTIFIER,
+	#		PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTIDENTIFIER,
+	#	},
+	# 	multi=False,
+	# ),
 )
 
 SUBMISSION_FORM_DATASET: ModelStructure = ModelStructure.define(

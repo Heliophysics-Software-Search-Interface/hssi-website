@@ -3,15 +3,7 @@ import ast, json
 from django.apps import apps
 from django.http import JsonResponse, HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
-from ..forms import (
-	SUBMISSION_FORM_FIELDS, SUBMISSION_FORM_FIELDS_1, SUBMISSION_FORM_FIELDS_2, 
-	SUBMISSION_FORM_FIELDS_3, SUBMISSION_FORM_OBSERVATORY, SUBMISSION_FORM_AUTHOR, 
-	SUBMISSION_FORM_CONTRIBUTOR, SUBMISSION_FORM_AWARD, SUBMISSION_FORM_DATASET, 
-	SUBMISSION_FORM_INSTRUMENT, SUBMISSION_FORM_LICENSE, 
-	SUBMISSION_FORM_AUTHOR_AFFILIATION, SUBMISSION_FORM_CONTRIBUTOR_AFFILIATION, 
-	SUBMISSION_FORM_PUBLISHER, SUBMISSION_FORM_FUNDER, SUBMISSION_FORM_PUBLICATION, 
-	SUBMISSION_FORM_REL_SOFTWARE, SUBMISSION_FORM_SUBMITTER, SUBMISSION_FORM_VERSION
-)
+from ..forms import *
 from ..models import (
 	HssiModel, Keyword, OperatingSystem, Phenomena, RepoStatus, Image,
 	ProgrammingLanguage, DataInput, CpuArchitecture,  FileFormat, Region,
@@ -67,7 +59,7 @@ def get_model_structure(request: HttpRequest) -> JsonResponse:
 			SUBMISSION_FORM_FIELDS_2.serialized(),
 			SUBMISSION_FORM_FIELDS_3.serialized(),
 		],
-	]}
+	], "fieldMap": MODEL_FIELD_MAP }
 	return JsonResponse(structures)
 
 def get_model_choices(

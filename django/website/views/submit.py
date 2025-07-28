@@ -164,7 +164,9 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 		publisher = Organization()
 		publisher.name = publisher_data.get(FIELD_PUBLISHER)
 		publisher.identifier = publisher_data.get(FIELD_PUBLISHERIDENTIFIER)
-		pub_match = Organization.objects.filter(identifier=publisher.identifier).first()
+		pub_match = None
+		if publisher.identifier: 
+			pub_match = Organization.objects.filter(identifier=publisher.identifier).first()
 		if pub_match: publisher = pub_match
 		else: publisher.save()
 		software.publisher = publisher
@@ -197,7 +199,9 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	for author_data in author_datas:
 		author = Person()
 		author.identifier = author_data.get(FIELD_AUTHORIDENTIFIER)
-		author_match = Person.objects.filter(identifier=author.identifier).first()
+		author_match = None
+		if author.identifier: 
+			author_match = Person.objects.filter(identifier=author.identifier).first()
 
 		# TODO some way to change author name after submission
 		if author_match: author = author_match
@@ -209,7 +213,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 			if len(author_spl) > 1:
 				author_firstname = author_spl[-1]
 				author_lastname = author_spl[0]
-			else:	
+			else:
 				author_lastname = author_name.split()[-1]
 				author_firstname = author_name.replace(author_lastname, '').strip()
 			author.lastName = author_lastname
@@ -225,7 +229,9 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 				affiliation = Organization()
 				affiliation.name = affiliation_name
 				affiliation.identifier = affiliation_id
-				affil_match = Organization.objects.filter(identifier=affiliation.identifier).first()
+				affil_match = None
+				if affiliation_id: 
+					affil_match = Organization.objects.filter(identifier=affiliation.identifier).first()
 				if affil_match: affiliation = affil_match
 				else: affiliation.save()
 				author.affiliation.add(affiliation)
@@ -478,7 +484,8 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 			software.relatedInstruments.add(InstrumentObservatory.objects.get(pk=uid))
 		except Exception:
 			instr_ident = relinstr_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
-			instr_ref = InstrumentObservatory.objects.filter(identifier=instr_ident)
+			instr_ref = None
+			if instr_ident: instr_ref = InstrumentObservatory.objects.filter(identifier=instr_ident)
 			if instr_ref: software.relatedInstruments.add(instr_ref)
 			else:
 				instr = InstrumentObservatory()
@@ -497,8 +504,9 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 		except Exception:
 			# TODO FIELD_RELATEDOBSERVATORYIDENTIFIER
 			obs_ident = relobs_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
-			obs_ref = InstrumentObservatory.objects.filter(identifier=obs_ident)
-			if instr_ref: software.relatedInstruments.add(obs_ref)
+			obs_ref = None
+			if obs_ident: obs_ref = InstrumentObservatory.objects.filter(identifier=obs_ident)
+			if obs_ref: software.relatedInstruments.add(obs_ref)
 			else:
 				obs = InstrumentObservatory()
 				obs.name = "UNKNOWN"

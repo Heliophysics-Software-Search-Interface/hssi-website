@@ -5,7 +5,9 @@ import {
 	getStringSimilarity,
 	type JSONObject,
 	fetchTimeout,
-	type JSONValue
+	type JSONValue,
+	FormGenerator,
+	ModelMultiSubfield
 } from "../../loader";
 
 const optionDataValue = "json-options";
@@ -190,9 +192,20 @@ export class ModelBox extends Widget {
 			const subfields = this.parentField.getSubfields();
 			console.log(jsonData);
 			for(const dataFieldName in jsonData){
-				console.log(dataFieldName);
-				const subfield = subfields.find(x => x.name == dataFieldName);
-				subfield?.fillField(jsonData[dataFieldName]);
+				const subfield = subfields.find(x => {
+					const mappedName = FormGenerator.fieldMap[x.name] ?? "NONE";
+					return mappedName == dataFieldName;
+				});
+				console.log(dataFieldName + " -> " + subfield?.name, jsonData[dataFieldName]);
+				if(subfield){
+					const jsonValue = jsonData[dataFieldName];
+					if(subfield instanceof ModelMultiSubfield) {
+						if(jsonValue instanceof Array)
+							subfield.fillMultiFields(jsonValue);
+						else subfield.fillMultiFields([jsonValue]);
+					}
+					else subfield.fillField(jsonValue);
+				}
 			}
 			this.rowFetchAbort = null;
 		});

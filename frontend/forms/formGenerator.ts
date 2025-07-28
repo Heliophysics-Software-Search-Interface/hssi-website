@@ -17,6 +17,7 @@ export const formSeparatorStyle = "form-separator"
 
 type ModelStructureData = {
 	data: ModelFieldStructure[],
+	fieldMap: JSONObject,
 }
 
 export class FormGenerator {
@@ -285,6 +286,7 @@ export class FormGenerator {
 
 	private static instance: FormGenerator = null;
 	private static structureData: ModelStructureData = null;
+	public static fieldMap: JSONObject = null;
 
 	/** 
 	 * generate a form from a given set of fields, or if not specified, tries 
@@ -307,10 +309,11 @@ export class FormGenerator {
 
 		// load structure data
 		if(this.structureData == null) {
-			const response = await fetch(modelStructureUrl);
+			const response = await fetchTimeout(modelStructureUrl);
 			const data = await response.json();
 			const structureData = data as ModelStructureData;
 			this.structureData = structureData;
+			this.fieldMap = structureData.fieldMap;
 			ModelFieldStructure.parseBasicWidgetModels();
 			ModelFieldStructure.parseModels(this.structureData.data);
 		}

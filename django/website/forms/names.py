@@ -1,3 +1,4 @@
+from ..models import *
 
 PROP_LABEL = "label"
 PROP_TT_EXPL = "tooltipExplanation"
@@ -28,13 +29,13 @@ FIELD_PERSISTENTIDENTIFIER = "persistentIdentifier"
 FIELD_PROGRAMMINGLANGUAGE = "programmingLanguage"
 FIELD_PUBLICATIONDATE = "publicationDate"
 FIELD_AUTHORS = "authors"
+FIELD_AUTHORIDENTIFIER = "authorIdentifier"
 FIELD_AUTHORAFFILIATION = "authorAffiliation"
 FIELD_AUTHORAFFILIATIONIDENTIFIER = "authorAffiliationIdentifier"
 FIELD_CONTRIBUTOR = "contributor"
 FIELD_CONTRIBUTORIDENTIFIER = "contributorIdentifier"
 FIELD_CONTRIBUTORAFFILIATION = "contributorAffiliation"
 FIELD_CONTRIBUTORAFFILIATIONIDENTIFIER = "contributorAffiliationIdentifier"
-FIELD_AUTHORIDENTIFIER = "authorIdentifier"
 FIELD_PUBLISHER = "publisher"
 FIELD_PUBLISHERIDENTIFIER = "publisherIdentifier"
 FIELD_RELATEDINSTRUMENTS = "relatedInstruments"
@@ -210,3 +211,68 @@ TTBEST_SUBMITTERNAME = "Given name, initials, and last/surname (e.g. Jack L. Doe
 TTBEST_SUBMITTEREMAIL = "Please ensure that a complete email address is given."
 TTBEST_CURATORNAME = "Last/surname, given name and initials (e.g. Doe, Jack L.)."
 TTBEST_CURATOREMAIL = "Please ensure that a complete email address is given."
+
+# TODO give a proper solution for mapping field names to database rows on frontend
+MODEL_FIELD_MAP = {
+	FIELD_PERSISTENTIDENTIFIER: "persistentIdentifier",
+	FIELD_PROGRAMMINGLANGUAGE: "programmingLanguage",
+	FIELD_PUBLICATIONDATE: "publicationDate",
+	FIELD_AUTHORS: "authors",
+	FIELD_AUTHORIDENTIFIER: "identifier",
+	FIELD_AUTHORAFFILIATION: "affiliation",
+	FIELD_AUTHORAFFILIATIONIDENTIFIER: "identifier",
+	FIELD_CONTRIBUTOR: "NONE",
+	FIELD_CONTRIBUTORIDENTIFIER: "identifier",
+	FIELD_CONTRIBUTORAFFILIATION: "affiliation",
+	FIELD_CONTRIBUTORAFFILIATIONIDENTIFIER: "identifier",
+	FIELD_PUBLISHER: "publisher",
+	FIELD_PUBLISHERIDENTIFIER: "identifier",
+	FIELD_RELATEDINSTRUMENTS: "relatedInstruments",
+	FIELD_RELATEDINSTRUMENTIDENTIFIER: "identifier",
+	FIELD_RELATEDOBSERVATORIES: "relatedObservatories",
+	FIELD_SOFTWARENAME: "softwareName",
+	FIELD_VERSIONNUMBER: "version",
+	FIELD_VERSIONDATE: "release_date",
+	FIELD_VERSIONDESCRIPTION: "description",
+	FIELD_VERSIONPID: "version_pid",
+	FIELD_REFERENCEPUBLICATION: "referencePublication",
+	FIELD_DESCRIPTION: "description",
+	FIELD_CONCISEDESCRIPTION: "conciseDescription",
+	FIELD_SOFTWAREFUNCTIONALITY: "softwareFunctionality",
+	FIELD_DOCUMENTATION: "documentation",
+	FIELD_DATASOURCES: "dataSources",
+	FIELD_INPUTFORMATS: "inputFormats",
+	FIELD_OUTPUTFORMATS: "outputFormats",
+	FIELD_RELATEDPUBLICATIONS: "relatedPublications",
+	FIELD_RELATEDDATASETS: "relatedDatasets",
+	FIELD_RELATEDDATASETNAME: "name",
+	FIELD_DEVELOPMENTSTATUS: "developmentStatus",
+	FIELD_OPERATINGSYSTEM: "operatingSystem",
+	FIELD_CPUARCHITECTURE: "cpuArchitecture",
+	FIELD_METADATALICENSE: "metadataLicense",
+	FIELD_METADATALICENSEURI: "url",
+	FIELD_METADATALICENSEIDENTIFIER: "NONE",
+	FIELD_METADATALICENSEIDENTIFIERSCHEME: "NONE",
+	FIELD_METADATASCHEMEURI: "NONE",
+	FIELD_LICENSE: "license",
+	FIELD_LICENSEURI: "url",
+	FIELD_LICENSEFILEURL: "NONE",
+	FIELD_LICENSEIDENTIFIER: "NONE",
+	FIELD_LICENSEIDENTIFIERSCHEME: "NONE",
+	FIELD_SCHEMEURI: "NONE",
+	FIELD_RELATEDREGION: "relatedRegion",
+	FIELD_KEYWORDS: "keywords",
+	FIELD_RELATEDSOFTWARE: "relatedSoftware",
+	FIELD_INTEROPERABLESOFTWARE: "interoperableSoftware",
+	FIELD_FUNDER: "funder",
+	FIELD_FUNDERIDENTIFIER: "identifier",
+	FIELD_AWARDTITLE: "award",
+	FIELD_AWARDNUMBER: "identifier",
+	FIELD_CODEREPOSITORYURL: "codeRepositoryUrl",
+	FIELD_LOGO: "logo",
+	FIELD_RELATEDPHENOMENA: "relatedPhenomena",
+	FIELD_SUBMITTERNAME: "submitter",
+	FIELD_SUBMITTEREMAIL: "email",
+	FIELD_CURATORNAME: "curator",
+	FIELD_CURATOREMAIL: "email",
+}

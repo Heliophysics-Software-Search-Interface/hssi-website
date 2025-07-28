@@ -19,6 +19,7 @@ const optionValidStyle = "option-valid";
 
 const modelsUrl = "/api/models/";
 const modelChoicesSlug = "/choices/";
+const modelRowSlug = "/rows/";
 
 type ChoicesJsonStructure = { data: [string, string, string[], string?][] }
 
@@ -59,6 +60,7 @@ export class ModelBox extends Widget {
 	private listenerUnsetChild: (x: any) => any = null;
 
 	public properties: ModelBoxProperties = {};
+	public rowFetchAbort: AbortController = null;
 	
 	/// Restricted functionality -----------------------------------------------
 
@@ -170,12 +172,42 @@ export class ModelBox extends Widget {
 		}
 	}
 
+	protected fetchModelRow(uid: string): void {
+		this.rowFetchAbort?.abort();
+		this.rowFetchAbort = null;
+
+		// fetch object data to fill out
+		const fetchUrl = modelsUrl + this.properties.targetModel + modelRowSlug + uid;
+		this.rowFetchAbort = new AbortController();
+		console.log(`Fetching ${this.properties.targetModel} row: ${uid}`);
+		const promise = fetch(fetchUrl, { signal: this.rowFetchAbort.signal });
+		promise.then(async data => {
+			console.log(data);
+			const jsonData = await data.json();
+			const collapse = !this.parentField.subfieldsExpanded();
+			this.parentField.expandSubfields();
+			if(collapse) this.parentField.collapseSubfields();
+			const subfields = this.parentField.getSubfields();
+			console.log(jsonData);
+			for(const dataFieldName in jsonData){
+				console.log(dataFieldName);
+				const subfield = subfields.find(x => x.name == dataFieldName);
+				subfield?.fillField(jsonData[dataFieldName]);
+			}
+			this.rowFetchAbort = null;
+		});
+		promise.catch(err => console.error(err));
+	}
+
 	protected selectOption(option: Option = this.selectedOptionLI?.data): void {
+		this.rowFetchAbort?.abort();
+		this.rowFetchAbort = null;
 		if(option != null){
 			this.inputElement.value = option.name;
 			this.inputElement.data = option;
 			// this.inputElement.dispatchEvent(new Event("input", { bubbles: true }));
 			this.parentField?.requirement.applyRequirementWarningStyles();
+			this.fetchModelRow(option.id);
 		}
 		else {
 			this.inputElement.data = null;

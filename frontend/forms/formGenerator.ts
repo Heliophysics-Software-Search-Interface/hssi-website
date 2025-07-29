@@ -445,6 +445,13 @@ export class FormGenerator {
 		this.instance.autofilledFromRepo = true;
 	}
 	
+	public static isAutofilledDatacite(): boolean { 
+		return this.instance.autofilledFromDatacite; 
+	}
+	
+	public static isAutofilledRepo(): boolean { 
+		return this.instance.autofilledFromRepo; 
+	}
 }
 
 const win = window as any;

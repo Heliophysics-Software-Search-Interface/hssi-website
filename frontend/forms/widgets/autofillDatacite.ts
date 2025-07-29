@@ -91,19 +91,21 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 
 	override initialize(): void {
 		super.initialize();
-		this.parentField?.requirement?.containerElement?.addEventListener(
-			"focusout", async e => {
-				if(!FormGenerator.markAutofilledDatacite && this.parentField.hasValidInput()){
-					if(await ConfirmDialogue.getConfirmation(
-						"It looks like the identifier you entered can be " +
-						"used to fetch relevant data about your software " + 
-						"from datacite. Would you like to use this data " +
-						"to autofill the form? If so, please ensure "+ 
-						"autofilled information is accurate.", 
-						"Autofill Prompt"
-					)) this.handleAutofill();
-				}
-		});
+		setTimeout(()=>{
+			this.parentField?.requirement?.containerElement?.addEventListener(
+				"focusout", async e => {
+					if(!FormGenerator.isAutofilledDatacite() && this.parentField.hasValidInput()){
+						if(await ConfirmDialogue.getConfirmation(
+							"It looks like the identifier you entered can be " +
+							"used to fetch relevant data about your software " + 
+							"from datacite. Would you like to use this data " +
+							"to autofill the form? If so, please ensure "+ 
+							"autofilled information is accurate.", 
+							"Autofill Prompt"
+						)) this.handleAutofill();
+					}
+				});
+		}, 0);
 	}
 
 	/// Static -----------------------------------------------------------------

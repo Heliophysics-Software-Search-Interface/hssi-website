@@ -52,7 +52,7 @@ export async function fetchTimeout(
 	input: RequestInfo | URL,
 	init: RequestInit = {},
 	timeout: number = 10
-) {
+): Promise<Response> {
 	const controller = new AbortController();
 	const reqInit = deepMerge(
 		init as JSONObject,
@@ -83,7 +83,7 @@ export function extractOrcId(url: string): string {
  * get a similarity score of how similar two strings are from 0 to 1, where 0
  * means completely different strings, and 1 means they are the exact same
  */
-export function getStringSimilarity(a: string, b: string) {
+export function getStringSimilarity(a: string, b: string): number {
 	const m = a.length, n = b.length;
 	const dp = Array.from({ length: m + 1 }, (_, i) =>
 		Array.from({ length: n + 1 }, (_, j) => i === 0 ? j : j === 0 ? i : 0)

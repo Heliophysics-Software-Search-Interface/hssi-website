@@ -1,10 +1,11 @@
-import uuid
+import uuid, json
 from django.db import models
-from django.db.models.fields import related, related_descriptors
+from django.db.models.fields import related_descriptors
+from django.core.serializers import serialize
 from colorful.fields import RGBColorField
 
 from .structurizer import form_config
-from ..util import RequirementLevel
+from ..util import *
 
 from typing import TYPE_CHECKING, Any, NamedTuple
 if TYPE_CHECKING:
@@ -12,9 +13,14 @@ if TYPE_CHECKING:
 	from .auxillary_info import Award, RelatedItem
 	from .software import Software
 
+FIELD_HAS_FOREIGN_KEY = (
+	models.ForeignKey | models.ManyToManyField | models.OneToOneField
+)
+
 # Character length limits
 LEN_LONGNAME = 512
-LEN_NAME = 256
+LEN_NAME = 128
+LEN_SHORTNAME = 16
 LEN_ABBREVIATION = 5
 
 class ModelObjectChoice(NamedTuple):
@@ -48,6 +54,7 @@ class HssiBase(models.base.ModelBase):
 
 class HssiModel(models.Model, metaclass=HssiBase):
 	'''Base class for all models in the HSSI project'''
+	access: AccessLevel = AccessLevel.ADMIN
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
 	def get_search_terms(self) -> list[str]: 
@@ -97,6 +104,51 @@ class HssiModel(models.Model, metaclass=HssiBase):
 			subfields.append(field)
 		
 		return subfields
+	
+	def get_serialized_data(self, access: AccessLevel, recursive: bool = False) -> dict[str, Any]:
+		"""
+		return the instance fields that are available to the specified access 
+		level as data in a dictionary. Foreign keys will be fetched and nested 
+		in the data structure if 'recursive' is specified
+		"""
+		model = type(self)
+		if access < model.access:
+			raise Exception(f"Unauthorized access, {access} < {model.access}")
+		
+		datas: str = serialize('json', [self])
+		data: dict[str, Any] = json.loads(datas)[0].get('fields')
+		data['id'] = str(self.id)
+
+		# TODO handle potential infinite recursion for circular table references
+		if recursive:
+			def lookup(uid: str, field: FIELD_HAS_FOREIGN_KEY) -> dict[str, Any] | None | str:
+				if isinstance(field, FIELD_HAS_FOREIGN_KEY):
+					target_model: type[HssiModel] = field.related_model
+					if not issubclass(target_model, HssiModel): return None
+					instance = target_model.objects.filter(pk=uid).first()
+					parsed_val: dict[str, Any] = None
+					try: parsed_val = instance.get_serialized_data(access, recursive)
+					except Exception: return "ERROR"
+					return parsed_val
+				return None
+			
+			for key, val in data.items():
+				if key == 'id': continue
+				if isinstance(val, list):
+					new_val: list = []
+					for item in val:
+						if not item: continue
+						try:
+							new_item = lookup(uuid.UUID(item), model._meta.get_field(key))
+							if new_item: new_val.append(new_item)
+						except Exception: break
+					if new_val: data[key] = new_val
+					continue
+				try:
+					new_val =  lookup(uuid.UUID(val), model._meta.get_field(key))
+					if new_val: data[key] = new_val
+				except: continue
+		return data
 	
 	class Meta:
 		abstract = True
@@ -161,7 +213,8 @@ class ControlledGraphList(ControlledList):
 
 ## Simple Root Models ----------------------------------------------------------
 
-class Keyword(ControlledList): 
+class Keyword(ControlledList):
+	access = AccessLevel.PUBLIC
 	@classmethod
 	def _form_config_redef(cls) -> None:
 		super()._form_config_redef()
@@ -174,6 +227,7 @@ class Keyword(ControlledList):
 
 class OperatingSystem(ControlledList):
 	'''Operating system on which the software can run'''
+	access = AccessLevel.PUBLIC
 	@classmethod
 	def _form_config_redef(cls) -> None:
 		super()._form_config_redef()
@@ -186,6 +240,7 @@ class OperatingSystem(ControlledList):
 
 class CpuArchitecture(ControlledList):
 	'''CPU Architecture on which the software can run'''
+	access = AccessLevel.PUBLIC
 	@classmethod
 	def _form_config_redef(cls) -> None:
 		super()._form_config_redef()
@@ -198,6 +253,7 @@ class CpuArchitecture(ControlledList):
 
 class Phenomena(ControlledList):
 	'''Solar phenomena that relate to the software'''
+	access = AccessLevel.PUBLIC
 	@classmethod
 	def _form_config_redef(cls) -> None:
 		super()._form_config_redef()
@@ -213,6 +269,7 @@ class RepoStatus(ControlledList):
 	Repo status as defined by the repostatus.org json-ld: 
 	https://www.repostatus.org/badges/latest/ontology.jsonld
 	'''
+	access = AccessLevel.PUBLIC
 	image = models.URLField(blank=True, null=True)
 
 	@classmethod
@@ -229,6 +286,7 @@ class RepoStatus(ControlledList):
 
 class Image(HssiModel):
 	'''Reference to an image file and alt text description'''
+	access = AccessLevel.PUBLIC
 	url = models.URLField(blank=True, null=True)
 	description = models.CharField(max_length=250)
 
@@ -240,6 +298,7 @@ class Image(HssiModel):
 
 class ProgrammingLanguage(ControlledList):
 	'''Primary Programming language used to develop the software'''
+	access = AccessLevel.PUBLIC
 	version = models.CharField(max_length=LEN_NAME, blank=True, null=True)
 
 	@classmethod
@@ -256,6 +315,7 @@ class ProgrammingLanguage(ControlledList):
 
 class DataInput(ControlledList):
 	'''Ways that the software can accept data as input'''
+	access = AccessLevel.PUBLIC
 	abbreviation = models.CharField(max_length=LEN_ABBREVIATION, blank=True, null=True)
 
 	@classmethod
@@ -272,6 +332,7 @@ class DataInput(ControlledList):
 
 class FileFormat(ControlledList):
 	'''File formats that are supported as input or output types by the software'''
+	access = AccessLevel.PUBLIC
 	extension = models.CharField(max_length=25, blank=False, null=False)
 
 	# specified for intellisense, defined in other models
@@ -292,6 +353,7 @@ class FileFormat(ControlledList):
 
 class Region(ControlledList):
 	'''Region of the sun which relates to the software'''
+	access = AccessLevel.PUBLIC
 	@classmethod
 	def _form_config_redef(cls) -> None:
 		super()._form_config_redef()
@@ -307,6 +369,7 @@ class Region(ControlledList):
 
 class InstrumentObservatory(ControlledList):
 	'''An observatory or scientific research instrument'''
+	access = AccessLevel.PUBLIC
 	type = form_config(
 		models.IntegerField(choices=InstrObsType.choices, default=InstrObsType.UNKNOWN),
 		label="Type",
@@ -342,6 +405,7 @@ class InstrumentObservatory(ControlledList):
 ## Complex Root Models ---------------------------------------------------------
 
 class FunctionCategory(ControlledGraphList):
+	access = AccessLevel.PUBLIC
 	abbreviation = models.CharField(max_length=5, null=True, blank=True)
 	backgroundColor = RGBColorField("Background Color", default="#FFFFFF", blank=True, null=True)
 	textColor = RGBColorField("Text Color", default="#000000", blank=True, null=True)
@@ -366,6 +430,7 @@ class FunctionCategory(ControlledGraphList):
 	def __str__(self): return self.name
 
 class License(HssiModel):
+	access = AccessLevel.PUBLIC
 	name = models.CharField(max_length=LEN_NAME)
 	url = models.URLField(blank=True, null=True)
 
@@ -383,13 +448,12 @@ class License(HssiModel):
 	
 	class Meta: ordering = ['name']
 	def __str__(self): return self.name
-	
 
 class Organization(HssiModel):
 	'''A legal entity such as university, agency, or company'''
-
+	access = AccessLevel.PUBLIC
 	name = models.CharField(max_length=LEN_NAME)
-	abbreviation = models.CharField(max_length=20, null=True, blank=True)
+	abbreviation = models.CharField(max_length=LEN_SHORTNAME, null=True, blank=True)
 	website = models.URLField(blank=True, null=True)
 	identifier = models.URLField(blank=True, null=True)
 	parent_organization = models.ForeignKey(
@@ -419,7 +483,7 @@ class Organization(HssiModel):
 		return terms
 
 	class Meta: ordering = ['name']
-	def __str__(self): 
+	def __str__(self):
 		if self.abbreviation:
 			return f"{self.name} ({self.abbreviation})"
 		return self.name

@@ -67,6 +67,10 @@ export class RorFinder extends ApiQueryPopup {
 	public override get title(): string {
 		return "ROR Finder";
 	}
+	
+	protected override get description(): string { return (
+		"Enter an institution's name to find their ROR identifier."
+	); };
 
 	protected override get endpoint(): string {
 		return "https://api.ror.org/v2/organizations";

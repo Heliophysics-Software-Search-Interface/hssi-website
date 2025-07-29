@@ -1,10 +1,10 @@
-import uuid
 from django.db import models
 
 from typing import Callable, TYPE_CHECKING
 if TYPE_CHECKING:
 	from .software import Software
 
+from ..util import *
 from .people import HssiModel, Curator, Submitter
 
 class SubmissionStatusCode(models.IntegerChoices):
@@ -21,6 +21,7 @@ class SubmissionStatusCode(models.IntegerChoices):
 
 class SubmissionInfo(HssiModel):
 	'''Metadata about the a piece of software submitted to HSSI'''
+	access = AccessLevel.CURATOR
 	dateModified = models.DateField(auto_now=True, blank=True, null=True)
 	modificationDescription = models.TextField(blank=True, null=True)
 	metadataVersionNumber = models.CharField(max_length=50, blank=True, null=True)

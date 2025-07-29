@@ -4,13 +4,14 @@ from typing import Callable
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 
+from ..util import *
 from .people import Person
 from .auxillary_info import RelatedItem, Award
 from .submission_info import SubmissionInfo
 from .roots import ( LEN_NAME, HssiModel,
 	RepoStatus, OperatingSystem, Keyword, Image, Phenomena, Organization, 
 	License, InstrumentObservatory, ProgrammingLanguage, FileFormat, 
-	Region, DataInput, FunctionCategory
+	Region, DataInput, FunctionCategory, CpuArchitecture
 )
 
 class SoftwareVersion(HssiModel):
@@ -21,7 +22,7 @@ class SoftwareVersion(HssiModel):
 	version_pid = models.URLField(blank=True, null=True)
 	
 	# specified for intellisense, defined in Software model
-	software_current: models.Manager['Software']
+	software: models.Manager['Software']
 
 	@classmethod
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("number")
@@ -30,6 +31,7 @@ class SoftwareVersion(HssiModel):
 	def __str__(self): return self.number
 
 class Software(HssiModel):
+	access = AccessLevel.PUBLIC
 	programmingLanguage = models.ManyToManyField(
 		ProgrammingLanguage,
 		blank=True, 
@@ -59,10 +61,15 @@ class Software(HssiModel):
 		SoftwareVersion,
 		on_delete=models.CASCADE,
 		blank=True, null=True,
-		related_name='software_current'
+		related_name='software'
 	)
 	persistentIdentifier = models.URLField(blank=True, null=True)
-	referencePublication = models.URLField(blank=True, null=True)
+	referencePublication = models.ForeignKey(
+		RelatedItem,
+		on_delete=models.CASCADE,
+		blank=True, null=True,
+		related_name="softwares_published"
+	)
 	description = models.TextField(blank=True, null=True)
 	conciseDescription = models.TextField(max_length=200, blank=True, null=True)
 	softwareFunctionality = models.ManyToManyField(
@@ -79,18 +86,27 @@ class Software(HssiModel):
 	inputFormats = models.ManyToManyField(
 		FileFormat, 
 		blank=True, 
-		related_name='softwares_to'
-	),
+		related_name='softwares_in'
+	)
 	outputFormats = models.ManyToManyField(
 		FileFormat, 
 		blank=True, 
-		related_name='softwares_from'
+		related_name='softwares_out'
 	)
-	relatedPublications = models.TextField(blank=True, null=True)
+	cpuArchitecture = models.ManyToManyField(
+		CpuArchitecture,
+		blank=True,
+		related_name='softwares'
+	)
+	relatedPublications = models.ManyToManyField(
+		RelatedItem,
+		blank=True,
+		related_name='softwares_referenced'
+	)
 	relatedDatasets = models.ManyToManyField(
 		RelatedItem,
 		blank=True,
-		related_name='softwares'
+		related_name='softwares_data'
 	)
 	developmentStatus = models.ForeignKey(
 		RepoStatus,
@@ -127,24 +143,22 @@ class Software(HssiModel):
 		related_name='softwares'
 	)
 	relatedSoftware = models.ManyToManyField(
-		'self',
+		RelatedItem,
 		blank=True,
-		symmetrical=True
+		related_name='softwares_related'
 	)
 	interoperableSoftware = models.ManyToManyField(
-		'self',
+		RelatedItem,
 		blank=True,
-		symmetrical=True
+		related_name='softwares_interoperable'
 	)
 	funder = models.ManyToManyField(
 		Organization,
 		blank=True,
 		related_name="softwares_funded"
 	)
-	award = models.ForeignKey(
+	award = models.ManyToManyField(
 		Award,
-		on_delete=models.CASCADE, 
-		null=True, 
 		blank=True, 
 		related_name='softwares'
 	)
@@ -201,7 +215,8 @@ class Software(HssiModel):
 			return False
 
 class VisibleSoftware(models.Model):
-	'''Stores ids'''
+	'''Stores ids to flag softwares with the given ids as visible'''
+	access = AccessLevel.ADMIN
 	id = models.OneToOneField(
 		Software, 
 		on_delete=models.CASCADE, 

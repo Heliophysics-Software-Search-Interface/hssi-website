@@ -1,7 +1,5 @@
 import { 
-	ApiQueryPopup, 
-	ModelSubfield, 
-	propResultFilters, 
+	ApiQueryPopup,
 	type ApiQueryResult, type JSONArray, type JSONObject, type JSONValue 
 } from "../loader";
 
@@ -116,6 +114,10 @@ function isConceptDoi(attrs: DataciteAttributes): boolean {
 }
 
 export class DoiDataciteFinder extends ApiQueryPopup {
+
+	protected override get description(): string { return (
+		"Enter the name or keywords of an item to find it's DOI."
+	); };
 
 	public override get title(): string { return "Datacite Search"; }
 

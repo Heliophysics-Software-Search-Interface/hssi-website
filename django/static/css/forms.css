@@ -1,3 +1,12 @@
+@keyframes flash {
+	0%, 100% { background-color: initial; }
+	50% { background-color: #72a7cf; }
+}
+
+.emphasis-anim {
+	animation: flash 0.25s ease-in-out 0.1s 3;
+}
+
 .form-wrapper {
 	justify-content: center;
 	margin: 120px;

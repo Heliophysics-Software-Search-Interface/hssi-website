@@ -497,7 +497,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# PID
 	ModelSubfield.define(
 		name=FIELD_PERSISTENTIDENTIFIER,
-		type=TYPE_DATACITEDOI,
+		type=TYPE_AUTOFILLDATACITE,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Persistent Identifier",

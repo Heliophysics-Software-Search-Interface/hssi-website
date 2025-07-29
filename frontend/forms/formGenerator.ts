@@ -30,6 +30,9 @@ export class FormGenerator {
 	private hasAgreement: boolean = true;
 	private agreementElement: HTMLInputElement = null;
 
+	public autofilledFromDatacite: boolean = false;
+	public autofilledFromRepo: boolean = false;
+
 	private buildForm(): void {
 
 		// don't try to generate the form without structure data
@@ -408,6 +411,8 @@ export class FormGenerator {
 			field.clearField();
 		}
 		this.collapseFormFields();
+		this.instance.autofilledFromDatacite = false;
+		this.instance.autofilledFromRepo = false;
 	}
 
 	public static collapseFormFields(): void {
@@ -430,6 +435,22 @@ export class FormGenerator {
 			console.log("Form cleared");
 		}
 		else console.log("Form clear cancelled");
+	}
+
+	public static markAutofilledDatacite(): void { 
+		this.instance.autofilledFromDatacite = true;
+	}
+
+	public static markAutofilledRepo(): void {
+		this.instance.autofilledFromRepo = true;
+	}
+	
+	public static isAutofilledDatacite(): boolean { 
+		return this.instance.autofilledFromDatacite; 
+	}
+	
+	public static isAutofilledRepo(): boolean { 
+		return this.instance.autofilledFromRepo; 
 	}
 }
 

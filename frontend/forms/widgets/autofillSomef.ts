@@ -41,6 +41,7 @@ export class AutofillSomefWidget extends InputWidget {
 			const data = await (await fetch(requestUrl)).json();
 			console.log(`described repo at ${this.inputElement.value}`, data);
 			FormGenerator.fillForm(data);
+			FormGenerator.markAutofilledDatacite();
 			Spinner.hideSpinner();
 		} 
 

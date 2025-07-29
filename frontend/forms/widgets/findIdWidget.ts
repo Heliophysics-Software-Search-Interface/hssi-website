@@ -1,4 +1,4 @@
-import { 
+import {
 	OrcidFinder, PopupDialogue, RorFinder, DoiDataciteFinder, 
 	UrlWidget, faMagicIcon, propResultFilters,
 	type JSONObject,
@@ -6,8 +6,11 @@ import {
 	ModelMultiSubfield
 } from "../../loader"
 
+export const styleEmphasisAnimation = "emphasis-anim";
+
 export abstract class FindIdWidget extends UrlWidget {
 
+	private emphasized: boolean = false;
 	protected findButton: HTMLButtonElement = null;
 	protected get findButtonText(): string { return "find"; }
 
@@ -25,13 +28,24 @@ export abstract class FindIdWidget extends UrlWidget {
 		this.findButton.innerHTML = faMagicIcon + " " + this.findButtonText;
 		this.findButton.addEventListener("click", () => {
 			this.onFindButtonPressed();
+			this.emphasized = true;
 		});
+		this.findButton.title = "popup dialogue to search for your identifier";
 
 		this.inputElement.style.flex = "1";
 		rowContainer.appendChild(this.findButton);
 		rowContainer.appendChild(this.inputElement);
 
 		this.element.appendChild(rowContainer);
+
+		// add emphasis animation
+		const inElem = this.getInputElement();
+		inElem.addEventListener("focusin", e => {
+			if(!this.emphasized && !this.parentField?.hasValidInput()) {
+				this.findButton.classList.add(styleEmphasisAnimation);
+				this.emphasized = true;
+			}
+		}, {once: true});
 	}
 
 	override initialize(): void {

@@ -1,5 +1,7 @@
 import {
+	ConfirmDialogue,
 	DataciteDoiWidget, extractDoi, faMagicIcon, fetchTimeout, FormGenerator,
+	PopupDialogue,
 	Spinner,
 	type DataciteItem, type JSONArray, type JSONObject, type SubmissionFormData,
 	type ZenodoApiItem,
@@ -87,20 +89,21 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		Spinner.hideSpinner();
 	}
 
-	private buildAutofillButton(): void {
-		this.autofillButton = document.createElement("button");
-		this.autofillButton.type = "button";
-		this.autofillButton.innerHTML = faMagicIcon + " autofill";
-		this.autofillButton.addEventListener(
-			"click", () => this.handleAutofill()
-		);
-
-		this.element.appendChild(this.autofillButton);
-	}
-
 	override initialize(): void {
 		super.initialize();
-		this.buildAutofillButton();
+		this.parentField?.requirement?.containerElement?.addEventListener(
+			"focusout", async e => {
+				if(!FormGenerator.markAutofilledDatacite && this.parentField.hasValidInput()){
+					if(await ConfirmDialogue.getConfirmation(
+						"It looks like the identifier you entered can be " +
+						"used to fetch relevant data about your software " + 
+						"from datacite. Would you like to use this data " +
+						"to autofill the form? If so, please ensure "+ 
+						"autofilled information is accurate.", 
+						"Autofill Prompt"
+					)) this.handleAutofill();
+				}
+		});
 	}
 
 	/// Static -----------------------------------------------------------------
@@ -132,6 +135,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		data: DataciteItem, 
 		zenodoData: ZenodoApiItem = {} as any,
 	): void {
+		FormGenerator.markAutofilledDatacite();
 
 		console.log("Parsing datacite api data", data);
 		const formData = {} as SubmissionFormData;

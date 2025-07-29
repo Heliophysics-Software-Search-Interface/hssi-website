@@ -77,7 +77,8 @@ export class FieldRequirement {
 		if(valid || this.level == RequirementLevel.OPTIONAL) return "";
 
 		let note = "";
-		switch(this.level){
+		if(!this.field.hasValidFormatValue()) note = "Invalid";
+		else switch(this.level){
 			case RequirementLevel.MANDATORY: 
 				note = "Mandatory";
 				break;
@@ -112,23 +113,20 @@ export class FieldRequirement {
 	}
 
 	public removeStyles(): void {
-		let className = "";
-		switch(this.level) {
-			case RequirementLevel.RECOMMENDED: className = invalidRecStyle; break;
-			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
-		}
-		if(className.length > 0){
-			this.getStyledElement().classList.remove(className);
-			this.noteElement.classList.remove(className);
+		let elem = this.getStyledElement();
+		for(const stylename of [invalidRecStyle, invalidManStyle]){
+			elem.classList.remove(stylename);
+			this.noteElement.classList.remove(stylename);
 		}
 		this.noteElement.style.display = "none";
 	}
 
-	private applyStyles(): void {
+	private applyStyles(forceMandatoryStyle: boolean = false): void {
 
-		// add invalid style
+		// decide which style to use
 		let className = "";
-		switch(this.level) {
+		if(forceMandatoryStyle) className = invalidManStyle;
+		else switch(this.level) {
 			case RequirementLevel.RECOMMENDED: className = invalidRecStyle; break;
 			case RequirementLevel.MANDATORY: className = invalidManStyle; break;
 			default: return;
@@ -183,7 +181,7 @@ export class FieldRequirement {
 	 */
 	public applyRequirementWarningStyles(): void{
 		if(this.field.hasValidInput()) this.removeStyles();
-		else this.applyStyles();
+		else this.applyStyles(!this.field.hasValidFormatValue());
 	}
 
 	/// Event listeners --------------------------------------------------------

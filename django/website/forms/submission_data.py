@@ -375,17 +375,18 @@ SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
 		},
 		multi=False,
 	),
-	ModelSubfield.define(
-		name=FIELD_RELATEDINSTRUMENTIDENTIFIER,
-		type=TYPE_URL,
-		requirement=RequirementLevel.OPTIONAL.value,
-		properties={
-			PROP_LABEL: "Observatory Identifier",
-			PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTIDENTIFIER,
-			PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTIDENTIFIER,
-		},
-		multi=False,
-	),
+    # TODO implement when observatory identifier is standardized
+	# ModelSubfield.define(
+	# 	name=FIELD_RELATEDINSTRUMENTIDENTIFIER,
+	# 	type=TYPE_URL,
+	# 	requirement=RequirementLevel.OPTIONAL.value,
+	# 	properties={
+	#		PROP_LABEL: "Observatory Identifier",
+	#		PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTIDENTIFIER,
+	#		PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTIDENTIFIER,
+	#	},
+	# 	multi=False,
+	# ),
 )
 
 SUBMISSION_FORM_DATASET: ModelStructure = ModelStructure.define(
@@ -583,6 +584,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Concise Description",
 			PROP_TT_EXPL: TTEXPL_CONCISEDESCRIPTION,
 			PROP_TT_BEST: TTBEST_CONCISEDESCRIPTION,
+            PROP_WIDGET_PROPS: {
+                WPROP_MAXLENGTH: 200,
+			}
 		},
 		multi=False,
 	),
@@ -793,6 +797,21 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			},
 		},
 		multi=True,
+	),
+    # Related Phenomena
+    ModelSubfield.define(
+        name=FIELD_RELATEDPHENOMENA,
+        type=TYPE_MODELBOX,
+        requirement=RequirementLevel.OPTIONAL.value,
+        properties={
+            PROP_LABEL: "Related Phenomena",
+			PROP_TT_EXPL: TTEXPL_RELATEDPHENOMENA,
+            PROP_TT_BEST: TTBEST_RELATEDPHENOMENA,
+            PROP_WIDGET_PROPS:{
+                WPROP_DROPDOWNBUTTON: True
+			}
+		},
+        multi=True,
 	),
 	# Reference Publication
 	ModelSubfield.define(

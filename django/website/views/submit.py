@@ -63,8 +63,19 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	software.conciseDescription = data.get(FIELD_CONCISEDESCRIPTION)
 	software.documentation = data.get(FIELD_DOCUMENTATION)
 
-	# TODO get from/store in related objects model?
-	software.referencePublication = data.get(FIELD_REFERENCEPUBLICATION) 
+	## REFERENCE PUBLICATION
+
+	refpub = data.get(FIELD_REFERENCEPUBLICATION)
+	if refpub:
+		refpub_ref = RelatedItem.objects.filter(identifier=refpub).first()
+		if refpub_ref: software.referencePublication = refpub_ref
+		else:
+			refpublication = RelatedItem()
+			refpublication.name = "UNKNOWN"
+			refpublication.identifier = refpub
+			refpublication.type = RelatedItemType.PUBLICATION
+			refpublication.save()
+			software.referencePublication = refpublication
 
 	## DEVELOPMENT STATUS
 
@@ -153,7 +164,9 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 		publisher = Organization()
 		publisher.name = publisher_data.get(FIELD_PUBLISHER)
 		publisher.identifier = publisher_data.get(FIELD_PUBLISHERIDENTIFIER)
-		pub_match = Organization.objects.filter(identifier=publisher.identifier).first()
+		pub_match = None
+		if publisher.identifier: 
+			pub_match = Organization.objects.filter(identifier=publisher.identifier).first()
 		if pub_match: publisher = pub_match
 		else: publisher.save()
 		software.publisher = publisher
@@ -186,14 +199,23 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	for author_data in author_datas:
 		author = Person()
 		author.identifier = author_data.get(FIELD_AUTHORIDENTIFIER)
-		author_match = Person.objects.filter(identifier=author.identifier).first()
+		author_match = None
+		if author.identifier: 
+			author_match = Person.objects.filter(identifier=author.identifier).first()
 
 		# TODO some way to change author name after submission
 		if author_match: author = author_match
 		else:
 			author_name: str = author_data.get(FIELD_AUTHORS)
-			author_lastname = author_name.split()[-1]
-			author_firstname = author_name.replace(author_lastname, '').strip()
+			author_spl: str = author_name.split(',')
+			author_lastname = ""
+			author_firstname = ""
+			if len(author_spl) > 1:
+				author_firstname = author_spl[-1]
+				author_lastname = author_spl[0]
+			else:
+				author_lastname = author_name.split()[-1]
+				author_firstname = author_name.replace(author_lastname, '').strip()
 			author.lastName = author_lastname
 			author.firstName = author_firstname
 			author.save()
@@ -207,7 +229,9 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 				affiliation = Organization()
 				affiliation.name = affiliation_name
 				affiliation.identifier = affiliation_id
-				affil_match = Organization.objects.filter(identifier=affiliation.identifier).first()
+				affil_match = None
+				if affiliation_id: 
+					affil_match = Organization.objects.filter(identifier=affiliation.identifier).first()
 				if affil_match: affiliation = affil_match
 				else: affiliation.save()
 				author.affiliation.add(affiliation)
@@ -239,7 +263,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 			uid = UUID(kw)
 			software.programmingLanguage.add(Keyword.objects.get(pk=uid))
 		except Exception:
-			kw_ref = Keyword.objects.filter(pk=uid).first()
+			kw_ref = Keyword.objects.filter(name=kw).first()
 			if kw_ref: software.keywords.add(kw_ref)
 			else:
 				keyword = Keyword()
@@ -309,10 +333,15 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	for architecture in architectures:
 		try:
 			uid = UUID(architecture)
-			# TODO add cpu architecture field to software model
+			software.cpuArchitecture.add(CpuArchitecture.objects.get(pk=uid))
 		except:
 			arcref = CpuArchitecture.objects.filter(name=architecture).first()
-			# TODO add cpu architecture field to software model
+			if arcref: software.cpuArchitecture.add(arcref)
+			else:
+				arc = CpuArchitecture()
+				arc.name = architecture
+				arc.save()
+				software.cpuArchitecture.add(arc)
 
 	## RELATED REGION
 
@@ -332,14 +361,22 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 
 	## AWARDS
 	
-	awards = data.get(FIELD_AWARDTITLE)
-	for award in awards:
+	award_datas: list[dict] = data.get(FIELD_AWARDTITLE)
+	for award_data in award_datas:
+		award_name = award_data.get(FIELD_AWARDTITLE)
 		try:
-			uid = UUID(award)
-			software.award = Award.objects.get(pk=uid)
-			# TODO change software award field to be manytomany field
+			uid = UUID(award_name)
+			software.award.add(Award.objects.get(pk=uid))
 		except Exception:
-			pass
+			award_num = award_data.get(FIELD_AWARDNUMBER)
+			award_ref = Award.objects.filter(identifier=award_num).first()
+			if award_ref: software.award.add(award_ref)
+			else:
+				award = Award()
+				award.name = award_name
+				award.identifier = award_num
+				award.save()
+				software.award.add(award)
 
 	## FUNDER
 
@@ -368,16 +405,23 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	for relpub in relpubs:
 		try:
 			uid = UUID(relpub)
-			# TODO make related publications many to many field
+			software.relatedPublications.add(RelatedItem.objects.get(pk=uid))
 		except:
-			pass
+			relpub_ref = RelatedItem.objects.filter(identifier=relpub).first()
+			if relpub_ref: software.relatedPublications.add(reldat_ref)
+			else:
+				relatedpub = RelatedItem()
+				relatedpub.name = "UNKNOWN"
+				relatedpub.identifier = relpub
+				relatedpub.type = RelatedItemType.PUBLICATION
+				relatedpub.save()
+				software.relatedPublications.add(relatedpub)
 	
 	reldatas: list[str] = data.get(FIELD_RELATEDDATASETS)
 	for reldat in reldatas:
 		try:
 			uid = UUID(reldat)
 			software.relatedDatasets.add(RelatedItem.objects.get(pk=uid))
-			# TODO remove redeclaration of RelatedItem.identifier
 		except Exception:
 			reldat_ref = RelatedItem.objects.filter(
 				identifier=reldat, 
@@ -440,7 +484,8 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 			software.relatedInstruments.add(InstrumentObservatory.objects.get(pk=uid))
 		except Exception:
 			instr_ident = relinstr_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
-			instr_ref = InstrumentObservatory.objects.filter(identifier=instr_ident)
+			instr_ref = None
+			if instr_ident: instr_ref = InstrumentObservatory.objects.filter(identifier=instr_ident)
 			if instr_ref: software.relatedInstruments.add(instr_ref)
 			else:
 				instr = InstrumentObservatory()
@@ -459,8 +504,9 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 		except Exception:
 			# TODO FIELD_RELATEDOBSERVATORYIDENTIFIER
 			obs_ident = relobs_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
-			obs_ref = InstrumentObservatory.objects.filter(identifier=obs_ident)
-			if instr_ref: software.relatedInstruments.add(obs_ref)
+			obs_ref = None
+			if obs_ident: obs_ref = InstrumentObservatory.objects.filter(identifier=obs_ident)
+			if obs_ref: software.relatedInstruments.add(obs_ref)
 			else:
 				obs = InstrumentObservatory()
 				obs.name = "UNKNOWN"

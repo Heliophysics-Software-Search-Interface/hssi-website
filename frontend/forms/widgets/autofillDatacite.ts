@@ -341,7 +341,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		}
 
 		// code repo url try #2 (zenodo)
-		const repoUrl = zenodoData?.metadata?.custom["code:codeRepository"];
+		const repoUrl = zenodoData?.metadata?.custom?.["code:codeRepository"];
 		if(repoUrl) formData.codeRepositoryURL = repoUrl;
 
 		// set the related identifiers
@@ -381,13 +381,14 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		}
 
 		// repo status
-		const devStatus = zenodoData?.metadata?.custom["code:developmentStatus"];
+		console.log(zenodoData);
+		const devStatus = zenodoData?.metadata?.custom?.["code:developmentStatus"];
 		if(devStatus){
 			formData.developmentStatus = devStatus.title?.en || devStatus.id;
 		}
 
 		// programming languages
-		const progLangs = zenodoData?.metadata?.custom["code:programmingLanguage"];
+		const progLangs = zenodoData?.metadata?.custom?.["code:programmingLanguage"];
 		if(progLangs){
 			formData.programmingLanguage = [];
 			for(const lang of progLangs){

@@ -5,7 +5,9 @@ import {
 	getStringSimilarity,
 	type JSONObject,
 	fetchTimeout,
-	type JSONValue
+	type JSONValue,
+	FormGenerator,
+	ModelMultiSubfield
 } from "../../loader";
 
 const optionDataValue = "json-options";
@@ -15,8 +17,11 @@ const dropdownStyle = "widget-dropdown";
 const tooltipStyle = "widget-tooltip";
 const dropButtonStyle = "dropdown-button";
 const selectedStyle = "selected";
+const optionValidStyle = "option-valid";
 
-const modelChoicesUrl = "/api/model_choices/";
+const modelsUrl = "/api/models/";
+const modelChoicesSlug = "/choices/";
+const modelRowSlug = "/rows/";
 
 type ChoicesJsonStructure = { data: [string, string, string[], string?][] }
 
@@ -53,9 +58,11 @@ export class ModelBox extends Widget {
 	private filteredOptionLIs: OptionLi[] = [];
 	private selectedOptionIndex: number = -1;
 	private selectedOptionLI: OptionLi = null;
-	private selectedOption: Option = null;
+	private listenerUnset: (x: any) => any = null;
+	private listenerUnsetChild: (x: any) => any = null;
 
 	public properties: ModelBoxProperties = {};
+	public rowFetchAbort: AbortController = null;
 	
 	/// Restricted functionality -----------------------------------------------
 
@@ -76,6 +83,10 @@ export class ModelBox extends Widget {
 		this.inputContainerRowElement.append(this.inputContainerElement);
 		this.element.appendChild(this.inputContainerRowElement);
 
+		// enforce max length
+		const maxLength = this.properties?.maxLength ?? 100;
+		this.inputElement.setAttribute("maxlength", maxLength.toString());
+
 		// add event listeners
 		this.inputElement.addEventListener("input", e => this.onInputValueChanged(e));
 		this.inputElement.addEventListener("keydown", e => this.onInputKeyDown(e));
@@ -84,6 +95,33 @@ export class ModelBox extends Widget {
 
 		// build dropdown button if applicable
 		if(this.properties.dropdownButton) this.buildDropdownButton();
+
+		if(this.parentField){
+			this.listenerUnset = this.parentField.onValueChanged.addListener(() => {
+				this.unsetInputElementData();
+			});
+			
+			// TODO this isn't working for submitter field for some reason? 
+			// submitter field seems to have no subfields even though there 
+			// is an email subfield
+			this.listenerUnsetChild = this.parentField.onChildValueChanged.addListener(() => {
+				this.unsetInputElementData();
+			});
+		}
+	}
+
+	private unsetInputElementData(): void{
+		const elem = this.getInputElement();
+		if(elem.data) {
+			elem.data = null;
+			this.updateValidModelStyle();
+		}
+	}
+
+	private updateValidModelStyle(): void{
+		const elem = this.getInputElement();
+		if(elem.data) elem.classList.add(optionValidStyle);
+		else elem.classList.remove(optionValidStyle);
 	}
 
 	private buildDropdownButton(): void {
@@ -136,16 +174,58 @@ export class ModelBox extends Widget {
 		}
 	}
 
+	protected fetchModelRow(uid: string): void {
+		this.rowFetchAbort?.abort();
+		this.rowFetchAbort = null;
+
+		// fetch object data to fill out
+		const fetchUrl = modelsUrl + this.properties.targetModel + modelRowSlug + uid;
+		this.rowFetchAbort = new AbortController();
+		console.log(`Fetching ${this.properties.targetModel} row: ${uid}`);
+		const promise = fetch(fetchUrl, { signal: this.rowFetchAbort.signal });
+		promise.then(async data => {
+			console.log(data);
+			const jsonData = await data.json();
+			const collapse = !this.parentField.subfieldsExpanded();
+			this.parentField.expandSubfields();
+			if(collapse) this.parentField.collapseSubfields();
+			const subfields = this.parentField.getSubfields();
+			console.log(jsonData);
+			for(const dataFieldName in jsonData){
+				const subfield = subfields.find(x => {
+					const mappedName = FormGenerator.fieldMap[x.name] ?? "NONE";
+					return mappedName == dataFieldName;
+				});
+				console.log(dataFieldName + " -> " + subfield?.name, jsonData[dataFieldName]);
+				if(subfield){
+					const jsonValue = jsonData[dataFieldName];
+					if(subfield instanceof ModelMultiSubfield) {
+						if(jsonValue instanceof Array)
+							subfield.fillMultiFields(jsonValue);
+						else subfield.fillMultiFields([jsonValue]);
+					}
+					else subfield.fillField(jsonValue);
+				}
+			}
+			this.rowFetchAbort = null;
+		});
+		promise.catch(err => console.error(err));
+	}
+
 	protected selectOption(option: Option = this.selectedOptionLI?.data): void {
+		this.rowFetchAbort?.abort();
+		this.rowFetchAbort = null;
 		if(option != null){
 			this.inputElement.value = option.name;
 			this.inputElement.data = option;
 			// this.inputElement.dispatchEvent(new Event("input", { bubbles: true }));
 			this.parentField?.requirement.applyRequirementWarningStyles();
+			this.fetchModelRow(option.id);
 		}
 		else {
 			this.inputElement.data = null;
 		}
+		this.updateValidModelStyle();
 	}
 
 	protected setSelectedOptionLI(option: OptionLi): void {
@@ -246,7 +326,7 @@ export class ModelBox extends Widget {
 		let optionData: Option[] = ModelBox.optionMap.get(modelName);
 		if(!optionData){
 			const data: ChoicesJsonStructure = await (
-				await fetchTimeout(modelChoicesUrl + modelName)
+				await fetchTimeout(modelsUrl + modelName + modelChoicesSlug)
 			).json();
 			optionData = data.data.map(x => {
 				return {
@@ -417,11 +497,20 @@ export class ModelBox extends Widget {
 		return super.getInputValue();
 	}
 
+	override destroy(): void {
+		if(this.parentField){
+			this.parentField.onValueChanged.removeListener(this.listenerUnset);
+			this.parentField.onChildValueChanged.removeListener(this.listenerUnsetChild);
+		}
+		super.destroy();
+	}
+
 	/// Dropdown and tooltip elements ------------------------------------------
 
 	protected static optionMap: Map<string, Option[]> = new Map();
 	private static dropdownElement: HTMLDivElement = null;
 	private static tooltipElement: HTMLDivElement = null;
+	private static repositionDropdownInterval: number = 0;
 
 	protected static getDropdownElement(): HTMLDivElement {
 		if(this.dropdownElement == null) this.createDropdownElement();
@@ -476,8 +565,15 @@ export class ModelBox extends Widget {
 	 * specified element
 	 */
 	private static showDropdown(from: HTMLElement): void {
-		this.positionDropdownElement(from);
-		this.getDropdownElement().style.display = "block";
+		this.repositionDropdownInterval = setInterval(() => this.showDropdownRecurse(from), 100);
+		this.showDropdownRecurse(from);
+	}
+
+	private static showDropdownRecurse(from: HTMLElement): void{
+		if(this.repositionDropdownInterval){
+			this.positionDropdownElement(from);
+			this.getDropdownElement().style.display = "block";
+		}
 	}
 
 	/**
@@ -505,6 +601,10 @@ export class ModelBox extends Widget {
 
 	public static hideDropdown(): void {
 		this.getDropdownElement().style.display = "none";
+		if(this.repositionDropdownInterval){
+			clearInterval(this.repositionDropdownInterval);
+			this.repositionDropdownInterval = 0;
+		}
 	}
 
 	/**

@@ -14,6 +14,7 @@ export class AutofillSomefWidget extends InputWidget {
 		setTimeout(()=>{
 			this.parentField?.containerElement?.addEventListener(
 				"focusout", async e => {
+					this.setValue(this.getInputValue());
 					if(!FormGenerator.isAutofilledRepo() && this.parentField.hasValidInput()){
 						if(await ConfirmDialogue.getConfirmation(
 							"'" + this.getInputValue() + "'\n" +

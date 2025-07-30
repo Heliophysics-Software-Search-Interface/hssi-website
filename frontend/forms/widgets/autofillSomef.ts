@@ -1,30 +1,41 @@
-import { FormGenerator, InputWidget, Spinner } from "../../loader";
+import { 
+	FormGenerator, InputWidget, Spinner, ConfirmDialogue 
+} from "../../loader";
 
 export const describeApiEndpoint = "/api/describe_form";
 export const faMagicIcon = "<i class='fa fa-magic'></i>";
 
 export class AutofillSomefWidget extends InputWidget {
 
-	protected createElements(): void {
-		super.createElements();
-		this.createAutofillButton();
-	}
-
-	private createAutofillButton(): void {
-		const autofillButton = document.createElement("button");
-		autofillButton.innerHTML = faMagicIcon + " autofill";
-		autofillButton.title = (
-			"Fetch metadata from the specified repository " + 
-			"and use it to autofill the fields in the form"
-		);
-		autofillButton.type = "button"; // Prevents form submission
-		autofillButton.addEventListener("click", () => this.onPressAutofillButton());
-		this.element.appendChild(autofillButton);
-	}
-
 	public getInputType(): string { return "url"; }
 
-	private async onPressAutofillButton(): Promise<void> {
+	public override initialize(): void {
+		super.initialize();
+		setTimeout(()=>{
+			this.parentField?.containerElement?.addEventListener(
+				"focusout", async e => {
+					this.setValue(this.getInputValue());
+					if(!FormGenerator.isAutofilledRepo() && this.parentField.hasValidInput()){
+						if(await ConfirmDialogue.getConfirmation(
+							"'" + this.getInputValue() + "'\n" +
+							"This is the repository we will use to auto-fill " +
+							"this form as much as possible. Please check for " + 
+							"accuracy. ",
+							"Auto-Fill Confirmation",
+						)) this.handleAutofill();
+					}
+				});
+		}, 0);
+	}
+
+	public override setValue(value: string): void {
+		if(value.endsWith(".git")){
+			value = value.substring(0, value.length - 4);
+		}
+		super.setValue(value);
+	}
+
+	private async handleAutofill(): Promise<void> {
 
 		// validate input before sending request
 		if(!this.inputElement.checkValidity() || this.inputElement.value.length <= 0){

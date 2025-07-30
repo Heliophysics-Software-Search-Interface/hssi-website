@@ -1,8 +1,7 @@
 import {
-	ConfirmDialogue,
-	DataciteDoiWidget, extractDoi, faMagicIcon, fetchTimeout, FormGenerator,
-	PopupDialogue,
-	Spinner,
+	AutofillSomefWidget, describeApiEndpoint, ConfirmDialogue,
+	DataciteDoiWidget, extractDoi, faMagicIcon, fetchTimeout, 
+	FindIdWidget, FormGenerator, PopupDialogue, Spinner,
 	type DataciteItem, type JSONArray, type JSONObject, type SubmissionFormData,
 	type ZenodoApiItem,
 } from "../../loader"
@@ -83,25 +82,46 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		);
 
 		// parse the datacite api data
-		try { AutofillDataciteWidget.autofillFromApiData(data, zenodoData); }
+		let formData: SubmissionFormData = null;
+		try { 
+			formData = AutofillDataciteWidget.autofillFromApiData(
+				data, 
+				zenodoData
+			);
+		}
 		catch(e){ console.error(e); }
-
 		Spinner.hideSpinner();
+
+		// fetch data with somef if code repo url provided
+		if(formData.codeRepositoryURL && !FormGenerator.isAutofilledRepo()){
+			Spinner.showSpinner("Fetching metadata from repository, this may take a moment");
+			let repoUrlVal = formData.codeRepositoryURL;
+			if(repoUrlVal.endsWith(".git")){
+				repoUrlVal = repoUrlVal.substring(0, repoUrlVal.length - 4);
+			}
+			try{
+				const requestUrl = describeApiEndpoint + `?target=${repoUrlVal}`
+				const data = await (await fetch(requestUrl)).json();
+				console.log(`described repo at ${repoUrlVal}`, data);
+				FormGenerator.fillForm(data);
+			}
+			catch(e){ console.error(e); }
+			Spinner.hideSpinner();
+		}
 	}
 
 	override initialize(): void {
 		super.initialize();
 		setTimeout(()=>{
-			this.parentField?.requirement?.containerElement?.addEventListener(
+			this.parentField?.containerElement?.addEventListener(
 				"focusout", async e => {
 					if(!FormGenerator.isAutofilledDatacite() && this.parentField.hasValidInput()){
 						if(await ConfirmDialogue.getConfirmation(
-							"It looks like the identifier you entered can be " +
-							"used to fetch relevant data about your software " + 
-							"from datacite. Would you like to use this data " +
-							"to autofill the form? If so, please ensure "+ 
-							"autofilled information is accurate.", 
-							"Autofill Prompt"
+							"'" + this.getDoi() + "'\n" +
+							"This is the DOI we will use to auto-fill this " +
+							"form as much as possible. Please check for " + 
+							"accuracy. ",
+							"Auto-Fill Confirmation",
 						)) this.handleAutofill();
 					}
 				});
@@ -136,8 +156,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 	public static autofillFromApiData(
 		data: DataciteItem, 
 		zenodoData: ZenodoApiItem = {} as any,
-	): void {
-		FormGenerator.markAutofilledDatacite();
+	): SubmissionFormData {
 
 		console.log("Parsing datacite api data", data);
 		const formData = {} as SubmissionFormData;
@@ -404,6 +423,8 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		}
 
 		console.log(formData);
-		FormGenerator.fillForm(formData);
+		FormGenerator.fillForm(formData, true);
+		FormGenerator.markAutofilledDatacite();
+		return formData;
 	}
 }

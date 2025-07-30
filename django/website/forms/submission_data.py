@@ -497,7 +497,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# PID
 	ModelSubfield.define(
 		name=FIELD_PERSISTENTIDENTIFIER,
-		type=TYPE_DATACITEDOI,
+		type=TYPE_AUTOFILLDATACITE,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Persistent Identifier",
@@ -512,7 +512,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Code Repo
 	ModelSubfield.define(
 		name=FIELD_CODEREPOSITORYURL,
-		type=TYPE_URL,
+		type=TYPE_AUTOFILLSOMEF,
 		requirement=RequirementLevel.MANDATORY.value,
 		properties={
 			PROP_LABEL: "Code Repository",

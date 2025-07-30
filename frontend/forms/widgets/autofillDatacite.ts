@@ -137,7 +137,6 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		data: DataciteItem, 
 		zenodoData: ZenodoApiItem = {} as any,
 	): void {
-		FormGenerator.markAutofilledDatacite();
 
 		console.log("Parsing datacite api data", data);
 		const formData = {} as SubmissionFormData;
@@ -404,6 +403,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		}
 
 		console.log(formData);
-		FormGenerator.fillForm(formData);
+		FormGenerator.fillForm(formData, true);
+		FormGenerator.markAutofilledDatacite();
 	}
 }

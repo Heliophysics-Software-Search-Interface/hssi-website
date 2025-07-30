@@ -1,4 +1,4 @@
-import { 
+import {
 	OrcidFinder, PopupDialogue, RorFinder, DoiDataciteFinder, 
 	UrlWidget, faMagicIcon, propResultFilters,
 	type JSONObject,
@@ -6,10 +6,15 @@ import {
 	ModelMultiSubfield
 } from "../../loader"
 
+export const findButtonStyle = "button-find";
+export const styleEmphasisAnimation = "emphasis-anim";
+
 export abstract class FindIdWidget extends UrlWidget {
 
+	private emphasized: boolean = false;
 	protected findButton: HTMLButtonElement = null;
 	protected get findButtonText(): string { return "find"; }
+	protected get placeholderExample(): string { return ""; }
 
 	protected abstract onFindButtonPressed(): void;
 	public onDataSelected(data: JSONObject): void { }
@@ -22,26 +27,44 @@ export abstract class FindIdWidget extends UrlWidget {
 
 		this.findButton = document.createElement("button");
 		this.findButton.type = "button";
+		this.findButton.classList.add(findButtonStyle);
 		this.findButton.innerHTML = faMagicIcon + " " + this.findButtonText;
 		this.findButton.addEventListener("click", () => {
 			this.onFindButtonPressed();
+			this.emphasized = true;
 		});
+		this.findButton.title = "popup dialogue to search for your identifier";
 
 		this.inputElement.style.flex = "1";
 		rowContainer.appendChild(this.findButton);
 		rowContainer.appendChild(this.inputElement);
 
 		this.element.appendChild(rowContainer);
+
+		// add emphasis animation
+		const inElem = this.getInputElement();
+		inElem.addEventListener("focusin", e => {
+			if(!this.emphasized && !this.parentField?.hasValidInput()) {
+				this.findButton.classList.add(styleEmphasisAnimation);
+				this.emphasized = true;
+			}
+		}, {once: true});
 	}
 
 	override initialize(): void {
 		super.initialize();
 		this.buildFindButton();
-		this.inputElement.placeholder = "Use 'find' button or paste URL";
+		this.inputElement.placeholder = "Use 'find' button or paste URL ";
+		if(this.placeholderExample) {
+			this.inputElement.placeholder += "(ex: " + this.placeholderExample + ")";
+		}
 	}
 }
 
 export class RorWidget extends FindIdWidget {
+	protected get placeholderExample(): string { 
+		return "https://ror.org/00000xxxx";
+	}
 	protected override onFindButtonPressed(): void {
 		const rorPopup = RorFinder.getInstance()
 			.setTarget(this.parentField)
@@ -51,6 +74,9 @@ export class RorWidget extends FindIdWidget {
 }
 
 export class OrcidWidget extends FindIdWidget {
+	protected get placeholderExample(): string { 
+		return "https://orcid.org/0000-0000-0000-0000"; 
+	}
 	protected override onFindButtonPressed(): void {
 		const orcidPopup = OrcidFinder.getInstance()
 			.setTarget(this.parentField)
@@ -90,6 +116,9 @@ export class OrcidWidget extends FindIdWidget {
 }
 
 export class DataciteDoiWidget extends FindIdWidget {
+	protected get placeholderExample(): string { 
+		return "https://doi.org/10.5281/zenodo.00000000";
+	}
 	protected override onFindButtonPressed(): void {
 		const popup = DoiDataciteFinder.getInstance()
 			.setTarget(this.parentField)

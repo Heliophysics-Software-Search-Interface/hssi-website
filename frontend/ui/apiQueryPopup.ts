@@ -162,6 +162,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 				const targetWidget = this.targetField.widget;
 				if(targetWidget instanceof FindIdWidget){
 					targetWidget.onDataSelected(result.jsonData);
+					targetWidget.getInputElement().focus();
 				}
 				if(!this.targetField.multi){
 					const inputElem = this.targetField.getInputElement();

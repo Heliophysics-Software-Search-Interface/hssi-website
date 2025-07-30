@@ -1,6 +1,6 @@
 @keyframes flash {
-	0%, 100% { background-color: initial; }
-	50% { background-color: #72a7cf; }
+	0%, 100% { background-color: #9abdd8; }
+	50% { background-color: white; }
 }
 
 .emphasis-anim {
@@ -120,6 +120,10 @@ form button {
 	padding: 5px;
 	margin: 5px;
 	box-shadow: 0px 2px 5px #3333;
+}
+
+form .button-find {
+	background-color: #9abdd8;
 }
 
 form .multi-field-row>button {

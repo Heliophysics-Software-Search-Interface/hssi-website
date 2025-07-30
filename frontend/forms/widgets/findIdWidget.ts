@@ -6,6 +6,7 @@ import {
 	ModelMultiSubfield
 } from "../../loader"
 
+export const findButtonStyle = "button-find";
 export const styleEmphasisAnimation = "emphasis-anim";
 
 export abstract class FindIdWidget extends UrlWidget {
@@ -25,6 +26,7 @@ export abstract class FindIdWidget extends UrlWidget {
 
 		this.findButton = document.createElement("button");
 		this.findButton.type = "button";
+		this.findButton.classList.add(findButtonStyle);
 		this.findButton.innerHTML = faMagicIcon + " " + this.findButtonText;
 		this.findButton.addEventListener("click", () => {
 			this.onFindButtonPressed();

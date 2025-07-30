@@ -96,12 +96,11 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 				"focusout", async e => {
 					if(!FormGenerator.isAutofilledDatacite() && this.parentField.hasValidInput()){
 						if(await ConfirmDialogue.getConfirmation(
-							"It looks like the identifier you entered can be " +
-							"used to fetch relevant data about your software " + 
-							"from datacite. Would you like to use this data " +
-							"to autofill the form? If so, please ensure "+ 
-							"autofilled information is accurate.", 
-							"Autofill Prompt"
+							"'" + this.getDoi() + "'\n" +
+							"This is the DOI we will use to auto-fill this " +
+							"form as much as possible. Please check for " + 
+							"accuracy. ",
+							"Auto-Fill Confirmation",
 						)) this.handleAutofill();
 					}
 				});

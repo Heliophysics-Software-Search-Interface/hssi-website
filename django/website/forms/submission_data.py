@@ -741,8 +741,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
 			PROP_LABEL: "Output File Formats",
-			PROP_TT_EXPL: TTEXPL_INPUTFORMATS,
-			PROP_TT_BEST: TTBEST_INPUTFORMATS,
+			PROP_TT_EXPL: TTEXPL_OUPUTFORMATS,
+			PROP_TT_BEST: TTBEST_OUPUTFORMATS,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: FileFormat.__name__,
 				WPROP_DROPDOWNBUTTON: True,

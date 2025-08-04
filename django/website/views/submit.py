@@ -165,7 +165,9 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 		except Exception:
 			publisher.identifier = publisher_data.get(FIELD_PUBLISHERIDENTIFIER)
 			pub_match = None
-			if publisher.identifier: 
+			if publisher.name.lower() == "zenodo":
+				pub_match = Organization.objects.filter(name="Zenodo").first()
+			elif publisher.identifier: 
 				pub_match = Organization.objects.filter(identifier=publisher.identifier).first()
 			if pub_match: publisher = pub_match
 			else: publisher.save()

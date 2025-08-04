@@ -417,6 +417,19 @@ class FunctionCategory(ControlledGraphList):
 		symmetrical=False,
 	)
 
+	def get_choice(self) -> ModelObjectChoice:
+		choice_name = str(self)
+		if self.parent_nodes:
+			if self.parent_nodes.count() == 1:
+				choice_name = str(self.parent_nodes.first()) + ": " + choice_name
+
+		return ModelObjectChoice(
+			str(self.id), 
+			choice_name,
+			self.get_search_terms(),
+			self.get_tooltip(),
+		)
+
 	@classmethod
 	def _form_config_redef(cls) -> None:
 		super()._form_config_redef()

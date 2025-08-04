@@ -1,1 +1,12 @@
 id,name,identifier,definition,extension
+465f74bb-34e7-4bbb-b1b6-b3d0eff4b995,ascii,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OutputFileFormats#ascii,,
+e9eb054a-2bd0-4212-a6b9-f9cc5221b95f,CDF,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OutputFileFormats#CDF,,
+a3b6e1ea-e719-4630-a083-4c33b5d1a80f,csv,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OutputFileFormats#csv,,
+1ba2c1b7-1d36-4240-a1a9-cef1cc3e0b3f,FITS,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OutputFileFormats#FITS,,
+e72b7650-5afe-4295-a6b8-47dc07d1bf38,HDF5,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OutputFileFormats#HDF5,,
+98655ee1-926b-4d21-b1ef-da682f82e9ea,IDL.sav,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OutputFileFormats#IDL.sav,,
+e60354c0-6bb7-44ff-92f8-0f2c016455ca,ISTP-Compliant,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OutputFileFormats#ISTP-Compliant,,
+769de7a7-1e76-46ea-b9fb-56701c6482a2,JSON,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OutputFileFormats#JSON,,
+fa943017-b146-4f01-9563-0ba168c69179,netCDF3/4,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OutputFileFormats#netCDF3_4,,
+ac6e501f-9b7b-4a62-aaf8-92e47d21d2ba,Other,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OutputFileFormats#Other,,
+b708efdd-8bed-48f8-8309-84039156ee6e,Zarr,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OutputFileFormats#Zarr,,

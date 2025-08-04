@@ -1,1 +1,8 @@
 id,name,identifier,definition
+5a4825da-9cd7-4d26-853c-6d5da605a973,Linux,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OperatingSystems#Linux,
+c71690b4-dfe4-4778-bc9c-7374b6156306,Mac,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OperatingSystems#Mac,
+a5d7caf0-1b35-4d08-9ba1-2c3a3c007f58,MobilePlatform,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OperatingSystems#MobilePlatform,
+8722ac38-5806-42c2-9bdf-22fb5449cce5,OS Independent,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OperatingSystems#OSIndependent,
+cf06fd5a-7659-4124-b78b-eee6ab0798f5,Other,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OperatingSystems#Other,
+2eae7613-3753-47d9-bc80-83e992382776,Solaris,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OperatingSystems#Solaris,
+950a7c83-e6c7-4b70-bf07-201c76d6f8b9,Windows,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/OperatingSystems#Windows,

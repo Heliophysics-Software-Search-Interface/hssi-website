@@ -174,7 +174,7 @@ class ControlledList(HssiModel):
 		label="Definition",
 	)
 
-	def __str__(self): return self.name
+	def __str__(self) -> str: return self.name
 
 	@classmethod
 	def get_top_field(cls): return cls._meta.get_field("name")
@@ -224,6 +224,8 @@ class Keyword(ControlledList):
 			tooltipExplanation="General science keywords relevant for the software (e.g. from the AGU Index List of the UAT) not supported by other metadata fields.",
 			tooltipBestPractise="Begin typing the keyword in the box. Keywords listed in the UAT and AGU Index lists will appear in a dropdown list, please choose the correct one(s). If your keyword is not listed, please type it in.",
 		)
+
+	def __str__(self) -> str: return self.name.title()
 
 class OperatingSystem(ControlledList):
 	'''Operating system on which the software can run'''

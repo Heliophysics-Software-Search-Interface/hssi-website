@@ -1,4 +1,4 @@
-import json, uuid, datetime
+import json, uuid, datetime, re
 from uuid import UUID
 
 from django.shortcuts import render, redirect, HttpResponse
@@ -14,6 +14,8 @@ from ..forms import (
 )
 from ..models import *
 from ..forms.names import *
+
+SPACE_REPLACE = re.compile('[_\-.]')
 
 def view_form(request: HttpRequest) -> HttpResponse:
 	return render(
@@ -259,20 +261,19 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	
 	## KEYWORDS
 
-	keywords = data.get(FIELD_KEYWORDS)
+	keywords: list[str] = data.get(FIELD_KEYWORDS)
 	for kw in keywords:
 		try:
 			uid = UUID(kw)
 			dbkw = Keyword.objects.get(pk=uid)
 			software.keywords.add(dbkw)
 		except Exception as e:
-			print(e)
-			kw_ref = Keyword.objects.filter(name=kw).first()
-			if kw_ref: 
-				software.keywords.add(kw_ref)
+			kw_fmtd = SPACE_REPLACE.sub(' ', kw).lower()
+			kw_ref = Keyword.objects.filter(name=kw_fmtd).first()
+			if kw_ref: software.keywords.add(kw_ref)
 			else:
 				keyword = Keyword()
-				keyword.name = kw
+				keyword.name = kw_fmtd
 				keyword.save()
 				software.keywords.add(keyword)
 

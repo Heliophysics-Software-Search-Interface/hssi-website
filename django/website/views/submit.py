@@ -158,13 +158,18 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	if publisher_data:
 		publisher = Organization()
 		publisher.name = publisher_data.get(FIELD_PUBLISHER)
-		publisher.identifier = publisher_data.get(FIELD_PUBLISHERIDENTIFIER)
-		pub_match = None
-		if publisher.identifier: 
-			pub_match = Organization.objects.filter(identifier=publisher.identifier).first()
-		if pub_match: publisher = pub_match
-		else: publisher.save()
-		software.publisher = publisher
+		try:
+			uid = UUID(publisher.name)
+			dbpub = Organization.objects.get(pk=uid)
+			software.publisher = dbpub
+		except Exception:
+			publisher.identifier = publisher_data.get(FIELD_PUBLISHERIDENTIFIER)
+			pub_match = None
+			if publisher.identifier: 
+				pub_match = Organization.objects.filter(identifier=publisher.identifier).first()
+			if pub_match: publisher = pub_match
+			else: publisher.save()
+			software.publisher = publisher
 
 	## VERSION
 
@@ -256,10 +261,13 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	for kw in keywords:
 		try:
 			uid = UUID(kw)
-			software.programmingLanguage.add(Keyword.objects.get(pk=uid))
-		except Exception:
+			dbkw = Keyword.objects.get(pk=uid)
+			software.keywords.add(dbkw)
+		except Exception as e:
+			print(e)
 			kw_ref = Keyword.objects.filter(name=kw).first()
-			if kw_ref: software.keywords.add(kw_ref)
+			if kw_ref: 
+				software.keywords.add(kw_ref)
 			else:
 				keyword = Keyword()
 				keyword.name = kw
@@ -378,8 +386,10 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	funder_datas: list[dict] = data.get(FIELD_FUNDER)
 	for funder_data in funder_datas:
 		funder_name = funder_data.get(FIELD_FUNDER)
+		print(f"adding funder '{funder_name}'")
 		try:
 			uid = UUID(funder_name)
+			fnref = Organization.objects.get(pk=uid)
 			software.funder.add(Organization.objects.get(pk=uid))
 		except Exception:
 			funder_ident = funder_data.get(FIELD_FUNDERIDENTIFIER)

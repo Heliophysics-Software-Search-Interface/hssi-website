@@ -25,16 +25,30 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 	@action(description="Fix Improper Toplevel UUID")
 	def fix_uuid_chains(self, request: HttpRequest, queryset: QuerySet):
 		"""
+		Due to an error that should now be fixed, software submission entries
+		would sometimes subit new model entries for certain fields where the 
+		model object's name would be a uuid, when instead it should have been
+		treated as a reference to another object instead of creating a new 
+		object with that uuid as a name. 
+		This is an action that appears in the admin control panel as a 
+		retroactive solution that aims to resolve these faulty foregn key/m2m
+		references.
 		"""
 		hssimodel = queryset.model
 		if not issubclass(hssimodel, HssiModel): return
 		topfield = hssimodel.get_top_field()
 	
 		for obj in queryset:
+
 			iter_obj = obj
 			val: str = ""
 			uid: uuid.UUID = None
 			iters: int = 0
+
+			# it is possible for a false key to refer to another false key,
+			# which then needs to be resolved further. Multiple iterations 
+			# should solve this by continuing to resolve false keys until a
+			# non-key value is found
 			while True:
 				val = getattr(iter_obj, topfield.name)
 				try: uid = uuid.UUID(val)
@@ -42,19 +56,26 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 				iter_obj = hssimodel.objects.get(pk=uid)
 				iters += 1
 				if iters >= 100: break
+
 			if iters <= 0: 
 				print(f"'{str(val)}' does not appear to be a uuid")
 				continue
-			print(f"uuid depth for {str(obj)}: {iters}")
+
+			print(f"false key depth for {str(obj)}: {iters}")
 			refobj = hssimodel.objects.filter(pk=uid).first()
 			if not refobj:
 				print(f"could not find {uid} in {hssimodel._meta.model_name}")
 				continue
 			
+			# fix all references to this false key that should instead be 
+			# pointing to the object that this key resolves to
 			refs = find_database_references(obj)
 			print(f"updating {len(refs)} references to {str(uid)}..")
 			for ref in refs:
 				target, field = ref
+
+				# many to many fields need to be handled separately since they
+				# hold multiple foreign key references instead of just one
 				if isinstance(field, ManyToManyField): 
 					manager = getattr(target, field.name)
 					manager.remove(obj)
@@ -62,7 +83,6 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 				else: setattr(target, field.name, refobj)
 				target.save()
 				print(f"updated '{target}:{field}' field")
-			# obj.delete()
 	
 	# actions need to be specified
 	actions = [fix_uuid_chains]

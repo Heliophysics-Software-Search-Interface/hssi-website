@@ -120,15 +120,23 @@ class KeywordResource(resources.ModelResource):
 	class Meta: model = Keyword
 class KeywordAdmin(ControlledListAdmin): 
 	resource_class = KeywordResource
-	
+
+	@action(description="Collapse to Single")
 	def collapse_keyword_entries(self, request: HttpRequest, queryset: QuerySet[Keyword]):
 		colkeyword = Keyword.collapse_objects(queryset)
 		colkeyword.name = SPACE_REPLACE.sub(' ', colkeyword.name).lower()
 		colkeyword.save()
 	
+	@action(description="Format Names")
+	def format_name(self, req: HttpRequest, query: QuerySet[Keyword]):
+		for obj in query:
+			obj.name = SPACE_REPLACE.sub(' ', obj.name).lower()
+			obj.save()
+
 	actions = [
 		HSSIModelAdmin.fix_uuid_chains,
-		collapse_keyword_entries
+		collapse_keyword_entries,
+		format_name,
 	]
 
 class ImageResource(resources.ModelResource):

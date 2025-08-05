@@ -167,13 +167,14 @@ class DataListConcept:
 		self.pref_label = ""
 		self.definition = ""
 
-	def to_model(self, model: Type[ControlledList]):
+	def to_model_entry(self, model: Type[ControlledList]) -> ControlledList:
 		obj = model()
 		obj.name = self.pref_label
 		obj.definition = self.definition
 		obj.identifier = self.identifier
 		obj.save()
 		print(f"saved object {obj.name} to {model}")
+		return obj
 	
 	@classmethod
 	def from_concept_serialized(cls, concepts: list[dict[str, Any]]) -> list['DataListConcept']:

@@ -17,6 +17,7 @@ from django.conf import settings
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
+from ..util import * 
 from ..constants import SaveType
 from ..models import *
 from ..views import migrate_db_old_to_new
@@ -147,19 +148,51 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 		concept_data = get_concepts(get_data(url))
 		concepts = DataListConcept.from_concept_serialized(concept_data)
 		model = apps.get_model(app_label, model_name)
+		if not issubclass(model, ControlledGraphList):
+			raise Exception(f"{model.__name__} is not a controlled list")
 
 		# cache all objects that were here before storing any, so we can remove 
 		# the old ones
 		old_objs = [x for x in model.objects.all()]
-	
+		matched_old_objs: list[ControlledList] = []
+
+		print(f"found {len(concepts)} vocab terms from {request.get_full_path()}")
 		for concept in concepts:
-			concept.to_model(model)
+			new_obj = concept.to_model_entry(model)
+			matched_obj: ControlledList = None
+
+			print(f"searching for old {new_obj.name} match..")
+
+			# look for any remaining objects that match the newly pulled vocab 
+			# term, and flag them for reference updating and removal
+			for oldobj in old_objs:
+				if oldobj.identifier == new_obj.identifier or oldobj.name == new_obj.name:
+					matched_obj = oldobj
+					matched_old_objs.append(matched_obj)
+					old_objs.remove(oldobj)
+					break
+
+			# if an old object that matches the new object is found, replace all
+			# of the old object references with the new object
+			if matched_obj:
+				oldrefs = find_database_references(matched_obj)
+				print(f"found match! replacing {len(oldrefs)} references..")
+				for refobj, field in oldrefs:
+					if isinstance(field, ManyToManyField):
+						getattr(refobj, field.name).remove(matched_obj)
+						getattr(refobj, field.name).add(new_obj)
+					else: setattr(refobj, field.name, new_obj)
+					print(f"updated '{refobj.pk}:{field}' to new vocab term")
 		
 		if issubclass(model, ControlledGraphList):
 			link_concept_children(model, concept_data)
 
-		# remove old entries
-		for old_obj in old_objs: old_obj.delete()
+		# remove old entries that have been replaced with new vocab terms
+		for old_obj in matched_old_objs: old_obj.delete()
+
+		# mark any objects that did not get replaced with new terms as outdated
+		for old_obj in old_objs:
+			old_obj.name = old_obj.name + " (OUTDATED)"
 
 	return redirect('admin:index')
 

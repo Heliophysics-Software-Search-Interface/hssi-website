@@ -87,19 +87,28 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 	# actions need to be specified
 	actions = [fix_uuid_chains]
 
+class ControlledListAdmin(HSSIModelAdmin):
+
+	@action(description="test")
+	def collapse_model_entries(self, request: HttpRequest, queryset: QuerySet):
+		# TODO
+		pass
+
+	actions = [HSSIModelAdmin.fix_uuid_chains, collapse_model_entries]
+
 # Admin definitions for roots module -------------------------------------------
 
 class OperatingSystemResource(resources.ModelResource):
 	class Meta: model = OperatingSystem
-class OperatingSystemAdmin(HSSIModelAdmin): resource_class = OperatingSystemResource
+class OperatingSystemAdmin(ControlledListAdmin): resource_class = OperatingSystemResource
 
 class PhenomenaTypeResource(resources.ModelResource):
 	class Meta: model = Phenomena
-class PhenomenaTypeAdmin(HSSIModelAdmin): resource_class = PhenomenaTypeResource
+class PhenomenaTypeAdmin(ControlledListAdmin): resource_class = PhenomenaTypeResource
 
 class KeywordResource(resources.ModelResource):
 	class Meta: model = Keyword
-class KeywordAdmin(HSSIModelAdmin): resource_class = KeywordResource
+class KeywordAdmin(ControlledListAdmin): resource_class = KeywordResource
 
 class ImageResource(resources.ModelResource):
 	class Meta: model = Image
@@ -107,23 +116,23 @@ class ImageAdmin(HSSIModelAdmin): resource_class = ImageResource
 
 class RegionResource(resources.ModelResource):
 	class Meta: model = Region
-class RegionAdmin(HSSIModelAdmin): resource_class = RegionResource
+class RegionAdmin(ControlledListAdmin): resource_class = RegionResource
 
 class DataInputResource(resources.ModelResource):
 	class Meta: model = DataInput
-class DataInputAdmin(HSSIModelAdmin): resource_class = DataInputResource
+class DataInputAdmin(ControlledListAdmin): resource_class = DataInputResource
 
 class RepoStatusResource(resources.ModelResource):
 	class Meta: model = RepoStatus
-class RepoStatusAdmin(HSSIModelAdmin): resource_class = RepoStatusResource
+class RepoStatusAdmin(ControlledListAdmin): resource_class = RepoStatusResource
 
 class FunctionCategoryResource(resources.ModelResource):
 	class Meta: model = FunctionCategory
-class FunctionCategoryAdmin(HSSIModelAdmin): resource_class = FunctionCategoryResource
+class FunctionCategoryAdmin(ControlledListAdmin): resource_class = FunctionCategoryResource
 
 class InstrumentObservatoryResource(resources.ModelResource):
 	class Meta: model = InstrumentObservatory
-class InstrumentObservatoryAdmin(HSSIModelAdmin): resource_class = InstrumentObservatoryResource
+class InstrumentObservatoryAdmin(ControlledListAdmin): resource_class = InstrumentObservatoryResource
 
 class LicenseResource(resources.ModelResource):
 	class Meta: model = License
@@ -135,11 +144,11 @@ class OrganizationAdmin(HSSIModelAdmin): resource_class = OrganizationResource
 
 class FileFormatResource(resources.ModelResource):
 	class Meta: model = FileFormat
-class FileFormatAdmin(HSSIModelAdmin): resource_class = FileFormatResource
+class FileFormatAdmin(ControlledListAdmin): resource_class = FileFormatResource
 
 class ProgrammingLanguageResource(resources.ModelResource):
 	class Meta: model = ProgrammingLanguage
-class ProgrammingLanguageAdmin(HSSIModelAdmin): resource_class = ProgrammingLanguageResource
+class ProgrammingLanguageAdmin(ControlledListAdmin): resource_class = ProgrammingLanguageResource
 
 # Admin definitions for people module ------------------------------------------
 
@@ -163,7 +172,7 @@ class AwardAdmin(HSSIModelAdmin): resource_class = AwardResource
 
 class DatasetResource(resources.ModelResource):
 	class Meta: model = RelatedItem
-class DatasetAdmin(HSSIModelAdmin): resource_class = DatasetResource
+class DatasetAdmin(ControlledListAdmin): resource_class = DatasetResource
 
 class SoftwareVersionResource(resources.ModelResource):
 	class Meta: model = SoftwareVersion

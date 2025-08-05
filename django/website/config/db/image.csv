@@ -1,10 +1,11 @@
 id,url,description
-ab0dd26b-453e-49aa-bf16-9ddd1c1dd22a,https://www2.hao.ucar.edu/sites/default/files/resize/images/ICON-GOLD_2016/IonosphereHorizon-Banner-980x232.jpg,
-9fe94c0d-b302-4575-be0b-f7cdcce71149,https://raw.githubusercontent.com/space-physics/GOESplot/master/src/goesplot/tests/goes13-IR-2017-07-13-12.jpg,
-0fde05b5-faa5-49ef-baf8-2c5de3c0ba5e,https://raw.githubusercontent.com/HERMES-SOC/hermes_core/main/docs/logo/hermes_logo.png,
-50d3b03f-0eaf-4ace-8dea-6576e7885dee,https://ccmc.gsfc.nasa.gov/images/CCMC-LOGO-2.gif,
-1270f2bd-7381-43f4-8de2-280ecfd3896d,https://www.ngdc.noaa.gov/IAGA/vmod/img/vmod_header.gif,
-a3e844fd-067b-4006-9715-4f8704a87271,https://iri.gsfc.nasa.gov/images/red_band-179.jpg,
-86263990-2be7-4396-9fbf-dcccb9964a39,https://iri.gsfc.nasa.gov/images/tail-179.jpg,
-9b87ef8d-e84c-45d2-ab53-7016e9ce42f7,https://raw.githubusercontent.com/space-physics/lowtran/master/gfx/whyskyisblue.png,
-01304127-92d7-4b45-934b-91d74c0dff72,https://i.ibb.co/Jyx1nNd/thm-gbo-logo.jpg,
+cff81f1f-922b-47b4-af5d-40e77d309863,,logo for hapi-server/client-python:
+6af2c03f-4298-42c6-81dc-6a914549c207,,logo for PySPEDAS
+ff947b90-c293-4a6e-bce7-4503bba805cb,,logo for rebeccaringuette/MagnetosphericSWCX: PublicationCode_v1.0
+35f87c65-e2ce-4932-9b66-f825a8c74bbe,,logo for rebeccaringuette/MagnetosphericSWCX: PublicationCode_v1.0
+84dac53f-a918-48c1-b61e-cd4334a51af6,,logo for sammi-cdf
+64a3b6c5-6710-431b-b590-8c8eb58a7b62,,logo for solarmach
+1eba7e08-7f71-49dd-9d77-1fe9289ebfbc,,logo for solo-epd-loader
+62115ef1-1277-439a-a6ff-e8516e7509d8,,logo for solo-epd-loader
+52ae280f-117a-439b-a39b-980a1db8489e,,logo for solo-epd-loader
+c7c49cf9-1d7a-4d6f-a540-c5fcf33dfc03,,logo for SpacePy

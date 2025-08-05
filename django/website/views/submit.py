@@ -16,8 +16,6 @@ from ..models import *
 from ..forms.names import *
 from ..util import *
 
-
-
 def view_form(request: HttpRequest) -> HttpResponse:
 	return render(
 		request, 

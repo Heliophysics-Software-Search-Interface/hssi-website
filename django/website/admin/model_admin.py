@@ -128,7 +128,7 @@ class KeywordAdmin(ControlledListAdmin):
 		colkeyword.save()
 	
 	@action(description="Format Names")
-	def format_name(self, req: HttpRequest, query: QuerySet[Keyword]):
+	def format_names(self, req: HttpRequest, query: QuerySet[Keyword]):
 		for obj in query:
 			obj.name = SPACE_REPLACE.sub(' ', obj.name).lower()
 			obj.save()
@@ -136,7 +136,7 @@ class KeywordAdmin(ControlledListAdmin):
 	actions = [
 		HSSIModelAdmin.fix_uuid_chains,
 		collapse_keyword_entries,
-		format_name,
+		format_names,
 	]
 
 class ImageResource(resources.ModelResource):

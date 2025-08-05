@@ -8,13 +8,13 @@
 		<li>
 			<form action="{% url 'admin:export_db' %}" method="POST">
 				{% csrf_token %}
-				<input type="submit" value="Export Database">
+				<input type="submit" value="Export EMAC Database (deprecated)">
 			</form>
 		</li>
 		<li>
 			<form action="{% url 'admin:import_db' %}" method="POST">
 				{% csrf_token %}
-				<input type="submit" value="Import Database">
+				<input type="submit" value="Import EMAC Database (depricated)">
 			</form>
 		</li>
 		<li>
@@ -26,13 +26,13 @@
 		<li>
 			<form action="{% url 'admin:export_db_new' %}" method="POST">
 				{% csrf_token %}
-				<input type="submit" value="Export Database (new)">
+				<input type="submit" value="Export HSSI Database (new)">
 			</form>
 		</li>
 		<li>
 			<form action="{% url 'admin:import_db_new' %}" method="POST">
 				{% csrf_token %}
-				<input type="submit" value="Import Database (new)">
+				<input type="submit" value="Import HSSI Database (new)">
 			</form>
 		</li>
 		<li>

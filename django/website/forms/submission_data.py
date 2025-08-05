@@ -90,7 +90,7 @@ SUBMISSION_FORM_PUBLISHER: ModelStructure = ModelStructure.define(
 		type=TYPE_ROR,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
-			PROP_LABEL: "Identifier",
+			PROP_LABEL: "Publisher Identifier",
 			PROP_TT_EXPL: TTEXPL_PUBLISHERIDENTIFIER,
 			PROP_TT_BEST: TTBEST_PUBLISHERIDENTIFIER,
 			PROP_WIDGET_PROPS: {

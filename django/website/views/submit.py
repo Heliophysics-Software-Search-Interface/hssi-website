@@ -1,4 +1,4 @@
-import json, uuid, datetime, re
+import json, uuid, datetime
 from uuid import UUID
 
 from django.shortcuts import render, redirect, HttpResponse
@@ -14,8 +14,9 @@ from ..forms import (
 )
 from ..models import *
 from ..forms.names import *
+from ..util import *
 
-SPACE_REPLACE = re.compile('[_\-.]')
+
 
 def view_form(request: HttpRequest) -> HttpResponse:
 	return render(

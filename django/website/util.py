@@ -1,9 +1,11 @@
-import uuid
+import uuid, re
 
 from django.contrib.auth.models import AbstractUser, AnonymousUser
 from django.db.models import Model, Manager
 from django.db.models.fields import Field
 from enum import IntEnum
+
+SPACE_REPLACE = re.compile(r'[_\-.]')
 
 class RequirementLevel(IntEnum):
 	OPTIONAL = 0

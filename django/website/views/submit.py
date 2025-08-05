@@ -93,11 +93,12 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## LOGO
 
 	logo_url = data.get(FIELD_LOGO)
-	img = Image()
-	img.description = f"logo for {software.softwareName}"
-	img.url = logo_url
-	img.save()
-	software.logo = img
+	if logo_url:
+		img = Image()
+		img.description = f"logo for {software.softwareName}"
+		img.url = logo_url
+		img.save()
+		software.logo = img
 
 	## SUBMISSION
 	

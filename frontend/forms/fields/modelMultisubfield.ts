@@ -111,12 +111,12 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.buildNewMultifield();
 	}
 
-	public fillMultiFields(data: JSONArray): void {
+	public fillMultiFields(data: JSONArray, notify: boolean = true): void {
 		this.clearMultifields();
 		for(let i = 0; i < data.length; i++){
 			const value = data[i];
 			this.buildNewMultifield();
-			this.multiFields[i].fillField(value);
+			this.multiFields[i].fillField(value, notify);
 		}
 	}
 

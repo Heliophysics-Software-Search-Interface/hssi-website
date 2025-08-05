@@ -71,10 +71,6 @@ export abstract class Widget {
 				}
 			}
 	}
-	
-	public setValue(value: string): void{
-		this.getInputElement().value = value;
-	}
 
 	protected checkForInputElementEventInit(): void {
 		const inputElem = this.getInputElement();
@@ -162,6 +158,11 @@ export abstract class Widget {
 	}
 
 	/// Public functionality ---------------------------------------------------
+
+	public setValue(value: string, notify: boolean = true): void{
+		this.getInputElement().value = value;
+		if(notify && this.parentField) this.parentField.onValueChanged.triggerEvent();
+	}
 
 	/** return the element that the user interacts with for inputing data */
 	public abstract getInputElement(): AnyInputElement;

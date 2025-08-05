@@ -207,7 +207,7 @@ export class ModelSubfield {
 	public clearField(): void {
 		
 		// clear input value
-		this.setValue("");
+		this.setValue("", true);
 
 		// clear/collapse all subfield values
 		for(const subfield of this.getSubfields()) {
@@ -220,7 +220,7 @@ export class ModelSubfield {
 		this.requirement.removeStyles();
 	}
 
-	public fillField(data: JSONValue): void {
+	public fillField(data: JSONValue, notify: boolean = true): void {
 		
 		if(data instanceof Array) {
 			if(this instanceof ModelMultiSubfield) this.fillMultiFields(data);
@@ -244,12 +244,12 @@ export class ModelSubfield {
 
 				// check each field/subfield of this field and apply the data
 				if(this.name === key) {
-					this.fillField(value);
+					this.fillField(value, notify);
 					continue;
 				}
 				for(const subfield of fields){
 					if(subfield.name === key){
-						subfield.fillField(value);
+						subfield.fillField(value, notify);
 						break;
 					}
 				}
@@ -257,7 +257,7 @@ export class ModelSubfield {
 		}
 
 		// it's a non-recursive value (almost certainly a string)
-		else this.setValue(data.toString());
+		else this.setValue(data.toString(), notify);
 	}
 
 	public meetsRequirementLevel(): boolean {
@@ -376,8 +376,8 @@ export class ModelSubfield {
 		return this.widget?.getInputElement() ?? null;
 	}
 
-	public setValue(value: string): void {
-		this.widget?.setValue(value);
+	public setValue(value: string, notify: boolean = true): void {
+		this.widget?.setValue(value, notify);
 	}
 
 	/** 

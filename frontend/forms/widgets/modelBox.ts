@@ -100,10 +100,7 @@ export class ModelBox extends Widget {
 			this.listenerUnset = this.parentField.onValueChanged.addListener(() => {
 				this.unsetInputElementData();
 			});
-			
-			// TODO this isn't working for submitter field for some reason? 
-			// submitter field seems to have no subfields even though there 
-			// is an email subfield
+
 			this.listenerUnsetChild = this.parentField.onChildValueChanged.addListener(() => {
 				this.unsetInputElementData();
 			});
@@ -196,15 +193,15 @@ export class ModelBox extends Widget {
 					const mappedName = FormGenerator.fieldMap[x.name] ?? "NONE";
 					return mappedName == dataFieldName;
 				});
-				console.log(dataFieldName + " -> " + subfield?.name, jsonData[dataFieldName]);
+				console.log(dataFieldName + "->" + subfield?.name + " : ", jsonData[dataFieldName]);
 				if(subfield){
 					const jsonValue = jsonData[dataFieldName];
 					if(subfield instanceof ModelMultiSubfield) {
 						if(jsonValue instanceof Array)
-							subfield.fillMultiFields(jsonValue);
-						else subfield.fillMultiFields([jsonValue]);
+							subfield.fillMultiFields(jsonValue, false);
+						else subfield.fillMultiFields([jsonValue], false);
 					}
-					else subfield.fillField(jsonValue);
+					else subfield.fillField(jsonValue, false);
 				}
 			}
 			this.rowFetchAbort = null;
@@ -456,11 +453,11 @@ export class ModelBox extends Widget {
 
 	/// Public functionality ---------------------------------------------------
 
-	public override setValue(value: string): void {
+	public override setValue(value: string, notify: boolean = true): void {
 		if(!this.options) {
 			super.setValue(value);
 			this.builOptionsFromModel(this.properties.targetModel).then(
-				() => this.setValue(value)
+				() => this.setValue(value, notify)
 			);
 			return;
 		}
@@ -468,7 +465,7 @@ export class ModelBox extends Widget {
 		const matchThreshold = this.properties.allowNewEntries ? 1 : 0;
 		const match = this.findMatchingOption(value, matchThreshold);
 		if(match) {
-			super.setValue(match.name);
+			super.setValue(match.name, notify);
 			this.inputElement.data = match;
 		}
 		else {

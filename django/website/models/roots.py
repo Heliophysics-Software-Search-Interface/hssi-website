@@ -216,7 +216,7 @@ class ControlledList(HssiModel):
 		return firstobj
 
 	@classmethod
-	def get_top_field(cls): return cls._meta.get_field("name")
+	def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
 
 	def get_tooltip(self): return self.definition
 

@@ -148,8 +148,8 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 		concept_data = get_concepts(get_data(url))
 		concepts = DataListConcept.from_concept_serialized(concept_data)
 		model = apps.get_model(app_label, model_name)
-		if not issubclass(model, ControlledGraphList):
-			raise Exception(f"{model.__name__} is not a controlled list")
+		if not (issubclass(model, HssiModel)):
+			raise Exception(f"{model.__name__} is not a HSSI model")
 
 		# cache all objects that were here before storing any, so we can remove 
 		# the old ones
@@ -159,14 +159,17 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 		print(f"found {len(concepts)} vocab terms from {request.get_full_path()}")
 		for concept in concepts:
 			new_obj = concept.to_model_entry(model)
-			matched_obj: ControlledList = None
+			matched_obj: HssiModel = None
 
 			print(f"searching for old {new_obj.name} match..")
 
 			# look for any remaining objects that match the newly pulled vocab 
 			# term, and flag them for reference updating and removal
 			for oldobj in old_objs:
-				if oldobj.identifier == new_obj.identifier or oldobj.name == new_obj.name:
+				identmatch = False
+				if isinstance(oldobj, ControlledList): 
+					identmatch = oldobj.identifier == new_obj.identifier
+				if identmatch or oldobj.name == new_obj.name:
 					matched_obj = oldobj
 					matched_old_objs.append(matched_obj)
 					old_objs.remove(oldobj)
@@ -182,7 +185,7 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 						getattr(refobj, field.name).remove(matched_obj)
 						getattr(refobj, field.name).add(new_obj)
 					else: setattr(refobj, field.name, new_obj)
-					print(f"updated '{refobj.pk}:{field}' to new vocab term")
+					print(f"updated field '{refobj.pk}:{field}'")
 		
 		if issubclass(model, ControlledGraphList):
 			link_concept_children(model, concept_data)
@@ -191,8 +194,7 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 		for old_obj in matched_old_objs: old_obj.delete()
 
 		# mark any objects that did not get replaced with new terms as outdated
-		for old_obj in old_objs:
-			old_obj.name = old_obj.name + " (OUTDATED)"
+		for old_obj in old_objs: old_obj.name = old_obj.name + " (OUTDATED)"
 
 	return redirect('admin:index')
 

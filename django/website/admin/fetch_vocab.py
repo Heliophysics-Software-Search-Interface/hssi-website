@@ -185,6 +185,7 @@ class DataListConcept:
 		for concept in concepts:
 			label = concept.get('prefLabel')
 			definition = concept.get('definition')
+			if not definition: definition = concept.get('licenseUrl')
 			identifier = concept.get('@id')
 			conc = DataListConcept()
 

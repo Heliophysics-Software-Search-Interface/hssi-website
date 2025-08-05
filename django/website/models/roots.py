@@ -174,7 +174,7 @@ class ControlledList(HssiModel):
 		label="Definition",
 	)
 
-	def __str__(self): return self.name
+	def __str__(self) -> str: return self.name
 
 	@classmethod
 	def get_top_field(cls): return cls._meta.get_field("name")
@@ -224,6 +224,8 @@ class Keyword(ControlledList):
 			tooltipExplanation="General science keywords relevant for the software (e.g. from the AGU Index List of the UAT) not supported by other metadata fields.",
 			tooltipBestPractise="Begin typing the keyword in the box. Keywords listed in the UAT and AGU Index lists will appear in a dropdown list, please choose the correct one(s). If your keyword is not listed, please type it in.",
 		)
+
+	def __str__(self) -> str: return self.name.title()
 
 class OperatingSystem(ControlledList):
 	'''Operating system on which the software can run'''
@@ -416,6 +418,19 @@ class FunctionCategory(ControlledGraphList):
 		related_name='parent_nodes',
 		symmetrical=False,
 	)
+
+	def get_choice(self) -> ModelObjectChoice:
+		choice_name = str(self)
+		if self.parent_nodes:
+			if self.parent_nodes.count() == 1:
+				choice_name = str(self.parent_nodes.first()) + ": " + choice_name
+
+		return ModelObjectChoice(
+			str(self.id), 
+			choice_name,
+			self.get_search_terms(),
+			self.get_tooltip(),
+		)
 
 	@classmethod
 	def _form_config_redef(cls) -> None:

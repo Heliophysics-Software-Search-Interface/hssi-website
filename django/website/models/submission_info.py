@@ -25,8 +25,9 @@ class SubmissionInfo(HssiModel):
 	dateModified = models.DateField(auto_now=True, blank=True, null=True)
 	modificationDescription = models.TextField(blank=True, null=True)
 	metadataVersionNumber = models.CharField(max_length=50, blank=True, null=True)
-	submitter = models.ManyToManyField(
+	submitter = models.ForeignKey(
 		Submitter,
+		on_delete=models.CASCADE, 
 		blank=True,
 		related_name='submission_infos'
 	)
@@ -65,10 +66,10 @@ class SubmissionInfo(HssiModel):
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("submitter")
 
 	class Meta: 
-		ordering = ['dateModified', 'submitter__person__lastName']
+		ordering = ['dateModified']
 		verbose_name_plural = "  Submission Info"
 	def __str__(self): 
-		return (
-			f"{str(self.submissionDate)} - " + f"{str(self.software)}: " +
-			f"{self.get_internalStatusCode_display()}"
-		)
+		text = "Submission"
+		if self.submitter: text += f" by {str(self.submitter)}"
+		text += f" on {str(self.submissionDate)}"
+		return text

@@ -1,4 +1,8 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser, AnonymousUser
+from django.db.models import Model, Manager
+from django.db.models.fields import Field
 from enum import IntEnum
 
 class RequirementLevel(IntEnum):
@@ -27,3 +31,17 @@ class AccessLevel(IntEnum):
 		return access
 
 REQ_LVL_ATTR = "data-hssi-required"
+
+def find_database_references(object: Model) -> list[tuple[Model, Field]]:
+	"""
+	get all (related object, field) pairs on all objects in the database that 
+	reference the specified object
+	"""
+	refs = []
+	for field in object._meta.get_fields():
+		if field.is_relation and field.auto_created and not field.concrete:
+			rel_name = field.get_accessor_name()
+			related: Manager = getattr(object, rel_name)
+			for rel in related.all():
+				refs.append((rel, field.field))
+	return refs

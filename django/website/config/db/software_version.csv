@@ -1,88 +1,41 @@
-id,number,release_date,description,version_pid,software
-59b91735-2534-4534-b444-3dea5b8cf76b,,2024-12-31,,,32951cc1-120a-43e7-965f-efbff5eb9465
-7febe183-53b9-4a8d-a276-1df859d30bd7,,2023-01-27,,,8d3c59d6-eba7-415b-b303-00ca371f7662
-b3bbfb92-cfaa-4c2e-b195-a5b0224ed060,,2023-01-27,,,91267e12-5c4e-4baf-b9fa-47d7ea7fb0e4
-23be28ee-4ede-48a6-ba22-3bafe9b740db,,2025-01-16,,,fb731b78-f3e6-4fba-9cee-7fad9c0eff1e
-11ad28f3-0e7c-48d1-9bd0-5fc041e1ca01,,2023-01-27,,,b97bbe4b-720a-4267-813a-73596a610d70
-12bdaa92-b463-473c-ae3b-3b1912cb3934,,2025-02-14,,,61e567d0-921b-4a20-a88c-7d8423de1d07
-ef86f191-fc92-4bad-8cf1-51f41af8dd96,,2025-01-28,,,6b9cb65c-dfad-41b8-821b-60ff588b7dd6
-23176b0f-57e1-464d-b8f6-547dcc2546e3,,2025-02-14,,,f77353c1-58fb-46a7-9b38-757b6d21bcec
-b5cd156e-a812-408d-8750-d8c0d6ac8a75,,2024-11-16,,,8779110a-05b1-40d8-9356-22dc6143065e
-d05ec44c-aad3-4f4e-b966-29317f9a4fd8,,2025-02-11,,,642210ac-5415-4908-b6e2-8fa4129d51e0
-fdec3a5c-f02d-4c62-a5eb-02cd5612a18c,,2025-01-30,,,23d2fb34-4b6b-418c-a313-563569ed6158
-488a9ce8-fbcb-406e-bf50-10841bc8c44a,,2025-01-23,,,52505897-9362-4c58-8a02-c6a5e18809f8
-239d196b-d0ab-406e-ba5a-41d4c71834fc,,2024-01-22,,,442e4262-53cc-4753-8e5b-28116fa94ea8
-9c1560c8-018c-47a5-9e97-23b94cbbcbdb,,2023-11-03,,,31eeb0af-a517-49bd-bec3-498990e321e7
-26c6283b-42a4-43f7-9915-96be999b4316,,2025-02-11,,,fe1dae9b-7f60-4770-ada0-3cd690120446
-d5116137-c0db-4c02-ab89-be9a94e9f382,,2025-02-19,,,405370d8-a347-4835-9de0-113e5fd9a477
-871ca7ff-116e-447d-8535-3a90db02f1ad,,2025-01-20,,,472c759e-01f2-4764-92e0-560ec1076ba0
-82c49236-e6e7-4638-afda-4a9886b9d0ca,,2024-12-05,,,bef89747-3abc-4a44-9e46-fa31c8f57c23
-d6d6baf4-0c24-4d0c-bb1e-66b9354375f9,,2025-01-17,,,c8dad17f-bb94-49a5-bf94-4964f230d7b7
-e4e586bd-1309-4b12-8a8a-f9e77eb9e83b,,2023-03-20,,,65632c4c-7b60-45bf-a433-be2eb4758424
-141e0e68-9545-46f3-88c9-5a820a1b0e45,,2024-06-03,,,2809fc5b-0a10-4f9e-8c8d-4213bfa01993
-4f5813d3-8c5c-478d-b149-73aa0d871ad6,,2024-05-02,,,245ad419-5928-4408-b9d6-293508455f1f
-eee4c473-193d-48dc-a72c-8a04c70bdfcc,,2024-03-21,,,dde29b3d-4c04-4e10-8db2-f3c04f90e943
-2d6c0003-a8b2-46b5-8bb8-6d0707e7099d,,2024-05-21,,,6ee3a715-54c3-401e-823b-17f62174841b
-ca8d3f9b-789b-488c-90a6-497746b49682,,2025-02-26,,,a2b4e0cf-0563-4e94-b966-2545142c78e0
-8b3350f4-1d81-4dad-9dc3-021248a0e2e2,,2025-01-28,,,2a24064d-db0c-4d17-bb56-6fb451b743a1
-eb1d34bf-84a3-47ad-b4de-0defd5d484b5,,2024-06-04,,,5fd14dd1-0ec7-4468-acd1-4e6b1b755849
-3036a1b6-da24-4a66-b566-95440e75efeb,,2025-02-24,,,4adcf4ee-8eb6-48be-9a78-08a4049ca058
-0256779a-3878-4bc7-bc95-d2ccd32a2c58,,2025-01-22,,,708fc6f9-2a3a-4b31-b0a8-8c168af88cc4
-92f3ae2c-b380-4558-9adc-7953f156d81d,,2024-05-20,,,c1b37f90-e8c1-47b9-b6cb-8e1f454560a9
-9272ebe9-da47-4194-a942-1ec07cdc786d,,2024-12-23,,,523599da-af23-4c84-9488-c4838b13c7f9
-2cd52bda-0fe7-4890-aaf3-31d93cb0a8e0,,2022-02-06,,,68b2fb07-882f-4045-97f4-c231ed02ecd2
-98596534-59ed-4a47-b3e0-2019852a1812,,2025-02-11,,,b64b2451-c588-4c0a-8662-2b439395fe19
-792d5add-a09c-4068-9411-0437aeec2c01,,2025-02-10,,,5fd3feaf-5ced-47ba-833a-fc1c5e1073fc
-5f6b44b3-1c5a-4691-aaf8-526a32794fcc,,2025-01-29,,,8842d10b-3420-4150-9080-7107f71f1993
-62f40d63-24d8-44dc-8505-1f404c0b7775,,2023-01-27,,,fb8ea2f1-a9e5-4a07-ba3f-0c4b608993d8
-2f0c0c48-3fd0-457b-8cc2-f1c66a68cc9d,,2024-10-14,,,0447198a-6da2-4205-891e-770d95fcfeea
-2b3086d8-f05f-499c-a343-fc9c773f2f64,,2024-07-31,,,207d617a-349f-4a15-8134-05bf337dd26d
-010da7c9-c8dd-490c-8dbf-66b056d5d3c2,,2024-06-22,,,e0c86f77-b568-437e-9eb4-ca8340338c19
-ee04682e-68e5-488b-93b5-762dd0cc6f90,,2025-01-13,,,da4077ab-14fb-4fb8-92f1-fb98eee06f1a
-057b5344-9e92-4350-86e4-902848980724,,2025-01-22,,,9adbd84f-7bca-4bd5-a0cf-b2c0468cf3d5
-b194afac-50b8-4033-a04b-bf3a53cda99b,,2025-02-05,,,3c77c91c-cec0-496f-af29-8308f33ea225
-6a27947d-153d-4b27-ac23-4a367b62a496,,2024-12-26,,,9cc42eb8-3f83-4c19-999b-89160efef495
-31c17694-ccce-4435-97ce-182480c08630,,2024-11-27,,,82352966-7635-484f-a5ee-d2ff13e9a304
-30da8ab6-a5b4-4249-9de3-e5a718bf8edb,,2025-01-29,,,1a60f795-0abc-4121-a59d-bd16c070ef22
-afdfc6ad-f34f-4c3d-a1f2-668fec6ef694,,2025-02-13,,,10ff1fcf-9567-4cc4-b83e-91caefd0f71f
-ba49f627-ddcb-4245-9d31-cd527ce3a9cf,,2025-01-07,,,4d56a224-a079-41b3-86ca-4093b58f21c0
-dc0dd801-8506-4b25-894e-1f4a9b29f69c,,2025-02-15,,,64819188-8a20-4762-bca2-ad17e5949a9c
-e94ae6c2-5368-47e3-926d-cb89cd7bf945,,2024-11-27,,,f0f8e299-c76e-4552-a1c6-ab1b6b29a7f0
-f1669ca2-bfa4-42b4-8461-b2663572a50c,,2025-02-14,,,e376d876-3578-48af-a4a4-d66a4ef91ef6
-d7e64535-6cd0-400e-90a2-5cfd56e9bdfa,,2025-01-07,,,fd8f227d-82f0-4449-abf1-bf1d80423212
-84377541-ea7a-4248-bad7-910a3fa9f925,,2025-02-07,,,7e7a173b-a305-4320-920c-ad350bcaac6e
-76389e33-d962-468f-a1c4-b02590a6ea58,,2024-12-19,,,9a4866b7-b3a7-4637-90e9-7414b4add238
-81300a65-bc0f-4927-bc69-a130672b9e2c,,2025-01-29,,,eb257b42-e06a-4338-98a1-727a60788be4
-723db239-7eed-43a5-96a3-abb2c2a2d433,,2025-02-08,,,04302bcb-1d29-44f9-b1ac-7ef3b23778ea
-e994cec7-5e31-476b-b4ae-044abe8a130f,,2025-02-06,,,21fdefa3-1a48-4448-8339-210deb4add1e
-671cd2a6-4338-4de6-bf79-62f9cd9b1e45,,2025-02-19,,,564919a1-f3c3-4e09-b02e-7cac1786f71b
-29071512-250d-497a-a6dd-98a5a9ae6850,,2024-10-14,,,7e20c436-80f1-4928-8a60-143f571560e9
-aaba2a49-3c8b-4801-887f-e1a941e4529c,,2025-02-17,,,a6518ccc-f4e3-46a5-abd0-5b1912a65151
-94715fc5-7860-4033-ae74-1116a4e99cd5,,2024-12-04,,,e6d05550-9810-489d-a7e7-60fd5ca36df0
-5200e3b0-1486-4afa-bd19-3319d1a2b383,,2025-02-05,,,c6b5887f-b49d-4594-a874-332cc06e5e76
-71183500-1d8c-4ab4-8ee0-16859d5f25f2,,2023-11-01,,,b2306e74-e703-479a-a48e-7c3acc0848a0
-1b0c83ac-8993-42bf-aa0c-ce31f8cf5cff,,2025-02-18,,,0f25e62d-76a4-413a-a3eb-0f7488474c58
-830daeb1-ad7d-4af8-b938-b45be05d55bb,,2025-02-19,,,5db39ccc-790e-41b2-a389-c9e66149dd3f
-a4d35325-cc92-4e19-a7c5-afe79583d364,,2024-11-25,,,5096b2af-2c41-40ff-964c-e68b4c7645d3
-d993993b-94e0-49e8-9952-8f379bb9333e,,2025-02-24,,,f56d1578-3e5c-4d21-80ee-29b4e7b8d434
-3c5464a2-e7ba-4047-aed5-ccc004204c3a,,2025-02-26,,,bd130617-c220-499b-87a0-aa6865b56086
-4535a8ce-c940-46fc-91d8-10b10d39f271,,2025-02-19,,,798bd158-4cd0-4f57-937c-8671af95ea57
-e5ed9aa7-066a-4706-9ea9-331194cc4ff9,,2022-12-22,,,b3300026-5346-43e8-8bbd-b92f2b3150db
-a56e35fd-4e78-40fd-b1b7-f548634fd1b2,,2024-08-21,,,704b2e44-a209-4568-a02d-c28cf008ff35
-038ff2f5-8e9b-461e-b566-5b333274103d,,2025-02-06,,,2d8cb815-e2fe-46d5-aaea-1c32e40c0a19
-162f0a87-ee13-437b-9f79-00b3310f3f92,,2025-01-10,,,b58f690e-45e6-4152-9c6e-fcf95a0b237e
-9f2be49b-cfea-4278-8b15-50c64b0c11ab,,2023-01-27,,,6187481a-cef1-4afd-a30a-a0cd6a109a43
-59f66969-a93a-4fa3-a1f9-5c9f83698de8,,2024-10-14,,,ce7762ce-9a28-4e76-a134-3817a4e6491c
-8105a42e-c73d-44ae-8c47-29b189b2d00a,,2025-02-11,,,6b946024-e0f9-4961-bf28-b811c6693743
-3463aff2-6bf2-41a6-8b0f-43d94a8cdaef,,2025-02-04,,,643d15d9-03e1-4abe-87c5-b4be3c449922
-d3a2fcbd-be51-44fb-a8c1-35629dee1f11,,2024-08-30,,,e463c1a9-14c8-4a10-b85b-327e6c51e655
-dcb03dd5-dcd4-4a11-8bf3-baaed2b29ce8,,2025-02-19,,,5122f0a2-2c29-47e9-87d8-390015ec01d9
-c5d82cbf-8cce-4129-a31d-157ddc674e72,,2025-02-08,,,3fbbaf90-4758-4596-9bad-603b9a5c8585
-ad848798-cd50-4c20-b9f1-70603a4a7048,,2025-02-14,,,2f01c22b-ec3c-4d31-ac73-281b9cf16677
-43fe9884-fbfb-4206-b0c7-e872537e9676,,2025-02-17,,,0ea85003-02b8-4f99-a797-39278bdf7f1a
-a90fdb27-6a88-4d64-aed7-c8417e9ee728,,2024-10-30,,,d3fe8109-a544-4a33-9a9b-5e4b215aec80
-f83614b4-92f4-432d-be14-b79a5b95c37a,,2025-02-17,,,2972d344-fb5f-402f-9adc-fe41d8ac250d
-e6d2e1d1-1097-4062-9c2a-b299024a09df,,2025-02-18,,,5aa43de2-cc46-4bc4-8b31-4fdb5bbd5bce
-f7cc8adc-6249-4797-87f5-d63f8a9d2849,,2025-02-19,,,3eb614c0-e3c7-4a66-a399-ec72e997cd38
-ad893363-cc44-464c-a072-b6b644da0cff,,2025-01-22,,,e09be3a9-a3a5-43f7-bba8-30662d76e920
-9703b470-29d4-425d-90fc-11a19a55bf7a,,2024-10-07,,,df518c18-1150-44df-a320-1cfc7565f202
+id,number,release_date,description,version_pid
+dcf367e6-a310-482b-a0b7-3eff3d258ea6,0.7.0,2024-11-08,"Please see the full release notes at https://spacepy.github.io/release_notes.html
+
+Binary wheels are now provided for Linux on 64-bit ARM, intended for Raspberry Pi.
+
+There are no changes to dependencies, minimum versions, or installation process with this release.
+
+## New Features
+`help` now supports searching the documentation.
+
+## Dependency requirements
+Numpy 2.0 is now fully supported. 
+
+Numpy and f2py are no longer required to build SpacePy.  Binary wheels are no longer tied to numpy or Python version.
+
+Sphinx 4.0 is now required to build the documentation; this is not a concern for most users.
+
+Support for Python 3.6 has been removed due to inability to test. Python 3.7 is the oldest supported Python; as a result, Astropy 2.0 is the oldest supported Astropy (if using Astropy).
+
+## Deprecations and removals
+`toolbox.timeout_check_call` is deprecated as redundant to using `subprocess.check_call` with the `timeout` argument.
+
+The `irbempy.irbempylib` module has been removed. This was the old internal interface to the IRBEM library and was not intended for public use.
+
+The `data_assimilation`, `radbelt`, and `spacepy_EnKF` modules have been moved to the ""sandbox"". These modules were undertested and minimally documented.
+
+## Major bugfixes
+`irbempy.find_Bmirror` now correctly returns one `Bmirr` per input pitch angle instead of ignoring all but the first.
+
+## Other changes
+Operations on `dmarray` which return a scalar value will now return a numpy array scalar rather than the base Python type. This is consistent with the behavior of `numpy.ndarray`. `dmarray` also supports assigning to its `dtype` and `shape`. Together these changes should make `dmarray` a much closer drop-in replacement for `numpy.ndarray`.
+
+Warnings issued by SpacePy are now associated with the line of the calling code, not with the SpacePy code itself.",https://doi.org/10.5281/zenodo.14057789
+b89b06b5-e45a-40b1-9bf1-8a771ba2f997,MSWCX,2025-08-01,Code used to produce the results in a publication on separating out the magnetospheric SWCX X-ray spectral contribution in astrophysical observations of dark fields.,https://doi.org/10.5281/zenodo.8253002
+e89f1bb4-4011-4351-9cac-ebaa2f7db5d3,MSWCX,2025-08-01,Code used to produce the results in a publication on separating out the magnetospheric SWCX X-ray spectral contribution in astrophysical observations of dark fields.,https://doi.org/10.5281/zenodo.8253002
+14f38f56-7803-4b90-8729-28c1d4173f89,v0.2.1,2021-10-06,Python client for HAPI,https://doi.org/10.5281/zenodo.5553156
+c9a46ee5-4790-483f-ab16-612e7de367e3,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
+ebe3e0b9-101a-44d2-a0dd-207212f45841,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
+7b54feb6-1fc0-4c7f-8a70-f1d3353e4c9c,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
+8155ff78-4060-4adb-ace8-e640ad648c35,v0.5.0,2025-01-29,Python package of the multi-spacecraft longitudinal configuration plotter Solar-MACH,https://doi.org/10.5281/zenodo.14763546
+ba4a1dc4-9db4-4d0e-873d-b20cc6c8ed99,v1.0.2,2025-06-03,A Python package to support metadata attribute management for Space Weather data processing pipelines.,https://doi.org/10.5281/zenodo.15587327

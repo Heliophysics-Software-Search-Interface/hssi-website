@@ -1,4 +1,4 @@
-import json, uuid, datetime
+import json, uuid, datetime, re
 from uuid import UUID
 
 from django.shortcuts import render, redirect, HttpResponse
@@ -14,6 +14,8 @@ from ..forms import (
 )
 from ..models import *
 from ..forms.names import *
+
+SPACE_REPLACE = re.compile('[_\-.]')
 
 def view_form(request: HttpRequest) -> HttpResponse:
 	return render(
@@ -109,23 +111,18 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	submitter_person.lastName = submitter_lastname
 	submitter_person.firstName = submitter_firstname
 	submitter_person.save()
+
+	submitter = Submitter()
+	submitter.person = submitter_person
+	submitter.email = submitter_data.get(FIELD_SUBMITTEREMAIL)
+	submitter.save()
 	
+	submission.submitter = submitter
 	submission.dateModified = date.today()
 	submission.modificationDescription = "Initial submission"
 	submission.metadataVersionNumber = "0.1.0"
 	submission.submissionDate = date.today()
 	submission.internalStatusNote = "Not assigned or reviewed"
-
-	# submission must exist in db before any values can be added to m2m field
-	submission.save()
-	
-	submitter_emails = submitter_data.get(FIELD_SUBMITTEREMAIL)
-	for submitter_email in submitter_emails:
-		submitter = Submitter()
-		submitter.email = submitter_email
-		submitter.person = submitter_person
-		submitter.save()
-		submission.submitter.add(submitter)
 
 	submission.save()
 	software.submissionInfo = submission
@@ -163,13 +160,20 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	if publisher_data:
 		publisher = Organization()
 		publisher.name = publisher_data.get(FIELD_PUBLISHER)
-		publisher.identifier = publisher_data.get(FIELD_PUBLISHERIDENTIFIER)
-		pub_match = None
-		if publisher.identifier: 
-			pub_match = Organization.objects.filter(identifier=publisher.identifier).first()
-		if pub_match: publisher = pub_match
-		else: publisher.save()
-		software.publisher = publisher
+		try:
+			uid = UUID(publisher.name)
+			dbpub = Organization.objects.get(pk=uid)
+			software.publisher = dbpub
+		except Exception:
+			publisher.identifier = publisher_data.get(FIELD_PUBLISHERIDENTIFIER)
+			pub_match = None
+			if publisher.name.lower() == "zenodo":
+				pub_match = Organization.objects.filter(name="Zenodo").first()
+			elif publisher.identifier: 
+				pub_match = Organization.objects.filter(identifier=publisher.identifier).first()
+			if pub_match: publisher = pub_match
+			else: publisher.save()
+			software.publisher = publisher
 
 	## VERSION
 
@@ -257,17 +261,19 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	
 	## KEYWORDS
 
-	keywords = data.get(FIELD_KEYWORDS)
+	keywords: list[str] = data.get(FIELD_KEYWORDS)
 	for kw in keywords:
 		try:
 			uid = UUID(kw)
-			software.programmingLanguage.add(Keyword.objects.get(pk=uid))
-		except Exception:
-			kw_ref = Keyword.objects.filter(name=kw).first()
+			dbkw = Keyword.objects.get(pk=uid)
+			software.keywords.add(dbkw)
+		except Exception as e:
+			kw_fmtd = SPACE_REPLACE.sub(' ', kw).lower()
+			kw_ref = Keyword.objects.filter(name=kw_fmtd).first()
 			if kw_ref: software.keywords.add(kw_ref)
 			else:
 				keyword = Keyword()
-				keyword.name = kw
+				keyword.name = kw_fmtd
 				keyword.save()
 				software.keywords.add(keyword)
 
@@ -383,8 +389,10 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	funder_datas: list[dict] = data.get(FIELD_FUNDER)
 	for funder_data in funder_datas:
 		funder_name = funder_data.get(FIELD_FUNDER)
+		print(f"adding funder '{funder_name}'")
 		try:
 			uid = UUID(funder_name)
+			fnref = Organization.objects.get(pk=uid)
 			software.funder.add(Organization.objects.get(pk=uid))
 		except Exception:
 			funder_ident = funder_data.get(FIELD_FUNDERIDENTIFIER)

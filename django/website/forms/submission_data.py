@@ -139,15 +139,12 @@ SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
 	"SubmissionFormSubmitter",
 	ModelSubfield.define(
 		name=FIELD_SUBMITTERNAME, 
-		type=TYPE_MODELBOX,
+		type=TYPE_CHAR,
 		requirement=RequirementLevel.MANDATORY.value, 
 		properties={
 			PROP_LABEL: "Submitter Name",
 			PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
 			PROP_TT_BEST: TTBEST_SUBMITTERNAME,
-			PROP_WIDGET_PROPS:{
-				WPROP_TARGETMODEL: Person.__name__,
-			},
 		},
 		multi=False,
 	),

@@ -469,7 +469,6 @@ export class ModelBox extends Widget {
 		const match = this.findMatchingOption(value, matchThreshold);
 		if(match) {
 			super.setValue(match.name);
-			
 			this.inputElement.data = match;
 		}
 		else {

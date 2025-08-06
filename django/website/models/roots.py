@@ -88,7 +88,7 @@ class HssiModel(models.Model, metaclass=HssiBase):
 		The fields of the combined object will be equal to the first selected 
 		object, and appended to if there are any empty fields on that object.
 		"""
-		print(f"collapsing {queryset.count() - 1} entries in {queryset.model.name}..")
+		print(f"collapsing {queryset.count() - 1} entries in {queryset.model.__name__}..")
 		firstobj: HssiModel = None
 		for object in queryset:
 			if firstobj is None:
@@ -105,7 +105,7 @@ class HssiModel(models.Model, metaclass=HssiBase):
 					objvals: models.Manager = getattr(object, field.name)
 					ocount = objvals.count()
 					for val in objvals.all(): firstval.add(val)
-					print(f"update m2m field {field} with {objvals.count - ocount} values")
+					print(f"update m2m field {field} with {objvals.count() - ocount} values")
 				else:
 					objval = getattr(object, field.name)
 					if not firstval and objval: 
@@ -128,7 +128,8 @@ class HssiModel(models.Model, metaclass=HssiBase):
 			firstobj.save()
 			object.delete()
 
-		print(f"collapsed to '{firstobj.name}'")
+		topfieldname = firstobj._meta.model.get_top_field().name
+		print(f"collapsed to '{getattr(firstobj, topfieldname)}:{firstobj.pk}'")
 		return firstobj
 
 	@classmethod

@@ -43,7 +43,10 @@ def find_database_references(object: Model) -> list[tuple[Model, Field]]:
 	for field in object._meta.get_fields():
 		if field.is_relation and field.auto_created and not field.concrete:
 			rel_name = field.get_accessor_name()
-			related: Manager = getattr(object, rel_name)
-			for rel in related.all():
-				refs.append((rel, field.field))
+			try:
+				related: Manager = getattr(object, rel_name)
+				for rel in related.all():
+					refs.append((rel, field.field))
+			except Exception as e:
+				print(f"could not resolve '{rel_name}' on {str(object)} |", e)
 	return refs

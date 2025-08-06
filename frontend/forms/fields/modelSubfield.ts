@@ -242,7 +242,6 @@ export class ModelSubfield {
 		else if(data instanceof Object) {
 			this.expandSubfields();
 			const fields = this.getSubfields();
-			console.log("START " + this.name)
 			for(const key in data){
 				const value = data[key];
 
@@ -258,7 +257,6 @@ export class ModelSubfield {
 					}
 				}
 			}
-			console.log("END " + this.name)
 		}
 
 		// it's a non-recursive value (almost certainly a string)

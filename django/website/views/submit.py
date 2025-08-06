@@ -416,7 +416,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 			software.relatedPublications.add(RelatedItem.objects.get(pk=uid))
 		except:
 			relpub_ref = RelatedItem.objects.filter(identifier=relpub).first()
-			if relpub_ref: software.relatedPublications.add(reldat_ref)
+			if relpub_ref: software.relatedPublications.add(relpub_ref)
 			else:
 				relatedpub = RelatedItem()
 				relatedpub.name = "UNKNOWN"
@@ -505,20 +505,23 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 
 	relobs_datas: list[dict] = data.get(FIELD_RELATEDOBSERVATORIES)
 	for relobs_data in relobs_datas:
-		obs_name = relobs_data.get(FIELD_RELATEDOBSERVATORIES)
+		obs_name: str = ""
+		if isinstance(relobs_data, dict): obs_name = relobs_data.get(FIELD_RELATEDOBSERVATORIES)
+		else: obs_name = relobs_data
 		try:
 			uid = UUID(obs_name)
 			software.relatedObservatories.add(InstrumentObservatory.objects.get(pk=uid))
 		except Exception:
 			# TODO FIELD_RELATEDOBSERVATORYIDENTIFIER
-			obs_ident = relobs_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
+			obs_ident = None
+			if isinstance(relobs_data, dict): relobs_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
 			obs_ref = None
 			if obs_ident: obs_ref = InstrumentObservatory.objects.filter(identifier=obs_ident)
 			if obs_ref: software.relatedInstruments.add(obs_ref)
 			else:
 				obs = InstrumentObservatory()
 				obs.name = "UNKNOWN"
-				obs.identifier = instr_ident
+				obs.identifier = obs_ident
 				obs.type = InstrObsType.OBSERVATORY.value
 				obs.save()
 				software.relatedObservatories.add(obs)

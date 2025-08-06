@@ -250,7 +250,7 @@ SUBMISSION_FORM_CONTRIBUTOR: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_CONTRIBUTORAFFILIATION,
-		row_name=ROW_PERSON_AFFILIATION,
+        row_name=ROW_ORGANIZATION_NAME,
 		type=SUBMISSION_FORM_CONTRIBUTOR_AFFILIATION.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={

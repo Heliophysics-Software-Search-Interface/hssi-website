@@ -79,6 +79,58 @@ class HssiModel(models.Model, metaclass=HssiBase):
 		cls._form_config_redef()
 		return super().__init_subclass__()
 	
+	@staticmethod
+	def collapse_objects(queryset: QuerySet['HssiModel']) -> 'HssiModel':
+		"""
+		Useful for if there are multiple entries that should be treated as the 
+		same, use this action to collapse all objects to one object, and update
+		all references to those objects to point to the new combined object.
+		The fields of the combined object will be equal to the first selected 
+		object, and appended to if there are any empty fields on that object.
+		"""
+		print(f"collapsing {queryset.count() - 1} entries in {queryset.model.name}..")
+		firstobj: HssiModel = None
+		for object in queryset:
+			if firstobj is None:
+				firstobj = object
+				continue
+
+			# concatenate all fields, if first object has an empty field, fill
+			# it with the value from a collapsed object, or if it is missing
+			# entries in a m2m field, add them
+			for field in object._meta.get_fields():
+				if field.is_relation and field.auto_created and not field.concrete: continue
+				firstval = getattr(firstobj, field.name)
+				if isinstance(field, ManyToManyField):
+					objvals: models.Manager = getattr(object, field.name)
+					ocount = objvals.count()
+					for val in objvals.all(): firstval.add(val)
+					print(f"update m2m field {field} with {objvals.count - ocount} values")
+				else:
+					objval = getattr(object, field.name)
+					if not firstval and objval: 
+						setattr(firstval, field.name, objval)
+						print(f"update field {field} to '{objval}'")
+			
+			refs = find_database_references(object)
+			for refobj, field in refs:
+
+				# many to many fields need to be handled separately since they
+				# hold multiple foreign key references instead of just one
+				if isinstance(field, ManyToManyField): 
+					manager = getattr(refobj, field.name)
+					manager.remove(object)
+					manager.add(firstobj)
+				else: setattr(refobj, field.name, firstobj)
+				refobj.save()
+				print(f"updated '{refobj}:{field}' field")
+
+			firstobj.save()
+			object.delete()
+
+		print(f"collapsed to '{firstobj.name}'")
+		return firstobj
+
 	@classmethod
 	def _form_config_redef(cls) -> None:
 		'''Redefine the form properties for fields here'''

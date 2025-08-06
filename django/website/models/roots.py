@@ -229,44 +229,6 @@ class ControlledList(HssiModel):
 
 	def __str__(self) -> str: return self.name
 
-	@staticmethod
-	def collapse_objects(queryset: QuerySet['ControlledList']) -> 'ControlledList':
-		"""
-		Useful for if there are multiple entries that should be treated as the 
-		same, use this action to collapse all objects to one object, and update
-		all references to those objects to point to the new combined object.
-		The fields of the combined object will be equal to the first selected 
-		object, and appended to if there are any empty fields on that object.
-		"""
-		print(f"collapsing {queryset.count() - 1} entries in {queryset.model.name}..")
-		firstobj: ControlledList = None
-		for object in queryset:
-			if firstobj is None:
-				firstobj = object
-				continue
-			if not firstobj.name: firstobj.name = object.name
-			if not firstobj.definition: firstobj.definition = object.definition
-			if not firstobj.identifier: firstobj.identifier = object.identifier
-
-			refs = find_database_references(object)
-			for refobj, field in refs:
-
-				# many to many fields need to be handled separately since they
-				# hold multiple foreign key references instead of just one
-				if isinstance(field, ManyToManyField): 
-					manager = getattr(refobj, field.name)
-					manager.remove(object)
-					manager.add(firstobj)
-				else: setattr(refobj, field.name, firstobj)
-				refobj.save()
-				print(f"updated '{refobj}:{field}' field")
-
-			firstobj.save()
-			object.delete()
-
-		print(f"collapsed to '{firstobj.name}'")
-		return firstobj
-
 	@classmethod
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
 

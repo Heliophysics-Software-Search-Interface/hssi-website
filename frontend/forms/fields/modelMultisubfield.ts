@@ -35,8 +35,9 @@ export class ModelMultiSubfield extends ModelSubfield {
 	
 	private createMultifield(): ModelSubfield {
 		return new ModelSubfield(
-			this.name, 
-			this.type, 
+			this.name,
+			this.rowName,
+			this.type,
 			this.properties
 		);
 	}
@@ -115,8 +116,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.clearMultifields();
 		for(let i = 0; i < data.length; i++){
 			const value = data[i];
-			this.buildNewMultifield();
-			this.multiFields[i].fillField(value, notify);
+			this.addNewMultifieldWithValue(value, notify);
 		}
 	}
 
@@ -140,9 +140,9 @@ export class ModelMultiSubfield extends ModelSubfield {
 		}
 	}
 
-	public addNewMultifieldWithValue(value: JSONValue): ModelSubfield {
+	public addNewMultifieldWithValue(value: JSONValue, notify: boolean = false): ModelSubfield {
 		const field = this.buildNewMultifield();
-		field.fillField(value);
+		field.fillField(value, notify);
 		return field;
 	}
 

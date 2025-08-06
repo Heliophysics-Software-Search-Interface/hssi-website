@@ -40,6 +40,15 @@ class Person(HssiModel):
 		}
 	)
 
+	@property
+	def fullName(self) -> str:
+		return f"{self.firstName} {self.lastName}"
+
+	@fullName.setter
+	def fullName(self, value: str):
+		self.firstName = value.split()[0]
+		self.lastName = value.removeprefix(self.firstName).strip()
+
 	# specified for intellisense, defined in other models
 	softwares: models.Manager['Software']
 	submission_info: models.Manager['SubmissionInfo']

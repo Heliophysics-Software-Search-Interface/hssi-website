@@ -26,6 +26,7 @@ const faInfoCircle = "<i class='fa fa-info-circle'></i>";
 export class ModelSubfield {
 
 	public name: string = "";
+	public rowName: string = "";
 	public type: ModelFieldStructure = null;
 	public properties: PropertyContainer = {};
 	public widget: Widget = null;
@@ -49,11 +50,13 @@ export class ModelSubfield {
 	/// Initialization ---------------------------------------------------------
 
 	protected constructor(
-		name: string, 
+		name: string,
+		rowName: string,
 		type: ModelFieldStructure, 
 		properties: PropertyContainer = {},
 	) {
 		this.name = name;
+		this.rowName = rowName;
 		this.type = type;
 		this.properties = properties;
 
@@ -239,21 +242,23 @@ export class ModelSubfield {
 		else if(data instanceof Object) {
 			this.expandSubfields();
 			const fields = this.getSubfields();
+			console.log("START " + this.name)
 			for(const key in data){
 				const value = data[key];
 
 				// check each field/subfield of this field and apply the data
-				if(this.name === key) {
+				if(this.name === key || this.rowName === key) {
 					this.fillField(value, notify);
 					continue;
 				}
 				for(const subfield of fields){
-					if(subfield.name === key){
+					if(subfield.name === key || subfield.rowName === key){
 						subfield.fillField(value, notify);
 						break;
 					}
 				}
 			}
+			console.log("END " + this.name)
 		}
 
 		// it's a non-recursive value (almost certainly a string)
@@ -442,14 +447,16 @@ export class ModelSubfield {
 		let subfield: ModelSubfield = null;
 		if(!data.multi){
 			subfield = new ModelSubfield(
-				data.name, 
+				data.name,
+				data.rowName,
 				type, 
 				data.properties,
 			);
 		}
 		else {
 			subfield = new ModelMultiSubfield(
-				data.name, 
+				data.name,
+				data.rowName,
 				type,
 				data.properties
 			)

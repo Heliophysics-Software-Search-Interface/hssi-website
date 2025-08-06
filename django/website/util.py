@@ -34,6 +34,25 @@ class AccessLevel(IntEnum):
 
 REQ_LVL_ATTR = "data-hssi-required"
 
+def name_to_abbreviation(name: str) -> str:
+	splname = name.replace('-', ' ').split()
+	match len(splname):
+		case 0: return "????"
+		case 1: return name[0:4].title()
+		case 2: return splname[0][0:2].title() + splname[1][0:2].title()
+		case 3: return (
+			splname[0][0:2].title() + 
+			splname[1][0].upper() + 
+			splname[2][0].upper()
+		)
+		case _: return (
+			splname[0][0].upper() + 
+			splname[1][0].upper() + 
+			splname[-2][0].upper() + 
+			splname[-1][0].upper()
+		)
+	return name
+
 def find_database_references(object: Model) -> list[tuple[Model, Field]]:
 	"""
 	get all (related object, field) pairs on all objects in the database that 

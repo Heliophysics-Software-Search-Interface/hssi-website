@@ -1,4 +1,4 @@
-import uuid, json
+import uuid, json, colorsys
 from django.db import models
 from django.db.models import ManyToManyField, QuerySet
 from django.db.models.fields import related_descriptors
@@ -244,6 +244,9 @@ class ControlledList(HssiModel):
 				.split(), 
 			self.identifier if self.identifier else '',
 		]
+
+	@classmethod
+	def post_fetch(cls): pass
 
 	class Meta:
 		ordering = ['name']
@@ -494,6 +497,38 @@ class FunctionCategory(ControlledGraphList):
 			label="Functionality",
 			tooltipExplanation="A category that contains functionalities.",
 		)
+
+	@classmethod
+	def post_fetch(cls):
+		super().post_fetch()
+
+		# create appropriate abbreviations for all items
+		for obj in cls.objects.all():
+			if not obj.abbreviation:
+				obj.abbreviation = name_to_abbreviation(obj.name)
+				obj.save()
+
+		# get unique colors for each parent
+		parents = [x for x in cls.get_parent_nodes()]
+		all_objs = []
+		delta_hue = 1 / len(parents)
+		hue = 0.333 # start at green
+		for parent in parents:
+			for child in parent.children.all():
+				r, g, b = colorsys.hsv_to_rgb(hue, 0.5, 0.95)
+				dark = r * 0.299 + g * 0.587 + b * 0.114 <= 0.5
+				child.backgroundColor = f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}".upper()
+				child.textColor = "#FFFFFF" if dark else "#000000"
+				if not child in all_objs: all_objs.append(child)
+			
+			r, g, b = colorsys.hsv_to_rgb(hue, 0.75, 0.75)
+			dark = r * 0.299 + g * 0.587 + b * 0.114 <= 0.5
+			parent.backgroundColor = f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}".upper()
+			parent.textColor = "#FFFFFF" if dark else "#000000"
+			all_objs.append(parent)
+			hue = (hue + delta_hue) % 1.0
+		
+		cls.objects.bulk_update(all_objs, ['backgroundColor', 'textColor'])
 
 	class Meta: verbose_name_plural = "Function Categories"
 	def __str__(self): return self.name

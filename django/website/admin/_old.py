@@ -186,15 +186,17 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 						getattr(refobj, field.name).add(new_obj)
 					else: setattr(refobj, field.name, new_obj)
 					print(f"updated field '{refobj.pk}:{field}'")
-		
-		if issubclass(model, ControlledGraphList):
-			link_concept_children(model, concept_data)
 
 		# remove old entries that have been replaced with new vocab terms
 		for old_obj in matched_old_objs: old_obj.delete()
 
 		# mark any objects that did not get replaced with new terms as outdated
 		for old_obj in old_objs: old_obj.name = old_obj.name + " (OUTDATED)"
+
+		if issubclass(model, ControlledList):
+			if issubclass(model, ControlledGraphList):
+				link_concept_children(model, concept_data)
+			model.post_fetch()
 
 	return redirect('admin:index')
 

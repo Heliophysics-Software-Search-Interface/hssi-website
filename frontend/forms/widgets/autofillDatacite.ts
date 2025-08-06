@@ -115,6 +115,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		setTimeout(()=>{
 			this.parentField?.containerElement?.addEventListener(
 				"focusout", async e => {
+					if(e.relatedTarget == this.findButton) return;
 					if(!FormGenerator.isAutofilledDatacite() && this.parentField.hasValidInput()){
 						if(await ConfirmDialogue.getConfirmation(
 							"'" + this.getDoi() + "'\n" +

@@ -66,17 +66,18 @@ export class ModelBox extends Widget {
 	
 	/// Restricted functionality -----------------------------------------------
 
-	private buildElements(): void {
+	private buildElements(readOnly: boolean): void {
 
 		// create and populate the dropdown list
 		if(this.options != null) this.buildOptions(this.options);
 		if(this.properties.targetModel){
-			this.builOptionsFromModel(this.properties.targetModel);
+			this.buildOptionsFromModel(this.properties.targetModel);
 		}
 
 		// create the input, container, and row elements
 		this.inputElement = document.createElement("input");
 		this.inputElement.type = "text";
+		this.inputElement.readOnly = readOnly;
 		this.inputContainerElement = document.createElement("div");
 		this.inputContainerElement.appendChild(this.inputElement);
 		this.inputContainerRowElement = document.createElement("div");
@@ -88,13 +89,15 @@ export class ModelBox extends Widget {
 		this.inputElement.setAttribute("maxlength", maxLength.toString());
 
 		// add event listeners
-		this.inputElement.addEventListener("input", e => this.onInputValueChanged(e));
-		this.inputElement.addEventListener("keydown", e => this.onInputKeyDown(e));
-		this.inputContainerElement.addEventListener("focusin", e => this.onInputFocusIn(e));
-		this.inputContainerElement.addEventListener("focusout", e => this.onInputFocusOut(e));
+		if(!readOnly){
+			this.inputElement.addEventListener("input", e => this.onInputValueChanged(e));
+			this.inputElement.addEventListener("keydown", e => this.onInputKeyDown(e));
+			this.inputContainerElement.addEventListener("focusin", e => this.onInputFocusIn(e));
+			this.inputContainerElement.addEventListener("focusout", e => this.onInputFocusOut(e));
+		}
 
 		// build dropdown button if applicable
-		if(this.properties.dropdownButton) this.buildDropdownButton();
+		if(this.properties.dropdownButton && !readOnly) this.buildDropdownButton();
 
 		if(this.parentField){
 			this.listenerUnset = this.parentField.onValueChanged.addListener(() => {
@@ -260,9 +263,9 @@ export class ModelBox extends Widget {
 	}
 
 	/** @override Implementation for {@link Widget.prototype.initialize} */
-	public initialize(): void {
-		super.initialize();
-		this.buildElements();
+	public initialize(readOnly: boolean = false): void {
+		super.initialize(readOnly);
+		this.buildElements(readOnly);
 	}
 
 	/* builds the option element list from the given options */
@@ -319,7 +322,7 @@ export class ModelBox extends Widget {
 	 * gets the choice data from the specified model and builds it's own 
 	 * options list based off that
 	 */
-	public async builOptionsFromModel(modelName: string): Promise<void> {
+	public async buildOptionsFromModel(modelName: string): Promise<void> {
 		let optionData: Option[] = ModelBox.optionMap.get(modelName);
 		if(!optionData){
 			const data: ChoicesJsonStructure = await (
@@ -456,7 +459,7 @@ export class ModelBox extends Widget {
 	public override setValue(value: string, notify: boolean = true): void {
 		if(!this.options) {
 			super.setValue(value);
-			this.builOptionsFromModel(this.properties.targetModel).then(
+			this.buildOptionsFromModel(this.properties.targetModel).then(
 				() => this.setValue(value, notify)
 			);
 			return;

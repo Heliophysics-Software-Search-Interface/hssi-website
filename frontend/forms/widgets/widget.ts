@@ -102,9 +102,9 @@ export abstract class Widget {
 	}
 
 	/** custom initialization logic for widget */
-	public initialize(): void {
+	public initialize(readOnly: boolean = false): void {
 		this.collectData();
-		if(this.properties.requirementLevel != undefined) {
+		if(!readOnly && this.properties.requirementLevel != undefined) {
 			this.element.setAttribute(
 				requirementAttributeContainer,
 				this.properties.requirementLevel.toString(),

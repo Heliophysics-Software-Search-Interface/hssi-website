@@ -110,8 +110,9 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		}
 	}
 
-	override initialize(): void {
-		super.initialize();
+	override initialize(readOnly: boolean = false): void {
+		super.initialize(readOnly);
+		if(readOnly) return;
 		setTimeout(()=>{
 			this.parentField?.containerElement?.addEventListener(
 				"focusout", async e => {

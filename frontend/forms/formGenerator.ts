@@ -33,7 +33,7 @@ export class FormGenerator {
 	public autofilledFromDatacite: boolean = false;
 	public autofilledFromRepo: boolean = false;
 
-	private buildForm(): void {
+	private buildForm(readOnly: boolean = false, condensed: boolean = false): void {
 
 		// don't try to generate the form without structure data
 		if(FormGenerator.structureData == null) {
@@ -55,7 +55,7 @@ export class FormGenerator {
 		
 		for(const field of this.fields) {
 			if(field instanceof Array){
-				this.buildFormSection(field, titles.shift(), i > 0);
+				this.buildFormSection(field, titles.shift(), i > 0, readOnly, condensed);
 				i++;
 				continue;
 			}
@@ -116,6 +116,8 @@ export class FormGenerator {
 		fields: ModelSubfield[], 
 		title: string,
 		collapsible: boolean = true,
+		readOnly: boolean = false,
+		condensed: boolean = false,
 	): void {
 
 		const details = document.createElement(collapsible ? "details" : "div");
@@ -127,7 +129,7 @@ export class FormGenerator {
 		for(const field of fields) {
 			const formRow = document.createElement("div") as HTMLDivElement;
 			formRow.classList.add(formRowStyle);
-			field.buildInterface(formRow);
+			field.buildInterface(formRow, true, readOnly, condensed);
 			details.appendChild(formRow);
 		}
 
@@ -372,7 +374,8 @@ export class FormGenerator {
 
 		// apply the singleton instance
 		this.instance = generator;
-		this.instance.buildForm();
+		console.log("READONLY TEST")
+		this.instance.buildForm(true);
 		
 	}
 

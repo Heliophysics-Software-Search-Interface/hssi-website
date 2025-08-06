@@ -36,6 +36,9 @@ export class ModelSubfield {
 	protected controlContainerElement: HTMLDivElement = null;
 	protected labelElement: HTMLLabelElement = null;
 	private explanationElement: HTMLDivElement = null;
+
+	protected readOnly: boolean = false;
+	protected condensed: boolean = false;
 	
 	private subfieldContainer: HTMLDetailsElement = null;
 	private subfields: ModelSubfield[] = [];
@@ -94,7 +97,7 @@ export class ModelSubfield {
 			const field = ModelSubfield.parse(serializedField)
 			const row = document.createElement("div") as HTMLDivElement;
 			row.classList.add(formRowStyle)
-			field.buildInterface(row);
+			field.buildInterface(row, true, this.readOnly, this.condensed);
 			field.parentField = this;
 			this.subfields.push(field);
 			this.subfieldContainer.appendChild(row);
@@ -147,7 +150,7 @@ export class ModelSubfield {
 		}
 	}
 
-	protected buildWidget(): void {
+	protected buildWidget(readOnly: boolean): void {
 		if(!this.type){
 			console.error("Undefined subfield type!", this);
 			return;
@@ -164,7 +167,7 @@ export class ModelSubfield {
 				this.properties.widgetProperties
 			);
 		}
-		this.widget.initialize();
+		this.widget.initialize(readOnly);
 		this.controlContainerElement.appendChild(this.widget.element);
 	}
 
@@ -176,7 +179,11 @@ export class ModelSubfield {
 	public buildInterface(
 		targetDiv: HTMLDivElement, 
 		buildFieldInfo: boolean = true,
+		readOnly: boolean = false,
+		condensed: boolean = false,
 	): void {
+		this.readOnly = readOnly;
+		this.condensed = condensed;
 		if(this.containerElement != null) {
 			console.warn(`Interface for ${this.name} is already built`);
 			return;
@@ -186,7 +193,7 @@ export class ModelSubfield {
 		if(buildFieldInfo) this.buildFieldInfo();
 
 		this.controlContainerElement = document.createElement("div");
-		this.buildWidget();
+		this.buildWidget(readOnly);
 		this.buildSubfieldContainer();
 		this.containerElement.appendChild(this.controlContainerElement);
 

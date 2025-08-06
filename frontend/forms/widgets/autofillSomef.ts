@@ -9,8 +9,9 @@ export class AutofillSomefWidget extends InputWidget {
 
 	public getInputType(): string { return "url"; }
 
-	public override initialize(): void {
-		super.initialize();
+	public override initialize(readOnly: boolean = false): void {
+		super.initialize(readOnly);
+		if(readOnly) return;
 		setTimeout(()=>{
 			this.parentField?.containerElement?.addEventListener(
 				"focusout", async e => {

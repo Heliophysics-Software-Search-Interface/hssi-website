@@ -15,9 +15,10 @@ export abstract class InputWidget extends Widget {
 		this.inputElement.setAttribute("maxlength", maxLength.toString());
 	}
 
-	public initialize(): void {
-		super.initialize();
+	public initialize(readOnly: boolean = false): void {
+		super.initialize(readOnly);
 		this.createElements();
+		this.inputElement.readOnly = readOnly;
 	}
 
 	public getInputElement(): HTMLInputElement { return this.inputElement; }
@@ -50,8 +51,9 @@ export class CheckboxWidget extends InputWidget {
 export class TextAreaWidget extends Widget {
 	protected textAreaElement: HTMLInputElement;
 
-	protected createElements(): void {
+	protected createElements(readOnly: boolean): void {
 		this.textAreaElement = document.createElement("textarea") as any;
+		this.textAreaElement.readOnly = readOnly;
 		this.element.appendChild(this.textAreaElement);
 		if(this.properties.maxLength != null){
 			this.textAreaElement.setAttribute(
@@ -61,9 +63,9 @@ export class TextAreaWidget extends Widget {
 		}
 	}
 
-	public initialize(): void {
-		super.initialize();
-		this.createElements();
+	public initialize(readOnly: boolean = false): void {
+		super.initialize(readOnly);
+		this.createElements(readOnly);
 	}
 
 	public getInputElement(): AnyInputElement { return this.textAreaElement; }

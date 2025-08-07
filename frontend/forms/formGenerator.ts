@@ -374,8 +374,7 @@ export class FormGenerator {
 
 		// apply the singleton instance
 		this.instance = generator;
-		console.log("READONLY TEST")
-		this.instance.buildForm(true);
+		this.instance.buildForm();
 		
 	}
 

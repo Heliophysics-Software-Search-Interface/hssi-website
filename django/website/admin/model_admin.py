@@ -11,12 +11,12 @@ from ..models.software import Software, VisibleSoftware, SoftwareVersion
 from ..models.submission_info import SubmissionInfo
 from ..models.auxillary_info import RelatedItem, Award
 from ..models.roots import (
-	HssiModel,	FunctionCategory, OperatingSystem, Phenomena, Keyword, Image, 
-	Organization, License, InstrumentObservatory, RepoStatus, DataInput,
-	ProgrammingLanguage, FileFormat, Region
+	HssiModel, ControlledList, FunctionCategory, OperatingSystem, Phenomena, 
+	Keyword, Image, Organization, License, InstrumentObservatory, RepoStatus, 
+	DataInput, ProgrammingLanguage, FileFormat, Region
 )
 
-from ..util import find_database_references
+from ..util import *
 
 # Abstract definitions for model admins ----------------------------------------
 
@@ -84,8 +84,24 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 				target.save()
 				print(f"updated '{target}:{field}' field")
 	
+
+	@action(description="Collapse to Single")
+	def collapse_model_entries(
+		self, 
+		request: HttpRequest, 
+		queryset: QuerySet[ControlledList]
+	):
+		"""
+		Useful for if there are multiple entries that should be treated as the 
+		same, use this action to collapse all objects to one object, and update
+		all references to those objects to point to the new combined object.
+		The fields of the combined object will be equal to the first selected 
+		object, and appended to if there are any empty fields on that object.
+		"""
+		HssiModel.collapse_objects(queryset)
+
 	# actions need to be specified
-	actions = [fix_uuid_chains]
+	actions = [fix_uuid_chains, collapse_model_entries]
 
 # Admin definitions for roots module -------------------------------------------
 
@@ -99,7 +115,26 @@ class PhenomenaTypeAdmin(HSSIModelAdmin): resource_class = PhenomenaTypeResource
 
 class KeywordResource(resources.ModelResource):
 	class Meta: model = Keyword
-class KeywordAdmin(HSSIModelAdmin): resource_class = KeywordResource
+class KeywordAdmin(HSSIModelAdmin): 
+	resource_class = KeywordResource
+
+	@action(description="Collapse to Single")
+	def collapse_keyword_entries(self, request: HttpRequest, queryset: QuerySet[Keyword]):
+		colkeyword = Keyword.collapse_objects(queryset)
+		colkeyword.name = SPACE_REPLACE.sub(' ', colkeyword.name).lower()
+		colkeyword.save()
+	
+	@action(description="Format Names")
+	def format_names(self, req: HttpRequest, query: QuerySet[Keyword]):
+		for obj in query:
+			obj.name = SPACE_REPLACE.sub(' ', obj.name).lower()
+			obj.save()
+
+	actions = [
+		HSSIModelAdmin.fix_uuid_chains,
+		collapse_keyword_entries,
+		format_names,
+	]
 
 class ImageResource(resources.ModelResource):
 	class Meta: model = Image

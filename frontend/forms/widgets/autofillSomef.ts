@@ -9,8 +9,9 @@ export class AutofillSomefWidget extends InputWidget {
 
 	public getInputType(): string { return "url"; }
 
-	public override initialize(): void {
-		super.initialize();
+	public override initialize(readOnly: boolean = false): void {
+		super.initialize(readOnly);
+		if(readOnly) return;
 		setTimeout(()=>{
 			this.parentField?.containerElement?.addEventListener(
 				"focusout", async e => {
@@ -52,7 +53,7 @@ export class AutofillSomefWidget extends InputWidget {
 			const data = await (await fetch(requestUrl)).json();
 			console.log(`described repo at ${this.inputElement.value}`, data);
 			FormGenerator.fillForm(data);
-			FormGenerator.markAutofilledDatacite();
+			FormGenerator.markAutofilledRepo();
 			Spinner.hideSpinner();
 		} 
 

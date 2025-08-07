@@ -104,17 +104,20 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 				const data = await (await fetch(requestUrl)).json();
 				console.log(`described repo at ${repoUrlVal}`, data);
 				FormGenerator.fillForm(data);
+				FormGenerator.markAutofilledRepo();
 			}
 			catch(e){ console.error(e); }
 			Spinner.hideSpinner();
 		}
 	}
 
-	override initialize(): void {
-		super.initialize();
+	override initialize(readOnly: boolean = false): void {
+		super.initialize(readOnly);
+		if(readOnly) return;
 		setTimeout(()=>{
 			this.parentField?.containerElement?.addEventListener(
 				"focusout", async e => {
+					if(e.relatedTarget == this.findButton) return;
 					if(!FormGenerator.isAutofilledDatacite() && this.parentField.hasValidInput()){
 						if(await ConfirmDialogue.getConfirmation(
 							"'" + this.getDoi() + "'\n" +

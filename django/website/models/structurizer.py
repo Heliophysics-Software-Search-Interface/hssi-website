@@ -45,6 +45,7 @@ class ModelSubfield:
 	"""
 
 	name: str = ""
+	row_name: str = ""
 	type: str = ""
 	requirement: RequirementLevel = RequirementLevel.OPTIONAL.value
 	properties: dict = {}
@@ -57,6 +58,7 @@ class ModelSubfield:
 		"""
 		return {
 			'name': self.name,
+			'rowName': self.row_name,
 			'type': self.type,
 			'requirement': self.requirement,
 			'properties': self.properties,
@@ -74,6 +76,7 @@ class ModelSubfield:
 
 		subfield = cls()
 		subfield.name = field.name
+		subfield.row_name = field.name
 
 		# get custom widget properties if defined
 		properties: dict = getattr(field, FORM_CONFIG_ATTR, {})
@@ -106,16 +109,17 @@ class ModelSubfield:
 
 	@classmethod
 	def define(
-		cls, name: str, type: str, requirement: int, properties: dict, multi: bool
+		cls, name: str, type: str, requirement: int, properties: dict, multi: bool, 
+		row_name: str = ""
 	) -> 'ModelSubfield':
 
 		sf = ModelSubfield()
 		sf.name = name
+		sf.row_name = row_name
 		sf.type = type
 		sf.requirement = requirement
 		sf.properties = properties
 		sf.multi = multi
-
 		return sf
 
 class ModelStructure:

@@ -26,6 +26,7 @@ type ModelFieldStructureInstance = {
 
 export type SerializedSubfield = {
 	name: string,
+	rowName: string,
 	type: string | ModelFieldStructure,
 	multi: boolean,
 	requirement: RequirementLevel,

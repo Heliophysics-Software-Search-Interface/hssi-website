@@ -104,6 +104,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 				const data = await (await fetch(requestUrl)).json();
 				console.log(`described repo at ${repoUrlVal}`, data);
 				FormGenerator.fillForm(data);
+				FormGenerator.markAutofilledRepo();
 			}
 			catch(e){ console.error(e); }
 			Spinner.hideSpinner();

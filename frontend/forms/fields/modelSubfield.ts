@@ -26,6 +26,7 @@ const faInfoCircle = "<i class='fa fa-info-circle'></i>";
 export class ModelSubfield {
 
 	public name: string = "";
+	public rowName: string = "";
 	public type: ModelFieldStructure = null;
 	public properties: PropertyContainer = {};
 	public widget: Widget = null;
@@ -35,6 +36,9 @@ export class ModelSubfield {
 	protected controlContainerElement: HTMLDivElement = null;
 	protected labelElement: HTMLLabelElement = null;
 	private explanationElement: HTMLDivElement = null;
+
+	protected readOnly: boolean = false;
+	protected condensed: boolean = false;
 	
 	private subfieldContainer: HTMLDetailsElement = null;
 	private subfields: ModelSubfield[] = [];
@@ -49,11 +53,13 @@ export class ModelSubfield {
 	/// Initialization ---------------------------------------------------------
 
 	protected constructor(
-		name: string, 
+		name: string,
+		rowName: string,
 		type: ModelFieldStructure, 
 		properties: PropertyContainer = {},
 	) {
 		this.name = name;
+		this.rowName = rowName;
 		this.type = type;
 		this.properties = properties;
 
@@ -91,7 +97,7 @@ export class ModelSubfield {
 			const field = ModelSubfield.parse(serializedField)
 			const row = document.createElement("div") as HTMLDivElement;
 			row.classList.add(formRowStyle)
-			field.buildInterface(row);
+			field.buildInterface(row, true, this.readOnly, this.condensed);
 			field.parentField = this;
 			this.subfields.push(field);
 			this.subfieldContainer.appendChild(row);
@@ -144,7 +150,7 @@ export class ModelSubfield {
 		}
 	}
 
-	protected buildWidget(): void {
+	protected buildWidget(readOnly: boolean): void {
 		if(!this.type){
 			console.error("Undefined subfield type!", this);
 			return;
@@ -161,7 +167,7 @@ export class ModelSubfield {
 				this.properties.widgetProperties
 			);
 		}
-		this.widget.initialize();
+		this.widget.initialize(readOnly);
 		this.controlContainerElement.appendChild(this.widget.element);
 	}
 
@@ -173,7 +179,11 @@ export class ModelSubfield {
 	public buildInterface(
 		targetDiv: HTMLDivElement, 
 		buildFieldInfo: boolean = true,
+		readOnly: boolean = false,
+		condensed: boolean = false,
 	): void {
+		this.readOnly = readOnly;
+		this.condensed = condensed;
 		if(this.containerElement != null) {
 			console.warn(`Interface for ${this.name} is already built`);
 			return;
@@ -183,7 +193,7 @@ export class ModelSubfield {
 		if(buildFieldInfo) this.buildFieldInfo();
 
 		this.controlContainerElement = document.createElement("div");
-		this.buildWidget();
+		this.buildWidget(readOnly);
 		this.buildSubfieldContainer();
 		this.containerElement.appendChild(this.controlContainerElement);
 
@@ -207,7 +217,7 @@ export class ModelSubfield {
 	public clearField(): void {
 		
 		// clear input value
-		this.setValue("");
+		this.setValue("", true);
 
 		// clear/collapse all subfield values
 		for(const subfield of this.getSubfields()) {
@@ -220,7 +230,7 @@ export class ModelSubfield {
 		this.requirement.removeStyles();
 	}
 
-	public fillField(data: JSONValue): void {
+	public fillField(data: JSONValue, notify: boolean = true): void {
 		
 		if(data instanceof Array) {
 			if(this instanceof ModelMultiSubfield) this.fillMultiFields(data);
@@ -243,13 +253,13 @@ export class ModelSubfield {
 				const value = data[key];
 
 				// check each field/subfield of this field and apply the data
-				if(this.name === key) {
-					this.fillField(value);
+				if(this.name === key || this.rowName === key) {
+					this.fillField(value, notify);
 					continue;
 				}
 				for(const subfield of fields){
-					if(subfield.name === key){
-						subfield.fillField(value);
+					if(subfield.name === key || subfield.rowName === key){
+						subfield.fillField(value, notify);
 						break;
 					}
 				}
@@ -257,7 +267,7 @@ export class ModelSubfield {
 		}
 
 		// it's a non-recursive value (almost certainly a string)
-		else this.setValue(data.toString());
+		else this.setValue(data.toString(), notify);
 	}
 
 	public meetsRequirementLevel(): boolean {
@@ -376,8 +386,8 @@ export class ModelSubfield {
 		return this.widget?.getInputElement() ?? null;
 	}
 
-	public setValue(value: string): void {
-		this.widget?.setValue(value);
+	public setValue(value: string, notify: boolean = true): void {
+		this.widget?.setValue(value, notify);
 	}
 
 	/** 
@@ -442,14 +452,16 @@ export class ModelSubfield {
 		let subfield: ModelSubfield = null;
 		if(!data.multi){
 			subfield = new ModelSubfield(
-				data.name, 
+				data.name,
+				data.rowName,
 				type, 
 				data.properties,
 			);
 		}
 		else {
 			subfield = new ModelMultiSubfield(
-				data.name, 
+				data.name,
+				data.rowName,
 				type,
 				data.properties
 			)

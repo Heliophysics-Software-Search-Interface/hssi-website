@@ -35,8 +35,9 @@ export class ModelMultiSubfield extends ModelSubfield {
 	
 	private createMultifield(): ModelSubfield {
 		return new ModelSubfield(
-			this.name, 
-			this.type, 
+			this.name,
+			this.rowName,
+			this.type,
 			this.properties
 		);
 	}
@@ -51,7 +52,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		const fieldContainer = document.createElement("div") as HTMLDivElement;
 		fieldContainer.classList.add(multiFieldPartStyle);
 		const field = this.createMultifield() as MultiField;
-		field.buildInterface(fieldContainer, false);
+		field.buildInterface(fieldContainer, false, this.readOnly);
 
 		// use the requirement object for the multifield instead of each part 
 		// having its own requirement
@@ -76,7 +77,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		// add elements to root node
 		this.multiFields.push(field);
 		multiRow.appendChild(fieldContainer);
-		multiRow.appendChild(removeButton);
+		if(!this.readOnly) multiRow.appendChild(removeButton);
 		this.getRowContainer().appendChild(multiRow);
 
 		return field;
@@ -111,12 +112,11 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.buildNewMultifield();
 	}
 
-	public fillMultiFields(data: JSONArray): void {
+	public fillMultiFields(data: JSONArray, notify: boolean = true): void {
 		this.clearMultifields();
 		for(let i = 0; i < data.length; i++){
 			const value = data[i];
-			this.buildNewMultifield();
-			this.multiFields[i].fillField(value);
+			this.addNewMultifieldWithValue(value, notify);
 		}
 	}
 
@@ -140,9 +140,9 @@ export class ModelMultiSubfield extends ModelSubfield {
 		}
 	}
 
-	public addNewMultifieldWithValue(value: JSONValue): ModelSubfield {
+	public addNewMultifieldWithValue(value: JSONValue, notify: boolean = false): ModelSubfield {
 		const field = this.buildNewMultifield();
-		field.fillField(value);
+		field.fillField(value, notify);
 		return field;
 	}
 
@@ -152,7 +152,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 
 		this.multiFieldContainerElement.style.overflow = "hidden";
 		this.multiFieldContainerElement.style.maxHeight = "0";
-		this.newItemButton.style.display = "none";
+		if(this.newItemButton) this.newItemButton.style.display = "none";
 		this.hideButton.innerText = "show";
 
 		this.hiddenText.style.display = "block";
@@ -164,7 +164,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 
 		this.multiFieldContainerElement.style.removeProperty("max-height");
 		this.multiFieldContainerElement.style.removeProperty("overflow");
-		this.newItemButton.style.display = "block";
+		if(this.newItemButton) this.newItemButton.style.display = "block";
 		this.hideButton.innerText = "hide";
 
 		this.hiddenText.style.display = "none";
@@ -188,21 +188,25 @@ export class ModelMultiSubfield extends ModelSubfield {
 		hiddenText.innerText = "-- hidden --";
 		hiddenText.style.display = "none";
 
-		this.newItemButton.parentElement.appendChild(hiddenText);
+		if(this.newItemButton) this.newItemButton.parentElement.appendChild(hiddenText);
 	}
 
 	/// Overriden funcitonality ------------------------------------------------
 
 	public override buildInterface(
 		targetDiv: HTMLDivElement, 
-		buildFieldInfo: boolean = true
+		buildFieldInfo: boolean = true,
+		readOnly: boolean = false,
+		condensed: boolean = false,
 	): void {
+		this.readOnly = readOnly;
+		this.condensed = condensed;
 		this.containerElement = document.createElement("div");
 
 		if(buildFieldInfo) this.buildFieldInfo();
 		this.buildMultiFieldContainer();
 		this.buildNewMultifield();
-		this.buildNewItemButton();
+		if(!readOnly) this.buildNewItemButton();
 		this.buildHideButton();
 
 		targetDiv.appendChild(this.containerElement);

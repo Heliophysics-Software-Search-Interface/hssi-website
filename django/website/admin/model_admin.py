@@ -11,12 +11,12 @@ from ..models.software import Software, VisibleSoftware, SoftwareVersion
 from ..models.submission_info import SubmissionInfo
 from ..models.auxillary_info import RelatedItem, Award
 from ..models.roots import (
-	HssiModel,	FunctionCategory, OperatingSystem, Phenomena, Keyword, Image, 
-	Organization, License, InstrumentObservatory, RepoStatus, DataInput,
-	ProgrammingLanguage, FileFormat, Region
+	HssiModel, ControlledList, FunctionCategory, OperatingSystem, Phenomena, 
+	Keyword, Image, Organization, License, InstrumentObservatory, RepoStatus, 
+	DataInput, ProgrammingLanguage, FileFormat, Region
 )
 
-from ..util import find_database_references
+from ..util import *
 
 # Abstract definitions for model admins ----------------------------------------
 
@@ -84,31 +84,57 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 				target.save()
 				print(f"updated '{target}:{field}' field")
 	
+
+	@action(description="Collapse to Single")
+	def collapse_model_entries(
+		self, 
+		request: HttpRequest, 
+		queryset: QuerySet[ControlledList]
+	):
+		"""
+		Useful for if there are multiple entries that should be treated as the 
+		same, use this action to collapse all objects to one object, and update
+		all references to those objects to point to the new combined object.
+		The fields of the combined object will be equal to the first selected 
+		object, and appended to if there are any empty fields on that object.
+		"""
+		HssiModel.collapse_objects(queryset)
+
 	# actions need to be specified
-	actions = [fix_uuid_chains]
-
-class ControlledListAdmin(HSSIModelAdmin):
-
-	@action(description="test")
-	def collapse_model_entries(self, request: HttpRequest, queryset: QuerySet):
-		# TODO
-		pass
-
-	actions = [HSSIModelAdmin.fix_uuid_chains, collapse_model_entries]
+	actions = [fix_uuid_chains, collapse_model_entries]
 
 # Admin definitions for roots module -------------------------------------------
 
 class OperatingSystemResource(resources.ModelResource):
 	class Meta: model = OperatingSystem
-class OperatingSystemAdmin(ControlledListAdmin): resource_class = OperatingSystemResource
+class OperatingSystemAdmin(HSSIModelAdmin): resource_class = OperatingSystemResource
 
 class PhenomenaTypeResource(resources.ModelResource):
 	class Meta: model = Phenomena
-class PhenomenaTypeAdmin(ControlledListAdmin): resource_class = PhenomenaTypeResource
+class PhenomenaTypeAdmin(HSSIModelAdmin): resource_class = PhenomenaTypeResource
 
 class KeywordResource(resources.ModelResource):
 	class Meta: model = Keyword
-class KeywordAdmin(ControlledListAdmin): resource_class = KeywordResource
+class KeywordAdmin(HSSIModelAdmin): 
+	resource_class = KeywordResource
+
+	@action(description="Collapse to Single")
+	def collapse_keyword_entries(self, request: HttpRequest, queryset: QuerySet[Keyword]):
+		colkeyword = Keyword.collapse_objects(queryset)
+		colkeyword.name = SPACE_REPLACE.sub(' ', colkeyword.name).lower()
+		colkeyword.save()
+	
+	@action(description="Format Names")
+	def format_names(self, req: HttpRequest, query: QuerySet[Keyword]):
+		for obj in query:
+			obj.name = SPACE_REPLACE.sub(' ', obj.name).lower()
+			obj.save()
+
+	actions = [
+		HSSIModelAdmin.fix_uuid_chains,
+		collapse_keyword_entries,
+		format_names,
+	]
 
 class ImageResource(resources.ModelResource):
 	class Meta: model = Image
@@ -116,23 +142,23 @@ class ImageAdmin(HSSIModelAdmin): resource_class = ImageResource
 
 class RegionResource(resources.ModelResource):
 	class Meta: model = Region
-class RegionAdmin(ControlledListAdmin): resource_class = RegionResource
+class RegionAdmin(HSSIModelAdmin): resource_class = RegionResource
 
 class DataInputResource(resources.ModelResource):
 	class Meta: model = DataInput
-class DataInputAdmin(ControlledListAdmin): resource_class = DataInputResource
+class DataInputAdmin(HSSIModelAdmin): resource_class = DataInputResource
 
 class RepoStatusResource(resources.ModelResource):
 	class Meta: model = RepoStatus
-class RepoStatusAdmin(ControlledListAdmin): resource_class = RepoStatusResource
+class RepoStatusAdmin(HSSIModelAdmin): resource_class = RepoStatusResource
 
 class FunctionCategoryResource(resources.ModelResource):
 	class Meta: model = FunctionCategory
-class FunctionCategoryAdmin(ControlledListAdmin): resource_class = FunctionCategoryResource
+class FunctionCategoryAdmin(HSSIModelAdmin): resource_class = FunctionCategoryResource
 
 class InstrumentObservatoryResource(resources.ModelResource):
 	class Meta: model = InstrumentObservatory
-class InstrumentObservatoryAdmin(ControlledListAdmin): resource_class = InstrumentObservatoryResource
+class InstrumentObservatoryAdmin(HSSIModelAdmin): resource_class = InstrumentObservatoryResource
 
 class LicenseResource(resources.ModelResource):
 	class Meta: model = License
@@ -144,11 +170,11 @@ class OrganizationAdmin(HSSIModelAdmin): resource_class = OrganizationResource
 
 class FileFormatResource(resources.ModelResource):
 	class Meta: model = FileFormat
-class FileFormatAdmin(ControlledListAdmin): resource_class = FileFormatResource
+class FileFormatAdmin(HSSIModelAdmin): resource_class = FileFormatResource
 
 class ProgrammingLanguageResource(resources.ModelResource):
 	class Meta: model = ProgrammingLanguage
-class ProgrammingLanguageAdmin(ControlledListAdmin): resource_class = ProgrammingLanguageResource
+class ProgrammingLanguageAdmin(HSSIModelAdmin): resource_class = ProgrammingLanguageResource
 
 # Admin definitions for people module ------------------------------------------
 
@@ -172,7 +198,7 @@ class AwardAdmin(HSSIModelAdmin): resource_class = AwardResource
 
 class DatasetResource(resources.ModelResource):
 	class Meta: model = RelatedItem
-class DatasetAdmin(ControlledListAdmin): resource_class = DatasetResource
+class DatasetAdmin(HSSIModelAdmin): resource_class = DatasetResource
 
 class SoftwareVersionResource(resources.ModelResource):
 	class Meta: model = SoftwareVersion

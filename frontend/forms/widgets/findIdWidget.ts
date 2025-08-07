@@ -51,9 +51,9 @@ export abstract class FindIdWidget extends UrlWidget {
 		}, {once: true});
 	}
 
-	override initialize(): void {
-		super.initialize();
-		this.buildFindButton();
+	override initialize(readOnly: boolean = false): void {
+		super.initialize(readOnly);
+		if(!readOnly) this.buildFindButton();
 		this.inputElement.placeholder = "Use 'find' button or paste URL ";
 		if(this.placeholderExample) {
 			this.inputElement.placeholder += "(ex: " + this.placeholderExample + ")";

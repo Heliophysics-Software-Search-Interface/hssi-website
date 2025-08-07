@@ -8,9 +8,9 @@ import requests
 import json
 
 from ..models import (
-	ControlledList, ControlledGraphList, DataInput, License, OperatingSystem, 
-	ProgrammingLanguage, FileFormat, RepoStatus, CpuArchitecture, 
-	FunctionCategory
+	HssiModel, ControlledList, ControlledGraphList, DataInput, License, 
+	OperatingSystem, ProgrammingLanguage, FileFormat, RepoStatus, 
+	CpuArchitecture, FunctionCategory
 )
 
 from django.db.models import Model
@@ -167,13 +167,17 @@ class DataListConcept:
 		self.pref_label = ""
 		self.definition = ""
 
-	def to_model(self, model: Type[ControlledList]):
+	def to_model_entry(self, model: Type[ControlledList]) -> ControlledList:
 		obj = model()
-		obj.name = self.pref_label
-		obj.definition = self.definition
-		obj.identifier = self.identifier
+		setattr(obj, model.get_top_field().name, self.pref_label)
+		if isinstance(obj, ControlledList):
+			obj.definition = self.definition
+			obj.identifier = self.identifier
+		elif isinstance(obj, License):
+			obj.url = self.definition
 		obj.save()
 		print(f"saved object {obj.name} to {model}")
+		return obj
 	
 	@classmethod
 	def from_concept_serialized(cls, concepts: list[dict[str, Any]]) -> list['DataListConcept']:
@@ -181,6 +185,7 @@ class DataListConcept:
 		for concept in concepts:
 			label = concept.get('prefLabel')
 			definition = concept.get('definition')
+			if not definition: definition = concept.get('licenseUrl')
 			identifier = concept.get('@id')
 			conc = DataListConcept()
 
@@ -195,8 +200,7 @@ class DataListConcept:
 				did_write = True
 				conc.identifier = identifier
 			
-			if did_write:
-				vals.append(conc)
+			if did_write: vals.append(conc)
 		return vals
 
 def link_concept_children(

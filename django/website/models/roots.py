@@ -1,5 +1,6 @@
-import uuid, json
+import uuid, json, colorsys
 from django.db import models
+from django.db.models import ManyToManyField, QuerySet
 from django.db.models.fields import related_descriptors
 from django.core.serializers import serialize
 from colorful.fields import RGBColorField
@@ -78,6 +79,59 @@ class HssiModel(models.Model, metaclass=HssiBase):
 		cls._form_config_redef()
 		return super().__init_subclass__()
 	
+	@staticmethod
+	def collapse_objects(queryset: QuerySet['HssiModel']) -> 'HssiModel':
+		"""
+		Useful for if there are multiple entries that should be treated as the 
+		same, use this action to collapse all objects to one object, and update
+		all references to those objects to point to the new combined object.
+		The fields of the combined object will be equal to the first selected 
+		object, and appended to if there are any empty fields on that object.
+		"""
+		print(f"collapsing {queryset.count() - 1} entries in {queryset.model.__name__}..")
+		firstobj: HssiModel = None
+		for object in queryset:
+			if firstobj is None:
+				firstobj = object
+				continue
+
+			# concatenate all fields, if first object has an empty field, fill
+			# it with the value from a collapsed object, or if it is missing
+			# entries in a m2m field, add them
+			for field in object._meta.get_fields():
+				if field.is_relation and field.auto_created and not field.concrete: continue
+				firstval = getattr(firstobj, field.name)
+				if isinstance(field, ManyToManyField):
+					objvals: models.Manager = getattr(object, field.name)
+					ocount = objvals.count()
+					for val in objvals.all(): firstval.add(val)
+					print(f"update m2m field {field} with {objvals.count() - ocount} values")
+				else:
+					objval = getattr(object, field.name)
+					if not firstval and objval: 
+						setattr(firstobj, field.name, objval)
+						print(f"update field {field} to '{objval}'")
+			
+			refs = find_database_references(object)
+			for refobj, field in refs:
+
+				# many to many fields need to be handled separately since they
+				# hold multiple foreign key references instead of just one
+				if isinstance(field, ManyToManyField): 
+					manager = getattr(refobj, field.name)
+					manager.remove(object)
+					manager.add(firstobj)
+				else: setattr(refobj, field.name, firstobj)
+				refobj.save()
+				print(f"updated '{refobj}:{field}' field")
+
+			firstobj.save()
+			object.delete()
+
+		topfieldname = firstobj._meta.model.get_top_field().name
+		print(f"collapsed to '{getattr(firstobj, topfieldname)}:{firstobj.pk}'")
+		return firstobj
+
 	@classmethod
 	def _form_config_redef(cls) -> None:
 		'''Redefine the form properties for fields here'''
@@ -177,7 +231,7 @@ class ControlledList(HssiModel):
 	def __str__(self) -> str: return self.name
 
 	@classmethod
-	def get_top_field(cls): return cls._meta.get_field("name")
+	def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
 
 	def get_tooltip(self): return self.definition
 
@@ -190,6 +244,9 @@ class ControlledList(HssiModel):
 				.split(), 
 			self.identifier if self.identifier else '',
 		]
+
+	@classmethod
+	def post_fetch(cls): pass
 
 	class Meta:
 		ordering = ['name']
@@ -440,6 +497,38 @@ class FunctionCategory(ControlledGraphList):
 			label="Functionality",
 			tooltipExplanation="A category that contains functionalities.",
 		)
+
+	@classmethod
+	def post_fetch(cls):
+		super().post_fetch()
+
+		# create appropriate abbreviations for all items
+		for obj in cls.objects.all():
+			if not obj.abbreviation:
+				obj.abbreviation = name_to_abbreviation(obj.name)
+				obj.save()
+
+		# get unique colors for each parent
+		parents = [x for x in cls.get_parent_nodes()]
+		all_objs = []
+		delta_hue = 1 / len(parents)
+		hue = 0.333 # start at green
+		for parent in parents:
+			for child in parent.children.all():
+				r, g, b = colorsys.hsv_to_rgb(hue, 0.5, 0.95)
+				dark = r * 0.299 + g * 0.587 + b * 0.114 <= 0.5
+				child.backgroundColor = f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}".upper()
+				child.textColor = "#FFFFFF" if dark else "#000000"
+				if not child in all_objs: all_objs.append(child)
+			
+			r, g, b = colorsys.hsv_to_rgb(hue, 0.75, 0.75)
+			dark = r * 0.299 + g * 0.587 + b * 0.114 <= 0.5
+			parent.backgroundColor = f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}".upper()
+			parent.textColor = "#FFFFFF" if dark else "#000000"
+			all_objs.append(parent)
+			hue = (hue + delta_hue) % 1.0
+		
+		cls.objects.bulk_update(all_objs, ['backgroundColor', 'textColor'])
 
 	class Meta: verbose_name_plural = "Function Categories"
 	def __str__(self): return self.name

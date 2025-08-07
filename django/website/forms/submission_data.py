@@ -7,6 +7,7 @@ SUBMISSION_FORM_AUTHOR_AFFILIATION: ModelStructure = ModelStructure.define(
 	"SubmissionFormAuthorAffiliation",
 	ModelSubfield.define(
 		name=FIELD_AUTHORAFFILIATION,
+		row_name=ROW_ORGANIZATION_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -21,10 +22,11 @@ SUBMISSION_FORM_AUTHOR_AFFILIATION: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_AUTHORAFFILIATIONIDENTIFIER,
+		row_name=ROW_ORGANIZATION_IDENTIFIER,
 		type=TYPE_ROR,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
-			PROP_LABEL: "Identifier",
+			PROP_LABEL: "Affiliation Identifier",
 			PROP_TT_EXPL: TTEXPL_AUTHORAFFILIATIONIDENTIFIER,
 			PROP_TT_BEST: TTBEST_AUTHORAFFILIATIONIDENTIFIER,
 			PROP_WIDGET_PROPS: {
@@ -40,6 +42,7 @@ SUBMISSION_FORM_CONTRIBUTOR_AFFILIATION: ModelStructure = ModelStructure.define(
 	"SubmissionFormContributorAffiliation",
 	ModelSubfield.define(
 		name=FIELD_CONTRIBUTORAFFILIATION,
+		row_name=ROW_ORGANIZATION_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -54,6 +57,7 @@ SUBMISSION_FORM_CONTRIBUTOR_AFFILIATION: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_CONTRIBUTORAFFILIATIONIDENTIFIER,
+		row_name=ROW_ORGANIZATION_IDENTIFIER,
 		type=TYPE_ROR,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -73,6 +77,7 @@ SUBMISSION_FORM_PUBLISHER: ModelStructure = ModelStructure.define(
 	"SubmissionFormPublisher",
 	ModelSubfield.define(
 		name=FIELD_PUBLISHER,
+		row_name=ROW_ORGANIZATION_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -87,10 +92,11 @@ SUBMISSION_FORM_PUBLISHER: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_PUBLISHERIDENTIFIER,
+		row_name=ROW_ORGANIZATION_IDENTIFIER,
 		type=TYPE_ROR,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
-			PROP_LABEL: "Identifier",
+			PROP_LABEL: "Publisher Identifier",
 			PROP_TT_EXPL: TTEXPL_PUBLISHERIDENTIFIER,
 			PROP_TT_BEST: TTBEST_PUBLISHERIDENTIFIER,
 			PROP_WIDGET_PROPS: {
@@ -106,6 +112,7 @@ SUBMISSION_FORM_FUNDER: ModelStructure = ModelStructure.define(
 	"SubmissionFormFunder",
 	ModelSubfield.define(
 		name=FIELD_FUNDER,
+		row_name=ROW_ORGANIZATION_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -120,6 +127,7 @@ SUBMISSION_FORM_FUNDER: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_FUNDERIDENTIFIER,
+		row_name=ROW_ORGANIZATION_IDENTIFIER,
 		type=TYPE_ROR,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -139,15 +147,13 @@ SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
 	"SubmissionFormSubmitter",
 	ModelSubfield.define(
 		name=FIELD_SUBMITTERNAME, 
-		type=TYPE_MODELBOX,
+        row_name=ROW_PERSON_NAME,
+		type=TYPE_CHAR,
 		requirement=RequirementLevel.MANDATORY.value, 
 		properties={
 			PROP_LABEL: "Submitter Name",
 			PROP_TT_EXPL: TTEXPL_SUBMITTERNAME,
 			PROP_TT_BEST: TTBEST_SUBMITTERNAME,
-			PROP_WIDGET_PROPS:{
-				WPROP_TARGETMODEL: Person.__name__,
-			},
 		},
 		multi=False,
 	),
@@ -168,7 +174,8 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 	Person,
 	"SubmissionFormAuthor",
 	ModelSubfield.define(
-		name=FIELD_AUTHORS, 
+		name=FIELD_AUTHORS,
+		row_name=ROW_PERSON_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.MANDATORY.value, 
 		properties={
@@ -183,6 +190,7 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_AUTHORIDENTIFIER,
+		row_name=ROW_PERSON_IDENTIFIER,
 		type=TYPE_ORCID,
 		requirement=RequirementLevel.RECOMMENDED,
 		properties={
@@ -194,6 +202,7 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_AUTHORAFFILIATION,
+		row_name=ROW_ORGANIZATION_NAME,
 		type=SUBMISSION_FORM_AUTHOR_AFFILIATION.type_name,
 		requirement=RequirementLevel.RECOMMENDED,
 		properties={
@@ -214,6 +223,7 @@ SUBMISSION_FORM_CONTRIBUTOR: ModelStructure = ModelStructure.define(
 	"SubmissionFormContributor",
 	ModelSubfield.define(
 		name=FIELD_CONTRIBUTOR, 
+        row_name=ROW_PERSON_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.OPTIONAL.value, 
 		properties={
@@ -228,6 +238,7 @@ SUBMISSION_FORM_CONTRIBUTOR: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_CONTRIBUTORIDENTIFIER,
+		row_name=ROW_PERSON_IDENTIFIER,
 		type=TYPE_ORCID,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -239,6 +250,7 @@ SUBMISSION_FORM_CONTRIBUTOR: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_CONTRIBUTORAFFILIATION,
+        row_name=ROW_ORGANIZATION_NAME,
 		type=SUBMISSION_FORM_CONTRIBUTOR_AFFILIATION.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -259,6 +271,7 @@ SUBMISSION_FORM_VERSION: ModelStructure = ModelStructure.define(
 	"SubmissionFormVersion",
 	ModelSubfield.define(
 		name=FIELD_VERSIONNUMBER,
+		row_name=ROW_VERSION_NUMBER,
 		type=TYPE_CHAR,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -270,6 +283,7 @@ SUBMISSION_FORM_VERSION: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_VERSIONDATE,
+		row_name=ROW_VERSION_DATE,
 		type=TYPE_DATE,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -281,6 +295,7 @@ SUBMISSION_FORM_VERSION: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_VERSIONDESCRIPTION,
+		row_name=ROW_VERSION_DESCRIPTION,
 		type=TYPE_TEXTAREA,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -292,6 +307,7 @@ SUBMISSION_FORM_VERSION: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_VERSIONPID,
+		row_name=ROW_VERSION_PID,
 		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -308,6 +324,7 @@ SUBMISSION_FORM_PUBLICATION: ModelStructure = ModelStructure.define(
 	"SubmissionFormPublication",
 	ModelSubfield.define(
 		name=FIELD_REFERENCEPUBLICATION,
+        row_name=ROW_CONTROLLEDLIST_IDENTIFIER,
 		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -324,6 +341,7 @@ SUBMISSION_FORM_REL_SOFTWARE: ModelStructure = ModelStructure.define(
 	"SubmissionFormRelSoftware",
 	ModelSubfield.define(
 		name=FIELD_RELATEDSOFTWARE,
+        row_name=ROW_CONTROLLEDLIST_IDENTIFIER,
 		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -339,6 +357,7 @@ SUBMISSION_FORM_INSTRUMENT: ModelStructure = ModelStructure.define(
 	"SubmissionFormInstrument",
 	ModelSubfield.define(
 		name=FIELD_RELATEDINSTRUMENTS,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=TYPE_CHAR,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -350,6 +369,7 @@ SUBMISSION_FORM_INSTRUMENT: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_RELATEDINSTRUMENTIDENTIFIER,
+        row_name=ROW_CONTROLLEDLIST_IDENTIFIER,
 		type=TYPE_URL,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -366,6 +386,7 @@ SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
 	"SubmissionFormObservatory",
 	ModelSubfield.define(
 		name=FIELD_RELATEDOBSERVATORIES,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=TYPE_CHAR,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -375,7 +396,7 @@ SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
 		},
 		multi=False,
 	),
-    # TODO implement when observatory identifier is standardized
+	# TODO implement when observatory identifier is standardized
 	# ModelSubfield.define(
 	# 	name=FIELD_RELATEDINSTRUMENTIDENTIFIER,
 	# 	type=TYPE_URL,
@@ -394,6 +415,7 @@ SUBMISSION_FORM_DATASET: ModelStructure = ModelStructure.define(
 	"SubmissionFormDataset",
 	ModelSubfield.define(
 		name=FIELD_RELATEDDATASETS,
+        row_name=ROW_CONTROLLEDLIST_IDENTIFIER,
 		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -413,6 +435,7 @@ SUBMISSION_FORM_LICENSE: ModelStructure = ModelStructure.define(
 	"SubmissionFormLicense",
 	ModelSubfield.define(
 		name=FIELD_LICENSE,
+        row_name=ROW_LICENSE_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -427,6 +450,7 @@ SUBMISSION_FORM_LICENSE: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_LICENSEURI,
+        row_name=ROW_LICENSE_URL,
 		type=TYPE_URL,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -446,6 +470,7 @@ SUBMISSION_FORM_AWARD: ModelStructure = ModelStructure.define(
 	"SubmissionFormAward",
 	ModelSubfield.define(
 		name=FIELD_AWARDTITLE,
+        row_name=ROW_AWARD_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -460,6 +485,7 @@ SUBMISSION_FORM_AWARD: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_AWARDNUMBER,
+        row_name=ROW_AWARD_IDENTIFIER,
 		type=TYPE_CHAR,
 		requirement=RequirementLevel.RECOMMENDED,
 		properties={
@@ -481,6 +507,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Submitter
 	ModelSubfield.define(
 		name=FIELD_SUBMITTERNAME, 
+        row_name=ROW_PERSON_NAME,
 		type=SUBMISSION_FORM_SUBMITTER.type_name, 
 		requirement=RequirementLevel.MANDATORY.value, 
 		properties={
@@ -524,6 +551,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Authors
 	ModelSubfield.define(
 		name=FIELD_AUTHORS,
+        row_name=ROW_PERSON_NAME,
 		type=SUBMISSION_FORM_AUTHOR.type_name,
 		requirement=RequirementLevel.MANDATORY.value,
 		properties={
@@ -540,6 +568,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Contributors
 	ModelSubfield.define(
 		name=FIELD_CONTRIBUTOR,
+        row_name=ROW_PERSON_NAME,
 		type=SUBMISSION_FORM_CONTRIBUTOR.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -584,8 +613,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Concise Description",
 			PROP_TT_EXPL: TTEXPL_CONCISEDESCRIPTION,
 			PROP_TT_BEST: TTBEST_CONCISEDESCRIPTION,
-            PROP_WIDGET_PROPS: {
-                WPROP_MAXLENGTH: 200,
+			PROP_WIDGET_PROPS: {
+				WPROP_MAXLENGTH: 200,
 			}
 		},
 		multi=False,
@@ -621,6 +650,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Version
 	ModelSubfield.define(
 		name=FIELD_VERSIONNUMBER,
+        row_name=ROW_VERSION_NUMBER,
 		type=SUBMISSION_FORM_VERSION.type_name,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -653,6 +683,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# License
 	ModelSubfield.define(
 		name=FIELD_LICENSE,
+        row_name=ROW_LICENSE_NAME,
 		type=SUBMISSION_FORM_LICENSE.type_name,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -672,6 +703,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Keywords
 	ModelSubfield.define(
 		name=FIELD_KEYWORDS,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -689,6 +721,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Functionality
 	ModelSubfield.define(
 		name=FIELD_SOFTWAREFUNCTIONALITY,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -705,6 +738,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Data Inputs
 	ModelSubfield.define(
 		name=FIELD_DATASOURCES,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -721,6 +755,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# File Formats - input
 	ModelSubfield.define(
 		name=FIELD_INPUTFORMATS,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -737,6 +772,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# File Formats - output
 	ModelSubfield.define(
 		name=FIELD_OUTPUTFORMATS,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -753,6 +789,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Operating System
 	ModelSubfield.define(
 		name=FIELD_OPERATINGSYSTEM,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -769,6 +806,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# CPU Architecture
 	ModelSubfield.define(
 		name=FIELD_CPUARCHITECTURE,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -785,6 +823,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Related Region
 	ModelSubfield.define(
 		name=FIELD_RELATEDREGION,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -798,20 +837,21 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		},
 		multi=True,
 	),
-    # Related Phenomena
-    ModelSubfield.define(
-        name=FIELD_RELATEDPHENOMENA,
-        type=TYPE_MODELBOX,
-        requirement=RequirementLevel.OPTIONAL.value,
-        properties={
-            PROP_LABEL: "Related Phenomena",
+	# Related Phenomena
+	ModelSubfield.define(
+		name=FIELD_RELATEDPHENOMENA,
+        row_name=ROW_CONTROLLEDLIST_NAME,
+		type=TYPE_MODELBOX,
+		requirement=RequirementLevel.OPTIONAL.value,
+		properties={
+			PROP_LABEL: "Related Phenomena",
 			PROP_TT_EXPL: TTEXPL_RELATEDPHENOMENA,
-            PROP_TT_BEST: TTBEST_RELATEDPHENOMENA,
-            PROP_WIDGET_PROPS:{
-                WPROP_DROPDOWNBUTTON: True
+			PROP_TT_BEST: TTBEST_RELATEDPHENOMENA,
+			PROP_WIDGET_PROPS:{
+				WPROP_DROPDOWNBUTTON: True
 			}
 		},
-        multi=True,
+		multi=True,
 	),
 	# Reference Publication
 	ModelSubfield.define(
@@ -828,6 +868,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Development Status
 	ModelSubfield.define(
 		name=FIELD_DEVELOPMENTSTATUS,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=TYPE_MODELBOX,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
@@ -856,6 +897,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Funder
 	ModelSubfield.define(
 		name=FIELD_FUNDER,
+        row_name=ROW_ORGANIZATION_NAME,
 		type=SUBMISSION_FORM_FUNDER.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -872,6 +914,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Awards
 	ModelSubfield.define(
 		name=FIELD_AWARDTITLE,
+        row_name=ROW_AWARD_NAME,
 		type=SUBMISSION_FORM_AWARD.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -890,6 +933,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Related Publications
 	ModelSubfield.define(
 		name=FIELD_RELATEDPUBLICATIONS,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=TYPE_DATACITEDOI,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -906,6 +950,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Related Datasets
 	ModelSubfield.define(
 		name=FIELD_RELATEDDATASETS,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=SUBMISSION_FORM_DATASET.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -922,6 +967,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Related Software
 	ModelSubfield.define(
 		name=FIELD_RELATEDSOFTWARE,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=SUBMISSION_FORM_REL_SOFTWARE.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -938,6 +984,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Interoperable Software
 	ModelSubfield.define(
 		name=FIELD_INTEROPERABLESOFTWARE,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=SUBMISSION_FORM_REL_SOFTWARE.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -954,6 +1001,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Related Instruments
 	ModelSubfield.define(
 		name=FIELD_RELATEDINSTRUMENTS,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=SUBMISSION_FORM_INSTRUMENT.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -970,6 +1018,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Related Observatories
 	ModelSubfield.define(
 		name=FIELD_RELATEDOBSERVATORIES,
+        row_name=ROW_CONTROLLEDLIST_NAME,
 		type=SUBMISSION_FORM_OBSERVATORY.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={

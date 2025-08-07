@@ -109,7 +109,7 @@ class HssiModel(models.Model, metaclass=HssiBase):
 				else:
 					objval = getattr(object, field.name)
 					if not firstval and objval: 
-						setattr(firstval, field.name, objval)
+						setattr(firstobj, field.name, objval)
 						print(f"update field {field} to '{objval}'")
 			
 			refs = find_database_references(object)

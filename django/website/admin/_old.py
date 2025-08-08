@@ -22,7 +22,7 @@ from ..constants import SaveType
 from ..models import *
 from ..views import migrate_db_old_to_new
 from .. import submissions
-from .csv_export import export_db_csv, import_db_csv
+from .csv_export import export_db_csv, import_db_csv, remove_all_model_entries
 from .fetch_vocab import (
 	DataListConcept, link_concept_children, get_data, get_concepts, MODEL_URL_MAP
 )
@@ -132,6 +132,8 @@ def view_import_db_new(request: HttpRequest) -> HttpResponse:
 	# only allow post requests from super user to reimport the database
 	if request.method == 'POST' and request.user.is_superuser:
 
+		print("removing all data from hssi models..")
+		remove_all_model_entries()
 		print("Importing new database from csv files..")
 		import_db_csv()
 	

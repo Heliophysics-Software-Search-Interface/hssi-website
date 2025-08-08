@@ -27,15 +27,15 @@ class SubmissionInfo(HssiModel):
 	metadataVersionNumber = models.CharField(max_length=50, blank=True, null=True)
 	submitter = models.ForeignKey(
 		Submitter,
-		on_delete=models.CASCADE, 
+		on_delete=models.SET_DEFAULT, 
+		default=Submitter.get_default_submitter,
 		blank=True,
 		related_name='submission_infos'
 	)
 	curator = models.ForeignKey(
 		Curator,
-		on_delete=models.CASCADE, 
-		null=True, 
-		blank=True, 
+		on_delete=models.SET_NULL, 
+		null=True, blank=True, 
 		related_name='submission_infos'
 	)
 	submissionDate = models.DateField(blank=True, null=True)
@@ -46,9 +46,8 @@ class SubmissionInfo(HssiModel):
 	internalStatusNote = models.TextField(blank=True, null=True)
 	leadCurator = models.ForeignKey(
 		Curator,
-		on_delete=models.CASCADE, 
-		null=True, 
-		blank=True, 
+		on_delete=models.SET_NULL, 
+		null=True, blank=True, 
 		related_name='submission_infos_led'
 	)
 	lastContactDate = models.DateField(blank=True, null=True)

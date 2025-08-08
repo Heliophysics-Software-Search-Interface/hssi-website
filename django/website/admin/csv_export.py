@@ -56,6 +56,7 @@ def remove_all_model_entries():
 		Software,
 		VisibleSoftware
 	]
+	models.reverse()
 	for model in models: model.objects.all().delete()
 		
 

@@ -196,12 +196,10 @@ class HssiModel(models.Model, metaclass=HssiBase):
 							new_item = lookup(uuid.UUID(item), model._meta.get_field(key))
 							if new_item: new_val.append(new_item)
 						except Exception: break
-					if new_val: data[key] = new_val
-					continue
-				try:
-					new_val =  lookup(uuid.UUID(val), model._meta.get_field(key))
-					if new_val: data[key] = new_val
-				except: continue
+				else:
+					try: new_val =  lookup(uuid.UUID(val), model._meta.get_field(key))
+					except: continue
+				if new_val: data[key] = new_val
 		return data
 	
 	class Meta:

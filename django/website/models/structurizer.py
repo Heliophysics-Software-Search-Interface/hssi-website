@@ -221,6 +221,7 @@ class ModelStructure:
 			if not val: 
 				print(f"field [{fname}|{mfield.row_name}] not found on {object}")
 				continue
+			# TODO handle potential infinite recursion for circular table references
 			if recursive and (isinstance(val, models.Model) or isinstance(val, BaseManager)):
 				struct = registered_structures.get(mfield.type)
 				if struct:

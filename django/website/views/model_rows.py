@@ -25,7 +25,7 @@ def get_model_row(request: HttpRequest, model_name: str, uid: str) -> JsonRespon
 	access = AccessLevel.from_user(request.user)
 	obj = model.objects.get(pk=id)
 	data: dict = None
-	try: obj.get_serialized_data(access, True)
+	try: data = obj.get_serialized_data(access, True)
 	except Exception: return HttpResponseForbidden("Unauthorized")
 
 	return JsonResponse(data)

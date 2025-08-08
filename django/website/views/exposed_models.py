@@ -38,27 +38,7 @@ def get_model_structure(request: HttpRequest) -> JsonResponse:
 		# ModelStructure.create(SubmissionInfo).serialized(),
 		ModelStructure.create(SoftwareVersion).serialized(),
 		ModelStructure.create(Software).serialized(),
-		*[
-			SUBMISSION_FORM_OBSERVATORY.serialized(), 
-			SUBMISSION_FORM_AUTHOR.serialized(), 
-			SUBMISSION_FORM_CONTRIBUTOR.serialized(), 
-			SUBMISSION_FORM_AWARD.serialized(), 
-			SUBMISSION_FORM_DATASET.serialized(), 
-			SUBMISSION_FORM_INSTRUMENT.serialized(),
-			SUBMISSION_FORM_LICENSE.serialized(), 
-			SUBMISSION_FORM_AUTHOR_AFFILIATION.serialized(), 
-			SUBMISSION_FORM_CONTRIBUTOR_AFFILIATION.serialized(),
-			SUBMISSION_FORM_PUBLISHER.serialized(), 
-			SUBMISSION_FORM_FUNDER.serialized(), 
-			SUBMISSION_FORM_PUBLICATION.serialized(), 
-			SUBMISSION_FORM_REL_SOFTWARE.serialized(), 
-			SUBMISSION_FORM_SUBMITTER.serialized(), 
-			SUBMISSION_FORM_VERSION.serialized(),
-			SUBMISSION_FORM_FIELDS.serialized(),
-			SUBMISSION_FORM_FIELDS_1.serialized(),
-			SUBMISSION_FORM_FIELDS_2.serialized(),
-			SUBMISSION_FORM_FIELDS_3.serialized(),
-		],
+		*list(registered_structures.values()),
 	], "fieldMap": MODEL_FIELD_MAP }
 	return JsonResponse(structures)
 

@@ -14,6 +14,7 @@ urlpatterns = [
 	path('submit/', views.submit.view_form),
 	path('submit/submit_data', views.submit.submit_data),
 	path('submit/submitted', views.submit.view_confirmation),
+    path('api/view/<str:uid>', views.model_rows.api_view),
 	path('api/models/structures/', views.exposed_models.get_model_structure),
 	path('api/models/<str:model_name>/choices/', views.exposed_models.get_model_choices),
 	path('api/models/<str:model_name>/form/', views.exposed_models.model_form),

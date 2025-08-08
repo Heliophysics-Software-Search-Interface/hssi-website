@@ -55,6 +55,16 @@ class Person(HssiModel):
 	curator: models.Manager['Curator']
 	relatedItems: models.Manager['RelatedItem']
 
+	@staticmethod
+	def get_default_person() -> 'Person':
+		pers = Person.objects.filter(firstName="UNKNOWN").first()
+		if not pers:
+			pers = Person()
+			pers.firstName = "UNKNOWN"
+			pers.lastName = "UNKNOWN"
+			pers.save()
+		return pers
+
 	# meta info that allows data in this model to be serialized to allow for user discovery
 	def get_search_terms(self) -> list[str]:
 		terms = super().get_search_terms()
@@ -92,7 +102,8 @@ class Curator(HssiModel):
 	person = form_config(
 		models.OneToOneField(
 			Person, 
-			on_delete=models.CASCADE, 
+			on_delete=models.SET_DEFAULT, 
+			default=Person.get_default_person,
 			null=False, blank=False, 
 			related_name='curator'
 		),
@@ -123,7 +134,8 @@ class Submitter(HssiModel):
 	person = form_config(
 		models.ForeignKey(
 			Person, 
-			on_delete=models.CASCADE,
+			on_delete=models.SET_DEFAULT,
+			default=Person.get_default_person,
 			null=False, blank=False, 
 			related_name='submitter'
 		),
@@ -134,6 +146,15 @@ class Submitter(HssiModel):
 
 	# specified for intellisense, defined in other models
 	submission_infos: models.Manager['SubmissionInfo']
+
+	@staticmethod
+	def get_default_submitter() -> 'Submitter':
+		sub = Submitter.objects.filter(email="UNKNOWN").first()
+		if not sub:
+			sub = Submitter()
+			sub.email="UNKNOWN"
+			sub.save
+		return sub
 
 	@classmethod
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("email")

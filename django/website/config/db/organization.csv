@@ -1,7 +1,5 @@
 id,name,abbreviation,website,identifier,parent_organization
-e7e08e80-1430-48e0-ac5f-969aaeb2f15a,4e595751-ae4d-4124-80bc-d886221d0cef,,,,
-6926b56a-fca9-473c-8b40-f0bf489d58ea,4e595751-ae4d-4124-80bc-d886221d0cef,,,,
-1f88bbf8-1c72-487b-849f-471705f4739d,4e595751-ae4d-4124-80bc-d886221d0cef,,,,
+904715fe-f562-4982-8bd6-fd48e75234f1,94a648a6-bd72-46fe-bffe-389ea3297df2,,,,
 8e3350ef-76e3-4a63-93f6-8cecfad3b9b4,European Commission,,,https://ror.org/00k4n6c32,
 87ea06e9-fcd0-49d1-b778-05e619dc9a4d,George Mason University,,,,
 e63d6755-8e8e-4959-9c82-f16a5ba0b4f5,Heliophysics Data and Modeling Consortium,,,https://ror.org/04xbq1n92,
@@ -12,7 +10,4 @@ d402d7df-3761-492c-ab7f-90226678a25c,Los Alamos National Laboratory,,,https://ro
 3263f163-f39a-4284-8d60-836619fb7395,University of Michigan,,,https://ror.org/00jmfr291,
 6da76f19-0dd1-47e2-8518-9c2220c5879b,University of New Hampshire,,,https://ror.org/01rmh9n78,
 acb7415f-70c1-466c-a1c0-e4deb76c479f,University of Turku,,,https://ror.org/05vghhr25,
-4e595751-ae4d-4124-80bc-d886221d0cef,Zenodo,,,,
-d4415ca0-6646-4596-82af-be953309e844,Zenodo,,,https://zenodo.org,
-d87885bc-53db-4e81-82b9-54633db3cd5e,Zenodo,,,,
-ee990b81-8115-4ab4-8a7f-68a4d0bb345d,Zenodo,,,,
+ee990b81-8115-4ab4-8a7f-68a4d0bb345d,Zenodo,,,https://zenodo.org,

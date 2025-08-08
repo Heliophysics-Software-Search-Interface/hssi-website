@@ -31,6 +31,35 @@ def model_csv_filepath(
 
 # Module functionality ---------------------------------------------------------
 
+def remove_all_model_entries():
+	models: list[Model] = [
+		Image, 
+		Organization, 
+		Person,
+		Curator,
+		Award,
+		FunctionCategory,
+		InstrumentObservatory,
+		Keyword,
+		License,
+		OperatingSystem,
+		Phenomena,
+		ProgrammingLanguage,
+		Region,
+		RepoStatus,
+		DataInput,
+		FileFormat,
+		SoftwareVersion,
+		RelatedItem,
+		Submitter,
+		SubmissionInfo,
+		Software,
+		VisibleSoftware
+	]
+	models.reverse()
+	for model in models: model.objects.all().delete()
+		
+
 def export_model_csv(model: 'Type[models.Model]', directory: str = DEFAULT_DB_EXPORT_PATH):
 	filepath: str = model_csv_filepath(model, directory)
 	print(f'Exporting {model.__name__} to ' + filepath + ' ...')
@@ -100,13 +129,13 @@ def import_db_csv():
 	import_model_csv(OperatingSystem)
 	import_model_csv(Phenomena)
 	import_model_csv(ProgrammingLanguage)
-	import_model_csv(SubmissionInfo)
-	import_model_csv(Software)
-	import_model_csv(VisibleSoftware)
 	import_model_csv(Region)
 	import_model_csv(RepoStatus)
 	import_model_csv(DataInput)
 	import_model_csv(FileFormat)
 	import_model_csv(SoftwareVersion)
-	import_model_csv(Submitter)
 	import_model_csv(RelatedItem)
+	import_model_csv(Submitter)
+	import_model_csv(SubmissionInfo)
+	import_model_csv(Software)
+	import_model_csv(VisibleSoftware)

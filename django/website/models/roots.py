@@ -562,9 +562,8 @@ class Organization(HssiModel):
 	identifier = models.URLField(blank=True, null=True)
 	parent_organization = models.ForeignKey(
 		'self', 
-		on_delete=models.CASCADE, 
-		null=True, 
-		blank=True, 
+		on_delete=models.SET_NULL, 
+		null=True, blank=True, 
 		related_name='sub_organizations'
 	)
 

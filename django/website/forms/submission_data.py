@@ -131,7 +131,7 @@ SUBMISSION_FORM_FUNDER: ModelStructure = ModelStructure.define(
 		type=TYPE_ROR,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={
-			PROP_LABEL: "Identifier",
+			PROP_LABEL: "Funder Identifier",
 			PROP_TT_EXPL: TTEXPL_FUNDERIDENTIFIER,
 			PROP_TT_BEST: TTBEST_FUNDERIDENTIFIER,
 			PROP_WIDGET_PROPS: {
@@ -194,7 +194,7 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 		type=TYPE_ORCID,
 		requirement=RequirementLevel.RECOMMENDED,
 		properties={
-			PROP_LABEL: "Identifier",
+			PROP_LABEL: "Author Identifier",
 			PROP_TT_EXPL: TTEXPL_AUTHORIDENTIFIER,
 			PROP_TT_BEST: TTBEST_AUTHORIDENTIFIER,
 		},
@@ -242,7 +242,7 @@ SUBMISSION_FORM_CONTRIBUTOR: ModelStructure = ModelStructure.define(
 		type=TYPE_ORCID,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
-			PROP_LABEL: "Identifier",
+			PROP_LABEL: "Contributor Identifier",
 			PROP_TT_EXPL: TTEXPL_CONTRIBUTORIDENTIFIER,
 			PROP_TT_BEST: TTBEST_CONTRIBUTORIDENTIFIER,
 		},

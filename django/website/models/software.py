@@ -40,7 +40,7 @@ class Software(HssiModel):
 	publicationDate = models.DateField(null=True)
 	publisher = models.ForeignKey(
 		Organization,
-		on_delete=models.CASCADE, 
+		on_delete=models.SET_NULL, 
 		null=True, 
 		blank=True, 
 		related_name='softwares_published'
@@ -59,14 +59,14 @@ class Software(HssiModel):
 	softwareName = models.CharField(max_length=LEN_NAME)
 	version = models.OneToOneField(
 		SoftwareVersion,
-		on_delete=models.CASCADE,
+		on_delete=models.SET_NULL,
 		blank=True, null=True,
 		related_name='software'
 	)
 	persistentIdentifier = models.URLField(blank=True, null=True)
 	referencePublication = models.ForeignKey(
 		RelatedItem,
-		on_delete=models.CASCADE,
+		on_delete=models.SET_NULL,
 		blank=True, null=True,
 		related_name="softwares_published"
 	)
@@ -110,7 +110,7 @@ class Software(HssiModel):
 	)
 	developmentStatus = models.ForeignKey(
 		RepoStatus,
-		on_delete=models.CASCADE,
+		on_delete=models.SET_NULL,
 		null=True, blank=True,
 		related_name='softwares'
 	)
@@ -121,13 +121,13 @@ class Software(HssiModel):
 	)
 	metadataLicense = models.ForeignKey(
 		License,
-		on_delete=models.CASCADE, 
+		on_delete=models.SET_NULL, 
 		null=True, blank=True, 
 		related_name='softwares'
 	)
 	license = models.ForeignKey(
 		License,
-		on_delete=models.CASCADE, 
+		on_delete=models.SET_NULL, 
 		null=True, blank=True, 
 		related_name='softwares_license'
 	)
@@ -165,9 +165,8 @@ class Software(HssiModel):
 	codeRepositoryUrl = models.URLField(blank=True, null=True)
 	logo = models.ForeignKey(
 		Image,
-		on_delete=models.CASCADE, 
-		null=True, 
-		blank=True, 
+		on_delete=models.SET_NULL, 
+		null=True, blank=True, 
 		related_name='softwares'
 	)
 	relatedPhenomena = models.ManyToManyField(
@@ -177,7 +176,7 @@ class Software(HssiModel):
 	)
 	submissionInfo = models.OneToOneField(
 		SubmissionInfo,
-		on_delete=models.CASCADE,
+		on_delete=models.SET_NULL,
 		blank=True, null=True,
 		related_name='software'
 	)

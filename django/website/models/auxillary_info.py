@@ -40,7 +40,7 @@ class Award(HssiModel):
 	funder = form_config(
 		models.ForeignKey(
 			Organization,
-			on_delete=models.CASCADE,
+			on_delete=models.SET_NULL,
 			blank=True,
 			null=True,
 			related_name='awards'
@@ -88,7 +88,7 @@ class RelatedItem(ControlledList):
 	license = form_config(
 		models.ForeignKey(
 			License,
-			on_delete=models.CASCADE,
+			on_delete=models.SET_NULL,
 			blank=True, null=True,
 			related_name='relatedItems'
 		),

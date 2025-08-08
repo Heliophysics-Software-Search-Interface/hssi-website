@@ -23,6 +23,21 @@ def get_model_row(request: HttpRequest, model_name: str, uid: str) -> JsonRespon
 
 	access = AccessLevel.from_user(request.user)
 	obj = model.objects.get(pk=id)
-	data = obj.get_serialized_data(access, True)
+	data: dict = None
+	try: obj.get_serialized_data(access, True)
+	except Exception: return HttpResponseForbidden("Unauthorized")
 
+	return JsonResponse(data)
+
+def api_view(request: HttpRequest, uid: str) -> HttpResponse:
+	"""
+	"""
+	software: Software = None
+	try: 
+		softwareid = uuid.UUID(uid)
+		software = Software.objects.get(pk=softwareid)
+	except: return HttpResponseBadRequest(f"invalid id '{uid}")
+
+	data = software.get_serialized_data(AccessLevel.from_user(request.user), True)
+	# TODO convert to forms.submission_data.SUBMISSION_FORM_FIELDS data
 	return JsonResponse(data)

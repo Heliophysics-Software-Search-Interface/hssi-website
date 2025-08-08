@@ -103,6 +103,11 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 	# actions need to be specified
 	actions = [fix_uuid_chains, collapse_model_entries]
 
+	# columns to display in the model admin page
+	list_display = ('str_display', 'id')
+
+	def str_display(self, obj: Model): return str(obj)
+
 # Admin definitions for roots module -------------------------------------------
 
 class OperatingSystemResource(resources.ModelResource):

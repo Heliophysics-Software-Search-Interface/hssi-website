@@ -9,10 +9,11 @@ import json
 import warnings
 
 from django.db import models
+from django.db.models.manager import BaseManager
 from django.db.models.fields import related
 from django.forms import widgets
 
-from ..util import RequirementLevel, REQ_LVL_ATTR
+from ..util import RequirementLevel, AccessLevel, REQ_LVL_ATTR
 
 from enum import StrEnum
 from typing import Type, TYPE_CHECKING, Any
@@ -20,6 +21,11 @@ if TYPE_CHECKING:
 	from .roots import HssiModel
 
 FORM_CONFIG_ATTR = "form_config"
+
+registered_structures: dict[str, 'ModelStructure'] = {}
+
+def register_structure(*structure: 'ModelStructure'):
+	for struct in structure: registered_structures[struct.type_name] = struct
 
 def form_config(field: models.Field, **kwargs) -> models.Field:
 	'''
@@ -186,6 +192,68 @@ class ModelStructure:
 
 		return [self]
 
+	def serialize_model_object(
+		self, 
+		object: 'HssiModel', 
+		recursive: bool,
+		access: AccessLevel = AccessLevel.PUBLIC,
+	) -> dict[str, Any]:
+		"""
+		force an object to conform to this specific model structure.
+		creates a JSON serializable dict from the object data, but only with 
+		the values from fields specified in this structure, replacing the 
+		field names as defined
+		"""
+		if access < self.target_model.access:
+			raise Exception(f"Unauthorized access, {access} < {self.target_model.access}")
+		
+		if not issubclass(object._meta.model, self.target_model): 
+			raise Exception(
+				f"incompatible model types '{object._meta.model}', '{self.target_model}'"
+			)
+		
+		data: dict[str, Any] = {}
+		for mfield in self:
+			fname = mfield.name
+			val: Any = None
+			if hasattr(object, mfield.name): val = getattr(object, mfield.name)
+			elif hasattr(object, mfield.row_name): val = getattr(object, mfield.row_name)
+			if not val: 
+				print(f"field [{fname}|{mfield.row_name}] not found on {object}")
+				continue
+			if recursive and (isinstance(val, models.Model) or isinstance(val, BaseManager)):
+				struct = registered_structures.get(mfield.type)
+				if struct:
+					try:
+						if isinstance(val, models.Model):
+							val = struct.serialize_model_object(val, recursive, access)
+						elif isinstance(val, BaseManager):
+							objects = val.all()
+							val = []
+							for obj in objects:
+								val.append(struct.serialize_model_object(obj, recursive, access))
+						else: val = str(val)
+					except Exception as e: print(f"error fetching data for {object}:{fname}, {e}")
+				else:
+					try: 
+						if isinstance(val, models.Model):
+							val = val.get_serialized_data(access, recursive)
+						elif isinstance(val, BaseManager):
+							objects = val.all()
+							val = []
+							for obj in objects:
+								valdat: dict[str: Any] = obj.get_serialized_data(access, recursive)
+								for key, dat in list(valdat.items()): 
+									if not dat: valdat.pop(key)
+								val.append(valdat)
+
+						else: val = str(val)
+					except Exception as e: print(f"error fetching data for {object}:{fname}, {e}")
+			print(f"{fname}: {val}")
+			if val: data[fname] = val
+
+		return data
+			
 	def serialized(self) -> dict:
 		if self.top_field is None:
 			warnings.warn(
@@ -203,5 +271,8 @@ class ModelStructure:
 		}
 		return serialized
 	
-	def to_json(self) -> str:
-		return json.dumps(self.serialized())
+	def to_json(self) -> str: return json.dumps(self.serialized())
+
+	def __iter__(self):
+		yield self.top_field
+		yield from self.subfields

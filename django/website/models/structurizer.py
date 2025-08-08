@@ -249,7 +249,6 @@ class ModelStructure:
 
 						else: val = str(val)
 					except Exception as e: print(f"error fetching data for {object}:{fname}, {e}")
-			print(f"{fname}: {val}")
 			if val: data[fname] = val
 
 		return data

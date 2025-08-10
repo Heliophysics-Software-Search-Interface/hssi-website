@@ -37,3 +37,20 @@
 	</div>
 
 {% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+	setTimeout(async () => {
+		uid = new URLSearchParams(window.location.search).get("uid");
+		
+		// defined in /frontend/util.ts
+		const data = await getSoftwareData(uid);
+		console.log(data);
+		
+		// defined in /frontend/forms/formGenerator.ts
+		fillForm(data, true);
+
+	}, 100);
+</script>
+{% endblock %}

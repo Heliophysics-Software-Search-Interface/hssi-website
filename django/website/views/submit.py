@@ -106,16 +106,34 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	submitter_name: str = submitter_data.get(FIELD_SUBMITTERNAME)
 	submitter_lastname = submitter_name.split()[-1]
 	submitter_firstname = submitter_name.replace(submitter_lastname, '').strip()
+	submitter_email = submitter_data.get(FIELD_SUBMITTEREMAIL)
 
-	submitter_person = Person()
-	submitter_person.lastName = submitter_lastname
-	submitter_person.firstName = submitter_firstname
-	submitter_person.save()
+	submitter_found: Submitter = Submitter.objects.filter(email=submitter_email)
+	if submitter_found:
+		sub_person_found = Person.objects.filter(
+			firstName=submitter_found.person.firstName, 
+			lastName=submitter_found.person.lastName
+		)
+		success = False
+		for person in sub_person_found:
+			if person.pk == sub_person_found.pk:
+				success = True
+				print(f"found existing submitter for {submitter_found.email}")
+				break
+		if not success: submitter_found = None
+	
+	submitter: Submitter = None
+	if not submitter_found:
+		submitter_person = Person()
+		submitter_person.lastName = submitter_lastname
+		submitter_person.firstName = submitter_firstname
+		submitter_person.save()
 
-	submitter = Submitter()
-	submitter.person = submitter_person
-	submitter.email = submitter_data.get(FIELD_SUBMITTEREMAIL)
-	submitter.save()
+		submitter = Submitter()
+		submitter.person = submitter_person
+		submitter.email = submitter_email
+		submitter.save()
+	else: submitter = submitter_found
 	
 	submission.submitter = submitter
 	submission.dateModified = date.today()

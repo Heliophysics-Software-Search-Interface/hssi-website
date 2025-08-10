@@ -159,6 +159,7 @@ SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_SUBMITTEREMAIL,
+        row_name=ROW_SUBMITTER_EMAIL,
 		type=TYPE_EMAIL,
 		requirement=RequirementLevel.MANDATORY.value,
 		properties={
@@ -539,6 +540,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Code Repo
 	ModelSubfield.define(
 		name=FIELD_CODEREPOSITORYURL,
+        row_name=ROW_SOFTWARE_CODEREPOSITORYURL,
 		type=TYPE_AUTOFILLSOMEF,
 		requirement=RequirementLevel.MANDATORY.value,
 		properties={

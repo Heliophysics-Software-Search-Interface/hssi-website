@@ -53,7 +53,7 @@ export class ModelBox extends Widget {
 	private inputContainerRowElement: HTMLElement = null;
 	private dropdownButtonElement: HTMLButtonElement = null;
 	
-	private options: Option[] = null;
+	public options: Option[] = null;
 	private allOptionLIs: OptionLi[] = [];
 	private filteredOptionLIs: OptionLi[] = [];
 	private selectedOptionIndex: number = -1;
@@ -184,19 +184,20 @@ export class ModelBox extends Widget {
 		console.log(`Fetching ${this.properties.targetModel} row: ${uid}`);
 		const promise = fetch(fetchUrl, { signal: this.rowFetchAbort.signal });
 		promise.then(async data => {
-			console.log(data);
+			// console.log(data);
 			const jsonData = await data.json();
 			const collapse = !this.parentField.subfieldsExpanded();
 			this.parentField.expandSubfields();
 			if(collapse) this.parentField.collapseSubfields();
 			const subfields = this.parentField.getSubfields();
-			console.log(jsonData);
+			// console.log(jsonData);
 			for(const dataFieldName in jsonData){
 				const subfield = subfields.find(x => {
 					const mappedName = FormGenerator.fieldMap[x.name] ?? "NONE";
 					return mappedName == dataFieldName;
 				});
-				console.log(dataFieldName + "->" + subfield?.name + " : ", jsonData[dataFieldName]);
+				// const msg = dataFieldName + "->" + subfield?.name + " : ";
+				// console.log(msg, jsonData[dataFieldName]);
 				if(subfield){
 					const jsonValue = jsonData[dataFieldName];
 					if(subfield instanceof ModelMultiSubfield) {
@@ -212,7 +213,7 @@ export class ModelBox extends Widget {
 		promise.catch(err => console.error(err));
 	}
 
-	protected selectOption(option: Option = this.selectedOptionLI?.data): void {
+	public selectOption(option: Option = this.selectedOptionLI?.data): void {
 		this.rowFetchAbort?.abort();
 		this.rowFetchAbort = null;
 		if(option != null){

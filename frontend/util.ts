@@ -1,7 +1,17 @@
-
+export const softwareApiUrl = "/api/models/Software/rows/";
+export const modelApiUrl = "/api/models/"
 export type JSONValue = string | number | boolean | null | JSONObject | JSONArray;
 export interface JSONObject { [key: string]: JSONValue }
 export interface JSONArray<T = JSONValue> extends Array<T> { }
+
+/** like 'keyof' but recursively includes keys of nested types */
+export type NestedKeys<T, Prefix extends string = ""> = {
+	[K in keyof T]: T[K] extends object
+	? T[K] extends Function
+	? `${Prefix}${K & string}`
+	: `${Prefix}${K & string}` | NestedKeys<T[K], "">
+	: `${Prefix}${K & string}`;
+}[keyof T];
 
 /**
  * merge two objects together, recursively
@@ -103,11 +113,15 @@ export function getStringSimilarity(a: string, b: string): number {
 	return 1 - dist / Math.max(m, n); // similarity score
 }
 
-/** like 'keyof' but recursively includes keys of nested types */
-export type NestedKeys<T, Prefix extends string = ""> = {
-	[K in keyof T]: T[K] extends object
-	? T[K] extends Function
-	? `${Prefix}${K & string}`
-	: `${Prefix}${K & string}` | NestedKeys<T[K], "">
-	: `${Prefix}${K & string}`;
-}[keyof T];
+/** fetch the software data from the submission with the given uid */
+export async function getSoftwareData(uid: string): Promise<JSONObject> {
+	const url = softwareApiUrl + uid;
+	console.log(`fetching software data at ${url}`);
+	const result = await fetchTimeout(url);
+	const data = await result.json();
+	console.log("fetched software data: ", data);
+	return data;
+}
+
+const win = window as any;
+win.getSoftwareData = getSoftwareData;

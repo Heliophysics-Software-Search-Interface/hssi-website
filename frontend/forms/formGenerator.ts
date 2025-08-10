@@ -392,8 +392,9 @@ export class FormGenerator {
 		const fields = this.instance.getRootFields();
 		for(const key in data) {
 			const value = data[key as keyof typeof data];
-			const field = fields.find(f => f.name === key);
-			if(field) {
+			const field = fields.find(f => f.name === key || f.rowName === key);
+			// console.log(key, field, value)
+			if(field && value) {
 				if (overwrite_values || !field.hasValidInput()) {
 					field.fillField(value);
 				}
@@ -460,3 +461,4 @@ const win = window as any;
 win.clearGeneratedForm = FormGenerator.clearFormConfirm.bind(FormGenerator);
 win.collapseGeneratedForm = FormGenerator.collapseFormFields.bind(FormGenerator);
 win.expandGeneratedForm = FormGenerator.expandFormFields.bind(FormGenerator);
+win.fillForm = FormGenerator.fillForm.bind(FormGenerator);

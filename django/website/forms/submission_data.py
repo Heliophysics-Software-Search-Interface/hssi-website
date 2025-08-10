@@ -202,7 +202,7 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_AUTHORAFFILIATION,
-		row_name=ROW_ORGANIZATION_NAME,
+		row_name=ROW_PERSON_AFFILIATION,
 		type=SUBMISSION_FORM_AUTHOR_AFFILIATION.type_name,
 		requirement=RequirementLevel.RECOMMENDED,
 		properties={
@@ -250,7 +250,7 @@ SUBMISSION_FORM_CONTRIBUTOR: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_CONTRIBUTORAFFILIATION,
-        row_name=ROW_ORGANIZATION_NAME,
+        row_name=ROW_PERSON_AFFILIATION,
 		type=SUBMISSION_FORM_CONTRIBUTOR_AFFILIATION.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
@@ -650,7 +650,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Version
 	ModelSubfield.define(
 		name=FIELD_VERSIONNUMBER,
-        row_name=ROW_VERSION_NUMBER,
+        row_name=ROW_SOFTWARE_VERSION,
 		type=SUBMISSION_FORM_VERSION.type_name,
 		requirement=RequirementLevel.RECOMMENDED.value,
 		properties={

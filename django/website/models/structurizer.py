@@ -224,6 +224,7 @@ class ModelStructure:
 			# TODO handle potential infinite recursion for circular table references
 			if recursive and (isinstance(val, models.Model) or isinstance(val, BaseManager)):
 				struct = registered_structures.get(mfield.type)
+				print(f"parse field '{fname}' as '{mfield.type}'")
 				if struct:
 					try:
 						if isinstance(val, models.Model):

@@ -11,33 +11,36 @@ from ..models import (
 	Person, Curator, Submitter, Award, RelatedItem,
 	SubmissionInfo, SoftwareVersion, Software,
 )
-from ..models.structurizer import ModelStructure
+from ..models.structurizer import ModelStructure, register_structure
+
+register_structure(*[
+		ModelStructure.create(Keyword),
+		ModelStructure.create(OperatingSystem),
+		ModelStructure.create(Phenomena),
+		ModelStructure.create(RepoStatus),
+		ModelStructure.create(Image),
+		ModelStructure.create(ProgrammingLanguage),
+		ModelStructure.create(DataInput),
+		ModelStructure.create(CpuArchitecture),
+		ModelStructure.create(FileFormat),
+		ModelStructure.create(Region),
+		ModelStructure.create(InstrumentObservatory),
+		ModelStructure.create(FunctionCategory),
+		ModelStructure.create(License),
+		ModelStructure.create(Organization),
+		ModelStructure.create(Person),
+		# ModelStructure.create(Curator),
+		ModelStructure.create(Submitter),
+		ModelStructure.create(Award),
+		# ModelStructure.create(Functionality),
+		ModelStructure.create(RelatedItem),
+		# ModelStructure.create(SubmissionInfo),
+		ModelStructure.create(SoftwareVersion),
+		ModelStructure.create(Software),
+	])
 
 def get_model_structure(request: HttpRequest) -> JsonResponse:
 	structures = { "data": [
-		ModelStructure.create(Keyword).serialized(),
-		ModelStructure.create(OperatingSystem).serialized(),
-		ModelStructure.create(Phenomena).serialized(),
-		ModelStructure.create(RepoStatus).serialized(),
-		ModelStructure.create(Image).serialized(),
-		ModelStructure.create(ProgrammingLanguage).serialized(),
-		ModelStructure.create(DataInput).serialized(),
-		ModelStructure.create(CpuArchitecture).serialized(),
-		ModelStructure.create(FileFormat).serialized(),
-		ModelStructure.create(Region).serialized(),
-		ModelStructure.create(InstrumentObservatory).serialized(),
-		ModelStructure.create(FunctionCategory).serialized(),
-		ModelStructure.create(License).serialized(),
-		ModelStructure.create(Organization).serialized(),
-		ModelStructure.create(Person).serialized(),
-		# ModelStructure.create(Curator).serialized(),
-		ModelStructure.create(Submitter).serialized(),
-		ModelStructure.create(Award).serialized(),
-		# ModelStructure.create(Functionality).serialized(),
-		ModelStructure.create(RelatedItem).serialized(),
-		# ModelStructure.create(SubmissionInfo).serialized(),
-		ModelStructure.create(SoftwareVersion).serialized(),
-		ModelStructure.create(Software).serialized(),
 		*[x.serialized() for x in registered_structures.values()],
 	], "fieldMap": MODEL_FIELD_MAP }
 	return JsonResponse(structures)

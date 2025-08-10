@@ -392,7 +392,8 @@ export class FormGenerator {
 		const fields = this.instance.getRootFields();
 		for(const key in data) {
 			const value = data[key as keyof typeof data];
-			const field = fields.find(f => f.name === key);
+			const field = fields.find(f => f.name === key || f.rowName === key);
+			// console.log(key, field, value)
 			if(field && value) {
 				if (overwrite_values || !field.hasValidInput()) {
 					field.fillField(value);

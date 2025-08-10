@@ -246,15 +246,20 @@ export class ModelSubfield {
 		}
 
 		// controlled list item
-		if(data instanceof Object && data.name && data.id){
+		if(this.widget instanceof ModelBox && data instanceof Object && data.id){
 			if(this.widget instanceof ModelBox){
 				const find = () => {
-					const modelbox = this.widget as ModelBox
-					const op = modelbox.options.find(val => { return val.id == data.id; });
-					modelbox.selectOption(op);
+					try{
+						const modelbox = this.widget as ModelBox;
+						const op = modelbox.options.find(val => { return val.id == data.id; });
+						modelbox.selectOption(op);
+					} catch (e) {
+						console.error(e, `retrying for ${this.name}..`);
+						setTimeout(find, 200);
+					}
 				};
 				if(this.widget.options) find();
-				else setTimeout(find, 0);
+				else setTimeout(find);
 			}
 		}
 
@@ -264,9 +269,16 @@ export class ModelSubfield {
 			const fields = this.getSubfields();
 			for(const key in data){
 				const value = data[key];
+				
+				// TODO this is kinda a bad fix and not refactor friendly.
+				// manually hardcoding edge cases is a code smell
+				let altName = null;
+				switch(this.name){
+					case "versionNumber": altName = "number"; break;
+				}
 
 				// check each field/subfield of this field and apply the data
-				if(this.name === key || this.rowName === key) {
+				if(this.name === key || this.rowName === key || altName === key) {
 					this.fillField(value, notify);
 					continue;
 				}

@@ -53,7 +53,7 @@ export class ModelBox extends Widget {
 	private inputContainerRowElement: HTMLElement = null;
 	private dropdownButtonElement: HTMLButtonElement = null;
 	
-	private options: Option[] = null;
+	public options: Option[] = null;
 	private allOptionLIs: OptionLi[] = [];
 	private filteredOptionLIs: OptionLi[] = [];
 	private selectedOptionIndex: number = -1;
@@ -212,7 +212,7 @@ export class ModelBox extends Widget {
 		promise.catch(err => console.error(err));
 	}
 
-	protected selectOption(option: Option = this.selectedOptionLI?.data): void {
+	public selectOption(option: Option = this.selectedOptionLI?.data): void {
 		this.rowFetchAbort?.abort();
 		this.rowFetchAbort = null;
 		if(option != null){

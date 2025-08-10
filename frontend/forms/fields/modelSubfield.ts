@@ -245,6 +245,19 @@ export class ModelSubfield {
 			return;
 		}
 
+		// controlled list item
+		if(data instanceof Object && data.name && data.id){
+			if(this.widget instanceof ModelBox){
+				const find = () => {
+					const modelbox = this.widget as ModelBox
+					const op = modelbox.options.find(val => { return val.id == data.id; });
+					modelbox.selectOption(op);
+				};
+				if(this.widget.options) find();
+				else setTimeout(find, 0);
+			}
+		}
+
 		// if its a nested field data
 		else if(data instanceof Object) {
 			this.expandSubfields();

@@ -25,7 +25,7 @@ FORM_CONFIG_ATTR = "form_config"
 registered_structures: dict[str, 'ModelStructure'] = {}
 
 def register_structure(*structure: 'ModelStructure'):
-	for struct in structure: registered_structures[struct.type_name] = struct
+	for struct in structure: registered_structures[struct.type_name] = struct.serialized()
 
 def form_config(field: models.Field, **kwargs) -> models.Field:
 	'''

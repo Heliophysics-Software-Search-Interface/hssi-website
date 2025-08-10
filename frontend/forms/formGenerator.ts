@@ -460,3 +460,4 @@ const win = window as any;
 win.clearGeneratedForm = FormGenerator.clearFormConfirm.bind(FormGenerator);
 win.collapseGeneratedForm = FormGenerator.collapseFormFields.bind(FormGenerator);
 win.expandGeneratedForm = FormGenerator.expandFormFields.bind(FormGenerator);
+win.fillForm = FormGenerator.fillForm.bind(FormGenerator);

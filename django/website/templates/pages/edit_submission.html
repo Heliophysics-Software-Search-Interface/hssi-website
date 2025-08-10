@@ -1,0 +1,39 @@
+{% extends 'pages/forms_base.html' %}
+
+{% load static %}
+
+{% block head %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static 'css/submissions.css' %}" />
+	<link rel="stylesheet" href="{% static 'css/forms.css' %}" />
+{% endblock %}
+
+{% block title %}Edit Submission{% endblock %}
+
+{% block page_content %}
+
+	<div class="small-12 container submission_form">
+		<h3 class="page_title">Edit Submission</h3>
+		<p class="submission-text">
+			This page allows you to edit a software submission you've made to 
+			the HSSI website. Anything changes made to software can be
+			reflected by updating the fields here and submitting the form.
+		</p>
+		<div class="form-controls"> 
+			<h4> Submission Form </h4>
+			<div>
+				<!--button type="button" onclick="openAutofillDialogue()">
+					<i class="fa fa-magic"></i> Autofill fields
+				</button>
+				&nbsp;-->
+				<button type="button" onclick="clearGeneratedForm()">Clear Form</button>
+				&nbsp;
+				<button type="button" onclick="collapseGeneratedForm()">Collapse All</button>
+				&nbsp;
+				<button type="button" onclick="expandGeneratedForm()">Expand All</button>
+			</div>
+		</div>
+		{% include "forms/model_base.html" %}
+	</div>
+
+{% endblock %}

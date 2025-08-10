@@ -393,7 +393,7 @@ export class FormGenerator {
 		for(const key in data) {
 			const value = data[key as keyof typeof data];
 			const field = fields.find(f => f.name === key);
-			if(field) {
+			if(field && value) {
 				if (overwrite_values || !field.hasValidInput()) {
 					field.fillField(value);
 				}

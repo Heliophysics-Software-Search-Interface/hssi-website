@@ -44,4 +44,6 @@ def api_view(request: HttpRequest, uid: str) -> JsonResponse:
 		AccessLevel.from_user(request.user)
 	)
 
+	print(data)
+
 	return JsonResponse(data)

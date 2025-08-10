@@ -38,7 +38,7 @@ def get_model_structure(request: HttpRequest) -> JsonResponse:
 		# ModelStructure.create(SubmissionInfo).serialized(),
 		ModelStructure.create(SoftwareVersion).serialized(),
 		ModelStructure.create(Software).serialized(),
-		*list(registered_structures.values()),
+		*[x.serialized() for x in registered_structures.values()],
 	], "fieldMap": MODEL_FIELD_MAP }
 	return JsonResponse(structures)
 

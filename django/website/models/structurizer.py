@@ -25,7 +25,7 @@ FORM_CONFIG_ATTR = "form_config"
 registered_structures: dict[str, 'ModelStructure'] = {}
 
 def register_structure(*structure: 'ModelStructure'):
-	for struct in structure: registered_structures[struct.type_name] = struct.serialized()
+	for struct in structure: registered_structures[struct.type_name] = struct
 
 def form_config(field: models.Field, **kwargs) -> models.Field:
 	'''
@@ -229,7 +229,7 @@ class ModelStructure:
 						if isinstance(val, models.Model):
 							val = struct.serialize_model_object(val, recursive, access)
 						elif isinstance(val, BaseManager):
-							objects = val.all()
+							objects: list['HssiModel'] = val.all()
 							val = []
 							for obj in objects:
 								val.append(struct.serialize_model_object(obj, recursive, access))

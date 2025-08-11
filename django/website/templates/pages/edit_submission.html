@@ -16,8 +16,8 @@
 		<h3 class="page_title">Edit Submission</h3>
 		<p class="submission-text">
 			This page allows you to edit a software submission you've made to 
-			the HSSI website. Anything changes made to software can be
-			reflected by updating the fields here and submitting the form.
+			the HSSI website. Any changes made to software can be reflected 
+			here by updating the fields and resubmitting the form.
 		</p>
 		<div class="form-controls"> 
 			<h4> Submission Form </h4>
@@ -45,7 +45,7 @@
 		uid = new URLSearchParams(window.location.search).get("uid");
 		
 		// defined in /frontend/util.ts
-		const data = await getSoftwareData(uid);
+		const data = await getSoftwareFormData(uid);
 		
 		// defined in /frontend/forms/formGenerator.ts
 		fillForm(data, true);

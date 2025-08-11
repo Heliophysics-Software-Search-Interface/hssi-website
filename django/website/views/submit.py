@@ -106,16 +106,34 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	submitter_name: str = submitter_data.get(FIELD_SUBMITTERNAME)
 	submitter_lastname = submitter_name.split()[-1]
 	submitter_firstname = submitter_name.replace(submitter_lastname, '').strip()
+	submitter_email = submitter_data.get(FIELD_SUBMITTEREMAIL)
 
-	submitter_person = Person()
-	submitter_person.lastName = submitter_lastname
-	submitter_person.firstName = submitter_firstname
-	submitter_person.save()
+	submitter_found: Submitter = Submitter.objects.filter(email=submitter_email).first()
+	if submitter_found:
+		sub_person_found = Person.objects.filter(
+			firstName=submitter_found.person.firstName, 
+			lastName=submitter_found.person.lastName
+		)
+		success = False
+		for person in sub_person_found:
+			if person.pk == submitter_found.person.pk:
+				success = True
+				print(f"found existing submitter for {submitter_found.email}")
+				break
+		if not success: submitter_found = None
+	
+	submitter: Submitter = None
+	if not submitter_found:
+		submitter_person = Person()
+		submitter_person.lastName = submitter_lastname
+		submitter_person.firstName = submitter_firstname
+		submitter_person.save()
 
-	submitter = Submitter()
-	submitter.person = submitter_person
-	submitter.email = submitter_data.get(FIELD_SUBMITTEREMAIL)
-	submitter.save()
+		submitter = Submitter()
+		submitter.person = submitter_person
+		submitter.email = submitter_email
+		submitter.save()
+	else: submitter = submitter_found
 	
 	submission.submitter = submitter
 	submission.dateModified = date.today()
@@ -142,6 +160,12 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 				license_url = license_data.get(FIELD_LICENSEURI)
 				license = License.objects.filter(url=license_url).first()
 			if license: software.license = license
+			else:
+				license = License()
+				license.name = license_name
+				license.url = license_data.get(FIELD_LICENSEURI)
+				license.save()
+				software.license = license
 
 	## DEV STATUS
 
@@ -349,6 +373,16 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 				arc.save()
 				software.cpuArchitecture.add(arc)
 
+	## OPERATING SYSTEM
+
+	opsystems = data.get(FIELD_OPERATINGSYSTEM)
+	for opsys in opsystems:
+		try:
+			uid = UUID(opsys)
+			software.operatingSystem.add(OperatingSystem.objects.get(pk=uid))
+		except: print(f"invalid os entry '{opsys}'")
+		
+
 	## RELATED REGION
 
 	regions = data.get(FIELD_RELATEDREGION)
@@ -364,6 +398,22 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 				regn.name = region
 				regn.save()
 				software.relatedRegion.add(regn)
+
+	## RELATED PHENOMENA
+
+	phenoms = data.get(FIELD_RELATEDPHENOMENA)
+	for phenom in phenoms:
+		try:
+			uid = UUID(phenom)
+			software.relatedPhenomena.add(Phenomena.objects.get(pk=uid))
+		except:
+			phenomref = Phenomena.objects.filter(name=phenom).first()
+			if phenomref: software.relatedPhenomena.add(phenomref)
+			else:
+				phen = Phenomena()
+				phen.name = phenom
+				phen.save()
+				software.relatedPhenomena.add(phen)
 
 	## AWARDS
 	
@@ -393,7 +443,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 		try:
 			uid = UUID(funder_name)
 			fnref = Organization.objects.get(pk=uid)
-			software.funder.add(Organization.objects.get(pk=uid))
+			software.funder.add(fnref)
 		except Exception:
 			funder_ident = funder_data.get(FIELD_FUNDERIDENTIFIER)
 			funder_ref: Organization = None
@@ -497,7 +547,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 			if instr_ref: software.relatedInstruments.add(instr_ref)
 			else:
 				instr = InstrumentObservatory()
-				instr.name = "UNKNOWN"
+				instr.name = instr_name or "UNKNOWN"
 				instr.identifier = instr_ident
 				instr.type = InstrObsType.INSTRUMENT.value
 				instr.save()
@@ -520,7 +570,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 			if obs_ref: software.relatedInstruments.add(obs_ref)
 			else:
 				obs = InstrumentObservatory()
-				obs.name = "UNKNOWN"
+				obs.name = obs_name or "UNKNOWN"
 				obs.identifier = obs_ident
 				obs.type = InstrObsType.OBSERVATORY.value
 				obs.save()

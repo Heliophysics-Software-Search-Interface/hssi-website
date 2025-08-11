@@ -38,11 +38,26 @@ def api_view(request: HttpRequest, uid: str) -> JsonResponse:
 		software = Software.objects.get(pk=softwareid)
 	except: return HttpResponseBadRequest(f"invalid id '{uid}")
 
+	access = AccessLevel.from_user(request.user)
+
 	data = SUBMISSION_FORM_FIELDS.serialize_model_object(
 		software, 
 		True, 
-		AccessLevel.from_user(request.user)
+		access
 	)
+
+	try:
+		submitter_data = SUBMISSION_FORM_SUBMITTER.serialize_model_object(
+			software.submissionInfo.submitter, 
+			False,
+			access
+		)
+		submitter_data["id"] = software.submissionInfo.submitter.id
+		data[FIELD_SUBMITTERNAME] = submitter_data
+	except Exception as e:
+		print(e)
+
+	
 
 	print(data)
 

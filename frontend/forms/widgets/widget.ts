@@ -31,9 +31,7 @@ export type AnyInputElement = (
 
 export type WidgetType = new (elem: HTMLElement, field: ModelSubfield) => Widget;
 
-/**
- * Base class for all widgets
- */
+/** Base class for all widgets */
 export abstract class Widget {
 
 	private lastValue: string = "";

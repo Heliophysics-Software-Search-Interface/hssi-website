@@ -37,7 +37,7 @@ class Software(HssiModel):
 		blank=True, 
 		related_name='softwares'
 	)
-	publicationDate = models.DateField(null=True)
+	publicationDate = models.DateField(blank=True, null=True)
 	publisher = models.ForeignKey(
 		Organization,
 		on_delete=models.SET_NULL, 

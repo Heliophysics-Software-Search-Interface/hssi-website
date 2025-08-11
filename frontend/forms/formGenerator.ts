@@ -3,6 +3,9 @@ import {
 	RequirementLevel, ConfirmDialogue, fetchTimeout, labelStyle,
 	requiredIndicatorStyle, explanationTextStyle, Spinner,
 	type SubmissionFormData, type JSONValue, type JSONObject,
+	ModelMultiSubfield,
+	UrlWidget,
+	EmailWidget,
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -455,6 +458,33 @@ export class FormGenerator {
 	public static isAutofilledRepo(): boolean { 
 		return this.instance.autofilledFromRepo; 
 	}
+
+	public static debugAutofill(): void {
+		let iter = 0;
+		for(const outerField of this.instance.getRootFields()){
+			const fill: (f: ModelSubfield) => void = field => {
+				if(field instanceof ModelMultiSubfield){
+					field.clearMultifields();
+					fill(field.addNewMultifieldWithValue(""));
+					fill(field.addNewMultifieldWithValue(""));
+					return;
+				}
+				let testString = "test" + iter.toString()
+				if(field.widget instanceof UrlWidget) 
+					testString = "https://" + testString;
+				else if(field.widget instanceof EmailWidget) 
+					testString = `${testString}@${testString}.${testString}`;
+				field.setValue(testString);
+				setTimeout(() => {
+					field.requirement.applyRequirementWarningStyles();
+				});
+				iter += 1;
+				field.expandSubfields();
+				for(const sub of field.getSubfields()) fill(sub);
+			};
+			fill(outerField);
+		}
+	}
 }
 
 const win = window as any;
@@ -462,3 +492,4 @@ win.clearGeneratedForm = FormGenerator.clearFormConfirm.bind(FormGenerator);
 win.collapseGeneratedForm = FormGenerator.collapseFormFields.bind(FormGenerator);
 win.expandGeneratedForm = FormGenerator.expandFormFields.bind(FormGenerator);
 win.fillForm = FormGenerator.fillForm.bind(FormGenerator);
+win.debugAutofill = FormGenerator.debugAutofill.bind(FormGenerator);

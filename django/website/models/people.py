@@ -147,6 +147,10 @@ class Submitter(HssiModel):
 	# specified for intellisense, defined in other models
 	submission_infos: models.Manager['SubmissionInfo']
 
+	@property
+	def fullName(self) -> str:
+		return self.person.fullName
+
 	@staticmethod
 	def get_default_submitter() -> 'Submitter':
 		sub = Submitter.objects.filter(email="UNKNOWN").first()

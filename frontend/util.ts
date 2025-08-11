@@ -1,5 +1,5 @@
 export const softwareApiUrl = "/api/models/Software/rows/";
-export const modelApiUrl = "/api/models/"
+export const modelApiUrl = "/api/view/"
 export type JSONValue = string | number | boolean | null | JSONObject | JSONArray;
 export interface JSONObject { [key: string]: JSONValue }
 export interface JSONArray<T = JSONValue> extends Array<T> { }
@@ -119,9 +119,37 @@ export async function getSoftwareData(uid: string): Promise<JSONObject> {
 	console.log(`fetching software data at ${url}`);
 	const result = await fetchTimeout(url);
 	const data = await result.json();
+	return data;
+}
+
+/** 
+ * gets the software data from the proper database table and formats it to be 
+ * compatible with the { @see FormGenerator.fillForm } method
+ */
+export async function getSoftwareFormData(uid: string): Promise<JSONObject> {
+	const data = await getSoftwareData(uid);
+	if(!data.submitter){
+		const submitter: JSONObject = (
+			data.submissionInfo as JSONObject
+		)?.submitter as JSONObject;
+
+		// create a submitter object that matches the fill form data for the
+		// fill form function on the form generator, given the submission info
+		if(submitter) {
+			submitter.submitterName = (
+				(submitter.person as JSONObject)?.firstName as string + 
+				(submitter.person as JSONObject)?.lastName as string
+			);
+			let emails = JSON.parse((submitter.email as string).replaceAll("'", '"'));
+			if(!(emails instanceof Array)) emails = [emails];
+			submitter.submitterEmail = emails;
+			data.submitterName = submitter;
+		}
+	}
 	console.log("fetched software data: ", data);
 	return data;
 }
 
 const win = window as any;
 win.getSoftwareData = getSoftwareData;
+win.getSoftwareFormData = getSoftwareFormData;

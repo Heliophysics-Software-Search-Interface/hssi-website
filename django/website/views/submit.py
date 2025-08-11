@@ -108,7 +108,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	submitter_firstname = submitter_name.replace(submitter_lastname, '').strip()
 	submitter_email = submitter_data.get(FIELD_SUBMITTEREMAIL)
 
-	submitter_found: Submitter = Submitter.objects.filter(email=submitter_email)
+	submitter_found: Submitter = Submitter.objects.filter(email=submitter_email).first()
 	if submitter_found:
 		sub_person_found = Person.objects.filter(
 			firstName=submitter_found.person.firstName, 
@@ -116,7 +116,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 		)
 		success = False
 		for person in sub_person_found:
-			if person.pk == sub_person_found.pk:
+			if person.pk == submitter_found.person.pk:
 				success = True
 				print(f"found existing submitter for {submitter_found.email}")
 				break
@@ -443,7 +443,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 		try:
 			uid = UUID(funder_name)
 			fnref = Organization.objects.get(pk=uid)
-			software.funder.add(Organization.objects.get(pk=uid))
+			software.funder.add(fnref)
 		except Exception:
 			funder_ident = funder_data.get(FIELD_FUNDERIDENTIFIER)
 			funder_ref: Organization = None

@@ -857,6 +857,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_WIDGET_PROPS:{
 				WPROP_DROPDOWNBUTTON: True,
 				WPROP_TARGETMODEL: Phenomena.__name__,
+                WPROP_ALLOWNEWENTRIES: True,
 			}
 		},
 		multi=True,

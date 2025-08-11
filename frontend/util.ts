@@ -150,6 +150,16 @@ export async function getSoftwareFormData(uid: string): Promise<JSONObject> {
 	return data;
 }
 
+/** gets the api view json data of the specified software submission */
+export async function getSimpleSoftwareFormData(uid: string): Promise<JSONObject> {
+	const url = modelApiUrl + uid;
+	console.log(`fetching software data at ${url}`);
+	const result = await fetchTimeout(url);
+	const data = await result.json();
+	return data;
+}
+
 const win = window as any;
 win.getSoftwareData = getSoftwareData;
 win.getSoftwareFormData = getSoftwareFormData;
+win.getSimpleSoftwareFormData = getSimpleSoftwareFormData;

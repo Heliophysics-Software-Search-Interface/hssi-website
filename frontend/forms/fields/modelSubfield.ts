@@ -296,7 +296,7 @@ export class ModelSubfield {
 		}
 
 		// it's a non-recursive value (almost certainly a string)
-		else this.setValue(data.toString(), notify);
+		else this.setValue(data?.toString(), notify);
 	}
 
 	public meetsRequirementLevel(): boolean {

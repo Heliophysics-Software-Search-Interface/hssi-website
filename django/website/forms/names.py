@@ -107,6 +107,7 @@ ROW_AWARD_IDENTIFIER = "identifier"
 ROW_RELATEDITEM_TYPE = "type"
 ROW_SOFTWARE_VERSION = "version"
 ROW_SOFTWARE_CODEREPOSITORYURL = "codeRepositoryUrl"
+ROW_SOFTWARE_AWARDTITLE = "award"
 
 TTEXPL_PROGRAMMINGLANGUAGE = "The computer programming languages most important for the software."
 TTEXPL_PUBLICATIONDATE = "Date of first broadcast/publication. "

@@ -850,7 +850,8 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_RELATEDPHENOMENA,
 			PROP_TT_BEST: TTBEST_RELATEDPHENOMENA,
 			PROP_WIDGET_PROPS:{
-				WPROP_DROPDOWNBUTTON: True
+				WPROP_DROPDOWNBUTTON: True,
+				WPROP_TARGETMODEL: Phenomena.__name__,
 			}
 		},
 		multi=True,
@@ -916,7 +917,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	# Awards
 	ModelSubfield.define(
 		name=FIELD_AWARDTITLE,
-        row_name=ROW_AWARD_NAME,
+        row_name=ROW_SOFTWARE_AWARDTITLE,
 		type=SUBMISSION_FORM_AWARD.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={

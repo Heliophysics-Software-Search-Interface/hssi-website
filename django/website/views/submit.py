@@ -51,8 +51,9 @@ def submit_data(request: HttpRequest) -> HttpResponse:
 	# try handle json_data and save to database
 	print("recieved form data", json_data)
 	submisison_id = handle_submission_data(json_data)
+	software_id = SubmissionInfo.objects.get(pk=submisison_id).software.pk
 
-	return redirect(f"/submit/submitted?id={str(submisison_id)}")
+	return redirect(f"/submit/submitted?uid={str(software_id)}")
 
 def handle_submission_data(data: dict) -> uuid.UUID:
 	software = Software()
@@ -543,7 +544,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 		except Exception:
 			instr_ident = relinstr_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
 			instr_ref = None
-			if instr_ident: instr_ref = InstrumentObservatory.objects.filter(identifier=instr_ident)
+			if instr_ident: instr_ref = InstrumentObservatory.objects.filter(identifier=instr_ident).first()
 			if instr_ref: software.relatedInstruments.add(instr_ref)
 			else:
 				instr = InstrumentObservatory()

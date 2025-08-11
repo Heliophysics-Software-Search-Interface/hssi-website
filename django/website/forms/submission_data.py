@@ -279,6 +279,7 @@ SUBMISSION_FORM_VERSION: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Version Number",
 			PROP_TT_EXPL: TTEXPL_VERSIONNUMBER,
 			PROP_TT_BEST: TTBEST_VERSIONNUMBER,
+            PROP_TOPFIELD: "identifier",
 		},
 		multi=False,
 	),
@@ -332,6 +333,7 @@ SUBMISSION_FORM_PUBLICATION: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Reference Publication",
 			PROP_TT_EXPL: TTEXPL_REFERENCEPUBLICATION,
 			PROP_TT_BEST: TTBEST_REFERENCEPUBLICATION,
+            PROP_TOPFIELD: "identifier",
 		},
 		multi=False,
 	),
@@ -347,6 +349,7 @@ SUBMISSION_FORM_REL_SOFTWARE: ModelStructure = ModelStructure.define(
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Related Software",
+            PROP_TOPFIELD: "identifier",
 		},
 		multi=False,
 	),
@@ -423,6 +426,7 @@ SUBMISSION_FORM_DATASET: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Related Datasets",
 			PROP_TT_EXPL: TTEXPL_RELATEDDATASETS,
 			PROP_TT_BEST: TTBEST_RELATEDDATASETS,
+            PROP_TOPFIELD: "identifier",
 			PROP_WIDGET_PROPS: {
 				WPROP_ALLOWNEWENTRIES: True,
 			}
@@ -659,6 +663,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Version",
 			PROP_TT_EXPL: TTEXPL_VERSIONNUMBER,
 			PROP_TT_BEST: TTBEST_VERSIONNUMBER,
+            PROP_TOPFIELD: "number",
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: SoftwareVersion.__name__,
 				WPROP_ALLOWNEWENTRIES: True,
@@ -865,6 +870,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Reference Publication",
 			PROP_TT_EXPL: TTEXPL_REFERENCEPUBLICATION,
 			PROP_TT_BEST: TTBEST_REFERENCEPUBLICATION,
+            PROP_TOPFIELD: "identifier",
 		},
 		multi=False,
 	),
@@ -937,12 +943,13 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_RELATEDPUBLICATIONS,
         row_name=ROW_CONTROLLEDLIST_NAME,
-		type=TYPE_DATACITEDOI,
+		type=SUBMISSION_FORM_PUBLICATION.type_name,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Related Publications",
 			PROP_TT_EXPL: TTEXPL_RELATEDPUBLICATIONS,
 			PROP_TT_BEST: TTBEST_RELATEDPUBLICATIONS,
+            PROP_TOPFIELD: "identifier",
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: RelatedItem.__name__,
 				WPROP_ALLOWNEWENTRIES: True,
@@ -1044,6 +1051,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "Logo",
 			PROP_TT_EXPL: TTEXPL_LOGO,
 			PROP_TT_BEST: TTBEST_LOGO,
+            PROP_TOPFIELD: "url",
 		},
 		multi=False,
 	),

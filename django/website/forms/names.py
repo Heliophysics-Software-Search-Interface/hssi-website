@@ -4,6 +4,7 @@ PROP_LABEL = "label"
 PROP_TT_EXPL = "tooltipExplanation"
 PROP_TT_BEST = "tooltipBestPractise"
 PROP_WIDGET_PROPS = "widgetProperties"
+PROP_TOPFIELD = "topField"
 
 WPROP_MAXLENGTH = "maxLength"
 WPROP_TARGETMODEL = "targetModel"

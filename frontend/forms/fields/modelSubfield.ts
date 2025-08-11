@@ -272,13 +272,17 @@ export class ModelSubfield {
 				
 				// TODO this is kinda a bad fix and not refactor friendly.
 				// manually hardcoding edge cases is a code smell
-				let altName = null;
-				switch(this.name){
-					case "versionNumber": altName = "number"; break;
-				}
+				let altName = this.properties.topField;
+				// if(!altName) switch(this.name){
+				// 	case "versionNumber": altName = "number"; break;
+				// }
 
 				// check each field/subfield of this field and apply the data
-				if(this.name === key || this.rowName === key || altName === key) {
+				if(
+					(altName && altName === key) || 
+					this.name === key || 
+					this.rowName === key
+				) {
 					this.fillField(value, notify);
 					continue;
 				}

@@ -21,7 +21,6 @@ from ..util import *
 from ..constants import SaveType
 from ..models import *
 from ..views import migrate_db_old_to_new
-from .. import submissions
 from .csv_export import export_db_csv, import_db_csv, remove_all_model_entries
 from .fetch_vocab import (
 	DataListConcept, link_concept_children, get_data, get_concepts, MODEL_URL_MAP
@@ -477,53 +476,6 @@ class SubmissionResource(resources.ModelResource):
 	class Meta:
 		model = Submission
 
-def resend_receipt_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.submission_was_saved(submission, SaveType.SUBMIT)
-resend_receipt_email.short_description = "Send the submission receipt email again"
-
-def send_initial_recruitment_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.send_contact_email(submission, SaveType.FIRSTCONTACT)
-	# Updates all of the "first contact" submissions to "successfully contacted" and increments contact_count
-	queryset.update(status='CONTACTED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_initial_recruitment_email.short_description = "Send Initial Recruitment Email: 1st Contact"
-
-def send_followup_recruitment_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.send_contact_email(submission, SaveType.RECONTACT)
-	# Updates the contacted_date of the previously contacted submissions and increments contact_count
-	queryset.update(status='CONTACTED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_followup_recruitment_email.short_description = "Send Re-Contact Email: Previously Contacted Tools"
-
-def send_final_recruitment_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.send_contact_email(submission, SaveType.FINALCONTACT)
-	# Updates the contacted_date of the previously contacted submissions and increments contact_count
-	queryset.update(status='REJECTED_ABANDONED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_final_recruitment_email.short_description = "Send Final Recruitment Email: Previously Contacted Tools"
-
-def send_initial_inlit_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.send_contact_email(submission, SaveType.INITIALINLITCONTACT)
-	# Updates the contacted_date of the previously contacted submissions and increments contact_count
-	queryset.update(status='CONTACTED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_initial_inlit_email.short_description = "Send Initial Recruitment Email for In-Lit Resource: 1st Contact"
-
-def send_followup_inlit_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.send_contact_email(submission, SaveType.SECONDINLITCONTACT)
-	# Updates the contacted_date of the previously contacted submissions and increments contact_count
-	queryset.update(status='CONTACTED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_followup_inlit_email.short_description = "Send Followup Informational Email for In-Lit Resource: Previously Contacted Tools"
-
-def send_final_inlit_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.send_contact_email(submission, SaveType.FINALINLITCONTACT)
-	# Updates the contacted_date of the previously contacted submissions and increments contact_count
-	queryset.update(status='REJECTED_ABANDONED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_final_inlit_email.short_description = "Send Final Informational Email for In-Lit Resource: Previously Contacted Tools"
-
 API_KEY = "ADS_DEVLOPER_TOKEN" #settings.ADS_DEV_KEY
 def isInlit(submission):
 	# if 'adsabs.harvard.edu' in submission.ads_abstract_link:
@@ -544,47 +496,6 @@ def isInlit(submission):
 	#     if results.text[:8] == '@ARTICLE':
 	#         return True
 	return False
-
-def send_submission_contact_email(modeladmin, request, queryset):
-	for submission in queryset:
-		if submission.status == SubmissionStatus.FIRST_CONTACT:
-			if isInlit(submission):
-				submissions.send_contact_email(submission, SaveType.INITIALINLITCONTACT)
-			else:
-				submissions.send_contact_email(submission, SaveType.FIRSTCONTACT)
-			# Updates the contacted_date of the contacted submissions and increments contact_count
-			submission.status = SubmissionStatus.CONTACTED
-			submission.contact_count += 1
-			submission.date_contacted = timezone.now()
-			submission.save()
-		elif submission.status == SubmissionStatus.CONTACTED:
-			if isInlit(submission):
-				if submission.contact_count == 1:
-					submissions.send_contact_email(submission, SaveType.SECONDINLITCONTACT)
-					submission:Submission
-					submission.make_in_lit_resource()
-					submission.status = SubmissionStatus.IN_LITERATURE
-				else:
-					submissions.send_contact_email(submission, SaveType.FINALINLITCONTACT)
-					submission:Submission
-					submission.make_in_lit_resource()
-					submission.status = SubmissionStatus.IN_LITERATURE
-			else:
-				if submission.contact_count == 1:
-					submissions.send_contact_email(submission, SaveType.RECONTACT)
-				else:
-					submissions.send_contact_email(submission, SaveType.FINALCONTACT)
-					submission.status = SubmissionStatus.REJECTED_ABANDONED
-					submission.status_notes = "Rejected by the drop-down Contact action. The resource is not in the literature and the developer has been contacted at least 3 times.\n" + submission.status_notes
-			submission.contact_count += 1
-			submission.date_contacted = timezone.now()
-			submission.save()
-		elif submission.status == SubmissionStatus.IN_LITERATURE and submission.contact_count == 2:
-			submissions.send_contact_email(submission, SaveType.FINALINLITCONTACT)
-			submission.contact_count += 1
-			submission.date_contacted = timezone.now()
-			submission.save()
-send_submission_contact_email.short_description = "Send Contact Emails for the Selected Submissions"
 
 def mark_missing_info(modeladmin, request, queryset):
 	queryset.update(status = SubmissionStatus.MISSING_INFO)
@@ -677,7 +588,7 @@ class SubmissionAdmin(ImportExportModelAdmin):
 	search_fields = ['search_keywords', 'name']
 
 	actions = [
-		fill_forms_from_repo_url, update_times_from_repo_url, send_submission_contact_email, resend_receipt_email, mark_missing_info,
+		fill_forms_from_repo_url, update_times_from_repo_url, mark_missing_info,
 		mark_ready_for_first_contact, mark_contacted, mark_paused, mark_received, mark_in_review, mark_accepted, make_resource,
 		mark_under_development,make_in_lit_resource, mark_rejected_abandoned, mark_spam, update_resource
 	]

@@ -36,7 +36,6 @@ from ..models import (
 )
 # from ..admin import isInlit
 from ..constants import SaveType
-from .. import submissions
 
 
 def keywords_match_all_tokens(resources, tokens):
@@ -400,124 +399,6 @@ def published_resources(request):
 		response = render(request, 'website/published_resources.html', context)
 
 	return response
-
-
-def contact_all(request):
-	"""
-	Run a mass contact.
-	Contacts all submissions that haven't been contacted in 3 months. 
-	"""
-	class Contact_all_thread(Thread):
-		def run(self):
-			err_msg = ''
-			first_in_lit_counter = ""
-			first_non_in_lit_counter = ""
-			new_in_lit_counter = ""
-			second_non_in_lit_counter = ""
-			final_in_lit_counter = ""
-			final_non_in_lit_counter = ""
-			total_contacts = 0
-			submissionList = Submission.objects.all()
-			for submission in submissionList:
-				try:
-					if submission.status == SubmissionStatus.FIRST_CONTACT:
-						if False: #isInlit(submission):
-							submissions.send_contact_email(submission, SaveType.INITIALINLITCONTACT)
-							first_in_lit_counter += f"   - {submission.name}\n"
-						else:
-							submissions.send_contact_email(submission, SaveType.FIRSTCONTACT)
-							first_non_in_lit_counter += f"   - {submission.name}\n" 
-						# Updates the contacted_date of the contacted submissions and increments contact_count
-						submission.status = SubmissionStatus.CONTACTED
-						submission.contact_count += 1
-						submission.date_contacted = timezone.now()
-						submission.save()
-						total_contacts += 1
-					elif (submission.status == SubmissionStatus.CONTACTED) and (date_package.today() - submission.date_contacted > timedelta(days=89)):
-						if False: #isInlit(submission):
-							if submission.contact_count == 1:
-								submissions.send_contact_email(submission, SaveType.SECONDINLITCONTACT)
-								submission:Submission
-								submission.make_in_lit_resource()
-								submission.status = SubmissionStatus.IN_LITERATURE
-								new_in_lit_counter += f"   - {submission.name}\n"
-							else:
-								submissions.send_contact_email(submission, SaveType.FINALINLITCONTACT)
-								submission:Submission
-								submission.make_in_lit_resource()
-								submission.status = SubmissionStatus.IN_LITERATURE
-								new_in_lit_counter += f"   - {submission.name}\n"
-						else:
-							if submission.contact_count == 1:
-								submissions.send_contact_email(submission, SaveType.RECONTACT)
-								second_non_in_lit_counter += f"   - {submission.name}\n"
-							else:
-								submissions.send_contact_email(submission, SaveType.FINALCONTACT)
-								submission.status = SubmissionStatus.REJECTED_ABANDONED
-								submission.status_notes = "Rejected by the monthly Mass Contact. The resource is not in the literature and the developer has been contacted at least 3 times.\n" + submission.status_notes
-								final_non_in_lit_counter += f"   - {submission.name}\n"
-						submission.contact_count += 1
-						submission.date_contacted = timezone.now()
-						submission.save()
-						total_contacts += 1
-					elif (submission.status == SubmissionStatus.IN_LITERATURE and submission.contact_count == 2) and (date_package.today() - submission.date_contacted > timedelta(days=89)):
-						submissions.send_contact_email(submission, SaveType.FINALINLITCONTACT)
-						submission.contact_count += 1
-						submission.date_contacted = timezone.now()
-						submission.save()
-						final_in_lit_counter += f"   - {submission.name}\n"
-						total_contacts += 1
-				except Exception as err:
-					msg = f'Contact failed for Resource {submission.name}\n'
-					msg += f'Email Used: {submission.submitter_contact}\n'
-					msg += ''.join(traceback.TracebackException.from_exception(err).format()) + '\n'
-					print(msg)
-					err_msg+= msg+'\n'
-
-			print("Mass contact done")
-			body = f"Number of submissions contacted: {total_contacts} \n \n \n"
-			if first_in_lit_counter + first_non_in_lit_counter:
-				body += f"First contacts sent to: \n {first_in_lit_counter + first_non_in_lit_counter} \n"
-			if second_non_in_lit_counter:
-				body += f"Followup contacts sent to: \n {second_non_in_lit_counter} \n"
-			if new_in_lit_counter:
-				body += f"New In-Lit Resources created: \n {new_in_lit_counter} \n"
-			if final_non_in_lit_counter:
-				body += f"Submissions marked as Rejected/Abandoned: \n {final_non_in_lit_counter} \n"
-			if final_in_lit_counter:
-				body += f"Final followups sent for the In-Lit Resources: \n {final_in_lit_counter} \n"
-			if err_msg != '':
-				print("Error in mass contact")
-				message = EmailMessage(
-					subject="HSSI submission mass contact",
-					body=f"There was an error with the mass contact!\n{err_msg} \n" + body,
-					to=["admin@my-site.com"],
-				)
-				try:
-					message.send(fail_silently=False)
-				except:
-					print("Mass contact failed and email failed to send")
-				else:
-					print("Mass contact failed and email sent")
-			else:
-				print("Mass contact successful")
-				message = EmailMessage(
-					subject="HSSI submission mass contact",
-					body= "Mass submission contact was done successfully! \n" + body,
-					to=["admin@my-site.com"],
-				)
-				try:
-					message.send(fail_silently=False)
-				except:
-					print("Mass contact failed and email failed to send")
-				else:
-					print("Mass contact failed and email sent")
-
-	Contact_all_thread().start()
-	
-	return redirect('/')
-
-
 
 def FAQ(request):
 	published_resources = Resource.objects.filter(is_published=True)

@@ -1,12 +1,11 @@
 from django.urls import path
 
-from . import submissions, views
+from . import views
 
 app_name = 'website' # Defines app url namespace
 urlpatterns = [
 	path('', views.published_resources, name="published_resources"),
 	path('api', views.api_view, name="rest_api"),
-	path('Contact_all/', views.contact_all, name='Contact_all'),
 	path('FAQ/', views.FAQ, name="FAQ"),
 	path('news/', views.NewsView.as_view(), name='news'),
 	path('news/rss/', views.NewsFeed()),

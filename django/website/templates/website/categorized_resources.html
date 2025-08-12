@@ -92,7 +92,7 @@
 								<div class="filter-menus">
 								<div class="filter-section-body open">
 									<div class="filter_table" id="category-menu-mobile">
-										<script>makeFilterMenuElement();</script>
+										<script>makeFilterMenuElement(true);</script>
 										{% comment %}
 										{% include "website/filter_menu.html" 
 										with 
@@ -131,7 +131,7 @@
 						<div class="filter-menus">
 							<div class="filter-section-body open">
 								<div class="filter_table" id="category-menu-main">
-									<script>makeFilterMenuElement();</script>
+									<script>makeFilterMenuElement(false);</script>
 									{% comment %}
 									{% include "website/filter_menu.html" 
 									with 

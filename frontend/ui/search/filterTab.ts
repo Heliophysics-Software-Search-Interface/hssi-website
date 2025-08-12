@@ -68,13 +68,13 @@ const styleCategoryName = "category_name";
 const styleSubFilter = "sub_filter";
 const styleSubcategoryName = "subcategory_name";
 
-export class FilterMenu {
+export class FilterTab {
 
 	public containerElement: HTMLDivElement = null;
 	public itemContainerElement: HTMLUListElement = null;
 	public targetModel: string = "";
-	public rootItems: FilterMenuItem[] = [];
-	public selectedItems: FilterMenuItem[] = [];
+	public rootItems: FilterItem[] = [];
+	public selectedItems: FilterItem[] = [];
 	protected isDropdown: boolean = false;
 	protected modelData: JSONArray = [];
 
@@ -103,8 +103,8 @@ export class FilterMenu {
 
 	protected itemDataValid(itemData: JSONValue): boolean { return true; }
 
-	protected createItem(itemData: JSONValue): FilterMenuItem {
-		return new FilterMenuItem(this, itemData);
+	protected createItem(itemData: JSONValue): FilterItem {
+		return new FilterItem(this, itemData);
 	}
 
 	public refreshItems(): void {
@@ -143,7 +143,7 @@ export class FilterMenu {
 	}
 }
 
-class CategoryFilterMenu extends FilterMenu{
+class CategoryFilterTab extends FilterTab{
 
 	public get categories(): CategoryItem[] { return this.rootItems as CategoryItem[]; }
 	public get categoryData(): JSONArray<JSONObject> { 
@@ -161,7 +161,7 @@ class CategoryFilterMenu extends FilterMenu{
 		return true;
 	}
 
-	protected override createItem(itemData: JSONValue): FilterMenuItem {
+	protected override createItem(itemData: JSONValue): FilterItem {
 		const category = new CategoryItem(this, itemData);
 		const data = itemData as JSONObject;
 
@@ -180,18 +180,18 @@ class CategoryFilterMenu extends FilterMenu{
 	}
 }
 
-export class FilterMenuItem {
+export class FilterItem {
 
-	protected parentMenu: FilterMenu = null;
+	protected parentMenu: FilterTab = null;
 	public containerElement: HTMLLIElement = null;
 	public labelElement: HTMLElement = null;
 	public subContainerElement: HTMLUListElement = null;
-	public subItems: FilterMenuItem[] = [];
+	public subItems: FilterItem[] = [];
 	protected data: JSONValue = null;
 
 	public get label(): string { return this.data.toString(); }
 
-	public constructor(parent: FilterMenu, data: JSONValue) {
+	public constructor(parent: FilterTab, data: JSONValue) {
 		this.parentMenu = parent;
 		this.containerElement = document.createElement("li");
 		this.containerElement.classList.add(styleFilterMenu);
@@ -241,7 +241,7 @@ export class FilterMenuItem {
 		}
 	}
 
-	public buildChildItem(child: FilterMenuItem){
+	public buildChildItem(child: FilterItem){
 
 		// clear all child's internal html elements
 		while(child.containerElement.childNodes.length > 0){
@@ -277,7 +277,7 @@ export class FilterMenuItem {
 	}
 }
 
-class ControlledListItem extends FilterMenuItem {
+class ControlledListItem extends FilterItem {
 	public get objectData(): JSONObject { return this.data as JSONObject; }
 	public get id(): string { return this.objectData.id as any; }
 	public get name(): string { return this.objectData.name as any; }
@@ -331,7 +331,7 @@ class CategoryItem extends GraphListItem {
 }
 
 export function makeFilterMenuElement(dropdown: boolean): void {
-	const categoriesMenu = new CategoryFilterMenu(dropdown);
+	const categoriesMenu = new CategoryFilterTab(dropdown);
 	const scriptElement = document.currentScript;
 	categoriesMenu.onReady.addListener(() => {
 		scriptElement.parentNode.appendChild(categoriesMenu.containerElement);

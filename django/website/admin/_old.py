@@ -53,8 +53,6 @@ class HssiAdminSite(admin.AdminSite):
 		# final pattern in release builds shouldn't cause any issues.. hopefully
 		urls_base = super().get_urls()
 		urls = urls_base[:-1] + [
-			path('export_db/', view_export_db, name='export_db'),
-			path('import_db/', view_import_db, name='import_db'),
 			path('export_db_new/', view_export_db_new, name='export_db_new'),
 			path('import_db_new/', view_import_db_new, name='import_db_new'),
 			path('get_metadata/', view_get_metadata, name='get_metadata'),
@@ -64,45 +62,6 @@ class HssiAdminSite(admin.AdminSite):
 		return urls
 
 ## HSSI Admin Views
-def import_db_csvs():
-	call_command('import_website_database')
-
-def view_export_db(request: HttpRequest) -> HttpResponse:
-	"""
-	Export the database to csv files if requested by super user
-
-	Parameters
-	----------
-	request : HttpRequest
-		the request object sent from web browser
-	"""
-
-	# only allow post requests from super user to export the database
-	if request.method == 'POST' and request.user.is_superuser:
-		print("Exporting database to csv files..")
-		export_database()
-	
-	# redirect to admin page
-	return redirect('admin:index')
-
-def view_import_db(request: HttpRequest) -> HttpResponse:
-	"""
-	Reimport the database from the csv files if requested by super user
-
-	Parameters
-	----------
-	request : HttpRequest
-		the request object sent from web browser
-	"""
-
-	# only allow post requests from super user to reimport the database
-	if request.method == 'POST' and request.user.is_superuser:
-
-		print("Reimporting database from csv files..")
-		import_db_csvs()
-	
-	# redirect to admin page
-	return redirect('admin:index')
 
 def view_get_metadata(request: HttpRequest) -> HttpResponse:
 	

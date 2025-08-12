@@ -35,7 +35,6 @@ from ..models import (
 	FunctionCategory
 )
 # from ..admin import isInlit
-from ..constants import SaveType
 
 
 def keywords_match_all_tokens(resources, tokens):

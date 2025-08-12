@@ -18,7 +18,6 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 from ..util import * 
-from ..constants import SaveType
 from ..models import *
 from ..views import migrate_db_old_to_new
 from .csv_export import export_db_csv, import_db_csv, remove_all_model_entries

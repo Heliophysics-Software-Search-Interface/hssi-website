@@ -12,15 +12,29 @@ const styleCategoryName = "category_name";
 const styleSubFilter = "sub_filter";
 const styleSubcategoryName = "subcategory_name";
 
+/**
+ * represents a selectable item in a filter menu tab, also incorpoerates 
+ * shallow single level graph depth for root items and child items which are
+ * both selectable and distinct
+ */
 export class FilterItem {
 
 	protected parentMenu: FilterTab = null;
-	public containerElement: HTMLLIElement = null;
-	public labelElement: HTMLElement = null;
-	public subContainerElement: HTMLUListElement = null;
-	public subItems: FilterItem[] = [];
 	protected data: JSONValue = null;
 
+	/** html element that contains all other elements of the item */
+	public containerElement: HTMLLIElement = null;
+
+	/** element that holds the display text */
+	public labelElement: HTMLElement = null;
+
+	/** element that contains child items */
+	public subContainerElement: HTMLUListElement = null;
+
+	/** list of items that are children of this element */
+	public subItems: FilterItem[] = [];
+
+	/** the label text that the item displays as in the label element */
 	public get label(): string { return this.data.toString(); }
 
 	public constructor(parent: FilterTab, data: JSONValue) {
@@ -30,6 +44,7 @@ export class FilterItem {
 		this.data = data;
 	}
 
+	/** creates all display html elements for the list item */
 	public build(): void {
 
 		// clear html elements
@@ -73,6 +88,7 @@ export class FilterItem {
 		}
 	}
 
+	/** creates all elements that represent an item who is a child of this */
 	public buildChildItem(child: FilterItem){
 
 		// clear all child's internal html elements
@@ -102,6 +118,7 @@ export class FilterItem {
 		child.containerElement.appendChild(child.labelElement);
 	}
 
+	/** remove the item's html elements from the DOM and destroy children */
 	public destroy(): void {
 		for(const sub of this.subItems) sub.destroy();
 		this.subItems.length = 0;

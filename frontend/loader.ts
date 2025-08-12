@@ -8,6 +8,7 @@
 export * from "./util";
 export * from "./simpleEvent";
 
+export * from "./ui/search/filterMenu";
 export * from "./ui/jsonView";
 export * from "./ui/spinner";
 export * from "./ui/popupDialogue";

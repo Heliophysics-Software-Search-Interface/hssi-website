@@ -92,13 +92,16 @@
 								<div class="filter-menus">
 								<div class="filter-section-body open">
 									<div class="filter_table" id="category-menu-mobile">
+										<script>makeFilterMenuElement();</script>
+										{% comment %}
 										{% include "website/filter_menu.html" 
-											with 
-											is_dropdown="True" 
-											tags=function_categories 
-											selected_filter_ids=selected_category_ids 
-											filter_type="category" 
+										with 
+										is_dropdown="True" 
+										tags=function_categories 
+										selected_filter_ids=selected_category_ids 
+										filter_type="category" 
 										%}
+										{% endcomment %}
 									</div>
 								</div>
 							</div>
@@ -128,12 +131,15 @@
 						<div class="filter-menus">
 							<div class="filter-section-body open">
 								<div class="filter_table" id="category-menu-main">
+									<script>makeFilterMenuElement();</script>
+									{% comment %}
 									{% include "website/filter_menu.html" 
-										with 
-										tags=function_categories 
-										selected_filter_ids=selected_category_ids 
-										filter_type="category" 
+									with 
+									tags=function_categories 
+									selected_filter_ids=selected_category_ids 
+									filter_type="category" 
 									%}
+									{% endcomment %}
 								</div>
 							</div>
 						</div>

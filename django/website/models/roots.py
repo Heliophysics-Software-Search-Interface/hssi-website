@@ -261,6 +261,23 @@ class ControlledGraphList(ControlledList):
 	def get_parent_nodes(cls) -> models.QuerySet['ControlledGraphList']:
 		''' Returns all objects that have at least one child '''
 		return cls.objects.filter(children__isnull=False).distinct()
+	
+	def get_serialized_data(self, access, recursive = False) -> dict[str, Any]:
+		data = super().get_serialized_data(access, recursive)
+
+		if not hasattr(data, "children"): 
+			children: list[uuid.UUID] = []
+			for child in self.children.all():
+				children.append(child.id)
+			data["children"] = children
+			
+		if not hasattr(data, "parent_nodes"): 
+			parents: list[uuid.UUID] = []
+			for parent in self.parent_nodes.all():
+				parents.append(parent.id)
+			data["parents"] = parents
+			
+		return data
 
 	class Meta:
 		ordering = ['name']

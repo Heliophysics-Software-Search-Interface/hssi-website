@@ -7,6 +7,33 @@ from ..util import *
 from ..models import *
 from ..forms.submission_data import *
 
+def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
+	"""
+	serializes (non-recursively) all objects in a specified model into json and 
+	responds to the client with the result
+	"""
+	app_label = Software._meta.app_label
+	model = django.apps.apps.get_model(app_label, model_name)
+	if not (model and issubclass(model, HssiModel)):
+		return HttpResponseBadRequest(f"Model '{model_name}' is invalid")
+	
+	access = AccessLevel.from_user(request.user)
+	if access < model.access:
+		raise Exception(f"Unauthorized access, {access} < {model.access}")
+		
+	objects = model.objects.all()
+	arr: list[dict[str, Any]] = []
+
+	for object in objects:
+		try:
+			objdata = object.get_serialized_data(access, False)
+			arr.append(objdata)
+		except Exception as e:
+			print(e)
+			continue
+	
+	return JsonResponse({"data": arr})
+
 def get_model_row(request: HttpRequest, model_name: str, uid: str) -> JsonResponse:
 	""" 
 	serialize and get json response for a django instance with the specified 

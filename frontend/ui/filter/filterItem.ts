@@ -3,6 +3,9 @@ import {
 	type JSONArray, type JSONObject, type JSONValue,
 } from "../../loader";
 
+
+const textCollapse = "▲";
+const textExpand = "▼";
 const styleFilterMenu = "filter_menu";
 const styleFilterDropdown = "filter_dropdown";
 const styleFilterLabel = "filter_label";
@@ -21,6 +24,7 @@ export class FilterItem {
 
 	protected parentMenu: FilterTab = null;
 	protected data: JSONValue = null;
+	private expandButton: HTMLButtonElement = null;
 
 	/** html element that contains all other elements of the item */
 	public containerElement: HTMLLIElement = null;
@@ -34,8 +38,16 @@ export class FilterItem {
 	/** list of items that are children of this element */
 	public subItems: FilterItem[] = [];
 
+	/** triggered when the item has children and is expanded to show them */
+	public onExpand: SimpleEvent = new SimpleEvent();
+
 	/** the label text that the item displays as in the label element */
 	public get label(): string { return this.data.toString(); }
+
+	/** whether or not the subitems are expanded and visible */
+	public get isExpanded(): boolean { 
+		return (this.subContainerElement?.style?.display ?? "none") != "none"; 
+	}
 
 	public constructor(parent: FilterTab, data: JSONValue) {
 		this.parentMenu = parent;
@@ -78,8 +90,19 @@ export class FilterItem {
 		labelName.innerText = this.label;
 		labelDiv.appendChild(labelName);
 				
-		this.subContainerElement = document.createElement('ul');
+		this.subContainerElement = document.createElement("ul");
 		this.containerElement.appendChild(this.subContainerElement);
+
+		// build dropdown button only if there are subitems
+		if (this.subItems.length > 0) {
+			this.expandButton = document.createElement("button");
+			this.expandButton.type = "button";
+			labelDiv.appendChild(this.expandButton);
+			this.expandButton.addEventListener("click", e => {
+				this.setSubitemsExpanded(!this.isExpanded);
+			});
+			this.setSubitemsExpanded(false);
+		}
 
 		// build subItem children html elements
 		for(const child of this.subItems) {
@@ -123,6 +146,13 @@ export class FilterItem {
 		for(const sub of this.subItems) sub.destroy();
 		this.subItems.length = 0;
 		this.containerElement.remove();
+	}
+
+	public setSubitemsExpanded(expand: boolean): void {
+		if(this.isExpanded === expand) return;
+		const text = expand ? textCollapse : textExpand;
+		this.expandButton.innerText = text;
+		this.subContainerElement.style.display = expand ? "block" : "none";
 	}
 }
 

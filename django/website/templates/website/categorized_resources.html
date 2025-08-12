@@ -46,9 +46,20 @@
 			<div class="search_form_div">
 				<div class="search_form">
 					<div class="search-container">
-						<input type="search" id="searchbar" name="q" class="search-form" value="{{request.GET.q}}" placeholder="Search">
+						<input 
+							type="search" 
+							id="searchbar" 
+							name="q" 
+							class="search-form" 
+							value="{{request.GET.q}}" 
+							placeholder="Search"
+						>
 						<button type="button" class="search-button">
-							<img class="search-img" src="{% static 'images/blue-glass.jpg' %}" alt="search-glass" />
+							<img 
+								class="search-img" 
+								src="{% static 'images/blue-glass.jpg' %}" 
+								alt="search-glass" 
+							/>
 						</button>
 					</div> 
 				</div>
@@ -64,7 +75,11 @@
 							<div class="mobile-filter-toggle">
 								<span>Filters</span>
 								<span class="category-t"></span>
-								<input class="hollow button alert reset" type="button" value="Reset" />
+								<input 
+									class="hollow button alert reset" 
+									type="button" 
+									value="Reset" 
+								/>
 								
 							</div>
 							<div class="mobile-menu-container">
@@ -77,7 +92,13 @@
 								<div class="filter-menus">
 								<div class="filter-section-body open">
 									<div class="filter_table" id="category-menu-mobile">
-										{% include "website/filter_menu.html" with is_dropdown="True" tags=function_categories selected_filter_ids=selected_category_ids filter_type="category" %}
+										{% include "website/filter_menu.html" 
+											with 
+											is_dropdown="True" 
+											tags=function_categories 
+											selected_filter_ids=selected_category_ids 
+											filter_type="category" 
+										%}
 									</div>
 								</div>
 							</div>
@@ -93,7 +114,11 @@
 						<div class="filter_table_header">
 							<div class="main-filter-label">Filters</div>
 							<div class="filter-chip-container"></div>
-							<input class="hollow button alert reset" type="button" value="Reset" />
+							<input 
+								class="hollow button alert reset" 
+								type="button" 
+								value="Reset" 
+							/>
 						</div>
 						<div class="filter-tab-container">
 							<div class="filter-tab open">Categories</div>
@@ -103,7 +128,12 @@
 						<div class="filter-menus">
 							<div class="filter-section-body open">
 								<div class="filter_table" id="category-menu-main">
-									{% include "website/filter_menu.html" with tags=function_categories selected_filter_ids=selected_category_ids filter_type="category" %}
+									{% include "website/filter_menu.html" 
+										with 
+										tags=function_categories 
+										selected_filter_ids=selected_category_ids 
+										filter_type="category" 
+									%}
 								</div>
 							</div>
 						</div>
@@ -124,8 +154,19 @@
 				<div id="result-count"></div>
 				<div id="sort_menu">
 					<!-- default to sort by date -->
-					<input id="sort_by_date" type="button" class="button sort-button active-sort" value="Sort by Date" selected="selected" />
-					<input id="sort_by_name" type="button" class="button sort-button" value="Sort by Name" />
+					<input 
+						id="sort_by_date" 
+						type="button" 
+						class="button sort-button active-sort" 
+						value="Sort by Date" 
+						selected="selected" 
+					/>
+					<input 
+						id="sort_by_name" 
+						type="button" 
+						class="button sort-button" 
+						value="Sort by Name" 
+					/>
 				</div>
 			</div>
 			<!-- RESOURCE CONTENT -->

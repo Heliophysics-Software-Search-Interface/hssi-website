@@ -10,15 +10,23 @@
 		<a class="filter_dropdown"> 
 			<div class="filter_label">
 				<label 
-				class="label {{tag.abbreviation}}" 
-				style="background-color: {{tag.backgroundColor}}; color: {{tag.textColor}}">
+					class="label {{tag.abbreviation}}" 
+					style="background-color: {{tag.backgroundColor}}; color: {{tag.textColor}}"
+				>
 					<input class="label {{tag.abbreviation}} parent_filter" 
-					type="checkbox" name="{{filter_type}}_checkbox" 
-					value="{{tag.id}}" id="{{tag.id}}"
-					{% if tag.id in selected_filter_ids %} checked {% endif %} >
+						type="checkbox" name="{{filter_type}}_checkbox" 
+						value="{{tag.id}}" id="{{tag.id}}"
+						{% if tag.id in selected_filter_ids %} checked {% endif %} 
+					>
 						{{tag.abbreviation}}
 				</label>
-				<label for="{{tag.id}}" class="category_name {{tag.abbreviation}}" parent-abbr="{{tag.abbreviation}}">{{tag.name}}</label> 
+				<label 
+					for="{{tag.id}}" 
+					class="category_name {{tag.abbreviation}}" 
+					parent-abbr="{{tag.abbreviation}}"
+				>
+					{{tag.name}}
+				</label> 
 			</div>
 		</a>
 		<ul>
@@ -26,9 +34,10 @@
 			<li style="list-style: none;">
 				<div style="display: flex; align-items: center; white-space: nowrap; overflow: hidden;"></div>
 				<input class="label sub_filter" type="checkbox" 
-				name="{{filter_type}}_checkbox" value="{{subtag.id}}" 
-				id="{{tag.id}}_{{subtag.id}}"
-				{% if subtag.id in selected_subfilter_ids %} checked {% endif %} >
+					name="{{filter_type}}_checkbox" value="{{subtag.id}}" 
+					id="{{tag.id}}_{{subtag.id}}"
+					{% if subtag.id in selected_subfilter_ids %} checked {% endif %} 
+				>
 				<label class="subcategory_name" for="{{tag.id}}_{{subtag.id}}"> 
 					{{ subtag.name }} 
 				</label>

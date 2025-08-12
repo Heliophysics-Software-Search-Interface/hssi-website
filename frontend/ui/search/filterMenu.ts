@@ -230,21 +230,7 @@ export class FilterMenuItem {
 		labelName.classList.add(styleCategoryName);
 		labelName.innerText = this.label;
 		labelDiv.appendChild(labelName);
-		
-		// add information regarding ids and abbreviations here so we don't 
-		// need to override in subclass
-		if (this.data instanceof Object){
-			if((this.data as any).id){
-				checkbox.value = (this.data as any).id;
-				checkbox.id = (this.data as any).id;
-			}
-			if((this.data as any).abbreviation){
-				labelName.setAttribute("parent-abbr", (this.data as any).abbreviation);
-				checkbox.classList.add((this.data as any).abbreviation);
-				labelAbbr.append((this.data as any).abbreviation);
-			}
-		}
-		
+				
 		this.subContainerElement = document.createElement('ul');
 		this.containerElement.appendChild(this.subContainerElement);
 
@@ -295,6 +281,7 @@ class ControlledListItem extends FilterMenuItem {
 	public get objectData(): JSONObject { return this.data as JSONObject; }
 	public get id(): string { return this.objectData.id as any; }
 	public get name(): string { return this.objectData.name as any; }
+	public get abbreviation(): string { return this.objectData.abbreviation as any; }
 	public get identifier(): string { return this.objectData.identifier as any; }
 }
 
@@ -312,6 +299,35 @@ class CategoryItem extends GraphListItem {
 	public get textColor(): string { return this.objectData.textColor as any; }
 	public get children(): CategoryItem[] { return this.subItems as any; }
 	public get label(): string { return this.objectData.name as any; }
+
+	public build(): void {
+		super.build();
+
+		// add information regarding ids and abbreviations here so we don't 
+		// need to override in subclass
+		if (this.data instanceof Object){
+			const checkbox = 
+				this.containerElement
+				.querySelector(`label input.${styleLabel}`) as HTMLInputElement;
+			const labelName = 
+				this.containerElement
+				.querySelector(`label.${styleCategoryName}`);
+			const labelAbbr = 
+				this.containerElement
+				.querySelector(`label.${styleLabel}`) as HTMLLabelElement;
+			
+			checkbox.value = this.id;
+			checkbox.id = this.id;
+			checkbox.classList.add(this.abbreviation);
+			labelAbbr.classList.add(this.abbreviation);
+			labelAbbr.append(this.abbreviation);
+			labelAbbr.style.backgroundColor = this.bgColor;
+			labelAbbr.style.color = this.textColor;
+			labelName.setAttribute("for", this.id);
+			labelName.setAttribute("parent-abbr", this.abbreviation);
+			labelName.classList.add(this.abbreviation);
+		}
+	}
 }
 
 export function makeFilterMenuElement(dropdown: boolean): void {

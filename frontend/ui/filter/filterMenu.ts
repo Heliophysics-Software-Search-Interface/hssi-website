@@ -2,7 +2,8 @@ import {
 	FilterTab, CategoryFilterTab,
 } from "../../loader";
 
-const styleFilterTable = "filter_table";
+const styleFilterMenu = "filterMenu";
+const styleSelected = "selected";
 
 export class FilterMenu {
 
@@ -10,16 +11,17 @@ export class FilterMenu {
 	public containerElement: HTMLDivElement = null;
 	public tabHeadersElement: HTMLDivElement = null;
 	public tabContentsElement: HTMLDivElement = null;
+	private curTab: FilterTab = null;
 
 	/** all filter tabs that are selectable in the menu */
 	public tabs: FilterTab[] = [];
 
 	/** the tab that is currently selected by the user */
-	public get currentTab(): FilterTab { return this.tabs[0]; }
+	public get currentTab(): FilterTab { return this.curTab; }
 
 	public constructor() {
 		this.containerElement = document.createElement("div");
-		this.containerElement.classList.add(styleFilterTable);
+		this.containerElement.classList.add(styleFilterMenu);
 	}
 
 	/** build all display html elements for the {@link FilterMenu} */
@@ -36,13 +38,27 @@ export class FilterMenu {
 		// build tab html elements
 		for(const tab of this.tabs){
 			tab.build();
-			// TODO tab headers
+			this.tabHeadersElement.appendChild(tab.headerElement);
 			this.tabContentsElement.appendChild(tab.contentContainerElement);
 		}
 
 		// hide all tab contents except the current tab
 		for(const tab of this.tabs) tab.setContentsVisible(false);
-		this.currentTab.setContentsVisible(true);
+		this.selectTab(this.tabs[0]);
+	}
+
+	/** set the current tab to the specified tab and update contents */
+	public selectTab(tab: FilterTab): void {
+		if(this.curTab == tab) return;
+		if(this.curTab) {
+			this.curTab.setContentsVisible(false);
+			this.curTab.headerElement.classList.remove(styleSelected);
+		}
+		this.curTab = tab;
+		if(tab){
+			tab.headerElement.classList.add(styleSelected);
+			tab.setContentsVisible(true);
+		}
 	}
 }
 

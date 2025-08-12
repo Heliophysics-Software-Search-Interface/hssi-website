@@ -54,6 +54,9 @@ import {
 
 const apiModel = "/api/models/";
 const apiSlugRowsAll = "/rows/all/";
+
+const styleTabHeader = "tabHeader";
+const styleTabContent = "tabContent";
 const styleVertical = "vertical";
 const styleMenu = "menu";
 const styleDropdown = "dropdown";
@@ -87,8 +90,14 @@ export class FilterTab {
 	/** event is fired when html elements are built and ready for display */
 	public onReady: SimpleEvent = new SimpleEvent();
 
+	/** text that is shown for the tab header */
+	public get headerText(): string { return this.targetModel; }
+
 	public constructor(parentMenu: FilterMenu){
 		this.contentContainerElement = document.createElement("div");
+		this.contentContainerElement.classList.add(styleTabHeader);
+		this.headerElement = document.createElement("div");
+		this.headerElement.classList.add(styleTabHeader);
 		this.parentMenu = parentMenu;
 	}
 
@@ -99,6 +108,7 @@ export class FilterTab {
 	public build(): void {
 		this.fetchModelData().then(() => {
 			this.refreshItems();
+			this.rebuildHeaderElement();
 			this.rebuildContentElements();
 			this.onReady.triggerEvent();
 		});
@@ -131,6 +141,14 @@ export class FilterTab {
 				this.rootItems.push(item);
 			}
 		}
+	}
+
+	/** rebuild the html element that displays the header */
+	public rebuildHeaderElement(): void {
+		this.headerElement.innerHTML = this.headerText;
+		this.headerElement.addEventListener("click", () => {
+			this.parentMenu.selectTab(this);
+		});
 	}
 
 	/** rebuild html display elements for all items and content structure */
@@ -167,6 +185,8 @@ export class FilterTab {
 }
 
 export class CategoryFilterTab extends FilterTab{
+
+	public get headerText(): string { return "Categories"; }
 
 	public get categories(): CategoryItem[] { return this.rootItems as CategoryItem[]; }
 	public get categoryData(): JSONArray<JSONObject> { 

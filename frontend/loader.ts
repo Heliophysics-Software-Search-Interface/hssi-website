@@ -10,6 +10,7 @@ export * from "./simpleEvent";
 
 export * from "./ui/filter/filterItem";
 export * from "./ui/filter/filterTab";
+export * from "./ui/filter/filterMenu";
 export * from "./ui/jsonView";
 export * from "./ui/spinner";
 export * from "./ui/popupDialogue";

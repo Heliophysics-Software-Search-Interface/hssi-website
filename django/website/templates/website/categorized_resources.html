@@ -20,6 +20,8 @@
 {% endblock %}
 
 {% block head %}
+
+	{{ block.super }}
 	
 	{% include "website/social_preview.html" %}
 
@@ -27,6 +29,7 @@
 	<link rel="stylesheet" href="{% static 'css/resources.css' %}?v=2024-10-15" />
 	<link rel="stylesheet" href="{% static 'css/media.css' %}?v=2024-10-15" />
 	<link rel="stylesheet" href="{% static 'css/app.css' %}?v=2024-10-15" />
+	<link rel="stylesheet" href="{% static 'css/filter_menu.css' %}" />
 
 	{% include "website/category_styling.html" %}
 
@@ -91,8 +94,7 @@
 								</div>
 								<div class="filter-menus">
 								<div class="filter-section-body open">
-									<div class="filter_table" id="category-menu-mobile">
-										<script>makeFilterMenuElement(true);</script>
+									<script>makeFilterMenuElement();</script>
 										{% comment %}
 										{% include "website/filter_menu.html" 
 										with 
@@ -102,7 +104,6 @@
 										filter_type="category" 
 										%}
 										{% endcomment %}
-									</div>
 								</div>
 							</div>
 							</div>
@@ -130,8 +131,7 @@
 						</div>
 						<div class="filter-menus">
 							<div class="filter-section-body open">
-								<div class="filter_table" id="category-menu-main">
-									<script>makeFilterMenuElement(false);</script>
+								<script>makeFilterMenuElement();</script>
 									{% comment %}
 									{% include "website/filter_menu.html" 
 									with 
@@ -140,7 +140,6 @@
 									filter_type="category" 
 									%}
 									{% endcomment %}
-								</div>
 							</div>
 						</div>
 					</div>

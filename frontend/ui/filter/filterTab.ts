@@ -1,6 +1,7 @@
 import {
 	SimpleEvent, fetchTimeout, FilterItem, CategoryItem,
 	type JSONArray, type JSONObject, type JSONValue,
+	FilterMenu,
 } from "../../loader";
 
 /**
@@ -53,7 +54,6 @@ import {
 
 const apiModel = "/api/models/";
 const apiSlugRowsAll = "/rows/all/";
-const styleFilterTable = "filter_table";
 const styleVertical = "vertical";
 const styleMenu = "menu";
 const styleDropdown = "dropdown";
@@ -62,43 +62,66 @@ const styleMobileMenuContainer = "mobile-menu-container";
 
 export class FilterTab {
 
-	public containerElement: HTMLDivElement = null;
+	/** the selectable header for the tab */
+	public headerElement: HTMLDivElement = null; // TODO
+
+	/** contains elements for filter items and structure */
+	public contentContainerElement: HTMLDivElement = null;
+
+	/** contains filter item elements */
 	public itemContainerElement: HTMLUListElement = null;
+
+	/** the name of the database model to fetch the filter items from */
 	public targetModel: string = "";
+
+	/** a list of filter items to be displayed directly (not as children of other items) */
 	public rootItems: FilterItem[] = [];
+
+	/** all filter items that are currently selected by the user */
 	public selectedItems: FilterItem[] = [];
+
+	protected parentMenu: FilterMenu = null;
 	protected isDropdown: boolean = false;
 	protected modelData: JSONArray = [];
 
+	/** event is fired when html elements are built and ready for display */
 	public onReady: SimpleEvent = new SimpleEvent();
 
-	public constructor(isDropdown: boolean){
-		this.containerElement = document.createElement("div");
-		this.isDropdown = isDropdown;
+	public constructor(parentMenu: FilterMenu){
+		this.contentContainerElement = document.createElement("div");
+		this.parentMenu = parentMenu;
 	}
 
+	/** 
+	 * start building html display elements for the tab, when ready
+	 * {@link FilterTab.onReady} will be triggered
+	 */
 	public build(): void {
 		this.fetchModelData().then(() => {
 			this.refreshItems();
-			this.rebuildElements();
+			this.rebuildContentElements();
 			this.onReady.triggerEvent();
 		});
 	}
 
-	private async fetchModelData(): Promise<void> {
-		const url = apiModel + this.targetModel + apiSlugRowsAll;
-		const data = await fetchTimeout(url);
-		const jsonData = await data.json();
-		console.log("fetched model objects:", jsonData.data);
-		this.modelData = jsonData.data;
+	/**
+	 * hide or show the tab contents (does not affect header visibility)
+	 * @param visible whether the contents are visible or not
+	 */
+	public setContentsVisible(visible: boolean): void {
+		const displayMode = visible ? "block" : "none";
+		this.contentContainerElement.style.display = displayMode;
 	}
 
+	/** whether the specified data should be stored as a root filter item */
 	protected itemDataValid(itemData: JSONValue): boolean { return true; }
 
+	/** create a new root filter item for the tab */
 	protected createItem(itemData: JSONValue): FilterItem {
 		return new FilterItem(this, itemData);
 	}
 
+	/** recreate root filter items from db model data */
 	public refreshItems(): void {
 		for(const item of this.rootItems) item.destroy();
 		this.rootItems.length = 0;
@@ -110,9 +133,10 @@ export class FilterTab {
 		}
 	}
 
-	public rebuildElements(): void {
-		while (this.containerElement.childNodes.length > 0){
-			this.containerElement.childNodes[0].remove();
+	/** rebuild html display elements for all items and content structure */
+	public rebuildContentElements(): void {
+		while (this.contentContainerElement.childNodes.length > 0){
+			this.contentContainerElement.childNodes[0].remove();
 		}
 		
 		// apply styles to item container
@@ -125,13 +149,20 @@ export class FilterTab {
 			this.itemContainerElement.classList.add(styleMobileMenuContainer);
 		}
 		this.itemContainerElement.setAttribute("data-accordion-menu", "");
-		this.containerElement.appendChild(this.itemContainerElement);
+		this.contentContainerElement.appendChild(this.itemContainerElement);
 
 		// build items and add their html elements
 		for(const item of this.rootItems){
 			item.build();
 			this.itemContainerElement.appendChild(item.containerElement);
 		}
+	}
+
+	private async fetchModelData(): Promise<void> {
+		const url = apiModel + this.targetModel + apiSlugRowsAll;
+		const data = await fetchTimeout(url);
+		const jsonData = await data.json();
+		this.modelData = jsonData.data;
 	}
 }
 
@@ -142,8 +173,8 @@ export class CategoryFilterTab extends FilterTab{
 		return this.modelData as JSONArray<JSONObject>; 
 	}
 
-	public constructor(dropdown: boolean) {
-		super(dropdown);
+	public constructor(parentMenu: FilterMenu) {
+		super(parentMenu);
 		this.targetModel = "FunctionCategory";
 	}
 
@@ -171,16 +202,3 @@ export class CategoryFilterTab extends FilterTab{
 		return category;
 	}
 }
-
-export function makeFilterMenuElement(dropdown: boolean): void {
-	const categoriesMenu = new CategoryFilterTab(dropdown);
-	const scriptElement = document.currentScript;
-	categoriesMenu.onReady.addListener(() => {
-		scriptElement.parentNode.appendChild(categoriesMenu.containerElement);
-	});
-	categoriesMenu.build();
-}
-
-// export functionality to global scope
-const win = window as any;
-win.makeFilterMenuElement = makeFilterMenuElement;

@@ -1,0 +1,58 @@
+import { 
+	FilterTab, CategoryFilterTab,
+} from "../../loader";
+
+const styleFilterTable = "filter_table";
+
+export class FilterMenu {
+
+	/** contains all elements for  */
+	public containerElement: HTMLDivElement = null;
+	public tabHeadersElement: HTMLDivElement = null;
+	public tabContentsElement: HTMLDivElement = null;
+
+	/** all filter tabs that are selectable in the menu */
+	public tabs: FilterTab[] = [];
+
+	/** the tab that is currently selected by the user */
+	public get currentTab(): FilterTab { return this.tabs[0]; }
+
+	public constructor() {
+		this.containerElement = document.createElement("div");
+		this.containerElement.classList.add(styleFilterTable);
+	}
+
+	/** build all display html elements for the {@link FilterMenu} */
+	public build(): void {
+
+		// clear tab content and headers
+		for(const node of this.containerElement.childNodes) node.remove();
+
+		this.tabHeadersElement = document.createElement("div");
+		this.tabContentsElement = document.createElement("div");
+		this.containerElement.appendChild(this.tabHeadersElement);
+		this.containerElement.appendChild(this.tabContentsElement);
+
+		// build tab html elements
+		for(const tab of this.tabs){
+			tab.build();
+			// TODO tab headers
+			this.tabContentsElement.appendChild(tab.contentContainerElement);
+		}
+
+		// hide all tab contents except the current tab
+		for(const tab of this.tabs) tab.setContentsVisible(false);
+		this.currentTab.setContentsVisible(true);
+	}
+}
+
+export function makeFilterMenuElement(): void {
+	const filterMenu = new FilterMenu();
+	filterMenu.tabs.push(new CategoryFilterTab(filterMenu));
+	document.currentScript.parentNode.appendChild(filterMenu.containerElement);
+	filterMenu.build();
+}
+
+// export functionality to global scope
+const win = window as any;
+win.makeFilterMenuElement = makeFilterMenuElement;

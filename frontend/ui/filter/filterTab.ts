@@ -146,8 +146,12 @@ export class FilterTab {
 
 	/** rebuild the html element that displays the header */
 	public rebuildHeaderElement(): void {
-		this.headerElement.innerHTML = this.headerText;
-		this.headerElement.addEventListener("click", () => {
+		this.headerElement.innerHTML = "";
+		
+		const span = document.createElement("span");
+		span.innerText = this.headerText;
+
+		span.addEventListener("click", () => {
 			this.parentMenu.selectTab(this);
 		});
 	}

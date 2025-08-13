@@ -34,9 +34,13 @@ export class FilterMenu {
 		// clear tab content and headers
 		for(const node of this.containerElement.childNodes) node.remove();
 
-		this.groupMaker = new FilterGroupMaker();
+		this.groupMaker = new FilterGroupMaker(this);
 		this.containerElement.appendChild(this.groupMaker.containerElement);
 		this.groupMaker.build();
+
+		this.groupMaker.onItemRemoved.addListener(item => {
+			this.setItemSelected(item, false);
+		});
 
 		this.tabHeadersElement = document.createElement("div");
 		this.tabHeadersElement.classList.add(styleTabContainer);

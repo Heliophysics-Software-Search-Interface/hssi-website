@@ -479,7 +479,6 @@ class InstrumentObservatory(ControlledList):
 ## Complex Root Models ---------------------------------------------------------
 
 class FunctionCategory(ControlledGraphList):
-	access = AccessLevel.PUBLIC
 	abbreviation = models.CharField(max_length=5, null=True, blank=True)
 	backgroundColor = RGBColorField("Background Color", default="#FFFFFF", blank=True, null=True)
 	textColor = RGBColorField("Text Color", default="#000000", blank=True, null=True)

@@ -21,8 +21,10 @@ from ..util import *
 from ..models import *
 from ..views import migrate_db_old_to_new
 from .csv_export import export_db_csv, import_db_csv, remove_all_model_entries
+from .parse_ttl import parse_ttl
 from .fetch_vocab import (
-	DataListConcept, link_concept_children, get_data, get_concepts, MODEL_URL_MAP
+	DataListConcept, link_concept_children, get_data, get_concepts, 
+	MODEL_URL_MAP, URL_FUNCTIONCATEGORIES
 )
 
 from django.db.models import F
@@ -153,9 +155,11 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 		for old_obj in old_objs: old_obj.name = old_obj.name + " (OUTDATED)"
 
 		if issubclass(model, ControlledList):
-			if issubclass(model, ControlledGraphList):
-				link_concept_children(model, concept_data)
 			model.post_fetch()
+	
+	parse_ttl(FunctionCategory, URL_FUNCTIONCATEGORIES)
+	FunctionCategory.post_fetch()
+	# TODO create colors
 
 	return redirect('admin:index')
 

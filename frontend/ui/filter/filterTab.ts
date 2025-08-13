@@ -1,5 +1,5 @@
 import {
-	SimpleEvent, fetchTimeout, FilterItem, CategoryItem,
+	SimpleEvent, fetchTimeout, FilterMenuItem, CategoryItem,
 	type JSONArray, type JSONObject, type JSONValue,
 	FilterMenu,
 } from "../../loader";
@@ -79,10 +79,10 @@ export class FilterTab {
 	public targetModel: string = "";
 
 	/** a list of filter items to be displayed directly (not as children of other items) */
-	public rootItems: FilterItem[] = [];
+	public rootItems: FilterMenuItem[] = [];
 
 	/** all filter items that are currently selected by the user */
-	public selectedItems: FilterItem[] = [];
+	public selectedItems: FilterMenuItem[] = [];
 
 	protected parentMenu: FilterMenu = null;
 	protected isDropdown: boolean = false;
@@ -128,8 +128,8 @@ export class FilterTab {
 	protected itemDataValid(itemData: JSONValue): boolean { return true; }
 
 	/** create a new root filter item for the tab */
-	protected createItem(itemData: JSONValue): FilterItem {
-		return new FilterItem(this, itemData);
+	protected createItem(itemData: JSONValue): FilterMenuItem {
+		return new FilterMenuItem(this, itemData);
 	}
 
 	/** recreate root filter items from db model data */
@@ -210,7 +210,7 @@ export class CategoryFilterTab extends FilterTab{
 		return true;
 	}
 
-	protected override createItem(itemData: JSONValue): FilterItem {
+	protected override createItem(itemData: JSONValue): FilterMenuItem {
 		const category = new CategoryItem(this, itemData);
 		const data = itemData as JSONObject;
 

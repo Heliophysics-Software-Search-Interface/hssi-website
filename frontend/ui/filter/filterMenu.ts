@@ -1,18 +1,20 @@
 import { 
-	FilterTab, CategoryFilterTab, FilterItem,
+	FilterTab, CategoryFilterTab, FilterMenuItem, FilterGroupMaker,
 } from "../../loader";
 
 const styleFilterMenu = "filter-menu";
 const styleSelected = "selected";
 
 export class FilterMenu {
+	
+	private groupMaker: FilterGroupMaker = null;
+	private curTab: FilterTab = null;
+	private selectedItems: FilterMenuItem[] = [];
 
-	/** contains all elements for  */
+	/** contains all elements for menu */
 	public containerElement: HTMLDivElement = null;
 	public tabHeadersElement: HTMLDivElement = null;
 	public tabContentsElement: HTMLDivElement = null;
-	private curTab: FilterTab = null;
-	private selectedItems: FilterItem[] = [];
 
 	/** all filter tabs that are selectable in the menu */
 	public tabs: FilterTab[] = [];
@@ -30,6 +32,10 @@ export class FilterMenu {
 
 		// clear tab content and headers
 		for(const node of this.containerElement.childNodes) node.remove();
+
+		this.groupMaker = new FilterGroupMaker();
+		this.containerElement.appendChild(this.groupMaker.containerElement);
+		this.groupMaker.build();
 
 		this.tabHeadersElement = document.createElement("div");
 		this.tabContentsElement = document.createElement("div");
@@ -68,7 +74,7 @@ export class FilterMenu {
 	 * @param item the item to select/deselect
 	 * @param selected whether or not the item is marked as selected
 	 */
-	public setItemSelected(item: FilterItem, selected: boolean): void {
+	public setItemSelected(item: FilterMenuItem, selected: boolean): void {
 		if(this.selectedItems.includes(item) == selected) return;
 
 		if(selected) {

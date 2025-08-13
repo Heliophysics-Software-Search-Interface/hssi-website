@@ -26,12 +26,15 @@ const styleSubcategoryName = "subcategory_name";
  * shallow single level graph depth for root items and child items which are
  * both selectable and distinct
  */
-export class FilterItem {
+export class FilterMenuItem {
 
 	protected parentMenu: FilterTab = null;
 	protected data: JSONValue = null;
 	private expandButton: HTMLButtonElement = null;
-	private parentItem: FilterItem = null;
+	private parentItem: FilterMenuItem = null;
+
+	/** a unique UUID representing the filter item */
+	public get id(): string { return (this.data as any)?.id; }
 
 	/** html element that contains all other elements of the item */
 	public containerElement: HTMLLIElement = null;
@@ -46,7 +49,7 @@ export class FilterItem {
 	public subContainerElement: HTMLUListElement = null;
 
 	/** list of items that are children of this element */
-	public subItems: FilterItem[] = [];
+	public subItems: FilterMenuItem[] = [];
 
 	/** triggered when the item has children and is expanded to show them */
 	public onExpand: SimpleEvent = new SimpleEvent();
@@ -136,7 +139,7 @@ export class FilterItem {
 	}
 
 	/** creates all elements that represent an item who is a child of this */
-	public buildChildItem(child: FilterItem){
+	public buildChildItem(child: FilterMenuItem){
 		child.parentItem = this;
 		child.build();
 		child.containerElement.classList.add(styleFilterSubItem);
@@ -157,9 +160,8 @@ export class FilterItem {
 	}
 }
 
-export class ControlledListItem extends FilterItem {
+export class ControlledListItem extends FilterMenuItem {
 	public get objectData(): JSONObject { return this.data as JSONObject; }
-	public get id(): string { return this.objectData.id as any; }
 	public get name(): string { return this.objectData.name as any; }
 	public get abbreviation(): string { return this.objectData.abbreviation as any; }
 	public get identifier(): string { return this.objectData.identifier as any; }

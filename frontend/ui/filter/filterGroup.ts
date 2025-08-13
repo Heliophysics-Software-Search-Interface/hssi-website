@@ -166,8 +166,17 @@ class ItemChip {
 		this.itemReference = item;
 	}
 
+	private setInverted(inverted: boolean): void {
+		this.filterInverted = inverted;
+		if(inverted) this.chip.classList.add(styleInvertFilter);
+		else this.chip.classList.remove(styleInvertFilter);
+	}
+
 	public build(): void {
 		this.chip = this.itemReference.createChip();
+		this.chip.addEventListener("click", e => {
+			this.setInverted(!this.filterInverted);
+		});
 		// TODO add x button
 	}
 

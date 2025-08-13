@@ -32,6 +32,10 @@
 	margin-left: 5px;
 }
 
+.filter-container .item-chip.invert-filter {
+	text-decoration: line-through;
+}
+
 .filter-menu .filter-controls .group-control.group-clear {
 	border-color: #C00;
 }

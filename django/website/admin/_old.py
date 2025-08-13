@@ -159,7 +159,6 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 	
 	parse_ttl(FunctionCategory, URL_FUNCTIONCATEGORIES)
 	FunctionCategory.post_fetch()
-	# TODO create colors
 
 	return redirect('admin:index')
 

@@ -260,7 +260,7 @@ class ControlledGraphList(ControlledList):
 	@classmethod
 	def get_parent_nodes(cls) -> models.QuerySet['ControlledGraphList']:
 		''' Returns all objects that have at least one child '''
-		return cls.objects.filter(children__isnull=False).distinct()
+		return cls.objects.filter(children__isnull=False).distinct().order_by("name")
 	
 	def get_serialized_data(self, access, recursive = False) -> dict[str, Any]:
 		data = super().get_serialized_data(access, recursive)
@@ -535,7 +535,7 @@ class FunctionCategory(ControlledGraphList):
 				child.textColor = "#FFFFFF" if dark else "#000000"
 				if not child in all_objs: all_objs.append(child)
 			
-			r, g, b = colorsys.hsv_to_rgb(hue, 0.75, 0.75)
+			r, g, b = colorsys.hsv_to_rgb(hue, 0.75, 0.9)
 			dark = r * 0.299 + g * 0.587 + b * 0.114 <= 0.5
 			parent.backgroundColor = f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}".upper()
 			parent.textColor = "#FFFFFF" if dark else "#000000"

@@ -84,7 +84,9 @@ export class FilterTab {
 	/** all filter items that are currently selected by the user */
 	public selectedItems: FilterMenuItem[] = [];
 
-	protected parentMenu: FilterMenu = null;
+	/** the menu that this tab belongs to */
+	public parentMenu: FilterMenu = null;
+
 	protected isDropdown: boolean = false;
 	protected modelData: JSONArray = [];
 

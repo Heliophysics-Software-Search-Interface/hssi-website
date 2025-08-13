@@ -81,11 +81,13 @@ export class FilterMenu {
 		if(this.selectedItems.includes(item) == selected) return;
 
 		if(selected) {
+			this.groupMaker.addItem(item);
 			this.selectedItems.push(item);
 			item.checkboxElement.checked = true;
 			item.containerElement.classList.add(styleSelected);
 		}
 		else {
+			this.groupMaker.removeItem(item);
 			this.selectedItems.splice(this.selectedItems.indexOf(item), 1);
 			item.checkboxElement.checked = false;
 			item.containerElement.classList.remove(styleSelected);

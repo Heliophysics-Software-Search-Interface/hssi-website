@@ -1,6 +1,7 @@
 import {
 	SimpleEvent, FilterTab,
 	type JSONArray, type JSONObject, type JSONValue,
+	FilterMenu,
 } from "../../loader";
 
 
@@ -20,34 +21,37 @@ const styleSubchip = "subchip";
  */
 export class FilterMenuItem {
 
-	protected parentMenu: FilterTab = null;
+	protected parentTab: FilterTab = null;
 	protected data: JSONValue = null;
 	private expandButton: HTMLButtonElement = null;
 	private parentItem: FilterMenuItem = null;
-
+	
+	/** html element that contains all other elements of the item */
+	public containerElement: HTMLLIElement = null;
+	
+	/** element that holds the display text */
+	public labelElement: HTMLSpanElement = null;
+	
+	/** element that user interacts with */
+	public checkboxElement: HTMLInputElement = null;
+	
+	/** element that contains child items */
+	public subContainerElement: HTMLUListElement = null;
+	
+	/** list of items that are children of this element */
+	public subItems: FilterMenuItem[] = [];
+	
+	/** triggered when the item has children and is expanded to show them */
+	public onExpand: SimpleEvent = new SimpleEvent();
+	
 	/** a unique UUID representing the filter item */
 	public get id(): string { return (this.data as any)?.id; }
 
-	/** html element that contains all other elements of the item */
-	public containerElement: HTMLLIElement = null;
-
-	/** element that holds the display text */
-	public labelElement: HTMLSpanElement = null;
-
-	/** element that user interacts with */
-	public checkboxElement: HTMLInputElement = null;
-
-	/** element that contains child items */
-	public subContainerElement: HTMLUListElement = null;
-
-	/** list of items that are children of this element */
-	public subItems: FilterMenuItem[] = [];
-
-	/** triggered when the item has children and is expanded to show them */
-	public onExpand: SimpleEvent = new SimpleEvent();
-
 	/** the label text that the item displays as in the label element */
 	public get labelString(): string { return this.data.toString(); }
+
+	/** the menu that this item belongs to */
+	public get parentMenu(): FilterMenu { return this.parentTab.parentMenu; }
 
 	/** whether or not the subitems are expanded and visible */
 	public get isExpanded(): boolean { 
@@ -55,7 +59,7 @@ export class FilterMenuItem {
 	}
 
 	public constructor(parent: FilterTab, data: JSONValue) {
-		this.parentMenu = parent;
+		this.parentTab = parent;
 		this.containerElement = document.createElement("li");
 		this.containerElement.classList.add(styleFilterItem);
 		this.data = data;
@@ -87,12 +91,21 @@ export class FilterMenuItem {
 		
 		this.checkboxElement = document.createElement("input");
 		this.checkboxElement.type = "checkbox";
-		this.checkboxElement.name = this.parentMenu.targetModel + "_checkbox";
-		if(this.parentMenu.selectedItems.includes(this)) this.checkboxElement.checked = true;
+		this.checkboxElement.name = this.parentTab.targetModel + "_checkbox";
+		if(this.parentTab.selectedItems.includes(this)) this.checkboxElement.checked = true;
 		this.labelElement.appendChild(this.checkboxElement);
 		
 		const chip = this.createChip();
 		this.labelElement.appendChild(chip);
+
+		this.checkboxElement.addEventListener("click", e => {
+			this.parentMenu.setItemSelected(this, this.checkboxElement.checked);
+		});
+		chip.addEventListener("click", e => {
+			const selected = !this.checkboxElement.checked;
+			this.parentMenu.setItemSelected(this, selected);
+			this.checkboxElement.checked = selected;
+		});
 
 		const name = document.createElement("span");
 		name.classList.add(styleItemLabel);

@@ -80,10 +80,12 @@ export class FilterMenu {
 		if(selected) {
 			this.selectedItems.push(item);
 			item.checkboxElement.checked = true;
+			item.containerElement.classList.add(styleSelected);
 		}
 		else {
 			this.selectedItems.splice(this.selectedItems.indexOf(item), 1);
 			item.checkboxElement.checked = false;
+			item.containerElement.classList.remove(styleSelected);
 		}
 	}
 }

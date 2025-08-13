@@ -10,6 +10,7 @@ const styleFilterItem = "filter-item";
 const styleFilterSubItem = "filter-sub-item";
 const styleSubItemList = "filter-sub-list";
 const styleItemChip = "item-chip";
+const styleItemLabel = "item-label";
 const styleSubchip = "subchip";
 
 /**
@@ -83,22 +84,20 @@ export class FilterMenuItem {
 		// build internal html elements
 		this.labelElement = document.createElement('div');
 		this.containerElement.appendChild(this.labelElement);
-
-		const labelSpan = document.createElement("span");
-		this.labelElement.appendChild(labelSpan);
 		
 		this.checkboxElement = document.createElement("input");
 		this.checkboxElement.type = "checkbox";
 		this.checkboxElement.name = this.parentMenu.targetModel + "_checkbox";
 		if(this.parentMenu.selectedItems.includes(this)) this.checkboxElement.checked = true;
-		labelSpan.appendChild(this.checkboxElement);
+		this.labelElement.appendChild(this.checkboxElement);
 		
 		const chip = this.createChip();
-		labelSpan.appendChild(chip);
+		this.labelElement.appendChild(chip);
 
 		const name = document.createElement("span");
+		name.classList.add(styleItemLabel);
 		name.innerText = this.labelString;
-		labelSpan.appendChild(name);
+		this.labelElement.appendChild(name);
 				
 		this.subContainerElement = document.createElement("ul");
 		this.subContainerElement.classList.add(styleSubItemList);
@@ -108,7 +107,7 @@ export class FilterMenuItem {
 		if (this.subItems.length > 0) {
 			this.expandButton = document.createElement("button");
 			this.expandButton.type = "button";
-			labelSpan.appendChild(this.expandButton);
+			this.labelElement.appendChild(this.expandButton);
 			this.setSubitemsExpanded(false);
 			this.expandButton.addEventListener("click", e => {
 				this.setSubitemsExpanded(!this.isExpanded);

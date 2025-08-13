@@ -2,6 +2,7 @@ import {
 	FilterMenuItem 
 } from "../../loader";
 
+const styleFilterContainer = "filter-container";
 const styleInvertFilter = "invert-filter";
 
 enum FilterGroupMode {
@@ -28,6 +29,7 @@ export class FilterGroupMaker {
 	 */
 	public build(): void {
 		this.chipContainerElement = document.createElement("div");
+		this.chipContainerElement.classList.add(styleFilterContainer);
 		this.chipContainerElement.append("Filters: ")
 		this.containerElement.appendChild(this.chipContainerElement);
 

@@ -1,0 +1,88 @@
+.filter-menu {
+	user-select: none;
+	background-color: #ececec;
+}
+
+.filter-menu ul {
+	list-style: none;
+}
+
+.filter-menu .tab-header {
+	background-color: #cfcfd1;
+	text-align: center;
+}
+
+.filter-menu .filter-container {
+	background-color: #b7b7b7;
+}
+
+.filter-menu .tab-content {
+	padding: 10px;
+}
+
+.tab-content>ul>.filter-item>div>.item-label {
+	cursor: pointer;
+	padding-top: 2.5px;
+}
+
+.tab-content>ul>.filter-item>div>.item-label:hover {
+	font-weight: bold;
+}
+
+.filter-item>div {
+	white-space: nowrap;
+	overflow: hidden;
+	position: relative;
+	align-items: center;
+	padding: 5px;
+	height: 40px;
+	width: 100%;
+}
+
+.filter-item {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13.5px;
+	margin-top: 2.5px;
+	margin-bottom: 2.5px;
+	vertical-align: text-bottom;
+}
+
+.filter-item * {
+	margin-right: 5px;
+}
+
+.filter-item .filter-item {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.filter-item>div>* {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.filter-item .item-chip {
+	cursor: pointer;
+}
+
+.filter-menu .tab-content .menu>li button {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	right: 0;
+	color: #1779ba;
+	padding: 10px;
+}
+
+.item-chip {
+	font-family: Arial, Helvetica, sans-serif;
+	display: inline-block;
+	border-radius: 3px;
+	padding: 2.5px;
+	padding-left: 0;
+	padding-right: 0;
+	width: 40px;
+	height: 25px;
+	font-size: 12px;
+	text-align: center;
+}

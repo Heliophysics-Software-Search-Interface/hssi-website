@@ -2,7 +2,7 @@ import {
 	FilterTab, CategoryFilterTab,
 } from "../../loader";
 
-const styleFilterMenu = "filterMenu";
+const styleFilterMenu = "filter-menu";
 const styleSelected = "selected";
 
 export class FilterMenu {

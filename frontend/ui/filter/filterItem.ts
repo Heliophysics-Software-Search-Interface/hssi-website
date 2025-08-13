@@ -1,11 +1,15 @@
 import {
-	SimpleEvent, fetchTimeout, FilterTab,
+	SimpleEvent, FilterTab,
 	type JSONArray, type JSONObject, type JSONValue,
 } from "../../loader";
 
 
 const textCollapse = "▲";
 const textExpand = "▼";
+const styleFilterItem = "filter-item";
+const styleFilterSubItem = "filter-sub-item";
+const styleSubItemList = "filter-sub-list";
+
 const styleFilterMenu = "filter_menu";
 const styleFilterDropdown = "filter_dropdown";
 const styleFilterLabel = "filter_label";
@@ -53,6 +57,7 @@ export class FilterItem {
 		this.parentMenu = parent;
 		this.containerElement = document.createElement("li");
 		this.containerElement.classList.add(styleFilterMenu);
+		this.containerElement.classList.add(styleFilterItem);
 		this.data = data;
 	}
 
@@ -91,6 +96,7 @@ export class FilterItem {
 		labelDiv.appendChild(labelName);
 				
 		this.subContainerElement = document.createElement("ul");
+		this.subContainerElement.classList.add(styleSubItemList);
 		this.containerElement.appendChild(this.subContainerElement);
 
 		// build dropdown button only if there are subitems
@@ -113,6 +119,8 @@ export class FilterItem {
 
 	/** creates all elements that represent an item who is a child of this */
 	public buildChildItem(child: FilterItem){
+
+		child.containerElement.classList.add(styleFilterSubItem);
 
 		// clear all child's internal html elements
 		while(child.containerElement.childNodes.length > 0){

@@ -55,8 +55,9 @@ import {
 const apiModel = "/api/models/";
 const apiSlugRowsAll = "/rows/all/";
 
-const styleTabHeader = "tabHeader";
-const styleTabContent = "tabContent";
+const styleTabHeader = "tab-header";
+const styleTabContent = "tab-content";
+
 const styleVertical = "vertical";
 const styleMenu = "menu";
 const styleDropdown = "dropdown";
@@ -95,7 +96,7 @@ export class FilterTab {
 
 	public constructor(parentMenu: FilterMenu){
 		this.contentContainerElement = document.createElement("div");
-		this.contentContainerElement.classList.add(styleTabHeader);
+		this.contentContainerElement.classList.add(styleTabContent);
 		this.headerElement = document.createElement("div");
 		this.headerElement.classList.add(styleTabHeader);
 		this.parentMenu = parentMenu;

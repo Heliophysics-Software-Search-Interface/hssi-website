@@ -150,6 +150,7 @@ export class FilterTab {
 		
 		const span = document.createElement("span");
 		span.innerText = this.headerText;
+		this.headerElement.appendChild(span);
 
 		span.addEventListener("click", () => {
 			this.parentMenu.selectTab(this);

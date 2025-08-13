@@ -183,6 +183,7 @@ export class CategoryItem extends GraphListItem {
 	public override createChip(): HTMLSpanElement {
 		let chip = super.createChip();
 		chip.style.backgroundColor = this.bgColor;
+		chip.style.borderColor = this.bgColor;
 		chip.style.color = this.textColor;
 		chip.innerText = this.abbreviation;
 		return chip;

@@ -71,32 +71,6 @@
 
 			<!-- CATEGORY SELECTOR -->
 			<div class="category_list">
-				<!-- DROPDOWN CATEGORY SELECTOR FOR SMALL DISPLAY -->
-				<div class="filter-sidebar show-for-small-only">
-					<div class="filter_selector">
-						<div class="mobile-filter-header">
-							<div class="mobile-menu-container">
-								<div class="filter-chip-container"></div>
-								<div class="filter-menus">
-								<div class="filter-section-body open">
-									<script>makeFilterMenuElement();</script>
-										{% comment %}
-										{% include "website/filter_menu.html" 
-										with 
-										is_dropdown="True" 
-										tags=function_categories 
-										selected_filter_ids=selected_category_ids 
-										filter_type="category" 
-										%}
-										{% endcomment %}
-								</div>
-							</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- END DROPDOWN CATEGORY SELECTOR FOR SMALL DISPLAY -->
-
 				<!-- CATEGORY SELECTOR FOR MEDIUM DISPLAY -->
 				<div class="filter-sidebar hide-for-small-only">
 					<div class="filter_selector">

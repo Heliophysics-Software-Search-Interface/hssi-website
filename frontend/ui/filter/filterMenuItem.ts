@@ -12,15 +12,6 @@ const styleSubItemList = "filter-sub-list";
 const styleItemChip = "item-chip";
 const styleSubchip = "subchip";
 
-const styleFilterMenu = "filter_menu";
-const styleFilterDropdown = "filter_dropdown";
-const styleFilterLabel = "filter_label";
-const styleLabel = "label";
-const styleParentFilter = "label";
-const styleCategoryName = "category_name";
-const styleSubFilter = "sub_filter";
-const styleSubcategoryName = "subcategory_name";
-
 /**
  * represents a selectable item in a filter menu tab, also incorpoerates 
  * shallow single level graph depth for root items and child items which are
@@ -40,7 +31,7 @@ export class FilterMenuItem {
 	public containerElement: HTMLLIElement = null;
 
 	/** element that holds the display text */
-	public labelElement: HTMLElement = null;
+	public labelElement: HTMLSpanElement = null;
 
 	/** element that user interacts with */
 	public checkboxElement: HTMLInputElement = null;
@@ -65,7 +56,6 @@ export class FilterMenuItem {
 	public constructor(parent: FilterTab, data: JSONValue) {
 		this.parentMenu = parent;
 		this.containerElement = document.createElement("li");
-		this.containerElement.classList.add(styleFilterMenu);
 		this.containerElement.classList.add(styleFilterItem);
 		this.data = data;
 	}
@@ -76,7 +66,6 @@ export class FilterMenuItem {
 	 */
 	public createChip(): HTMLSpanElement {
 		const chip = document.createElement("span");
-		chip.classList.add(styleLabel);
 		chip.classList.add(styleItemChip);
 		if(this.parentItem) chip.classList.add(styleSubchip);
 		chip.innerText = this.labelString.substring(0,4);
@@ -92,29 +81,24 @@ export class FilterMenuItem {
 		}
 		
 		// build internal html elements
-		this.labelElement = document.createElement('a');
-		this.labelElement.classList.add(styleFilterDropdown);
+		this.labelElement = document.createElement('div');
 		this.containerElement.appendChild(this.labelElement);
 
-		const labelDiv = document.createElement("div");
-		labelDiv.classList.add(styleFilterLabel);
-		this.labelElement.appendChild(labelDiv);
+		const labelSpan = document.createElement("span");
+		this.labelElement.appendChild(labelSpan);
 		
 		this.checkboxElement = document.createElement("input");
-		this.checkboxElement.classList.add(styleLabel);
-		this.checkboxElement.classList.add(styleParentFilter);
 		this.checkboxElement.type = "checkbox";
 		this.checkboxElement.name = this.parentMenu.targetModel + "_checkbox";
 		if(this.parentMenu.selectedItems.includes(this)) this.checkboxElement.checked = true;
-		labelDiv.appendChild(this.checkboxElement);
+		labelSpan.appendChild(this.checkboxElement);
 		
 		const chip = this.createChip();
-		labelDiv.appendChild(chip);
+		labelSpan.appendChild(chip);
 
 		const name = document.createElement("span");
-		name.classList.add(styleCategoryName);
 		name.innerText = this.labelString;
-		labelDiv.appendChild(name);
+		labelSpan.appendChild(name);
 				
 		this.subContainerElement = document.createElement("ul");
 		this.subContainerElement.classList.add(styleSubItemList);
@@ -124,11 +108,14 @@ export class FilterMenuItem {
 		if (this.subItems.length > 0) {
 			this.expandButton = document.createElement("button");
 			this.expandButton.type = "button";
-			labelDiv.appendChild(this.expandButton);
+			labelSpan.appendChild(this.expandButton);
+			this.setSubitemsExpanded(false);
 			this.expandButton.addEventListener("click", e => {
 				this.setSubitemsExpanded(!this.isExpanded);
 			});
-			this.setSubitemsExpanded(false);
+			name.addEventListener("click", e => {
+				this.setSubitemsExpanded(!this.isExpanded);
+			})
 		}
 
 		// build subItem children html elements
@@ -193,17 +180,8 @@ export class CategoryItem extends GraphListItem {
 
 	public override build(): void {
 		super.build();
-
 		this.checkboxElement.value = this.id;
 		this.checkboxElement.id = this.id;
 		this.checkboxElement.classList.add(this.abbreviation);
-
-		const name = 
-			this.containerElement
-			.querySelector(`span.${styleCategoryName}`);
-		name.setAttribute("for", this.id);
-		name.setAttribute("parent-abbr", this.abbreviation);
-		name.classList.add(this.abbreviation);
-	
 	}
 }

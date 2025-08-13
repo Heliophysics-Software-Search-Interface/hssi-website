@@ -184,7 +184,7 @@ export class FilterTab {
 		}
 	}
 
-	private async fetchModelData(): Promise<void> {
+	protected async fetchModelData(): Promise<void> {
 		const url = apiModel + this.targetModel + apiSlugRowsAll;
 		const data = await fetchTimeout(url);
 		const jsonData = await data.json();
@@ -192,7 +192,18 @@ export class FilterTab {
 	}
 }
 
-export class CategoryFilterTab extends FilterTab{
+export class ControlledGraphListFilterTab extends FilterTab {
+	protected override async fetchModelData(): Promise<void> {
+		await super.fetchModelData();
+		this.modelData.sort((a,b) => {
+			const obA = a as { name: string };
+			const obB = b as { name: string };
+			return obA.name.localeCompare(obB.name);
+		});
+	}
+}
+
+export class CategoryFilterTab extends ControlledGraphListFilterTab {
 
 	public get headerText(): string { return "Categories"; }
 

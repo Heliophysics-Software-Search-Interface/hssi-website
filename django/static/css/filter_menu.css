@@ -7,18 +7,33 @@
 	list-style: none;
 }
 
-.filter-menu .tab-header {
-	padding: 10px;
-	padding-bottom: 5px;
-	padding-top: 5px;
-	background-color: #cfcfd1;
-	text-align: center;
-}
-
 .filter-menu .filter-container {
 	background-color: #b7b7b7;
-	min-height: 35;
+	color: white;
+	font-weight: bolder;
+	min-height: 40px;
+	padding: 5px;
+}
+
+.filter-menu .tab-container {
+	border-top: 1px solid black;
+}
+
+.filter-menu .tab-header {
+	background-color: #cfcfd1;
+	border: 1px solid #b7b7b7;
+	border-bottom-width: 0;
+	text-align: center;
+	padding-top: 5px;
 	padding: 10px;
+	padding-bottom: 5px;
+}
+
+.filter-menu .tab-container .selected {
+	font-weight: bold;
+	/*
+	background-color: #ececec;
+	*/
 }
 
 .filter-menu .tab-content {
@@ -77,6 +92,7 @@
 	right: 0;
 	color: #1779ba;
 	padding: 10px;
+	padding-right: 0;
 }
 
 .item-chip {

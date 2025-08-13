@@ -4,6 +4,7 @@ import {
 
 const styleFilterMenu = "filter-menu";
 const styleSelected = "selected";
+const styleTabContainer = "tab-container";
 
 export class FilterMenu {
 	
@@ -38,8 +39,10 @@ export class FilterMenu {
 		this.groupMaker.build();
 
 		this.tabHeadersElement = document.createElement("div");
-		this.tabContentsElement = document.createElement("div");
+		this.tabHeadersElement.classList.add(styleTabContainer);
 		this.containerElement.appendChild(this.tabHeadersElement);
+		
+		this.tabContentsElement = document.createElement("div");
 		this.containerElement.appendChild(this.tabContentsElement);
 
 		// build tab html elements

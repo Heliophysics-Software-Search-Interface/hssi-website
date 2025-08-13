@@ -9,6 +9,8 @@ const textExpand = "▼";
 const styleFilterItem = "filter-item";
 const styleFilterSubItem = "filter-sub-item";
 const styleSubItemList = "filter-sub-list";
+const styleItemChip = "item-chip";
+const styleSubchip = "subchip";
 
 const styleFilterMenu = "filter_menu";
 const styleFilterDropdown = "filter_dropdown";
@@ -61,6 +63,18 @@ export class FilterItem {
 		this.data = data;
 	}
 
+	/** 
+	 * create a small display element that can be used to represent this item 
+	 * anywhere in the document
+	 */
+	public createChip(): HTMLSpanElement {
+		const chip = document.createElement("span");
+		chip.classList.add(styleLabel);
+		chip.classList.add(styleItemChip);
+		chip.innerText = this.label.substring(0,4);
+		return chip;
+	}
+
 	/** creates all display html elements for the list item */
 	public build(): void {
 
@@ -77,10 +91,6 @@ export class FilterItem {
 		const labelDiv = document.createElement("div");
 		labelDiv.classList.add(styleFilterLabel);
 		this.labelElement.appendChild(labelDiv);
-
-		const labelAbbr = document.createElement("label");
-		labelAbbr.classList.add(styleLabel);
-		labelDiv.appendChild(labelAbbr);
 		
 		const checkbox = document.createElement("input");
 		checkbox.classList.add(styleLabel);
@@ -88,12 +98,15 @@ export class FilterItem {
 		checkbox.type = "checkbox";
 		checkbox.name = this.parentMenu.targetModel + "_checkbox";
 		if(this.parentMenu.selectedItems.includes(this)) checkbox.checked = true;
-		labelAbbr.appendChild(checkbox);
+		labelDiv.appendChild(checkbox);
 		
-		const labelName = document.createElement("label");
-		labelName.classList.add(styleCategoryName);
-		labelName.innerText = this.label;
-		labelDiv.appendChild(labelName);
+		const chip = this.createChip();
+		labelDiv.appendChild(chip);
+
+		const name = document.createElement("span");
+		name.classList.add(styleCategoryName);
+		name.innerText = this.label;
+		labelDiv.appendChild(name);
 				
 		this.subContainerElement = document.createElement("ul");
 		this.subContainerElement.classList.add(styleSubItemList);
@@ -187,7 +200,15 @@ export class CategoryItem extends GraphListItem {
 	public get children(): CategoryItem[] { return this.subItems as any; }
 	public get label(): string { return this.objectData.name as any; }
 
-	public build(): void {
+	public override createChip(): HTMLSpanElement {
+		let chip = super.createChip();
+		chip.style.backgroundColor = this.bgColor;
+		chip.style.color = this.textColor;
+		chip.innerText = this.abbreviation;
+		return chip;
+	}
+
+	public override build(): void {
 		super.build();
 
 		// add information regarding ids and abbreviations here so we don't 
@@ -195,24 +216,17 @@ export class CategoryItem extends GraphListItem {
 		if (this.data instanceof Object){
 			const checkbox = 
 				this.containerElement
-				.querySelector(`label input.${styleLabel}`) as HTMLInputElement;
-			const labelName = 
+				.querySelector(`div input.${styleLabel}`) as HTMLInputElement;
+			const name = 
 				this.containerElement
-				.querySelector(`label.${styleCategoryName}`);
-			const labelAbbr = 
-				this.containerElement
-				.querySelector(`label.${styleLabel}`) as HTMLLabelElement;
+				.querySelector(`span.${styleCategoryName}`);
 			
 			checkbox.value = this.id;
 			checkbox.id = this.id;
 			checkbox.classList.add(this.abbreviation);
-			labelAbbr.classList.add(this.abbreviation);
-			labelAbbr.append(this.abbreviation);
-			labelAbbr.style.backgroundColor = this.bgColor;
-			labelAbbr.style.color = this.textColor;
-			labelName.setAttribute("for", this.id);
-			labelName.setAttribute("parent-abbr", this.abbreviation);
-			labelName.classList.add(this.abbreviation);
+			name.setAttribute("for", this.id);
+			name.setAttribute("parent-abbr", this.abbreviation);
+			name.classList.add(this.abbreviation);
 		}
 	}
 }

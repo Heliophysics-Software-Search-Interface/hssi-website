@@ -1,5 +1,5 @@
 import { 
-	FilterTab, CategoryFilterTab,
+	FilterTab, CategoryFilterTab, FilterItem,
 } from "../../loader";
 
 const styleFilterMenu = "filter-menu";
@@ -12,6 +12,7 @@ export class FilterMenu {
 	public tabHeadersElement: HTMLDivElement = null;
 	public tabContentsElement: HTMLDivElement = null;
 	private curTab: FilterTab = null;
+	private selectedItems: FilterItem[] = [];
 
 	/** all filter tabs that are selectable in the menu */
 	public tabs: FilterTab[] = [];

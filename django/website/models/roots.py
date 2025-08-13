@@ -262,6 +262,17 @@ class ControlledGraphList(ControlledList):
 		''' Returns all objects that have at least one child '''
 		return cls.objects.filter(children__isnull=False).distinct().order_by("name")
 	
+	def get_name_path(self) -> str:
+		""" get a path of all parents recursively pointing to this one """
+		path = self.name
+
+		parent = self.parent_nodes.first()
+		while parent:
+			path = parent.name + "->" + path
+			parent = parent.parent_nodes.first()
+
+		return path
+
 	def get_serialized_data(self, access, recursive = False) -> dict[str, Any]:
 		data = super().get_serialized_data(access, recursive)
 
@@ -528,7 +539,6 @@ class FunctionCategory(ControlledGraphList):
 		delta_hue = 1 / len(parents)
 		hue = 0.964 # start at red
 		for parent in parents:
-			print(parent.name)
 			for child in parent.children.all():
 				r, g, b = colorsys.hsv_to_rgb(hue, 0.25, 0.9)
 				dark = r * 0.299 + g * 0.587 + b * 0.114 <= 0.65

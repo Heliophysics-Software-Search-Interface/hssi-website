@@ -21,10 +21,12 @@ from typing import Dict, List, Optional, Set
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.db.models.fields.related import ManyToManyField
 
 from rdflib import Graph, Namespace, RDF, RDFS, URIRef, Literal
 
 from ..models import FunctionCategory, ControlledGraphList
+from ..util import find_database_references
 
 SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
 
@@ -178,7 +180,7 @@ def parse_ttl(model: type[ControlledGraphList], file_url: str):
 	parse a ttl file at the specified url and create model objects for each 
 	graph node in the specified model
 	"""
-	model.objects.all().delete()
+	old_objs = list(model.objects.all())
 
 	print(f"fetching data {model._meta.model_name} data from {file_url}")
 
@@ -198,5 +200,36 @@ def parse_ttl(model: type[ControlledGraphList], file_url: str):
 		row = build_tree_and_persist(r, labels, defs, parents, children, None, None, model)
 		if row is not None:
 			created += 1
+
+	# update references from old to new
+	matched_old_objs: list[ControlledGraphList] = []
+
+	print(f"updating old {model._meta.model_name} references")
+	for obj in model.objects.all():
+		if obj in old_objs: continue
+		new_path = obj.get_name_path()
+		print(f"searching for old {new_path} match..")
+
+		# find an old object with a matching path as the new object
+		matched_obj: ControlledGraphList = None
+		for old_obj in old_objs:
+			if old_obj.get_name_path() == new_path:
+				matched_obj = old_obj
+				break
+		
+		# if found, replace all references on old object to point to new object
+		if matched_obj:
+			matched_old_objs.append(matched_obj)
+			oldrefs = find_database_references(matched_obj)
+			print(f"found match! replacing {len(oldrefs)} references..")
+			for refobj, field in oldrefs:
+				if isinstance(field, ManyToManyField):
+					getattr(refobj, field.name).remove(matched_obj)
+					getattr(refobj, field.name).add(obj)
+				else: setattr(refobj, field.name, obj)
+				print(f"updated field '{refobj.pk}:{field}'")
+		
+	# remove all old objects
+	for obj in old_objs: obj.delete()
 
 	print(f"Import complete. Roots created: {created}")

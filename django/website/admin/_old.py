@@ -157,6 +157,8 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 		if issubclass(model, ControlledList):
 			model.post_fetch()
 	
+	# function categories are handled differently because they have a more 
+	# complicated structure
 	parse_ttl(FunctionCategory, URL_FUNCTIONCATEGORIES)
 	FunctionCategory.post_fetch()
 

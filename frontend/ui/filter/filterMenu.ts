@@ -61,6 +61,25 @@ export class FilterMenu {
 			tab.setContentsVisible(true);
 		}
 	}
+
+	/** 
+	 * marks a specific filter item as being selected or not by the user, so 
+	 * that it will be considered when a filter group is made
+	 * @param item the item to select/deselect
+	 * @param selected whether or not the item is marked as selected
+	 */
+	public setItemSelected(item: FilterItem, selected: boolean): void {
+		if(this.selectedItems.includes(item) == selected) return;
+
+		if(selected) {
+			this.selectedItems.push(item);
+			item.checkboxElement.checked = true;
+		}
+		else {
+			this.selectedItems.splice(this.selectedItems.indexOf(item), 1);
+			item.checkboxElement.checked = false;
+		}
+	}
 }
 
 export function makeFilterMenuElement(): void {

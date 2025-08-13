@@ -31,12 +31,16 @@ export class FilterItem {
 	protected parentMenu: FilterTab = null;
 	protected data: JSONValue = null;
 	private expandButton: HTMLButtonElement = null;
+	private parentItem: FilterItem = null;
 
 	/** html element that contains all other elements of the item */
 	public containerElement: HTMLLIElement = null;
 
 	/** element that holds the display text */
 	public labelElement: HTMLElement = null;
+
+	/** element that user interacts with */
+	public checkboxElement: HTMLInputElement = null;
 
 	/** element that contains child items */
 	public subContainerElement: HTMLUListElement = null;
@@ -48,7 +52,7 @@ export class FilterItem {
 	public onExpand: SimpleEvent = new SimpleEvent();
 
 	/** the label text that the item displays as in the label element */
-	public get label(): string { return this.data.toString(); }
+	public get labelString(): string { return this.data.toString(); }
 
 	/** whether or not the subitems are expanded and visible */
 	public get isExpanded(): boolean { 
@@ -71,7 +75,8 @@ export class FilterItem {
 		const chip = document.createElement("span");
 		chip.classList.add(styleLabel);
 		chip.classList.add(styleItemChip);
-		chip.innerText = this.label.substring(0,4);
+		if(this.parentItem) chip.classList.add(styleSubchip);
+		chip.innerText = this.labelString.substring(0,4);
 		return chip;
 	}
 
@@ -92,20 +97,20 @@ export class FilterItem {
 		labelDiv.classList.add(styleFilterLabel);
 		this.labelElement.appendChild(labelDiv);
 		
-		const checkbox = document.createElement("input");
-		checkbox.classList.add(styleLabel);
-		checkbox.classList.add(styleParentFilter);
-		checkbox.type = "checkbox";
-		checkbox.name = this.parentMenu.targetModel + "_checkbox";
-		if(this.parentMenu.selectedItems.includes(this)) checkbox.checked = true;
-		labelDiv.appendChild(checkbox);
+		this.checkboxElement = document.createElement("input");
+		this.checkboxElement.classList.add(styleLabel);
+		this.checkboxElement.classList.add(styleParentFilter);
+		this.checkboxElement.type = "checkbox";
+		this.checkboxElement.name = this.parentMenu.targetModel + "_checkbox";
+		if(this.parentMenu.selectedItems.includes(this)) this.checkboxElement.checked = true;
+		labelDiv.appendChild(this.checkboxElement);
 		
 		const chip = this.createChip();
 		labelDiv.appendChild(chip);
 
 		const name = document.createElement("span");
 		name.classList.add(styleCategoryName);
-		name.innerText = this.label;
+		name.innerText = this.labelString;
 		labelDiv.appendChild(name);
 				
 		this.subContainerElement = document.createElement("ul");
@@ -132,34 +137,9 @@ export class FilterItem {
 
 	/** creates all elements that represent an item who is a child of this */
 	public buildChildItem(child: FilterItem){
-
+		child.parentItem = this;
+		child.build();
 		child.containerElement.classList.add(styleFilterSubItem);
-
-		// clear all child's internal html elements
-		while(child.containerElement.childNodes.length > 0){
-			child.containerElement.childNodes[0].remove();
-		}
-
-		const checkbox = document.createElement("input");
-		checkbox.classList.add(styleLabel);
-		checkbox.classList.add(styleSubFilter);
-		checkbox.type = "checkbox";
-		checkbox.name = this.parentMenu.targetModel + "_checkbox";
-		if(this.parentMenu.selectedItems.includes(child)) checkbox.checked = true;
-		child.containerElement.appendChild(checkbox);
-		
-		// add child id here if applicable, to avoid overriding in subclass
-		if(child.data instanceof Object){
-			if((child.data as any).id){
-				checkbox.value = (child.data as any).id;
-				checkbox.id = (child.data as any).id;
-			}
-		}
-
-		child.labelElement = document.createElement("label");
-		child.labelElement.classList.add(styleSubcategoryName);
-		child.labelElement.innerText = child.label;
-		child.containerElement.appendChild(child.labelElement);
 	}
 
 	/** remove the item's html elements from the DOM and destroy children */
@@ -198,7 +178,7 @@ export class CategoryItem extends GraphListItem {
 	public get bgColor(): string { return this.objectData.backgroundColor as any; }
 	public get textColor(): string { return this.objectData.textColor as any; }
 	public get children(): CategoryItem[] { return this.subItems as any; }
-	public get label(): string { return this.objectData.name as any; }
+	public get labelString(): string { return this.objectData.name as any; }
 
 	public override createChip(): HTMLSpanElement {
 		let chip = super.createChip();
@@ -211,22 +191,16 @@ export class CategoryItem extends GraphListItem {
 	public override build(): void {
 		super.build();
 
-		// add information regarding ids and abbreviations here so we don't 
-		// need to override in subclass
-		if (this.data instanceof Object){
-			const checkbox = 
-				this.containerElement
-				.querySelector(`div input.${styleLabel}`) as HTMLInputElement;
-			const name = 
-				this.containerElement
-				.querySelector(`span.${styleCategoryName}`);
-			
-			checkbox.value = this.id;
-			checkbox.id = this.id;
-			checkbox.classList.add(this.abbreviation);
-			name.setAttribute("for", this.id);
-			name.setAttribute("parent-abbr", this.abbreviation);
-			name.classList.add(this.abbreviation);
-		}
+		this.checkboxElement.value = this.id;
+		this.checkboxElement.id = this.id;
+		this.checkboxElement.classList.add(this.abbreviation);
+
+		const name = 
+			this.containerElement
+			.querySelector(`span.${styleCategoryName}`);
+		name.setAttribute("for", this.id);
+		name.setAttribute("parent-abbr", this.abbreviation);
+		name.classList.add(this.abbreviation);
+	
 	}
 }

@@ -8,12 +8,17 @@
 }
 
 .filter-menu .tab-header {
+	padding: 10px;
+	padding-bottom: 5px;
+	padding-top: 5px;
 	background-color: #cfcfd1;
 	text-align: center;
 }
 
 .filter-menu .filter-container {
 	background-color: #b7b7b7;
+	min-height: 35;
+	padding: 10px;
 }
 
 .filter-menu .tab-content {

@@ -33,6 +33,11 @@ export class FilterGroupMaker {
 		this.containerElement = document.createElement("div");
 	}
 
+	private setControlsVisible(visible: boolean): void {
+		const visibleStr = visible ? "block" : "none";
+		this.controlsContainerElement.style.display = visibleStr;
+	}
+
 	/** 
 	 * build the html elements that represent the filter group maker and 
 	 * controls 
@@ -66,6 +71,8 @@ export class FilterGroupMaker {
 		createGroup.addEventListener("click", e => {
 			this.createGroup();
 		})
+
+		this.setControlsVisible(false);
 	}
 
 	/** 
@@ -85,6 +92,7 @@ export class FilterGroupMaker {
 		chip.build();
 		this.chipContainerElement.appendChild(chip.chip);
 		this.chips.push(chip);
+		this.setControlsVisible(true);
 	}
 
 	/**
@@ -98,6 +106,7 @@ export class FilterGroupMaker {
 		if(index < 0) return;
 		this.chips[index].destroy();
 		this.chips.splice(index, 1);
+		if(this.chips.length <= 0) this.setControlsVisible(false);
 	}
 
 	/** remove all filter items */
@@ -111,6 +120,7 @@ export class FilterGroupMaker {
 			this.onItemRemoved.triggerEvent(chip.itemReference);
 		}
 		this.chips.length = 0;
+		this.setControlsVisible(false);
 	}
 
 	/** creates a {@link FilterGroup} from the items included in the group list */

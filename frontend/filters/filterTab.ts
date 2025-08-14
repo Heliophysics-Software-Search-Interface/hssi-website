@@ -52,8 +52,8 @@ import {
  * </li>
  */
 
-const apiModel = "/api/models/";
-const apiSlugRowsAll = "/rows/all/";
+export const apiModel = "/api/models/";
+export const apiSlugRowsAll = "/rows/all/";
 
 const styleTabHeader = "tab-header";
 const styleTabContent = "tab-content";

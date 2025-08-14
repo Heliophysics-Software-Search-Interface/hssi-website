@@ -12,6 +12,10 @@ export * from "./filters/filterGroup";
 export * from "./filters/filterMenuItem";
 export * from "./filters/filterTab";
 export * from "./filters/filterMenu";
+
+export * from "./resources/resourceItem";
+export * from "./resources/resourceView";
+
 export * from "./dialogues/jsonView";
 export * from "./dialogues/spinner";
 export * from "./dialogues/popupDialogue";

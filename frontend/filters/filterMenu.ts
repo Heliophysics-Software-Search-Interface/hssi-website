@@ -1,6 +1,6 @@
 import { 
 	FilterTab, CategoryFilterTab, FilterMenuItem, FilterGroupMaker,
-} from "../../loader";
+} from "../loader";
 
 const styleFilterMenu = "filter-menu";
 const styleSelected = "selected";

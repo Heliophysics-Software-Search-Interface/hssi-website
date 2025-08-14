@@ -2,7 +2,7 @@ import {
 	SimpleEvent, fetchTimeout, FilterMenuItem, CategoryItem,
 	type JSONArray, type JSONObject, type JSONValue,
 	FilterMenu,
-} from "../../loader";
+} from "../loader";
 
 /**
  * This module aims to reproduce the html structure below for each individual 

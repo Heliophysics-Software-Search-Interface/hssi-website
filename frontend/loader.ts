@@ -8,10 +8,10 @@
 export * from "./util";
 export * from "./simpleEvent";
 
-export * from "./ui/filter/filterGroup";
-export * from "./ui/filter/filterMenuItem";
-export * from "./ui/filter/filterTab";
-export * from "./ui/filter/filterMenu";
+export * from "./filters/filterGroup";
+export * from "./filters/filterMenuItem";
+export * from "./filters/filterTab";
+export * from "./filters/filterMenu";
 export * from "./ui/jsonView";
 export * from "./ui/spinner";
 export * from "./ui/popupDialogue";

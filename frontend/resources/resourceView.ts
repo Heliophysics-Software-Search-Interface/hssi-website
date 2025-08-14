@@ -13,7 +13,7 @@ export class ResourceView {
 
 	private itemData: JSONArray<JSONObject> = [];
 	private items: ResourceItem[] = [];
-	
+
 	/** the html element that contains all the html content for this view */
 	public containerElement: HTMLDivElement = null;
 
@@ -31,6 +31,7 @@ export class ResourceView {
 		// create new items from data
 		for(const data of this.itemData) {
 			const item = ResourceItem.createFromData(data);
+			console.log(data)
 			this.containerElement.appendChild(item.containerElement);
 			this.items.push(item);
 		}
@@ -58,3 +59,13 @@ export class ResourceView {
 		this.refreshItems();
 	}
 }
+
+function makeResourceView() {
+	const view = new ResourceView();
+	document.currentScript.parentNode.appendChild(view.containerElement);
+	view.fetchAndBuild();
+}
+
+// expose to global
+const win = window as any;
+win.makeResourceView = makeResourceView;

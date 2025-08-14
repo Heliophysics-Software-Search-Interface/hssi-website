@@ -224,12 +224,13 @@ class ModelStructure:
 			# TODO handle potential infinite recursion for circular table references
 			if recursive and (isinstance(val, models.Model) or isinstance(val, BaseManager)):
 				struct = registered_structures.get(mfield.type)
+				print(f"parse field '{fname}' as '{mfield.type}'")
 				if struct:
 					try:
 						if isinstance(val, models.Model):
 							val = struct.serialize_model_object(val, recursive, access)
 						elif isinstance(val, BaseManager):
-							objects = val.all()
+							objects: list['HssiModel'] = val.all()
 							val = []
 							for obj in objects:
 								val.append(struct.serialize_model_object(obj, recursive, access))

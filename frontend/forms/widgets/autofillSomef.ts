@@ -1,11 +1,11 @@
 import { 
-	FormGenerator, InputWidget, Spinner, ConfirmDialogue 
+	FormGenerator, Spinner, ConfirmDialogue, UrlWidget
 } from "../../loader";
 
 export const describeApiEndpoint = "/api/describe_form";
 export const faMagicIcon = "<i class='fa fa-magic'></i>";
 
-export class AutofillSomefWidget extends InputWidget {
+export class AutofillSomefWidget extends UrlWidget {
 
 	public getInputType(): string { return "url"; }
 

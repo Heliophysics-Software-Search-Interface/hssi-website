@@ -260,7 +260,35 @@ class ControlledGraphList(ControlledList):
 	@classmethod
 	def get_parent_nodes(cls) -> models.QuerySet['ControlledGraphList']:
 		''' Returns all objects that have at least one child '''
-		return cls.objects.filter(children__isnull=False).distinct()
+		return cls.objects.filter(children__isnull=False).distinct().order_by("name")
+	
+	def get_name_path(self) -> str:
+		""" get a path of all parents recursively pointing to this one """
+		path = self.name
+
+		parent = self.parent_nodes.first()
+		while parent:
+			path = parent.name + "->" + path
+			parent = parent.parent_nodes.first()
+
+		return path
+
+	def get_serialized_data(self, access, recursive = False) -> dict[str, Any]:
+		data = super().get_serialized_data(access, recursive)
+
+		if not hasattr(data, "children"): 
+			children: list[uuid.UUID] = []
+			for child in self.children.all():
+				children.append(child.id)
+			data["children"] = children
+			
+		if not hasattr(data, "parent_nodes"): 
+			parents: list[uuid.UUID] = []
+			for parent in self.parent_nodes.all():
+				parents.append(parent.id)
+			data["parents"] = parents
+			
+		return data
 
 	class Meta:
 		ordering = ['name']
@@ -462,7 +490,6 @@ class InstrumentObservatory(ControlledList):
 ## Complex Root Models ---------------------------------------------------------
 
 class FunctionCategory(ControlledGraphList):
-	access = AccessLevel.PUBLIC
 	abbreviation = models.CharField(max_length=5, null=True, blank=True)
 	backgroundColor = RGBColorField("Background Color", default="#FFFFFF", blank=True, null=True)
 	textColor = RGBColorField("Text Color", default="#000000", blank=True, null=True)
@@ -510,17 +537,17 @@ class FunctionCategory(ControlledGraphList):
 		parents = [x for x in cls.get_parent_nodes()]
 		all_objs = []
 		delta_hue = 1 / len(parents)
-		hue = 0.333 # start at green
+		hue = 0.964 # start at red
 		for parent in parents:
 			for child in parent.children.all():
-				r, g, b = colorsys.hsv_to_rgb(hue, 0.5, 0.95)
-				dark = r * 0.299 + g * 0.587 + b * 0.114 <= 0.5
+				r, g, b = colorsys.hsv_to_rgb(hue, 0.25, 0.9)
+				dark = r * 0.299 + g * 0.587 + b * 0.114 <= 0.65
 				child.backgroundColor = f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}".upper()
 				child.textColor = "#FFFFFF" if dark else "#000000"
 				if not child in all_objs: all_objs.append(child)
 			
-			r, g, b = colorsys.hsv_to_rgb(hue, 0.75, 0.75)
-			dark = r * 0.299 + g * 0.587 + b * 0.114 <= 0.5
+			r, g, b = colorsys.hsv_to_rgb(hue, 0.65, 0.9)
+			dark = r * 0.299 + g * 0.587 + b * 0.114 <= 0.65
 			parent.backgroundColor = f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}".upper()
 			parent.textColor = "#FFFFFF" if dark else "#000000"
 			all_objs.append(parent)

@@ -11,6 +11,7 @@ export type PropertyContainer = {
 	/** the tooltip that appears on hover of the information icon */
 	tooltipBestPractise?: string,
 	requirementLevel?: RequirementLevel,
+	topField?: string,
 
 } & { [key: string]: any };
 

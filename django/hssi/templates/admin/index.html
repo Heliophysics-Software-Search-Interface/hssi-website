@@ -6,24 +6,6 @@
 	<h2>HSSI ACTIONS</h2>
 	<ul>
 		<li>
-			<form action="{% url 'admin:export_db' %}" method="POST">
-				{% csrf_token %}
-				<input type="submit" value="Export EMAC Database (deprecated)">
-			</form>
-		</li>
-		<li>
-			<form action="{% url 'admin:import_db' %}" method="POST">
-				{% csrf_token %}
-				<input type="submit" value="Import EMAC Database (depricated)">
-			</form>
-		</li>
-		<li>
-			<form action="{% url 'admin:migrate_old_to_new' %}" method="POST">
-				{% csrf_token %}
-				<input type="submit" value="Migrate Old DB to New">
-			</form>
-		</li>
-		<li>
 			<form action="{% url 'admin:export_db_new' %}" method="POST">
 				{% csrf_token %}
 				<input type="submit" value="Export HSSI Database (new)">

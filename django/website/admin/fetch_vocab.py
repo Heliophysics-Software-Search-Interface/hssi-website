@@ -38,7 +38,6 @@ MODEL_URL_MAP={
 	ProgrammingLanguage.__name__: URL_PROGRAMMINGLANGUAGES,
 	FileFormat.__name__: URL_SUPPORTEDFILEFORMATS,
 	RepoStatus.__name__: URL_REPOSTATUS,
-	FunctionCategory.__name__: URL_FUNCTIONCATEGORIES,
 }
 
 def get_data(url: str) -> dict | list:
@@ -214,6 +213,7 @@ def link_concept_children(
 		concept = next((
 			c for c in concept_data if c['@id'] == obj.identifier
 		), None)
+		print("CONCEPT", concept)
 		if concept is None: continue
 		parents = concept.get(parent_field_name, [])
 		for parent in parents:

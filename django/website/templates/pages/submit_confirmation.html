@@ -21,6 +21,22 @@
 			After review, a member of our team will be in touch to discuss 
 			the next steps.
 		</p>
+		<p>
+			Submitted Data:
+		</p>
+		<div id="hssi-div-sub-data"></div>
 	</div>
 
+{% endblock %}
+
+{% block scripts %} 
+{{ block.super }}
+<script>
+	setTimeout(async () => {
+		const div = document.getElementById("hssi-div-sub-data");
+		const softwareUid = new URLSearchParams(window.location.search).get("uid")
+		const data = await getSimpleSoftwareFormData(softwareUid);
+		div.appendChild(divFromJson(data));
+	});
+</script>
 {% endblock %}

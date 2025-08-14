@@ -14,7 +14,7 @@ import {
 	ConfirmDialogue, 
 } from "./loader";
 
-function main() {
+function initForms() {
 	
 	// register widgets that can be generated on clientside
 	Widget.registerWidgets(
@@ -35,8 +35,9 @@ function main() {
 
 	// generate the forms
 	FormGenerator.generateForm(null);
+}
 
-	// TODO smarter initialization
+function initDialogue() {
 	ConfirmDialogue.validateInstance();
 	AutofillDialoge.validateInstance();
 	RorFinder.getInstance();
@@ -44,6 +45,6 @@ function main() {
 	DoiDataciteFinder.getInstance();
 }
 
-// call main when document DOM tree is finished building so that we can access
-// all elements we need
-document.addEventListener("DOMContentLoaded", main);
+const win = window as any;
+win.initDialogue = initDialogue;
+win.initForms = initForms;

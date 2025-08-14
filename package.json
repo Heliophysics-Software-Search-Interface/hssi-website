@@ -3,6 +3,7 @@
 	"module": "frontend/index.ts",
 	"type": "module",
 	"private": true,
+	"sideEffects": true,
 	"devDependencies": {
 		"esbuild": "^0.25.4"
 	},

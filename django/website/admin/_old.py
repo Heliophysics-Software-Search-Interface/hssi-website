@@ -18,13 +18,13 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 from ..util import * 
-from ..constants import SaveType
 from ..models import *
 from ..views import migrate_db_old_to_new
-from .. import submissions
 from .csv_export import export_db_csv, import_db_csv, remove_all_model_entries
+from .parse_ttl import parse_ttl
 from .fetch_vocab import (
-	DataListConcept, link_concept_children, get_data, get_concepts, MODEL_URL_MAP
+	DataListConcept, link_concept_children, get_data, get_concepts, 
+	MODEL_URL_MAP, URL_FUNCTIONCATEGORIES
 )
 
 from django.db.models import F
@@ -55,8 +55,6 @@ class HssiAdminSite(admin.AdminSite):
 		# final pattern in release builds shouldn't cause any issues.. hopefully
 		urls_base = super().get_urls()
 		urls = urls_base[:-1] + [
-			path('export_db/', view_export_db, name='export_db'),
-			path('import_db/', view_import_db, name='import_db'),
 			path('export_db_new/', view_export_db_new, name='export_db_new'),
 			path('import_db_new/', view_import_db_new, name='import_db_new'),
 			path('get_metadata/', view_get_metadata, name='get_metadata'),
@@ -66,45 +64,6 @@ class HssiAdminSite(admin.AdminSite):
 		return urls
 
 ## HSSI Admin Views
-def import_db_csvs():
-	call_command('import_website_database')
-
-def view_export_db(request: HttpRequest) -> HttpResponse:
-	"""
-	Export the database to csv files if requested by super user
-
-	Parameters
-	----------
-	request : HttpRequest
-		the request object sent from web browser
-	"""
-
-	# only allow post requests from super user to export the database
-	if request.method == 'POST' and request.user.is_superuser:
-		print("Exporting database to csv files..")
-		export_database()
-	
-	# redirect to admin page
-	return redirect('admin:index')
-
-def view_import_db(request: HttpRequest) -> HttpResponse:
-	"""
-	Reimport the database from the csv files if requested by super user
-
-	Parameters
-	----------
-	request : HttpRequest
-		the request object sent from web browser
-	"""
-
-	# only allow post requests from super user to reimport the database
-	if request.method == 'POST' and request.user.is_superuser:
-
-		print("Reimporting database from csv files..")
-		import_db_csvs()
-	
-	# redirect to admin page
-	return redirect('admin:index')
 
 def view_get_metadata(request: HttpRequest) -> HttpResponse:
 	
@@ -196,9 +155,12 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 		for old_obj in old_objs: old_obj.name = old_obj.name + " (OUTDATED)"
 
 		if issubclass(model, ControlledList):
-			if issubclass(model, ControlledGraphList):
-				link_concept_children(model, concept_data)
 			model.post_fetch()
+	
+	# function categories are handled differently because they have a more 
+	# complicated structure
+	parse_ttl(FunctionCategory, URL_FUNCTIONCATEGORIES)
+	FunctionCategory.post_fetch()
 
 	return redirect('admin:index')
 
@@ -477,53 +439,6 @@ class SubmissionResource(resources.ModelResource):
 	class Meta:
 		model = Submission
 
-def resend_receipt_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.submission_was_saved(submission, SaveType.SUBMIT)
-resend_receipt_email.short_description = "Send the submission receipt email again"
-
-def send_initial_recruitment_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.send_contact_email(submission, SaveType.FIRSTCONTACT)
-	# Updates all of the "first contact" submissions to "successfully contacted" and increments contact_count
-	queryset.update(status='CONTACTED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_initial_recruitment_email.short_description = "Send Initial Recruitment Email: 1st Contact"
-
-def send_followup_recruitment_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.send_contact_email(submission, SaveType.RECONTACT)
-	# Updates the contacted_date of the previously contacted submissions and increments contact_count
-	queryset.update(status='CONTACTED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_followup_recruitment_email.short_description = "Send Re-Contact Email: Previously Contacted Tools"
-
-def send_final_recruitment_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.send_contact_email(submission, SaveType.FINALCONTACT)
-	# Updates the contacted_date of the previously contacted submissions and increments contact_count
-	queryset.update(status='REJECTED_ABANDONED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_final_recruitment_email.short_description = "Send Final Recruitment Email: Previously Contacted Tools"
-
-def send_initial_inlit_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.send_contact_email(submission, SaveType.INITIALINLITCONTACT)
-	# Updates the contacted_date of the previously contacted submissions and increments contact_count
-	queryset.update(status='CONTACTED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_initial_inlit_email.short_description = "Send Initial Recruitment Email for In-Lit Resource: 1st Contact"
-
-def send_followup_inlit_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.send_contact_email(submission, SaveType.SECONDINLITCONTACT)
-	# Updates the contacted_date of the previously contacted submissions and increments contact_count
-	queryset.update(status='CONTACTED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_followup_inlit_email.short_description = "Send Followup Informational Email for In-Lit Resource: Previously Contacted Tools"
-
-def send_final_inlit_email(modeladmin, request, queryset):
-	for submission in queryset:
-		submissions.send_contact_email(submission, SaveType.FINALINLITCONTACT)
-	# Updates the contacted_date of the previously contacted submissions and increments contact_count
-	queryset.update(status='REJECTED_ABANDONED', contact_count=F('contact_count')+1, date_contacted=timezone.now())
-send_final_inlit_email.short_description = "Send Final Informational Email for In-Lit Resource: Previously Contacted Tools"
-
 API_KEY = "ADS_DEVLOPER_TOKEN" #settings.ADS_DEV_KEY
 def isInlit(submission):
 	# if 'adsabs.harvard.edu' in submission.ads_abstract_link:
@@ -544,47 +459,6 @@ def isInlit(submission):
 	#     if results.text[:8] == '@ARTICLE':
 	#         return True
 	return False
-
-def send_submission_contact_email(modeladmin, request, queryset):
-	for submission in queryset:
-		if submission.status == SubmissionStatus.FIRST_CONTACT:
-			if isInlit(submission):
-				submissions.send_contact_email(submission, SaveType.INITIALINLITCONTACT)
-			else:
-				submissions.send_contact_email(submission, SaveType.FIRSTCONTACT)
-			# Updates the contacted_date of the contacted submissions and increments contact_count
-			submission.status = SubmissionStatus.CONTACTED
-			submission.contact_count += 1
-			submission.date_contacted = timezone.now()
-			submission.save()
-		elif submission.status == SubmissionStatus.CONTACTED:
-			if isInlit(submission):
-				if submission.contact_count == 1:
-					submissions.send_contact_email(submission, SaveType.SECONDINLITCONTACT)
-					submission:Submission
-					submission.make_in_lit_resource()
-					submission.status = SubmissionStatus.IN_LITERATURE
-				else:
-					submissions.send_contact_email(submission, SaveType.FINALINLITCONTACT)
-					submission:Submission
-					submission.make_in_lit_resource()
-					submission.status = SubmissionStatus.IN_LITERATURE
-			else:
-				if submission.contact_count == 1:
-					submissions.send_contact_email(submission, SaveType.RECONTACT)
-				else:
-					submissions.send_contact_email(submission, SaveType.FINALCONTACT)
-					submission.status = SubmissionStatus.REJECTED_ABANDONED
-					submission.status_notes = "Rejected by the drop-down Contact action. The resource is not in the literature and the developer has been contacted at least 3 times.\n" + submission.status_notes
-			submission.contact_count += 1
-			submission.date_contacted = timezone.now()
-			submission.save()
-		elif submission.status == SubmissionStatus.IN_LITERATURE and submission.contact_count == 2:
-			submissions.send_contact_email(submission, SaveType.FINALINLITCONTACT)
-			submission.contact_count += 1
-			submission.date_contacted = timezone.now()
-			submission.save()
-send_submission_contact_email.short_description = "Send Contact Emails for the Selected Submissions"
 
 def mark_missing_info(modeladmin, request, queryset):
 	queryset.update(status = SubmissionStatus.MISSING_INFO)
@@ -677,7 +551,7 @@ class SubmissionAdmin(ImportExportModelAdmin):
 	search_fields = ['search_keywords', 'name']
 
 	actions = [
-		fill_forms_from_repo_url, update_times_from_repo_url, send_submission_contact_email, resend_receipt_email, mark_missing_info,
+		fill_forms_from_repo_url, update_times_from_repo_url, mark_missing_info,
 		mark_ready_for_first_contact, mark_contacted, mark_paused, mark_received, mark_in_review, mark_accepted, make_resource,
 		mark_under_development,make_in_lit_resource, mark_rejected_abandoned, mark_spam, update_resource
 	]

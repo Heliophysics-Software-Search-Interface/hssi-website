@@ -7,6 +7,7 @@
 
 export * from "./util";
 export * from "./simpleEvent";
+export * from "./modelStructure";
 
 export * from "./filters/filterGroup";
 export * from "./filters/filterMenuItem";

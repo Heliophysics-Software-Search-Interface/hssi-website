@@ -3,7 +3,7 @@ import {
 	type JSONArray, type JSONObject, type SoftwareData,
 } from "../loader";
 
-const softwarModelName = "Software";
+const softwarModelName = "VisibleSoftware";
 
 /** 
  * a list-style display that shows users different software resource entries 

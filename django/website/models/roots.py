@@ -159,15 +159,19 @@ class HssiModel(models.Model, metaclass=HssiBase):
 		
 		return subfields
 	
-	def get_serialized_data(self, access: AccessLevel, recursive: bool = False) -> dict[str, Any]:
+	def get_serialized_data(
+		self, 
+		access: AccessLevel, 
+		recursive: bool = False, 
+		accessOverride: AccessLevel = AccessLevel.PUBLIC
+	) -> dict[str, Any]:
 		"""
 		return the instance fields that are available to the specified access 
 		level as data in a dictionary. Foreign keys will be fetched and nested 
-		in the data structure if 'recursive' is specified
+		in the data structure if 'recursive' is specified.
 		"""
-		model = type(self)
-		if access < model.access:
-			raise Exception(f"Unauthorized access, {access} < {model.access}")
+		if access < self.access and accessOverride < self.access:
+			raise Exception(f"Unauthorized access, {access} < {self.access}")
 		
 		datas: str = serialize('json', [self])
 		data: dict[str, Any] = json.loads(datas)[0].get('fields')
@@ -193,17 +197,39 @@ class HssiModel(models.Model, metaclass=HssiBase):
 					for item in val:
 						if not item: continue
 						try:
-							new_item = lookup(uuid.UUID(item), model._meta.get_field(key))
+							new_item = lookup(uuid.UUID(item), self._meta.get_field(key))
 							if new_item: new_val.append(new_item)
 						except Exception: break
 				else:
-					try: new_val =  lookup(uuid.UUID(val), model._meta.get_field(key))
+					try: new_val =  lookup(uuid.UUID(val), self._meta.get_field(key))
 					except: continue
 				if new_val: data[key] = new_val
 		return data
 	
 	class Meta:
 		abstract = True
+
+class HssiSet(HssiModel):
+	access: AccessLevel = AccessLevel.ADMIN
+	target_model: type[HssiModel] = None
+	id = models.UUIDField(primary_key=True)
+
+	def get_search_terms(self):
+		return self.target_model.objects.get(pk=self.pk).get_search_terms()
+	def get_choice(self):
+		return self.target_model.objects.get(pk=self.pk).get_choice()
+	def get_tooltip(self):
+		return self.target_model.objects.get(pk=self.pk).get_tooltip()
+	def get_serialized_data(self, access, recursive = False, accessOverride = AccessLevel.PUBLIC):
+		if access < self.access and accessOverride < self.access:
+			raise Exception(f"Unauthorized access, {access} < {self.access}")
+		return self.target_model.objects.get(pk=self.pk).get_serialized_data(
+			access, 
+			recursive, 
+			self.target_model.access
+		)
+
+	class Meta: abstract = True
 
 class ControlledList(HssiModel):
 	'''Base class for all controlled lists in the HSSI project'''
@@ -490,6 +516,7 @@ class InstrumentObservatory(ControlledList):
 ## Complex Root Models ---------------------------------------------------------
 
 class FunctionCategory(ControlledGraphList):
+	access = AccessLevel.PUBLIC
 	abbreviation = models.CharField(max_length=5, null=True, blank=True)
 	backgroundColor = RGBColorField("Background Color", default="#FFFFFF", blank=True, null=True)
 	textColor = RGBColorField("Text Color", default="#000000", blank=True, null=True)

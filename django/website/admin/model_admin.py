@@ -213,7 +213,27 @@ class SoftwareVersionAdmin(HSSIModelAdmin): resource_class = SoftwareVersionReso
 
 class SoftwareResource(resources.ModelResource):
 	class Meta: model = Software
-class SoftwareAdmin(HSSIModelAdmin): resource_class = SoftwareResource
+class SoftwareAdmin(HSSIModelAdmin): 
+	resource_class = SoftwareResource
+
+	@action(description="Publish to Visible Software")
+	def mark_visible(self, 
+		request: HttpRequest, 
+		queryset: QuerySet[Software]
+	):
+		for soft in queryset:
+			exists = not not VisibleSoftware.objects.filter(pk=soft.pk).first()
+			if exists: continue
+			VisibleSoftware.objects.create(id=uuid.UUID(str(soft.id)))
+			print(f"made {soft.softwareName}:{soft.id} visible to public")
+
+
+	actions = [
+		mark_visible,
+		HSSIModelAdmin.fix_uuid_chains, 
+		HSSIModelAdmin.collapse_model_entries,
+	]
+
 
 class VisibleSoftwareResource(resources.ModelResource):
 	class Meta: model = VisibleSoftware

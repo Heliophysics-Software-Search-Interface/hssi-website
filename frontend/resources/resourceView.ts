@@ -1,6 +1,6 @@
 import { 
 	apiModel, apiSlugRowsAll, fetchTimeout, ResourceItem, 
-	type JSONArray, type JSONObject,
+	type JSONArray, type JSONObject, type SoftwareData,
 } from "../loader";
 
 const softwarModelName = "Software";
@@ -30,7 +30,7 @@ export class ResourceView {
 
 		// create new items from data
 		for(const data of this.itemData) {
-			const item = ResourceItem.createFromData(data);
+			const item = ResourceItem.createFromData(data as SoftwareData);
 			console.log(data)
 			this.containerElement.appendChild(item.containerElement);
 			this.items.push(item);

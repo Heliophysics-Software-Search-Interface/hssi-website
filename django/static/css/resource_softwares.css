@@ -1,0 +1,16 @@
+.resource-item {
+	background-color: #ececec;
+	border: 1px solid #bcbcbd;
+	border-radius: 5px;
+	padding: 20px;
+	margin-bottom: 10px;
+}
+
+.resource-item .resource-header {
+	margin-bottom: 10px;
+}
+
+.resource-item .resource-title {
+	font-size: 18px;
+	font-weight: bold;
+}

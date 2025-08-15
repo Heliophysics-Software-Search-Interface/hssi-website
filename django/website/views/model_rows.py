@@ -24,9 +24,13 @@ def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 	objects = model.objects.all()
 	arr: list[dict[str, Any]] = []
 
+	recurse = False
+	if(request.GET.get("recursive", "").lower() == "true"):
+		recurse = True
+
 	for object in objects:
 		try:
-			objdata = object.get_serialized_data(access, False)
+			objdata = object.get_serialized_data(access, recurse)
 			arr.append(objdata)
 		except Exception as e:
 			print(e)

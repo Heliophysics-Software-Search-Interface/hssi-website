@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 	from .submission_info import SubmissionInfo
 
 class Person(HssiModel):
-	access = AccessLevel.ADMIN
+	access = AccessLevel.PUBLIC
 	'''Metadata to hold needed information about someone'''
 	firstName = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
 	lastName = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")

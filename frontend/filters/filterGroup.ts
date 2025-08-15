@@ -1,7 +1,7 @@
 import { 
 	FilterMenu, FilterMenuItem,
 	SimpleEvent,
-} from "../../loader";
+} from "../loader";
 
 const styleFilterContainer = "filter-container";
 const styleFilterControls = "filter-controls";

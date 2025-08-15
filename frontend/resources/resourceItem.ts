@@ -35,8 +35,19 @@ export class ResourceItem{
 		headerDiv.appendChild(titleDiv);
 
 		const headInfoDiv = document.createElement("div");
-		headInfoDiv.innerText = "Lorem Ipsum";
 		headerDiv.appendChild(headInfoDiv);
+
+		const authors = document.createElement("span");
+		headInfoDiv.appendChild(authors)
+
+		for(let i = 0; i < this.data.authors.length; i++){
+			const author = this.data.authors[i];
+			const authSpan = document.createElement("span");
+			console.log(author)
+			authSpan.innerText = `${author.firstName} ${author.lastName}`;
+			if(i < this.data.authors.length - 1) authSpan.innerText += "; ";
+			headInfoDiv.appendChild(authSpan);
+		}
 
 		const descContainerDiv = document.createElement("div");
 		this.containerElement.appendChild(descContainerDiv);

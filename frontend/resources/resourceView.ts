@@ -31,7 +31,6 @@ export class ResourceView {
 		// create new items from data
 		for(const data of this.itemData) {
 			const item = ResourceItem.createFromData(data as SoftwareData);
-			console.log(data)
 			this.containerElement.appendChild(item.containerElement);
 			this.items.push(item);
 		}
@@ -42,9 +41,10 @@ export class ResourceView {
 		// TODO implement querying
 
 		// fetch all software objects from the database
-		const url = apiModel + softwarModelName + apiSlugRowsAll;
+		const url = apiModel + softwarModelName + apiSlugRowsAll + "?recursive=true";
 		const result = await fetchTimeout(url);
 		const data = await result.json();
+		console.log(data);
 		this.itemData = data.data;
 	}
 

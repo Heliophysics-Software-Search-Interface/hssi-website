@@ -44,7 +44,6 @@ export class ResourceItem{
 		for(let i = 0; i < this.data.authors.length; i++){
 			const author = this.data.authors[i];
 			const authSpan = document.createElement("span");
-			console.log(author)
 			authSpan.innerText = author.firstName || "";
 			if (author.firstName) authSpan.innerText += " ";
 			authSpan.innerText += author.lastName;

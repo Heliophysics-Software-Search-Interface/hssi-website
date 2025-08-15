@@ -44,7 +44,6 @@ export class ResourceView {
 		const url = apiModel + softwarModelName + apiSlugRowsAll + "?recursive=true";
 		const result = await fetchTimeout(url);
 		const data = await result.json();
-		console.log(data);
 		this.itemData = data.data;
 	}
 

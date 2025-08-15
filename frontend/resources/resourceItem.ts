@@ -6,6 +6,7 @@ const styleResourceItem = "resource-item";
 const styleResourceHeader = "resource-header";
 const styleResourceTitle = "resource-title";
 const styleDescription = "description";
+const styleBottomButtons = "bottom-buttons";
 
 /**
  * represents a single software resource submitted to the HSSI database, 
@@ -44,7 +45,9 @@ export class ResourceItem{
 			const author = this.data.authors[i];
 			const authSpan = document.createElement("span");
 			console.log(author)
-			authSpan.innerText = `${author.firstName} ${author.lastName}`;
+			authSpan.innerText = author.firstName || "";
+			if (author.firstName) authSpan.innerText += " ";
+			authSpan.innerText += author.lastName;
 			if(i < this.data.authors.length - 1) authSpan.innerText += "; ";
 			headInfoDiv.appendChild(authSpan);
 		}
@@ -65,6 +68,38 @@ export class ResourceItem{
 		// TODO add logo
 
 		// TODO add buttons: repo, docs, doi, ref pub, 
+
+		const bottomButtonContainer = document.createElement("div");
+		bottomButtonContainer.classList.add(styleBottomButtons);
+		this.containerElement.appendChild(bottomButtonContainer);
+		
+		if(this.data.codeRepositoryUrl){
+			const repoButton = document.createElement("a");
+			repoButton.innerText = "Code";
+			repoButton.href = this.data.codeRepositoryUrl;
+			bottomButtonContainer.appendChild(repoButton);
+		}
+
+		if(this.data.documentation){
+			const docsButton = document.createElement("a");
+			docsButton.innerText = "Documentation";
+			docsButton.href = this.data.documentation;
+			bottomButtonContainer.appendChild(docsButton);
+		}
+
+		if(this.data.referencePublication){
+			const refpubButton = document.createElement("a");
+			refpubButton.innerText = "Publication";
+			refpubButton.href = this.data.referencePublication.identifier;
+			bottomButtonContainer.appendChild(refpubButton);
+		}
+
+		if(this.data.persistentIdentifier){
+			const doiButton = document.createElement("a");
+			doiButton.innerText = "DOI";
+			doiButton.href = this.data.persistentIdentifier;
+			bottomButtonContainer.appendChild(doiButton);
+		}
 	}
 
 	/** destroy and remove item from DOM */

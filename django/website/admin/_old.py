@@ -9,10 +9,10 @@ from django.db.models import QuerySet
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-
 #Libraries and code for sending queries to ADS and checking bibcodes
 import json
 from django.conf import settings
+from django.core.mail import send_mail
 
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin

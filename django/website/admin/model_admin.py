@@ -2,12 +2,13 @@ import uuid
 
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
+from django.utils import timezone
 from django.contrib.admin import action, register
 from django.http import HttpRequest
 from django.db.models import QuerySet, ManyToManyField
 
 from ..models.people import Person, Curator
-from ..models.software import Software, VisibleSoftware, SoftwareVersion
+from ..models.software import Software, VisibleSoftware, SoftwareVersion, SoftwareEditQueue
 from ..models.submission_info import SubmissionInfo
 from ..models.auxillary_info import RelatedItem, Award
 from ..models.roots import (
@@ -213,7 +214,7 @@ class SoftwareVersionAdmin(HSSIModelAdmin): resource_class = SoftwareVersionReso
 
 class SoftwareResource(resources.ModelResource):
 	class Meta: model = Software
-class SoftwareAdmin(HSSIModelAdmin): 
+class SoftwareAdmin(HSSIModelAdmin):
 	resource_class = SoftwareResource
 
 	@action(description="Publish to Visible Software")
@@ -227,20 +228,58 @@ class SoftwareAdmin(HSSIModelAdmin):
 			VisibleSoftware.objects.create(id=uuid.UUID(str(soft.id)))
 			print(f"made {soft.softwareName}:{soft.id} visible to public")
 
+	@action(description="Add to Edit Queue")
+	def add_edit_queue(self, request: HttpRequest, queryset: QuerySet[Software]):
+		for soft in queryset: SoftwareEditQueue.create(soft)
 
 	actions = [
 		mark_visible,
+		add_edit_queue,
 		HSSIModelAdmin.fix_uuid_chains, 
 		HSSIModelAdmin.collapse_model_entries,
 	]
-
 
 class VisibleSoftwareResource(resources.ModelResource):
 	class Meta: model = VisibleSoftware
 class VisibleSoftwareAdmin(ImportExportModelAdmin): resource_class = VisibleSoftwareResource
 
+class SoftwareEditQueueResource(resources.ModelResource):
+	class Meta: Model = SoftwareEditQueue
+class SoftwareEditQueueAdmin(ImportExportModelAdmin): 
+	resource_class = SoftwareEditQueueResource
+
+	list_display = ('target_name', 'created', 'id')
+
+	@action(description="Prune expired items")
+	def remove_selected(self, request: HttpRequest, query: QuerySet[SoftwareEditQueue]):
+		to_remove: list[SoftwareEditQueue] = []
+
+		for item in query:
+			elapsed = timezone.now() - item.created
+			if elapsed > item.time_threshold:
+				print(f"removing '{self.target_name(item)}' from editable queue")
+				to_remove.append(item)
+		
+		for item in to_remove: item.delete()
+
+	def target_name(self, obj: 'SoftwareEditQueue') -> str:
+		if obj.target_software: return obj.target_software.softwareName
+		return "None"
+	
+	actions = [
+		remove_selected
+	]
+
+
 # Admin definitions for submission_info module ---------------------------------
 
 class SubmissionInfoResource(resources.ModelResource):
 	class Meta: model = SubmissionInfo
-class SubmissionInfoAdmin(HSSIModelAdmin): resource_class = SubmissionInfoResource
+class SubmissionInfoAdmin(HSSIModelAdmin): 
+	resource_class = SubmissionInfoResource
+
+	def submitter_name(self, obj: SubmissionInfo):
+		if obj.submitter: return obj.submitter.fullName
+		return "None"
+	
+	list_display = ('submitter_name', 'submissionDate', 'id')

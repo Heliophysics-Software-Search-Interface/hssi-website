@@ -587,6 +587,7 @@ class TeamMemberAdmin(ImportExportModelAdmin):
 from .model_admin import *
 
 site.register(Software, admin_class=SoftwareAdmin)
+site.register(SoftwareEditQueue, admin_class=SoftwareEditQueueAdmin)
 site.register(FileFormat, admin_class=FileFormatAdmin)
 site.register(ProgrammingLanguage, admin_class=ProgrammingLanguageAdmin)
 site.register(VisibleSoftware, admin_class=VisibleSoftwareAdmin)

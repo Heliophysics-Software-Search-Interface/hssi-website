@@ -21,6 +21,7 @@ export * from "./dialogues/jsonView";
 export * from "./dialogues/spinner";
 export * from "./dialogues/popupDialogue";
 export * from "./dialogues/confirmDialogue";
+export * from "./dialogues/textInputDialogue";
 export * from "./dialogues/autofillDialogue";
 export * from "./dialogues/apiQueryPopup";
 export * from "./dialogues/rorFinder";

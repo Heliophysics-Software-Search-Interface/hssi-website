@@ -148,7 +148,7 @@ export class FormGenerator {
 
 	private onSubmit(e: SubmitEvent): void{
 
-		// we don't want the default html form functionality submiting anything
+		// we don't want the default html form functionality submitting anything
 		e.preventDefault();
 
 		// check to see all required elements are filled out

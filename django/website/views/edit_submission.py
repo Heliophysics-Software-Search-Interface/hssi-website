@@ -15,11 +15,13 @@ from ..forms import (
 )
 
 def request_edit_link(request: HttpRequest, uid: str) -> HttpResponse:
+	if request.method != "POST": return HttpResponseBadRequest("expected POST")
 	try:
+		test_email = request.body.decode("utf-8").lower()
+		if len(test_email) <= 0: return HttpResponseBadRequest()
 		id = uuid.UUID(uid)
 		software = Software.objects.get(pk=id)
 		correct_emails: list[str] = software.submissionInfo.submitter.email_list()
-		test_email = request.body.decode("utf-8").lower()
 		for correct_email in correct_emails:
 			if test_email == correct_email.lower():
 				email_edit_link(software.submissionInfo)
@@ -79,7 +81,6 @@ def submit_edits(request: HttpRequest, uid: str) -> HttpResponse:
 
 	except Exception: return HttpResponseServerError()
 	return HttpResponse(status=204)
-
 
 def email_edit_link(submission: SubmissionInfo):
 	queue_item = SoftwareEditQueue.create(submission.software)

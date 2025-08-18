@@ -53,7 +53,10 @@ def submit_data(request: HttpRequest) -> HttpResponse:
 	submisison_id = handle_submission_data(json_data)
 	software_id = SubmissionInfo.objects.get(pk=submisison_id).software.pk
 
-	return redirect(f"/submit/submitted?uid={str(software_id)}")
+	# mark for review
+	InReviewSoftware.objects.create(pk=UUID(str(software_id)))
+
+	return redirect(f"/submit/submitted/?uid={str(software_id)}")
 
 def handle_submission_data(data: dict, software_target: Software = None) -> uuid.UUID:
 	""" store submission data in the specified software target """

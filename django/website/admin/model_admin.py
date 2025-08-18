@@ -9,7 +9,10 @@ from django.db.models import QuerySet, ManyToManyField
 
 from ..views import email_edit_link as v_email_edit_link
 from ..models.people import Person, Curator
-from ..models.software import Software, VisibleSoftware, SoftwareVersion, SoftwareEditQueue
+from ..models.software import (
+    Software, VisibleSoftware, SoftwareVersion, SoftwareEditQueue,
+	InReviewSoftware
+)
 from ..models.submission_info import SubmissionInfo
 from ..models.auxillary_info import RelatedItem, Award
 from ..models.roots import (
@@ -229,12 +232,21 @@ class SoftwareAdmin(HSSIModelAdmin):
 			VisibleSoftware.objects.create(id=uuid.UUID(str(soft.id)))
 			print(f"made {soft.softwareName}:{soft.id} visible to public")
 
+	@action(description="Mark as In Review")
+	def mark_in_review(self, request: HttpRequest, queryset: QuerySet[Software]):
+		for soft in queryset:
+			exists = not not InReviewSoftware.objects.filter(pk=soft.pk).first()
+			if exists: continue
+			InReviewSoftware.objects.create(id=uuid.UUID(str(soft.id)))
+			print(f"marked {soft.softwareName}:{soft.id} as in review")
+
 	@action(description="Add to Edit Queue")
 	def add_edit_queue(self, request: HttpRequest, queryset: QuerySet[Software]):
 		for soft in queryset: SoftwareEditQueue.create(soft)
 
 	actions = [
 		mark_visible,
+		mark_in_review,
 		add_edit_queue,
 		HSSIModelAdmin.fix_uuid_chains, 
 		HSSIModelAdmin.collapse_model_entries,
@@ -243,6 +255,10 @@ class SoftwareAdmin(HSSIModelAdmin):
 class VisibleSoftwareResource(resources.ModelResource):
 	class Meta: model = VisibleSoftware
 class VisibleSoftwareAdmin(ImportExportModelAdmin): resource_class = VisibleSoftwareResource
+
+class InReviewSoftwareResource(resources.ModelResource):
+	class Meta: model = InReviewSoftware
+class InReviewSoftwareAdmin(ImportExportModelAdmin): resource_class = InReviewSoftwareResource
 
 class SoftwareEditQueueResource(resources.ModelResource):
 	class Meta: Model = SoftwareEditQueue

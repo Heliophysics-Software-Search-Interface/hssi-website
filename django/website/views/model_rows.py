@@ -64,24 +64,35 @@ def get_model_row(request: HttpRequest, model_name: str, uid: str) -> JsonRespon
 def api_view(request: HttpRequest, uid: str) -> JsonResponse:
 	""" user-friendly data view of software submission data """
 	software: Software = None
+	access = AccessLevel.from_user(request.user)
+	access_ovr = AccessLevel.PUBLIC
 	try: 
 		softwareid = uuid.UUID(uid)
-		software = Software.objects.get(pk=softwareid)
-	except: return HttpResponseBadRequest(f"invalid id '{uid}")
+		software = VisibleSoftware.objects.get(pk=softwareid)
+		access_ovr = VisibleSoftware.target_model.access
+	except Exception: 
+		try:
+			softwareid = uuid.UUID(uid)
+			software = InReviewSoftware.objects.get(pk=softwareid)
+			access_ovr = InReviewSoftware.target_model.access
+		except:
+			return HttpResponseBadRequest(f"invalid id '{uid}")
 
-	access = AccessLevel.from_user(request.user)
+	software = Software.objects.get(pk=software.pk)
 
 	data = SUBMISSION_FORM_FIELDS.serialize_model_object(
 		software, 
 		True, 
-		access
+		access, 
+		access_ovr
 	)
 
 	try:
 		submitter_data = SUBMISSION_FORM_SUBMITTER.serialize_model_object(
 			software.submissionInfo.submitter, 
 			False,
-			access
+			access,
+			access_ovr
 		)
 		submitter_data["id"] = software.submissionInfo.submitter.id
 		data[FIELD_SUBMITTERNAME] = submitter_data

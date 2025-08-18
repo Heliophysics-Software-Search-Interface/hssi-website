@@ -216,8 +216,14 @@ class Software(HssiModel):
 		except ObjectDoesNotExist: 
 			return False
 
+class InReviewSoftware(HssiSet):
+	""" store ids to flag softwares which are currently under review """
+	access = AccessLevel.PUBLIC
+	target_model = Software
+	def __str__(self): return str(self.id)
+
 class VisibleSoftware(HssiSet):
-	'''Stores ids to flag softwares with the given ids as visible'''
+	"""Stores ids to flag softwares with the given ids as visible"""
 	access = AccessLevel.PUBLIC
 	target_model = Software
 

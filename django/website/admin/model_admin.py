@@ -1,4 +1,4 @@
-import uuid
+import uuid, json
 
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
@@ -7,6 +7,7 @@ from django.contrib.admin import action, register
 from django.http import HttpRequest
 from django.db.models import QuerySet, ManyToManyField
 
+from ..views import email_edit_link as v_email_edit_link
 from ..models.people import Person, Curator
 from ..models.software import Software, VisibleSoftware, SoftwareVersion, SoftwareEditQueue
 from ..models.submission_info import SubmissionInfo
@@ -278,8 +279,21 @@ class SubmissionInfoResource(resources.ModelResource):
 class SubmissionInfoAdmin(HSSIModelAdmin): 
 	resource_class = SubmissionInfoResource
 
+	@action(description="Email edit submission link")
+	def email_edit_link(self, request: HttpRequest, query: QuerySet[SubmissionInfo]):
+		for info in query: v_email_edit_link(info)
+
+	actions = [
+		email_edit_link,
+		HSSIModelAdmin.fix_uuid_chains,
+		HSSIModelAdmin.collapse_model_entries,
+	]
+
+	def submission_name(self, obj: SubmissionInfo):
+		return obj.software.softwareName
+
 	def submitter_name(self, obj: SubmissionInfo):
 		if obj.submitter: return obj.submitter.fullName
 		return "None"
 	
-	list_display = ('submitter_name', 'submissionDate', 'id')
+	list_display = ('submission_name', 'submitter_name', 'submissionDate', 'id')

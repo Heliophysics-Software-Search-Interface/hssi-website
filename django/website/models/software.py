@@ -18,6 +18,7 @@ from .roots import ( LEN_NAME, HssiModel,
 
 class SoftwareVersion(HssiModel):
 	'''A snapshot of the software metadata whenever it's updated to a new version'''
+	access = AccessLevel.PUBLIC
 	number = models.CharField(max_length=LEN_NAME)
 	release_date = models.DateField(blank=True, null=True)
 	description = models.TextField(blank=True, null=True)
@@ -262,4 +263,4 @@ class SoftwareEditQueue(HssiModel):
 		queue_item.created = timezone.now()
 		queue_item.target_software = target
 		queue_item.save()
-		return cls
+		return queue_item

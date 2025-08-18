@@ -1,5 +1,6 @@
 export const softwareApiUrl = "/api/models/Software/rows/";
 export const modelApiUrl = "/api/view/"
+export const editApiUrl = "/sapi/software_edit_data/";
 export type JSONValue = string | number | boolean | null | JSONObject | JSONArray;
 export interface JSONObject { [key: string]: JSONValue }
 export interface JSONArray<T = JSONValue> extends Array<T> { }
@@ -123,11 +124,37 @@ export async function getSoftwareData(uid: string): Promise<JSONObject> {
 }
 
 /** 
+ * fetch the software data from the submission with the given uid, uses secure
+ * api to fetch from secret url with slightly elevated priveleges to get 
+ * submitter data
+ */
+export async function getEditData(uid: string): Promise<JSONObject> {
+	const url = editApiUrl + uid;
+	console.log(`fetching edit data at ${url}`);
+	const result = await fetchTimeout(url);
+	const data = await result.json();
+	console.log("recieve edit data", data)
+	return data;
+}
+
+/** 
  * gets the software data from the proper database table and formats it to be 
  * compatible with the { @see FormGenerator.fillForm } method
  */
 export async function getSoftwareFormData(uid: string): Promise<JSONObject> {
 	const data = await getSoftwareData(uid);
+	console.log("fetched software data: ", data);
+	return data;
+}
+
+/** 
+ * gets the software data from the proper database table and formats it to be 
+ * compatible with the { @see FormGenerator.fillForm } method. This is meant 
+ * for use with edit form page, as it will have slightly elevated priveleges to
+ * fetch submitter data if a valid hit for the secret url is found
+ */
+export async function getSoftwareEditFormData(uid: string): Promise<JSONObject> {
+	const data = await getEditData(uid);
 	if(!data.submitter){
 		const submitter: JSONObject = (
 			data.submissionInfo as JSONObject
@@ -137,7 +164,7 @@ export async function getSoftwareFormData(uid: string): Promise<JSONObject> {
 		// fill form function on the form generator, given the submission info
 		if(submitter) {
 			submitter.submitterName = (
-				(submitter.person as JSONObject)?.firstName as string + 
+				(submitter.person as JSONObject)?.firstName as string + " " +
 				(submitter.person as JSONObject)?.lastName as string
 			);
 			let emails = JSON.parse((submitter.email as string).replaceAll("'", '"'));
@@ -162,4 +189,5 @@ export async function getSimpleSoftwareFormData(uid: string): Promise<JSONObject
 const win = window as any;
 win.getSoftwareData = getSoftwareData;
 win.getSoftwareFormData = getSoftwareFormData;
+win.getSoftwareEditFormData = getSoftwareEditFormData;
 win.getSimpleSoftwareFormData = getSimpleSoftwareFormData;

@@ -197,6 +197,7 @@ class ModelStructure:
 		object: 'HssiModel', 
 		recursive: bool,
 		access: AccessLevel = AccessLevel.PUBLIC,
+		access_ovr: AccessLevel = AccessLevel.PUBLIC,
 	) -> dict[str, Any]:
 		"""
 		force an object to conform to this specific model structure.
@@ -204,7 +205,7 @@ class ModelStructure:
 		the values from fields specified in this structure, replacing the 
 		field names as defined
 		"""
-		if access < self.target_model.access:
+		if access < self.target_model.access and access_ovr < self.target_model.access:
 			raise Exception(f"Unauthorized access, {access} < {self.target_model.access}")
 		
 		if not issubclass(object._meta.model, self.target_model): 

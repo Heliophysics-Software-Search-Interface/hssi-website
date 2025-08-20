@@ -45,7 +45,7 @@
 		uid = new URLSearchParams(window.location.search).get("uid");
 		
 		// defined in /frontend/util.ts
-		const data = await getSoftwareFormData(uid);
+		const data = await getSoftwareEditFormData(uid);
 		
 		// defined in /frontend/forms/formGenerator.ts
 		fillForm(data, true);

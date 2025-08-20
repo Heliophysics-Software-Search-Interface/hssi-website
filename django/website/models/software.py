@@ -1,7 +1,9 @@
 import uuid
 from typing import Callable
+from datetime import timedelta
 
 from django.db import models
+from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 
 from ..util import *
@@ -11,11 +13,12 @@ from .submission_info import SubmissionInfo
 from .roots import ( LEN_NAME, HssiModel,
 	RepoStatus, OperatingSystem, Keyword, Image, Phenomena, Organization, 
 	License, InstrumentObservatory, ProgrammingLanguage, FileFormat, 
-	Region, DataInput, FunctionCategory, CpuArchitecture
+	Region, DataInput, FunctionCategory, CpuArchitecture, HssiSet,
 )
 
 class SoftwareVersion(HssiModel):
 	'''A snapshot of the software metadata whenever it's updated to a new version'''
+	access = AccessLevel.PUBLIC
 	number = models.CharField(max_length=LEN_NAME)
 	release_date = models.DateField(blank=True, null=True)
 	description = models.TextField(blank=True, null=True)
@@ -31,7 +34,7 @@ class SoftwareVersion(HssiModel):
 	def __str__(self): return self.number
 
 class Software(HssiModel):
-	access = AccessLevel.PUBLIC
+	access = AccessLevel.CURATOR
 	programmingLanguage = models.ManyToManyField(
 		ProgrammingLanguage,
 		blank=True, 
@@ -213,18 +216,57 @@ class Software(HssiModel):
 		except ObjectDoesNotExist: 
 			return False
 
-class VisibleSoftware(models.Model):
-	'''Stores ids to flag softwares with the given ids as visible'''
-	access = AccessLevel.ADMIN
-	id = models.OneToOneField(
+class InReviewSoftware(HssiSet):
+	""" store ids to flag softwares which are currently under review """
+	access = AccessLevel.PUBLIC
+	target_model = Software
+	def __str__(self): return str(self.id)
+
+class VisibleSoftware(HssiSet):
+	"""Stores ids to flag softwares with the given ids as visible"""
+	access = AccessLevel.PUBLIC
+	target_model = Software
+
+	class Meta: verbose_name_plural = 'Visible software'
+	def __str__(self): return str(self.id)
+
+class SoftwareEditQueue(HssiModel):
+	"""
+	The idea here is that submitters can request to make edits to their 
+	submissions by accessing the page for their software package, then press a 
+	button to request to edit their submission. When the option is selected,
+	a new entry will be made into this model, pointing to the target software
+	to be edited, then an email will be sent to the submitter email linking to
+	the edit page made from the entry in this model. The edit page will expire 
+	some time after it is created. This allows for secure editing of submissions
+	by the submitter with a randomly generated url based on the UUID of the 
+	object in this model's pk without managing profiles for submitters.
+	"""
+
+	time_threshold = timedelta(hours=5)
+
+	access = AccessLevel.PUBLIC
+	created = models.DateTimeField()
+	target_software = models.ForeignKey(
 		Software, 
-		on_delete=models.CASCADE, 
-		primary_key=True,
-		related_name='visible'
+		on_delete=models.CASCADE,
+		null=True, blank=True,
+		related_name="submission_edit_queue"
 	)
 
-	class Meta: 
-		ordering = ['id__softwareName']
-		verbose_name_plural = 'Visible software'
-	def __str__(self):
-		return str(self.id)
+	def is_expired(self) -> bool:
+		"""
+		returns true if the queue entry was created longer ago than the 
+		threshold specifies, the entry should be deleted if this returns true
+		"""
+		if not self.created: return True
+		elapsed = timezone.now() - self.created
+		return elapsed > self.time_threshold
+	
+	@classmethod
+	def create(cls, target: Software) -> 'SoftwareEditQueue':
+		queue_item = cls()
+		queue_item.created = timezone.now()
+		queue_item.target_software = target
+		queue_item.save()
+		return queue_item

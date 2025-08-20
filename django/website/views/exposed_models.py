@@ -37,6 +37,7 @@ register_structure(*[
 		# ModelStructure.create(SubmissionInfo),
 		ModelStructure.create(SoftwareVersion),
 		ModelStructure.create(Software),
+		ModelStructure.create(VisibleSoftware),
 	])
 
 def get_model_structure(request: HttpRequest) -> JsonResponse:

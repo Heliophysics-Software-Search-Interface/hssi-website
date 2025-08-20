@@ -1,3 +1,4 @@
+import json
 from django.db import models
 
 from ..util import *
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
 	from .submission_info import SubmissionInfo
 
 class Person(HssiModel):
-	access = AccessLevel.ADMIN
+	access = AccessLevel.PUBLIC
 	'''Metadata to hold needed information about someone'''
 	firstName = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
 	lastName = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
@@ -91,7 +92,7 @@ class Person(HssiModel):
 		return f"{self.lastName}, {self.firstName}"
 
 class Curator(HssiModel):
-	access = AccessLevel.ADMIN
+	access = AccessLevel.CURATOR
 	'''A user who is able to curate submissions'''
 	email = form_config(
 		models.EmailField(null=False, blank=False),
@@ -123,7 +124,7 @@ class Curator(HssiModel):
 	def __str__(self): return str(self.person)
 
 class Submitter(HssiModel):
-	access = AccessLevel.ADMIN
+	access = AccessLevel.CURATOR
 	'''A person who has submitted a software'''
 	email = form_config(
 		models.EmailField(null=False, blank=False),
@@ -150,6 +151,12 @@ class Submitter(HssiModel):
 	@property
 	def fullName(self) -> str:
 		return self.person.fullName
+
+	def email_list(self) -> list[str]:
+		if not self.email: return []
+		jsonstr: str = self.email
+		jsonstr = jsonstr.replace("'", '"')
+		return json.loads(jsonstr)
 
 	@staticmethod
 	def get_default_submitter() -> 'Submitter':

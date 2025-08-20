@@ -53,10 +53,15 @@ def submit_data(request: HttpRequest) -> HttpResponse:
 	submisison_id = handle_submission_data(json_data)
 	software_id = SubmissionInfo.objects.get(pk=submisison_id).software.pk
 
-	return redirect(f"/submit/submitted?uid={str(software_id)}")
+	# mark for review
+	InReviewSoftware.objects.create(pk=UUID(str(software_id)))
 
-def handle_submission_data(data: dict) -> uuid.UUID:
-	software = Software()
+	return redirect(f"/submit/submitted/?uid={str(software_id)}")
+
+def handle_submission_data(data: dict, software_target: Software = None) -> uuid.UUID:
+	""" store submission data in the specified software target """
+	software = software_target
+	if not software: software = Software()
 
 	software.persistentIdentifier = data.get(FIELD_PERSISTENTIDENTIFIER)
 	software.codeRepositoryUrl = data.get(FIELD_CODEREPOSITORYURL)
@@ -93,10 +98,13 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 
 	logo_url = data.get(FIELD_LOGO)
 	if logo_url:
-		img = Image()
-		img.description = f"logo for {software.softwareName}"
-		img.url = logo_url
-		img.save()
+		img: Image = None
+		img = Image.objects.filter(url=logo_url).first()
+		if not img: 
+			img = Image()
+			img.description = f"logo for {software.softwareName}"
+			img.url = logo_url
+			img.save()
 		software.logo = img
 
 	## SUBMISSION
@@ -225,6 +233,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## AUTHORS
 
 	author_datas: list[dict] = data.get(FIELD_AUTHORS)
+	if author_datas is not None: software.authors.clear()
 	for author_data in author_datas:
 		author = Person()
 		author.identifier = author_data.get(FIELD_AUTHORIDENTIFIER)
@@ -276,6 +285,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## PROGRAMMING LANGUAGES
 
 	proglangs = data.get(FIELD_PROGRAMMINGLANGUAGE)
+	if proglangs is not None: software.programmingLanguage.clear()
 	for lang in proglangs:
 		try:
 			uid = UUID(lang)
@@ -287,6 +297,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## KEYWORDS
 
 	keywords: list[str] = data.get(FIELD_KEYWORDS)
+	if keywords is not None: software.keywords.clear()
 	for kw in keywords:
 		try:
 			uid = UUID(kw)
@@ -305,6 +316,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## FUNCTIONALITY
 
 	functionalities = data.get(FIELD_SOFTWAREFUNCTIONALITY)
+	if functionalities is not None: software.softwareFunctionality.clear()
 	for functionality in functionalities:
 		try:
 			uid = UUID(functionality)
@@ -315,6 +327,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## DATA SOURCES
 	
 	data_sources = data.get(FIELD_DATASOURCES)
+	if data_sources is not None: software.dataSources.clear()
 	for datasrc in data_sources:
 		try:
 			uid = UUID(datasrc)
@@ -331,6 +344,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## FILE FORMATS
 
 	inputs = data.get(FIELD_INPUTFORMATS)
+	if inputs is not None: software.inputFormats.clear()
 	for input in inputs:
 		try:
 			uid = UUID(input)
@@ -345,6 +359,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 				software.inputFormats.add(inpt)
 	
 	outputs = data.get(FIELD_OUTPUTFORMATS)
+	if outputs is not None: software.outputFormats.clear()
 	for output in outputs:
 		try:
 			uid = UUID(output)
@@ -361,6 +376,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## CPU ARCHITECTURE
 
 	architectures = data.get(FIELD_CPUARCHITECTURE)
+	if architecture is not None: software.cpuArchitecture.clear()
 	for architecture in architectures:
 		try:
 			uid = UUID(architecture)
@@ -377,6 +393,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## OPERATING SYSTEM
 
 	opsystems = data.get(FIELD_OPERATINGSYSTEM)
+	if opsystems is not None: software.operatingSystem.clear()
 	for opsys in opsystems:
 		try:
 			uid = UUID(opsys)
@@ -387,6 +404,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## RELATED REGION
 
 	regions = data.get(FIELD_RELATEDREGION)
+	if regions is not None: software.relatedRegion.clear()
 	for region in regions:
 		try:
 			uid = UUID(region)
@@ -403,6 +421,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## RELATED PHENOMENA
 
 	phenoms = data.get(FIELD_RELATEDPHENOMENA)
+	if phenoms is not None: software.relatedPhenomena.clear()
 	for phenom in phenoms:
 		try:
 			uid = UUID(phenom)
@@ -419,6 +438,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## AWARDS
 	
 	award_datas: list[dict] = data.get(FIELD_AWARDTITLE)
+	if award_datas is not None: software.award.clear()
 	for award_data in award_datas:
 		award_name = award_data.get(FIELD_AWARDTITLE)
 		try:
@@ -438,6 +458,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## FUNDER
 
 	funder_datas: list[dict] = data.get(FIELD_FUNDER)
+	if funder_data is not None: software.funder.clear()
 	for funder_data in funder_datas:
 		funder_name = funder_data.get(FIELD_FUNDER)
 		print(f"adding funder '{funder_name}'")
@@ -461,6 +482,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## RELATED OBJECTS
 	
 	relpubs: list[str] = data.get(FIELD_RELATEDPUBLICATIONS)
+	if relpubs is not None: software.relatedPublications.clear()
 	for relpub in relpubs:
 		try:
 			uid = UUID(relpub)
@@ -477,6 +499,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 				software.relatedPublications.add(relatedpub)
 	
 	reldatas: list[str] = data.get(FIELD_RELATEDDATASETS)
+	if reldatas is not None: software.relatedDatasets.clear()
 	for reldat in reldatas:
 		try:
 			uid = UUID(reldat)
@@ -496,6 +519,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 				software.relatedDatasets.add(reldataset)
 	
 	relsofts: list[str] = data.get(FIELD_RELATEDSOFTWARE)
+	if relsofts is not None: software.relatedSoftware.clear()
 	for relsoft in relsofts:
 		try:
 			uid = UUID(relsoft)
@@ -515,6 +539,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 				software.relatedSoftware.add(relsoftware)
 	
 	intersofts: list[str] = data.get(FIELD_INTEROPERABLESOFTWARE)
+	if intersofts is not None: software.interoperableSoftware.clear()
 	for intersoft in intersofts:
 		try:
 			uid = UUID(intersoft)
@@ -536,6 +561,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 	## RELATED INSTRUMENTS AND OBSERVATORIES
 
 	relinstr_datas: list[dict] = data.get(FIELD_RELATEDINSTRUMENTS)
+	if relinstr_data is not None: software.relatedInstruments.clear()
 	for relinstr_data in relinstr_datas:
 		instr_name = relinstr_data.get(FIELD_RELATEDINSTRUMENTS)
 		try:
@@ -555,6 +581,7 @@ def handle_submission_data(data: dict) -> uuid.UUID:
 				software.relatedInstruments.add(instr)
 
 	relobs_datas: list[dict] = data.get(FIELD_RELATEDOBSERVATORIES)
+	if relobs_data is not None: software.relatedDatasets.clear()
 	for relobs_data in relobs_datas:
 		obs_name: str = ""
 		if isinstance(relobs_data, dict): obs_name = relobs_data.get(FIELD_RELATEDOBSERVATORIES)

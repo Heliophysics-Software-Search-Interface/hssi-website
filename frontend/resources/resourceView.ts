@@ -1,9 +1,9 @@
 import { 
 	apiModel, apiSlugRowsAll, fetchTimeout, ResourceItem, 
-	type JSONArray, type JSONObject,
+	type JSONArray, type JSONObject, type SoftwareData,
 } from "../loader";
 
-const softwarModelName = "Software";
+const softwarModelName = "VisibleSoftware";
 
 /** 
  * a list-style display that shows users different software resource entries 
@@ -30,8 +30,7 @@ export class ResourceView {
 
 		// create new items from data
 		for(const data of this.itemData) {
-			const item = ResourceItem.createFromData(data);
-			console.log(data)
+			const item = ResourceItem.createFromData(data as SoftwareData);
 			this.containerElement.appendChild(item.containerElement);
 			this.items.push(item);
 		}
@@ -42,7 +41,7 @@ export class ResourceView {
 		// TODO implement querying
 
 		// fetch all software objects from the database
-		const url = apiModel + softwarModelName + apiSlugRowsAll;
+		const url = apiModel + softwarModelName + apiSlugRowsAll + "?recursive=true";
 		const result = await fetchTimeout(url);
 		const data = await result.json();
 		this.itemData = data.data;

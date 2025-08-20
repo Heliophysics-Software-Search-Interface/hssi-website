@@ -18,6 +18,8 @@ services:
         environment:
             - SUPERUSER_NAME=$SUPERUSER_NAME
             - SUPERUSER_PWD=$SUPERUSER_PWD
+            - GMAIL_EMAIL=${GMAIL_EMAIL}
+            - GMAIL_APP_PASSWORD=${GMAIL_APP_PASSWORD}
             - PROJECT_NAME=hssi
             - APP_NAME=website
             - GUNICORN_WORKERS=4

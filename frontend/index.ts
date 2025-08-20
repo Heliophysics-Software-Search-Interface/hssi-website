@@ -9,9 +9,9 @@ import {
 	ModelBox, FormGenerator, RorWidget, OrcidWidget, DataciteDoiWidget,
 	AutofillDataciteWidget, AutofillDialoge,
 
-	// etc
+	// dialogues
 	RorFinder, OrcidFinder, DoiDataciteFinder,
-	ConfirmDialogue, 
+	ConfirmDialogue, TextInputDialogue, 
 } from "./loader";
 
 function initForms() {
@@ -40,6 +40,7 @@ function initForms() {
 function initDialogue() {
 	ConfirmDialogue.validateInstance();
 	AutofillDialoge.validateInstance();
+	TextInputDialogue.validateInstance();
 	RorFinder.getInstance();
 	OrcidFinder.getInstance();
 	DoiDataciteFinder.getInstance();

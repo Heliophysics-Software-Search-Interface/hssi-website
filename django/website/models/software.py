@@ -11,7 +11,7 @@ from .submission_info import SubmissionInfo
 from .roots import ( LEN_NAME, HssiModel,
 	RepoStatus, OperatingSystem, Keyword, Image, Phenomena, Organization, 
 	License, InstrumentObservatory, ProgrammingLanguage, FileFormat, 
-	Region, DataInput, FunctionCategory, CpuArchitecture
+	Region, DataInput, FunctionCategory, CpuArchitecture, HssiSet,
 )
 
 class SoftwareVersion(HssiModel):
@@ -31,7 +31,7 @@ class SoftwareVersion(HssiModel):
 	def __str__(self): return self.number
 
 class Software(HssiModel):
-	access = AccessLevel.PUBLIC
+	access = AccessLevel.CURATOR
 	programmingLanguage = models.ManyToManyField(
 		ProgrammingLanguage,
 		blank=True, 
@@ -213,18 +213,10 @@ class Software(HssiModel):
 		except ObjectDoesNotExist: 
 			return False
 
-class VisibleSoftware(models.Model):
+class VisibleSoftware(HssiSet):
 	'''Stores ids to flag softwares with the given ids as visible'''
-	access = AccessLevel.ADMIN
-	id = models.OneToOneField(
-		Software, 
-		on_delete=models.CASCADE, 
-		primary_key=True,
-		related_name='visible'
-	)
+	access = AccessLevel.PUBLIC
+	target_model = Software
 
-	class Meta: 
-		ordering = ['id__softwareName']
-		verbose_name_plural = 'Visible software'
-	def __str__(self):
-		return str(self.id)
+	class Meta: verbose_name_plural = 'Visible software'
+	def __str__(self): return str(self.id)

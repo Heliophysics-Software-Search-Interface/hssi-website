@@ -2,7 +2,7 @@ import {
 	SimpleEvent, FilterTab,
 	type JSONArray, type JSONObject, type JSONValue,
 	FilterMenu,
-} from "../../loader";
+} from "../loader";
 
 
 const textCollapse = "▲";

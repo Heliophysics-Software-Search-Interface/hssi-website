@@ -1,0 +1,29 @@
+.resource-item {
+	background-color: #ececec;
+	border: 1px solid #bcbcbd;
+	border-radius: 5px;
+	padding: 20px;
+	margin-bottom: 10px;
+	color: rgb(77, 77, 77);
+}
+
+.resource-item .resource-header {
+	font-size: 13px;
+	margin-bottom: 10px;
+}
+
+.resource-item .resource-title {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.resource-item .bottom-buttons {
+	margin-top: 20px;
+}
+
+.resource-item .bottom-buttons a {
+	border: 1px solid black;
+	border-radius: 5px;
+	margin-right: 10px;
+	padding: 10px;
+}

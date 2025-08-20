@@ -2,7 +2,7 @@ import {
 	SimpleEvent, fetchTimeout, FilterMenuItem, CategoryItem,
 	type JSONArray, type JSONObject, type JSONValue,
 	FilterMenu,
-} from "../../loader";
+} from "../loader";
 
 /**
  * This module aims to reproduce the html structure below for each individual 
@@ -52,8 +52,8 @@ import {
  * </li>
  */
 
-const apiModel = "/api/models/";
-const apiSlugRowsAll = "/rows/all/";
+export const apiModel = "/api/models/";
+export const apiSlugRowsAll = "/rows/all/";
 
 const styleTabHeader = "tab-header";
 const styleTabContent = "tab-content";

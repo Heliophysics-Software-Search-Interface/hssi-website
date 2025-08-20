@@ -7,20 +7,25 @@
 
 export * from "./util";
 export * from "./simpleEvent";
+export * from "./modelStructure";
 
-export * from "./ui/filter/filterGroup";
-export * from "./ui/filter/filterMenuItem";
-export * from "./ui/filter/filterTab";
-export * from "./ui/filter/filterMenu";
-export * from "./ui/jsonView";
-export * from "./ui/spinner";
-export * from "./ui/popupDialogue";
-export * from "./ui/confirmDialogue";
-export * from "./ui/autofillDialogue";
-export * from "./ui/apiQueryPopup";
-export * from "./ui/rorFinder";
-export * from "./ui/orcidFinder";
-export * from "./ui/doiDataciteFinder";
+export * from "./filters/filterGroup";
+export * from "./filters/filterMenuItem";
+export * from "./filters/filterTab";
+export * from "./filters/filterMenu";
+
+export * from "./resources/resourceItem";
+export * from "./resources/resourceView";
+
+export * from "./dialogues/jsonView";
+export * from "./dialogues/spinner";
+export * from "./dialogues/popupDialogue";
+export * from "./dialogues/confirmDialogue";
+export * from "./dialogues/autofillDialogue";
+export * from "./dialogues/apiQueryPopup";
+export * from "./dialogues/rorFinder";
+export * from "./dialogues/orcidFinder";
+export * from "./dialogues/doiDataciteFinder";
 
 export * from "./forms/fieldRequirement";
 export * from "./forms/widgets/widget";

@@ -375,6 +375,11 @@ export class FormGenerator {
 		generator.fieldContainer = generator.formElement.querySelector(
 			`div[${typeAttribute}=${formFieldsType}]`
 		);
+		// we dont want autofill popups if its an edit form
+		if(isEdit){
+			generator.autofilledFromDatacite = true;
+			generator.autofilledFromRepo = true;
+		}
 		if (generator.fieldContainer == null) {
 			generator.fieldContainer = document.createElement("div");
 			generator.fieldContainer.setAttribute(typeAttribute, formFieldsType);

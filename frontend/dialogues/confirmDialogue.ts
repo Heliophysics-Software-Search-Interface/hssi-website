@@ -45,7 +45,13 @@ export class ConfirmDialogue extends PopupDialogue {
 		this.instance.titleElement.innerText = title;
 		this.instance.messageElement.innerText = message;
 		this.instance.acceptElement.innerText = acceptText;
-		this.instance.cancelElement.innerText = cancelText;
+		if(cancelText != null){
+			this.instance.cancelElement.innerText = cancelText;
+			this.instance.cancelElement.style.display = "inline-block";
+		}
+		else {
+			this.instance.cancelElement.style.display = "none";
+		}
 		
 		const checkForClosedDialogue = (accept: ()=>any, cancel: ()=>any) => {
 			if(!PopupDialogue.popupIsShown()) {

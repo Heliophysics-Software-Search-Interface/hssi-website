@@ -22,6 +22,17 @@ project directory.
 * After docker container is fully launched, visit `localhost` in a browser to 
 see the website
 
+## Email API
+
+HSSI currently uses gmail smtp to send automated emails through a registered
+gmail business account. You will need to provide the following values to the
+`.env` file from your own account to utilize the autosending email features:
+
+```
+GMAIL_APP_PASSWORD="xxxxxxxxxxxxxxxx"
+GMAIL_EMAIL="example@gmail.com"
+```
+
 ### Compiling
 
 You must first compile the typescript frontend to javascript before running 

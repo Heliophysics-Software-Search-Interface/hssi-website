@@ -4,12 +4,19 @@
 	border-radius: 5px;
 	padding: 20px;
 	margin-bottom: 10px;
-	color: rgb(77, 77, 77);
 }
 
 .resource-item .resource-header {
 	font-size: 13px;
 	margin-bottom: 10px;
+}
+
+.resource-item .author {	
+	color: rgb(77, 77, 77);
+}
+
+.resource-item a .author:hover {	
+	text-decoration: underline;
 }
 
 .resource-item .resource-title {

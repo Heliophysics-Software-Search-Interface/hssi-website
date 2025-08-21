@@ -23,7 +23,10 @@ export class JsonView {
 	private createDivFromObject(json: JSONObject): HTMLDivElement {
 		const div = document.createElement("div");
 		for(const key in json){
-			const field = this.createField(key, json[key]);
+			if(key == "id") continue;
+			const val = json[key];
+			if(val == "UNKNOWN") continue;
+			const field = this.createField(key, val);
 			div.appendChild(field);
 		}
 		return div;
@@ -33,7 +36,11 @@ export class JsonView {
 		const divs: HTMLDivElement[] = [];
 		for(const val of json){
 			const div = document.createElement("div");
-			const elem = this.createField("", val);
+			let elem = this.createField("", val);
+			const childs = elem.querySelectorAll("div span");
+			if(childs.length == 1){
+				elem = childs[0] as any;
+			}
 			div.appendChild(elem);
 			divs.push(div);
 		}
@@ -58,7 +65,7 @@ export class JsonView {
 		}
 		else if (json instanceof Object) {
 			const title = document.createElement("summary");
-			title.innerHTML = `<strong>${fieldName}</strong>: `;
+			title.innerHTML = `<strong>${fieldName}</strong> `;
 			const body = this.createDivFromObject(json);
 			const detail = document.createElement("details");
 			detail.appendChild(title);
@@ -68,7 +75,7 @@ export class JsonView {
 		}
 		else {
 			const span = document.createElement("span");
-			span.innerHTML = `<strong>${fieldName}</strong>: ${json?.toString()}`;
+			span.innerHTML = `<strong>${fieldName}</strong> ${json?.toString()}`;
 			return span;
 		}
 	}

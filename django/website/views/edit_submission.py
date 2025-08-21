@@ -93,23 +93,33 @@ def email_existing_edit_link(submission: SubmissionInfo) -> bool:
 	item = items.first()
 	if not item: return False
 	
+
 	# find latest expiring item
 	for i in items: 
 		if i.expiration > item.expiration: item = i
 	
+	user: Person = submission.submitter.person
+	software: Software = submission.software
 	emails = submission.submitter.email_list()
 	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(item.id)}"
 
 	message = (
-		f"Hello, {submission.submitter.fullName}\n\n" +
+		f"Hello {user.firstName}, \n\n" +
 		f"Thank you for submitting your software to HSSI. Once your submission " +
 		f"is reviewed, a curator will contact you at this email.\n" +
 		f"In the meantime, you can view or edit your submission with the " +
-		f"link below: \n\n" + link
+		f"link below: \n\n{link}\n\n" +
+		f"Please do not share this link publicly, as anyone with this link " +
+		f"can edit the submission."
 	)
 
 	print(f"Sending edit link for {item.id} to {emails}")
-	send_mail("[HSSI] Submission Confirmed!", message, None, emails)
+	send_mail(
+		f"[HSSI] '{software.softwareName}' Submission Confirmed!", 
+		message, 
+		None, 
+		emails
+	)
 	
 	return True
 
@@ -118,8 +128,23 @@ def email_edit_link(submission: SubmissionInfo):
 	creates a new edit queue item in the database and emails an edit link
 	based on it to the submitter's email
 	"""
-	queue_item = SoftwareEditQueue.create(submission.software)
+	software: Software = submission.software
+	user: Person = submission.submitter.person
+	queue_item = SoftwareEditQueue.create(software)
 	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(queue_item.id)}"
+	message = (
+		f"Hello {user.firstName}, \n\n" +
+		f"We have received a request to email you a new edit link. You can use " +
+		f"the link below to edit your submission: \n\n{link}\n\n" +
+		f"Note that this link will expire in 5 hours " +
+		f"(UTC {str(queue_item.expiration)})."
+	)
+
 	emails = submission.submitter.email_list()
-	print(f"Sending edit links for {queue_item.id} to {emails}...")
-	send_mail("[HSSI] Edit Submission", link, None, emails)
+	print(f"Creating and sending edit link for {queue_item.id} to {emails}...")
+	send_mail(
+		f"[HSSI] Link to edit '{software.softwareName}' submission", 
+		message, 
+		None, 
+		emails
+	)

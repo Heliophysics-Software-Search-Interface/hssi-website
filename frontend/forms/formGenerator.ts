@@ -6,6 +6,7 @@ import {
 	ModelMultiSubfield,
 	UrlWidget,
 	EmailWidget,
+	PopupDialogue,
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -184,9 +185,23 @@ export class FormGenerator {
 		
 		response.then(response => {
 			Spinner.hideSpinner();
+			
+			if(!response.ok){
+				ConfirmDialogue.getConfirmation(
+					"We encountered an error, please try again later.",
+					"Error", "ok", null
+				);
+			}
+
 			if(response.redirected) window.location.href = response.url;
 		});
-		response.catch(() => Spinner.hideSpinner());
+		response.catch(e => {
+			Spinner.hideSpinner();
+			ConfirmDialogue.getConfirmation(
+				"We encountered an error, please try again later. \n" + String(e),
+				"Error", "ok", null
+			);
+		});
 		response.finally(() => Spinner.hideSpinner());
 	}
 

@@ -1,6 +1,7 @@
 import json, uuid, datetime
 from uuid import UUID
 
+from django.utils import timezone
 from django.shortcuts import render, redirect, HttpResponse
 from django.http import (
 	HttpRequest, HttpResponseBadRequest, 
@@ -51,12 +52,12 @@ def submit_data(request: HttpRequest) -> HttpResponse:
 	# try handle json_data and save to database
 	print("recieved form data", json_data)
 	submisison_id = handle_submission_data(json_data)
-	software_id = SubmissionInfo.objects.get(pk=submisison_id).software.pk
+	software = SubmissionInfo.objects.get(pk=submisison_id).software
 
-	# mark for review
-	InReviewSoftware.objects.create(pk=UUID(str(software_id)))
+	# mark for review edits
+	SoftwareEditQueue.create(software, timezone.now() + datetime.timedelta(days=31))
 
-	return redirect(f"/submit/submitted/?uid={str(software_id)}")
+	return redirect(f"/submit/submitted/?uid={str(software.pk)}")
 
 def handle_submission_data(data: dict, software_target: Software = None) -> uuid.UUID:
 	""" store submission data in the specified software target """
@@ -376,7 +377,7 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	## CPU ARCHITECTURE
 
 	architectures = data.get(FIELD_CPUARCHITECTURE)
-	if architecture is not None: software.cpuArchitecture.clear()
+	if architectures is not None: software.cpuArchitecture.clear()
 	for architecture in architectures:
 		try:
 			uid = UUID(architecture)
@@ -458,7 +459,7 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	## FUNDER
 
 	funder_datas: list[dict] = data.get(FIELD_FUNDER)
-	if funder_data is not None: software.funder.clear()
+	if funder_datas is not None: software.funder.clear()
 	for funder_data in funder_datas:
 		funder_name = funder_data.get(FIELD_FUNDER)
 		print(f"adding funder '{funder_name}'")
@@ -561,7 +562,7 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	## RELATED INSTRUMENTS AND OBSERVATORIES
 
 	relinstr_datas: list[dict] = data.get(FIELD_RELATEDINSTRUMENTS)
-	if relinstr_data is not None: software.relatedInstruments.clear()
+	if relinstr_datas is not None: software.relatedInstruments.clear()
 	for relinstr_data in relinstr_datas:
 		instr_name = relinstr_data.get(FIELD_RELATEDINSTRUMENTS)
 		try:
@@ -581,7 +582,7 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 				software.relatedInstruments.add(instr)
 
 	relobs_datas: list[dict] = data.get(FIELD_RELATEDOBSERVATORIES)
-	if relobs_data is not None: software.relatedDatasets.clear()
+	if relobs_datas is not None: software.relatedDatasets.clear()
 	for relobs_data in relobs_datas:
 		obs_name: str = ""
 		if isinstance(relobs_data, dict): obs_name = relobs_data.get(FIELD_RELATEDOBSERVATORIES)

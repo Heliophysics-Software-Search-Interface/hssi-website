@@ -45,6 +45,8 @@ def get_model_row(request: HttpRequest, model_name: str, uid: str) -> JsonRespon
 	"""
 	app_label = Software._meta.app_label
 	model = django.apps.apps.get_model(app_label, model_name)
+	if issubclass(model, SoftwareEditQueue):
+		return HttpResponseForbidden()
 	if not (model and issubclass(model, HssiModel)):
 		return HttpResponseBadRequest(f"Model '{model_name}' is invalid")
 	
@@ -73,10 +75,11 @@ def api_view(request: HttpRequest, uid: str) -> JsonResponse:
 	except Exception: 
 		try:
 			softwareid = uuid.UUID(uid)
-			software = InReviewSoftware.objects.get(pk=softwareid)
-			access_ovr = InReviewSoftware.target_model.access
+			software_edit = SoftwareEditQueue.objects.get(target_software=softwareid)
+			software = Software.objects.get(pk=software_edit.target_software.pk)
+			access_ovr = Software.access
 		except:
-			return HttpResponseBadRequest(f"invalid id '{uid}")
+			return HttpResponseBadRequest(f"Invalid ID '{uid}'")
 
 	software = Software.objects.get(pk=software.pk)
 

@@ -21,6 +21,103 @@
 		</p>
 	</div>
 	<div class="team_container">
+		<div class="callout medium team-info">
+			<img 
+				class="p_img" 
+				style="object-fit: cover;"
+				src="https://lasp.colorado.edu/media/projects/lasp/people/julie-barnum.jpg"
+			>
+			<div class="p_name">
+				<a href="" class="personal-url" target="_blank">
+					Julie Barnum
+				</a>
+				<br>
+				<span class="p_desc">
+					Principal Investigator, Project management
+				</span>
+			</div>
+		</div>
+		<div class="callout medium team-info">
+			<img 
+				class="p_img" 
+				style="object-fit: cover;"
+				src="https://technostalgic.gitlab.io/portfolio/files/media/avatar.png"
+			>
+			<div class="p_name">
+				<a href="https://technostalgic.gitlab.io/portfolio/" class="personal-url" target="_blank">
+					Isaiah Smith
+				</a>
+				<br>
+				<span class="p_desc">
+					Software development
+				</span>
+			</div>
+		</div>
+		<div class="callout medium team-info">
+			<img 
+				class="p_img" 
+				style="object-fit: cover;"
+				src="/static/media/images/rebecca_ringuette.jpg"
+			>
+			<div class="p_name">
+				<a href="" class="personal-url" target="_blank">
+					Rebecca Ringuette
+				</a>
+				<br>
+				<span class="p_desc">
+					Metadata design, Software curation
+				</span>
+			</div>
+		</div>
+		<div class="callout medium team-info">
+			<img 
+				class="p_img" 
+				style="object-fit: cover;"
+				src="/static/media/images/catherine_byrd.jpg"
+			>
+			<div class="p_name">
+				<a href="" class="personal-url" target="_blank">
+					Catherine Byrd
+				</a>
+				<br>
+				<span class="p_desc">
+					Software curation
+				</span>
+			</div>
+		</div>
+		<div class="callout medium team-info">
+			<img 
+				class="p_img" 
+				style="object-fit: cover;"
+				src="https://science.gsfc.nasa.gov/images/Photos/65173/1132024102759_Renaud,%20Joe_02.jpg"
+			>
+			<div class="p_name">
+				<a href="" class="personal-url" target="_blank">
+					Joe Renaud
+				</a>
+				<br>
+				<span class="p_desc">
+					Design and technical consultation
+				</span>
+			</div>
+		</div>
+		<div class="callout medium team-info">
+			<img 
+				class="p_img" 
+				style="object-fit: cover;"
+				src="/static/media/images/shawn_polson.jpg"
+			>
+			<div class="p_name">
+				<a href="" class="personal-url" target="_blank">
+					Shawn Polson
+				</a>
+				<br>
+				<span class="p_desc">
+					Technical lead
+				</span>
+			</div>
+		</div>
+		{% comment %}
 		{% for team_member in team %}
 			<div class="callout medium team-info">
 				{% if team_member.member_image %}
@@ -37,9 +134,10 @@
 				</div>
 			</div>
 		{% endfor %}
+		{% endcomment %}
 	</div>
 
-	<div class="my-accordion-section">
+	<!--div class="my-accordion-section">
 		<div class="my-accordion-header-bar">
 			<div class="page_title alumni-title">Our Alumni</div>
 			<div class="caret-container">
@@ -64,7 +162,7 @@
 			</div>
 			{% endfor %}
 		</div>
-	</div>
+	</div-->
 </div>
 
 {% endblock %} 

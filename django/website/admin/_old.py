@@ -9,10 +9,10 @@ from django.db.models import QuerySet
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-
 #Libraries and code for sending queries to ADS and checking bibcodes
 import json
 from django.conf import settings
+from django.core.mail import send_mail
 
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
@@ -587,6 +587,7 @@ class TeamMemberAdmin(ImportExportModelAdmin):
 from .model_admin import *
 
 site.register(Software, admin_class=SoftwareAdmin)
+site.register(SoftwareEditQueue, admin_class=SoftwareEditQueueAdmin)
 site.register(FileFormat, admin_class=FileFormatAdmin)
 site.register(ProgrammingLanguage, admin_class=ProgrammingLanguageAdmin)
 site.register(VisibleSoftware, admin_class=VisibleSoftwareAdmin)

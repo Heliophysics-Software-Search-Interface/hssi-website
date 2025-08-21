@@ -1,7 +1,8 @@
-import uuid
+import uuid, datetime
 from typing import Callable
 
 from django.db import models
+from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 
 from ..util import *
@@ -16,6 +17,7 @@ from .roots import ( LEN_NAME, HssiModel,
 
 class SoftwareVersion(HssiModel):
 	'''A snapshot of the software metadata whenever it's updated to a new version'''
+	access = AccessLevel.PUBLIC
 	number = models.CharField(max_length=LEN_NAME)
 	release_date = models.DateField(blank=True, null=True)
 	description = models.TextField(blank=True, null=True)
@@ -214,9 +216,65 @@ class Software(HssiModel):
 			return False
 
 class VisibleSoftware(HssiSet):
-	'''Stores ids to flag softwares with the given ids as visible'''
+	"""Stores ids to flag softwares with the given ids as visible"""
 	access = AccessLevel.PUBLIC
 	target_model = Software
 
 	class Meta: verbose_name_plural = 'Visible software'
 	def __str__(self): return str(self.id)
+
+class SoftwareEditQueue(HssiModel):
+	"""
+	The idea here is that submitters can request to make edits to their 
+	submissions by accessing the page for their software package, then press a 
+	button to request to edit their submission. When the option is selected,
+	a new entry will be made into this model, pointing to the target software
+	to be edited, then an email will be sent to the submitter email linking to
+	the edit page made from the entry in this model. The edit page will expire 
+	some time after it is created. This allows for secure editing of submissions
+	by the submitter with a randomly generated url based on the UUID of the 
+	object in this model's pk without managing profiles for submitters.
+	"""
+
+	default_expire_delta = datetime.timedelta(hours=5)
+
+	access = AccessLevel.PUBLIC
+	created = models.DateTimeField(null=True, blank=True)
+	expiration = models.DateTimeField(null=True, blank=True)
+	target_software = models.ForeignKey(
+		Software, 
+		on_delete=models.CASCADE,
+		null=True, blank=True,
+		related_name="submission_edit_queue"
+	)
+
+	def is_expired(self) -> bool:
+		"""
+		returns true if the queue entry was created longer ago than the 
+		threshold specifies, the entry should be deleted if this returns true
+		"""
+		if not self.expiration: return True
+		return timezone.now() > self.expiration
+	
+	@classmethod
+	def get_latest_expiry(cls, target: Software) -> 'SoftwareEditQueue':
+		"""
+		grab the edit queue item that corresponds to the specified target 
+		which has the latest expiry date/time
+		"""
+		items = cls.objects.filter(target_software=target.pk)
+		latest = items.first()
+		if not latest: return None
+		for item in items:
+			if latest.expiration < item.expiration: latest = item
+		return latest
+
+	@classmethod
+	def create(cls, target: Software, expiration: datetime.datetime = None) -> 'SoftwareEditQueue':
+		queue_item = cls()
+		queue_item.created = timezone.now()
+		queue_item.target_software = target
+		if not expiration: expiration = queue_item.created + cls.default_expire_delta
+		queue_item.expiration = expiration
+		queue_item.save()
+		return queue_item

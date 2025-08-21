@@ -23,10 +23,10 @@ SUPERUSER_NAME = None if 'SUPERUSER_NAME' not in os.environ else os.environ.get(
 SUPERUSER_PWD = None if 'SUPERUSER_PWD' not in os.environ else os.environ.get('SUPERUSER_PWD')
 
 ADMIN_EMAIL = "admin@my-site.com"
-DEFAULT_FROM_EMAIL = ADMIN_EMAIL
+DEFAULT_FROM_EMAIL = "noreply@hssi.hsdcloud.org"
 
-EMAIL_HOST = 'your.email.server'
-EMAIL_PORT = 25
+# EMAIL_HOST = 'your.email.server'
+# EMAIL_PORT = 25
 EMAIL_SUBJECT_PREFIX = "[HSSI] "
 ###
 ### - end secret settings
@@ -34,6 +34,14 @@ EMAIL_SUBJECT_PREFIX = "[HSSI] "
 # default for local development
 SITE_DOMAIN = "localhost"
 SITE_PROTOCOL = "http"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = os.environ.get("GMAIL_EMAIL")
+EMAIL_HOST_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # uncomment the below 2 lines to see email contents in the console output
 # to debug when an actual SMTP server is not available

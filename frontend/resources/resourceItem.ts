@@ -7,6 +7,7 @@ const styleResourceHeader = "resource-header";
 const styleResourceTitle = "resource-title";
 const styleDescription = "description";
 const styleBottomButtons = "bottom-buttons";
+const styleAuthor = "author";
 
 /**
  * represents a single software resource submitted to the HSSI database, 
@@ -44,12 +45,18 @@ export class ResourceItem{
 		for(let i = 0; i < this.data.authors.length; i++){
 			const author = this.data.authors[i];
 			const authSpan = document.createElement("span");
-			console.log(author)
+			authSpan.classList.add(styleAuthor);
 			authSpan.innerText = author.firstName || "";
 			if (author.firstName) authSpan.innerText += " ";
 			authSpan.innerText += author.lastName;
-			if(i < this.data.authors.length - 1) authSpan.innerText += "; ";
-			headInfoDiv.appendChild(authSpan);
+			if(author.identifier){
+				const authAnchor = document.createElement("a");
+				authAnchor.href = author.identifier;
+				authAnchor.appendChild(authSpan);
+				headInfoDiv.appendChild(authAnchor);
+			}
+			else headInfoDiv.appendChild(authSpan);
+			if(i < this.data.authors.length - 1) headInfoDiv.innerHTML += "; ";
 		}
 
 		const descContainerDiv = document.createElement("div");

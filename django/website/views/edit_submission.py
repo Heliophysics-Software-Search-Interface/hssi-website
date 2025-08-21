@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.http import *
 from django.shortcuts import render
 
-from .submit import handle_submission_data
+from ..data_parser import handle_submission_data
 from ..util import *
 from ..models import *
 
@@ -15,6 +15,7 @@ from ..forms import (
 )
 
 def request_edit_link(request: HttpRequest, uid: str) -> HttpResponse:
+	""" http view for requesting an edit link to a given software uid """
 	if request.method != "POST": return HttpResponseBadRequest("expected POST")
 	try:
 		test_email = request.body.decode("utf-8").lower()
@@ -82,7 +83,41 @@ def submit_edits(request: HttpRequest, uid: str) -> HttpResponse:
 	except Exception: return HttpResponseServerError()
 	return HttpResponse(status=204)
 
+def email_existing_edit_link(submission: SubmissionInfo) -> bool:
+	"""
+	grabs an edit link from the software edit queue whose expiration date is 
+	the furthest away and emails that to the submitter in the submission info,
+	returns false if no edit link exists
+	"""
+	items = SoftwareEditQueue.objects.filter(target_software=submission.software)
+	item = items.first()
+	if not item: return False
+	
+	# find latest expiring item
+	for i in items: 
+		if i.expiration > item.expiration: item = i
+	
+	emails = submission.submitter.email_list()
+	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(item.id)}"
+
+	message = (
+		f"Hello, {submission.submitter.fullName}\n\n" +
+		f"Thank you for submitting your software to HSSI. Once your submission " +
+		f"is reviewed, a curator will contact you at this email.\n" +
+		f"In the meantime, you can view or edit your submission with the " +
+		f"link below: \n\n" + link
+	)
+
+	print(f"Sending edit link for {item.id} to {emails}")
+	send_mail("[HSSI] Submission Confirmed!", message, None, emails)
+	
+	return True
+
 def email_edit_link(submission: SubmissionInfo):
+	"""
+	creates a new edit queue item in the database and emails an edit link
+	based on it to the submitter's email
+	"""
 	queue_item = SoftwareEditQueue.create(submission.software)
 	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(queue_item.id)}"
 	emails = submission.submitter.email_list()

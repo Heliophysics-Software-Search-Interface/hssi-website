@@ -257,6 +257,19 @@ class SoftwareEditQueue(HssiModel):
 		return timezone.now() > self.expiration
 	
 	@classmethod
+	def get_latest_expiry(cls, target: Software) -> 'SoftwareEditQueue':
+		"""
+		grab the edit queue item that corresponds to the specified target 
+		which has the latest expiry date/time
+		"""
+		items = cls.objects.filter(target_software=target.pk)
+		latest = items.first()
+		if not latest: return None
+		for item in items:
+			if latest.expiration < item.expiration: latest = item
+		return latest
+
+	@classmethod
 	def create(cls, target: Software, expiration: datetime.datetime = None) -> 'SoftwareEditQueue':
 		queue_item = cls()
 		queue_item.created = timezone.now()

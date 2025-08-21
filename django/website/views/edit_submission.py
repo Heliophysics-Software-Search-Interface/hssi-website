@@ -89,14 +89,8 @@ def email_existing_edit_link(submission: SubmissionInfo) -> bool:
 	the furthest away and emails that to the submitter in the submission info,
 	returns false if no edit link exists
 	"""
-	items = SoftwareEditQueue.objects.filter(target_software=submission.software)
-	item = items.first()
-	if not item: return False
-	
-
-	# find latest expiring item
-	for i in items: 
-		if i.expiration > item.expiration: item = i
+	item = SoftwareEditQueue.get_latest_expiry(submission.software)
+	if not item or item.is_expired(): return False
 	
 	user: Person = submission.submitter.person
 	software: Software = submission.software

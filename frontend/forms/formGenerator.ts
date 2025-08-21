@@ -33,11 +33,15 @@ export class FormGenerator {
 	private fieldSections: HTMLDetailsElement[] = [];
 	private hasAgreement: boolean = true;
 	private agreementElement: HTMLInputElement = null;
+	private isEditForm: boolean = false;
 
 	public autofilledFromDatacite: boolean = false;
 	public autofilledFromRepo: boolean = false;
 
-	private buildForm(readOnly: boolean = false, condensed: boolean = false): void {
+	private buildForm(
+		readOnly: boolean = false, 
+		condensed: boolean = false, 
+	): void {
 
 		// don't try to generate the form without structure data
 		if(FormGenerator.structureData == null) {
@@ -76,6 +80,7 @@ export class FormGenerator {
 		this.submitElement = document.createElement("input");
 		this.submitElement.type = "submit";
 		this.submitElement.value = "Submit";
+		if(this.isEditForm) this.submitElement.value += " Edits";
 		this.formElement.appendChild(this.submitElement);
 	}
 
@@ -169,9 +174,21 @@ export class FormGenerator {
 
 		Spinner.showSpinner();
 
+		// change action if it's an edit form
+		console.log("submitting form.. is edit:", this.isEditForm);
+		let action = this.formElement.action
+		if(this.isEditForm){
+			console.log("Edit form, appending quid...");
+			const params = new URLSearchParams(window.location.search);
+			const quid = params.get("uid");
+			console.log(quid);
+			action += quid + "/";
+		}
+
 		// submit the data from the form fields as a JSON string
+		console.log("submitting to " + action);
 		const data = this.getJsonData();
-		const response = fetchTimeout(this.formElement.action, {
+		const response = fetchTimeout(action, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -315,7 +332,10 @@ export class FormGenerator {
 	 * generate a form from a given set of fields, or if not specified, tries 
 	 * to find json data about fields inside the text
 	 */
-	public static async generateForm(fields: ModelSubfield[] = null): Promise<void> {
+	public static async generateForm(
+		fields: ModelSubfield[] = null, 
+		editing: boolean = false
+	): Promise<void> {
 
 		// warn about singleton resetting
 		if(this.instance != null) {
@@ -328,7 +348,8 @@ export class FormGenerator {
 		) as HTMLFormElement;
 		if(form == null) return;
 
-		// TODO placeholder form loading icon
+		form.style.minHeight = "100px";
+		Spinner.showSpinner(null, form);
 
 		// load structure data
 		if(this.structureData == null) {
@@ -341,8 +362,15 @@ export class FormGenerator {
 			ModelFieldStructure.parseModels(this.structureData.data);
 		}
 		
+		// determine whether it's on an edit page or not
+		// TODO make this not suck
+		const params = new URLSearchParams(window.location.search);
+		const isEdit = !!params.get("uid");
+		console.log("detecting edit quid.. ", params.get("uid"), isEdit);
+
 		// get references to or create the form elements
 		const generator = new FormGenerator();
+		generator.isEditForm = isEdit;
 		generator.formElement = form;
 		generator.fieldContainer = generator.formElement.querySelector(
 			`div[${typeAttribute}=${formFieldsType}]`
@@ -394,6 +422,7 @@ export class FormGenerator {
 		this.instance = generator;
 		this.instance.buildForm();
 		
+		Spinner.hideSpinner(form);
 	}
 
 	/**

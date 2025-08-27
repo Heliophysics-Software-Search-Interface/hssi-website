@@ -1,6 +1,5 @@
-import uuid
+import uuid, datetime
 from typing import Callable
-from datetime import timedelta
 
 from django.db import models
 from django.utils import timezone
@@ -216,12 +215,6 @@ class Software(HssiModel):
 		except ObjectDoesNotExist: 
 			return False
 
-class InReviewSoftware(HssiSet):
-	""" store ids to flag softwares which are currently under review """
-	access = AccessLevel.PUBLIC
-	target_model = Software
-	def __str__(self): return str(self.id)
-
 class VisibleSoftware(HssiSet):
 	"""Stores ids to flag softwares with the given ids as visible"""
 	access = AccessLevel.PUBLIC
@@ -243,10 +236,11 @@ class SoftwareEditQueue(HssiModel):
 	object in this model's pk without managing profiles for submitters.
 	"""
 
-	time_threshold = timedelta(hours=5)
+	default_expire_delta = datetime.timedelta(hours=5)
 
 	access = AccessLevel.PUBLIC
-	created = models.DateTimeField()
+	created = models.DateTimeField(null=True, blank=True)
+	expiration = models.DateTimeField(null=True, blank=True)
 	target_software = models.ForeignKey(
 		Software, 
 		on_delete=models.CASCADE,
@@ -259,14 +253,28 @@ class SoftwareEditQueue(HssiModel):
 		returns true if the queue entry was created longer ago than the 
 		threshold specifies, the entry should be deleted if this returns true
 		"""
-		if not self.created: return True
-		elapsed = timezone.now() - self.created
-		return elapsed > self.time_threshold
+		if not self.expiration: return True
+		return timezone.now() > self.expiration
 	
 	@classmethod
-	def create(cls, target: Software) -> 'SoftwareEditQueue':
+	def get_latest_expiry(cls, target: Software) -> 'SoftwareEditQueue':
+		"""
+		grab the edit queue item that corresponds to the specified target 
+		which has the latest expiry date/time
+		"""
+		items = cls.objects.filter(target_software=target.pk)
+		latest = items.first()
+		if not latest: return None
+		for item in items:
+			if latest.expiration < item.expiration: latest = item
+		return latest
+
+	@classmethod
+	def create(cls, target: Software, expiration: datetime.datetime = None) -> 'SoftwareEditQueue':
 		queue_item = cls()
 		queue_item.created = timezone.now()
 		queue_item.target_software = target
+		if not expiration: expiration = queue_item.created + cls.default_expire_delta
+		queue_item.expiration = expiration
 		queue_item.save()
 		return queue_item

@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from django.http import *
 from django.shortcuts import render
 
-from .submit import handle_submission_data
+from ..data_parser import handle_submission_data
 from ..util import *
 from ..models import *
 
@@ -15,6 +15,7 @@ from ..forms import (
 )
 
 def request_edit_link(request: HttpRequest, uid: str) -> HttpResponse:
+	""" http view for requesting an edit link to a given software uid """
 	if request.method != "POST": return HttpResponseBadRequest("expected POST")
 	try:
 		test_email = request.body.decode("utf-8").lower()
@@ -82,9 +83,62 @@ def submit_edits(request: HttpRequest, uid: str) -> HttpResponse:
 	except Exception: return HttpResponseServerError()
 	return HttpResponse(status=204)
 
-def email_edit_link(submission: SubmissionInfo):
-	queue_item = SoftwareEditQueue.create(submission.software)
-	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(queue_item.id)}"
+def email_existing_edit_link(submission: SubmissionInfo) -> bool:
+	"""
+	grabs an edit link from the software edit queue whose expiration date is 
+	the furthest away and emails that to the submitter in the submission info,
+	returns false if no edit link exists
+	"""
+	item = SoftwareEditQueue.get_latest_expiry(submission.software)
+	if not item or item.is_expired(): return False
+	
+	user: Person = submission.submitter.person
+	software: Software = submission.software
 	emails = submission.submitter.email_list()
-	print(f"Sending edit links for {queue_item.id} to {emails}...")
-	send_mail("[HSSI] Edit Submission", link, None, emails)
+	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(item.id)}"
+
+	message = (
+		f"Hello {user.firstName}, \n\n" +
+		f"Thank you for submitting your software to HSSI. Once your submission " +
+		f"is reviewed, a curator will contact you at this email.\n" +
+		f"In the meantime, you can view or edit your submission with the " +
+		f"link below: \n\n{link}\n\n" +
+		f"Please do not share this link publicly, as anyone with this link " +
+		f"can edit the submission."
+	)
+
+	print(f"Sending edit link for {item.id} to {emails}")
+	send_mail(
+		f"[HSSI] '{software.softwareName}' Submission Confirmed!", 
+		message, 
+		None, 
+		emails
+	)
+	
+	return True
+
+def email_edit_link(submission: SubmissionInfo):
+	"""
+	creates a new edit queue item in the database and emails an edit link
+	based on it to the submitter's email
+	"""
+	software: Software = submission.software
+	user: Person = submission.submitter.person
+	queue_item = SoftwareEditQueue.create(software)
+	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(queue_item.id)}"
+	message = (
+		f"Hello {user.firstName}, \n\n" +
+		f"We have received a request to email you a new edit link. You can use " +
+		f"the link below to edit your submission: \n\n{link}\n\n" +
+		f"Note that this link will expire in 5 hours " +
+		f"(UTC {str(queue_item.expiration)})."
+	)
+
+	emails = submission.submitter.email_list()
+	print(f"Creating and sending edit link for {queue_item.id} to {emails}...")
+	send_mail(
+		f"[HSSI] Link to edit '{software.softwareName}' submission", 
+		message, 
+		None, 
+		emails
+	)

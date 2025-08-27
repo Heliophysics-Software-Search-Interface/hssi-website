@@ -250,7 +250,6 @@ form {
 }
 
 .tooltip-text {
-	display: none;
 	position: absolute;
 	background: #333;
 	color: white;
@@ -263,6 +262,14 @@ form {
 	top: 100%;
 	left: 0;
 	z-index: 100;
+}
+
+form span.tooltip-icon + .tooltip-text {
+	display: none;
+}
+
+form span.tooltip-icon:hover + .tooltip-text {
+	display: block;
 }
 
 .explanation-text {

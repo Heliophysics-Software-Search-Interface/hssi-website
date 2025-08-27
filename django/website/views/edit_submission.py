@@ -47,9 +47,6 @@ def get_submission_data(request: HttpRequest, uid: str) -> HttpResponse:
 	return JsonResponse(data)
 
 def edit_submission(request: HttpRequest) -> HttpResponse:
-	if AccessLevel.from_user(request.user) < AccessLevel.CURATOR:
-		return HttpResponseForbidden("You must be a curator to access this page")
-	
 	return render(
 		request, 
 		"pages/edit_submission.html", 

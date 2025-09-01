@@ -572,20 +572,20 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		multi=True,
 	),	
 	# Contributors
-	ModelSubfield.define(
-		name=FIELD_CONTRIBUTOR,
-        row_name=ROW_PERSON_NAME,
-		type=SUBMISSION_FORM_CONTRIBUTOR.type_name,
-		requirement=RequirementLevel.OPTIONAL.value,
-		properties={
-			PROP_LABEL: "Contributors",
-			PROP_WIDGET_PROPS: {
-				WPROP_TARGETMODEL: Person.__name__,
-				WPROP_ALLOWNEWENTRIES: True,
-			},
-		},
-		multi=True,
-	),
+	# ModelSubfield.define(
+	# 	name=FIELD_CONTRIBUTOR,
+    #     row_name=ROW_PERSON_NAME,
+	# 	type=SUBMISSION_FORM_CONTRIBUTOR.type_name,
+	# 	requirement=RequirementLevel.OPTIONAL.value,
+	# 	properties={
+	# 		PROP_LABEL: "Contributors",
+	# 		PROP_WIDGET_PROPS: {
+	# 			WPROP_TARGETMODEL: Person.__name__,
+	# 			WPROP_ALLOWNEWENTRIES: True,
+	# 		},
+	# 	},
+	# 	multi=True,
+	# ),
 	# Software Name
 	ModelSubfield.define(
 		name=FIELD_SOFTWARENAME,

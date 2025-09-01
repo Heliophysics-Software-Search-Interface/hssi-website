@@ -293,6 +293,7 @@ export class ModelBox extends Widget {
 		this.selectedOptionIndex = -1;
 
 		// move "other" option to last in the list
+		// TODO add as property for moving any named item to bottom of list
 		let otherIndex = options.findIndex(x => {
 			return "other" == x.name.trim().toLocaleLowerCase();
 		});
@@ -301,11 +302,14 @@ export class ModelBox extends Widget {
 		}
 
 		// move "x independent" option to first in the list
-		let independentIndex = options.findIndex(x => {
-			return x.name.toUpperCase().includes("INDEPENDENT");
-		});
-		if (independentIndex >= 1){
-			options.splice(0, 0, ...options.splice(independentIndex, 1));
+		// TODO add as property for moving any named item to top of list
+		if(this.properties.targetModel === "OperatingSystem"){
+			let independentIndex = options.findIndex(x => {
+				return x.name.toUpperCase().includes("INDEPENDENT");
+			});
+			if (independentIndex >= 1){
+				options.splice(0, 0, ...options.splice(independentIndex, 1));
+			}
 		}
 
 		// create and populate the dropdown list

@@ -300,6 +300,14 @@ export class ModelBox extends Widget {
 			options.push(options.splice(otherIndex, 1)[0]);
 		}
 
+		// move "x independent" option to first in the list
+		let independentIndex = options.findIndex(x => {
+			return x.name.toUpperCase().includes("INDEPENDENT");
+		});
+		if (independentIndex >= 1){
+			options.splice(0, 0, ...options.splice(independentIndex, 1));
+		}
+
 		// create and populate the dropdown list
 		this.optionListElement = document.createElement("ul");
 		for(const option of this.options) {

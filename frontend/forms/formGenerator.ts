@@ -152,25 +152,59 @@ export class FormGenerator {
 		return !this.hasAgreement || this.agreementElement.checked;
 	}
 
-	private onSubmit(e: SubmitEvent): void{
-
-		// we don't want the default html form functionality submitting anything
-		e.preventDefault();
+	private validateForSubmission(): boolean{
 
 		// check to see all required elements are filled out
 		if(!this.validateFieldRequirements()) {
 			console.log("form fields not valid!");
-			return;
+			return false;
 		}
 
 		if(!this.userHasAgreed()){
 			ConfirmDialogue.getConfirmation(
 				"Error - You must agree to the given terms, please check the " +
 				"'I agree' checkbox located at the bottom of the form.", 
-				"Metadata Agreement", "ok", "cancel"
+				"Metadata Agreement", "ok", null
 			);
-			return;
+			return false;
 		}
+
+		// check version date is later than or equal to publication date
+		const pubDateField = this.getRootFields().find(
+			x => x.name === "publicationDate" 
+		);
+		const verDateField = this.getRootFields().find(
+			x => x.name === "versionNumber"
+		)?.getSubfields().find(
+			x => x.name === "versionDate"
+		);
+		if (pubDateField && verDateField){
+			const pubDateStr = pubDateField.getInputElement()?.value;
+			const verDateStr = verDateField.getInputElement()?.value;
+			if(pubDateStr && verDateStr){
+				const pubDate = new Date(pubDateStr);
+				const verDate = new Date(verDateStr);
+				if(new Date(pubDateStr).getTime() > new Date(verDateStr).getTime()){
+					ConfirmDialogue.getConfirmation(
+						"Error - The listed publication date is more recent " +
+						"than the latest version date, which should not be " + 
+						"possible. Please fix this.", 
+						"Error - Date Conflict", "ok", null
+					);
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	private onSubmit(e: SubmitEvent): void{
+
+		// we don't want the default html form functionality submitting anything
+		e.preventDefault();
+
+		if(!this.validateForSubmission()) return;
 
 		Spinner.showSpinner();
 

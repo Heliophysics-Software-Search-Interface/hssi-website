@@ -1,7 +1,6 @@
 import {
-	SimpleEvent, FilterTab,
-	type JSONArray, type JSONObject, type JSONValue,
-	FilterMenu,
+	SimpleEvent, FilterTab, FilterMenu,
+	type JSONArray, type JSONObject, type JSONValue, type CategoryFilterTab
 } from "../loader";
 
 
@@ -159,6 +158,10 @@ export class FilterMenuItem {
 	}
 }
 
+/** 
+ * Abstract implementation for the menu item type which implements getters 
+ * and setters for the abstract django model 'ControlledList'
+ */
 export class ControlledListItem extends FilterMenuItem {
 	public get objectData(): JSONObject { return this.data as JSONObject; }
 	public get name(): string { return this.objectData.name as any; }
@@ -171,6 +174,7 @@ export class ControlledListItem extends FilterMenuItem {
 	public set identifier(val: string) { this.objectData.identifier = val; }
 }
 
+/** A concrete type for the abstract {@link ControlledListItem} */
 export class ConcreteListItem extends ControlledListItem {
 
 	public bgColor: string = "#FFF";
@@ -195,6 +199,10 @@ export class ConcreteListItem extends ControlledListItem {
 	}
 }
 
+/** 
+ * Abstract implementation of menu items who already have nested metadata from 
+ * the django model 'ControlledGraphList'
+ */
 export class GraphListItem extends ControlledListItem {
 	public get childData(): JSONArray<JSONObject> { 
 		return this.objectData.children as any; 
@@ -204,6 +212,7 @@ export class GraphListItem extends ControlledListItem {
 	}
 }
 
+/** Menu item type used in the {@link CategoryFilterTab} */
 export class CategoryItem extends GraphListItem {
 	public get bgColor(): string { return this.objectData.backgroundColor as any; }
 	public get textColor(): string { return this.objectData.textColor as any; }

@@ -1,5 +1,6 @@
 import { 
 	FilterTab, CategoryFilterTab, FilterMenuItem, FilterGroupMaker,
+	ProgrammingLanguageFilterTab,
 } from "../loader";
 
 const styleFilterMenu = "filter-menu";
@@ -102,7 +103,7 @@ export class FilterMenu {
 export function makeFilterMenuElement(): void {
 	const filterMenu = new FilterMenu();
 	filterMenu.tabs.push(new CategoryFilterTab(filterMenu));
-	filterMenu.tabs.push(new CategoryFilterTab(filterMenu));
+	filterMenu.tabs.push(new ProgrammingLanguageFilterTab(filterMenu));
 	document.currentScript.parentNode.appendChild(filterMenu.containerElement);
 	filterMenu.build();
 }

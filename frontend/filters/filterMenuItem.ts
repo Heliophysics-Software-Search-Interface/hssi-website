@@ -164,6 +164,35 @@ export class ControlledListItem extends FilterMenuItem {
 	public get name(): string { return this.objectData.name as any; }
 	public get abbreviation(): string { return this.objectData.abbreviation as any; }
 	public get identifier(): string { return this.objectData.identifier as any; }
+	public get labelString(): string { return this.name; }
+	
+	public set name(val: string) { this.objectData.name = val; }
+	public set abbreviation(val: string) { this.objectData.abbreviation = val; }
+	public set identifier(val: string) { this.objectData.identifier = val; }
+}
+
+export class ConcreteListItem extends ControlledListItem {
+
+	public bgColor: string = "#FFF";
+	public borderColor: string = "#000";
+	public textColor: string = "#000";
+
+	override createChip(): HTMLSpanElement {
+		const chip = super.createChip();
+		chip.style.backgroundColor = this.bgColor;
+		chip.style.borderColor = this.borderColor;
+		chip.style.borderStyle = "solid";
+		chip.style.borderWidth = "1px";
+		chip.style.color = this.textColor;
+		chip.innerText = this.abbreviation;
+		return chip;
+	}
+
+	public override build(): void {
+		super.build();
+		this.checkboxElement.value = this.id;
+		this.checkboxElement.id = this.id;
+	}
 }
 
 export class GraphListItem extends ControlledListItem {
@@ -182,7 +211,7 @@ export class CategoryItem extends GraphListItem {
 	public get labelString(): string { return this.objectData.name as any; }
 
 	public override createChip(): HTMLSpanElement {
-		let chip = super.createChip();
+		const chip = super.createChip();
 		chip.style.backgroundColor = this.bgColor;
 		chip.style.borderColor = this.bgColor;
 		chip.style.color = this.textColor;

@@ -21,6 +21,7 @@ const faGit = `<i class="fa fa-git"></i>`;
 const faNews = `<i class="fa fa-news"></i>`;
 const faFile = `<i class="fa fa-file"></i>`;
 const faDownArrow = `<i class="fa fa-angle-down"></i>`
+const faUpArrow = `<i class="fa fa-angle-up"></i>`
 
 /**
  * represents a single software resource submitted to the HSSI database, 
@@ -29,9 +30,13 @@ const faDownArrow = `<i class="fa fa-angle-down"></i>`
 export class ResourceItem{
 
 	private data: SoftwareData = null;
+	private shrinkedContent: HTMLDivElement = null;
+	private expandedContent: HTMLDivElement = null;
+	private expandButton: HTMLButtonElement = null;
 
 	/** the html element that contains all the html content for this item */
 	public containerElement: HTMLDivElement = null;
+
 
 	public constructor(){
 		this.containerElement = document.createElement("div");
@@ -115,29 +120,55 @@ export class ResourceItem{
 			if(i < this.data.authors.length - 1) headInfoDiv.innerHTML += "; ";
 		}
 
-		const descContainerDiv = document.createElement("div");
-		this.containerElement.appendChild(descContainerDiv);
-
-		const descriptionDiv = document.createElement("div");
-		descriptionDiv.classList.add(styleDescription);
-		descriptionDiv.innerText = this.data.description;
-		descContainerDiv.appendChild(descriptionDiv);
-
+		this.shrinkedContent = document.createElement("div");
+		this.containerElement.appendChild(this.shrinkedContent);
+		
 		const conciseDescDiv = document.createElement("div");
 		conciseDescDiv.classList.add(styleDescription);
 		conciseDescDiv.innerText = this.data.conciseDescription;
-		descContainerDiv.appendChild(conciseDescDiv);
-
+		this.shrinkedContent.appendChild(conciseDescDiv);
+		
+		this.expandedContent = document.createElement("div");
+		this.containerElement.appendChild(this.expandedContent);
+		
+		const descriptionDiv = document.createElement("div");
+		descriptionDiv.classList.add(styleDescription);
+		descriptionDiv.innerText = this.data.description;
+		this.expandedContent.appendChild(descriptionDiv);
+		
 		// TODO add logo
 
 		this.buildLinkButtons();
 
 		// Expand button:
-		const expandButton = document.createElement("button");
-		expandButton.classList.add(styleExpandButton);
-		expandButton.innerHTML = faDownArrow;
+		this.expandButton = document.createElement("button");
+		this.expandButton.classList.add(styleExpandButton);
+		this.expandButton.innerHTML = faDownArrow;
 
-		this.containerElement.appendChild(expandButton);
+		this.expandButton.addEventListener("click", e => 
+			this.setExpanded(!this.isExpanded())
+		);
+
+		this.containerElement.appendChild(this.expandButton);
+		this.setExpanded(false);
+	}
+
+	public setExpanded(expand: boolean): void {
+		if(expand){
+			this.expandedContent.style.display = "block";
+			this.shrinkedContent.style.display = "none";
+			this.expandButton.innerHTML = faUpArrow;
+		} 
+		else {
+			this.expandedContent.style.display = "none";
+			this.shrinkedContent.style.display = "block";
+			this.expandButton.innerHTML = faDownArrow;
+		}
+	}
+
+	/** returns true if the hidden expandedcontent div is visible */
+	public isExpanded(): boolean {
+		return this.expandedContent.style.display !== "none";
 	}
 
 	/** destroy and remove item from DOM */

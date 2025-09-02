@@ -6,6 +6,7 @@ const styleResourceItem = "resource-item";
 const styleResourceHeader = "resource-header";
 const styleResourceTitle = "resource-title";
 const styleDescription = "description";
+const styleExpandButton = "expand-button";
 const styleBottomButtons = "bottom-buttons";
 const styleAuthor = "author";
 const styleLinkBtn = "link-btn";
@@ -19,6 +20,7 @@ const faLink = `<i class="fa fa-link"></i>`;
 const faGit = `<i class="fa fa-git"></i>`;
 const faNews = `<i class="fa fa-news"></i>`;
 const faFile = `<i class="fa fa-file"></i>`;
+const faDownArrow = `<i class="fa fa-angle-down"></i>`
 
 /**
  * represents a single software resource submitted to the HSSI database, 
@@ -34,6 +36,49 @@ export class ResourceItem{
 	public constructor(){
 		this.containerElement = document.createElement("div");
 		this.containerElement.classList.add(styleResourceItem);
+		this.containerElement.style.position = "relative";
+	}
+
+	private buildLinkButtons(): void {
+		const bottomButtonContainer = document.createElement("div");
+		bottomButtonContainer.classList.add(styleBottomButtons);
+		this.containerElement.appendChild(bottomButtonContainer);
+		
+		if(this.data.codeRepositoryUrl){
+			const repoButton = document.createElement("a");
+			repoButton.classList.add(styleLinkBtn);
+			repoButton.classList.add(styleBtnCode);
+			repoButton.innerHTML = faGit + " Code";
+			repoButton.href = this.data.codeRepositoryUrl;
+			bottomButtonContainer.appendChild(repoButton);
+		}
+
+		if(this.data.documentation){
+			const docsButton = document.createElement("a");
+			docsButton.classList.add(styleLinkBtn);
+			docsButton.classList.add(styleBtnDocs);
+			docsButton.innerHTML = faBook + " Docs";
+			docsButton.href = this.data.documentation;
+			bottomButtonContainer.appendChild(docsButton);
+		}
+
+		if(this.data.referencePublication){
+			const refpubButton = document.createElement("a");
+			refpubButton.classList.add(styleLinkBtn);
+			refpubButton.classList.add(styleBtnPublication);
+			refpubButton.innerHTML = faFile + " Publication";
+			refpubButton.href = this.data.referencePublication.identifier;
+			bottomButtonContainer.appendChild(refpubButton);
+		}
+
+		if(this.data.persistentIdentifier){
+			const doiButton = document.createElement("a");
+			doiButton.classList.add(styleLinkBtn);
+			doiButton.classList.add(styleBtnDoi);
+			doiButton.innerHTML = faLink + "DOI";
+			doiButton.href = this.data.persistentIdentifier;
+			bottomButtonContainer.appendChild(doiButton);
+		}
 	}
 
 	private build(): void {
@@ -85,46 +130,14 @@ export class ResourceItem{
 
 		// TODO add logo
 
-		const bottomButtonContainer = document.createElement("div");
-		bottomButtonContainer.classList.add(styleBottomButtons);
-		this.containerElement.appendChild(bottomButtonContainer);
-		
-		// Link Buttons:
-		if(this.data.codeRepositoryUrl){
-			const repoButton = document.createElement("a");
-			repoButton.classList.add(styleLinkBtn);
-			repoButton.classList.add(styleBtnCode);
-			repoButton.innerHTML = faGit + " Code";
-			repoButton.href = this.data.codeRepositoryUrl;
-			bottomButtonContainer.appendChild(repoButton);
-		}
+		this.buildLinkButtons();
 
-		if(this.data.documentation){
-			const docsButton = document.createElement("a");
-			docsButton.classList.add(styleLinkBtn);
-			docsButton.classList.add(styleBtnDocs);
-			docsButton.innerHTML = faBook + " Docs";
-			docsButton.href = this.data.documentation;
-			bottomButtonContainer.appendChild(docsButton);
-		}
+		// Expand button:
+		const expandButton = document.createElement("button");
+		expandButton.classList.add(styleExpandButton);
+		expandButton.innerHTML = faDownArrow;
 
-		if(this.data.referencePublication){
-			const refpubButton = document.createElement("a");
-			refpubButton.classList.add(styleLinkBtn);
-			refpubButton.classList.add(styleBtnPublication);
-			refpubButton.innerHTML = faFile + " Publication";
-			refpubButton.href = this.data.referencePublication.identifier;
-			bottomButtonContainer.appendChild(refpubButton);
-		}
-
-		if(this.data.persistentIdentifier){
-			const doiButton = document.createElement("a");
-			doiButton.classList.add(styleLinkBtn);
-			doiButton.classList.add(styleBtnDoi);
-			doiButton.innerHTML = faLink + "DOI";
-			doiButton.href = this.data.persistentIdentifier;
-			bottomButtonContainer.appendChild(doiButton);
-		}
+		this.containerElement.appendChild(expandButton);
 	}
 
 	/** destroy and remove item from DOM */

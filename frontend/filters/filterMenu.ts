@@ -102,6 +102,7 @@ export class FilterMenu {
 export function makeFilterMenuElement(): void {
 	const filterMenu = new FilterMenu();
 	filterMenu.tabs.push(new CategoryFilterTab(filterMenu));
+	filterMenu.tabs.push(new CategoryFilterTab(filterMenu));
 	document.currentScript.parentNode.appendChild(filterMenu.containerElement);
 	filterMenu.build();
 }

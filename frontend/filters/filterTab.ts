@@ -154,7 +154,7 @@ export class FilterTab {
 		span.innerText = this.headerText;
 		this.headerElement.appendChild(span);
 
-		span.addEventListener("click", () => {
+		this.headerElement.addEventListener("click", () => {
 			this.parentMenu.selectTab(this);
 		});
 	}

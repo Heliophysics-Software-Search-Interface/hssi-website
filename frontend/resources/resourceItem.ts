@@ -17,7 +17,7 @@ const styleBtnDoi = "btn-doi";
 
 const faBook = `<i class="fa fa-book"></i>`;
 const faLink = `<i class="fa fa-link"></i>`;
-const faGit = `<i class="fa fa-git"></i>`;
+const faCode = `<i class="fa fa-code"></i>`;
 const faNews = `<i class="fa fa-news"></i>`;
 const faFile = `<i class="fa fa-file"></i>`;
 const faDownArrow = `<i class="fa fa-angle-down"></i>`
@@ -53,7 +53,7 @@ export class ResourceItem{
 			const repoButton = document.createElement("a");
 			repoButton.classList.add(styleLinkBtn);
 			repoButton.classList.add(styleBtnCode);
-			repoButton.innerHTML = faGit + " Code";
+			repoButton.innerHTML = faCode + " Code";
 			repoButton.href = this.data.codeRepositoryUrl;
 			bottomButtonContainer.appendChild(repoButton);
 		}

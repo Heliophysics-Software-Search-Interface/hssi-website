@@ -86,6 +86,11 @@ export class ResourceItem{
 		}
 	}
 
+	private buildModelChips(): void {
+		// TODO add category chips
+		// TODO add programming language chips
+	}
+
 	private build(): void {
 		// TODO build from this.data
 		const headerDiv = document.createElement("div");
@@ -139,6 +144,7 @@ export class ResourceItem{
 		// TODO add logo
 
 		this.buildLinkButtons();
+		this.buildModelChips();
 
 		// Expand button:
 		this.expandButton = document.createElement("button");

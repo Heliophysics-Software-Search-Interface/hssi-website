@@ -8,6 +8,17 @@ const styleResourceTitle = "resource-title";
 const styleDescription = "description";
 const styleBottomButtons = "bottom-buttons";
 const styleAuthor = "author";
+const styleLinkBtn = "link-btn";
+const styleBtnCode = "btn-code";
+const styleBtnDocs = "btn-docs";
+const styleBtnPublication = "btn-publication";
+const styleBtnDoi = "btn-doi";
+
+const faBook = `<i class="fa fa-book"></i>`;
+const faLink = `<i class="fa fa-link"></i>`;
+const faGit = `<i class="fa fa-git"></i>`;
+const faNews = `<i class="fa fa-news"></i>`;
+const faFile = `<i class="fa fa-file"></i>`;
 
 /**
  * represents a single software resource submitted to the HSSI database, 
@@ -74,36 +85,43 @@ export class ResourceItem{
 
 		// TODO add logo
 
-		// TODO add buttons: repo, docs, doi, ref pub, 
-
 		const bottomButtonContainer = document.createElement("div");
 		bottomButtonContainer.classList.add(styleBottomButtons);
 		this.containerElement.appendChild(bottomButtonContainer);
 		
+		// Link Buttons:
 		if(this.data.codeRepositoryUrl){
 			const repoButton = document.createElement("a");
-			repoButton.innerText = "Code";
+			repoButton.classList.add(styleLinkBtn);
+			repoButton.classList.add(styleBtnCode);
+			repoButton.innerHTML = faGit + " Code";
 			repoButton.href = this.data.codeRepositoryUrl;
 			bottomButtonContainer.appendChild(repoButton);
 		}
 
 		if(this.data.documentation){
 			const docsButton = document.createElement("a");
-			docsButton.innerText = "Documentation";
+			docsButton.classList.add(styleLinkBtn);
+			docsButton.classList.add(styleBtnDocs);
+			docsButton.innerHTML = faBook + " Docs";
 			docsButton.href = this.data.documentation;
 			bottomButtonContainer.appendChild(docsButton);
 		}
 
 		if(this.data.referencePublication){
 			const refpubButton = document.createElement("a");
-			refpubButton.innerText = "Publication";
+			refpubButton.classList.add(styleLinkBtn);
+			refpubButton.classList.add(styleBtnPublication);
+			refpubButton.innerHTML = faFile + " Publication";
 			refpubButton.href = this.data.referencePublication.identifier;
 			bottomButtonContainer.appendChild(refpubButton);
 		}
 
 		if(this.data.persistentIdentifier){
 			const doiButton = document.createElement("a");
-			doiButton.innerText = "DOI";
+			doiButton.classList.add(styleLinkBtn);
+			doiButton.classList.add(styleBtnDoi);
+			doiButton.innerHTML = faLink + "DOI";
 			doiButton.href = this.data.persistentIdentifier;
 			bottomButtonContainer.appendChild(doiButton);
 		}

@@ -494,7 +494,7 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 				identifier=intersoft, 
 				type=RelatedItemType.SOFTWARE.value
 			).first()
-			if intersoft_ref: software.relatedSoftware.add(intersoft_ref)
+			if intersoft_ref: software.interoperableSoftware.add(intersoft_ref)
 			else:
 				intersoftware = RelatedItem()
 				intersoftware.name = "UNKNOWN"
@@ -526,7 +526,7 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 				software.relatedInstruments.add(instr)
 
 	relobs_datas: list[dict] = data.get(FIELD_RELATEDOBSERVATORIES)
-	if relobs_datas is not None: software.relatedDatasets.clear()
+	if relobs_datas is not None: software.relatedObservatories.clear()
 	for relobs_data in relobs_datas:
 		obs_name: str = ""
 		if isinstance(relobs_data, dict): obs_name = relobs_data.get(FIELD_RELATEDOBSERVATORIES)

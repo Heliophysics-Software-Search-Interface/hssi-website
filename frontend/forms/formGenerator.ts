@@ -339,7 +339,7 @@ export class FormGenerator {
 
 	public getJsonData(): JSONValue{
 
-		// get all subfields into a linear array
+		// get all subfields into a flat array
 		const subfields: ModelSubfield[] = [];
 		let outerFields: ModelSubfield[][] = this.fields as any;
 		if(outerFields.length > 0 && !(outerFields[0] instanceof Array)) {

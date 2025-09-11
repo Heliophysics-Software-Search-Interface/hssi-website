@@ -38,10 +38,7 @@ export class FormGenerator {
 	public autofilledFromDatacite: boolean = false;
 	public autofilledFromRepo: boolean = false;
 
-	private buildForm(
-		readOnly: boolean = false, 
-		condensed: boolean = false, 
-	): void {
+	private buildForm(): void {
 
 		// don't try to generate the form without structure data
 		if(FormGenerator.structureData == null) {
@@ -63,7 +60,7 @@ export class FormGenerator {
 		
 		for(const field of this.fields) {
 			if(field instanceof Array){
-				this.buildFormSection(field, titles.shift(), i > 0, readOnly, condensed);
+				this.buildFormSection(field, titles.shift(), i > 0);
 				i++;
 				continue;
 			}
@@ -125,8 +122,6 @@ export class FormGenerator {
 		fields: ModelSubfield[], 
 		title: string,
 		collapsible: boolean = true,
-		readOnly: boolean = false,
-		condensed: boolean = false,
 	): void {
 
 		const details = document.createElement(collapsible ? "details" : "div");
@@ -138,7 +133,7 @@ export class FormGenerator {
 		for(const field of fields) {
 			const formRow = document.createElement("div") as HTMLDivElement;
 			formRow.classList.add(formRowStyle);
-			field.buildInterface(formRow, true, readOnly, condensed);
+			field.buildInterface(formRow, true);
 			details.appendChild(formRow);
 		}
 
@@ -258,8 +253,7 @@ export class FormGenerator {
 			if(!this.isEditForm) return;
 			let confirm = await ConfirmDialogue.getConfirmation(
 				"The changes to the submission have been received.", 
-				"Success", 
-				"Return to Homepage", "Continue Editing"
+				"Success", "Return to Homepage", "Continue Editing",
 			);
 			if(confirm) window.location.href = "/";
 		});
@@ -376,8 +370,7 @@ export class FormGenerator {
 	 * to find json data about fields inside the text
 	 */
 	public static async generateForm(
-		fields: ModelSubfield[] = null, 
-		editing: boolean = false
+		fields: ModelSubfield[] = null,
 	): Promise<void> {
 
 		// warn about singleton resetting
@@ -577,6 +570,10 @@ export class FormGenerator {
 			fill(outerField);
 		}
 	}
+
+	public static async awaitFormGeneration(): Promise<void> {
+		while(this.instance == null) await new Promise(x => setTimeout(x, 100));
+	}
 }
 
 const win = window as any;
@@ -585,3 +582,4 @@ win.collapseGeneratedForm = FormGenerator.collapseFormFields.bind(FormGenerator)
 win.expandGeneratedForm = FormGenerator.expandFormFields.bind(FormGenerator);
 win.fillForm = FormGenerator.fillForm.bind(FormGenerator);
 win.debugAutofill = FormGenerator.debugAutofill.bind(FormGenerator);
+win.awaitFormGeneration = FormGenerator.awaitFormGeneration.bind(FormGenerator);

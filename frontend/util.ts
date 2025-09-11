@@ -1,4 +1,4 @@
-import { ConfirmDialogue, PopupDialogue, TextInputDialogue } from "./loader";
+import { ConfirmDialogue, FormGenerator, PopupDialogue, TextInputDialogue } from "./loader";
 
 export const softwareApiUrl = "/api/models/Software/rows/";
 export const modelApiUrl = "/api/view/"
@@ -249,9 +249,33 @@ export async function requestEditSubmission(uid: string): Promise<void> {
 	});
 }
 
+async function curateEditFormInit() {
+	let uid = new URLSearchParams(window.location.search).get("uid");
+	
+	let data = null;
+	try{
+		// defined in /frontend/util.ts
+		data = await getSoftwareEditFormData(uid);
+	}
+	catch(e) { console.error(e); }
+	
+	if(data == null) {
+		await ConfirmDialogue.getConfirmation(
+			"This edit link is invalid.", "Error", "Ok", null
+		);
+		window.location.href = "/";
+		return;
+	}
+	
+	// defined in /frontend/forms/formGenerator.ts
+	await FormGenerator.awaitFormGeneration();
+	FormGenerator.fillForm(data, true);
+}
+
 const win = window as any;
 win.requestEditSubmission = requestEditSubmission;
 win.getSoftwareData = getSoftwareData;
 win.getSoftwareFormData = getSoftwareFormData;
 win.getSoftwareEditFormData = getSoftwareEditFormData;
 win.getSimpleSoftwareFormData = getSimpleSoftwareFormData;
+win.curateEditFormInit = curateEditFormInit;

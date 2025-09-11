@@ -253,7 +253,15 @@ export class FormGenerator {
 				"Error", "ok", null
 			);
 		});
-		response.finally(() => Spinner.hideSpinner());
+		response.finally(async () => {
+			Spinner.hideSpinner();
+			let confirm = await ConfirmDialogue.getConfirmation(
+				"The changes to the submission have been received.", 
+				"Success", 
+				"Return to Homepage", "Continue Editing"
+			);
+			if(confirm) window.location.href = "/";
+		});
 	}
 
 	private validateFieldRequirements(): boolean {

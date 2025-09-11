@@ -255,6 +255,7 @@ export class FormGenerator {
 		});
 		response.finally(async () => {
 			Spinner.hideSpinner();
+			if(!this.isEditForm) return;
 			let confirm = await ConfirmDialogue.getConfirmation(
 				"The changes to the submission have been received.", 
 				"Success", 

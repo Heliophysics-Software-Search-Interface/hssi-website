@@ -4,7 +4,7 @@ import {
 	FilterMenu,
 	ControlledListItem,
 	ConcreteListItem,
-} from "../loader";
+} from "../../loader";
 
 /**
  * This module aims to reproduce the html structure below for each individual 
@@ -60,7 +60,7 @@ export const apiSlugRowsAll = "/rows/all/";
 const styleTabHeader = "tab-header";
 const styleTabContent = "tab-content";
 
-const colorSrcGreen = "#559e41";
+export const colorSrcGreen = "#559e41";
 const styleVertical = "vertical";
 const styleMenu = "menu";
 const styleDropdown = "dropdown";
@@ -203,87 +203,5 @@ export class ControlledListFilterTab extends FilterTab {
 			const obB = b as { name: string };
 			return obA.name.localeCompare(obB.name);
 		});
-	}
-}
-
-export class CategoryFilterTab extends ControlledListFilterTab {
-
-	public get headerText(): string { return "Categories"; }
-
-	public get categories(): CategoryItem[] { return this.rootItems as CategoryItem[]; }
-	public get categoryData(): JSONArray<JSONObject> { 
-		return this.modelData as JSONArray<JSONObject>; 
-	}
-
-	public constructor(parentMenu: FilterMenu) {
-		super(parentMenu);
-		this.targetModel = "FunctionCategory";
-	}
-
-	protected override itemDataValid(itemData: JSONValue): boolean {
-		const data = itemData as JSONObject;
-		if(data?.parents instanceof Array) return data.parents.length <= 0;
-		return true;
-	}
-
-	protected override createItem(itemData: JSONValue): FilterMenuItem {
-		const category = new CategoryItem(this, itemData);
-		const data = itemData as JSONObject;
-
-		// find and parse direct children
-		if(data?.children instanceof Array){
-			for(const uid of data.children){
-				const id = uid as string;
-				const childData = this.categoryData.find(x => { return x.id == id; });
-				if(childData){
-					category.children.push(new CategoryItem(this, childData));
-				}
-			}
-		}
-
-		return category;
-	}
-}
-
-export class ProgrammingLanguageFilterTab extends ControlledListFilterTab {
-	
-	public get headerText(): string { return "Prog. Languages"; }
-
-	public get categories(): ControlledListItem[] { 
-		return this.rootItems as ControlledListItem[]; 
-	}
-
-	public constructor(parentMenu: FilterMenu) {
-		super(parentMenu);
-		this.targetModel = "ProgrammingLanguage";
-	}
-
-	protected override createItem(itemData: JSONValue): FilterMenuItem {
-		const item = new ConcreteListItem(this, itemData);
-		item.borderColor = colorSrcGreen;
-		item.textColor = item.borderColor;
-
-		switch(item.name.toLowerCase()){
-			case "javascript": item.abbreviation = "JaSc"; break
-			case "typescript": item.abbreviation = "TySc"; break
-			case "fortran77": item.abbreviation = "Fo77"; break;
-			case "fortran90": item.abbreviation = "Fo90"; break;
-			default:
-				let splname = item.name.replaceAll(".", "").split(" ");
-				switch(splname.length){
-					case 2: 
-					item.abbreviation = (
-						splname[0].substring(0, 2) + 
-						splname[1].substring(splname[1].length - 2, splname[1].length)
-					);
-					break;
-					default:
-						item.abbreviation = item.name.substring(0, 4);
-						break;
-				}
-				break;
-		}
-				
-		return item;
 	}
 }

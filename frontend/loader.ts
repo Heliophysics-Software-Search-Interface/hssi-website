@@ -11,7 +11,9 @@ export * from "./modelStructure";
 
 export * from "./filters/filterGroup";
 export * from "./filters/filterMenuItem";
-export * from "./filters/filterTab";
+export * from "./filters/filterTab/filterTab";
+export * from "./filters/filterTab/categoryFilterTab";
+export * from "./filters/filterTab/programmingLanguageFilterTab";
 export * from "./filters/filterMenu";
 
 export * from "./resources/resourceItem";

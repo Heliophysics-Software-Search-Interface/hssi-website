@@ -1,6 +1,7 @@
 import {
 	SimpleEvent, FilterTab, FilterMenu,
-	type JSONArray, type JSONObject, type JSONValue, type CategoryFilterTab
+	type JSONArray, type JSONObject, type JSONValue, type CategoryFilterTab,
+	ModelChipBuilder
 } from "../loader";
 
 
@@ -68,16 +69,12 @@ export class FilterMenuItem {
 	 * create a small display element that can be used to represent this item 
 	 * anywhere in the document
 	 */
-	public createChip(): HTMLSpanElement {
-		const chip = document.createElement("span");
-		chip.classList.add(styleItemChip);
-		if(this.parentItem) chip.classList.add(styleSubchip);
-		chip.innerText = this.labelString.substring(0,4);
-		return chip;
+	public async createChip(): Promise<HTMLSpanElement> {
+		return await ModelChipBuilder.createChip(this.parentTab.targetModel, this.id);
 	}
 
 	/** creates all display html elements for the list item */
-	public build(): void {
+	public async build(): Promise<void> {
 
 		// clear html elements
 		while(this.containerElement.childNodes.length > 0){
@@ -94,7 +91,7 @@ export class FilterMenuItem {
 		if(this.parentTab.selectedItems.includes(this)) this.checkboxElement.checked = true;
 		this.labelElement.appendChild(this.checkboxElement);
 		
-		const chip = this.createChip();
+		const chip = await this.createChip();
 		this.labelElement.appendChild(chip);
 
 		this.checkboxElement.addEventListener("click", e => {
@@ -137,9 +134,9 @@ export class FilterMenuItem {
 	}
 
 	/** creates all elements that represent an item who is a child of this */
-	public buildChildItem(child: FilterMenuItem){
+	public async buildChildItem(child: FilterMenuItem){
 		child.parentItem = this;
-		child.build();
+		await child.build();
 		child.containerElement.classList.add(styleFilterSubItem);
 	}
 
@@ -181,8 +178,8 @@ export class ConcreteListItem extends ControlledListItem {
 	public borderColor: string = "#000";
 	public textColor: string = "#000";
 
-	override createChip(): HTMLSpanElement {
-		const chip = super.createChip();
+	public override async createChip(): Promise<HTMLSpanElement> {
+		const chip = await super.createChip();
 		chip.style.backgroundColor = this.bgColor;
 		chip.style.borderColor = this.borderColor;
 		chip.style.borderStyle = "solid";
@@ -192,8 +189,8 @@ export class ConcreteListItem extends ControlledListItem {
 		return chip;
 	}
 
-	public override build(): void {
-		super.build();
+	public override async build(): Promise<void> {
+		await super.build();
 		this.checkboxElement.value = this.id;
 		this.checkboxElement.id = this.id;
 	}
@@ -219,8 +216,8 @@ export class CategoryItem extends GraphListItem {
 	public get children(): CategoryItem[] { return this.subItems as any; }
 	public get labelString(): string { return this.objectData.name as any; }
 
-	public override createChip(): HTMLSpanElement {
-		const chip = super.createChip();
+	public override async createChip(): Promise<HTMLSpanElement> {
+		const chip = await super.createChip();
 		chip.style.backgroundColor = this.bgColor;
 		chip.style.borderColor = this.bgColor;
 		chip.style.color = this.textColor;
@@ -228,8 +225,8 @@ export class CategoryItem extends GraphListItem {
 		return chip;
 	}
 
-	public override build(): void {
-		super.build();
+	public override async build(): Promise<void> {
+		await super.build();
 		this.checkboxElement.value = this.id;
 		this.checkboxElement.id = this.id;
 		this.checkboxElement.classList.add(this.abbreviation);

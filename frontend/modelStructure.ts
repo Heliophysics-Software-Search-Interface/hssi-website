@@ -3,6 +3,27 @@ import {
 	type JSONObject
 } from "./loader";
 
+export type ModelName = ( 
+	"HSSIModel" 
+	| "HssiSet" 
+	| "ControlledList"
+	| "ControlledGraphList"
+	| "Keyword"
+	| "OperatingSystem"
+	| "CpuArchitecture"
+	| "Phenomena"
+	| "RepoStatus"
+	| "Image"
+	| "ProgrammingLanguage"
+	| "DataInput"
+	| "FileFormat"
+	| "Region"
+	| "InstrumentObservatory"
+	| "FunctionCategory"
+	| "License"
+	| "Organization"
+);
+
 export interface ArrayData extends JSONObject {
 	data: JSONArray,
 }

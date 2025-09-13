@@ -27,8 +27,8 @@ export class ProgrammingLanguageFilterTab extends ControlledListFilterTab {
 		item.textColor = item.borderColor;
 
 		switch(item.name.toLowerCase()){
-			case "javascript": item.abbreviation = "JaSc"; break
-			case "typescript": item.abbreviation = "TySc"; break
+			case "javascript": item.abbreviation = "JaSc"; break;
+			case "typescript": item.abbreviation = "TySc"; break;
 			case "fortran77": item.abbreviation = "Fo77"; break;
 			case "fortran90": item.abbreviation = "Fo90"; break;
 			default:

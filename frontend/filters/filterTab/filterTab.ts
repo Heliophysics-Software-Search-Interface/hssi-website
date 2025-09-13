@@ -1,9 +1,11 @@
 import {
-	SimpleEvent, fetchTimeout, FilterMenuItem, CategoryItem,
-	type JSONArray, type JSONObject, type JSONValue,
+	SimpleEvent, 
+	fetchTimeout, 
+	FilterMenuItem,
 	FilterMenu,
-	ControlledListItem,
-	ConcreteListItem,
+	type JSONArray, 
+	type JSONValue,
+	type ModelName,
 } from "../../loader";
 
 /**
@@ -79,7 +81,7 @@ export class FilterTab {
 	public itemContainerElement: HTMLUListElement = null;
 
 	/** the name of the database model to fetch the filter items from */
-	public targetModel: string = "";
+	public targetModel: ModelName = "" as any;
 
 	/** a list of filter items to be displayed directly (not as children of other items) */
 	public rootItems: FilterMenuItem[] = [];

@@ -89,7 +89,7 @@ export class FilterGroupMaker {
 
 		// add item and visuals
 		const chip = new ItemChip(item);
-		chip.build();
+		await chip.build();
 		this.chipContainerElement.appendChild(chip.chip);
 		this.chips.push(chip);
 		this.setControlsVisible(true);

@@ -169,25 +169,6 @@ export class ControlledListItem extends FilterMenuItem {
 	public set name(val: string) { this.objectData.name = val; }
 	public set abbreviation(val: string) { this.objectData.abbreviation = val; }
 	public set identifier(val: string) { this.objectData.identifier = val; }
-}
-
-/** A concrete type for the abstract {@link ControlledListItem} */
-export class ConcreteListItem extends ControlledListItem {
-
-	public bgColor: string = "#FFF";
-	public borderColor: string = "#000";
-	public textColor: string = "#000";
-
-	public override async createChip(): Promise<HTMLSpanElement> {
-		const chip = await super.createChip();
-		chip.style.backgroundColor = this.bgColor;
-		chip.style.borderColor = this.borderColor;
-		chip.style.borderStyle = "solid";
-		chip.style.borderWidth = "1px";
-		chip.style.color = this.textColor;
-		chip.innerText = this.abbreviation;
-		return chip;
-	}
 
 	public override async build(): Promise<void> {
 		await super.build();
@@ -215,15 +196,6 @@ export class CategoryItem extends GraphListItem {
 	public get textColor(): string { return this.objectData.textColor as any; }
 	public get children(): CategoryItem[] { return this.subItems as any; }
 	public get labelString(): string { return this.objectData.name as any; }
-
-	public override async createChip(): Promise<HTMLSpanElement> {
-		const chip = await super.createChip();
-		chip.style.backgroundColor = this.bgColor;
-		chip.style.borderColor = this.bgColor;
-		chip.style.color = this.textColor;
-		chip.innerText = this.abbreviation;
-		return chip;
-	}
 
 	public override async build(): Promise<void> {
 		await super.build();

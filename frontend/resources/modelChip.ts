@@ -1,7 +1,9 @@
 import { 
 	BaseChipFactory,
+	colorSrcGreen,
 	ControlledListChipFactory,
 	FunctionCategoryChipFactory,
+	UniformListChipFactory,
 	type ModelChipFactory,
 	type ModelName,
 } from "../loader";
@@ -17,7 +19,10 @@ export class ModelChipBuilder {
 				factory = new FunctionCategoryChipFactory(model);
 				break;
 			case "ProgrammingLanguage":
-				factory = new ControlledListChipFactory(model);
+				const ufactory = new UniformListChipFactory(model);
+				ufactory.borderColor = colorSrcGreen;
+				ufactory.textColor = ufactory.borderColor;
+				factory = ufactory;
 				break;
 			default: factory = new ControlledListChipFactory(model); break;
 		}

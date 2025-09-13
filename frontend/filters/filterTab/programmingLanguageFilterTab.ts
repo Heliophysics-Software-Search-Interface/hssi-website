@@ -1,6 +1,5 @@
 import { 
 	colorSrcGreen,
-	ConcreteListItem,
 	ControlledListFilterTab, 
 	ControlledListItem, 
 	FilterMenu,
@@ -22,9 +21,7 @@ export class ProgrammingLanguageFilterTab extends ControlledListFilterTab {
 	}
 
 	protected override createItem(itemData: JSONValue): FilterMenuItem {
-		const item = new ConcreteListItem(this, itemData);
-		item.borderColor = colorSrcGreen;
-		item.textColor = item.borderColor;
+		const item = new ControlledListItem(this, itemData);
 
 		switch(item.name.toLowerCase()){
 			case "javascript": item.abbreviation = "JaSc"; break;

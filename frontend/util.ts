@@ -249,6 +249,13 @@ export async function requestEditSubmission(uid: string): Promise<void> {
 	});
 }
 
+/** append an async child to a parent element when the child is resolved */
+export function appendPromisedElement(parentElem: HTMLElement, childPromise: Promise<HTMLElement>){
+	childPromise
+		.then(x => parentElem.appendChild(x))
+		.catch(e => console.error(e));
+}
+
 async function curateEditFormInit() {
 	let uid = new URLSearchParams(window.location.search).get("uid");
 	

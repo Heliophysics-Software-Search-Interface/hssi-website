@@ -49,7 +49,7 @@ export interface GraphListData extends ControlledListData {
 
 export interface KeywordData extends ControlledListData { }
 
-export interface FunctionalityData extends GraphListData { 
+export interface FunctionalityData extends GraphListData {
 	abbreviation?: string,
 	backgroundColor: string,
 	textColor: string,
@@ -86,8 +86,8 @@ export interface SoftwareData extends HSSIModelData {
 	referencePublication: ControlledListData,
 	description: string,
 	conciseDescription: string,
-	softwareFunctionality: string,
 	documentation: string,
+	softwareFunctionality: JSONArray<FunctionalityData>,
 	dataSources: JSONArray<ControlledListData>,
 	inputFormats: JSONArray<ControlledListData>,
 	outputFormats: JSONArray<ControlledListData>,

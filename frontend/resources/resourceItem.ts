@@ -1,5 +1,7 @@
 import { 
-	type JSONObject, type SoftwareData,
+	appendPromisedElement,
+	ModelChipBuilder,
+	type SoftwareData,
 } from "../loader";
 
 const styleResourceItem = "resource-item";
@@ -33,10 +35,10 @@ export class ResourceItem{
 	private shrinkedContent: HTMLDivElement = null;
 	private expandedContent: HTMLDivElement = null;
 	private expandButton: HTMLButtonElement = null;
+	private headerDiv: HTMLDivElement = null;
 
 	/** the html element that contains all the html content for this item */
 	public containerElement: HTMLDivElement = null;
-
 
 	public constructor(){
 		this.containerElement = document.createElement("div");
@@ -87,23 +89,56 @@ export class ResourceItem{
 	}
 
 	private buildModelChips(): void {
-		// TODO add category chips
-		// TODO add programming language chips
+		const chipContainer = document.createElement("div")
+		this.headerDiv.appendChild(chipContainer);
+		
+		const categoryChips = document.createElement("div")
+		chipContainer.appendChild(categoryChips);
+
+		// add each unique top-level category to the container
+		const categoriesAdded = new Set<string>();
+		for(const category of this.data.softwareFunctionality) {
+			
+			// get id or parent id if its a child, mark id as added
+			const targetId = category.parents?.at(0) ?? category.id;
+			if(categoriesAdded.has(targetId)) continue;
+			categoriesAdded.add(targetId);
+
+			// create visual ui element and add to resource
+			appendPromisedElement(
+				categoryChips, 
+				ModelChipBuilder.createChip("FunctionCategory",targetId)
+			);
+		}
+		
+		const proglangChips = document.createElement("div")
+		chipContainer.appendChild(proglangChips);
+		
+		// no need to check for uniqueness because db table already does
+		for(const lang of this.data.programmingLanguage) {
+			appendPromisedElement(
+				proglangChips, 
+				ModelChipBuilder.createChip("ProgrammingLanguage", lang.id)
+			);
+		}
 	}
 
 	private build(): void {
 		// TODO build from this.data
-		const headerDiv = document.createElement("div");
-		headerDiv.classList.add(styleResourceHeader);
-		this.containerElement.appendChild(headerDiv);
+		this.headerDiv = document.createElement("div");
+		this.headerDiv.classList.add(styleResourceHeader);
+		this.containerElement.appendChild(this.headerDiv);
+
+		const headerText = document.createElement("div");
+		this.headerDiv.appendChild(headerText);
 		
 		const titleDiv = document.createElement("div");
 		titleDiv.classList.add(styleResourceTitle);
 		titleDiv.innerText = this.data.softwareName;
-		headerDiv.appendChild(titleDiv);
+		headerText.appendChild(titleDiv);
 
 		const headInfoDiv = document.createElement("div");
-		headerDiv.appendChild(headInfoDiv);
+		headerText.appendChild(headInfoDiv);
 
 		const authors = document.createElement("span");
 		headInfoDiv.appendChild(authors)

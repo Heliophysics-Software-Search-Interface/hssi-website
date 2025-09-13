@@ -79,7 +79,7 @@ export class FilterGroupMaker {
 	 * add the specified filter item to the group list (if its not already
 	 * included), to be made into part of the filter group 
 	 */
-	public addItem(item: FilterMenuItem): void {
+	public async addItem(item: FilterMenuItem): Promise<void> {
 
 		// ensure item is not already included
 		const index = this.chips.findIndex(
@@ -142,14 +142,14 @@ export class FilterGroup {
 	public mode: FilterGroupMode = FilterGroupMode.Or;
 
 	/** create a small display element that represents the whole filter group */
-	public createChip(): HTMLSpanElement{
+	public async createChip(): Promise<HTMLSpanElement>{
 		const span = document.createElement("span");
 		for(const inc of this.includedItems){
-			const chip = inc.createChip();
+			const chip = await inc.createChip();
 			span.appendChild(chip);
 		}
 		for(const exc of this.excludedItems){
-			const chip = exc.createChip();
+			const chip = await exc.createChip();
 			chip.classList.add(styleInvertFilter);
 			span.appendChild(chip);
 		}
@@ -172,8 +172,8 @@ class ItemChip {
 		else this.chip.classList.remove(styleInvertFilter);
 	}
 
-	public build(): void {
-		this.chip = this.itemReference.createChip();
+	public async build(): Promise<void> {
+		this.chip = await this.itemReference.createChip();
 		this.chip.addEventListener("click", e => {
 			this.setInverted(!this.filterInverted);
 		});

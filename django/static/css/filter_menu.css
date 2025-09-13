@@ -83,6 +83,8 @@
 
 .filter-menu .tab-content {
 	padding: 10px;
+	overflow: auto;
+	max-height: 75vh;
 }
 
 .tab-content>ul>.filter-item>div>.item-label {

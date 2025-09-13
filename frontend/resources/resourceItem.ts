@@ -16,6 +16,7 @@ const styleBtnCode = "btn-code";
 const styleBtnDocs = "btn-docs";
 const styleBtnPublication = "btn-publication";
 const styleBtnDoi = "btn-doi";
+const styleHeaderChips = "header-chips";
 
 const faBook = `<i class="fa fa-book"></i>`;
 const faLink = `<i class="fa fa-link"></i>`;
@@ -89,10 +90,11 @@ export class ResourceItem{
 	}
 
 	private buildModelChips(): void {
-		const chipContainer = document.createElement("div")
+		const chipContainer = document.createElement("div");
+		chipContainer.classList.add(styleHeaderChips);
 		this.headerDiv.appendChild(chipContainer);
 		
-		const categoryChips = document.createElement("div")
+		const categoryChips = document.createElement("div");
 		chipContainer.appendChild(categoryChips);
 
 		// add each unique top-level category to the container

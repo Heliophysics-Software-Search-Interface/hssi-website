@@ -6,16 +6,11 @@
 	margin-bottom: 15px;
 }
 
-.resource-item .resource-header {
-	font-size: 13px;
-	margin-bottom: 10px;
-}
-
-.resource-item .author {	
+.resource-item .author {
 	color: rgb(77, 77, 77);
 }
 
-.resource-item a .author:hover {	
+.resource-item a .author:hover {
 	text-decoration: underline;
 }
 
@@ -41,6 +36,34 @@
 	bottom: 0;
 	right: 50%;
 	transform: translate(50%, 25%);
+}
+
+.resource-item .resource-header {
+	display: flex;
+	font-size: 13px;
+	margin-bottom: 10px;
+}
+
+.resource-header > div {
+	display: inline-block;
+}
+
+.resource-header .header-chips {
+	display: inline-block;
+	vertical-align: top;
+	text-align: right;
+	min-width: 0;
+	flex: 1;
+}
+
+.header-chips .item-chip {
+	margin-left: 5px;
+	margin-bottom: 5px;
+}
+
+.item-chip {
+	user-select: none;
+	cursor: inherit;
 }
 
 .link-btn {

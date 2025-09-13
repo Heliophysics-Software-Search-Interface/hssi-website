@@ -22,6 +22,16 @@ export type ModelName = (
 	| "FunctionCategory"
 	| "License"
 	| "Organization"
+	| "Software"
+	| "SoftwareVersion"
+	| "VisibleSoftware"
+	| "SoftwareEditQueue"
+	| "SubmissionInfo"
+	| "Award"
+	| "RelatedItem"
+	| "Person"
+	| "Submitter"
+	| "Curator"
 );
 
 export interface ArrayData extends JSONObject {

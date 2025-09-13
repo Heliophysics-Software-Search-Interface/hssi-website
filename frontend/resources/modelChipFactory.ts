@@ -6,7 +6,8 @@ import {
 	type ControlledListData, 
 	type GraphListData, 
 	type HSSIModelData,
-	type FunctionalityData, 
+	type FunctionalityData,
+	colorSrcGreen, 
 } from "../loader";
 
 const styleItemChip = "item-chip";
@@ -35,6 +36,7 @@ export class BaseChipFactory implements ModelChipFactory {
 		const url = apiModel + this.modelName + apiSlugRowsAll;
 		const result = await fetchTimeout(url);
 		this.modelData = (await result.json()).data;
+		this.processData();
 	}
 
 	private async buildMap(): Promise<void> {
@@ -44,6 +46,8 @@ export class BaseChipFactory implements ModelChipFactory {
 			this.modelMap.set(data.id, data);
 		}
 	}
+
+	protected processData(): void { }
 
 	protected async createChipFromData(_data: HSSIModelData): Promise<HTMLSpanElement> {
 		const chip = document.createElement("span");
@@ -102,7 +106,42 @@ export class GraphListChipFactory extends ControlledListChipFactory {
 	}
 }
 
+export class ProgLangChipFactory extends UniformListChipFactory {
+
+	public bgColor: string = "#FFF";
+	public borderColor: string = colorSrcGreen;
+	public textColor: string = colorSrcGreen;
+
+	protected override processData(): void {
+		for(const entry of this.modelData){
+			
+			const category = entry as FunctionalityData;
+			switch(category.name.toLowerCase()) {
+				case "javascript": category.abbreviation = "JaSc"; break;
+				case "typescript": category.abbreviation = "TySc"; break;
+				case "fortran77": category.abbreviation = "Fo77"; break;
+				case "fortran90": category.abbreviation = "Fo90"; break;
+				default:
+					let splname = category.name.replaceAll(".", "").split(" ");
+					switch(splname.length){
+						case 2: 
+						category.abbreviation = (
+							splname[0].substring(0, 2) + 
+							splname[1].substring(splname[1].length - 2, splname[1].length)
+						);
+						break;
+						default:
+							category.abbreviation = category.name.substring(0, 4);
+							break;
+					}
+					break;
+			}
+		}
+	}
+}
+
 export class FunctionCategoryChipFactory extends GraphListChipFactory {
+
 	protected override async createChipFromData(data: HSSIModelData): Promise<HTMLSpanElement> {
 		const funcData = data as FunctionalityData;
 		const chip = await super.createChipFromData(data);

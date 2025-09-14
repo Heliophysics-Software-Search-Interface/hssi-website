@@ -8,18 +8,12 @@ import {
 	type HSSIModelData,
 	type FunctionalityData,
 	colorSrcGreen,
-	type JSONObject, 
+	type ModelDataAccess, 
 } from "../loader";
 
 const styleItemChip = "item-chip";
 const styleSubchip = "subchip";
 
-export interface ModelDataAccess {
-	/** get all the data in a specified model table as a json array of each row */
-	getModelData(): Promise<JSONArray<HSSIModelData>>;
-	/** get a specific row with the specified uid in the model table */
-	getModelObject(uid: string): Promise<HSSIModelData>;
-}
 
 export interface ModelChipFactory {
 	/** 

@@ -6,9 +6,15 @@ import {
 	type HSSIModelData,
 	type JSONArray,
 	type ModelChipFactory,
-	type ModelDataAccess,
 	type ModelName,
 } from "../loader";
+
+export interface ModelDataAccess {
+	/** get all the data in a specified model table as a json array of each row */
+	getModelData(): Promise<JSONArray<HSSIModelData>>;
+	/** get a specific row with the specified uid in the model table */
+	getModelObject(uid: string): Promise<HSSIModelData>;
+}
 
 export class ModelData {
 	private static factoryMap: Map<string, ModelChipFactory & ModelDataAccess> = new Map();

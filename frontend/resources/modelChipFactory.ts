@@ -27,11 +27,13 @@ export class BaseChipFactory implements ModelChipFactory, ModelDataAccess {
 
 	private dataPromise: Promise<Response> = null;
 	private jsonPromise: Promise<any> = null;
+	protected fetchUrlSuffix: string = "";
 	protected modelName: string = "";
 	protected modelData: JSONArray<HSSIModelData> = null;
 	protected modelMap: Map<string, HSSIModelData> = null;
 
-	public constructor(model: string){
+	public constructor(model: string, urlSuffix: string = ""){
+		this.fetchUrlSuffix = urlSuffix;
 		this.modelName = model;
 		this.fetchModelData();
 	}
@@ -45,7 +47,7 @@ export class BaseChipFactory implements ModelChipFactory, ModelDataAccess {
 		}
 			
 		try{
-			const url = apiModel + this.modelName + apiSlugRowsAll;
+			const url = apiModel + this.modelName + apiSlugRowsAll + this.fetchUrlSuffix;
 			this.dataPromise = fetchTimeout(url);
 			this.jsonPromise = (await this.dataPromise).json();
 			this.modelData = (await this.jsonPromise).data;
@@ -87,6 +89,7 @@ export class BaseChipFactory implements ModelChipFactory, ModelDataAccess {
 	}
 
 	public async createChip(uid: string): Promise<HTMLSpanElement> {
+		if(!uid) debugger;
 		const data = await this.getModelObject(uid);
 		return await this.createChipFromData(data);
 	}

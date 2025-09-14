@@ -23,13 +23,18 @@ export class ModelData {
 		let factory: BaseChipFactory = null;
 
 		switch(model){
+			case "VisibleSoftware":
+			case "SoftwareEditQueue":
+			case "Software":
+				factory = new BaseChipFactory(model, "?recursive=true"); break;
 			case "FunctionCategory":
 				factory = new FunctionCategoryChipFactory(model);
 				break;
 			case "ProgrammingLanguage":
 				factory = new ProgLangChipFactory(model);
 				break;
-			default: factory = new ControlledListChipFactory(model); break;
+			default: factory = new ControlledListChipFactory(model); 
+				break;
 		}
 
 		this.factoryMap.set(model, factory);

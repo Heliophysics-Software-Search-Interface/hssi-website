@@ -1,5 +1,5 @@
 import { 
-	apiModel, apiSlugRowsAll, fetchTimeout, ResourceItem, 
+	apiModel, apiSlugRowsAll, fetchTimeout, modelApiUrl, ModelData, ResourceItem, 
 	type JSONArray, type JSONObject, type SoftwareData,
 } from "../loader";
 
@@ -41,10 +41,7 @@ export class ResourceView {
 		// TODO implement querying
 
 		// fetch all software objects from the database
-		const url = apiModel + softwarModelName + apiSlugRowsAll + "?recursive=true";
-		const result = await fetchTimeout(url);
-		const data = await result.json();
-		this.itemData = data.data;
+		this.itemData = await ModelData.getModelData(softwarModelName);
 	}
 
 	/** 

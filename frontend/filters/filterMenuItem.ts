@@ -1,7 +1,10 @@
 import {
 	SimpleEvent, FilterTab, FilterMenu,
-	type JSONArray, type JSONObject, type JSONValue, type CategoryFilterTab,
-	ModelChipBuilder
+	ModelData,
+	type JSONArray, 
+	type JSONObject, 
+	type JSONValue, 
+	type CategoryFilterTab,
 } from "../loader";
 
 
@@ -70,7 +73,7 @@ export class FilterMenuItem {
 	 * anywhere in the document
 	 */
 	public async createChip(): Promise<HTMLSpanElement> {
-		return await ModelChipBuilder.createChip(this.parentTab.targetModel, this.id);
+		return await ModelData.createChip(this.parentTab.targetModel, this.id);
 	}
 
 	/** creates all display html elements for the list item */

@@ -7,11 +7,19 @@ import {
 	type GraphListData, 
 	type HSSIModelData,
 	type FunctionalityData,
-	colorSrcGreen, 
+	colorSrcGreen,
+	type JSONObject, 
 } from "../loader";
 
 const styleItemChip = "item-chip";
 const styleSubchip = "subchip";
+
+export interface ModelDataAccess {
+	/** get all the data in a specified model table as a json array of each row */
+	getModelData(): Promise<JSONArray<HSSIModelData>>;
+	/** get a specific row with the specified uid in the model table */
+	getModelObject(uid: string): Promise<HSSIModelData>;
+}
 
 export interface ModelChipFactory {
 	/** 
@@ -21,8 +29,10 @@ export interface ModelChipFactory {
 	createChip(uid: string): Promise<HTMLSpanElement>;
 }
 
-export class BaseChipFactory implements ModelChipFactory {
+export class BaseChipFactory implements ModelChipFactory, ModelDataAccess {
 
+	private dataPromise: Promise<Response> = null;
+	private jsonPromise: Promise<any> = null;
 	protected modelName: string = "";
 	protected modelData: JSONArray<HSSIModelData> = null;
 	protected modelMap: Map<string, HSSIModelData> = null;
@@ -33,10 +43,26 @@ export class BaseChipFactory implements ModelChipFactory {
 	}
 
 	private async fetchModelData(): Promise<void> {
-		const url = apiModel + this.modelName + apiSlugRowsAll;
-		const result = await fetchTimeout(url);
-		this.modelData = (await result.json()).data;
-		this.processData();
+		if(this.modelData) return;
+		if(this.jsonPromise || this.dataPromise) {
+			await this.dataPromise;
+			await this.jsonPromise;
+			return;
+		}
+			
+		try{
+			const url = apiModel + this.modelName + apiSlugRowsAll;
+			this.dataPromise = fetchTimeout(url);
+			this.jsonPromise = (await this.dataPromise).json();
+			this.modelData = (await this.jsonPromise).data;
+			this.processData();
+		}
+		catch(e) {
+			console.error(e);
+		}
+
+		this.dataPromise = null;
+		this.jsonPromise = null;
 	}
 
 	private async buildMap(): Promise<void> {
@@ -56,13 +82,18 @@ export class BaseChipFactory implements ModelChipFactory {
 		return chip;
 	}
 
-	protected async getModelData(uid: string): Promise<HSSIModelData> {
+	public async getModelData(): Promise<JSONArray<HSSIModelData>> {
+		if(!this.modelData) await this.fetchModelData();
+		return this.modelData;
+	}
+
+	public async getModelObject(uid: string): Promise<HSSIModelData> {
 		if(!this.modelMap) await this.buildMap();
 		return this.modelMap.get(uid);
 	}
 
 	public async createChip(uid: string): Promise<HTMLSpanElement> {
-		const data = await this.getModelData(uid);
+		const data = await this.getModelObject(uid);
 		return await this.createChipFromData(data);
 	}
 }

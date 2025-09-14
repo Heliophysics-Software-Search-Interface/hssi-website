@@ -1,6 +1,6 @@
 import { 
 	appendPromisedElement,
-	ModelChipBuilder,
+	ModelData,
 	type SoftwareData,
 } from "../loader";
 
@@ -109,7 +109,7 @@ export class ResourceItem{
 			// create visual ui element and add to resource
 			appendPromisedElement(
 				categoryChips, 
-				ModelChipBuilder.createChip("FunctionCategory",targetId)
+				ModelData.createChip("FunctionCategory",targetId)
 			);
 		}
 		
@@ -120,7 +120,7 @@ export class ResourceItem{
 		for(const lang of this.data.programmingLanguage) {
 			appendPromisedElement(
 				proglangChips, 
-				ModelChipBuilder.createChip("ProgrammingLanguage", lang.id)
+				ModelData.createChip("ProgrammingLanguage", lang.id)
 			);
 		}
 	}

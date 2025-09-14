@@ -6,6 +6,7 @@ import {
 	type JSONArray, 
 	type JSONValue,
 	type ModelName,
+	ModelData,
 } from "../../loader";
 
 /**
@@ -190,10 +191,7 @@ export class FilterTab {
 	}
 
 	protected async fetchModelData(): Promise<void> {
-		const url = apiModel + this.targetModel + apiSlugRowsAll;
-		const data = await fetchTimeout(url);
-		const jsonData = await data.json();
-		this.modelData = jsonData.data;
+		this.modelData = await ModelData.getModelData(this.targetModel);
 	}
 }
 

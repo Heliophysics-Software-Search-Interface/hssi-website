@@ -1,17 +1,19 @@
 import { 
 	BaseChipFactory,
-	colorSrcGreen,
 	ControlledListChipFactory,
 	FunctionCategoryChipFactory,
 	ProgLangChipFactory,
+	type HSSIModelData,
+	type JSONArray,
 	type ModelChipFactory,
+	type ModelDataAccess,
 	type ModelName,
 } from "../loader";
 
-export class ModelChipBuilder {
-	private static factoryMap: Map<string, ModelChipFactory> = new Map();
+export class ModelData {
+	private static factoryMap: Map<string, ModelChipFactory & ModelDataAccess> = new Map();
 	
-	private static buildFactory(model: ModelName): ModelChipFactory{
+	private static buildFactory(model: ModelName): ModelChipFactory & ModelDataAccess{
 		let factory: BaseChipFactory = null;
 
 		switch(model){
@@ -32,5 +34,17 @@ export class ModelChipBuilder {
 		let factory = this.factoryMap.get(model);
 		if(!factory) factory = this.buildFactory(model);
 		return await factory.createChip(uid);
+	}
+
+	public static async getModelData(model: ModelName): Promise<JSONArray<HSSIModelData>> {
+		let factory = this.factoryMap.get(model);
+		if(!factory) factory = this.buildFactory(model);
+		return await factory.getModelData();
+	}
+
+	public static async getModelObject(model: ModelName, uid: string){
+		let factory = this.factoryMap.get(model);
+		if(!factory) factory = this.buildFactory(model);
+		return await factory.getModelObject(uid);
 	}
 }

@@ -1,4 +1,37 @@
 id,number,release_date,description,version_pid
+1382ad84-06dc-495f-9323-8e4285221fd2,0.4.3,2025-04-03,,https://doi.org/10.5281/zenodo.15130823
+9de96051-9260-4b37-8442-ab07e3fa39c1,0.7.0,2024-11-08,"Please see the full release notes at https://spacepy.github.io/release_notes.html
+
+Binary wheels are now provided for Linux on 64-bit ARM, intended for Raspberry Pi.
+
+There are no changes to dependencies, minimum versions, or installation process with this release.
+
+## New Features
+`help` now supports searching the documentation.
+
+## Dependency requirements
+Numpy 2.0 is now fully supported. 
+
+Numpy and f2py are no longer required to build SpacePy.  Binary wheels are no longer tied to numpy or Python version.
+
+Sphinx 4.0 is now required to build the documentation; this is not a concern for most users.
+
+Support for Python 3.6 has been removed due to inability to test. Python 3.7 is the oldest supported Python; as a result, Astropy 2.0 is the oldest supported Astropy (if using Astropy).
+
+## Deprecations and removals
+`toolbox.timeout_check_call` is deprecated as redundant to using `subprocess.check_call` with the `timeout` argument.
+
+The `irbempy.irbempylib` module has been removed. This was the old internal interface to the IRBEM library and was not intended for public use.
+
+The `data_assimilation`, `radbelt`, and `spacepy_EnKF` modules have been moved to the ""sandbox"". These modules were undertested and minimally documented.
+
+## Major bugfixes
+`irbempy.find_Bmirror` now correctly returns one `Bmirr` per input pitch angle instead of ignoring all but the first.
+
+## Other changes
+Operations on `dmarray` which return a scalar value will now return a numpy array scalar rather than the base Python type. This is consistent with the behavior of `numpy.ndarray`. `dmarray` also supports assigning to its `dtype` and `shape`. Together these changes should make `dmarray` a much closer drop-in replacement for `numpy.ndarray`.
+
+Warnings issued by SpacePy are now associated with the line of the calling code, not with the SpacePy code itself.",https://doi.org/10.5281/zenodo.14057789
 dcf367e6-a310-482b-a0b7-3eff3d258ea6,0.7.0,2024-11-08,"Please see the full release notes at https://spacepy.github.io/release_notes.html
 
 Binary wheels are now provided for Linux on 64-bit ARM, intended for Raspberry Pi.
@@ -31,12 +64,139 @@ The `data_assimilation`, `radbelt`, and `spacepy_EnKF` modules have been moved t
 Operations on `dmarray` which return a scalar value will now return a numpy array scalar rather than the base Python type. This is consistent with the behavior of `numpy.ndarray`. `dmarray` also supports assigning to its `dtype` and `shape`. Together these changes should make `dmarray` a much closer drop-in replacement for `numpy.ndarray`.
 
 Warnings issued by SpacePy are now associated with the line of the calling code, not with the SpacePy code itself.",https://doi.org/10.5281/zenodo.14057789
+7ee40e5d-8af1-493f-8011-b4f9899b4977,0.7.0,2024-11-08,"Please see the full release notes at https://spacepy.github.io/release_notes.html
+
+Binary wheels are now provided for Linux on 64-bit ARM, intended for Raspberry Pi.
+
+There are no changes to dependencies, minimum versions, or installation process with this release.
+
+## New Features
+`help` now supports searching the documentation.
+
+## Dependency requirements
+Numpy 2.0 is now fully supported. 
+
+Numpy and f2py are no longer required to build SpacePy.  Binary wheels are no longer tied to numpy or Python version.
+
+Sphinx 4.0 is now required to build the documentation; this is not a concern for most users.
+
+Support for Python 3.6 has been removed due to inability to test. Python 3.7 is the oldest supported Python; as a result, Astropy 2.0 is the oldest supported Astropy (if using Astropy).
+
+## Deprecations and removals
+`toolbox.timeout_check_call` is deprecated as redundant to using `subprocess.check_call` with the `timeout` argument.
+
+The `irbempy.irbempylib` module has been removed. This was the old internal interface to the IRBEM library and was not intended for public use.
+
+The `data_assimilation`, `radbelt`, and `spacepy_EnKF` modules have been moved to the ""sandbox"". These modules were undertested and minimally documented.
+
+## Major bugfixes
+`irbempy.find_Bmirror` now correctly returns one `Bmirr` per input pitch angle instead of ignoring all but the first.
+
+## Other changes
+Operations on `dmarray` which return a scalar value will now return a numpy array scalar rather than the base Python type. This is consistent with the behavior of `numpy.ndarray`. `dmarray` also supports assigning to its `dtype` and `shape`. Together these changes should make `dmarray` a much closer drop-in replacement for `numpy.ndarray`.
+
+Warnings issued by SpacePy are now associated with the line of the calling code, not with the SpacePy code itself.",https://doi.org/10.5281/zenodo.14057789
+e4779f0d-4b10-4253-8c40-4ed20849f14a,0.7.0,2024-11-08,"Please see the full release notes at https://spacepy.github.io/release_notes.html
+
+Binary wheels are now provided for Linux on 64-bit ARM, intended for Raspberry Pi.
+
+There are no changes to dependencies, minimum versions, or installation process with this release.
+
+## New Features
+`help` now supports searching the documentation.
+
+## Dependency requirements
+Numpy 2.0 is now fully supported. 
+
+Numpy and f2py are no longer required to build SpacePy.  Binary wheels are no longer tied to numpy or Python version.
+
+Sphinx 4.0 is now required to build the documentation; this is not a concern for most users.
+
+Support for Python 3.6 has been removed due to inability to test. Python 3.7 is the oldest supported Python; as a result, Astropy 2.0 is the oldest supported Astropy (if using Astropy).
+
+## Deprecations and removals
+`toolbox.timeout_check_call` is deprecated as redundant to using `subprocess.check_call` with the `timeout` argument.
+
+The `irbempy.irbempylib` module has been removed. This was the old internal interface to the IRBEM library and was not intended for public use.
+
+The `data_assimilation`, `radbelt`, and `spacepy_EnKF` modules have been moved to the ""sandbox"". These modules were undertested and minimally documented.
+
+## Major bugfixes
+`irbempy.find_Bmirror` now correctly returns one `Bmirr` per input pitch angle instead of ignoring all but the first.
+
+## Other changes
+Operations on `dmarray` which return a scalar value will now return a numpy array scalar rather than the base Python type. This is consistent with the behavior of `numpy.ndarray`. `dmarray` also supports assigning to its `dtype` and `shape`. Together these changes should make `dmarray` a much closer drop-in replacement for `numpy.ndarray`.
+
+Warnings issued by SpacePy are now associated with the line of the calling code, not with the SpacePy code itself.",https://doi.org/10.5281/zenodo.14057789
+aa31aed3-ea5d-4696-8d99-69a487f64f04,0.7.0,2024-11-08,"Please see the full release notes at https://spacepy.github.io/release_notes.html
+
+Binary wheels are now provided for Linux on 64-bit ARM, intended for Raspberry Pi.
+
+There are no changes to dependencies, minimum versions, or installation process with this release.
+
+## New Features
+`help` now supports searching the documentation.
+
+## Dependency requirements
+Numpy 2.0 is now fully supported. 
+
+Numpy and f2py are no longer required to build SpacePy.  Binary wheels are no longer tied to numpy or Python version.
+
+Sphinx 4.0 is now required to build the documentation; this is not a concern for most users.
+
+Support for Python 3.6 has been removed due to inability to test. Python 3.7 is the oldest supported Python; as a result, Astropy 2.0 is the oldest supported Astropy (if using Astropy).
+
+## Deprecations and removals
+`toolbox.timeout_check_call` is deprecated as redundant to using `subprocess.check_call` with the `timeout` argument.
+
+The `irbempy.irbempylib` module has been removed. This was the old internal interface to the IRBEM library and was not intended for public use.
+
+The `data_assimilation`, `radbelt`, and `spacepy_EnKF` modules have been moved to the ""sandbox"". These modules were undertested and minimally documented.
+
+## Major bugfixes
+`irbempy.find_Bmirror` now correctly returns one `Bmirr` per input pitch angle instead of ignoring all but the first.
+
+## Other changes
+Operations on `dmarray` which return a scalar value will now return a numpy array scalar rather than the base Python type. This is consistent with the behavior of `numpy.ndarray`. `dmarray` also supports assigning to its `dtype` and `shape`. Together these changes should make `dmarray` a much closer drop-in replacement for `numpy.ndarray`.
+
+Warnings issued by SpacePy are now associated with the line of the calling code, not with the SpacePy code itself.",https://doi.org/10.5281/zenodo.14057789
+949797af-620d-41d4-adaf-fa8510024129,1.1.2,2025-06-23,,
+cdfe7f55-0ae4-4db9-864a-9abe0c0c3b48,1.1.2,2025-06-23,,
+79367291-ffae-40cb-bbe3-15d99eea650f,1.1.2,2025-06-23,,
+4cb54bb5-35f2-4c98-a147-4dfc9fa0119a,1.1.2,2025-06-23,,
+18c833d1-53d4-4af5-90f4-bd541c5357c6,MSWCX,2025-08-01,Code used to produce the results in a publication on separating out the magnetospheric SWCX X-ray spectral contribution in astrophysical observations of dark fields.,https://doi.org/10.5281/zenodo.8253002
 b89b06b5-e45a-40b1-9bf1-8a771ba2f997,MSWCX,2025-08-01,Code used to produce the results in a publication on separating out the magnetospheric SWCX X-ray spectral contribution in astrophysical observations of dark fields.,https://doi.org/10.5281/zenodo.8253002
 e89f1bb4-4011-4351-9cac-ebaa2f7db5d3,MSWCX,2025-08-01,Code used to produce the results in a publication on separating out the magnetospheric SWCX X-ray spectral contribution in astrophysical observations of dark fields.,https://doi.org/10.5281/zenodo.8253002
 14f38f56-7803-4b90-8729-28c1d4173f89,v0.2.1,2021-10-06,Python client for HAPI,https://doi.org/10.5281/zenodo.5553156
+7b54feb6-1fc0-4c7f-8a70-f1d3353e4c9c,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
 ebe3e0b9-101a-44d2-a0dd-207212f45841,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
 c9a46ee5-4790-483f-ab16-612e7de367e3,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
-7b54feb6-1fc0-4c7f-8a70-f1d3353e4c9c,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
 8155ff78-4060-4adb-ace8-e640ad648c35,v0.5.0,2025-01-29,Python package of the multi-spacecraft longitudinal configuration plotter Solar-MACH,https://doi.org/10.5281/zenodo.14763546
 3f5027b1-ea6e-4c6e-bd69-ead2be9e4969,v0.5.0,2025-01-29,Python package of the multi-spacecraft longitudinal configuration plotter Solar-MACH,https://doi.org/10.5281/zenodo.14763546
+8d496242-9888-4a63-b55a-97eeb9cfe8c5,v0.5.0,2025-01-29,Python package of the multi-spacecraft longitudinal configuration plotter Solar-MACH,https://doi.org/10.5281/zenodo.14763546
+40ff751d-006c-411d-9f7d-553fc766df61,v1.0.2,2025-06-03,A Python package to support metadata attribute management for Space Weather data processing pipelines.,https://doi.org/10.5281/zenodo.15587327
 ba4a1dc4-9db4-4d0e-873d-b20cc6c8ed99,v1.0.2,2025-06-03,A Python package to support metadata attribute management for Space Weather data processing pipelines.,https://doi.org/10.5281/zenodo.15587327
+7dbee1bb-1018-457c-80ad-048aa0737384,v3.2.2,2025-03-20,"pysat 3.2.2 is a bug fix and maintenance release. Primarily, it fixes an issue with running the unit tests from the pypi-installed version elsewhere in the PyHC ecosystem. It also updates some documentation issues.
+
+[3.2.2] - 2025-03-20
+
+
+
+Bug Fix
+
+
+Include test data in tar.gz so unit test suite can be run from a pip-install
+
+
+
+Maintenance
+
+
+Update .gitignore
+
+Update zenodo affiliations and references
+
+Clarified controlled information distribution statement
+
+Updated Ops tests to new lower limit of Python 3.9 and Ubuntu 22.04",https://doi.org/10.5281/zenodo.15059161
+4de99a7b-5df0-41d8-ae97-fe601a7f288c,v7.0.1,2025-07-31,"sunpy is a software library that provides fundamental tools for accessing, loading and interacting with solar physics data in Python",https://doi.org/10.5281/zenodo.16638197

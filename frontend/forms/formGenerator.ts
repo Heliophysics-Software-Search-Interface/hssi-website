@@ -165,31 +165,31 @@ export class FormGenerator {
 		}
 
 		// check version date is later than or equal to publication date
-		const pubDateField = this.getRootFields().find(
-			x => x.name === "publicationDate" 
-		);
-		const verDateField = this.getRootFields().find(
-			x => x.name === "versionNumber"
-		)?.getSubfields().find(
-			x => x.name === "versionDate"
-		);
-		if (pubDateField && verDateField){
-			const pubDateStr = pubDateField.getInputElement()?.value;
-			const verDateStr = verDateField.getInputElement()?.value;
-			if(pubDateStr && verDateStr){
-				const pubDate = new Date(pubDateStr);
-				const verDate = new Date(verDateStr);
-				if(new Date(pubDateStr).getTime() > new Date(verDateStr).getTime()){
-					ConfirmDialogue.getConfirmation(
-						"Error - The listed publication date is more recent " +
-						"than the latest version date, which should not be " + 
-						"possible. Please fix this.", 
-						"Error - Date Conflict", "ok", null
-					);
-					return false;
-				}
-			}
-		}
+		// const pubDateField = this.getRootFields().find(
+		// 	x => x.name === "publicationDate" 
+		// );
+		// const verDateField = this.getRootFields().find(
+		// 	x => x.name === "versionNumber"
+		// )?.getSubfields().find(
+		// 	x => x.name === "versionDate"
+		// );
+		// if (pubDateField && verDateField){
+		// 	const pubDateStr = pubDateField.getInputElement()?.value;
+		// 	const verDateStr = verDateField.getInputElement()?.value;
+		// 	if(pubDateStr && verDateStr){
+		// 		const pubDate = new Date(pubDateStr);
+		// 		const verDate = new Date(verDateStr);
+		// 		if(pubDate.getTime() > verDate.getTime()){
+		// 			ConfirmDialogue.getConfirmation(
+		// 				"Error - The listed publication date is more recent " +
+		// 				"than the latest version date, which should not be " + 
+		// 				"possible. Please fix this.", 
+		// 				"Error - Date Conflict", "ok", null
+		// 			);
+		// 			return false;
+		// 		}
+		// 	}
+		// }
 
 		return true;
 	}

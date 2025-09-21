@@ -103,13 +103,15 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 
 	license_data: dict = data.get(FIELD_LICENSE)
 	if license_data:
-		license_name = license_data.get(FIELD_LICENSE)
+		license_name: str = license_data.get(FIELD_LICENSE)
 		try:
 			uid = UUID(license_name)
 			license = License.objects.get(pk=uid)
 			software.license = license
 		except Exception:
-			license = License.objects.filter(name=license_name).first()
+			license = None
+			if license_name.upper() != "OTHER":
+				license = License.objects.filter(name=license_name).first()
 			if not license:
 				license_url = license_data.get(FIELD_LICENSEURI)
 				license = License.objects.filter(url=license_url).first()
@@ -120,6 +122,7 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 				license.url = license_data.get(FIELD_LICENSEURI)
 				license.save()
 				software.license = license
+	print(f"LICENSE SAVED: {software.license.id}")
 
 	## DEV STATUS
 

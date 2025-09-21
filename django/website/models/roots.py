@@ -582,6 +582,11 @@ class FunctionCategory(ControlledGraphList):
 		
 		cls.objects.bulk_update(all_objs, ['backgroundColor', 'textColor'])
 
+	def get_search_terms(self):
+		arr = super().get_search_terms()
+		arr.extend(self.get_name_path().split("->"))
+		return arr
+
 	class Meta: verbose_name_plural = "Function Categories"
 	def __str__(self): return self.name
 

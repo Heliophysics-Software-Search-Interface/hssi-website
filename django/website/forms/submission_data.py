@@ -449,6 +449,7 @@ SUBMISSION_FORM_LICENSE: ModelStructure = ModelStructure.define(
 			PROP_TT_BEST: TTBEST_LICENSE,
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: License.__name__,
+				WPROP_LICENCEMBOX: True,
 			},
 		},
 		multi=False,
@@ -462,9 +463,6 @@ SUBMISSION_FORM_LICENSE: ModelStructure = ModelStructure.define(
 			PROP_LABEL: "License URI",
 			PROP_TT_EXPL: TTEXPL_LICENSEURI,
 			PROP_TT_BEST: TTBEST_LICENSEURI,
-			PROP_WIDGET_PROPS: {
-				WPROP_TARGETMODEL: License.__name__,
-			},
 		},
 		multi=False,
 	),

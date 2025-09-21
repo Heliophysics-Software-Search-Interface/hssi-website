@@ -1,7 +1,7 @@
 id,name,url
-1cc66deb-27d0-470e-9629-957104da1f26,Apache License 2.0,https://spdx.org/licenses/Apache-2.0
-cfa8fcce-847c-477b-bee0-39075079aec4,GNU General Public Licenses (GPL version 2),https://spdx.org/licenses/GPL-2.0
-46564f41-47e7-4b97-86ba-61b10f9dd271,GNU Library or ‘Lesser’ General Public Licenses (LGPL version 2),https://spdx.org/licenses/LGPL-2.0
-78050028-b043-44ab-ab5c-c08e4f130bf9,MIT License,https://spdx.org/licenses/MIT
-2e4db8ae-69b8-4985-abb4-fecfa6829bf3,New BSD license,https://spdx.org/licenses/BSD-3-Clause
-a6d39d37-f9fc-4cf7-b0f5-526756fd204e,Other,
+65513359-aa10-49dc-8859-85bea07bd121,Apache License 2.0,https://spdx.org/licenses/Apache-2.0
+75867f58-2bb5-4312-aa38-a67c3fad9781,GNU General Public Licenses (GPL version 2),https://spdx.org/licenses/GPL-2.0
+789b1d30-cefc-413b-9651-398ee6bf4632,GNU Library or ‘Lesser’ General Public Licenses (LGPL version 2),https://spdx.org/licenses/LGPL-2.0
+590cf839-9650-4680-bbbd-afed7a676334,MIT License,https://spdx.org/licenses/MIT
+3676c9ca-fdb8-49e6-b066-b8de50725100,New BSD license,https://spdx.org/licenses/BSD-3-Clause
+57c8b9b1-5851-408c-921f-acbf4313a4ed,Other,

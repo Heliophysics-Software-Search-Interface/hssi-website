@@ -69,7 +69,8 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'django_extensions',
-	'markdownify.apps.MarkdownifyConfig'
+	'markdownify.apps.MarkdownifyConfig',
+	"sortedm2m",
 ]
 
 MIDDLEWARE = [

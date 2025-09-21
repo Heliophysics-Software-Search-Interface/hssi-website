@@ -148,7 +148,7 @@ export class ModelBox extends Widget {
 		if (!this.properties.caseSensitiveFilter) {
 			filterString = filterString.toLocaleUpperCase();
 		}
-		
+
 		// iterate through each option li showing options that pass the 
 		// filter while hiding others
 		const splitInput = filterString.split(" ");
@@ -324,8 +324,9 @@ export class ModelBox extends Widget {
 			
 			li.innerText = option.name;
 			this.allOptionLIs.push(li);
-			this.optionListElement.appendChild(li);
 		}
+		this.allOptionLIs.sort((a, b) => a.data.name.localeCompare(b.data.name));
+		for(const li of this.allOptionLIs) this.optionListElement.appendChild(li);
 
 		this.optionListElement.addEventListener("click", e => this.onListClick(e));
 		this.optionListElement.addEventListener("mouseover", e => this.onListMouseover(e));

@@ -1,7 +1,9 @@
 import { 
 	faCloseIcon,
 	FilterMenu, FilterMenuItem,
+	GraphListItem,
 	SimpleEvent,
+	styleSelected,
 } from "../loader";
 
 const styleFilterContainer = "filter-container";
@@ -10,6 +12,7 @@ const styleInvertFilter = "invert-filter";
 const styleGroupControl = "group-control";
 const styleGroupClear = "group-clear";
 const styleGroupCreate = "group-create";
+const styleGroupMode = "group-mode";
 
 enum FilterGroupMode {
 	Or = 0,
@@ -22,6 +25,7 @@ export class FilterGroupMaker {
 	private chipContainerElement: HTMLDivElement = null;
 	private controlsContainerElement: HTMLDivElement = null;
 	private chips: ItemChip[] = [];
+	private currentMode: FilterGroupMode = FilterGroupMode.Or;
 
 	/** called whenever an item/chip is removed from the filter group maker */
 	public onItemRemoved: SimpleEvent<FilterMenuItem> = new SimpleEvent();
@@ -53,6 +57,30 @@ export class FilterGroupMaker {
 		this.controlsContainerElement.classList.add(styleFilterControls);
 		this.containerElement.appendChild(this.controlsContainerElement);
 
+		const modeAnd = document.createElement("button");
+		modeAnd.classList.add(styleGroupControl);
+		modeAnd.classList.add(styleGroupMode);
+		modeAnd.innerText = "AND";
+		this.controlsContainerElement.appendChild(modeAnd);
+		
+		const modeOr = document.createElement("button");
+		modeOr.classList.add(styleGroupControl);
+		modeOr.classList.add(styleGroupMode);
+		modeOr.classList.add(styleSelected);
+		modeOr.innerText = "OR";
+		this.controlsContainerElement.appendChild(modeOr);
+
+		modeOr.addEventListener("click", e => {
+			this.currentMode = FilterGroupMode.Or;
+			modeOr.classList.add(styleSelected);
+			modeAnd.classList.remove(styleSelected);
+		});
+		modeAnd.addEventListener("click", e => {
+			this.currentMode = FilterGroupMode.And;
+			modeAnd.classList.add(styleSelected);
+			modeOr.classList.remove(styleSelected);
+		});
+		
 		const clearFilters = document.createElement("button");
 		clearFilters.classList.add(styleGroupControl);
 		clearFilters.classList.add(styleGroupClear);
@@ -70,7 +98,8 @@ export class FilterGroupMaker {
 		this.controlsContainerElement.appendChild(createGroup);
 
 		createGroup.addEventListener("click", e => {
-			this.createGroup();
+			const group = this.createGroup();
+			// TODO apply filter group 
 		})
 
 		this.setControlsVisible(false);
@@ -127,7 +156,15 @@ export class FilterGroupMaker {
 	/** creates a {@link FilterGroup} from the items included in the group list */
 	public createGroup(): FilterGroup {
 		const group = new FilterGroup();
-		// TODO
+		group.mode = this.currentMode;
+		
+		for (const chip of this.chips){
+			const item = chip.itemReference;
+			if(!chip.filterInverted) group.includedItems.push(item);
+			else group.excludedItems.push(item);
+		}
+		
+		this.clearItems();
 		return group;
 	}
 }

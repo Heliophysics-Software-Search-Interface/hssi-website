@@ -4,7 +4,7 @@ import {
 } from "../loader";
 
 const styleFilterMenu = "filter-menu";
-const styleSelected = "selected";
+export const styleSelected = "selected";
 const styleTabContainer = "tab-container";
 
 export class FilterMenu {

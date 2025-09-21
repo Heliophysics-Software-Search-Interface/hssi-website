@@ -29,7 +29,18 @@
 	border-radius: 3px;
 	font-weight: bolder;
 	padding: 5px;
+	padding-bottom: 2px;
 	margin-left: 5px;
+}
+
+.filter-menu .filter-controls .group-control.group-mode {
+	font-size: 10px;
+}
+
+.filter-menu .filter-controls .group-control.selected {
+	color: black;
+	background-color: white;
+	cursor: inherit;
 }
 
 .filter-container .item-chip.invert-filter {

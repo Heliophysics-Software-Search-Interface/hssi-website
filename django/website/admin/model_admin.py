@@ -171,7 +171,14 @@ class InstrumentObservatoryAdmin(HSSIModelAdmin): resource_class = InstrumentObs
 
 class LicenseResource(resources.ModelResource):
 	class Meta: model = License
-class LicenseAdmin(HSSIModelAdmin): resource_class = LicenseResource
+class LicenseAdmin(HSSIModelAdmin): 
+	resource_class = LicenseResource
+
+	def str_display(self, obj: Model): 
+		disp = super().str_display(obj)
+		if isinstance(obj, License):
+			if obj.name == "Other" and obj.url: disp += " - " + obj.url
+		return disp
 
 class OrganizationResource(resources.ModelResource):
 	class Meta: model = Organization
@@ -248,7 +255,7 @@ class VisibleSoftwareAdmin(ImportExportModelAdmin): resource_class = VisibleSoft
 
 class SoftwareEditQueueResource(resources.ModelResource):
 	class Meta: Model = SoftwareEditQueue
-class SoftwareEditQueueAdmin(ImportExportModelAdmin): 
+class SoftwareEditQueueAdmin(ImportExportModelAdmin):
 	resource_class = SoftwareEditQueueResource
 
 	list_display = ('target_name', 'created', 'id')

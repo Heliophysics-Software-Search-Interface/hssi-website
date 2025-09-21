@@ -30,6 +30,7 @@ interface ModelBoxProperties extends BaseProperties {
 	modelFilter?: string,
 	dropdownButton?: string,
 	allowNewEntries?: string,
+	licenseModelbox?: boolean,
 }
 
 /// Organizational types -------------------------------------------------------
@@ -158,7 +159,14 @@ export class ModelBox extends Widget {
 			const match = splitInput.every(
 				word => optionLi.data.keywords.some(kw => kw?.includes(word))
 			);
-			const visible = (match || filterString.length <= 0);
+			let visible = (match || filterString.length <= 0);
+			if (this.properties.licenseModelbox){
+				if(
+					optionLi.data.name.toUpperCase() == "OTHER" && 
+					optionLi.data.keywords.length > 1
+				)
+					visible = false;
+			}
 			optionLi.style.display = visible ? "block" : "none";
 			if (visible) this.filteredOptionLIs.push(optionLi);
 		}
@@ -295,6 +303,7 @@ export class ModelBox extends Widget {
 		// move "other" option to last in the list
 		// TODO add as property for moving any named item to bottom of list
 		let otherIndex = options.findIndex(x => {
+			if(x == null) return false;
 			return "other" == x.name.trim().toLocaleLowerCase();
 		});
 		if(otherIndex >= 0){
@@ -315,6 +324,7 @@ export class ModelBox extends Widget {
 		// create and populate the dropdown list
 		this.optionListElement = document.createElement("ul");
 		for(const option of this.options) {
+			if(option == null) continue;
 			const li: OptionLi = document.createElement("li") as any;
 			li.data = option;
 			li.tabIndex = 0;
@@ -343,6 +353,7 @@ export class ModelBox extends Widget {
 				await fetchTimeout(modelsUrl + modelName + modelChoicesSlug)
 			).json();
 			optionData = data.data.map(x => {
+				if(x == null) return null;
 				return {
 					id: x[0],
 					name: x[1],

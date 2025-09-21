@@ -12,6 +12,7 @@ WPROP_MODELFILTER = "modelFilter"
 WPROP_DROPDOWNBUTTON = "dropdownButton"
 WPROP_ALLOWNEWENTRIES = "allowNewEntries"
 WPROP_RESULTFILTERS = "resultFilters"
+WPROP_LICENCEMBOX = "licenseModelbox"
 
 TYPE_CHAR = "CharWidget"
 TYPE_TEXTAREA = "TextAreaWidget"

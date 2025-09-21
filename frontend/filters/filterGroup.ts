@@ -1,4 +1,5 @@
 import { 
+	faCloseIcon,
 	FilterMenu, FilterMenuItem,
 	SimpleEvent,
 } from "../loader";
@@ -160,6 +161,7 @@ export class FilterGroup {
 class ItemChip {
 	public itemReference: FilterMenuItem = null;
 	public chip: HTMLSpanElement = null;
+	public removeButton: HTMLButtonElement = null;
 	public filterInverted: boolean = false;
 
 	public constructor(item: FilterMenuItem){
@@ -177,7 +179,16 @@ class ItemChip {
 		this.chip.addEventListener("click", e => {
 			this.setInverted(!this.filterInverted);
 		});
-		// TODO add x button
+
+		// create 'remove' button
+		this.removeButton = document.createElement("button");
+		this.removeButton.innerHTML = faCloseIcon;
+		this.removeButton.addEventListener("click", e => {
+			this.itemReference.parentMenu.setItemSelected(
+				this.itemReference, false
+			);
+		});
+		this.chip.appendChild(this.removeButton);
 	}
 
 	public destroy(): void {

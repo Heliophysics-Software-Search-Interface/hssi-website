@@ -45,7 +45,7 @@
 }
 
 .filter-container .item-chip {
-	margin-right: 2px;
+	margin-right: 5px;
 	margin-bottom: 2px;
 }
 
@@ -146,6 +146,8 @@
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	display: inline-block;
+	position: relative;
+	cursor: pointer;
 	border-radius: 3px;
 	padding: 2.5px;
 	padding-left: 0;
@@ -154,6 +156,19 @@
 	height: 25px;
 	font-size: 12px;
 	text-align: center;
+}
+
+.item-chip > button {
+	position: absolute;
+	color: orangered;
+	background-color: white;
+	cursor: pointer;
+	border-radius: 8px;
+	border: 1px solid red;
+	width: 15px;
+	height: 15px;
+	right: -5px;
+	top: -6px;
 }
 
 .item-chip.subchip {

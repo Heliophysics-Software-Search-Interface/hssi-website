@@ -179,6 +179,7 @@ class ItemChip {
 		this.chip.addEventListener("click", e => {
 			this.setInverted(!this.filterInverted);
 		});
+		this.chip.title = "Click to invert condition";
 
 		// create 'remove' button
 		this.removeButton = document.createElement("button");

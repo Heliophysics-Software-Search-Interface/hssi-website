@@ -10,7 +10,7 @@ import {
 
 export class CategoryFilterTab extends ControlledListFilterTab {
 
-	public get headerText(): string { return "Categories"; }
+	public get headerText(): string { return "Functionality"; }
 
 	public get categories(): CategoryItem[] { return this.rootItems as CategoryItem[]; }
 	public get categoryData(): JSONArray<JSONObject> { 

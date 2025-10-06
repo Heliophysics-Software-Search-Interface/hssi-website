@@ -32,8 +32,8 @@ EMAIL_SUBJECT_PREFIX = "[HSSI] "
 ### - end secret settings
 
 # default for local development
-SITE_DOMAIN = "hssi.hsdcloud.org"
-SITE_PROTOCOL = "https"
+SITE_DOMAIN = "localhost"
+SITE_PROTOCOL = "http"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
@@ -54,7 +54,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True if SITE_DOMAIN == "localhost" else False
 
 ALLOWED_HOSTS = ["*"] if DEBUG else ["52.2.25.84", "hssi.hsdcloud.org"]
 

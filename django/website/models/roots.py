@@ -142,6 +142,10 @@ class HssiModel(models.Model, metaclass=HssiBase):
 		return None
 	
 	@classmethod
+	def get_second_top_field(cls) -> models.Field:
+		return None
+	
+	@classmethod
 	def get_subfields(cls) -> list[models.Field]:
 		subfields = []
 

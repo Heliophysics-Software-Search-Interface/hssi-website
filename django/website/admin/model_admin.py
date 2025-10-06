@@ -41,7 +41,7 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 		hssimodel = queryset.model
 		if not issubclass(hssimodel, HssiModel): return
 		topfield = hssimodel.get_top_field()
-	
+		second_field = hssimodel.get_second_top_field()
 		for obj in queryset:
 
 			iter_obj = obj
@@ -55,6 +55,8 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 			# non-key value is found
 			while True:
 				val = getattr(iter_obj, topfield.name)
+				if not val and second_field:
+					val = getattr(iter_obj, second_field.name)
 				try: uid = uuid.UUID(val)
 				except Exception: break
 				iter_obj = hssimodel.objects.get(pk=uid)

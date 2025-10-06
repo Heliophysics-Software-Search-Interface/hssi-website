@@ -1,1 +1,5 @@
 id,url,description
+fe4882f0-2676-4f4b-8d9f-614c03d02d2f,https://raw.githubusercontent.com/DanBrandt/EUVpy/main/./EUVpy_logo.png,logo for Overview
+d6fabccf-0954-4fb8-95be-127888ff932d,https://lasp.colorado.edu/ctim/files/2023/01/CTIM_LOGO_350x100_centered_transparent.png,logo for space_packet_parser
+8fe59124-c128-4d9d-8144-9e71fd4e448f,https://raw.githubusercontent.com/nasa/Kamodo/master/docs/notebooks/Files/Kamodo.png,logo for The CCMC Kamodo Analysis Suite
+b433308a-8b2d-4dd4-af94-3231eb305f5b,https://raw.githubusercontent.com/HinodeXRT/xrtpy/main/docs/_static/images/XRTpy_logo.png,logo for XRTpy: A Hinode X-Ray Telescope Python Package

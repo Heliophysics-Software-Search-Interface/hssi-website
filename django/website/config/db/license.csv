@@ -1,7 +1,12 @@
 id,name,url
 b84abb1c-5700-482e-9665-c91525f6bb2c,Apache License 2.0,https://spdx.org/licenses/Apache-2.0
+e30aeeb6-77d6-4994-a80c-320aa1222eab,"BSD 2-Clause ""Simplified"" License",https://opensource.org/licenses/BSD-2-Clause
+d7f050b7-b557-445d-a0c5-1d89918a915e,"BSD 3-Clause ""New"" or ""Revised"" License",https://opensource.org/licenses/BSD-3-Clause
+a634c611-9258-4997-88c2-b73c9ddf3305,Creative Commons Attribution 4.0 International,https://creativecommons.org/licenses/by/4.0/legalcode
 1a6022c4-4de9-4ab5-94e2-8b0eb85eaff3,GNU General Public Licenses (GPL version 2),https://spdx.org/licenses/GPL-2.0
+0e565a36-a0dd-44aa-84b5-e19fbfdeefd8,GNU General Public License v3.0 or later,https://www.gnu.org/licenses/gpl-3.0-standalone.html
 c98cc533-620a-4c6b-b16d-68d90b73e17a,GNU Library or ‘Lesser’ General Public Licenses (LGPL version 2),https://spdx.org/licenses/LGPL-2.0
 f919fb73-26ef-4d98-8c6d-9d0c0364961c,MIT License,https://spdx.org/licenses/MIT
 225b8944-0b35-4025-8d28-40f3db861cc2,New BSD license,https://spdx.org/licenses/BSD-3-Clause
+bb0040df-bb23-4c25-aea4-1a35251f74ad,Open Access,info:eu-repo/semantics/openAccess
 a3c71b75-cab3-4913-a14a-8838ef9d9270,Other,

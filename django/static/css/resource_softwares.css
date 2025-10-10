@@ -48,6 +48,10 @@
 	display: inline-block;
 }
 
+.resource-header > div.col-left {
+	max-width: 60%;
+}
+
 .resource-header .header-chips {
 	display: inline-block;
 	vertical-align: top;

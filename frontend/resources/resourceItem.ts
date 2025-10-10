@@ -1,6 +1,7 @@
 import { 
 	appendPromisedElement,
 	ModelData,
+	type PersonData,
 	type SoftwareData,
 } from "../loader";
 
@@ -17,6 +18,7 @@ const styleBtnDocs = "btn-docs";
 const styleBtnPublication = "btn-publication";
 const styleBtnDoi = "btn-doi";
 const styleHeaderChips = "header-chips";
+const styleLeftColumn = "col-left";
 
 const faBook = `<i class="fa fa-book"></i>`;
 const faLink = `<i class="fa fa-link"></i>`;
@@ -37,6 +39,8 @@ export class ResourceItem{
 	private expandedContent: HTMLDivElement = null;
 	private expandButton: HTMLButtonElement = null;
 	private headerDiv: HTMLDivElement = null;
+	private authorsExpandedContainer: HTMLSpanElement = null;
+	private authorEtalContainer: HTMLSpanElement = null;
 
 	/** the html element that contains all the html content for this item */
 	public containerElement: HTMLDivElement = null;
@@ -125,6 +129,52 @@ export class ResourceItem{
 		}
 	}
 
+	private buildAuthors(headInfoDiv: HTMLDivElement): void{
+
+		const authors = document.createElement("span");
+		headInfoDiv.appendChild(authors)
+
+		function createAuthor(authorData: PersonData): HTMLSpanElement | HTMLAnchorElement{
+			const authSpan = document.createElement("span");
+			authSpan.classList.add(styleAuthor);
+			authSpan.innerText = authorData.firstName || "";
+			if (authorData.firstName) authSpan.innerText += " ";
+			authSpan.innerText += authorData.lastName;
+			if(authorData.identifier){
+				const authAnchor = document.createElement("a");
+				authAnchor.href = authorData.identifier;
+				authAnchor.appendChild(authSpan);
+				return authAnchor;
+			}
+			return authSpan;
+		}
+
+		const maxAuthorsCompact = Math.min(5, this.data.authors.length);
+		for(let i = 0; i < maxAuthorsCompact; i++){
+			const authElem = createAuthor(this.data.authors[i]);
+			headInfoDiv.appendChild(authElem);
+			if(i < maxAuthorsCompact - 1) headInfoDiv.innerHTML += "; ";
+		}
+
+		// create et al. if necessary
+		this.authorEtalContainer = document.createElement("span");
+		this.authorEtalContainer.classList.add(styleAuthor);
+		if(maxAuthorsCompact < this.data.authors.length){
+			this.authorEtalContainer.innerHTML = "; et al."
+		}
+		headInfoDiv.appendChild(this.authorEtalContainer);
+
+		// create expanded authors to show when resource is expanded
+		this.authorsExpandedContainer = document.createElement("span");
+		this.authorsExpandedContainer.style.display = "none";
+		for(let i = maxAuthorsCompact; i < this.data.authors.length; i++){
+			const authElem = createAuthor(this.data.authors[i]);
+			this.authorsExpandedContainer.innerHTML += "; ";
+			this.authorsExpandedContainer.appendChild(authElem);
+		}
+		headInfoDiv.appendChild(this.authorsExpandedContainer);
+	}
+
 	private build(): void {
 		// TODO build from this.data
 		this.headerDiv = document.createElement("div");
@@ -132,6 +182,7 @@ export class ResourceItem{
 		this.containerElement.appendChild(this.headerDiv);
 
 		const headerText = document.createElement("div");
+		headerText.classList.add(styleLeftColumn);
 		this.headerDiv.appendChild(headerText);
 		
 		const titleDiv = document.createElement("div");
@@ -142,25 +193,7 @@ export class ResourceItem{
 		const headInfoDiv = document.createElement("div");
 		headerText.appendChild(headInfoDiv);
 
-		const authors = document.createElement("span");
-		headInfoDiv.appendChild(authors)
-
-		for(let i = 0; i < this.data.authors.length; i++){
-			const author = this.data.authors[i];
-			const authSpan = document.createElement("span");
-			authSpan.classList.add(styleAuthor);
-			authSpan.innerText = author.firstName || "";
-			if (author.firstName) authSpan.innerText += " ";
-			authSpan.innerText += author.lastName;
-			if(author.identifier){
-				const authAnchor = document.createElement("a");
-				authAnchor.href = author.identifier;
-				authAnchor.appendChild(authSpan);
-				headInfoDiv.appendChild(authAnchor);
-			}
-			else headInfoDiv.appendChild(authSpan);
-			if(i < this.data.authors.length - 1) headInfoDiv.innerHTML += "; ";
-		}
+		this.buildAuthors(headInfoDiv);
 
 		this.shrinkedContent = document.createElement("div");
 		this.containerElement.appendChild(this.shrinkedContent);
@@ -206,11 +239,15 @@ export class ResourceItem{
 		if(expand){
 			this.expandedContent.style.display = "block";
 			this.shrinkedContent.style.display = "none";
+			this.authorsExpandedContainer.style.display = "inline";
+			this.authorEtalContainer.style.display = "none";
 			this.expandButton.innerHTML = faUpArrow;
 		} 
 		else {
 			this.expandedContent.style.display = "none";
 			this.shrinkedContent.style.display = "block";
+			this.authorsExpandedContainer.style.display = "none";
+			this.authorEtalContainer.style.display = "inline";
 			this.expandButton.innerHTML = faDownArrow;
 		}
 	}

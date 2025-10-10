@@ -1,7 +1,10 @@
 import { 
 	apiModel, apiSlugRowsAll, fetchTimeout, modelApiUrl, ModelData, ResourceItem, 
+	Spinner, 
 	type JSONArray, type JSONObject, type SoftwareData,
 } from "../loader";
+
+const styleNoResults = "no-results";
 
 const softwarModelName = "VisibleSoftware";
 
@@ -13,12 +16,18 @@ export class ResourceView {
 
 	private itemData: JSONArray<JSONObject> = [];
 	private items: ResourceItem[] = [];
+	
+	/** element to display when no results */
+	private get noResultsElement(): HTMLElement {
+		return document.body.getElementsByClassName(styleNoResults)[0] as any;
+	}
 
 	/** the html element that contains all the html content for this view */
 	public containerElement: HTMLDivElement = null;
 
 	public constructor() {
 		this.containerElement = document.createElement("div");
+		this.containerElement.style.minHeight = "100px";
 	}
 
 	/** create new items based on stored item data */
@@ -33,6 +42,14 @@ export class ResourceView {
 			const item = ResourceItem.createFromData(data as SoftwareData);
 			this.containerElement.appendChild(item.containerElement);
 			this.items.push(item);
+		}
+
+		// display no results if no results found, or hide it if there is results
+		const noResultsElem = this.noResultsElement;
+		console.log(noResultsElem)
+		if(noResultsElem){
+			if(this.items.length <= 0) this.noResultsElement.style.display = "block";
+			else this.noResultsElement.style.display = "none";
 		}
 	}
 
@@ -51,8 +68,12 @@ export class ResourceView {
 	public async fetchAndBuild(): Promise<void> {
 		// TODO implement querying
 
+		Spinner.showSpinner("Fetching Software Data...", this.containerElement);
+
 		await this.fetchResourceItems();
 		this.refreshItems();
+
+		Spinner.hideSpinner(this.containerElement);
 	}
 }
 

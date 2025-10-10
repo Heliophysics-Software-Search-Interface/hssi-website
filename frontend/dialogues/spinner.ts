@@ -151,9 +151,9 @@ export class Spinner {
 	public static showSpinner(message: string = "", target: HTMLElement = null): void {
 		if(target == null) {
 			this.validateInstance();
-			this.instance.messageElement.textContent = message;
 			this.instance.show();
 			this.instance.centerPopup();
+			this.instance.messageElement.textContent = message;
 			return;
 		}
 
@@ -163,6 +163,7 @@ export class Spinner {
 		console.log(spinner);
 		this.spinnerMap.set(target, spinner);
 		spinner.show();
+		spinner.messageElement.textContent = message;
 		this.updateSpinners();
 	}
 

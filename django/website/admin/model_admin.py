@@ -245,7 +245,7 @@ class SoftwareAdmin(HSSIModelAdmin):
 		for soft in queryset: 
 			SoftwareEditQueue.create(
 				soft, 
-				timezone.now() + datetime.timedelta.days(31)
+				timezone.now() + datetime.timedelta(days=31)
 			)
 
 	actions = [

@@ -1,4 +1,4 @@
-import uuid, json
+import uuid, json, datetime
 
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
@@ -242,7 +242,11 @@ class SoftwareAdmin(HSSIModelAdmin):
 
 	@action(description="Add to Edit Queue")
 	def add_edit_queue(self, request: HttpRequest, queryset: QuerySet[Software]):
-		for soft in queryset: SoftwareEditQueue.create(soft)
+		for soft in queryset: 
+			SoftwareEditQueue.create(
+				soft, 
+				timezone.now() + datetime.timedelta.days(31)
+			)
 
 	actions = [
 		mark_visible,

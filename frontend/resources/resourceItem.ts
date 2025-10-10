@@ -165,6 +165,12 @@ export class ResourceItem{
 		this.shrinkedContent = document.createElement("div");
 		this.containerElement.appendChild(this.shrinkedContent);
 		
+		if((this.data.conciseDescription?.trim() ?? "").length <= 0){
+			let concDesc = this.data.description?.trim()?.substring(0, 199) ?? "";
+			if(concDesc.length > 0) concDesc += "…";
+			this.data.conciseDescription = concDesc;
+		}
+
 		const conciseDescDiv = document.createElement("div");
 		conciseDescDiv.classList.add(styleDescription);
 		conciseDescDiv.innerText = this.data.conciseDescription;

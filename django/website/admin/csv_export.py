@@ -32,7 +32,7 @@ def model_csv_filepath(
 # Module functionality ---------------------------------------------------------
 
 def remove_all_model_entries():
-	authors_remote_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
+	authors_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
 	models: list[Model] = [
 		Image,
 		Organization,
@@ -58,7 +58,7 @@ def remove_all_model_entries():
 		Software,
 		VisibleSoftware,
 		SoftwareEditQueue,
-		authors_remote_field.through,
+		authors_field.through,
 	]
 	models.reverse()
 	for model in models: model.objects.all().delete()
@@ -100,8 +100,8 @@ def export_db_csv():
 	export_model_csv(RelatedItem)
 	export_model_csv(SoftwareEditQueue)
 
-	authors_remote_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
-	author_order = authors_remote_field.through
+	authors_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
+	author_order = authors_field.through
 	export_model_csv(author_order)
 
 def import_model_csv(model: 'Type[models.Model]', filepath: os.PathLike | None = None):
@@ -151,6 +151,6 @@ def import_db_csv():
 	import_model_csv(VisibleSoftware)
 	import_model_csv(SoftwareEditQueue)
 
-	authors_remote_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
-	author_order = authors_remote_field.through
+	authors_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
+	author_order = authors_field.through
 	import_model_csv(author_order)

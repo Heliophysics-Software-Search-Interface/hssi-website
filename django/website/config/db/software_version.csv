@@ -1,6 +1,8 @@
 id,number,release_date,description,version_pid
 cbdc9192-0700-4b8c-9d81-a546c7da7ef6,0.2.0,2025-03-28,,
+3749f9c1-01cc-4215-bdaa-ce875dc2612a,0.3.33,2025-04-08,,
 c008d1be-a4b0-427f-a832-5fb4435091c7,0.4.0,2023-11-17,A community-developed open source Python 3.6+ package for plasma physics research and education that is currently under development.,https://doi.org/10.5281/zenodo.4037407
+8301f2b6-449c-4ed5-acc0-faa11b067df9,0.6.0,2025-08-11,,https://doi.org/10.5281/zenodo.16802585
 dcf367e6-a310-482b-a0b7-3eff3d258ea6,0.7.0,2024-11-08,"Please see the full release notes at https://spacepy.github.io/release_notes.html
 
 Binary wheels are now provided for Linux on 64-bit ARM, intended for Raspberry Pi.
@@ -33,31 +35,7 @@ The `data_assimilation`, `radbelt`, and `spacepy_EnKF` modules have been moved t
 Operations on `dmarray` which return a scalar value will now return a numpy array scalar rather than the base Python type. This is consistent with the behavior of `numpy.ndarray`. `dmarray` also supports assigning to its `dtype` and `shape`. Together these changes should make `dmarray` a much closer drop-in replacement for `numpy.ndarray`.
 
 Warnings issued by SpacePy are now associated with the line of the calling code, not with the SpacePy code itself.",https://doi.org/10.5281/zenodo.14057789
-bc3cf45b-b9b3-40c9-9deb-7b3f6c015761,1.1.0,2025-09-04,,
-d29053c6-800a-4ea1-bda9-675d4f436cf7,1.1.0,2025-07-17,"[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/231
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/232
-
-specify codecov path by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/234
-
-Create CHANGELOG.md by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/235
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/237
-
-Allow a single star mask to be provided by @svank in https://github.com/punch-mission/regularizepsf/pull/236
-
-Update sep by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/239
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/240
-
-Handle saturated values when applying a transform by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/242
-
-adds new mask and saturation features by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/243
-
-Prepare v1.1.0 by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/244
-
-
-Full Changelog: https://github.com/punch-mission/regularizepsf/compare/1.0.2...1.1.0",https://doi.org/10.5281/zenodo.16018479
+6cf80739-d3cd-497b-b4f5-adc279389ff6,1.1.0,2024-12-29,"I/O interface and utilities for CCSDS binary spacecraft data in Python. Library used in flight missions at NASA, NOAA, and SWRI.",https://doi.org/10.5281/zenodo.7819991
 c46c39aa-bcab-4b49-902f-9591abadbea9,1.1.0,2025-07-17,"What's Changed
 
 
@@ -86,7 +64,31 @@ Prepare v1.1.0 by @jmbhughes in https://github.com/punch-mission/regularizepsf/p
 
 
 Full Changelog: https://github.com/punch-mission/regularizepsf/compare/1.0.2...1.1.0",https://doi.org/10.5281/zenodo.16018479
-6cf80739-d3cd-497b-b4f5-adc279389ff6,1.1.0,2024-12-29,"I/O interface and utilities for CCSDS binary spacecraft data in Python. Library used in flight missions at NASA, NOAA, and SWRI.",https://doi.org/10.5281/zenodo.7819991
+d29053c6-800a-4ea1-bda9-675d4f436cf7,1.1.0,2025-07-17,"[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/231
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/232
+
+specify codecov path by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/234
+
+Create CHANGELOG.md by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/235
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/237
+
+Allow a single star mask to be provided by @svank in https://github.com/punch-mission/regularizepsf/pull/236
+
+Update sep by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/239
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/240
+
+Handle saturated values when applying a transform by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/242
+
+adds new mask and saturation features by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/243
+
+Prepare v1.1.0 by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/244
+
+
+Full Changelog: https://github.com/punch-mission/regularizepsf/compare/1.0.2...1.1.0",https://doi.org/10.5281/zenodo.16018479
+bc3cf45b-b9b3-40c9-9deb-7b3f6c015761,1.1.0,2025-09-04,,
 3a3f50b8-c704-4a96-8e15-891fed3a9418,1.3.6,2025-08-05,,
 6d75acbb-2e7e-4474-a57d-074b531e4205,2.0.2a2,2025-09-27,,
 7ed6fcf6-6082-4bb3-9aa8-5f84d1d2cc71,2.6.0,2020-07-30,"This major release incorporates AACGM-v2.6 coefficients (2015-2020) derived using the IGRF13 model. Other changes include removing a deprecated routine, providing version targets for other deprecated routines, and consolidating similar unit and integration tests.",https://doi.org/10.5281/zenodo.3598705
@@ -96,6 +98,79 @@ b89b06b5-e45a-40b1-9bf1-8a771ba2f997,MSWCX,2025-08-01,Code used to produce the r
 e89f1bb4-4011-4351-9cac-ebaa2f7db5d3,MSWCX,2025-08-01,Code used to produce the results in a publication on separating out the magnetospheric SWCX X-ray spectral contribution in astrophysical observations of dark fields.,https://doi.org/10.5281/zenodo.8253002
 08bfb574-aa75-4dc4-8904-b508a4035875,release-0.1.0,2022-02-11,"0.1.0 (2022-02-10) Please see the full release notes at https://spacepy.github.io/dbprocessing/release_notes.html This is the first public packaged release of dbprocessing. For the convenience of those working directly from git checkouts, these release notes summarize changes made since the creation of the public repository on 2020-07-15. New features Support for processes that take no input was added, as part of many enhancements to <code>DBRunner.py</code>. New script <code>linkUningested.py</code> to find files which match product format but are not in database, and symlink them to the incoming directory so they can be ingested. Python 3 support was added. Added options <code>--count</code>, <code>--exist</code>, and <code>--quiet</code> to <code>printProcessQueue.py</code> to allow flow control in shell scripts based on the process queue state. Added options <code>--product</code> to filter output and <code>--sort</code> to <code>printProcessQueue.py</code> to sort output. Initial PostgreSQL support was added. Deprecations and removals None Dependency requirements SQLAlchemy and dateutil are required. No minimum version has been established, but dbprocessing is known to work with SQLAlchemy 1.1 and dateutil 2.6. Major bugfixes Fixed <code>ProcessQueue.buildChildren</code> on older databases without <code>yesterday</code> and <code>tomorrow</code> columns in the <code>Productprocesslink</code> table. Fixed <code>runMe</code> to always maintain the <code>output_interface</code> version specified by the code. Updates to a code's interface version will increment the quality version of its output (not the interface); updates to a file's interface version will increment the quality version of child files (rather than assuming children were up-to-date and failing to reprocess them). Fixed <code>buildChildren</code> to only look for files which are recorded in the database as existing on disk. Most notably, this means <code>ProcessQueue.py</code> will not attempt to use nonexistent files as inputs to processing.",https://doi.org/10.5281/zenodo.6047134
 b1c2d5cd-bc45-4187-a396-449b9cd5902e,v0.1,2023-04-25,This version was used to create figures for the ISR paper.,https://doi.org/10.5281/zenodo.154533
+92eb6223-0c68-48da-a3ba-832d9511d32d,v.0.1.0,2025-09-08,"FitsFlow v0.1.0
+
+FitsFlow is a browser-based application that takes a solar FITS image and returns machine-learning ready outputs.
+
+Abstract
+
+FitsFlow is a browser-based platform developed by the author to streamline the exploration and annotation of Solar Dynamics Observatory (SDO) FITS images through a fully integrated, cloud-native environment. The system connects heliophysics data services from Joint Science Operations Center (JSOC), Helioviewer, and the Heliophysics Event Knowledgebase (HEK), enabling users to parse FITS headers, align event times, and automatically retrieve associated imagery and metadata. The backend, deployed on Amazon Web Services (AWS) Lambda and Elastic Cloud Compute (EC2), handles on-demand processing and delivers all outputs through a lightweight web interface. FitsFlow produces structured, machine learning–ready outputs, including support for the Advanced Scientific Data Format (ASDF). Each session allows up to 170 MB of fits data and the results can be downloaded in bulk as a ZIP file containing: header metadata in JSON, pixel data in CSV and NumPy formats, colorized PNG images from Helioviewer, grayscale PNGs from JSOC, and HEK metadata in JSON format. These outputs are designed to support reproducible and interpretable ML workflows for classifying, segmenting, and forecasting solar events, laying the foundation for cyberinfrastructure that connects solar surface activity to radiation impacts in low Earth orbit (LEO). FitsFlow represents the first in a planned suite of “KISS” tools (Keep It Simple, Scientist) aimed at lowering the barrier to entry for machine learning in heliophysics. With browser-native visualization, downloadable structured examples, zero-install access, and no login required, FitsFlow broadens accessibility for researchers, educators, and citizen scientists working with solar data.
+
+Simple Language
+
+In simple terms:
+
+
+
+You upload a FITS file in your browser.
+
+FitsFlow automatically connects to NASA/NOAA data services (HEK, JSOC, Helioviewer).
+
+The system processes everything in the cloud.
+
+You get back a single manifest file and outputs (images, metadata, ASDF).
+
+
+FitsFlow connects all the dots so researchers, educators, and the public can use solar data without special software.
+
+System Overview
+
+
+
+AWS services: Lambda, API Gateway, S3, CloudFront, Route 53, CloudWatch, EventBridge, EC2
+
+External APIs: HEK, JSOC, Helioviewer
+
+Outputs: images, metadata, ASDF, manifest files
+
+
+Click here to view the AWS flow of information!
+
+Click here to view a demo!
+
+Repository Structure
+
+
+
+client/ – frontend code (HTML, CSS, JS, assets)
+
+server/ – backend AWS Lambda functions, IAM policies, layers, API definitions
+
+README.md – documentation (system architecture, data flow, security, future work)
+
+
+Research Outputs
+
+
+
+Dragon Con 2025 — Space & Science Tracks
+
+Science and Cyberinfrastructure for Discovery 2025 — Session 4: Lightning Talks
+
+Data, Analysis, and Software in Heliophysics 2025 — (session details pending)
+
+AGU Fall Meeting 2025 — Session SH032: The Long Way: Heliosphere Modeling with Operations in Mind
+
+
+Version Info
+
+
+
+Release type: First public release
+
+Tag: v0.1.0
+
+License: Apache-2.0",https://doi.org/10.5281/zenodo.17069414
 2c1cb591-573a-438e-a128-3bb1643a0272,v0.10.2,2025-09-13,"What's Changed
 
 
@@ -118,6 +193,8 @@ Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pul
 
 
 Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
+56077274-c839-41fc-a092-44fd672b82c0,v0.11.0,2025-06-13,,https://doi.org/10.5281/zenodo.15656924
+26bcfcdc-8b98-4eb4-8ef2-fc8588d98430,v0.2.0,2023-03-22,,
 14f38f56-7803-4b90-8729-28c1d4173f89,v0.2.1,2021-10-06,Python client for HAPI,https://doi.org/10.5281/zenodo.5553156
 2f08e9e6-59d9-4ab1-96bd-90085bab2e72,v0.26.5,2025-05-30,"[0.26.4] - 2025-05-30
 
@@ -156,14 +233,18 @@ Fix issues with some obs by @nabobalis in https://github.com/LM-SAL/irispy/pull/
 
 
 Full Changelog: https://github.com/LM-SAL/irispy/compare/v0.3.1...v0.4.0",https://doi.org/10.5281/zenodo.16989847
-ebe3e0b9-101a-44d2-a0dd-207212f45841,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
 7b54feb6-1fc0-4c7f-8a70-f1d3353e4c9c,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
+ebe3e0b9-101a-44d2-a0dd-207212f45841,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
 c9a46ee5-4790-483f-ab16-612e7de367e3,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
 3f5027b1-ea6e-4c6e-bd69-ead2be9e4969,v0.5.0,2025-01-29,Python package of the multi-spacecraft longitudinal configuration plotter Solar-MACH,https://doi.org/10.5281/zenodo.14763546
 8155ff78-4060-4adb-ace8-e640ad648c35,v0.5.0,2025-01-29,Python package of the multi-spacecraft longitudinal configuration plotter Solar-MACH,https://doi.org/10.5281/zenodo.14763546
 c6a6a698-31ca-42fe-8adc-11d71dd4de75,v0.6.1,2025-08-14,"fiasco provides a Python interface to the CHIANTI, an atomic database used primarily for astrophysical spectroscopy.",https://doi.org/10.5281/zenodo.16876516
+27d74e70-04a2-47a5-bf86-9a628390600e,v1.0.0,2023-03-28,,https://doi.org/10.5281/zenodo.7779553
 e162adaa-2799-4859-937f-50b6936189ac,v1.0.12,2025-03-31,This release adds the functionality to auto-load the latest or a specific version of geopack coefficients.,https://doi.org/10.5281/zenodo.15110787
 ba4a1dc4-9db4-4d0e-873d-b20cc6c8ed99,v1.0.2,2025-06-03,A Python package to support metadata attribute management for Space Weather data processing pipelines.,https://doi.org/10.5281/zenodo.15587327
+2f122a4b-85e6-43bd-84dd-8ea8833dbd5c,v1.1.0,2025-04-07,,https://doi.org/10.5281/zenodo.15170693
+79c29d1a-a4d4-4cd9-a33e-0b01b78acdc6,v1.1.3,2025-09-30,,https://doi.org/10.5281/zenodo.17236774
 01dd9ee7-a39c-4ee5-a42c-ee6ce98280b3,v1.1.8,2024-12-02,Minor release primarily to update documentation and how it is compiled on ReadTheDocs.  This should not introduce new functionality.,https://doi.org/10.5281/zenodo.14174414
+08c8e2c5-6eee-4a53-a8c3-07ba36d0c67e,v2.3,2022-11-23,,https://doi.org/10.5281/zenodo.7352323
 e16b5881-30d9-4145-8a68-6283cb4bca4c,v7.0.2,2025-09-19,"sunpy is a software library that provides fundamental tools for accessing, loading and interacting with solar physics data in Python",https://doi.org/10.5281/zenodo.17162925
 7d8f4d54-4a67-4c59-b294-c48afaaac6ee,version 0.4.1,2024-08-08,"The XRTpy Python package is a specialized tool developed for the analysis of observations made by the X-Ray Telescope (XRT) aboard the Hinode spacecraft. Hinode is a joint mission involving space agencies from Japan, the United States, and Europe, launched with the primary aim of providing multi-wavelength data from the photosphere to the upper corona, enabling continuous observations of the Sun. XRTpy offers a comprehensive range of functionalities, including object-oriented representation of instrument configuration, effective area calculations, temperature response computation, light leak subtraction, image sharpening, estimation of electron temperature, and emission measure derivation. These capabilities empower researchers to explore and analyze XRT data comprehensively, contributing to a deeper understanding of solar phenomena.",https://doi.org/10.5281/zenodo.13157914

@@ -32,12 +32,14 @@ def model_csv_filepath(
 # Module functionality ---------------------------------------------------------
 
 def remove_all_model_entries():
+	authors_remote_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
 	models: list[Model] = [
-		Image, 
-		Organization, 
+		Image,
+		Organization,
 		Person,
 		Curator,
 		Award,
+		CpuArchitecture,
 		FunctionCategory,
 		InstrumentObservatory,
 		Keyword,
@@ -54,11 +56,12 @@ def remove_all_model_entries():
 		Submitter,
 		SubmissionInfo,
 		Software,
-		VisibleSoftware
+		VisibleSoftware,
+		SoftwareEditQueue,
+		authors_remote_field.through,
 	]
 	models.reverse()
 	for model in models: model.objects.all().delete()
-		
 
 def export_model_csv(model: 'Type[models.Model]', directory: str = DEFAULT_DB_EXPORT_PATH):
 	filepath: str = model_csv_filepath(model, directory)
@@ -77,6 +80,7 @@ def export_db_csv():
 	export_model_csv(Person)
 	export_model_csv(Curator)
 	export_model_csv(Award)
+	export_model_csv(CpuArchitecture)
 	export_model_csv(FunctionCategory)
 	export_model_csv(InstrumentObservatory)
 	export_model_csv(Keyword)
@@ -94,6 +98,11 @@ def export_db_csv():
 	export_model_csv(SoftwareVersion)
 	export_model_csv(Submitter)
 	export_model_csv(RelatedItem)
+	export_model_csv(SoftwareEditQueue)
+
+	authors_remote_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
+	author_order = authors_remote_field.through
+	export_model_csv(author_order)
 
 def import_model_csv(model: 'Type[models.Model]', filepath: os.PathLike | None = None):
 	if filepath is None: filepath = model_csv_filepath(model)
@@ -122,6 +131,7 @@ def import_db_csv():
 	import_model_csv(Person)
 	import_model_csv(Curator)
 	import_model_csv(Award)
+	import_model_csv(CpuArchitecture)
 	import_model_csv(FunctionCategory)
 	import_model_csv(InstrumentObservatory)
 	import_model_csv(Keyword)
@@ -139,3 +149,8 @@ def import_db_csv():
 	import_model_csv(SubmissionInfo)
 	import_model_csv(Software)
 	import_model_csv(VisibleSoftware)
+	import_model_csv(SoftwareEditQueue)
+
+	authors_remote_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
+	author_order = authors_remote_field.through
+	import_model_csv(author_order)

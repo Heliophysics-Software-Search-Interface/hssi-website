@@ -2,12 +2,12 @@ import {
 	fetchTimeout, 
 	apiModel,
 	apiSlugRowsAll,
+	colorSrcGreen,
 	type JSONArray,
 	type ControlledListData, 
 	type GraphListData, 
 	type HSSIModelData,
 	type FunctionalityData,
-	colorSrcGreen,
 	type ModelDataAccess, 
 } from "../loader";
 

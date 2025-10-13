@@ -178,6 +178,13 @@ export class ControlledListItem extends FilterMenuItem {
 		this.checkboxElement.value = this.id;
 		this.checkboxElement.id = this.id;
 	}
+
+	public override async createChip(): Promise<HTMLSpanElement> {
+		if(this.id) return await super.createChip();
+		const chip = await ModelData.createChip(this.parentTab.targetModel, this.subItems[0].id)
+		chip.innerText = this.abbreviation;
+		return chip;
+	}
 }
 
 /** 

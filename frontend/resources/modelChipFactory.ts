@@ -100,6 +100,7 @@ export class ControlledListChipFactory extends BaseChipFactory {
 		const listData = data as ControlledListData;
 		const chip = await super.createChipFromData(listData);
 		chip.innerText = listData.name.substring(0,4);
+		chip.title = listData.name;
 		return chip;
 	}
 }

@@ -183,6 +183,7 @@ export class ControlledListItem extends FilterMenuItem {
 		if(this.id) return await super.createChip();
 		const chip = await ModelData.createChip(this.parentTab.targetModel, this.subItems[0].id)
 		chip.innerText = this.abbreviation;
+		chip.title = this.name;
 		return chip;
 	}
 }

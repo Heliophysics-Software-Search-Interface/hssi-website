@@ -46,11 +46,11 @@
 }
 
 .resource-item .logo {
-	float: left;
-	margin-right: 10px;
+	float: right;
+	margin-left: 10px;
 	margin-bottom: 10px;
-	max-width: 100px;
-	max-height: 75px;
+	max-width: 50%;
+	max-height: 100px;
 	width: auto;
 	height: auto;
 	box-shadow: grey 2px 2px 5px;

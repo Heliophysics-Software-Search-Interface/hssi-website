@@ -20,6 +20,7 @@ const styleBtnDoi = "btn-doi";
 const styleHeaderChips = "header-chips";
 const styleLeftColumn = "col-left";
 const styleBtnFeedback = "btn-feedback";
+const styleLogo = "logo";
 
 const faBook = `<i class="fa fa-book"></i>`;
 const faLink = `<i class="fa fa-link"></i>`;
@@ -40,12 +41,13 @@ const linkHssiVocab = (
 export class ResourceItem{
 
 	private data: SoftwareData = null;
+	private bodyLeftContent: HTMLDivElement = null;
 	private shrinkedContent: HTMLDivElement = null;
 	private expandedContent: HTMLDivElement = null;
 	private expandButton: HTMLButtonElement = null;
 	private headerDiv: HTMLDivElement = null;
 	private authorsExpandedContainer: HTMLSpanElement = null;
-	private authorEtalContainer: HTMLSpanElement = null;
+	private authorEtAlContainer: HTMLSpanElement = null;
 
 	/** the html element that contains all the html content for this item */
 	public containerElement: HTMLDivElement = null;
@@ -162,12 +164,12 @@ export class ResourceItem{
 		}
 
 		// create et al. if necessary
-		this.authorEtalContainer = document.createElement("span");
-		this.authorEtalContainer.classList.add(styleAuthor);
+		this.authorEtAlContainer = document.createElement("span");
+		this.authorEtAlContainer.classList.add(styleAuthor);
 		if(maxAuthorsCompact < this.data.authors.length){
-			this.authorEtalContainer.innerHTML = "; et al."
+			this.authorEtAlContainer.innerHTML = "; et al."
 		}
-		headInfoDiv.appendChild(this.authorEtalContainer);
+		headInfoDiv.appendChild(this.authorEtAlContainer);
 
 		// create expanded authors to show when resource is expanded
 		this.authorsExpandedContainer = document.createElement("span");
@@ -200,8 +202,12 @@ export class ResourceItem{
 
 		this.buildAuthors(headInfoDiv);
 
+		this.bodyLeftContent = document.createElement("div");
+		this.bodyLeftContent.classList.add(styleLeftColumn);
+		this.containerElement.appendChild(this.bodyLeftContent);
+
 		this.shrinkedContent = document.createElement("div");
-		this.containerElement.appendChild(this.shrinkedContent);
+		this.bodyLeftContent.appendChild(this.shrinkedContent);
 		
 		if((this.data.conciseDescription?.trim() ?? "").length <= 0){
 			let concDesc = this.data.description?.trim()?.substring(0, 199) ?? "";
@@ -215,14 +221,23 @@ export class ResourceItem{
 		this.shrinkedContent.appendChild(conciseDescDiv);
 		
 		this.expandedContent = document.createElement("div");
-		this.containerElement.appendChild(this.expandedContent);
+		this.bodyLeftContent.appendChild(this.expandedContent);
 		
 		const descriptionDiv = document.createElement("div");
 		descriptionDiv.classList.add(styleDescription);
 		descriptionDiv.innerText = this.data.description;
 		this.expandedContent.appendChild(descriptionDiv);
 		
-		// TODO add logo
+		// Add logo
+		if(this.data.logo && this.data.logo.url){
+			const logoImage = document.createElement("img");
+			logoImage.classList.add(styleLogo);
+			logoImage.src = this.data.logo.url as any;
+			logoImage.alt = this.data.logo.description as any;
+			conciseDescDiv.prepend(logoImage);
+			descriptionDiv.prepend(logoImage.cloneNode());
+			console.log("IMAGE", logoImage);
+		}
 
 		this.buildLinkButtons();
 		this.buildModelChips();
@@ -253,14 +268,14 @@ export class ResourceItem{
 			this.expandedContent.style.display = "block";
 			this.shrinkedContent.style.display = "none";
 			this.authorsExpandedContainer.style.display = "inline";
-			this.authorEtalContainer.style.display = "none";
+			this.authorEtAlContainer.style.display = "none";
 			this.expandButton.innerHTML = faUpArrow;
 		} 
 		else {
 			this.expandedContent.style.display = "none";
 			this.shrinkedContent.style.display = "block";
 			this.authorsExpandedContainer.style.display = "none";
-			this.authorEtalContainer.style.display = "inline";
+			this.authorEtAlContainer.style.display = "inline";
 			this.expandButton.innerHTML = faDownArrow;
 		}
 	}

@@ -19,14 +19,17 @@ const styleBtnPublication = "btn-publication";
 const styleBtnDoi = "btn-doi";
 const styleHeaderChips = "header-chips";
 const styleLeftColumn = "col-left";
+const styleBtnFeedback = "btn-feedback";
 
 const faBook = `<i class="fa fa-book"></i>`;
 const faLink = `<i class="fa fa-link"></i>`;
 const faCode = `<i class="fa fa-code"></i>`;
 const faNews = `<i class="fa fa-news"></i>`;
 const faFile = `<i class="fa fa-file"></i>`;
-const faDownArrow = `<i class="fa fa-angle-down"></i>`
-const faUpArrow = `<i class="fa fa-angle-up"></i>`
+const faDownArrow = `<i class="fa fa-angle-down"></i>`;
+const faUpArrow = `<i class="fa fa-angle-up"></i>`;
+
+const linkHssiVocab = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/issues";
 
 /**
  * represents a single software resource submitted to the HSSI database, 
@@ -221,6 +224,14 @@ export class ResourceItem{
 
 		this.buildLinkButtons();
 		this.buildModelChips();
+
+		// Feedback button
+		const feedbackBtn = document.createElement("a");
+		this.headerDiv.appendChild(feedbackBtn);
+		feedbackBtn.href = linkHssiVocab;
+		feedbackBtn.target = "blank";
+		feedbackBtn.title = "Provide feedback through github issues";
+		feedbackBtn.classList.add(styleBtnFeedback);
 
 		// Expand button:
 		this.expandButton = document.createElement("button");

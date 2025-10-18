@@ -82,10 +82,18 @@
 	line-height: 1;
 }
 
-.link-btn:hover{
+.link-btn:hover {
 	color: black;
 	border-color: black;
 	text-decoration: none;
+}
+
+.resource-header>.btn-feedback {
+	width: 35px;
+	height: 35px;
+	margin-left: 10px;
+	background-image: url("/static/images/feedback.png");
+	background-size: contain;
 }
 
 .link-btn i {

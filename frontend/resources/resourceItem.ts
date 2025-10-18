@@ -29,7 +29,9 @@ const faFile = `<i class="fa fa-file"></i>`;
 const faDownArrow = `<i class="fa fa-angle-down"></i>`;
 const faUpArrow = `<i class="fa fa-angle-up"></i>`;
 
-const linkHssiVocab = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/issues";
+const linkHssiVocab = (
+	"https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/issues/new"
+);
 
 /**
  * represents a single software resource submitted to the HSSI database, 

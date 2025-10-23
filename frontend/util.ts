@@ -1,12 +1,13 @@
 import { ConfirmDialogue, FormGenerator, PopupDialogue, TextInputDialogue } from "./loader";
 
+export const uuid4Regex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 export const softwareApiUrl = "/api/models/Software/rows/";
 export const modelApiUrl = "/api/view/"
 export const editApiUrl = "/sapi/software_edit_data/";
 export const requestEditUrl = "/request_edit/";
 export const csrfTokenName = "csrf-token";
 
-export type JSONValue = string | number | boolean | null | JSONObject | JSONArray;
+export type JSONValue = string | number | boolean | null | JSONObject | JSONArray | any;
 export interface JSONObject { [key: string]: JSONValue }
 export interface JSONArray<T = JSONValue> extends Array<T> { }
 
@@ -247,6 +248,14 @@ export async function requestEditSubmission(uid: string): Promise<void> {
 		PopupDialogue.hidePopup();
 		ConfirmDialogue.getConfirmation(String(e), "Error", "ok", null);
 	});
+}
+
+/**
+ * tests a given string to see if it matches the uuid v4 format
+ * @param uid the string to test if its a uuid
+ */
+export function isUuid4(uid: string): boolean {
+	return uuid4Regex.test(uid);
 }
 
 /** append an async child to a parent element when the child is resolved */

@@ -11,8 +11,8 @@ export const apiSlugRowsAll = "/rows/all/";
 export interface AsyncHssiModelData {
 	id: string;
 	model: ModelName;
-	data: HSSIModelData;
-	getData(): Promise<HSSIModelData>;
+	data: AsyncHssiModelData;
+	getData(): Promise<AsyncHssiModelData>;
 }
 
 export class AsyncHssiData implements AsyncHssiModelData {
@@ -21,7 +21,7 @@ export class AsyncHssiData implements AsyncHssiModelData {
 
 	public id: string = null;
 	public model: ModelName = null;
-	public data: HSSIModelData = null;
+	public data: AsyncHssiModelData = null;
 	
 	public constructor(model: ModelName, id: string){
 		this.model = model;
@@ -29,6 +29,9 @@ export class AsyncHssiData implements AsyncHssiModelData {
 	}
 
 	private async fetchData(): Promise<void>{
+		if(this.isFetchingData || this.data) return;
+
+		this.isFetchingData = true;
 		try{
 			const result = await fetchTimeout(apiModel + this.model + "/rows/" + this.id);
 			const data: JSONObject = await result.json();
@@ -37,9 +40,14 @@ export class AsyncHssiData implements AsyncHssiModelData {
 		} catch(e) {
 			console.error(`Error fetching '${this.model}' data with id '${this.id}'`, e);
 		}
+		this.isFetchingData = false;
 	}
 
-	public async getData(): Promise<HSSIModelData>{
+	/**
+	 * returns the hssi model object data if it is available, otherwise 
+	 * asynchronously fetches it, then returns it when it is done
+	 */
+	public async getData(): Promise<AsyncHssiModelData>{
 		if(this.data == null) await this.fetchData();
 		return this.data;
 	}

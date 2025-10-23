@@ -129,7 +129,7 @@ def email_edit_link(submission: SubmissionInfo, expire_time: timedelta = timedel
 		f"Hello {user.firstName}, \n\n" +
 		# f"We have received a request to email you a new edit link. "+
 		f"Due to some backend issues, we are resending an edit link for " + 
-		f"your submissiont to HSSI." +
+		f"your submissiont to HSSI. " +
 		f"You can use " +
 		f"the link below to edit your submission " + 
 		f"'{software.softwareName}': \n\n{link}\n\n" +

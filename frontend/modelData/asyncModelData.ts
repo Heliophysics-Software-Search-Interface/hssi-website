@@ -9,24 +9,26 @@ import {
 	type FunctionalityData,
 	fetchTimeout,
 	isUuid4,
+	type OrganizationData,
 } from "../loader";
 
 export const apiModel = "/api/models/";
 export const apiSlugRowsAll = "/rows/all/";
 
-export interface HssiDataAsync {
+export interface HssiDataAsync<T extends HSSIModelData> {
 	id: string;
 	data: HSSIModelData;
 	get model(): ModelName;
-	getData(): Promise<HssiDataAsync>;
+	getData(): Promise<T>;
 }
 
-export abstract class HssiModelDataAsync implements HSSIModelData, HssiDataAsync {
-	
-	private isFetchingData: boolean = false;
+export abstract class HssiModelDataAsync<T extends HSSIModelData> 
+	implements HSSIModelData, HssiDataAsync<T> 
+{
+	private dataFetchPromise: Promise<void> = null;
 
 	public id: string = null;
-	public data: HssiDataAsync = null;
+	public data: T = null;
 
 	public abstract get model(): ModelName;
 	
@@ -34,18 +36,22 @@ export abstract class HssiModelDataAsync implements HSSIModelData, HssiDataAsync
 		this.data = this.asyncifyData(data);
 	}
 
-	public static fromId(uid: string): HssiModelDataAsync{
-		const instance: HssiModelDataAsync = new (this as any)();
+	public static fromId<T2 extends HSSIModelData>(uid: string): HssiModelDataAsync<T2>{
+		const instance: HssiModelDataAsync<T2> = new (this as any)();
 		instance.id = uid;
 		return instance;
 	}
 
-	protected abstract asyncifyData(data: HSSIModelData): HssiModelDataAsync;
+	protected abstract asyncifyData(data: HSSIModelData): T;
 
 	private async fetchData(): Promise<void>{
-		if(this.isFetchingData || this.data) return;
+		if(this.data) return;
+		if(this.dataFetchPromise){
+			await this.dataFetchPromise;
+			return;
+		}
 
-		this.isFetchingData = true;
+		this.dataFetchPromise = true;
 		try{
 			const result = await fetchTimeout(apiModel + this.model + "/rows/" + this.id);
 			const data: JSONObject = await result.json();
@@ -54,31 +60,16 @@ export abstract class HssiModelDataAsync implements HSSIModelData, HssiDataAsync
 		} catch(e) {
 			console.error(`Error fetching '${this.model}' data with id '${this.id}'`, e);
 		}
-		this.isFetchingData = false;
+		this.dataFetchPromise = null;
 	}
 
 	/**
 	 * returns the hssi model object data if it is available, otherwise 
 	 * asynchronously fetches it, then returns it when it is done
 	 */
-	public async getData(): Promise<HSSIModelData>{
+	public async getData(): Promise<T>{
 		if(this.data == null) await this.fetchData();
 		return this.data;
-	}
-}
-
-class OrganizationDataAsync extends HssiModelDataAsync {
-
-	name: string;
-	/** ROR identifier url of the organization */
-	identifier?: string;
-	abbreviation: string;
-	website: string;
-	parent_organization: OrganizationDataAsync;
-
-	public get model(): ModelName { return "Organization" }
-	protected asyncifyData(data: HSSIModelData): HssiModelDataAsync {
-		
 	}
 }
 
@@ -87,13 +78,13 @@ interface PersonDataAsync extends HSSIModelData {
 	lastName: string,
 	/** ORCID of the person */
 	identifier?: string,
-	affiliations: Array<HssiDataAsync<OrganizationDataAsync>>,
+	affiliations: Array<HssiDataAsync<OrganizationData>>,
 }
 
 interface SoftwareDataAsync extends HSSIModelData {
 	programmingLanguage: Array<HssiDataAsync<ControlledListData>>,
 	publicationDate: string,
-	publisher: HssiDataAsync<OrganizationDataAsync>,
+	publisher: HssiDataAsync<OrganizationData>,
 	authors: Array<HssiDataAsync<PersonDataAsync>>,
 	relatedInstruments: Array<HssiDataAsync<ControlledListData>>,
 	relatedObservatories: Array<HssiDataAsync<ControlledListData>>,
@@ -118,7 +109,7 @@ interface SoftwareDataAsync extends HSSIModelData {
 	keywords: Array<KeywordData>,
 	relatedSoftware: Array<HssiDataAsync<ControlledListData>>,
 	interoperableSoftware: Array<HssiDataAsync<ControlledListData>>,
-	funder: HssiDataAsync<OrganizationDataAsync>,
+	funder: HssiDataAsync<OrganizationData>,
 	award: HssiDataAsync<HSSIModelData>,
 	codeRepositoryUrl: string,
 	logo: HssiDataAsync<HSSIModelData>,

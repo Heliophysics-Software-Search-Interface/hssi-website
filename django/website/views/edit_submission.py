@@ -3,6 +3,7 @@ import json, uuid, enum
 from django.core.mail import send_mail
 from django.http import *
 from django.shortcuts import render
+from datetime import timedelta
 
 from ..data_parser import handle_submission_data
 from ..util import *
@@ -114,21 +115,26 @@ def email_existing_edit_link(submission: SubmissionInfo) -> bool:
 	
 	return True
 
-def email_edit_link(submission: SubmissionInfo):
+def email_edit_link(submission: SubmissionInfo, expire_time: timedelta = timedelta(days=90)):
 	"""
 	creates a new edit queue item in the database and emails an edit link
 	based on it to the submitter's email
 	"""
 	software: Software = submission.software
 	user: Person = submission.submitter.person
-	queue_item = SoftwareEditQueue.create(software)
+	expiration: datetime.datetime = datetime.datetime.now() + expire_time
+	queue_item = SoftwareEditQueue.create(software, expiration)
 	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(queue_item.id)}"
 	message = (
 		f"Hello {user.firstName}, \n\n" +
-		f"We have received a request to email you a new edit link. You can use " +
-		f"the link below to edit your submission: \n\n{link}\n\n" +
-		f"Note that this link will expire in 5 hours " +
-		f"(UTC {str(queue_item.expiration)})."
+		# f"We have received a request to email you a new edit link. "+
+		f"Due to some backend issues, we are resending an edit link for " + 
+		f"your submissiont to HSSI." +
+		f"You can use " +
+		f"the link below to edit your submission " + 
+		f"'{software.softwareName}': \n\n{link}\n\n" +
+		f"Note that this link will expire on " +
+		f"UTC {queue_item.expiration.strftime("%Y-%m-%d %H:%M")}."
 	)
 
 	emails = submission.submitter.email_list()

@@ -294,9 +294,9 @@ class SubmissionInfoResource(resources.ModelResource):
 class SubmissionInfoAdmin(HSSIModelAdmin): 
 	resource_class = SubmissionInfoResource
 
-	@action(description="Email edit submission link")
+	@action(description="Email edit submission link (90 days)")
 	def email_edit_link(self, request: HttpRequest, query: QuerySet[SubmissionInfo]):
-		for info in query: v_email_edit_link(info)
+		for info in query: v_email_edit_link(info, datetime.timedelta(days=90))
 
 	actions = [
 		email_edit_link,

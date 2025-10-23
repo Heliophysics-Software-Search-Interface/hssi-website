@@ -1,7 +1,7 @@
 import {
 	type JSONArray,
 	type JSONObject
-} from "./loader";
+} from "../loader";
 
 export type ModelName = ( 
 	"HSSIModel" 

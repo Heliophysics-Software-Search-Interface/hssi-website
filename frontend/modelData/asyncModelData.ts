@@ -1,8 +1,9 @@
 import { 
 	type ModelName, 
 	type HSSIModelData,
-	fetchTimeout
-} from "./loader";
+	type JSONObject,
+	fetchTimeout,
+} from "../loader";
 
 export const apiModel = "/api/models/";
 export const apiSlugRowsAll = "/rows/all/";
@@ -28,8 +29,14 @@ export class AsyncHssiData implements AsyncHssiModelData {
 	}
 
 	private async fetchData(): Promise<void>{
-		// TODO
-		fetchTimeout(apiModel + this.model + "/rows/" + this.id);
+		try{
+			const result = await fetchTimeout(apiModel + this.model + "/rows/" + this.id);
+			const data: JSONObject = await result.json();
+			this.data = data as any;
+			data.id = this.id
+		} catch(e) {
+			console.error(`Error fetching '${this.model}' data with id '${this.id}'`, e);
+		}
 	}
 
 	public async getData(): Promise<HSSIModelData>{

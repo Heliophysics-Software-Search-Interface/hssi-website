@@ -51,7 +51,6 @@ export abstract class HssiModelDataAsync<T extends HSSIModelData>
 			return;
 		}
 
-		this.dataFetchPromise = true;
 		try{
 			const result = await fetchTimeout(apiModel + this.model + "/rows/" + this.id);
 			const data: JSONObject = await result.json();
@@ -60,6 +59,7 @@ export abstract class HssiModelDataAsync<T extends HSSIModelData>
 		} catch(e) {
 			console.error(`Error fetching '${this.model}' data with id '${this.id}'`, e);
 		}
+
 		this.dataFetchPromise = null;
 	}
 
@@ -68,7 +68,15 @@ export abstract class HssiModelDataAsync<T extends HSSIModelData>
 	 * asynchronously fetches it, then returns it when it is done
 	 */
 	public async getData(): Promise<T>{
-		if(this.data == null) await this.fetchData();
+		if(this.data == null) {
+			if(this.dataFetchPromise) {
+				await this.dataFetchPromise;
+			}
+			else{
+				this.dataFetchPromise = this.fetchData();
+				await this.dataFetchPromise;
+			}
+		}
 		return this.data;
 	}
 }

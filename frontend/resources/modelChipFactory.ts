@@ -14,7 +14,6 @@ import {
 const styleItemChip = "item-chip";
 const styleSubchip = "subchip";
 
-
 export interface ModelChipFactory {
 	/** 
 	 * create a small display element that can be used to represent a database 

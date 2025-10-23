@@ -102,7 +102,9 @@ def email_existing_edit_link(submission: SubmissionInfo) -> bool:
 		f"In the meantime, you can view or edit your submission with the " +
 		f"link below: \n\n{link}\n\n" +
 		f"Please do not share this link publicly, as anyone with this link " +
-		f"can edit the submission."
+		f"can edit the submission." +
+		f"Note that this link will expire on " +
+		f"UTC {item.expiration.strftime("%Y-%m-%d %H:%M")}."
 	)
 
 	print(f"Sending edit link for {item.id} to {emails}")
@@ -127,9 +129,9 @@ def email_edit_link(submission: SubmissionInfo, expire_time: timedelta = timedel
 	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(queue_item.id)}"
 	message = (
 		f"Hello {user.firstName}, \n\n" +
-		# f"We have received a request to email you a new edit link. "+
-		f"Due to some backend issues, we are resending an edit link for " + 
-		f"your submissiont to HSSI. " +
+		f"We have received a request to email you a new edit link. "+
+		# f"Due to some backend issues, we are resending an edit link for " + 
+		# f"your submissiont to HSSI. " +
 		f"You can use " +
 		f"the link below to edit your submission " + 
 		f"'{software.softwareName}': \n\n{link}\n\n" +

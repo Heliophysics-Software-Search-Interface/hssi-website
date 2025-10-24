@@ -111,7 +111,7 @@ export interface SoftwareData extends HSSIModelData {
 	keywords: JSONArray<KeywordData>,
 	relatedSoftware: JSONArray<ControlledListData>,
 	interoperableSoftware: JSONArray<ControlledListData>,
-	funder: OrganizationData,
+	funder: JSONArray<OrganizationData>,
 	award: HSSIModelData,
 	codeRepositoryUrl: string,
 	logo: JSONObject,

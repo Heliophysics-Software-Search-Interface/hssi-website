@@ -1,4 +1,5 @@
 id,url,description
+6e93dca4-fa4a-4743-908f-e48350f517e1,https://raw.githubusercontent.com/danielver02/ALPS/master/./ALPS_logo.png,logo for ALPS: The Arbitrary Linear Plasma Solver
 48a0499f-08ae-444e-91e1-39642cf5e101,https://www.fitsflow.org/ff_logo_3.png,logo for FitsFlow
 9a29c20d-6aae-491f-9962-bd790eb2ef12,https://github.com/JouleCai/geospacelab/blob/master/docs/images/logo_v1_landscape_accent_colors.png,logo for GeospaceLAB
 7382e64c-c2ff-4297-ae6b-db97c1fb3658,https://raw.githubusercontent.com/HERMES-SOC/hermes_core/main/docs/logo/hermes_logo.png,logo for HERMES Core
@@ -17,5 +18,6 @@ d6fabccf-0954-4fb8-95be-127888ff932d,https://lasp.colorado.edu/ctim/files/2023/0
 976201c1-b76e-49c7-b9e7-93829ffcbcb2,https://raw.githubusercontent.com/SciQLop/speasy/main/logo/logo_speasy_400dpi.png,logo for Speasy
 16b26844-a49a-435d-99e4-5a6d8899083e,https://raw.githubusercontent.com/swxsoc/swxsoc/fbbc26e70863f8acc4df53dee4876a40b5cca154/docs/logo/s,logo for SWxSOC
 8fe59124-c128-4d9d-8144-9e71fd4e448f,https://raw.githubusercontent.com/nasa/Kamodo/master/docs/notebooks/Files/Kamodo.png,logo for The CCMC Kamodo Analysis Suite
+28b7a07a-b324-41e9-b09b-7d28a176c488,https://raw.githubusercontent.com/ESA-VirES/VirES-Python-Client/refs/heads/master/docs/images/vre_lo,logo for viresclient
 c814d7b0-387a-40ff-82d1-56bf90d649bc,https://raw.githubusercontent.com/ESA-VirES/Swarm-VRE/staging/docs/_static/vre_logo.png,logo for viresclient
 b433308a-8b2d-4dd4-af94-3231eb305f5b,https://raw.githubusercontent.com/HinodeXRT/xrtpy/main/docs/_static/images/XRTpy_logo.png,logo for XRTpy: A Hinode X-Ray Telescope Python Package

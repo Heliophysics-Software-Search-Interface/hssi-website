@@ -108,6 +108,7 @@ export class ModelDataCache<T extends HSSIModelData>{
 
 		// fetch data through api and format to async if possible
 		try{
+			console.log(`Fetching data ${uid} from ${this.model}`);
 			const result = await fetchTimeout(apiModel + this.targetModel + "/rows/" + uid);
 			const data: JSONObject = await result.json();
 			
@@ -129,6 +130,10 @@ export class ModelDataCache<T extends HSSIModelData>{
 	}
 
 	public async fetchAllData(): Promise<void> {
+
+		if(this.promiseAll) return;
+		// TODO set this.promiseAll
+		console.log(`Fetching all data from ${this.model}`);
 
 		// fetch data for all rows
 		const result = await fetchTimeout(apiModel + this.targetModel + apiSlugRowsAll);

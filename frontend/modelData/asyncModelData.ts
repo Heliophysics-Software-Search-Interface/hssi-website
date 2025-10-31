@@ -11,6 +11,8 @@ import {
 	isUuid4,
 	type OrganizationData,
 	type SoftwareData,
+	type PersonData,
+	ModelDataCache,
 } from "../loader";
 
 export const apiModel = "/api/models/";
@@ -18,8 +20,8 @@ export const apiSlugRowsAll = "/rows/all/";
 
 export interface HssiDataAsync<T extends HSSIModelData> {
 	get id(): string;
-	get data(): HSSIModelData;
 	get model(): ModelName;
+	get hasData(): boolean;
 	getData(): Promise<T>;
 }
 
@@ -41,11 +43,18 @@ export class HssiModelDataAsync<T extends HSSIModelData>
 	 * NOTE - the data type is ultimately determined by the {@link model},
 	 * it is generic here to make it more convenient for manual typing
 	 */
-	public get data(): T { return this.modelData; }
+	protected get data(): T { return this.modelData; }
+
+	public get hasData(): boolean { return !!this.data; }
 	
 	public constructor(model: ModelName, id: string){
 		this.model = model;
 		this.objId = id;
+	}
+
+	public setData(data: JSONObject) {
+		// TODO set modelData to each key in data
+		console.error("Not Implemented!");
 	}
 
 	private async fetchData(): Promise<void>{
@@ -60,6 +69,7 @@ export class HssiModelDataAsync<T extends HSSIModelData>
 			const data: JSONObject = await result.json();
 			switch(this.model){
 				case "Software": this.modelData = createAsyncSoftwareData(data as any) as any; break;
+				case "Person": this.modelData = createAsyncPersonData(data as any) as any; break;
 				default: this.modelData = data as any; break;
 			}
 			data.id = this.id
@@ -134,13 +144,21 @@ export interface SoftwareDataAsync extends HSSIModelData {
 
 // -----------------------------------------------------------------------------
 
-function asyncifyJsonObject<T extends HSSIModelData>(
+function asyncifyUid<T extends HSSIModelData>(
 	obj: JSONObject | string,
 	targetModel: ModelName,
 ): HssiDataAsync<T> {
 	let id = obj;
 	if((obj as any).id) id = (obj as any).id;
 	const r = new HssiModelDataAsync<T>(targetModel, id as string);
+
+	// if it has more than "id" key, use the data in the object
+	if(obj instanceof Object) for(const key in obj){
+		if(key == "id") continue;
+		if(!r.hasData) r.setData(obj);
+		break;
+	}
+
 	return r;
 }
 
@@ -152,7 +170,7 @@ function asyncifyJsonArray<T extends HSSIModelData>(
 	for(const obj of arr) {
 		let asyncObj = obj;
 		if(!(obj instanceof HssiModelDataAsync)) {
-			asyncObj = asyncifyJsonObject(asyncObj, targetModel);
+			asyncObj = asyncifyUid(asyncObj, targetModel);
 		}
 		r.push(asyncObj as any);
 	}
@@ -164,7 +182,7 @@ function asyncify<T extends HSSIModelData>(
 	targetModel: ModelName
 ): Array<HssiDataAsync<T>> | HssiDataAsync<T> {
 	if(obj instanceof Array) return asyncifyJsonArray<T>(obj, targetModel);
-	else return asyncifyJsonObject<T>(obj, targetModel);
+	else return asyncifyUid<T>(obj, targetModel);
 }
 
 export function createAsyncSoftwareData(data: SoftwareData): SoftwareDataAsync{
@@ -204,4 +222,14 @@ export function createAsyncSoftwareData(data: SoftwareData): SoftwareDataAsync{
 		relatedPhenomena: asyncify(data.relatedPhenomena, "Phenomena") as any,
 		submissionInfo: asyncify(data.submissionInfo, "SubmissionInfo") as any,
 	};
+}
+
+export function createAsyncPersonData(data: PersonData): PersonDataAsync{
+	return {
+		id: data.id,
+		firstName: data.firstName,
+		lastName: data.lastName,
+		identifier: data.identifier,
+		affiliations: asyncify(data.affiliations, "Organization") as any,
+	}
 }

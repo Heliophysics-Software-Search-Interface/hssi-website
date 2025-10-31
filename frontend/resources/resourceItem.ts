@@ -242,14 +242,6 @@ export class ResourceItem{
 		this.buildLinkButtons();
 		this.buildModelChips();
 
-		// Feedback button
-		const feedbackBtn = document.createElement("a");
-		this.headerDiv.appendChild(feedbackBtn);
-		feedbackBtn.href = linkHssiVocab;
-		feedbackBtn.target = "blank";
-		feedbackBtn.title = "Provide feedback through github issues";
-		feedbackBtn.classList.add(styleBtnFeedback);
-
 		// Expand button:
 		this.expandButton = document.createElement("button");
 		this.expandButton.classList.add(styleExpandButton);

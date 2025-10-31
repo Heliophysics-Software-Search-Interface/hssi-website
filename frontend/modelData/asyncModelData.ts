@@ -30,7 +30,6 @@ export class HssiModelDataAsync<T extends HSSIModelData>
 {
 	private objId: string = null;
 	private modelData: T = null;
-	private dataFetchPromise: Promise<void> = null;
 
 	/** the model (databse table) that the data will be fetched from */
 	public model: ModelName = null;

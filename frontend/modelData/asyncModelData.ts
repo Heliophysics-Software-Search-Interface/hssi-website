@@ -70,7 +70,7 @@ export interface PersonDataAsync extends HSSIModelData {
 	lastName: string,
 	/** ORCID of the person */
 	identifier?: string,
-	affiliations: Array<HssiDataAsync<OrganizationData>>,
+	affiliation: Array<HssiDataAsync<OrganizationData>>,
 }
 
 export interface SoftwareDataAsync extends HSSIModelData {
@@ -116,7 +116,7 @@ function asyncifyUid<T extends HSSIModelData>(
 	targetModel: ModelName,
 ): HssiDataAsync<T> {
 	let id = obj;
-	if((obj as any).id) id = (obj as any).id;
+	if((obj as any)?.id) id = (obj as any).id;
 	const r = new HssiModelDataAsync<T>(targetModel, id as string);
 
 	// if it has more than "id" key, use the data in the object
@@ -148,6 +148,7 @@ function asyncify<T extends HSSIModelData>(
 	obj: JSONArray | JSONObject | string, 
 	targetModel: ModelName
 ): Array<HssiDataAsync<T>> | HssiDataAsync<T> {
+	if(obj == null) return null;
 	if(obj instanceof Array) return asyncifyJsonArray<T>(obj, targetModel);
 	else return asyncifyUid<T>(obj, targetModel);
 }
@@ -197,6 +198,6 @@ export function createAsyncPersonData(data: PersonData): PersonDataAsync{
 		firstName: data.firstName,
 		lastName: data.lastName,
 		identifier: data.identifier,
-		affiliations: asyncify(data.affiliations, "Organization") as any,
+		affiliation: asyncify(data.affiliation, "Organization") as any,
 	}
 }

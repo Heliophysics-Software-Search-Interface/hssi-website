@@ -113,6 +113,7 @@ export class ModelDataCache<T extends HSSIModelData>{
 			
 			let modelObj: T = data as any;
 			switch(this.model){
+				case "VisibleSoftware":
 				case "Software": modelObj = createAsyncSoftwareData(data as any) as any; break;
 				case "Person": modelObj = createAsyncPersonData(data as any) as any; break;
 			}
@@ -137,6 +138,7 @@ export class ModelDataCache<T extends HSSIModelData>{
 		// convert objects to async where possible
 		let datas: Array<T> = [];
 		switch(this.model){
+			case "VisibleSoftware":
 			case "Software":
 				for(const data of array){
 					datas.push(createAsyncSoftwareData(data as any) as any);

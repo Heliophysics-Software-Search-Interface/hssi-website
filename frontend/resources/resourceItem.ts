@@ -236,7 +236,6 @@ export class ResourceItem{
 			logoImage.alt = this.data.logo.description as any;
 			conciseDescDiv.prepend(logoImage);
 			descriptionDiv.prepend(logoImage.cloneNode());
-			console.log("IMAGE", logoImage);
 		}
 
 		this.buildLinkButtons();

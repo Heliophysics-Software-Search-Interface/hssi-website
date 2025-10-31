@@ -57,44 +57,12 @@ export class HssiModelDataAsync<T extends HSSIModelData>
 		console.error("Not Implemented!");
 	}
 
-	private async fetchData(): Promise<void>{
-		if(this.modelData) return;
-		if(this.dataFetchPromise){
-			await this.dataFetchPromise;
-			return;
-		}
-
-		try{
-			const result = await fetchTimeout(apiModel + this.model + "/rows/" + this.id);
-			const data: JSONObject = await result.json();
-			switch(this.model){
-				case "Software": this.modelData = createAsyncSoftwareData(data as any) as any; break;
-				case "Person": this.modelData = createAsyncPersonData(data as any) as any; break;
-				default: this.modelData = data as any; break;
-			}
-			data.id = this.id
-		} catch(e) {
-			console.error(`Error fetching '${this.model}' data with id '${this.id}'`, e);
-		}
-
-		this.dataFetchPromise = null;
-	}
-
 	/**
 	 * returns the hssi model object data if it is available, otherwise 
 	 * asynchronously fetches it, then returns it when it is done
 	 */
 	public async getData(): Promise<T>{
-		if(this.modelData == null) {
-			if(this.dataFetchPromise) {
-				await this.dataFetchPromise;
-			}
-			else{
-				this.dataFetchPromise = this.fetchData();
-				await this.dataFetchPromise;
-			}
-		}
-		return this.modelData;
+		return ModelDataCache.getModelData(this.model, this.id) as any;
 	}
 }
 

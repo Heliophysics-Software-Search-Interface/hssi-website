@@ -12,6 +12,7 @@ export * from "./modelData/modelStructure";
 export * from "./modelData/asyncModelData";
 export * from "./modelData/modelData";
 export * from "./modelData/modelChipFactory";
+export * from "./modelData/modelDataCache";
 
 export * from "./filters/filterGroup";
 export * from "./filters/filterMenuItem";

@@ -131,7 +131,10 @@ export class ModelDataCache<T extends HSSIModelData>{
 
 	public async fetchAllData(): Promise<void> {
 
-		if(this.promiseAll) return;
+		if(this.promiseAll) {
+			await this.promiseAll;
+			return;
+		}
 		// TODO set this.promiseAll
 		console.log(`Fetching all data from ${this.model}`);
 

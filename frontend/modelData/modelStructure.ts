@@ -34,10 +34,6 @@ export type ModelName = (
 	| "Curator"
 );
 
-export interface ArrayData extends JSONObject {
-	data: JSONArray,
-}
-
 export interface HSSIModelData extends JSONObject {
 	/** string represinting a unique UUID for the object */
 	id: string,

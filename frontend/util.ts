@@ -10,6 +10,9 @@ export const csrfTokenName = "csrf-token";
 export type JSONValue = string | number | boolean | null | JSONObject | JSONArray | any;
 export interface JSONObject { [key: string]: JSONValue }
 export interface JSONArray<T = JSONValue> extends Array<T> { }
+export interface JSONArrayData extends JSONObject {
+	data: JSONArray,
+}
 
 /** like 'keyof' but recursively includes keys of nested types */
 export type NestedKeys<T, Prefix extends string = ""> = {

@@ -90,8 +90,18 @@ export class ModelDataCache<T extends HSSIModelData>{
 	private dataMap: Map<string, T> = new Map();
 	private promiseMap: Map<string, Promise<void>> = new Map();
 	private promiseAll: Promise<void> = null;
+	private allDataFetched: boolean = false;
 
 	public get model(): ModelName { return this.targetModel; }
+
+	private storeModelObjectData(obj: T): void {
+		switch(this.model){
+			case "VisibleSoftware":
+			case "Software": obj = createAsyncSoftwareData(obj as any) as any; break;
+			case "Person": obj = createAsyncPersonData(obj as any) as any; break;
+		}
+		this.dataMap.set(obj.id, obj);
+	}
 
 	private async fetchData(uid: string): Promise<void> {
 
@@ -111,15 +121,7 @@ export class ModelDataCache<T extends HSSIModelData>{
 			console.log(`Fetching data ${uid} from ${this.model}`);
 			const result = await fetchTimeout(apiModel + this.targetModel + "/rows/" + uid);
 			const data: JSONObject = await result.json();
-			
-			let modelObj: T = data as any;
-			switch(this.model){
-				case "VisibleSoftware":
-				case "Software": modelObj = createAsyncSoftwareData(data as any) as any; break;
-				case "Person": modelObj = createAsyncPersonData(data as any) as any; break;
-			}
-
-			this.dataMap.set(uid, modelObj);
+			this.storeModelObjectData(data as any);
 		}
 		catch(e){
 			console.error(`Error fetching '${this.model}' data with id '${uid}'`, e);
@@ -129,41 +131,37 @@ export class ModelDataCache<T extends HSSIModelData>{
 		this.promiseMap.delete(uid);
 	}
 
+	private async fetchAllModelData(): Promise<void> {
+
+		// prevent multiple and/or simultaneous fetch alls
+		if(this.promiseAll) await this.promiseAll;
+		if(this.allDataFetched) return;
+
+		// fetch the data and parse it int
+		const result = await fetchTimeout(apiModel + this.targetModel + apiSlugRowsAll);
+		const data: JSONArrayData = await result.json();
+		for(const obj of data.data) this.storeModelObjectData(obj as any);
+
+		// reset the promise
+		this.allDataFetched = true;
+		this.promiseAll = null;
+	}
+
+	/**
+	 * Preemptively fetches data for all model objects that are available for 
+	 * the model that this model cache targets
+	 */
 	public async fetchAllData(): Promise<void> {
 
 		if(this.promiseAll) {
 			await this.promiseAll;
 			return;
 		}
-		// TODO set this.promiseAll
-		console.log(`Fetching all data from ${this.model}`);
-
-		// fetch data for all rows
-		const result = await fetchTimeout(apiModel + this.targetModel + apiSlugRowsAll);
-		const json: JSONArrayData = await result.json()
-		const array: JSONArray<HSSIModelData> = json.data;
 		
-		// convert objects to async where possible
-		let datas: Array<T> = [];
-		switch(this.model){
-			case "VisibleSoftware":
-			case "Software":
-				for(const data of array){
-					datas.push(createAsyncSoftwareData(data as any) as any);
-				}
-				break;
-			case "Person": 
-				for(const data of array){
-					datas.push(createAsyncPersonData(data as any) as any);
-				}
-				break;
-			default: datas = array as any; break;
-		}
-
-		// register all objects in map
-		for(const obj of datas) this.dataMap.set(obj.id, obj);
-
-		this.promiseAll = null;
+		// fetch all data and set promise flag
+		console.log(`Fetching all data from ${this.model}`);
+		this.promiseAll = this.fetchAllModelData();
+		await this.promiseAll;
 	}
 
 	public async getData(uid: string): Promise<T> {

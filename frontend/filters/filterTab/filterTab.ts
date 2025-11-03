@@ -7,6 +7,7 @@ import {
 	type JSONValue,
 	type ModelName,
 	ModelData,
+	ModelDataCache,
 } from "../../loader";
 
 /**
@@ -188,7 +189,7 @@ export class FilterTab {
 	}
 
 	protected async fetchModelData(): Promise<void> {
-		this.modelData = await ModelData.getModelData(this.targetModel);
+		this.modelData = [... await ModelDataCache.getModelDataAll(this.targetModel)];
 	}
 }
 

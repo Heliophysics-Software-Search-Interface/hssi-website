@@ -49,7 +49,6 @@ export class ResourceView {
 
 		// display no results if no results found, or hide it if there is results
 		const noResultsElem = this.noResultsElement;
-		console.log(noResultsElem)
 		if(noResultsElem){
 			if(this.items.length <= 0) this.noResultsElement.style.display = "block";
 			else this.noResultsElement.style.display = "none";

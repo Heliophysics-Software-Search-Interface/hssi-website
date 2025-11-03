@@ -87,7 +87,5 @@ export class ProgrammingLanguageFilterTab extends ControlledListFilterTab {
 			this.rootItems.splice(this.rootItems.indexOf(foItem), 1);
 			fortranRootItem.subItems.push(foItem);
 		}
-
-		console.log(this.rootItems)
 	}
 }

@@ -5,9 +5,9 @@ import {
 	getStringSimilarity,
 	type JSONObject,
 	fetchTimeout,
-	type JSONValue,
 	FormGenerator,
-	ModelMultiSubfield
+	ModelMultiSubfield,
+	type ModelName
 } from "../../loader";
 
 const optionDataValue = "json-options";
@@ -26,7 +26,7 @@ const modelRowSlug = "/rows/";
 type ChoicesJsonStructure = { data: [string, string, string[], string?][] }
 
 interface ModelBoxProperties extends BaseProperties {
-	targetModel?: string,
+	targetModel?: ModelName,
 	modelFilter?: string,
 	dropdownButton?: string,
 	allowNewEntries?: string,
@@ -278,7 +278,7 @@ export class ModelBox extends Widget {
 	}
 
 	/* builds the option element list from the given options */
-	public buildOptions(options: Option[]): void {
+	private buildOptions(options: Option[]): void {
 
 		// enforce case insensitivity for keyword filtering
 		this.options = options;
@@ -346,7 +346,7 @@ export class ModelBox extends Widget {
 	 * gets the choice data from the specified model and builds it's own 
 	 * options list based off that
 	 */
-	public async buildOptionsFromModel(modelName: string): Promise<void> {
+	private async buildOptionsFromModel(modelName: ModelName): Promise<void> {
 		let optionData: Option[] = ModelBox.optionMap.get(modelName);
 		if(!optionData){
 			const data: ChoicesJsonStructure = await (

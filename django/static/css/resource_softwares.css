@@ -6,11 +6,12 @@
 	margin-bottom: 15px;
 }
 
-.resource-item .author {
+.resource-item .author, 
+.resource-item .author a {
 	color: rgb(77, 77, 77);
 }
 
-.resource-item a .author:hover {
+.resource-item .author a:hover {
 	text-decoration: underline;
 }
 

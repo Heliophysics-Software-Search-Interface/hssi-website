@@ -39,6 +39,11 @@ export interface HSSIModelData extends JSONObject {
 	id: string,
 }
 
+export interface HSSIImageData extends HSSIModelData {
+	url: string,
+	description: string,
+}
+
 export interface ControlledListData extends HSSIModelData {
 	/** string representing a human-readable display name */
 	name: string,

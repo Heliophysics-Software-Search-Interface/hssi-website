@@ -1,7 +1,8 @@
 import { 
-	apiModel, apiSlugRowsAll, fetchTimeout, modelApiUrl, ModelData, ResourceItem, 
+	apiModel, apiSlugRowsAll, fetchTimeout, modelApiUrl, ModelData, ModelDataCache, ResourceItem, 
 	Spinner, 
 	type JSONArray, type JSONObject, type SoftwareData,
+	type SoftwareDataAsync,
 } from "../loader";
 
 const styleNoResults = "no-results";
@@ -14,7 +15,7 @@ const softwarModelName = "VisibleSoftware";
  */
 export class ResourceView {
 
-	private itemData: JSONArray<JSONObject> = [];
+	private itemData: SoftwareDataAsync[] = [];
 	private items: ResourceItem[] = [];
 	
 	/** element to display when no results */
@@ -37,9 +38,11 @@ export class ResourceView {
 		for(const oldItem of this.items) oldItem.destroy();
 		this.items.length = 0;
 
+		// TODO implement search querying
+
 		// create new items from data
 		for(const data of this.itemData) {
-			const item = ResourceItem.createFromData(data as SoftwareData);
+			const item = ResourceItem.createFromData(data);
 			this.containerElement.appendChild(item.containerElement);
 			this.items.push(item);
 		}
@@ -53,24 +56,16 @@ export class ResourceView {
 		}
 	}
 
-	/** fetches resources from the server and store their data */
-	private async fetchResourceItems(): Promise<void> {
-		// TODO implement querying
-
-		// fetch all software objects from the database
-		this.itemData = await ModelData.getModelData(softwarModelName);
-	}
-
 	/** 
 	 * fetch item data from the server and build items from the 
 	 * data received 
 	 */
 	public async fetchAndBuild(): Promise<void> {
-		// TODO implement querying
+		// TODO implement filtering
 
 		Spinner.showSpinner("Fetching Software Data...", this.containerElement);
 
-		await this.fetchResourceItems();
+		this.itemData = [...await ModelDataCache.getModelDataAll("VisibleSoftware")];
 		this.refreshItems();
 
 		Spinner.hideSpinner(this.containerElement);

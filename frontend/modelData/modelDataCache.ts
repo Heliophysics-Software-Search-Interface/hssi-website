@@ -73,6 +73,14 @@ export class ModelDataCache<T extends HSSIModelData>{
 		return this.caches[model] as ModelDataCache<AsyncModelTypeMap[M]>;
 	}
 
+	public static async getModelDataAll<M extends ModelName>(
+		model: M
+	): Promise<Iterable<AsyncModelTypeMap[M]>> {
+		const cache = this.getCache(model);
+		if(!cache.allDataFetched) await cache.fetchAllData();
+		return cache.dataMap.values();
+	}
+
 	public static async getModelData<M extends ModelName>(
 		model: M, uid: string
 	): Promise<AsyncModelTypeMap[M]> {

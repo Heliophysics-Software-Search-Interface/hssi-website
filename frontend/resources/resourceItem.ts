@@ -3,6 +3,7 @@ import {
 	ModelData,
 	type PersonData,
 	type SoftwareData,
+	type SoftwareDataAsync,
 } from "../loader";
 
 const styleResourceItem = "resource-item";
@@ -40,7 +41,7 @@ const linkHssiVocab = (
  */
 export class ResourceItem{
 
-	private data: SoftwareData = null;
+	private data: SoftwareDataAsync = null;
 	private bodyLeftContent: HTMLDivElement = null;
 	private shrinkedContent: HTMLDivElement = null;
 	private expandedContent: HTMLDivElement = null;
@@ -286,7 +287,7 @@ export class ResourceItem{
 	 * pulled from the database Software table
 	 * @param data the json data to base the item off of
 	 */
-	public static createFromData(data: SoftwareData): ResourceItem {
+	public static createFromData(data: SoftwareDataAsync): ResourceItem {
 		const r = new ResourceItem();
 		r.data = data;
 		r.build();

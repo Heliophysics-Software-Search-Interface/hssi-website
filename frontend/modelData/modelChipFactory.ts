@@ -1,14 +1,11 @@
 import { 
-	fetchTimeout, 
-	apiModel,
-	apiSlugRowsAll,
 	colorSrcGreen,
-	type JSONArray,
 	type ControlledListData, 
 	type GraphListData, 
 	type HSSIModelData,
 	type FunctionalityData,
-	type ModelDataAccess, 
+	type ModelName,
+	ModelDataCache,
 } from "../loader";
 
 const styleItemChip = "item-chip";
@@ -22,97 +19,49 @@ export interface ModelChipFactory {
 	createChip(uid: string): Promise<HTMLSpanElement>;
 }
 
-export class BaseChipFactory implements ModelChipFactory, ModelDataAccess {
+export class BaseChipFactory<T extends HSSIModelData> implements ModelChipFactory {
 
-	private dataPromise: Promise<Response> = null;
-	private jsonPromise: Promise<any> = null;
-	protected fetchUrlSuffix: string = "";
-	protected modelName: string = "";
-	protected modelData: JSONArray<HSSIModelData> = null;
-	protected modelMap: Map<string, HSSIModelData> = null;
+	protected modelName: ModelName = null;
 
-	public constructor(model: string, urlSuffix: string = ""){
-		this.fetchUrlSuffix = urlSuffix;
+	public constructor(model: ModelName){
 		this.modelName = model;
-		this.fetchModelData();
-	}
-
-	private async fetchModelData(): Promise<void> {
-		if(this.modelData) return;
-		if(this.jsonPromise || this.dataPromise) {
-			await this.dataPromise;
-			await this.jsonPromise;
-			return;
-		}
-			
-		try{
-			const url = apiModel + this.modelName + apiSlugRowsAll + this.fetchUrlSuffix;
-			this.dataPromise = fetchTimeout(url);
-			this.jsonPromise = (await this.dataPromise).json();
-			this.modelData = (await this.jsonPromise).data;
-			this.processData();
-		}
-		catch(e) {
-			console.error(e);
-		}
-
-		this.dataPromise = null;
-		this.jsonPromise = null;
-	}
-
-	private async buildMap(): Promise<void> {
-		if(!this.modelData) await this.fetchModelData();
-		this.modelMap = new Map();
-		for(const data of this.modelData){
-			this.modelMap.set(data.id, data);
-		}
 	}
 
 	protected processData(): void { }
 
-	protected async createChipFromData(_data: HSSIModelData): Promise<HTMLSpanElement> {
+	protected createChipFromData(_data: T): HTMLSpanElement {
 		const chip = document.createElement("span");
 		chip.classList.add(styleItemChip);
 		chip.innerText = "ITEM";
 		return chip;
 	}
 
-	public async getModelData(): Promise<JSONArray<HSSIModelData>> {
-		if(!this.modelData) await this.fetchModelData();
-		return this.modelData;
-	}
-
-	public async getModelObject(uid: string): Promise<HSSIModelData> {
-		if(!this.modelMap) await this.buildMap();
-		return this.modelMap.get(uid);
-	}
-
 	public async createChip(uid: string): Promise<HTMLSpanElement> {
 		if(!uid) debugger;
-		const data = await this.getModelObject(uid);
-		return await this.createChipFromData(data);
+		const data = await ModelDataCache.getModelData(this.modelName, uid);
+		return this.createChipFromData(data as any);
 	}
 }
 
-export class ControlledListChipFactory extends BaseChipFactory {
-	protected override async createChipFromData(data: HSSIModelData): Promise<HTMLSpanElement> {
-		const listData = data as ControlledListData;
-		const chip = await super.createChipFromData(listData);
+export class ControlledListChipFactory<T extends ControlledListData> extends BaseChipFactory<T> {
+	protected override createChipFromData(data: T): HTMLSpanElement {
+		const listData = data as T;
+		const chip = super.createChipFromData(listData);
 		chip.innerText = listData.name.substring(0,4);
 		chip.title = listData.name;
 		return chip;
 	}
 }
 
-export class UniformListChipFactory extends ControlledListChipFactory {
+export class UniformListChipFactory extends ControlledListChipFactory<ControlledListData> {
 
 	public bgColor: string = "#FFF";
 	public borderColor: string = "#000";
 	public textColor: string = "#000";
 
-	protected override async createChipFromData(data: HSSIModelData): Promise<HTMLSpanElement> {
+	protected override createChipFromData(data: HSSIModelData): HTMLSpanElement {
 		const listData = data as ControlledListData;
-		const chip = await super.createChipFromData(listData);
+		const chip = super.createChipFromData(listData);
 		chip.style.backgroundColor = this.bgColor;
 		chip.style.borderColor = this.borderColor;
 		chip.style.borderStyle = "solid";
@@ -123,10 +72,10 @@ export class UniformListChipFactory extends ControlledListChipFactory {
 	}
 }
 
-export class GraphListChipFactory extends ControlledListChipFactory {
-	protected override async createChipFromData(data: HSSIModelData): Promise<HTMLSpanElement> {
-		const graphData = data as GraphListData;
-		const chip = await super.createChipFromData(graphData);
+export class GraphListChipFactory<T extends GraphListData> extends ControlledListChipFactory<T> {
+	protected override createChipFromData(data: GraphListData): HTMLSpanElement {
+		const graphData = data as T;
+		const chip = super.createChipFromData(graphData);
 		if(graphData.parents?.length > 0) {
 			chip.classList.add(styleSubchip);
 		}
@@ -140,39 +89,41 @@ export class ProgLangChipFactory extends UniformListChipFactory {
 	public borderColor: string = colorSrcGreen;
 	public textColor: string = colorSrcGreen;
 
-	protected override processData(): void {
-		for(const entry of this.modelData){
-			
-			const category = entry as FunctionalityData;
-			switch(category.name.toLowerCase()) {
-				case "javascript": category.abbreviation = "JaSc"; break;
-				case "typescript": category.abbreviation = "TySc"; break;
-				case "fortran77": category.abbreviation = "Fo77"; break;
-				case "fortran90": category.abbreviation = "Fo90"; break;
-				default:
-					let splname = category.name.replaceAll(".", "").split(" ");
-					switch(splname.length){
-						case 2: 
-						category.abbreviation = (
-							splname[0].substring(0, 2) + 
-							splname[1].substring(splname[1].length - 2, splname[1].length)
-						);
-						break;
-						default:
-							category.abbreviation = category.name.substring(0, 4);
-							break;
-					}
+	protected override createChipFromData(data: ControlledListData): HTMLSpanElement {
+		const chip = super.createChipFromData(data);
+
+		let label = "";
+		switch(data.name.toLowerCase()) {
+			case "javascript": label = "JaSc"; break;
+			case "typescript": label = "TySc"; break;
+			case "fortran77": label = "Fo77"; break;
+			case "fortran90": label = "Fo90"; break;
+			default:
+				let splname = data.name.replaceAll(".", "").split(" ");
+				switch(splname.length){
+					case 2:
+					label = (
+						splname[0].substring(0, 2) + 
+						splname[1].substring(splname[1].length - 2, splname[1].length)
+					);
 					break;
-			}
+					default:
+						label = data.name.substring(0, 4);
+						break;
+				}
+				break;
 		}
+
+		chip.innerText = label;
+		return chip;
 	}
 }
 
-export class FunctionCategoryChipFactory extends GraphListChipFactory {
+export class FunctionCategoryChipFactory extends GraphListChipFactory<FunctionalityData> {
 
-	protected override async createChipFromData(data: HSSIModelData): Promise<HTMLSpanElement> {
+	protected override createChipFromData(data: FunctionalityData): HTMLSpanElement {
 		const funcData = data as FunctionalityData;
-		const chip = await super.createChipFromData(data);
+		const chip = super.createChipFromData(data);
 		chip.style.backgroundColor = funcData.backgroundColor;
 		chip.style.borderColor = funcData.backgroundColor;
 		chip.style.color = funcData.textColor;

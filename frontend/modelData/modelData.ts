@@ -17,16 +17,16 @@ export interface ModelDataAccess {
 }
 
 export class ModelData {
-	private static factoryMap: Map<string, ModelChipFactory & ModelDataAccess> = new Map();
+	private static factoryMap: Map<string, ModelChipFactory> = new Map();
 	
-	private static buildFactory(model: ModelName): ModelChipFactory & ModelDataAccess{
-		let factory: BaseChipFactory = null;
+	private static buildFactory(model: ModelName): ModelChipFactory {
+		let factory: BaseChipFactory<HSSIModelData> = null;
 
 		switch(model){
 			case "VisibleSoftware":
 			case "SoftwareEditQueue":
 			case "Software":
-				factory = new BaseChipFactory(model, "?recursive=true"); break;
+				factory = new BaseChipFactory(model); break;
 			case "FunctionCategory":
 				factory = new FunctionCategoryChipFactory(model);
 				break;
@@ -45,17 +45,5 @@ export class ModelData {
 		let factory = this.factoryMap.get(model);
 		if(!factory) factory = this.buildFactory(model);
 		return await factory.createChip(uid);
-	}
-
-	public static async getModelData(model: ModelName): Promise<JSONArray<HSSIModelData>> {
-		let factory = this.factoryMap.get(model);
-		if(!factory) factory = this.buildFactory(model);
-		return await factory.getModelData();
-	}
-
-	public static async getModelObject(model: ModelName, uid: string){
-		let factory = this.factoryMap.get(model);
-		if(!factory) factory = this.buildFactory(model);
-		return await factory.getModelObject(uid);
 	}
 }

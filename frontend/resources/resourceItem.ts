@@ -1,8 +1,11 @@
 import { 
 	appendPromisedElement,
 	ModelData,
+	type HssiDataAsync,
 	type PersonData,
+	type PersonDataAsync,
 	type SoftwareData,
+	type SoftwareDataAsync,
 } from "../loader";
 
 const styleResourceItem = "resource-item";
@@ -40,7 +43,7 @@ const linkHssiVocab = (
  */
 export class ResourceItem{
 
-	private data: SoftwareData = null;
+	private data: SoftwareDataAsync = null;
 	private bodyLeftContent: HTMLDivElement = null;
 	private shrinkedContent: HTMLDivElement = null;
 	private expandedContent: HTMLDivElement = null;
@@ -86,7 +89,9 @@ export class ResourceItem{
 			refpubButton.classList.add(styleLinkBtn);
 			refpubButton.classList.add(styleBtnPublication);
 			refpubButton.innerHTML = faFile + " Publication";
-			refpubButton.href = this.data.referencePublication.identifier;
+			(async () => {
+				refpubButton.href = (await this.data.referencePublication.getData()).identifier;
+			})();
 			bottomButtonContainer.appendChild(refpubButton);
 		}
 
@@ -110,18 +115,21 @@ export class ResourceItem{
 
 		// add each unique top-level category to the container
 		const categoriesAdded = new Set<string>();
-		for(const category of this.data.softwareFunctionality) {
-			
-			// get id or parent id if its a child, mark id as added
-			const targetId = category.parents?.at(0) ?? category.id;
-			if(categoriesAdded.has(targetId)) continue;
-			categoriesAdded.add(targetId);
+		for(const categoryAsync of this.data.softwareFunctionality) {
+			(async()=>{
+				const category = await categoryAsync.getData();
+				// get id or parent id if its a child, mark id as added
+				const targetId = category.parents?.at(0) ?? categoryAsync.id;
+				if(categoriesAdded.has(targetId)) return;
+				categoriesAdded.add(targetId);
+				
+				// create visual ui element and add to resource
+				appendPromisedElement(
+					categoryChips, 
+					ModelData.createChip("FunctionCategory",targetId)
+				);
 
-			// create visual ui element and add to resource
-			appendPromisedElement(
-				categoryChips, 
-				ModelData.createChip("FunctionCategory",targetId)
-			);
+			})();
 		}
 		
 		const proglangChips = document.createElement("div")
@@ -136,23 +144,40 @@ export class ResourceItem{
 		}
 	}
 
+	private counter: number = 0;
+
 	private buildAuthors(headInfoDiv: HTMLDivElement): void{
 
 		const authors = document.createElement("span");
 		headInfoDiv.appendChild(authors)
 
-		function createAuthor(authorData: PersonData): HTMLSpanElement | HTMLAnchorElement{
-			const authSpan = document.createElement("span");
+		const ths = this;
+		function createAuthor(
+			authorDataAsync: HssiDataAsync<PersonDataAsync>
+		): HTMLSpanElement | HTMLAnchorElement{
+
+			// create filler span
+			let authSpan = document.createElement("span");
 			authSpan.classList.add(styleAuthor);
-			authSpan.innerText = authorData.firstName || "";
-			if (authorData.firstName) authSpan.innerText += " ";
-			authSpan.innerText += authorData.lastName;
-			if(authorData.identifier){
-				const authAnchor = document.createElement("a");
-				authAnchor.href = authorData.identifier;
-				authAnchor.appendChild(authSpan);
-				return authAnchor;
-			}
+			authSpan.innerText = "???";
+
+			// fill in the author names as they load
+			(async () => {
+				const authorData = await authorDataAsync.getData();
+				let nameStr = authorData.firstName || "";
+				if (authorData.firstName) nameStr += " ";
+				nameStr += authorData.lastName;
+				
+				if(authorData.identifier){
+					const authAnchor = document.createElement("a");
+					authAnchor.href = authorData.identifier;
+					authAnchor.appendChild(document.createTextNode(nameStr));
+					authSpan.innerHTML = authAnchor.outerHTML;
+				}
+				else authSpan.innerText = nameStr;
+			})();
+
+			// return filler span
 			return authSpan;
 		}
 
@@ -160,14 +185,14 @@ export class ResourceItem{
 		for(let i = 0; i < maxAuthorsCompact; i++){
 			const authElem = createAuthor(this.data.authors[i]);
 			headInfoDiv.appendChild(authElem);
-			if(i < maxAuthorsCompact - 1) headInfoDiv.innerHTML += "; ";
+			if(i < maxAuthorsCompact - 1) headInfoDiv.appendChild(document.createTextNode("; "));
 		}
 
 		// create et al. if necessary
 		this.authorEtAlContainer = document.createElement("span");
 		this.authorEtAlContainer.classList.add(styleAuthor);
 		if(maxAuthorsCompact < this.data.authors.length){
-			this.authorEtAlContainer.innerHTML = "; et al."
+			this.authorEtAlContainer.appendChild(document.createTextNode("; et al."));
 		}
 		headInfoDiv.appendChild(this.authorEtAlContainer);
 
@@ -176,7 +201,7 @@ export class ResourceItem{
 		this.authorsExpandedContainer.style.display = "none";
 		for(let i = maxAuthorsCompact; i < this.data.authors.length; i++){
 			const authElem = createAuthor(this.data.authors[i]);
-			this.authorsExpandedContainer.innerHTML += "; ";
+			this.authorsExpandedContainer.appendChild(document.createTextNode("; "));
 			this.authorsExpandedContainer.appendChild(authElem);
 		}
 		headInfoDiv.appendChild(this.authorsExpandedContainer);
@@ -229,14 +254,18 @@ export class ResourceItem{
 		this.expandedContent.appendChild(descriptionDiv);
 		
 		// Add logo
-		if(this.data.logo && this.data.logo.url){
-			const logoImage = document.createElement("img");
-			logoImage.classList.add(styleLogo);
-			logoImage.src = this.data.logo.url as any;
-			logoImage.alt = this.data.logo.description as any;
-			conciseDescDiv.prepend(logoImage);
-			descriptionDiv.prepend(logoImage.cloneNode());
-			console.log("IMAGE", logoImage);
+		if(this.data.logo) {
+			(async () => {
+				const logo = await this.data.logo.getData();
+				if(logo.url){
+					const logoImage = document.createElement("img");
+					logoImage.classList.add(styleLogo);
+					logoImage.src = logo.url as any;
+					logoImage.alt = logo.description as any;
+					conciseDescDiv.prepend(logoImage);
+					descriptionDiv.prepend(logoImage.cloneNode());
+				}
+			}) ();
 		}
 
 		this.buildLinkButtons();
@@ -287,7 +316,7 @@ export class ResourceItem{
 	 * pulled from the database Software table
 	 * @param data the json data to base the item off of
 	 */
-	public static createFromData(data: SoftwareData): ResourceItem {
+	public static createFromData(data: SoftwareDataAsync): ResourceItem {
 		const r = new ResourceItem();
 		r.data = data;
 		r.build();

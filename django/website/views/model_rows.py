@@ -25,7 +25,7 @@ def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 	arr: list[dict[str, Any]] = []
 
 	recurse = False
-	if(request.GET.get("recursive", "").lower() == "true"):
+	if(request.GET.get("recursive", "0").lower() == "true"):
 		recurse = True
 
 	for object in objects:
@@ -55,10 +55,14 @@ def get_model_row(request: HttpRequest, model_name: str, uid: str) -> JsonRespon
 	try: id = uuid.UUID(uid)
 	except Exception: id = model.objects.first().id
 
+	recurse = False
+	if(request.GET.get("recursive", "").lower() == "true"):
+		recurse = True
+	
 	access = AccessLevel.from_user(request.user)
 	obj = model.objects.get(pk=id)
 	data: dict = None
-	try: data = obj.get_serialized_data(access, True)
+	try: data = obj.get_serialized_data(access, recurse)
 	except Exception: return HttpResponseForbidden("Unauthorized")
 
 	return JsonResponse(data)

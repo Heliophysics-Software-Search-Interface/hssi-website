@@ -7,6 +7,7 @@ import {
 	type JSONValue,
 	type ModelName,
 	ModelData,
+	ModelDataCache,
 } from "../../loader";
 
 /**
@@ -56,9 +57,6 @@ import {
  * 	</ul>
  * </li>
  */
-
-export const apiModel = "/api/models/";
-export const apiSlugRowsAll = "/rows/all/";
 
 const styleTabHeader = "tab-header";
 const styleTabContent = "tab-content";
@@ -191,7 +189,7 @@ export class FilterTab {
 	}
 
 	protected async fetchModelData(): Promise<void> {
-		this.modelData = await ModelData.getModelData(this.targetModel);
+		this.modelData = [... await ModelDataCache.getModelDataAll(this.targetModel)];
 	}
 }
 

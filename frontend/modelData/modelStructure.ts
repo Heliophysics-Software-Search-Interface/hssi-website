@@ -1,7 +1,7 @@
 import {
 	type JSONArray,
 	type JSONObject
-} from "./loader";
+} from "../loader";
 
 export type ModelName = ( 
 	"HSSIModel" 
@@ -34,13 +34,14 @@ export type ModelName = (
 	| "Curator"
 );
 
-export interface ArrayData extends JSONObject {
-	data: JSONArray,
-}
-
 export interface HSSIModelData extends JSONObject {
 	/** string represinting a unique UUID for the object */
 	id: string,
+}
+
+export interface HSSIImageData extends HSSIModelData {
+	url: string,
+	description: string,
 }
 
 export interface ControlledListData extends HSSIModelData {
@@ -80,7 +81,7 @@ export interface PersonData extends HSSIModelData {
 	lastName: string,
 	/** ORCID of the person */
 	identifier?: string,
-	affiliations: JSONArray<OrganizationData>,
+	affiliation: JSONArray<OrganizationData>,
 }
 
 export interface SoftwareData extends HSSIModelData {
@@ -111,7 +112,7 @@ export interface SoftwareData extends HSSIModelData {
 	keywords: JSONArray<KeywordData>,
 	relatedSoftware: JSONArray<ControlledListData>,
 	interoperableSoftware: JSONArray<ControlledListData>,
-	funder: OrganizationData,
+	funder: JSONArray<OrganizationData>,
 	award: HSSIModelData,
 	codeRepositoryUrl: string,
 	logo: JSONObject,

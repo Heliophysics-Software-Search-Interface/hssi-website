@@ -7,10 +7,13 @@
 
 export * from "./util";
 export * from "./simpleEvent";
-export * from "./modelStructure";
+export * from "./modelData/modelStructure";
 
-export * from "./resources/modelData";
-export * from "./resources/modelChipFactory";
+export * from "./modelData/asyncModelData";
+export * from "./modelData/modelData";
+export * from "./modelData/modelChipFactory";
+export * from "./modelData/modelDataCache";
+
 export * from "./filters/filterGroup";
 export * from "./filters/filterMenuItem";
 export * from "./filters/filterTab/filterTab";

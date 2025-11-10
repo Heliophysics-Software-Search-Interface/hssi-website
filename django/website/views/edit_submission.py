@@ -78,7 +78,9 @@ def submit_edits(request: HttpRequest, uid: str) -> HttpResponse:
 		json_data = json.loads(data)
 		handle_submission_data(json_data, queue_item.target_software)
 
-	except Exception: return HttpResponseServerError()
+	except Exception as e: 
+		print(e)
+		return HttpResponseServerError()
 	return HttpResponse(status=204)
 
 def email_existing_edit_link(submission: SubmissionInfo) -> bool:

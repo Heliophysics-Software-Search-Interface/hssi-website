@@ -42,7 +42,7 @@ export class ModelSubfield {
 	
 	private subfieldContainer: HTMLDetailsElement = null;
 	private subfields: ModelSubfield[] = [];
-	private parentField: ModelSubfield = null;
+	protected parentField: ModelSubfield = null;
 
 	public get parent(): ModelSubfield { return this.parentField; }
 	public get multi(): boolean { return false; }
@@ -57,11 +57,13 @@ export class ModelSubfield {
 		rowName: string,
 		type: ModelFieldStructure, 
 		properties: PropertyContainer = {},
+		parentField: ModelSubfield = null
 	) {
 		this.name = name;
 		this.rowName = rowName;
 		this.type = type;
 		this.properties = properties;
+		this.parentField = parentField;
 
 		this.onValueChanged.addListener(() => {
 			if(this.parent) this.parent.onChildValueChanged.triggerEvent();
@@ -75,7 +77,6 @@ export class ModelSubfield {
 
 		// don't need a subfield container if no subfields
 		if(this.type.subfields.length <= 0) return;
-		console.log(this.name, this.type.subfields);
 
 		// create expandable details container
 		this.subfieldContainer = document.createElement("details");
@@ -234,7 +235,7 @@ export class ModelSubfield {
 	public fillField(data: JSONValue, notify: boolean = true): void {
 		
 		if(data instanceof Array) {
-			if(this instanceof ModelMultiSubfield) this.fillMultiFields(data);
+			if(this instanceof ModelMultiSubfield) this.fillMultiFields(data, notify);
 			else console.warn(`Data for ${this.name} is an array but field is not multi`);
 			return;
 		}

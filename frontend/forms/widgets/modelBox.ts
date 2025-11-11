@@ -483,7 +483,7 @@ export class ModelBox extends Widget {
 
 	public override setValue(value: string, notify: boolean = true): void {
 		if(!this.options) {
-			super.setValue(value);
+			super.setValue(value, notify);
 			this.buildOptionsFromModel(this.properties.targetModel).then(
 				() => this.setValue(value, notify)
 			);
@@ -497,8 +497,8 @@ export class ModelBox extends Widget {
 			this.inputElement.data = match;
 		}
 		else {
-			if(this.properties.allowNewEntries) super.setValue(value);
-			else super.setValue("");
+			if(this.properties.allowNewEntries) super.setValue(value, notify);
+			else super.setValue("", notify);
 			this.inputElement.data = null;
 		}
 	}

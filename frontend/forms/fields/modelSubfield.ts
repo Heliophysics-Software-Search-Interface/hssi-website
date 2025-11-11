@@ -42,7 +42,7 @@ export class ModelSubfield {
 	
 	private subfieldContainer: HTMLDetailsElement = null;
 	private subfields: ModelSubfield[] = [];
-	private parentField: ModelSubfield = null;
+	protected parentField: ModelSubfield = null;
 
 	public get parent(): ModelSubfield { return this.parentField; }
 	public get multi(): boolean { return false; }
@@ -57,11 +57,13 @@ export class ModelSubfield {
 		rowName: string,
 		type: ModelFieldStructure, 
 		properties: PropertyContainer = {},
+		parentField: ModelSubfield = null
 	) {
 		this.name = name;
 		this.rowName = rowName;
 		this.type = type;
 		this.properties = properties;
+		this.parentField = parentField;
 
 		this.onValueChanged.addListener(() => {
 			if(this.parent) this.parent.onChildValueChanged.triggerEvent();
@@ -233,10 +235,8 @@ export class ModelSubfield {
 	public fillField(data: JSONValue, notify: boolean = true): void {
 		
 		if(data instanceof Array) {
-			if(this instanceof ModelMultiSubfield) this.fillMultiFields(data);
-			else {
-				console.warn(`Data for ${this.name} is an array but field is not multi`);
-			}
+			if(this instanceof ModelMultiSubfield) this.fillMultiFields(data, notify);
+			else console.warn(`Data for ${this.name} is an array but field is not multi`);
 			return;
 		}
 
@@ -388,9 +388,9 @@ export class ModelSubfield {
 		this.subfields.length = 0;
 	}
 
-	/** true if the field should use data from it's subfields */
+	/** true if the field should use data from its subfields */
 	public hasSubfields(): boolean {
-		return this.subfields.length > 0;
+		return this.type.subfields.length > 0;
 	}
 
 	/** return true if the subfields are expanded and not hidden */
@@ -408,6 +408,7 @@ export class ModelSubfield {
 	}
 
 	public getSubfields(): ModelSubfield[] {
+		if(!this.subfieldsAreBuilt()) this.buildSubFields();
 		return this.subfields;
 	}
 
@@ -434,7 +435,7 @@ export class ModelSubfield {
 		}
 		const data: JSONObject = {};
 		data[this.name] = this.widget?.getInputValue() ?? "";
-		for(const subfield of this.subfields){
+		for(const subfield of this.getSubfields()){
 			data[subfield.name] = subfield.getFieldData();
 		}
 		return data;

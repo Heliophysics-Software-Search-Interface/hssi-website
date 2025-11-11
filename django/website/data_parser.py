@@ -3,6 +3,92 @@ from uuid import UUID
 
 from .forms.names import *
 
+def parse_organization(data: dict, name_field: str, ident_field: str) -> Organization:
+	"""
+	parse a data dict representing an organization model object, given field 
+	names for the organization name and the organization's identifier  
+	Parameters:
+		data: the key-value pairs representing the organization object
+		name_field: the name of the key for the organization's name
+		ident_field: the name of the key for the organization's identifier
+	"""
+	organization_name = data.get(name_field)
+
+	# first test to see if organization top field is uuid and return the object
+	# it references if so
+	try:
+		uid = UUID(organization_name)
+		org_ref = Organization.objects.get(pk=uid)
+		return org_ref
+	
+	except:
+		org_ident = data.get(ident_field)
+		org_ref: Organization = None
+
+		# look for an return an organization with matching identifier if exists
+		if org_ident: org_ref = Organization.objects.filter(identifier=org_ident).first()
+		if org_ref: return org_ref
+
+		# build new org object from data
+		else:
+			organization = Organization()
+			organization.name = organization_name
+			if org_ident: organization.identifier = org_ident
+			organization.save()
+			return organization
+
+def parse_person(
+	data: dict, 
+	name_field: str, ident_field: str, 
+	affil_field: str, affil_ident_field: str
+) -> Person:
+	
+	person: Person = None
+	person_match: Person = None
+	person_identifier = data.get(ident_field)
+
+	# first see if author field was passed as a uuid
+	person_name: str = data.get(name_field)
+	try:
+		person_uid = UUID(person_name)
+		person_match = Person.objects.get(pk=person_uid)
+		return person_match
+	except: person_match = None
+
+	# if not, see if we can match an author with the same identifier
+	if person_identifier: 
+		person_match = Person.objects.filter(identifier=person_identifier).first()
+
+	# if there's an author match, no need to create a new object
+	if person_match: person = person_match
+
+	# if no match, create new person object
+	else:
+		person = Person()
+		person.identifier = person_identifier
+		person_spl: str = person_name.split(',')
+		lastname = ""
+		firstname = ""
+		if len(person_spl) > 1:
+			firstname = person_spl[-1]
+			lastname = person_spl[0]
+		else:
+			lastname = person_name.split()[-1]
+			firstname = person_name.replace(lastname, '').strip()
+		person.lastName = lastname
+		person.firstName = firstname
+		person.save()
+
+	# add affiliation datas
+	affiliation_datas: dict = data.get(affil_field)
+	if affiliation_datas:
+		for affiliation_data in affiliation_datas:
+			affil = parse_organization(affiliation_data, affil_field, affil_ident_field)
+			person.affiliation.add(affil)
+
+	person.save()
+	return person
+
 def handle_submission_data(data: dict, software_target: Software = None) -> uuid.UUID:
 	""" store submission data in the specified software target """
 	software = software_target
@@ -183,46 +269,11 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	author_datas: list[dict] = data.get(FIELD_AUTHORS)
 	if author_datas is not None: software.authors.clear()
 	for author_data in author_datas:
-		author = Person()
-		author.identifier = author_data.get(FIELD_AUTHORIDENTIFIER)
-		author_match = None
-		if author.identifier: 
-			author_match = Person.objects.filter(identifier=author.identifier).first()
-
-		# TODO some way to change author name after submission
-		if author_match: author = author_match
-		else:
-			author_name: str = author_data.get(FIELD_AUTHORS)
-			author_spl: str = author_name.split(',')
-			author_lastname = ""
-			author_firstname = ""
-			if len(author_spl) > 1:
-				author_firstname = author_spl[-1]
-				author_lastname = author_spl[0]
-			else:
-				author_lastname = author_name.split()[-1]
-				author_firstname = author_name.replace(author_lastname, '').strip()
-			author.lastName = author_lastname
-			author.firstName = author_firstname
-			author.save()
-
-		affiliation_datas: dict = author_data.get(FIELD_AUTHORAFFILIATION)
-		if affiliation_datas:
-			for affiliation_data in affiliation_datas:
-				affiliation_name = affiliation_data.get(FIELD_AUTHORAFFILIATION)
-				affiliation_id = affiliation_data.get(FIELD_AUTHORAFFILIATIONIDENTIFIER)
-
-				affiliation = Organization()
-				affiliation.name = affiliation_name
-				affiliation.identifier = affiliation_id
-				affil_match = None
-				if affiliation_id: 
-					affil_match = Organization.objects.filter(identifier=affiliation.identifier).first()
-				if affil_match: affiliation = affil_match
-				else: affiliation.save()
-				author.affiliation.add(affiliation)
-
-		author.save()
+		author = parse_person(
+			author_data, 
+			FIELD_AUTHORS, FIELD_AUTHORIDENTIFIER, 
+			FIELD_AUTHORAFFILIATION, FIELD_AUTHORAFFILIATIONIDENTIFIER
+		)
 		software.authors.add(author)
 
 	pub_date = data.get(FIELD_PUBLICATIONDATE)
@@ -408,24 +459,8 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	funder_datas: list[dict] = data.get(FIELD_FUNDER)
 	if funder_datas is not None: software.funder.clear()
 	for funder_data in funder_datas:
-		funder_name = funder_data.get(FIELD_FUNDER)
-		print(f"adding funder '{funder_name}'")
-		try:
-			uid = UUID(funder_name)
-			fnref = Organization.objects.get(pk=uid)
-			software.funder.add(fnref)
-		except Exception:
-			funder_ident = funder_data.get(FIELD_FUNDERIDENTIFIER)
-			funder_ref: Organization = None
-			if funder_ident: 
-				funder_ref = Organization.objects.filter(identifier=funder_ident).first()
-			if funder_ref: software.funder.add(funder_ref)
-			else:
-				funder = Organization()
-				funder.name = funder_name
-				if funder_ident: funder.identifier = funder_ident
-				funder.save()
-				software.funder.add(funder)
+		funder = parse_organization(funder_data, FIELD_FUNDER, FIELD_FUNDERIDENTIFIER)
+		software.funder.add(funder)
 
 	## RELATED OBJECTS
 	

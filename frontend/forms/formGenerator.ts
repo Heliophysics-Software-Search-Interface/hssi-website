@@ -584,3 +584,4 @@ win.expandGeneratedForm = FormGenerator.expandFormFields.bind(FormGenerator);
 win.fillForm = FormGenerator.fillForm.bind(FormGenerator);
 win.debugAutofill = FormGenerator.debugAutofill.bind(FormGenerator);
 win.awaitFormGeneration = FormGenerator.awaitFormGeneration.bind(FormGenerator);
+win.FormGenerator = FormGenerator;

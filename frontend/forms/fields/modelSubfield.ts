@@ -75,6 +75,7 @@ export class ModelSubfield {
 
 		// don't need a subfield container if no subfields
 		if(this.type.subfields.length <= 0) return;
+		console.log(this.name, this.type.subfields);
 
 		// create expandable details container
 		this.subfieldContainer = document.createElement("details");
@@ -234,9 +235,7 @@ export class ModelSubfield {
 		
 		if(data instanceof Array) {
 			if(this instanceof ModelMultiSubfield) this.fillMultiFields(data);
-			else {
-				console.warn(`Data for ${this.name} is an array but field is not multi`);
-			}
+			else console.warn(`Data for ${this.name} is an array but field is not multi`);
 			return;
 		}
 
@@ -388,9 +387,9 @@ export class ModelSubfield {
 		this.subfields.length = 0;
 	}
 
-	/** true if the field should use data from it's subfields */
+	/** true if the field should use data from its subfields */
 	public hasSubfields(): boolean {
-		return this.subfields.length > 0;
+		return this.type.subfields.length > 0;
 	}
 
 	/** return true if the subfields are expanded and not hidden */
@@ -408,6 +407,7 @@ export class ModelSubfield {
 	}
 
 	public getSubfields(): ModelSubfield[] {
+		if(!this.subfieldsAreBuilt()) this.buildSubFields();
 		return this.subfields;
 	}
 
@@ -434,7 +434,7 @@ export class ModelSubfield {
 		}
 		const data: JSONObject = {};
 		data[this.name] = this.widget?.getInputValue() ?? "";
-		for(const subfield of this.subfields){
+		for(const subfield of this.getSubfields()){
 			data[subfield.name] = subfield.getFieldData();
 		}
 		return data;

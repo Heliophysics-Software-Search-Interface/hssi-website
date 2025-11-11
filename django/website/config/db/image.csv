@@ -5,6 +5,7 @@ id,url,description
 7382e64c-c2ff-4297-ae6b-db97c1fb3658,https://raw.githubusercontent.com/HERMES-SOC/hermes_core/main/docs/logo/hermes_logo.png,logo for HERMES Core
 44b8cb2c-7c54-44f2-be2c-022234ef8ce5,https://github.com/kgklein/PLUME/blob/main/PLUME_logo.png,logo for kgklein/PLUME: Updated Cyclotron Heating to Split positive and negative resonances
 686e6e0b-3576-411f-a6d5-d01db7380d07,https://lofar-sun-tools.readthedocs.io/en/latest/_static/logo0.png,logo for lofarSun
+44b90634-7121-4812-a381-c465ab178091,https://circleci.com/gh/NCAR/VAPOR.svg?style=svg,logo for NCAR/VAPOR
 44fc4047-b2bc-40d7-a411-1a994384ce04,https://raw.githubusercontent.com/aburrell/ocbpy/main/docs/figures/ocbpy_logo.gif,logo for OCBpy
 b6c4ceb7-83af-4fa6-a9a1-5c260326d0bf,https://raw.githubusercontent.com/CosmicStudioSoftware/OMMBV/main/docs/images/logo_high_res.png,logo for OMMBV
 fe4882f0-2676-4f4b-8d9f-614c03d02d2f,https://raw.githubusercontent.com/DanBrandt/EUVpy/main/./EUVpy_logo.png,logo for Overview
@@ -13,11 +14,12 @@ dc6684a1-c179-43d6-94a6-29a244bfcd58,https://raw.githubusercontent.com/aurorax-s
 d6ce6753-9545-417c-aada-b0807c573eb1,https://raw.githubusercontent.com/SuperDARN/pydarn/master/docs/imgs/pydarn_logo.png,logo for pyDARN
 cd6a2179-dcf8-4317-bfd9-90a516fca3a8,https://raw.githubusercontent.com/louis-richard/irfu-python/master/docs/_static/logo-pyrfu.png,logo for PyRFU
 c0d3fcba-63e9-465d-a690-0fb0af3c6edf,https://raw.githubusercontent.com/pysat/pysatCDF/main/docs/images/logo.png,logo for pysatCDF
+6b3004d7-52a5-457d-b0a5-cdd188228717,https://raw.githubusercontent.com/AthKouloumvakos/PyThea/master/docs/logo/pythea_logo.png,logo for PyThea: A software package to reconstruct the 3D structure of CMEs and shock waves
 02043945-c11b-4291-a24a-b7b12e7d5bbe,https://raw.githubusercontent.com/SciQLop/SciQLop/main/SciQLop/resources/icons/SciQLop.png,logo for SciQLop
 d6fabccf-0954-4fb8-95be-127888ff932d,https://lasp.colorado.edu/ctim/files/2023/01/CTIM_LOGO_350x100_centered_transparent.png,logo for space_packet_parser
 976201c1-b76e-49c7-b9e7-93829ffcbcb2,https://raw.githubusercontent.com/SciQLop/speasy/main/logo/logo_speasy_400dpi.png,logo for Speasy
 16b26844-a49a-435d-99e4-5a6d8899083e,https://raw.githubusercontent.com/swxsoc/swxsoc/fbbc26e70863f8acc4df53dee4876a40b5cca154/docs/logo/s,logo for SWxSOC
 8fe59124-c128-4d9d-8144-9e71fd4e448f,https://raw.githubusercontent.com/nasa/Kamodo/master/docs/notebooks/Files/Kamodo.png,logo for The CCMC Kamodo Analysis Suite
-28b7a07a-b324-41e9-b09b-7d28a176c488,https://raw.githubusercontent.com/ESA-VirES/VirES-Python-Client/refs/heads/master/docs/images/vre_lo,logo for viresclient
 c814d7b0-387a-40ff-82d1-56bf90d649bc,https://raw.githubusercontent.com/ESA-VirES/Swarm-VRE/staging/docs/_static/vre_logo.png,logo for viresclient
+28b7a07a-b324-41e9-b09b-7d28a176c488,https://raw.githubusercontent.com/ESA-VirES/VirES-Python-Client/refs/heads/master/docs/images/vre_lo,logo for viresclient
 b433308a-8b2d-4dd4-af94-3231eb305f5b,https://raw.githubusercontent.com/HinodeXRT/xrtpy/main/docs/_static/images/XRTpy_logo.png,logo for XRTpy: A Hinode X-Ray Telescope Python Package

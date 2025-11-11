@@ -53,15 +53,22 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 			# which then needs to be resolved further. Multiple iterations 
 			# should solve this by continuing to resolve false keys until a
 			# non-key value is found
-			while True:
+			while iters < 100:
 				val = getattr(iter_obj, topfield.name)
 				if not val and second_field:
 					val = getattr(iter_obj, second_field.name)
 				try: uid = uuid.UUID(val)
 				except Exception: break
-				iter_obj = hssimodel.objects.get(pk=uid)
+				try: iter_obj = hssimodel.objects.get(pk=uid)
+				except: 
+					print(
+						f"ERROR: '{val}' (evaluated to '{str(uid)}') " + 
+						f"does not point to any {hssimodel.__name__} object"
+					)
+					iters = -1
+					break
 				iters += 1
-				if iters >= 100: break
+			if iters == -1: continue
 
 			if iters <= 0: 
 				print(f"'{str(val)}' does not appear to be a uuid")

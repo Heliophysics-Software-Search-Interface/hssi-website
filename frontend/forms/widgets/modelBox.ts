@@ -25,7 +25,7 @@ const modelRowSlug = "/rows/";
 
 type ChoicesJsonStructure = { data: [string, string, string[], string?][] }
 
-interface ModelBoxProperties extends BaseProperties {
+export interface ModelBoxProperties extends BaseProperties {
 	targetModel?: ModelName,
 	modelFilter?: string,
 	dropdownButton?: string,

@@ -6,6 +6,11 @@ import {
 	type AnyInputElement,
 	ModelBox,
 	SimpleEvent,
+	isUuid4,
+	type BaseProperties,
+	type ModelBoxProperties,
+	type ModelName,
+	ModelDataCache,
 } from "../../loader";
 
 export const labelStyle = "custom-label";
@@ -296,7 +301,22 @@ export class ModelSubfield {
 		}
 
 		// it's a non-recursive value (almost certainly a string)
-		else this.setValue(data?.toString(), notify);
+		else {
+			const value: string = data?.toString();
+			if(value){
+				if(this.widget instanceof ModelBox && isUuid4(value)){
+					console.log(`Received uuid ${value} for`, this);
+					const model = (this.widget.properties as ModelBoxProperties).targetModel;
+					
+					console.log(`Fetching data from model ${model}`);
+					const datapromise = ModelDataCache.getModelData(model, value);
+					datapromise.then(data => {
+						this.fillField(data);
+					});
+				}
+				else this.setValue(value, notify);
+			}
+		}
 	}
 
 	public meetsRequirementLevel(): boolean {

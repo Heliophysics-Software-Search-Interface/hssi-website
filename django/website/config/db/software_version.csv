@@ -1,9 +1,9 @@
 id,number,release_date,description,version_pid
 cbdc9192-0700-4b8c-9d81-a546c7da7ef6,0.2.0,2025-03-28,,
-339bbaba-05c4-4250-b0d5-274c4b82e19d,0.3.33,2025-04-08,,
 3749f9c1-01cc-4215-bdaa-ce875dc2612a,0.3.33,2025-04-08,,
-c008d1be-a4b0-427f-a832-5fb4435091c7,0.4.0,2023-11-17,A community-developed open source Python 3.6+ package for plasma physics research and education that is currently under development.,https://doi.org/10.5281/zenodo.4037407
+339bbaba-05c4-4250-b0d5-274c4b82e19d,0.3.33,2025-04-08,,
 b03aacd6-424a-47a1-9b94-9296d99e9113,0.4.0,2021-02-08,"The HelioML team is happy to announce the release of HelioML 0.4.0. This release included a complete restructure of the back-end of the book, which now uses Jupyter Book version 0.8.3. As part of the restructure, all the chapter numbers shifted by one; e.g. what was previously Chapter 4 is now Chapter 3. We would like to acknowledge the following people for contributing new chapters to the book since v0.3.0: Colin Small, along with collaborators Matthew R. Argall and Marek Petrik, for contributing Chapter 7 on automatically detecting magnetopause crossings in MMS data, Rafael Pires de Lima, along with collaborator Yue Chen, for contributing Chapter 8 on forecasting Megaelectron‐volt electrons inside Earth's outer radiation belt, and Téo Bloch, along with collaborators Clare Watt, Mathew Owens, Leland McInnes, and Allan R. Macneil, for contributing Chapter 9 on classifying solar wind source regions. We would also like to acknowledge Chris Holdgraf for including us in the Gallery of Jupyter Books. Sincerely, The HelioML Team",https://doi.org/10.5281/zenodo.4521380
+c008d1be-a4b0-427f-a832-5fb4435091c7,0.4.0,2023-11-17,A community-developed open source Python 3.6+ package for plasma physics research and education that is currently under development.,https://doi.org/10.5281/zenodo.4037407
 8301f2b6-449c-4ed5-acc0-faa11b067df9,0.6.0,2025-08-11,,https://doi.org/10.5281/zenodo.16802585
 53c3ce09-59fe-4df6-bd2a-0a79ece07c3e,0.6.0,2025-08-11,Added boundary models to the potential sources of boundary locations.,https://doi.org/10.5281/zenodo.16802585
 dcf367e6-a310-482b-a0b7-3eff3d258ea6,0.7.0,2024-11-08,"Please see the full release notes at https://spacepy.github.io/release_notes.html
@@ -39,6 +39,33 @@ Operations on `dmarray` which return a scalar value will now return a numpy arra
 
 Warnings issued by SpacePy are now associated with the line of the calling code, not with the SpacePy code itself.",https://doi.org/10.5281/zenodo.14057789
 fe96bba1-7e66-459c-b309-fcf4ec392d95,1.0.0,2024-06-25,,https://doi.org/10.5281/zenodo.12532077
+4c9fe152-70c7-473c-a7e5-d740f2fb43bb,1.1.0,2025-07-17,,https://doi.org/10.5281/zenodo.16018479
+fe3225e5-6e9f-47b8-b404-159fb13bc6a7,1.1.0,2025-07-17,,https://doi.org/10.5281/zenodo.16018479
+bc3cf45b-b9b3-40c9-9deb-7b3f6c015761,1.1.0,2025-09-04,,
+d29053c6-800a-4ea1-bda9-675d4f436cf7,1.1.0,2025-07-17,"[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/231
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/232
+
+specify codecov path by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/234
+
+Create CHANGELOG.md by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/235
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/237
+
+Allow a single star mask to be provided by @svank in https://github.com/punch-mission/regularizepsf/pull/236
+
+Update sep by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/239
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/240
+
+Handle saturated values when applying a transform by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/242
+
+adds new mask and saturation features by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/243
+
+Prepare v1.1.0 by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/244
+
+
+Full Changelog: https://github.com/punch-mission/regularizepsf/compare/1.0.2...1.1.0",https://doi.org/10.5281/zenodo.16018479
 c46c39aa-bcab-4b49-902f-9591abadbea9,1.1.0,2025-07-17,"What's Changed
 
 
@@ -70,34 +97,7 @@ Full Changelog: https://github.com/punch-mission/regularizepsf/compare/1.0.2...1
 6cf80739-d3cd-497b-b4f5-adc279389ff6,1.1.0,2024-12-29,"I/O interface and utilities for CCSDS binary spacecraft data in Python. Library used in flight missions at NASA, NOAA, and SWRI.",https://doi.org/10.5281/zenodo.7819991
 a3b4940c-b686-4f2a-843f-0f1235052d9c,1.1.0,2025-07-17,,https://doi.org/10.5281/zenodo.16018479
 e7c54903-b708-4f45-a555-d41ecb2a8dbe,1.1.0,2025-07-17,,https://doi.org/10.5281/zenodo.16018479
-bc3cf45b-b9b3-40c9-9deb-7b3f6c015761,1.1.0,2025-09-04,,
-d29053c6-800a-4ea1-bda9-675d4f436cf7,1.1.0,2025-07-17,"[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/231
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/232
-
-specify codecov path by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/234
-
-Create CHANGELOG.md by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/235
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/237
-
-Allow a single star mask to be provided by @svank in https://github.com/punch-mission/regularizepsf/pull/236
-
-Update sep by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/239
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/punch-mission/regularizepsf/pull/240
-
-Handle saturated values when applying a transform by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/242
-
-adds new mask and saturation features by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/243
-
-Prepare v1.1.0 by @jmbhughes in https://github.com/punch-mission/regularizepsf/pull/244
-
-
-Full Changelog: https://github.com/punch-mission/regularizepsf/compare/1.0.2...1.1.0",https://doi.org/10.5281/zenodo.16018479
 77a27ca5-9135-4393-9e2d-76a3897a2086,1.1.0,2025-07-17,,https://doi.org/10.5281/zenodo.16018479
-fe3225e5-6e9f-47b8-b404-159fb13bc6a7,1.1.0,2025-07-17,,https://doi.org/10.5281/zenodo.16018479
-4c9fe152-70c7-473c-a7e5-d740f2fb43bb,1.1.0,2025-07-17,,https://doi.org/10.5281/zenodo.16018479
 3a3f50b8-c704-4a96-8e15-891fed3a9418,1.3.6,2025-08-05,,
 6d75acbb-2e7e-4474-a57d-074b531e4205,2.0.2a2,2025-09-27,,
 7ed6fcf6-6082-4bb3-9aa8-5f84d1d2cc71,2.6.0,2020-07-30,"This major release incorporates AACGM-v2.6 coefficients (2015-2020) derived using the IGRF13 model. Other changes include removing a deprecated routine, providing version targets for other deprecated routines, and consolidating similar unit and integration tests.",https://doi.org/10.5281/zenodo.3598705
@@ -120,13 +120,13 @@ New Contributors
 
 
 Full Changelog: https://github.com/JHUAPL/kaipy/compare/kaipy-1.1.2...kaipy-1.1.3",https://doi.org/10.5281/zenodo.17236774
-e89f1bb4-4011-4351-9cac-ebaa2f7db5d3,MSWCX,2025-08-01,Code used to produce the results in a publication on separating out the magnetospheric SWCX X-ray spectral contribution in astrophysical observations of dark fields.,https://doi.org/10.5281/zenodo.8253002
 b89b06b5-e45a-40b1-9bf1-8a771ba2f997,MSWCX,2025-08-01,Code used to produce the results in a publication on separating out the magnetospheric SWCX X-ray spectral contribution in astrophysical observations of dark fields.,https://doi.org/10.5281/zenodo.8253002
-b75d9ba8-2a95-4209-b833-7580dc988d68,release-0.1.0,2022-02-11,"0.1.0 (2022-02-10) Please see the full release notes at https://spacepy.github.io/dbprocessing/release_notes.html This is the first public packaged release of dbprocessing. For the convenience of those working directly from git checkouts, these release notes summarize changes made since the creation of the public repository on 2020-07-15. New features Support for processes that take no input was added, as part of many enhancements to <code>DBRunner.py</code>. New script <code>linkUningested.py</code> to find files which match product format but are not in database, and symlink them to the incoming directory so they can be ingested. Python 3 support was added. Added options <code>--count</code>, <code>--exist</code>, and <code>--quiet</code> to <code>printProcessQueue.py</code> to allow flow control in shell scripts based on the process queue state. Added options <code>--product</code> to filter output and <code>--sort</code> to <code>printProcessQueue.py</code> to sort output. Initial PostgreSQL support was added. Deprecations and removals None Dependency requirements SQLAlchemy and dateutil are required. No minimum version has been established, but dbprocessing is known to work with SQLAlchemy 1.1 and dateutil 2.6. Major bugfixes Fixed <code>ProcessQueue.buildChildren</code> on older databases without <code>yesterday</code> and <code>tomorrow</code> columns in the <code>Productprocesslink</code> table. Fixed <code>runMe</code> to always maintain the <code>output_interface</code> version specified by the code. Updates to a code's interface version will increment the quality version of its output (not the interface); updates to a file's interface version will increment the quality version of child files (rather than assuming children were up-to-date and failing to reprocess them). Fixed <code>buildChildren</code> to only look for files which are recorded in the database as existing on disk. Most notably, this means <code>ProcessQueue.py</code> will not attempt to use nonexistent files as inputs to processing.",https://doi.org/10.5281/zenodo.6047134
+e89f1bb4-4011-4351-9cac-ebaa2f7db5d3,MSWCX,2025-08-01,Code used to produce the results in a publication on separating out the magnetospheric SWCX X-ray spectral contribution in astrophysical observations of dark fields.,https://doi.org/10.5281/zenodo.8253002
 08bfb574-aa75-4dc4-8904-b508a4035875,release-0.1.0,2022-02-11,"0.1.0 (2022-02-10) Please see the full release notes at https://spacepy.github.io/dbprocessing/release_notes.html This is the first public packaged release of dbprocessing. For the convenience of those working directly from git checkouts, these release notes summarize changes made since the creation of the public repository on 2020-07-15. New features Support for processes that take no input was added, as part of many enhancements to <code>DBRunner.py</code>. New script <code>linkUningested.py</code> to find files which match product format but are not in database, and symlink them to the incoming directory so they can be ingested. Python 3 support was added. Added options <code>--count</code>, <code>--exist</code>, and <code>--quiet</code> to <code>printProcessQueue.py</code> to allow flow control in shell scripts based on the process queue state. Added options <code>--product</code> to filter output and <code>--sort</code> to <code>printProcessQueue.py</code> to sort output. Initial PostgreSQL support was added. Deprecations and removals None Dependency requirements SQLAlchemy and dateutil are required. No minimum version has been established, but dbprocessing is known to work with SQLAlchemy 1.1 and dateutil 2.6. Major bugfixes Fixed <code>ProcessQueue.buildChildren</code> on older databases without <code>yesterday</code> and <code>tomorrow</code> columns in the <code>Productprocesslink</code> table. Fixed <code>runMe</code> to always maintain the <code>output_interface</code> version specified by the code. Updates to a code's interface version will increment the quality version of its output (not the interface); updates to a file's interface version will increment the quality version of child files (rather than assuming children were up-to-date and failing to reprocess them). Fixed <code>buildChildren</code> to only look for files which are recorded in the database as existing on disk. Most notably, this means <code>ProcessQueue.py</code> will not attempt to use nonexistent files as inputs to processing.",https://doi.org/10.5281/zenodo.6047134
 a7178ef1-9978-49b3-9c94-92ce9af71656,release-0.1.0,2022-02-11,"0.1.0 (2022-02-10) Please see the full release notes at https://spacepy.github.io/dbprocessing/release_notes.html This is the first public packaged release of dbprocessing. For the convenience of those working directly from git checkouts, these release notes summarize changes made since the creation of the public repository on 2020-07-15. New features Support for processes that take no input was added, as part of many enhancements to <code>DBRunner.py</code>. New script <code>linkUningested.py</code> to find files which match product format but are not in database, and symlink them to the incoming directory so they can be ingested. Python 3 support was added. Added options <code>--count</code>, <code>--exist</code>, and <code>--quiet</code> to <code>printProcessQueue.py</code> to allow flow control in shell scripts based on the process queue state. Added options <code>--product</code> to filter output and <code>--sort</code> to <code>printProcessQueue.py</code> to sort output. Initial PostgreSQL support was added. Deprecations and removals None Dependency requirements SQLAlchemy and dateutil are required. No minimum version has been established, but dbprocessing is known to work with SQLAlchemy 1.1 and dateutil 2.6. Major bugfixes Fixed <code>ProcessQueue.buildChildren</code> on older databases without <code>yesterday</code> and <code>tomorrow</code> columns in the <code>Productprocesslink</code> table. Fixed <code>runMe</code> to always maintain the <code>output_interface</code> version specified by the code. Updates to a code's interface version will increment the quality version of its output (not the interface); updates to a file's interface version will increment the quality version of child files (rather than assuming children were up-to-date and failing to reprocess them). Fixed <code>buildChildren</code> to only look for files which are recorded in the database as existing on disk. Most notably, this means <code>ProcessQueue.py</code> will not attempt to use nonexistent files as inputs to processing.",https://doi.org/10.5281/zenodo.6047134
-b1c2d5cd-bc45-4187-a396-449b9cd5902e,v0.1,2023-04-25,This version was used to create figures for the ISR paper.,https://doi.org/10.5281/zenodo.154533
+b75d9ba8-2a95-4209-b833-7580dc988d68,release-0.1.0,2022-02-11,"0.1.0 (2022-02-10) Please see the full release notes at https://spacepy.github.io/dbprocessing/release_notes.html This is the first public packaged release of dbprocessing. For the convenience of those working directly from git checkouts, these release notes summarize changes made since the creation of the public repository on 2020-07-15. New features Support for processes that take no input was added, as part of many enhancements to <code>DBRunner.py</code>. New script <code>linkUningested.py</code> to find files which match product format but are not in database, and symlink them to the incoming directory so they can be ingested. Python 3 support was added. Added options <code>--count</code>, <code>--exist</code>, and <code>--quiet</code> to <code>printProcessQueue.py</code> to allow flow control in shell scripts based on the process queue state. Added options <code>--product</code> to filter output and <code>--sort</code> to <code>printProcessQueue.py</code> to sort output. Initial PostgreSQL support was added. Deprecations and removals None Dependency requirements SQLAlchemy and dateutil are required. No minimum version has been established, but dbprocessing is known to work with SQLAlchemy 1.1 and dateutil 2.6. Major bugfixes Fixed <code>ProcessQueue.buildChildren</code> on older databases without <code>yesterday</code> and <code>tomorrow</code> columns in the <code>Productprocesslink</code> table. Fixed <code>runMe</code> to always maintain the <code>output_interface</code> version specified by the code. Updates to a code's interface version will increment the quality version of its output (not the interface); updates to a file's interface version will increment the quality version of child files (rather than assuming children were up-to-date and failing to reprocess them). Fixed <code>buildChildren</code> to only look for files which are recorded in the database as existing on disk. Most notably, this means <code>ProcessQueue.py</code> will not attempt to use nonexistent files as inputs to processing.",https://doi.org/10.5281/zenodo.6047134
 4ad06caa-6bb5-488e-b7d4-832caedfae0b,v0.1,2023-04-25,This version was used to create figures for the ISR paper.,https://doi.org/10.5281/zenodo.154533
+b1c2d5cd-bc45-4187-a396-449b9cd5902e,v0.1,2023-04-25,This version was used to create figures for the ISR paper.,https://doi.org/10.5281/zenodo.154533
 92eb6223-0c68-48da-a3ba-832d9511d32d,v.0.1.0,2025-09-08,"FitsFlow v0.1.0
 
 FitsFlow is a browser-based application that takes a solar FITS image and returns machine-learning ready outputs.
@@ -222,6 +222,50 @@ Speasy Integration:
 - Improved float conversion in fill values cleanup
 - Better data handling capabilities with latest Speasy version",https://doi.org/10.5281/zenodo.17176824
 284c471d-f3fd-4716-b937-e3e82b33f1e3,v0.10.0,2025-09-22,,https://doi.org/10.5281/zenodo.17176824
+a9914ea3-a34e-4fae-977a-90d059c6c9f5,v0.10.2,2025-09-13,"What's Changed
+
+
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/352
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/353
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/354
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/355
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/356
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/357
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/358
+
+Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pull/360
+
+
+Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
+bc2e746b-e2bb-4640-87cf-5fcaf932e497,v0.10.2,2025-09-13,"What's Changed
+
+
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/352
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/353
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/354
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/355
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/356
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/357
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/358
+
+Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pull/360
+
+
+Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
 cd356914-c71d-4504-b0ca-608e4e451901,v0.10.2,2025-09-13,"What's Changed
 
 
@@ -310,28 +354,6 @@ Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pul
 
 
 Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
-2bfa93f9-023a-4f06-bdd2-4581eb8a878e,v0.10.2,2025-09-13,"What's Changed
-
-
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/352
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/353
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/354
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/355
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/356
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/357
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/358
-
-Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pull/360
-
-
-Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
 caf445ea-2ffc-4063-9a2c-a7362950f8ee,v0.10.2,2025-09-13,"What's Changed
 
 
@@ -398,72 +420,6 @@ Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pul
 
 
 Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
-72495f33-327b-4010-92b1-ca7e9ebbce24,v0.10.2,2025-09-13,"What's Changed
-
-
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/352
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/353
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/354
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/355
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/356
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/357
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/358
-
-Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pull/360
-
-
-Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
-2c1cb591-573a-438e-a128-3bb1643a0272,v0.10.2,2025-09-13,"What's Changed
-
-
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/352
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/353
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/354
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/355
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/356
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/357
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/358
-
-Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pull/360
-
-
-Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
-adb3bc5f-9e12-4da9-91e8-061d8fd10db8,v0.10.2,2025-09-13,"What's Changed
-
-
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/352
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/353
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/354
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/355
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/356
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/357
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/358
-
-Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pull/360
-
-
-Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
 7a706088-92bf-4e86-aae4-a59de5b54c53,v0.10.2,2025-09-13,"What's Changed
 
 
@@ -486,7 +442,29 @@ Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pul
 
 
 Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
-77e06914-a337-44d6-838e-d183099c28d3,v0.10.2,2025-09-13,"What's Changed
+72495f33-327b-4010-92b1-ca7e9ebbce24,v0.10.2,2025-09-13,"What's Changed
+
+
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/352
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/353
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/354
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/355
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/356
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/357
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/358
+
+Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pull/360
+
+
+Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
+2bfa93f9-023a-4f06-bdd2-4581eb8a878e,v0.10.2,2025-09-13,"What's Changed
 
 
 
@@ -530,7 +508,7 @@ Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pul
 
 
 Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
-a9914ea3-a34e-4fae-977a-90d059c6c9f5,v0.10.2,2025-09-13,"What's Changed
+2c1cb591-573a-438e-a128-3bb1643a0272,v0.10.2,2025-09-13,"What's Changed
 
 
 
@@ -552,7 +530,51 @@ Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pul
 
 
 Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
-bc2e746b-e2bb-4640-87cf-5fcaf932e497,v0.10.2,2025-09-13,"What's Changed
+a5cfc22b-3b35-4a87-aaee-7afc8a65947c,v0.10.2,2025-09-13,"What's Changed
+
+
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/352
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/353
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/354
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/355
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/356
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/357
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/358
+
+Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pull/360
+
+
+Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
+adb3bc5f-9e12-4da9-91e8-061d8fd10db8,v0.10.2,2025-09-13,"What's Changed
+
+
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/352
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/353
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/354
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/355
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/356
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/357
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/358
+
+Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pull/360
+
+
+Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
+77e06914-a337-44d6-838e-d183099c28d3,v0.10.2,2025-09-13,"What's Changed
 
 
 
@@ -636,16 +658,16 @@ ebe3e0b9-101a-44d2-a0dd-207212f45841,v0.4.3,2025-04-03,"Data loader (and downloa
 4e6f76aa-4515-4aac-bc89-0f79a65875df,v0.5.0,2025-04-08,,
 3f5027b1-ea6e-4c6e-bd69-ead2be9e4969,v0.5.0,2025-01-29,Python package of the multi-spacecraft longitudinal configuration plotter Solar-MACH,https://doi.org/10.5281/zenodo.14763546
 8155ff78-4060-4adb-ace8-e640ad648c35,v0.5.0,2025-01-29,Python package of the multi-spacecraft longitudinal configuration plotter Solar-MACH,https://doi.org/10.5281/zenodo.14763546
-c6a6a698-31ca-42fe-8adc-11d71dd4de75,v0.6.1,2025-08-14,"fiasco provides a Python interface to the CHIANTI, an atomic database used primarily for astrophysical spectroscopy.",https://doi.org/10.5281/zenodo.16876516
 839f52ab-5581-4a2c-b1e2-445b5fc0a9f4,v0.6.1,2025-02-20,,https://doi.org/10.5281/zenodo.15619797
+c6a6a698-31ca-42fe-8adc-11d71dd4de75,v0.6.1,2025-08-14,"fiasco provides a Python interface to the CHIANTI, an atomic database used primarily for astrophysical spectroscopy.",https://doi.org/10.5281/zenodo.16876516
 c26b138d-f0ec-452b-b113-cc9b8b07aab9,v0.6.2,2025-07-10,,https://doi.org/10.5281/zenodo.15852260
-27d74e70-04a2-47a5-bf86-9a628390600e,v1.0.0,2023-03-28,,https://doi.org/10.5281/zenodo.7779553
-794ecb52-d47a-4511-a068-cb64c22becc2,v1.0.0,2023-03-28,,https://doi.org/10.5281/zenodo.7779553
 ca5aa811-7bc0-4836-8c58-cfff67f7cd2b,v1.0.0,2023-03-28,,https://doi.org/10.5281/zenodo.7779553
+794ecb52-d47a-4511-a068-cb64c22becc2,v1.0.0,2023-03-28,,https://doi.org/10.5281/zenodo.7779553
+27d74e70-04a2-47a5-bf86-9a628390600e,v1.0.0,2023-03-28,,https://doi.org/10.5281/zenodo.7779553
 e162adaa-2799-4859-937f-50b6936189ac,v1.0.12,2025-03-31,This release adds the functionality to auto-load the latest or a specific version of geopack coefficients.,https://doi.org/10.5281/zenodo.15110787
 ba4a1dc4-9db4-4d0e-873d-b20cc6c8ed99,v1.0.2,2025-06-03,A Python package to support metadata attribute management for Space Weather data processing pipelines.,https://doi.org/10.5281/zenodo.15587327
-2f122a4b-85e6-43bd-84dd-8ea8833dbd5c,v1.1.0,2025-04-07,,https://doi.org/10.5281/zenodo.15170693
 00b9a7a9-9714-4ad8-b67e-ac5e9ef97b1d,v1.1.0,2023-04-25,Python wrapper for the International Reference Ionosphere (IRI) 2016 model.,https://doi.org/10.5281/zenodo.240895
+2f122a4b-85e6-43bd-84dd-8ea8833dbd5c,v1.1.0,2025-04-07,,https://doi.org/10.5281/zenodo.15170693
 79c29d1a-a4d4-4cd9-a33e-0b01b78acdc6,v1.1.3,2025-09-30,,https://doi.org/10.5281/zenodo.17236774
 a4b7771d-84af-48fc-988c-fe2b25f284a5,v1.1.3,2025-09-30,First contribution from outside core development team.  Minor bug fixes.,https://doi.org/10.5281/zenodo.17236774
 01dd9ee7-a39c-4ee5-a42c-ee6ce98280b3,v1.1.8,2024-12-02,Minor release primarily to update documentation and how it is compiled on ReadTheDocs.  This should not introduce new functionality.,https://doi.org/10.5281/zenodo.14174414
@@ -653,8 +675,8 @@ a4b7771d-84af-48fc-988c-fe2b25f284a5,v1.1.3,2025-09-30,First contribution from o
 c0947346-ed13-4710-bc61-d900dde724aa,v.1.2.0,2025-09-17,"This new version splits the n = \pm 1 cyclotron resonances into separate components, rather than keeping the previous summation of the two terms. This changes the column numbering scheme. See output.md for details.",https://doi.org/10.5281/zenodo.17148711
 64114880-3a98-4098-8724-73517fc370f7,v.1.2.0,2025-09-17,"This new version splits the n = \pm 1 cyclotron resonances into separate components, rather than keeping the previous summation of the two terms. This changes the column numbering scheme. See output.md for details.",https://doi.org/10.5281/zenodo.17148711
 e7bb6f64-32e9-4ace-a52d-3a6c68d7fcfe,v.1.2.0,2025-09-17,"This new version splits the n = \pm 1 cyclotron resonances into separate components, rather than keeping the previous summation of the two terms. This changes the column numbering scheme. See output.md for details.",https://doi.org/10.5281/zenodo.17148711
-45d7ac93-eac3-42f9-831e-4f2b4c7bd6c3,v1.2.6,2025-10-17,,https://doi.org/10.5281/zenodo.17382178
 b3bcd985-3eb4-4a75-8625-3a2170ae3322,v1.2.6,2025-10-17,,https://doi.org/10.5281/zenodo.17382178
+45d7ac93-eac3-42f9-831e-4f2b4c7bd6c3,v1.2.6,2025-10-17,,https://doi.org/10.5281/zenodo.17382178
 36e266bf-e6c1-4e64-aa83-4740a63ef8a9,v1.6.1,2025-09-05,"1.6.1
 - [UiowaEphTool] Remove coordinate_system kwarg for proxy (leftover from sscweb copy) by @jeandet in #234
 1.6.0
@@ -668,12 +690,12 @@ b3bcd985-3eb4-4a75-8625-3a2170ae3322,v1.2.6,2025-10-17,,https://doi.org/10.5281/
 - [UiowaEphTool] products are registered with UiowaEphTool as provider by @jeandet in #233",https://doi.org/10.5281/zenodo.17065425
 52be830b-9b02-4d44-a7fa-1f872c650722,v1.6.1,2025-09-05,,https://doi.org/10.5281/zenodo.17065425
 08c8e2c5-6eee-4a53-a8c3-07ba36d0c67e,v2.3,2022-11-23,,https://doi.org/10.5281/zenodo.7352323
-b326270f-10f2-42a2-8c50-6d24636fa19a,v2.4.12,2024-02-15,,https://doi.org/10.5281/zenodo.10678695
 554261ce-ffd8-4498-94b5-c8462b53d458,v2.4.12,2024-02-15,,https://doi.org/10.5281/zenodo.10678695
 f9a36086-b4a4-4546-8f43-06198f8d6b8f,v2.4.12,2024-02-15,,https://doi.org/10.5281/zenodo.10678695
-03fd6c3f-5608-4156-be8a-4059cdc003fe,v4.1.2,2025-05-16,,https://doi.org/10.5281/zenodo.15441879
-60086707-4d85-43ce-9f16-d4a4aab512c2,v4.1.2,2025-05-16,,https://doi.org/10.5281/zenodo.15441879
+b326270f-10f2-42a2-8c50-6d24636fa19a,v2.4.12,2024-02-15,,https://doi.org/10.5281/zenodo.10678695
 6fa7d423-c089-4baf-862d-a947c95e41d2,v4.1.2,2025-05-16,,https://doi.org/10.5281/zenodo.15441879
+60086707-4d85-43ce-9f16-d4a4aab512c2,v4.1.2,2025-05-16,,https://doi.org/10.5281/zenodo.15441879
+03fd6c3f-5608-4156-be8a-4059cdc003fe,v4.1.2,2025-05-16,,https://doi.org/10.5281/zenodo.15441879
 e16b5881-30d9-4145-8a68-6283cb4bca4c,v7.0.2,2025-09-19,"sunpy is a software library that provides fundamental tools for accessing, loading and interacting with solar physics data in Python",https://doi.org/10.5281/zenodo.17162925
 7d8f4d54-4a67-4c59-b294-c48afaaac6ee,version 0.4.1,2024-08-08,"The XRTpy Python package is a specialized tool developed for the analysis of observations made by the X-Ray Telescope (XRT) aboard the Hinode spacecraft. Hinode is a joint mission involving space agencies from Japan, the United States, and Europe, launched with the primary aim of providing multi-wavelength data from the photosphere to the upper corona, enabling continuous observations of the Sun. XRTpy offers a comprehensive range of functionalities, including object-oriented representation of instrument configuration, effective area calculations, temperature response computation, light leak subtraction, image sharpening, estimation of electron temperature, and emission measure derivation. These capabilities empower researchers to explore and analyze XRT data comprehensively, contributing to a deeper understanding of solar phenomena.",https://doi.org/10.5281/zenodo.13157914
 879f9080-2075-4a6b-b7a5-6dd841af015f,Version 1.0-prealpha,2024-09-04,,https://doi.org/10.5281/zenodo.13685579

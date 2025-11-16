@@ -213,7 +213,7 @@ export class ModelBox extends Widget {
 							subfield.fillMultiFields(jsonValue, false);
 						else subfield.fillMultiFields([jsonValue], false);
 					}
-					else subfield.fillField(jsonValue, false);
+					else subfield.fillField(jsonValue, false, true);
 				}
 			}
 			this.rowFetchAbort = null;

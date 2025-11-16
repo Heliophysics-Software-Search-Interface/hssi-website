@@ -237,7 +237,11 @@ export class ModelSubfield {
 		this.requirement.removeStyles();
 	}
 
-	public fillField(data: JSONValue, notify: boolean = true): void {
+	public fillField(
+		data: JSONValue, 
+		notify: boolean = true, 
+		eraseIfNull: boolean = false
+	): void {
 		
 		if(data instanceof Array) {
 			if(this instanceof ModelMultiSubfield) this.fillMultiFields(data, notify);
@@ -288,12 +292,12 @@ export class ModelSubfield {
 					this.name === key || 
 					this.rowName === key
 				) {
-					this.fillField(value, notify);
+					this.fillField(value, notify, eraseIfNull);
 					continue;
 				}
 				for(const subfield of fields){
 					if(subfield.name === key || subfield.rowName === key){
-						subfield.fillField(value, notify);
+						subfield.fillField(value, notify, true);
 						break;
 					}
 				}
@@ -311,11 +315,13 @@ export class ModelSubfield {
 					console.log(`Fetching data from model ${model}`);
 					const datapromise = ModelDataCache.getModelData(model, value);
 					datapromise.then(data => {
-						this.fillField(data);
+						console.log("Data recieved for", this, data);
+						this.fillField(data, notify, eraseIfNull);
 					});
 				}
 				else this.setValue(value, notify);
 			}
+			else if(eraseIfNull) this.setValue(null, notify);
 		}
 	}
 

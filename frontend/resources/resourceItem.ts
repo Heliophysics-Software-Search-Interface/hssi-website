@@ -308,7 +308,8 @@ export class ResourceItem{
 
 	/** destroy and remove item from DOM */
 	public destroy(): void {
-		// TODO 
+		this.containerElement.remove();
+		// TODO
 	}
 
 	/**

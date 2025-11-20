@@ -82,10 +82,11 @@ export class ModelDataCache<T extends HSSIModelData>{
 	}
 
 	public static async getModelData<M extends ModelName>(
-		model: M, uid: string
-	): Promise<AsyncModelTypeMap[M]> {
+		model: M, uid: string | string[]
+	): Promise<AsyncModelTypeMap[M] | AsyncModelTypeMap[M][]> {
 		const cache = this.getCache(model);
-		return await cache.getData(uid);
+		if(uid instanceof Array) return await cache.getMultiData(uid);
+		else return await cache.getData(uid);
 	}
 
 	// Instance Implementation -------------------------------------------------
@@ -169,6 +170,14 @@ export class ModelDataCache<T extends HSSIModelData>{
 		console.log(`Fetching all data from ${this.model}`);
 		this.promiseAll = this.fetchAllModelData();
 		await this.promiseAll;
+	}
+
+	public async getMultiData(uids: string[]): Promise<T[]> {
+		for(const uid of uids){
+			if (!isUuid4(uid)) throw new Error(`${uid} is not a valid uuidv4`);
+		}
+		const promise = uids.map(uid => this.getData(uid));
+		return await Promise.all(promise);
 	}
 
 	public async getData(uid: string): Promise<T> {

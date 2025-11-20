@@ -24,7 +24,7 @@ function initializeSearch(): void {
 	const searchButton = document.getElementById(idSearchButton) as HTMLButtonElement;
 	searchButton.addEventListener("click", onEnterSearch);
 
-	updateTitleToSearch();
+	if (searchTerm) searchForQuery(searchTerm);
 }
 
 function updateTitleToSearch() {
@@ -56,7 +56,7 @@ export function getSearchTerm(): string {
 
 export async function searchForQuery(query: string): Promise<void> {
 
-	Spinner.showSpinner(`Searching for ${query}`);
+	Spinner.showSpinner(`Searching for '${query}'`);
 
 	// get all search results relevant to the query
 	const relevantSoftwareIds = await getReleventQueryResults(query);

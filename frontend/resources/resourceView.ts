@@ -1,5 +1,5 @@
 import { 
-	apiModel, apiSlugRowsAll, extractDoi, fetchTimeout, isUuid4, modelApiUrl, ModelData, ModelDataCache, ResourceItem, 
+	apiModel, apiSlugRowsAll, extractDoi, fetchTimeout, HssiModelDataAsync, isUuid4, modelApiUrl, ModelData, ModelDataCache, ResourceItem, 
 	Spinner, 
 	type JSONArray, type JSONObject, type SoftwareData,
 	type SoftwareDataAsync,
@@ -110,7 +110,12 @@ export class ResourceView {
 
 		Spinner.showSpinner("Fetching Software Data...", this.containerElement);
 
-		this.itemData = [...await ModelDataCache.getModelDataAll("VisibleSoftware")];
+		if(this.specificUids){
+			this.itemData = [...await (
+				ModelDataCache.getModelData("VisibleSoftware", this.specificUids) as any
+			)];
+		}
+		else this.itemData = [...await ModelDataCache.getModelDataAll("VisibleSoftware")];
 		this.refreshItems();
 
 		Spinner.hideSpinner(this.containerElement);

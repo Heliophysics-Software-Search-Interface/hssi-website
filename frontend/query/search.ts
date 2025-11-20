@@ -1,7 +1,8 @@
 import { 
 	type SoftwareDataAsync,
 	ModelDataCache, 
-	ResourceView, 
+	ResourceView,
+	Spinner, 
 } from "../loader";
 
 export const idSearchbar = "searchbar";
@@ -14,19 +15,29 @@ export const searchParamQuery = "q";
  */
 function initializeSearch(): void {
 	const searchbar = document.getElementById(idSearchbar) as HTMLInputElement;
-	searchbar.value = getSearchTerm();
+	const searchTerm = getSearchTerm();
+	searchbar.value = searchTerm;
 	searchbar.addEventListener("keydown", e => {
 		if(e.key == "Enter") onEnterSearch();
 	});
 
 	const searchButton = document.getElementById(idSearchButton) as HTMLButtonElement;
 	searchButton.addEventListener("click", onEnterSearch);
+
+	updateTitleToSearch();
+}
+
+function updateTitleToSearch() {
+	const searchTerm = getSearchTerm();
+	if(searchTerm) document.title = `HSSI Search - '${searchTerm}'`;
+	else document.title = document.title.split(' - ')[0]
 }
 
 /** search based on input into the search box */
 function onEnterSearch(): void {
 	const searchbar = document.getElementById(idSearchbar) as HTMLInputElement;
-	const query = searchbar.value
+	const query = searchbar.value;
+
 	searchForQuery(query);
 }
 
@@ -43,57 +54,71 @@ export function getSearchTerm(): string {
 	return searchVal || "";
 }
 
-export function searchForQuery(query: string): void {
-	const promise = ModelDataCache.getModelDataAll("Software")
-	promise.then(datas => {
+export async function searchForQuery(query: string): Promise<void> {
 
-		// get all search results relevant to the query
-		const titleRelevant: SoftwareDataAsync[] = [];
-		const descriptionRelevant: SoftwareDataAsync[] = [];
-		const otherRelevant: SoftwareDataAsync[] = [];
-		const splitQuery = query.toLowerCase().split(/\s+/);
-		for(const data of datas){
-			for(const term of splitQuery){
-				if(data.softwareName.includes(term)) {
-					titleRelevant.push(data);
-				}
-				else if (
-					data.conciseDescription.includes(term) || 
-					data.description.includes(term)
-				){
-					descriptionRelevant.push(data);
-				}
-				else if (data.codeRepositoryUrl.includes(term)){
-					otherRelevant.push(data);
-				}
-				else if (data.persistentIdentifier.includes(term)){
-					otherRelevant.push(data);
-				}
-				else if (data.id.includes(term)) {
-					otherRelevant.push(data);
-				}
+	Spinner.showSpinner(`Searching for ${query}`);
+
+	// get all search results relevant to the query
+	const relevantSoftwareIds = await getReleventQueryResults(query);
+	
+	// refresh the items in the resource view to only display search results
+	const view = ResourceView.getMainView();
+	view.filterToItems(relevantSoftwareIds);
+	view.refreshItems();
+
+	// Record search to browser history
+	const newUrl = new URL(window.location.href);
+	if (query) newUrl.searchParams.set(searchParamQuery, query);
+	else newUrl.searchParams.delete(searchParamQuery);
+	history.pushState(null, "", newUrl);
+
+	console.log(`queried '${query}', results:`, relevantSoftwareIds);
+	
+	setTimeout(() => {
+		Spinner.hideSpinner();
+	}, 100);
+	updateTitleToSearch();
+}
+
+export async function getReleventQueryResults(query: string): Promise<string[]> {
+	const datas = await ModelDataCache.getModelDataAll("Software");
+
+	// get all search results relevant to the query
+	const titleRelevant: SoftwareDataAsync[] = [];
+	const descriptionRelevant: SoftwareDataAsync[] = [];
+	const otherRelevant: SoftwareDataAsync[] = [];
+	const splitQuery = query.toLowerCase().split(/\s+/);
+	for(const data of datas){
+		for(const term of splitQuery){
+			if(data.softwareName.includes(term)) {
+				titleRelevant.push(data);
+			}
+			else if (
+				data.conciseDescription.includes(term) || 
+				data.description.includes(term)
+			){
+				descriptionRelevant.push(data);
+			}
+			else if (data.codeRepositoryUrl.includes(term)){
+				otherRelevant.push(data);
+			}
+			else if (data.persistentIdentifier.includes(term)){
+				otherRelevant.push(data);
+			}
+			else if (data.id.includes(term)) {
+				otherRelevant.push(data);
 			}
 		}
-		const relevantSoftwareIds = (
-			titleRelevant.map(s => s.id)
-				.concat(descriptionRelevant.map(s => s.id))
-				.concat(otherRelevant.map(s => s.id))
-		)
-		
-		// TODO sort by relevance score
-		
-		// refresh the items in the resource view to only display search results
-		const view = ResourceView.getMainView();
-		view.filterToItems(relevantSoftwareIds);
-		view.refreshItems();
+	}
+	const relevantSoftwareIds = (
+		titleRelevant.map(s => s.id)
+			.concat(descriptionRelevant.map(s => s.id))
+			.concat(otherRelevant.map(s => s.id))
+	)
 
-		// Record search to browser history
-		const newUrl = new URL(window.location.href);
-		newUrl.searchParams.set(searchParamQuery, query);
-		history.pushState(null, "", newUrl);
+	// TODO sort by relevance score
 
-		console.log(`queried '${query}', results:`, relevantSoftwareIds);
-	});
+	return relevantSoftwareIds;
 }
 
 window.addEventListener("load", initializeSearch);

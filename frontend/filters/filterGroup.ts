@@ -4,6 +4,8 @@ import {
 	GraphListItem,
 	SimpleEvent,
 	styleSelected,
+	type SoftwareData,
+	type SoftwareDataAsync,
 } from "../loader";
 
 const styleFilterContainer = "filter-container";
@@ -14,7 +16,7 @@ const styleGroupClear = "group-clear";
 const styleGroupCreate = "group-create";
 const styleGroupMode = "group-mode";
 
-enum FilterGroupMode {
+export enum FilterGroupMode {
 	Or = 0,
 	And = 1,
 }

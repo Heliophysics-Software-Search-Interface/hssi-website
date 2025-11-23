@@ -101,6 +101,8 @@ export class ModelDataCache<T extends HSSIModelData>{
 	private promiseAll: Promise<void> = null;
 	private allDataFetched: boolean = false;
 
+	public get hasFetchedAllData(): boolean { return this.allDataFetched; }
+
 	public get model(): ModelName { return this.targetModel; }
 
 	private storeModelObjectData(obj: T): void {
@@ -198,6 +200,18 @@ export class ModelDataCache<T extends HSSIModelData>{
 		}
 		
 		return this.dataMap.get(uid);
+	}
+
+	/** 
+	 * checks all the uids the cache currently has loaded and returns the 
+	 * full uid for the first one that begins with the specified string,
+	 * returns null if not found
+	 */
+	public expandUidFromTruncated(truncatedUid: string): string {
+		for(const uid of this.dataMap.keys()){
+			if(uid.startsWith(truncatedUid)) return uid;
+		}
+		return null;
 	}
 }
 

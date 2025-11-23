@@ -8,6 +8,7 @@ import {
 	type ModelName,
 	ModelData,
 	ModelDataCache,
+	type SoftwareDataAsync,
 } from "../../loader";
 
 /**
@@ -81,6 +82,9 @@ export class FilterTab {
 
 	/** the name of the database model to fetch the filter items from */
 	public targetModel: ModelName = "" as any;
+
+	/** the field on the software data this filter item is filtering */
+	public targetField: keyof SoftwareDataAsync = "" as any;
 
 	/** a list of filter items to be displayed directly (not as children of other items) */
 	public rootItems: FilterMenuItem[] = [];

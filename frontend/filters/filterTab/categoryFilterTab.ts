@@ -20,6 +20,7 @@ export class CategoryFilterTab extends ControlledListFilterTab {
 	public constructor(parentMenu: FilterMenu) {
 		super(parentMenu);
 		this.targetModel = "FunctionCategory";
+		this.targetField = "softwareFunctionality";
 	}
 
 	protected override itemDataValid(itemData: JSONValue): boolean {

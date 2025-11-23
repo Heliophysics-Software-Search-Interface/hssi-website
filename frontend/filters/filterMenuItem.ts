@@ -5,6 +5,8 @@ import {
 	type JSONObject, 
 	type JSONValue, 
 	type CategoryFilterTab,
+	type ModelName,
+	type SoftwareDataAsync,
 } from "../loader";
 
 
@@ -28,6 +30,12 @@ export class FilterMenuItem {
 	protected data: JSONValue = null;
 	private expandButton: HTMLButtonElement = null;
 	private parentItem: FilterMenuItem = null;
+
+	public get targetSoftwareField(): keyof SoftwareDataAsync { 
+		return this.parentTab.targetModel; 
+	}
+
+	public get targetModel(): ModelName { return this.parentTab?.targetModel; }
 	
 	/** html element that contains all other elements of the item */
 	public containerElement: HTMLLIElement = null;

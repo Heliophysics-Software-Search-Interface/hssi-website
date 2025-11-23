@@ -20,6 +20,7 @@ export * from "./filters/filterTab/filterTab";
 export * from "./filters/filterTab/categoryFilterTab";
 export * from "./filters/filterTab/programmingLanguageFilterTab";
 export * from "./filters/filterMenu";
+export * from "./filters/urlEncoding";
 
 export * from "./query/search";
 

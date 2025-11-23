@@ -14,6 +14,7 @@ export class ProgrammingLanguageFilterTab extends ControlledListFilterTab {
 	public constructor(parentMenu: FilterMenu) {
 		super(parentMenu);
 		this.targetModel = "ProgrammingLanguage";
+		this.targetField = "programmingLanguage";
 	}
 
 	protected override createItem(itemData: JSONValue): FilterMenuItem {

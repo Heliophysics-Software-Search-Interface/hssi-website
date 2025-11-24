@@ -103,7 +103,6 @@ export interface SoftwareDataAsync extends HSSIModelData {
 	developmentStatus: HssiDataAsync<ControlledListData>,
 	operatingSystem: Array<HssiDataAsync<ControlledListData>>,
 	license: Array<HssiDataAsync<ControlledListData>>,
-	relatedRegion: Array<HssiDataAsync<ControlledListData>>,
 	keywords: Array<KeywordData>,
 	relatedSoftware: Array<HssiDataAsync<ControlledListData>>,
 	interoperableSoftware: Array<HssiDataAsync<ControlledListData>>,
@@ -111,6 +110,7 @@ export interface SoftwareDataAsync extends HSSIModelData {
 	award: HssiDataAsync<HSSIModelData>,
 	codeRepositoryUrl: string,
 	logo: HssiDataAsync<HSSIImageData>,
+	relatedRegion: Array<HssiDataAsync<ControlledListData>>,
 	relatedPhenomena: Array<HssiDataAsync<ControlledListData>>,
 	submissionInfo: HssiDataAsync<HSSIModelData>,
 }

@@ -52,6 +52,10 @@ export class ResourceItem{
 	private authorsExpandedContainer: HTMLSpanElement = null;
 	private authorEtAlContainer: HTMLSpanElement = null;
 
+	public get softwareData(): SoftwareDataAsync {
+		return this.data;
+	}
+	
 	/** the html element that contains all the html content for this item */
 	public containerElement: HTMLDivElement = null;
 

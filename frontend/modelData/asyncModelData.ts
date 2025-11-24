@@ -23,6 +23,7 @@ export interface HssiDataAsync<T extends HSSIModelData> {
 	get id(): string;
 	get model(): ModelName;
 	get hasData(): boolean;
+	get loadedData(): T;
 	getData(): Promise<T>;
 }
 
@@ -45,6 +46,10 @@ export class HssiModelDataAsync<T extends HSSIModelData>
 	 */
 	protected get data(): T { return this.modelData; }
 
+	/** returns the data if it's loaded but doesn't load it if it isn't */
+	public get loadedData(): T { return this.data; }
+
+	/** whether or not the data for the object has been loaded yet */
 	public get hasData(): boolean { return !!this.data; }
 	
 	public constructor(model: ModelName, id: string){

@@ -3,8 +3,10 @@ import {
 	filterGroupToUrlVal,
 	FilterMenu, FilterMenuItem,
 	GraphListItem,
+	HssiModelDataAsync,
 	SimpleEvent,
 	styleSelected,
+	type HSSIModelData,
 	type SoftwareData,
 	type SoftwareDataAsync,
 } from "../loader";
@@ -103,7 +105,7 @@ export class FilterGroupMaker {
 		createGroup.addEventListener("click", e => {
 			const group = this.createGroup();
 			console.log("Filter group created:\n" + filterGroupToUrlVal(group));
-			// TODO apply filter group 
+			this.parentMenu.addFilterGroup(group);
 		})
 
 		this.setControlsVisible(false);
@@ -196,6 +198,63 @@ export class FilterGroup {
 			span.appendChild(chip);
 		}
 		return span;
+	}
+
+	/** 
+	 * returns true if the specified software resource data passes all the 
+	 * filters in the filter group 
+	 */
+	public passes(data: SoftwareDataAsync): boolean {
+
+		// ensure that the software data fields for each filter exists
+		let hasAny = this.includedItems.length <= 0;
+		for(const item of this.includedItems){
+			let fieldDataArray: Array<any> = data[item.targetSoftwareField];
+			if(!(fieldDataArray instanceof Array)) fieldDataArray = [fieldDataArray];
+
+			let hasId = false;
+			for (const fieldData of fieldDataArray){
+				if(!fieldData.id || fieldData.id == item.id){
+					hasId = true;
+					break;
+				}
+			}
+			if(!hasId) {
+				if(this.mode == FilterGroupMode.And) return false;
+			}
+			else hasAny = true;
+		}
+		if(!hasAny) return false;
+
+		// ensure that none of the software data fields for any exclusion filter exists
+		for(const item of this.excludedItems){
+			let fieldDataArray = data[item.targetSoftwareField];
+			if(!(fieldDataArray instanceof Array)) fieldDataArray = [fieldDataArray];
+			let hasId = false;
+			for (const fieldData of fieldDataArray) {
+				if(!fieldData.id || fieldData.id == item.id){
+					hasId = true;
+					break;
+				}
+			}
+			if(hasId) return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * returns a list of software data who's corresponding data passes the 
+	 * filters  in this filter group
+	 * @param softwares the softwares datas to filter against
+	 */
+	public filterSoftware(softwares: SoftwareDataAsync[]): SoftwareDataAsync[] {
+		const passed: SoftwareDataAsync[] = [];
+		for(const software of softwares) {
+			console.log(software.softwareName, this.passes(software));
+			if(this.passes(software)) passed.push(software);
+		}
+		return passed;
 	}
 }
 

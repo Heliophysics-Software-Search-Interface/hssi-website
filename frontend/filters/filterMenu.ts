@@ -1,6 +1,8 @@
 import { 
 	FilterTab, CategoryFilterTab, FilterMenuItem, FilterGroupMaker,
 	ProgrammingLanguageFilterTab,
+	FilterGroup,
+	ResourceView,
 } from "../loader";
 
 const styleFilterMenu = "filter-menu";
@@ -12,6 +14,8 @@ export class FilterMenu {
 	private groupMaker: FilterGroupMaker = null;
 	private curTab: FilterTab = null;
 	private selectedItems: FilterMenuItem[] = [];
+	private activeFilterGroups: FilterGroup[] = [];
+	private targetView: ResourceView = null;
 
 	/** contains all elements for menu */
 	public containerElement: HTMLDivElement = null;
@@ -24,9 +28,17 @@ export class FilterMenu {
 	/** the tab that is currently selected by the user */
 	public get currentTab(): FilterTab { return this.curTab; }
 
-	public constructor() {
+	public constructor(view: ResourceView) {
 		this.containerElement = document.createElement("div");
 		this.containerElement.classList.add(styleFilterMenu);
+
+		// TODO make this less stupid
+		if(view == null){
+			window.addEventListener("DOMContentLoaded", e => {
+				this.targetView = ResourceView.getMainView();
+			})
+		}
+		else this.targetView = view;
 	}
 
 	/** build all display html elements for the {@link FilterMenu} */
@@ -98,10 +110,28 @@ export class FilterMenu {
 			item.containerElement.classList.remove(styleSelected);
 		}
 	}
+
+	public addFilterGroup(group: FilterGroup): void {
+		this.activeFilterGroups.push(group);
+		// TODO render filter groups
+		this.applyFilters();
+	}
+
+	/** Apply all the active filter groups to the results */
+	public applyFilters(): void {
+
+		let items = this.targetView.getActiveItems()
+		for(const group of this.activeFilterGroups){
+			items = group.filterSoftware(items);
+		}
+		this.targetView.filterToItems(items.map(item => item.id));
+		this.targetView.refreshItems();
+	}
 }
 
-export function makeFilterMenuElement(): void {
-	const filterMenu = new FilterMenu();
+export function makeFilterMenuElement(targetView: ResourceView = null): void {
+	const view = targetView || ResourceView.getMainView();
+	const filterMenu = new FilterMenu(view);
 	filterMenu.tabs.push(new CategoryFilterTab(filterMenu));
 	filterMenu.tabs.push(new ProgrammingLanguageFilterTab(filterMenu));
 	document.currentScript.parentNode.appendChild(filterMenu.containerElement);

@@ -61,6 +61,10 @@ export class ResourceView {
 		this.containerElement.style.minHeight = "100px";
 	}
 
+	public getActiveItems(): SoftwareDataAsync[] {
+		return this.items.map(itm => itm.softwareData);
+	}
+
 	/** create new items based on stored item data */
 	public refreshItems(): void {
 
@@ -106,7 +110,6 @@ export class ResourceView {
 	 * data received 
 	 */
 	public async fetchAndBuild(): Promise<void> {
-		// TODO implement filtering
 
 		Spinner.showSpinner("Fetching Software Data...", this.containerElement);
 

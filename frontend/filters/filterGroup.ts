@@ -105,7 +105,10 @@ export class FilterGroupMaker {
 
 		createGroup.addEventListener("click", e => {
 			const group = this.createGroup();
-			console.log("Filter group created:\n" + filterGroupToUrlVal(group));
+			try{
+				console.log("Filter group created:\n" + filterGroupToUrlVal(group));
+			}
+			catch(e) { console.error(e); }
 			this.parentMenu.addFilterGroup(group);
 		})
 
@@ -223,7 +226,11 @@ export class FilterGroup {
 
 			let hasId = false;
 			for (const fieldData of fieldDataArray){
-				if(!fieldData.id || fieldData.id == item.id){
+				if(
+					!fieldData.id || 
+					fieldData.id == item.id ||
+					!!item.subItems.find(sub => sub.id == fieldData.id)
+				){
 					hasId = true;
 					break;
 				}
@@ -241,7 +248,11 @@ export class FilterGroup {
 			if(!(fieldDataArray instanceof Array)) fieldDataArray = [fieldDataArray];
 			let hasId = false;
 			for (const fieldData of fieldDataArray) {
-				if(!fieldData.id || fieldData.id == item.id){
+				if(
+					!fieldData.id || 
+					fieldData.id == item.id ||
+					!!item.subItems.find(sub => sub.id == fieldData.id)
+				){
 					hasId = true;
 					break;
 				}
@@ -260,7 +271,6 @@ export class FilterGroup {
 	public filterSoftware(softwares: SoftwareDataAsync[]): SoftwareDataAsync[] {
 		const passed: SoftwareDataAsync[] = [];
 		for(const software of softwares) {
-			console.log(software.softwareName, this.passes(software));
 			if(this.passes(software)) passed.push(software);
 		}
 		return passed;

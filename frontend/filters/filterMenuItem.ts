@@ -31,6 +31,8 @@ export class FilterMenuItem {
 	private expandButton: HTMLButtonElement = null;
 	private parentItem: FilterMenuItem = null;
 
+	public get parentFilterItem(): FilterMenuItem { return this.parentItem; }
+
 	public get targetSoftwareField(): keyof SoftwareDataAsync { 
 		return this.parentTab.targetField; 
 	}
@@ -81,7 +83,15 @@ export class FilterMenuItem {
 	 * anywhere in the document
 	 */
 	public async createChip(): Promise<HTMLSpanElement> {
-		return await ModelData.createChip(this.parentTab.targetModel, this.id);
+		let chip:HTMLSpanElement = null;
+		try{
+			chip = await ModelData.createChip(this.parentTab.targetModel, this.id);
+		}
+		catch{
+			chip = this.containerElement.cloneNode() as any;
+			chip.querySelector("button").remove();
+		}
+		return chip;
 	}
 
 	/** creates all display html elements for the list item */

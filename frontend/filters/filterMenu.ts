@@ -4,6 +4,7 @@ import {
 	FilterGroup,
 	ResourceView,
 	faCloseIcon,
+	filterGroupToUrlVal,
 } from "../loader";
 
 export const styleHidden = "hidden";
@@ -11,6 +12,8 @@ export const styleSelected = "selected";
 const styleFilterMenu = "filter-menu";
 const styleTabContainer = "tab-container";
 const styleFilterGroupContainer = "active-filters";
+const urlSymGroupDelimiter = "..";
+const searchParamFilter = "filt";
 
 export class FilterMenu {
 	
@@ -164,6 +167,33 @@ export class FilterMenu {
 			this.activeGroupsContainerElement.classList.remove(styleHidden);
 		}
 		else this.activeGroupsContainerElement.classList.add(styleHidden);
+
+		// if it's the main view, we'll want to append the filters as url params
+		if(this.targetView == ResourceView.getMainView()){
+			this.recordFilterUrlParams();
+		}
+	}
+
+	private recordFilterUrlParams(): void {
+
+		let filterParamVal = "";
+		for(const group of this.activeFilterGroups){
+			filterParamVal += filterGroupToUrlVal(group) + urlSymGroupDelimiter;
+		}
+
+		// chop off the last delimiter
+		if(filterParamVal.length > 0) {
+			filterParamVal = filterParamVal.substring(
+				0, 
+				filterParamVal.length - urlSymGroupDelimiter.length
+			);
+		}
+
+		// Record filter to browser history
+		const newUrl = new URL(window.location.href);
+		if (filterParamVal) newUrl.searchParams.set(searchParamFilter, filterParamVal);
+		else newUrl.searchParams.delete(searchParamFilter);
+		history.pushState(null, "", newUrl);
 	}
 }
 

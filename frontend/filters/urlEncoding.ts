@@ -1,15 +1,14 @@
 import { 
 	FilterGroup,
 	FilterGroupMode,
+	FilterMenuItem,
 	isUuid4,
 	ModelDataCache,
 	type ModelName,
 	type SoftwareDataAsync,
 } from "../loader";
 
-const urlUidTruncateLength = 6;
-const urlSymOr = "_";
-const urlSymAnd = "-";
+const urlSymAnd = "~";
 const urlSymNot = "~";
 const urlSymUidDelim = ".";
 const uidUrlEncodeLength = 7;
@@ -130,31 +129,44 @@ async function getUidFromTruncated(truncatedUid: string, model: ModelName): Prom
 	return cache.expandUidFromTruncated(truncatedUid);
 }
 
-export function filterGroupToUrlVal(group: FilterGroup): string{
+function multiItemToUrlVal(item: FilterMenuItem, invert: boolean): string{
 	let valStr = "";
 
-	for(const item of group.includedItems) {
-		const uidTruncated = shortenUidToParamVal(item.id, item.targetSoftwareField);
-		valStr += uidTruncated;
-		if(group.mode == FilterGroupMode.And) valStr += urlSymAnd;
-		else valStr += urlSymOr;
+	for(const sub of item.subItems){
+		if(invert) valStr += urlSymNot;
+		valStr += shortenUidToParamVal(sub.id, sub.targetSoftwareField) + urlSymUidDelim;
 	}
-
-	for(const item of group.excludedItems) {
-		const uidTrunc = shortenUidToParamVal(item.id, item.targetSoftwareField);
-		valStr += urlSymNot + uidTrunc;
-		if(group.mode == FilterGroupMode.And) valStr += urlSymAnd;
-		else valStr += urlSymOr;
-	}
-
-	// clip off final and/or symbol
 	if (valStr.length > 0) valStr = valStr.substring(0, valStr.length - 1);
 
 	return valStr;
 }
 
+export function filterGroupToUrlVal(group: FilterGroup): string{
+	let valStr = "";
+
+	for(const item of group.includedItems) {
+		let truncated: string = null;
+		if(!item.id && item.subItems?.length > 0) truncated = multiItemToUrlVal(item, false);
+		else truncated = shortenUidToParamVal(item.id, item.targetSoftwareField);
+		valStr += truncated + urlSymUidDelim;
+	}
+
+	for(const item of group.excludedItems) {
+		let trunc: string = null;
+		if(!item.id && item.subItems?.length > 0) trunc = multiItemToUrlVal(item, true);
+		else trunc = urlSymNot + shortenUidToParamVal(item.id, item.targetSoftwareField);
+		valStr += trunc + urlSymUidDelim;
+	}
+
+	// clip off final and/or symbol
+	if (valStr.length > 0) valStr = valStr.substring(0, valStr.length - 1);
+
+	if(group.mode == FilterGroupMode.And) valStr += urlSymAnd;
+	return valStr;
+}
+
 /** Convert UUID (full or partial) → Base64 (URL-safe optional) */
-export function uuidToBase64(uuid: string, urlSafe = false): string {
+export function uuidToBase64(uuid: string): string {
 	const hex = uuid.replace(/-/g, "").toLowerCase();
 	const bytes = new Uint8Array(hex.length / 2);
 
@@ -163,15 +175,13 @@ export function uuidToBase64(uuid: string, urlSafe = false): string {
 	}
 
 	const b64 = btoa(String.fromCharCode(...bytes)).replace(/=+$/, "");
-	return urlSafe
-		? b64.replace(/\+/g, "-").replace(/\//g, "_")
-		: b64;
+	return b64.replaceAll("+", "-").replaceAll("/", "_");
 }
 
 /** Convert Base64 back → UUID hex string */
 export function base64ToUuid(b64: string): string {
 	// Undo URL-safe variant if used
-	const normalized = b64.replace("-", "+").replace("_", "/");
+	const normalized = b64.replaceAll("-", "+").replaceAll("_", "/");
 
 	const bin = atob(normalized);
 	let hex = "";

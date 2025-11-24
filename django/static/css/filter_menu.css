@@ -25,6 +25,10 @@
 	margin-right: 5px;
 }
 
+.filter-menu .filtergroup-container:hover {
+	background-color: #444;
+}
+
 .filter-menu .filter-controls {
 	background-color: #969696;
 	text-align: right;

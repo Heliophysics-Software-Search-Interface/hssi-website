@@ -124,18 +124,22 @@ export class FilterMenu {
 
 	public addFilterGroup(group: FilterGroup): void {
 		this.activeFilterGroups.push(group);
-		// TODO render filter groups
-		const chip = group.createChip();
-		this.activeGroupsContainerElement.append(chip);
 		this.applyFilters();
 	}
 
 	/** Apply all the active filter groups to the results */
 	public applyFilters(): void {
 
-		let items = this.targetView.getActiveItems()
+		// clear old chips
+		this.activeGroupsContainerElement.innerHTML = "Active Filter Groups: ";
+		
+		let items = this.targetView.getActiveItems();
 		for(const group of this.activeFilterGroups){
 			items = group.filterSoftware(items);
+
+			// render chips
+			const chip = group.createChip();
+			this.activeGroupsContainerElement.append(chip);
 		}
 		this.targetView.filterToItems(items.map(item => item.id));
 		this.targetView.refreshItems();

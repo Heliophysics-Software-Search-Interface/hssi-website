@@ -1,3 +1,5 @@
+.hidden { display: none; }
+
 .filter-menu {
 	user-select: none;
 	background-color: #ececec;
@@ -7,12 +9,20 @@
 	list-style: none;
 }
 
+.filter-menu .active-filters,
 .filter-menu .filter-container {
 	background-color: #b7b7b7;
 	color: white;
 	font-weight: bolder;
 	min-height: 40px;
 	padding: 5px;
+}
+
+.filter-menu .filtergroup-container {
+	border: 1px solid #222;
+	border-radius: 3px;
+	padding: 5px 0 5px 0;
+	margin-right: 5px;
 }
 
 .filter-menu .filter-controls {
@@ -43,6 +53,7 @@
 	cursor: inherit;
 }
 
+.active-filters .item-chip.invert-filter,
 .filter-container .item-chip.invert-filter {
 	text-decoration: line-through;
 }

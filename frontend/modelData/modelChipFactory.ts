@@ -37,7 +37,6 @@ export class BaseChipFactory<T extends HSSIModelData> implements ModelChipFactor
 	}
 
 	public async createChip(uid: string): Promise<HTMLSpanElement> {
-		if(!uid) debugger;
 		const data = await ModelDataCache.getModelData(this.modelName, uid);
 		return this.createChipFromData(data as any);
 	}

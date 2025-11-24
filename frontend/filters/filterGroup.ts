@@ -11,6 +11,7 @@ import {
 	type SoftwareDataAsync,
 } from "../loader";
 
+const styleFilterGroupChip = "filtergroup-container";
 const styleFilterContainer = "filter-container";
 const styleFilterControls = "filter-controls";
 const styleInvertFilter = "invert-filter";
@@ -186,16 +187,24 @@ export class FilterGroup {
 	public mode: FilterGroupMode = FilterGroupMode.Or;
 
 	/** create a small display element that represents the whole filter group */
-	public async createChip(): Promise<HTMLSpanElement>{
+	public createChip(): HTMLSpanElement {
 		const span = document.createElement("span");
+		span.classList.add(styleFilterGroupChip);
+		const scale = 0.9;
 		for(const inc of this.includedItems){
-			const chip = await inc.createChip();
-			span.appendChild(chip);
+			const promise = inc.createChip();
+			promise.then(chip => {
+				chip.style.transform = `scale(${scale})`;
+				span.appendChild(chip);
+			});
 		}
 		for(const exc of this.excludedItems){
-			const chip = await exc.createChip();
-			chip.classList.add(styleInvertFilter);
-			span.appendChild(chip);
+			const promise = exc.createChip();
+			promise.then(chip => {
+				chip.style.transform = `scale(${scale})`;
+				chip.classList.add(styleInvertFilter);
+				span.appendChild(chip);
+			});
 		}
 		return span;
 	}

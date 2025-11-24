@@ -5,12 +5,15 @@ import {
 	ResourceView,
 } from "../loader";
 
-const styleFilterMenu = "filter-menu";
+export const styleHidden = "hidden";
 export const styleSelected = "selected";
+const styleFilterMenu = "filter-menu";
 const styleTabContainer = "tab-container";
+const styleFilterGroupContainer = "active-filters";
 
 export class FilterMenu {
 	
+	private activeGroupsContainerElement: HTMLDivElement = null;
 	private groupMaker: FilterGroupMaker = null;
 	private curTab: FilterTab = null;
 	private selectedItems: FilterMenuItem[] = [];
@@ -55,6 +58,14 @@ export class FilterMenu {
 			this.setItemSelected(item, false);
 		});
 
+		// active filter group container
+		this.activeGroupsContainerElement = document.createElement("div");
+		this.activeGroupsContainerElement.classList.add(styleFilterGroupContainer);
+		this.activeGroupsContainerElement.classList.add(styleHidden);
+		this.activeGroupsContainerElement.append("Active Filter Groups: ");
+		this.containerElement.appendChild(this.activeGroupsContainerElement);
+
+		// tab headers
 		this.tabHeadersElement = document.createElement("div");
 		this.tabHeadersElement.classList.add(styleTabContainer);
 		this.containerElement.appendChild(this.tabHeadersElement);
@@ -114,6 +125,8 @@ export class FilterMenu {
 	public addFilterGroup(group: FilterGroup): void {
 		this.activeFilterGroups.push(group);
 		// TODO render filter groups
+		const chip = group.createChip();
+		this.activeGroupsContainerElement.append(chip);
 		this.applyFilters();
 	}
 
@@ -126,6 +139,12 @@ export class FilterMenu {
 		}
 		this.targetView.filterToItems(items.map(item => item.id));
 		this.targetView.refreshItems();
+
+		// show/hide active groups element
+		if (this.activeFilterGroups.length > 0){
+			this.activeGroupsContainerElement.classList.remove(styleHidden);
+		}
+		else this.activeGroupsContainerElement.classList.add(styleHidden);
 	}
 }
 

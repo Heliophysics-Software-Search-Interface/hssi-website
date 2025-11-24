@@ -5,6 +5,7 @@ import {
 	ResourceView,
 	faCloseIcon,
 	filterGroupToUrlVal,
+	type SoftwareDataAsync,
 } from "../loader";
 
 export const styleHidden = "hidden";
@@ -17,6 +18,9 @@ const searchParamFilter = "filt";
 
 export class FilterMenu {
 	
+	private static mainInstance: FilterMenu = null;
+	public static get main(): FilterMenu { return this.mainInstance; }
+
 	private activeGroupsContainerElement: HTMLDivElement = null;
 	private groupMaker: FilterGroupMaker = null;
 	private curTab: FilterTab = null;
@@ -38,6 +42,8 @@ export class FilterMenu {
 	public constructor(view: ResourceView) {
 		this.containerElement = document.createElement("div");
 		this.containerElement.classList.add(styleFilterMenu);
+
+		if(!FilterMenu.mainInstance) FilterMenu.mainInstance = this;
 
 		// TODO make this less stupid
 		if(view == null){
@@ -137,6 +143,11 @@ export class FilterMenu {
 			item.checkboxElement.checked = false;
 			item.containerElement.classList.remove(styleSelected);
 		}
+	}
+
+	/** returns the tab that filters the specified software field */
+	public getTabForField(field: keyof SoftwareDataAsync): FilterTab {
+		return this.tabs.find(tab => tab.targetField == field);
 	}
 
 	public addFilterGroup(group: FilterGroup): void {

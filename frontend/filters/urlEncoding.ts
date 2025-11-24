@@ -1,6 +1,7 @@
 import { 
 	FilterGroup,
 	FilterGroupMode,
+	FilterMenu,
 	FilterMenuItem,
 	isUuid4,
 	ModelDataCache,
@@ -129,11 +130,11 @@ async function getUidFromTruncated(truncatedUid: string, model: ModelName): Prom
 	return cache.expandUidFromTruncated(truncatedUid);
 }
 
-function multiItemToUrlVal(item: FilterMenuItem, invert: boolean): string{
+function multiItemToUrlVal(item: FilterMenuItem, negated: boolean): string{
 	let valStr = "";
 
 	for(const sub of item.subItems){
-		if(invert) valStr += urlSymNot;
+		if(negated) valStr += urlSymNot;
 		valStr += shortenUidToParamVal(sub.id, sub.targetSoftwareField) + urlSymUidDelim;
 	}
 	if (valStr.length > 0) valStr = valStr.substring(0, valStr.length - 1);
@@ -163,6 +164,36 @@ export function filterGroupToUrlVal(group: FilterGroup): string{
 
 	if(group.mode == FilterGroupMode.And) valStr += urlSymAnd;
 	return valStr;
+}
+
+export async function urlValToFilterGroup(urlVal: string): Promise<FilterGroup>{
+	const group = new FilterGroup();
+	let newval = urlVal.trim();
+
+	// parse mode
+	if(newval.endsWith(urlSymAnd)) group.mode = FilterGroupMode.And;
+	else group.mode = FilterGroupMode.Or;
+	newval = newval.substring(0, newval.length - 1);
+
+	// split into individual values
+	const vals = newval.split(urlSymUidDelim);
+	for (let val of vals) {
+
+		// check to see if the filter item is negated
+		const itemList = !val.startsWith(urlSymNot) ? 
+			group.includedItems : 
+			group.excludedItems;
+		val = val.substring(1);
+
+		// convert to uid and find corresponding filtermenuitem
+		const uid = await expandUidFromParamVal(val);
+		const field = urlParamToSoftwareField(val.substring(uidUrlEncodeLength));
+		const item = FilterMenu.main.getTabForField(field).findItemWithUid(uid);
+		
+		itemList.push(item);
+	}
+
+	return group;
 }
 
 /** Convert UUID (full or partial) → Base64 (URL-safe optional) */

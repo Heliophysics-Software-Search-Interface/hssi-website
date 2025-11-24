@@ -142,6 +142,19 @@ export class FilterTab {
 		return new FilterMenuItem(this, itemData);
 	}
 
+	/** 
+	 * finds the filter menu item with the specified uid even if it's not 
+	 * a root item 
+	*/
+	public findItemWithUid(uid: string): FilterMenuItem {
+		for(const item of this.rootItems){
+			if(item.id == uid) return item;
+			if(item.subItems) for(const sub of item.subItems){
+				if(sub.id == uid) return sub;
+			}
+		}
+	}
+
 	/** recreate root filter items from db model data */
 	public refreshItems(): void {
 		for(const item of this.rootItems) item.destroy();

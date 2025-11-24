@@ -291,52 +291,6 @@ async function curateEditFormInit() {
 	FormGenerator.fillForm(data, true);
 }
 
-/** Convert UUID (full or partial) → Base64 (URL-safe optional) */
-export function uuidToBase64(uuid: string, urlSafe = false): string {
-	const hex = uuid.replace(/-/g, "").toLowerCase();
-	const bytes = new Uint8Array(hex.length / 2);
-
-	for (let i = 0; i < bytes.length; i++) {
-		bytes[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
-	}
-
-	const b64 = btoa(String.fromCharCode(...bytes)).replace(/=+$/, "");
-	return urlSafe
-		? b64.replace(/\+/g, "-").replace(/\//g, "_")
-		: b64;
-}
-
-/** Convert Base64 back → UUID hex string */
-export function base64ToUuid(b64: string): string {
-	// Undo URL-safe variant if used
-	const normalized = b64.replace("-", "+").replace("_", "/");
-
-	const bin = atob(normalized);
-	let hex = "";
-	for (let i = 0; i < bin.length; i++) {
-		hex += bin.charCodeAt(i).toString(16).padStart(2, "0");
-	}
-
-	// Add dashes
-	const parts = [8, 12, 16, 20, 32];
-	let out = "";
-	let lastpart = 0;
-
-	for (const part of parts) {
-		// no more chars
-		if (hex.length <= lastpart) break; 
-
-		const end = Math.min(part, hex.length);
-		out += hex.slice(lastpart, end);
-		
-		// add dash only if a full block exists
-		if (end === part && end < hex.length) out += "-";  
-		lastpart = part;
-	}
-
-	return out;
-}
-
 const win = window as any;
 win.requestEditSubmission = requestEditSubmission;
 win.getSoftwareData = getSoftwareData;
@@ -344,5 +298,3 @@ win.getSoftwareFormData = getSoftwareFormData;
 win.getSoftwareEditFormData = getSoftwareEditFormData;
 win.getSimpleSoftwareFormData = getSimpleSoftwareFormData;
 win.curateEditFormInit = curateEditFormInit;
-win.uuidToBase64 = uuidToBase64;
-win.base64ToUuid = base64ToUuid;

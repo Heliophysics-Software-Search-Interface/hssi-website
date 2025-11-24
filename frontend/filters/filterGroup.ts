@@ -1,5 +1,6 @@
 import { 
 	faCloseIcon,
+	filterGroupToUrlVal,
 	FilterMenu, FilterMenuItem,
 	GraphListItem,
 	SimpleEvent,
@@ -101,6 +102,7 @@ export class FilterGroupMaker {
 
 		createGroup.addEventListener("click", e => {
 			const group = this.createGroup();
+			console.log("Filter group created:\n" + filterGroupToUrlVal(group));
 			// TODO apply filter group 
 		})
 

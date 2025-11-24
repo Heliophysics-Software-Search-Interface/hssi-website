@@ -32,7 +32,7 @@ export class FilterMenuItem {
 	private parentItem: FilterMenuItem = null;
 
 	public get targetSoftwareField(): keyof SoftwareDataAsync { 
-		return this.parentTab.targetModel; 
+		return this.parentTab.targetField; 
 	}
 
 	public get targetModel(): ModelName { return this.parentTab?.targetModel; }

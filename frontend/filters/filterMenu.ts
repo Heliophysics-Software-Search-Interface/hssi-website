@@ -3,6 +3,7 @@ import {
 	ProgrammingLanguageFilterTab,
 	FilterGroup,
 	ResourceView,
+	faCloseIcon,
 } from "../loader";
 
 export const styleHidden = "hidden";
@@ -42,6 +43,19 @@ export class FilterMenu {
 			})
 		}
 		else this.targetView = view;
+	}
+
+	private attachRemoveButton(chip: HTMLSpanElement, group: FilterGroup) {
+		const removeButton = document.createElement("button");
+		removeButton.innerHTML = faCloseIcon;
+		removeButton.addEventListener("click", _ => {
+			const index = this.activeFilterGroups.indexOf(group);
+			if(index >= 0){
+				this.activeFilterGroups.splice(index, 1);
+				this.applyFilters();
+			}
+		});
+		chip.appendChild(removeButton);
 	}
 
 	/** build all display html elements for the {@link FilterMenu} */
@@ -133,13 +147,14 @@ export class FilterMenu {
 		// clear old chips
 		this.activeGroupsContainerElement.innerHTML = "Active Filter Groups: ";
 		
-		let items = this.targetView.getActiveItems();
+		let items = this.targetView.getAllItems();
 		for(const group of this.activeFilterGroups){
 			items = group.filterSoftware(items);
 
 			// render chips
 			const chip = group.createChip();
 			this.activeGroupsContainerElement.append(chip);
+			this.attachRemoveButton(chip, group);
 		}
 		this.targetView.filterToItems(items.map(item => item.id));
 		this.targetView.refreshItems();

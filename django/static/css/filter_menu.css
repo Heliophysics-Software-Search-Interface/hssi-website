@@ -168,6 +168,10 @@
 	padding-right: 0;
 }
 
+.filtergroup-container {
+	position: relative;
+}
+
 .item-chip {
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
@@ -184,17 +188,20 @@
 	text-align: center;
 }
 
+.filtergroup-container > button,
 .item-chip > button {
 	position: absolute;
 	color: orangered;
 	background-color: white;
 	cursor: pointer;
+	font-size: 8pt;
 	border-radius: 8px;
 	border: 1px solid red;
 	width: 15px;
 	height: 15px;
 	right: -5px;
 	top: -6px;
+	z-index: 1;
 }
 
 .item-chip.subchip {

@@ -293,7 +293,7 @@ class ItemChip {
 		// create 'remove' button
 		this.removeButton = document.createElement("button");
 		this.removeButton.innerHTML = faCloseIcon;
-		this.removeButton.addEventListener("click", e => {
+		this.removeButton.addEventListener("click", _ => {
 			this.itemReference.parentMenu.setItemSelected(
 				this.itemReference, false
 			);

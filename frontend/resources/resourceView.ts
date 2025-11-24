@@ -61,6 +61,10 @@ export class ResourceView {
 		this.containerElement.style.minHeight = "100px";
 	}
 
+	public getAllItems(): SoftwareDataAsync[] {
+		return this.itemData;
+	}
+
 	public getActiveItems(): SoftwareDataAsync[] {
 		return this.items.map(itm => itm.softwareData);
 	}

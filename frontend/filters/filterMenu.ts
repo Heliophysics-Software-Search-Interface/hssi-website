@@ -6,6 +6,7 @@ import {
 	faCloseIcon,
 	filterGroupToUrlVal,
 	type SoftwareDataAsync,
+	urlValToFilterGroup,
 } from "../loader";
 
 export const styleHidden = "hidden";
@@ -49,7 +50,7 @@ export class FilterMenu {
 		if(view == null){
 			window.addEventListener("DOMContentLoaded", e => {
 				this.targetView = ResourceView.getMainView();
-			})
+			});
 		}
 		else this.targetView = view;
 	}
@@ -65,6 +66,24 @@ export class FilterMenu {
 			}
 		});
 		chip.appendChild(removeButton);
+	}
+
+	private async parseUrlParams(): Promise<void> {
+		const search = new URLSearchParams(window.location.search);
+		const groupVals = search.get(searchParamFilter)?.split(urlSymGroupDelimiter);
+		if(!groupVals) return;
+
+		for(const groupval of groupVals) {
+			const group = await urlValToFilterGroup(groupval);
+			this.addFilterGroup(group);
+		}
+
+		try{
+			this.applyFilters();
+		}
+		catch{
+			window.addEventListener("DOMContentLoaded", _ => this.applyFilters());
+		}
 	}
 
 	/** build all display html elements for the {@link FilterMenu} */
@@ -106,6 +125,9 @@ export class FilterMenu {
 		// hide all tab contents except the current tab
 		for(const tab of this.tabs) tab.setContentsVisible(false);
 		this.selectTab(this.tabs[0]);
+
+		// get active filter groups from url
+		this.parseUrlParams();
 	}
 
 	/** set the current tab to the specified tab and update contents */
@@ -152,7 +174,6 @@ export class FilterMenu {
 
 	public addFilterGroup(group: FilterGroup): void {
 		this.activeFilterGroups.push(group);
-		this.applyFilters();
 	}
 
 	/** Apply all the active filter groups to the results */
@@ -220,3 +241,4 @@ export function makeFilterMenuElement(targetView: ResourceView = null): void {
 // export functionality to global scope
 const win = window as any;
 win.makeFilterMenuElement = makeFilterMenuElement;
+win.FilterMenu = FilterMenu;

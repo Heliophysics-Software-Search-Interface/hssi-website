@@ -171,25 +171,30 @@ export async function urlValToFilterGroup(urlVal: string): Promise<FilterGroup>{
 	let newval = urlVal.trim();
 
 	// parse mode
-	if(newval.endsWith(urlSymAnd)) group.mode = FilterGroupMode.And;
+	if(newval.endsWith(urlSymAnd)) {
+		group.mode = FilterGroupMode.And;
+		newval = newval.substring(0, newval.length - 1);
+	}
 	else group.mode = FilterGroupMode.Or;
-	newval = newval.substring(0, newval.length - 1);
 
 	// split into individual values
 	const vals = newval.split(urlSymUidDelim);
 	for (let val of vals) {
 
 		// check to see if the filter item is negated
-		const itemList = !val.startsWith(urlSymNot) ? 
-			group.includedItems : 
-			group.excludedItems;
-		val = val.substring(1);
+		let itemList = null 
+		if(!val.startsWith(urlSymNot)) itemList = group.includedItems 
+		else {
+			itemList = group.excludedItems;
+			val = val.substring(1);
+		}
 
 		// convert to uid and find corresponding filtermenuitem
 		const uid = await expandUidFromParamVal(val);
 		const field = urlParamToSoftwareField(val.substring(uidUrlEncodeLength));
-		const item = FilterMenu.main.getTabForField(field).findItemWithUid(uid);
-		
+		const tab = FilterMenu.main.getTabForField(field);
+		const item = await tab.findItemWithUid(uid);
+
 		itemList.push(item);
 	}
 
@@ -239,3 +244,8 @@ export function base64ToUuid(b64: string): string {
 
 	return out;
 }
+
+const win = window as any;
+win.expandUidFromParamVal = expandUidFromParamVal;
+win.shortenUidToParamVal = shortenUidToParamVal;
+win.getUidFromTruncated = getUidFromTruncated;

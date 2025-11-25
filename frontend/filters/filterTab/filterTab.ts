@@ -146,7 +146,8 @@ export class FilterTab {
 	 * finds the filter menu item with the specified uid even if it's not 
 	 * a root item 
 	*/
-	public findItemWithUid(uid: string): FilterMenuItem {
+	public async findItemWithUid(uid: string): Promise<FilterMenuItem> {
+		if(this.rootItems?.length <= 0) await this.onReady.wait();
 		for(const item of this.rootItems){
 			if(item.id == uid) return item;
 			if(item.subItems) for(const sub of item.subItems){

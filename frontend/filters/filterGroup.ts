@@ -110,6 +110,7 @@ export class FilterGroupMaker {
 			}
 			catch(e) { console.error(e); }
 			this.parentMenu.addFilterGroup(group);
+			this.parentMenu.applyFilters();
 		})
 
 		this.setControlsVisible(false);

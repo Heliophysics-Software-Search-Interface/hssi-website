@@ -186,16 +186,16 @@ export class FilterMenu {
 	}
 
 	/** Apply all the active filter groups to the results */
-	public applyFilters(pushHistory: boolean = true): void {
+	public async applyFilters(pushHistory: boolean = true): Promise<void> {
 
 		Spinner.showSpinner("Applying Filters");
-		setTimeout(() => {
-			Spinner.hideSpinner();
-		}, 100);
 
 		// clear old chips
 		this.activeGroupsContainerElement.innerHTML = "Active Filter Groups: ";
 		
+		// only filter after resources are fetched
+		if(this.targetView.getAllItems()?.length <= 0) await this.targetView.onReady.wait();
+
 		let items = this.targetView.getAllItems();
 		for(const group of this.activeFilterGroups){
 			items = group.filterSoftware(items);
@@ -218,6 +218,10 @@ export class FilterMenu {
 		if(this.targetView == ResourceView.getMainView()){
 			if(pushHistory) this.recordFilterUrlParams();
 		}
+
+		setTimeout(() => {
+			Spinner.hideSpinner();
+		}, 100);
 	}
 
 	private recordFilterUrlParams(): void {

@@ -1,5 +1,6 @@
 import { 
 	apiModel, apiSlugRowsAll, extractDoi, fetchTimeout, HssiModelDataAsync, isUuid4, modelApiUrl, ModelData, ModelDataCache, ResourceItem, 
+	SimpleEvent, 
 	Spinner, 
 	styleHidden, 
 	type JSONArray, type JSONObject, type SoftwareData,
@@ -29,6 +30,8 @@ export class ResourceView {
 	private itemData: SoftwareDataAsync[] = [];
 	private items: ResourceItem[] = [];
 	
+	public onReady: SimpleEvent = null;
+
 	private static resourceViewMap: Map<HTMLElement, ResourceView> = new Map();
 
 	/** 
@@ -54,6 +57,7 @@ export class ResourceView {
 	public containerElement: HTMLDivElement = null;
 
 	public constructor() {
+		this.onReady = new SimpleEvent();
 		this.containerElement = document.createElement("div");
 		this.containerElement.style.minHeight = "100px";
 		
@@ -81,8 +85,6 @@ export class ResourceView {
 		// remove all old items
 		for(const oldItem of this.items) oldItem.destroy();
 		this.items.length = 0;
-
-		// TODO implement filtering
 
 		// create new items from data
 		for(const data of this.itemData) {
@@ -126,8 +128,10 @@ export class ResourceView {
 			)];
 		}
 		else this.itemData = [...await ModelDataCache.getModelDataAll("VisibleSoftware")];
-		this.refreshItems();
 
+		this.onReady.triggerEvent();
+
+		this.refreshItems();
 		Spinner.hideSpinner(this.containerElement);
 	}
 }

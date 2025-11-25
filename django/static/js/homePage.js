@@ -357,34 +357,7 @@ HSSI.scrollToContentTop = function scrollToContentTop(delay) {
 }
 
 HSSI.showResultCount = function showResultCount(queryParamUrl) {
-	let results = $("#resource_content .callout").length;
-	if (results === 0) {
-		$('#result-count').html("No resources match your search...yet!<br/>Would you like to <a href='/submit'>submit a new resource?</a>").show();
-		$('#result-count').addClass('no-results');
-		HSSI.toggleSortVisible(false);
-	} else {
-		var collections = $("#resource_content .callout.collection").length;
-		var visibleResults = (results - collections);
-		var resources = visibleResults === 1 ? 'resource' : 'resources';
-		$('#result-count').removeClass('no-results');
-		$('#result-count').html(`Showing ${visibleResults} published ${resources}. `);
-		var params = queryParamUrl.substring(1).split('&');
-		if (params.some(param => param.startsWith('category=')
-								  || param.startsWith('q=')
-								  || param.startsWith('collection='))
-				&& visibleResults > 0) {
-			var exportLink = $('<a>(Download results)</a>');
-			exportLink.attr('href', `/export${window.location.search}`);
-			exportLink.attr('target', '_blank');
-			$('#result-count').append(exportLink);
-		}
-		if (params.some(param => param.startsWith('related_resource=')
-								  || param.startsWith('q='))) {
-			HSSI.toggleSortVisible(false);
-		} else {
-			HSSI.toggleSortVisible(true);
-		}
-	}
+	
 }
 
 /** @param {string} queryParamUrl */

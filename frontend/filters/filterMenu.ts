@@ -7,6 +7,7 @@ import {
 	filterGroupToUrlVal,
 	type SoftwareDataAsync,
 	urlValToFilterGroup,
+	Spinner,
 } from "../loader";
 
 export const styleHidden = "hidden";
@@ -186,6 +187,11 @@ export class FilterMenu {
 
 	/** Apply all the active filter groups to the results */
 	public applyFilters(pushHistory: boolean = true): void {
+
+		Spinner.showSpinner("Applying Filters");
+		setTimeout(() => {
+			Spinner.hideSpinner();
+		}, 100);
 
 		// clear old chips
 		this.activeGroupsContainerElement.innerHTML = "Active Filter Groups: ";

@@ -22,6 +22,7 @@ export class ResourceView {
 	// 		submit a new resource?
 	// 	</a>
 
+	private noResourcesElem: HTMLDivElement = null;
 	private specificUids: string[] = null;
 	private parentElement: HTMLElement = null;
 	private itemData: SoftwareDataAsync[] = [];
@@ -59,6 +60,13 @@ export class ResourceView {
 	public constructor() {
 		this.containerElement = document.createElement("div");
 		this.containerElement.style.minHeight = "100px";
+		
+		this.noResourcesElem = document.createElement("div");
+		this.noResourcesElem.classList.add(styleNoResults);
+		this.noResourcesElem.innerHTML = (
+			"No resources match your search...yet!<br/>"+
+			"Would you like to <a href='/submit'>submit a new resource?</a>"
+		)
 	}
 
 	public getAllItems(): SoftwareDataAsync[] {

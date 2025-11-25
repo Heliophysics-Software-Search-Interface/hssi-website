@@ -1,6 +1,7 @@
 import { 
 	appendPromisedElement,
 	ModelData,
+	styleHidden,
 	type HssiDataAsync,
 	type PersonData,
 	type PersonDataAsync,
@@ -51,6 +52,8 @@ export class ResourceItem{
 	private headerDiv: HTMLDivElement = null;
 	private authorsExpandedContainer: HTMLSpanElement = null;
 	private authorEtAlContainer: HTMLSpanElement = null;
+	private chipContainerElement: HTMLDivElement = null;
+	private nameTagContainerElement: HTMLDivElement = null;
 
 	public get softwareData(): SoftwareDataAsync {
 		return this.data;
@@ -146,6 +149,15 @@ export class ResourceItem{
 				ModelData.createChip("ProgrammingLanguage", lang.id)
 			);
 		}
+
+		this.chipContainerElement = chipContainer;
+	}
+
+	private buildModelNametags(): void {
+		const container = document.createElement("div");
+		this.nameTagContainerElement = container;
+
+		// TODO
 	}
 
 	private counter: number = 0;
@@ -295,6 +307,9 @@ export class ResourceItem{
 			this.authorsExpandedContainer.style.display = "inline";
 			this.authorEtAlContainer.style.display = "none";
 			this.expandButton.innerHTML = faUpArrow;
+			this.chipContainerElement.classList.add(styleHidden);
+			if(!this.nameTagContainerElement) this.buildModelNametags();
+			//this.nameTagContainerElement.classList.remove(styleHidden);
 		} 
 		else {
 			this.expandedContent.style.display = "none";
@@ -302,6 +317,8 @@ export class ResourceItem{
 			this.authorsExpandedContainer.style.display = "none";
 			this.authorEtAlContainer.style.display = "inline";
 			this.expandButton.innerHTML = faDownArrow;
+			this.chipContainerElement.classList.remove(styleHidden);
+			//this.nameTagContainerElement?.classList?.add(styleHidden);
 		}
 	}
 

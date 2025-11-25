@@ -28,7 +28,7 @@ export class FilterMenu {
 	private curTab: FilterTab = null;
 	private selectedItems: FilterMenuItem[] = [];
 	private activeFilterGroups: FilterGroup[] = [];
-	private targetView: ResourceView = null;
+	private view: ResourceView = null;
 
 	/** contains all elements for menu */
 	public containerElement: HTMLDivElement = null;
@@ -41,7 +41,12 @@ export class FilterMenu {
 	/** the tab that is currently selected by the user */
 	public get currentTab(): FilterTab { return this.curTab; }
 
-	public constructor(view: ResourceView) {
+	/** the resource view that the filters apply to */
+	public get targetView(): ResourceView {
+		return this.view || ResourceView.main;
+	}
+
+	public constructor(view: ResourceView = null) {
 		this.containerElement = document.createElement("div");
 		this.containerElement.classList.add(styleFilterMenu);
 
@@ -50,13 +55,7 @@ export class FilterMenu {
 			window.addEventListener("popstate", _ => { this.parseUrlParams(); } );
 		}
 
-		// TODO make this less stupid
-		if(view == null){
-			window.addEventListener("DOMContentLoaded", e => {
-				this.targetView = ResourceView.getMainView();
-			});
-		}
-		else this.targetView = view;
+		this.view = view;
 	}
 
 	private attachRemoveButton(chip: HTMLSpanElement, group: FilterGroup) {
@@ -188,11 +187,20 @@ export class FilterMenu {
 	/** Apply all the active filter groups to the results */
 	public async applyFilters(pushHistory: boolean = true): Promise<void> {
 
+		// ensure the filters can only be applied if there is a main resource view
+		if(!this.targetView){
+			await ResourceView.onMainViewCreated.wait();
+			if(!this.targetView) {
+				console.error("No target view to apply filters for!", this);
+				return;
+			}
+		}
+
 		Spinner.showSpinner("Applying Filters");
 
 		// clear old chips
 		this.activeGroupsContainerElement.innerHTML = "Active Filter Groups: ";
-		
+
 		// only filter after resources are fetched
 		if(this.targetView.getAllItems()?.length <= 0) await this.targetView.onReady.wait();
 
@@ -215,7 +223,7 @@ export class FilterMenu {
 		else this.activeGroupsContainerElement.classList.add(styleHidden);
 
 		// if it's the main view, we'll want to append the filters as url params
-		if(this.targetView == ResourceView.getMainView()){
+		if(this.targetView == ResourceView.main){
 			if(pushHistory) this.recordFilterUrlParams();
 		}
 
@@ -248,8 +256,7 @@ export class FilterMenu {
 }
 
 export function makeFilterMenuElement(targetView: ResourceView = null): void {
-	const view = targetView || ResourceView.getMainView();
-	const filterMenu = new FilterMenu(view);
+	const filterMenu = new FilterMenu(targetView);
 	filterMenu.tabs.push(new CategoryFilterTab(filterMenu));
 	filterMenu.tabs.push(new ProgrammingLanguageFilterTab(filterMenu));
 	document.currentScript.parentNode.appendChild(filterMenu.containerElement);

@@ -17,12 +17,8 @@ const idResourceContainer = "resource_content";
  */
 export class ResourceView {
 
-	// TODO: manage element internally: 
-	// No resources match your search...yet!<br/>
-	// Would you like to 
-	// 	<a href='/submit'>
-	// 		submit a new resource?
-	// 	</a>
+	private static mainInstance: ResourceView = null;
+	public static onMainViewCreated: SimpleEvent = new SimpleEvent();
 
 	private noResourcesElem: HTMLDivElement = null;
 	private specificUids: string[] = null;
@@ -38,8 +34,8 @@ export class ResourceView {
 	 * Gets the main resource view element that updates according to 
 	 * search queries 
 	 */
-	public static getMainView(): ResourceView {
-		return ResourceView.getViewInElement(document.getElementById(idResourceContainer));
+	public static get main(): ResourceView {
+		return this.mainInstance;
 	}
 
 	/** Get the resource view on a specific element if it exists */
@@ -57,10 +53,15 @@ export class ResourceView {
 	public containerElement: HTMLDivElement = null;
 
 	public constructor() {
+		if(!ResourceView.mainInstance) {
+			ResourceView.mainInstance = this;
+			ResourceView.onMainViewCreated.triggerEvent();
+		}
+
 		this.onReady = new SimpleEvent();
 		this.containerElement = document.createElement("div");
 		this.containerElement.style.minHeight = "100px";
-		
+
 		this.noResourcesElem = document.createElement("div");
 		this.noResourcesElem.classList.add(styleNoResults, styleHidden);
 		this.noResourcesElem.innerHTML = (

@@ -1,4 +1,4 @@
-{% extends 'site_base_template.html' %} 
+{% extends 'site_base_template.html' %}
 
 {% load static %}
 
@@ -17,15 +17,17 @@
 			<div class="faq-topic">
 				<div class="faq-content">
 					<span class="faq-bullet"></span>
-					<h2 class="faq-question">Is the HSSI only for Python software?</h2>
+					<h2 class="faq-question">
+						Is the HSSI only for Python software?
+					</h2>
 					<div class="caret-container">
 						<span class="faq-t"></span>
 					</div>
 				</div>
 				<div class="faq-answer">
 					<p>
-						No, the HSSI is a search interface for all software in 
-						Heliophysics and is not limited to software written in 
+						No, the HSSI is a search interface for all software in
+						Heliophysics and is not limited to software written in
 						a single programming language.
 					</p>
 				</div>
@@ -48,11 +50,123 @@
 				</div>
 			</div>
 
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">
+						Can I submit my software if it is not hosted on GitHub?
+					</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						Yes, you can use gitlab, bitbucket, or any other remote repository host.
+					</p>
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">
+						Can I submit my software if it is not open?
+					</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						Yes, but for the repository you must submit a link that
+						takes users to a location where they can request code access.
+					</p>
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">
+						Someone else submitted my software but there are corrections
+						needed. How do I request edit access to the record?
+					</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						Please contact the HSSI team at <a href="mailto:hssi-team@googlegroups.com">hssi-team@googlegroups.com</a> to request edit access.
+					</p>
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">
+						Can I edit my entry later if I have updated information
+						or could not remember a detail upon initial entry?
+					</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						Yes. When you submit a new resource, an email is automatically
+						sent out to the submitter email provided with an edit link.
+						This link will expire after a few months (date indicated in
+						the email). If you need to edit after that time period, please
+						reach out to <a href="mailto:hssi-team@googlegroups.com">hssi-team@googlegroups.com</a>
+					</p>
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">
+						How do I create a DOI for my software if one does not exist?
+					</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						If your software is on GitHub, you can consider using the
+						GitHub-Zenodo workflow. See <a href="https://docs.github.com/en/repositories/archiving-a-github-repository/referencing-and-citing-content">this link</a> or <a href="https://www.python4data.science/en/latest/productive/cite/software/doi.html">this link</a> for more details.
+						Else, you can always download all files and upload to Zenodo manually.
+					</p>
+				</div>
+			</div>
+
+			<div class="faq-topic">
+				<div class="faq-content">
+					<span class="faq-bullet"></span>
+					<h2 class="faq-question">
+						I have questions regarding submitting my package on the
+						Resource Submission page. Who do I contact for help?
+					</h2>
+					<div class="caret-container">
+						<span class="faq-t"></span>
+					</div>
+				</div>
+				<div class="faq-answer">
+					<p>
+						Please contact the HSSI team at <a href="mailto:hssi-team@googlegroups.com">hssi-team@googlegroups.com</a> and provide the questions with context.
+					</p>
+				</div>
+			</div>
+
 		</div>
 	</div>
 {% endblock %}
 
-{% block scripts %} 
+{% block scripts %}
 	<script >
 		$(".faq-content").click(function() {
 			var container = $(this).parents(".faq-topic");

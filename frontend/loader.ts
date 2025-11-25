@@ -21,8 +21,7 @@ export * from "./filters/filterTab/categoryFilterTab";
 export * from "./filters/filterTab/programmingLanguageFilterTab";
 export * from "./filters/filterMenu";
 export * from "./filters/urlEncoding";
-
-export * from "./query/search";
+export * from "./filters/search";
 
 export * from "./resources/resourceItem";
 export * from "./resources/resourceView";

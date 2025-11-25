@@ -24,7 +24,9 @@ function initializeSearch(): void {
 	const searchButton = document.getElementById(idSearchButton) as HTMLButtonElement;
 	searchButton.addEventListener("click", onEnterSearch);
 
-	if (searchTerm) searchForQuery(searchTerm);
+	window.addEventListener("popstate", _ => { parseUrlParams(); });
+
+	parseUrlParams();
 }
 
 function updateTitleToSearch() {
@@ -41,11 +43,29 @@ function onEnterSearch(): void {
 	searchForQuery(query);
 }
 
+function parseUrlParams() {
+	const search = new URLSearchParams(window.location.search);
+	const searchVal = search.get("q");
+	if (searchVal) searchForQuery(searchVal, false);
+
+	const searchbar = document.getElementById(idSearchbar) as HTMLInputElement;
+	if(searchbar) searchbar.value = searchVal;
+}
+
+function recordHistory(query: string){
+
+	// Record search to browser history
+	const newUrl = new URL(window.location.href);
+	if (query) newUrl.searchParams.set(searchParamQuery, query);
+	else newUrl.searchParams.delete(searchParamQuery);
+	history.pushState(null, "", newUrl);
+}
+
 /** 
  * gets the search term first from the search bar or from the query 
  * params if search bar is empty or does not exist
  */
-export function getSearchTerm(): string {
+function getSearchTerm(): string {
 	const searchbar = document.getElementById(idSearchbar) as HTMLInputElement;
 	if(searchbar?.value) return searchbar.value;
 
@@ -54,7 +74,10 @@ export function getSearchTerm(): string {
 	return searchVal || "";
 }
 
-export async function searchForQuery(query: string): Promise<void> {
+export async function searchForQuery(
+	query: string, 
+	pushHistory: boolean = true
+): Promise<void> {
 
 	Spinner.showSpinner(`Searching for '${query}'`);
 
@@ -66,11 +89,7 @@ export async function searchForQuery(query: string): Promise<void> {
 	view.filterToItems(relevantSoftwareIds);
 	view.refreshItems();
 
-	// Record search to browser history
-	const newUrl = new URL(window.location.href);
-	if (query) newUrl.searchParams.set(searchParamQuery, query);
-	else newUrl.searchParams.delete(searchParamQuery);
-	history.pushState(null, "", newUrl);
+	if (pushHistory) recordHistory(query);
 
 	console.log(`queried '${query}', results:`, relevantSoftwareIds);
 	

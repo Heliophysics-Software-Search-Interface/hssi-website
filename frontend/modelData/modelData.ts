@@ -24,7 +24,6 @@ export class ModelData {
 
 		switch(model){
 			case "VisibleSoftware":
-			case "SoftwareEditQueue":
 			case "Software":
 				factory = new BaseChipFactory(model); break;
 			case "FunctionCategory":
@@ -45,5 +44,11 @@ export class ModelData {
 		let factory = this.factoryMap.get(model);
 		if(!factory) factory = this.buildFactory(model);
 		return await factory.createChip(uid);
+	}
+
+	public static async createNametag(model: ModelName, uid: string): Promise<HTMLSpanElement> {
+		let factory = this.factoryMap.get(model);
+		if(!factory) factory = this.buildFactory(model);
+		return await factory.createNametag(uid);
 	}
 }

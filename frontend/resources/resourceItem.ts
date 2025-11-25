@@ -130,7 +130,7 @@ export class ResourceItem{
 				// create visual ui element and add to resource
 				appendPromisedElement(
 					categoryChips, 
-					ModelData.createChip("FunctionCategory",targetId)
+					ModelData.createChip("FunctionCategory", targetId)
 				);
 
 			})();

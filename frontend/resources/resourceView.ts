@@ -1,6 +1,7 @@
 import { 
 	apiModel, apiSlugRowsAll, extractDoi, fetchTimeout, HssiModelDataAsync, isUuid4, modelApiUrl, ModelData, ModelDataCache, ResourceItem, 
 	Spinner, 
+	styleHidden, 
 	type JSONArray, type JSONObject, type SoftwareData,
 	type SoftwareDataAsync,
 } from "../loader";
@@ -43,11 +44,6 @@ export class ResourceView {
 		return ResourceView.resourceViewMap.get(element)
 	}
 
-	/** element to display when no results */
-	private get noResultsElement(): HTMLElement {
-		return document.body.getElementsByClassName(styleNoResults)[0] as any;
-	}
-
 	public setParentElement(element: HTMLElement) {
 		if(this.parentElement) ResourceView.resourceViewMap.delete(this.parentElement);
 		if(element) ResourceView.resourceViewMap.set(element, this);
@@ -62,11 +58,13 @@ export class ResourceView {
 		this.containerElement.style.minHeight = "100px";
 		
 		this.noResourcesElem = document.createElement("div");
-		this.noResourcesElem.classList.add(styleNoResults);
+		this.noResourcesElem.classList.add(styleNoResults, styleHidden);
 		this.noResourcesElem.innerHTML = (
 			"No resources match your search...yet!<br/>"+
 			"Would you like to <a href='/submit'>submit a new resource?</a>"
-		)
+		);
+
+		this.containerElement.appendChild(this.noResourcesElem);
 	}
 
 	public getAllItems(): SoftwareDataAsync[] {
@@ -97,11 +95,8 @@ export class ResourceView {
 		}
 
 		// display no results if no results found, or hide it if there is results
-		const noResultsElem = this.noResultsElement;
-		if(noResultsElem){
-			if(this.items.length <= 0) this.noResultsElement.style.display = "block";
-			else this.noResultsElement.style.display = "none";
-		}
+		if(this.items.length <= 0) this.noResourcesElem.classList.remove(styleHidden);
+		else this.noResourcesElem.classList.add(styleHidden);
 	}
 
 	/** 

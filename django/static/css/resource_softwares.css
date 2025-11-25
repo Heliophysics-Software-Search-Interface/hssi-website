@@ -1,3 +1,12 @@
+.no-results {
+	color: #14679e;
+	font-size: 18px;
+	font-weight: bold;
+	color: red;
+	width: 100%;
+	text-align: center;
+}
+
 .resource-item {
 	background-color: #ececec;
 	border: 1px solid #bcbcbd;

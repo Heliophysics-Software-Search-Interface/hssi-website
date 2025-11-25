@@ -44,7 +44,10 @@ export class FilterMenu {
 		this.containerElement = document.createElement("div");
 		this.containerElement.classList.add(styleFilterMenu);
 
-		if(!FilterMenu.mainInstance) FilterMenu.mainInstance = this;
+		if(!FilterMenu.mainInstance) {
+			FilterMenu.mainInstance = this;
+			window.addEventListener("popstate", _ => { this.parseUrlParams(); } );
+		}
 
 		// TODO make this less stupid
 		if(view == null){
@@ -71,7 +74,12 @@ export class FilterMenu {
 	private async parseUrlParams(): Promise<void> {
 		const search = new URLSearchParams(window.location.search);
 		const groupVals = search.get(searchParamFilter)?.split(urlSymGroupDelimiter);
-		if(!groupVals) return;
+		
+		this.activeFilterGroups.length = 0;
+		if(!groupVals) {
+			this.applyFilters(false);
+			return;
+		}
 
 		for(const groupval of groupVals) {
 			const group = await urlValToFilterGroup(groupval);
@@ -79,7 +87,7 @@ export class FilterMenu {
 		}
 
 		try{
-			this.applyFilters();
+			this.applyFilters(false);
 		}
 		catch{
 			window.addEventListener("DOMContentLoaded", _ => this.applyFilters());
@@ -177,7 +185,7 @@ export class FilterMenu {
 	}
 
 	/** Apply all the active filter groups to the results */
-	public applyFilters(): void {
+	public applyFilters(pushHistory: boolean = true): void {
 
 		// clear old chips
 		this.activeGroupsContainerElement.innerHTML = "Active Filter Groups: ";
@@ -202,7 +210,7 @@ export class FilterMenu {
 
 		// if it's the main view, we'll want to append the filters as url params
 		if(this.targetView == ResourceView.getMainView()){
-			this.recordFilterUrlParams();
+			if(pushHistory) this.recordFilterUrlParams();
 		}
 	}
 

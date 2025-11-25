@@ -74,10 +74,6 @@
 	display: inline-block;
 }
 
-.header-chips .item-nametag:not(.hidden) {
-	display: block;
-}
-
 .resource-header .header-chips {
 	vertical-align: top;
 	text-align: right;

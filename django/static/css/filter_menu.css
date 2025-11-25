@@ -177,7 +177,6 @@
 	font-weight: bold;
 	display: inline-block;
 	position: relative;
-	cursor: pointer;
 }
 
 .filtergroup-container > button,

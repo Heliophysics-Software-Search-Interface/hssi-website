@@ -23,6 +23,7 @@ const styleBtnDocs = "btn-docs";
 const styleBtnPublication = "btn-publication";
 const styleBtnDoi = "btn-doi";
 const styleHeaderChips = "header-chips";
+const styleHeaderNametags = "header-nametags";
 const styleLeftColumn = "col-left";
 const styleBtnFeedback = "btn-feedback";
 const styleLogo = "logo";
@@ -151,7 +152,7 @@ export class ResourceItem{
 
 	private buildModelNametags(): void {
 		const container = document.createElement("div");
-		container.classList.add(styleHeaderChips);
+		container.classList.add(styleHeaderNametags);
 		this.nameTagContainerElement = container;
 		this.headerDiv.appendChild(container);
 

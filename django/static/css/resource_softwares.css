@@ -66,12 +66,19 @@
 	box-shadow: grey 2px 2px 5px;
 }
 
-.resource-header > div {
+.resource-header>div:not(.hidden) {
 	display: inline-block;
 }
 
-.resource-header .header-chips {
+.header-chips:not(.hidden) {
 	display: inline-block;
+}
+
+.header-chips .item-nametag:not(.hidden) {
+	display: block;
+}
+
+.resource-header .header-chips {
 	vertical-align: top;
 	text-align: right;
 	min-width: 0;

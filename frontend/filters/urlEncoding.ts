@@ -109,7 +109,7 @@ function shortenUidToParamVal(uid: string, field: keyof SoftwareDataAsync): stri
 async function expandUidFromParamVal(val: string): Promise<string> {
 	const truncatedUid = base64ToUuid(val.substring(0, uidUrlEncodeLength));
 	const field = urlParamToSoftwareField(val.substring(uidUrlEncodeLength));
-	const model = softwareFieldToModelMap[field];
+	const model = softwareFieldToModelName(field);
 	return await getUidFromTruncated(truncatedUid, model);
 }
 
@@ -140,6 +140,10 @@ function multiItemToUrlVal(item: FilterMenuItem, negated: boolean): string{
 	if (valStr.length > 0) valStr = valStr.substring(0, valStr.length - 1);
 
 	return valStr;
+}
+
+export function softwareFieldToModelName(field: keyof SoftwareDataAsync): ModelName {
+	return softwareFieldToModelMap[field];
 }
 
 export function filterGroupToUrlVal(group: FilterGroup): string{

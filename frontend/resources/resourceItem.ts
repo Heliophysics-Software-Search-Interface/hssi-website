@@ -1,5 +1,6 @@
 import { 
 	appendPromisedElement,
+	softwareFieldToModelName,
 	ModelData,
 	styleHidden,
 	type HssiDataAsync,
@@ -114,6 +115,8 @@ export class ResourceItem{
 
 	private buildModelChips(): void {
 		const chipContainer = document.createElement("div");
+		this.chipContainerElement = chipContainer;
+		console.log(chipContainer);
 		chipContainer.classList.add(styleHeaderChips);
 		this.headerDiv.appendChild(chipContainer);
 		
@@ -131,11 +134,9 @@ export class ResourceItem{
 				categoriesAdded.add(targetId);
 				
 				// create visual ui element and add to resource
-				appendPromisedElement(
-					categoryChips, 
-					ModelData.createChip("FunctionCategory", targetId)
+				categoryChips.appendChild(
+					await ModelData.createChip("FunctionCategory", targetId)
 				);
-
 			})();
 		}
 		
@@ -143,21 +144,36 @@ export class ResourceItem{
 		chipContainer.appendChild(proglangChips);
 		
 		// no need to check for uniqueness because db table already does
-		for(const lang of this.data.programmingLanguage) {
-			appendPromisedElement(
-				proglangChips, 
-				ModelData.createChip("ProgrammingLanguage", lang.id)
-			);
-		}
-
-		this.chipContainerElement = chipContainer;
+		chipContainer.appendChild(
+			this.createChipContainer("programmingLanguage", ModelData.createChip.bind(ModelData))
+		);
 	}
 
 	private buildModelNametags(): void {
 		const container = document.createElement("div");
+		container.classList.add(styleHeaderChips);
 		this.nameTagContainerElement = container;
+		this.headerDiv.appendChild(container);
 
-		// TODO
+		// add each function category to the container
+		container.appendChild(this.createChipContainer("softwareFunctionality"));
+		
+		// add programming languages
+		container.appendChild(this.createChipContainer("programmingLanguage"));
+	}
+
+	private createChipContainer(
+		field: keyof SoftwareDataAsync, 
+		chipMethod = ModelData.createNametag.bind(ModelData)
+	): HTMLDivElement {
+		const container = document.createElement("div")
+		for(const lang of this.data[field]) {
+			appendPromisedElement(
+				container, 
+				chipMethod(softwareFieldToModelName(field), lang.id)
+			);
+		}
+		return container;
 	}
 
 	private counter: number = 0;
@@ -309,7 +325,7 @@ export class ResourceItem{
 			this.expandButton.innerHTML = faUpArrow;
 			this.chipContainerElement.classList.add(styleHidden);
 			if(!this.nameTagContainerElement) this.buildModelNametags();
-			//this.nameTagContainerElement.classList.remove(styleHidden);
+			this.nameTagContainerElement.classList.remove(styleHidden);
 		} 
 		else {
 			this.expandedContent.style.display = "none";
@@ -318,7 +334,7 @@ export class ResourceItem{
 			this.authorEtAlContainer.style.display = "inline";
 			this.expandButton.innerHTML = faDownArrow;
 			this.chipContainerElement.classList.remove(styleHidden);
-			//this.nameTagContainerElement?.classList?.add(styleHidden);
+			this.nameTagContainerElement?.classList?.add(styleHidden);
 		}
 	}
 

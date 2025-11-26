@@ -8,6 +8,7 @@ import {
 	type SoftwareDataAsync,
 	urlValToFilterGroup,
 	Spinner,
+	ConfirmDialogue,
 } from "../loader";
 
 export const styleHidden = "hidden";
@@ -198,38 +199,45 @@ export class FilterMenu {
 
 		Spinner.showSpinner("Applying Filters");
 
-		// clear old chips
-		this.activeGroupsContainerElement.innerHTML = "Active Filter Groups: ";
-
-		// only filter after resources are fetched
-		if(this.targetView.getAllItems()?.length <= 0) await this.targetView.onReady.wait();
-
-		let items = this.targetView.getAllItems();
-		for(const group of this.activeFilterGroups){
-			items = group.filterSoftware(items);
-
-			// render chips
-			const chip = group.createChip();
-			this.activeGroupsContainerElement.append(chip);
-			this.attachRemoveButton(chip, group);
+		try{
+			// clear old chips
+			this.activeGroupsContainerElement.innerHTML = "Active Filter Groups: ";
+			
+			// only filter after resources are fetched
+			if(this.targetView.getAllItems()?.length <= 0) await this.targetView.onReady.wait();
+			
+			let items = this.targetView.getAllItems();
+			for(const group of this.activeFilterGroups){
+				items = group.filterSoftware(items);
+				
+				// render chips
+				const chip = group.createChip();
+				this.activeGroupsContainerElement.append(chip);
+				this.attachRemoveButton(chip, group);
+			}
+			this.targetView.filterToItems(items.map(item => item.id));
+			this.targetView.refreshItems();
+			
+			// show/hide active groups element
+			if (this.activeFilterGroups.length > 0){
+				this.activeGroupsContainerElement.classList.remove(styleHidden);
+			}
+			else this.activeGroupsContainerElement.classList.add(styleHidden);
+			
+			// if it's the main view, we'll want to append the filters as url params
+			if(this.targetView == ResourceView.main){
+				if(pushHistory) this.recordFilterUrlParams();
+			}
+			
+			setTimeout(() => {
+				Spinner.hideSpinner();
+			}, 100);
 		}
-		this.targetView.filterToItems(items.map(item => item.id));
-		this.targetView.refreshItems();
 
-		// show/hide active groups element
-		if (this.activeFilterGroups.length > 0){
-			this.activeGroupsContainerElement.classList.remove(styleHidden);
-		}
-		else this.activeGroupsContainerElement.classList.add(styleHidden);
-
-		// if it's the main view, we'll want to append the filters as url params
-		if(this.targetView == ResourceView.main){
-			if(pushHistory) this.recordFilterUrlParams();
-		}
-
-		setTimeout(() => {
+		catch(e) {
 			Spinner.hideSpinner();
-		}, 100);
+			ConfirmDialogue.getConfirmation(e?.toString() || "", "Error", "Ok", null);
+		}
 	}
 
 	private recordFilterUrlParams(): void {

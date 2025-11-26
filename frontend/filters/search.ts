@@ -77,6 +77,14 @@ function getSearchTerm(): string {
 	return searchVal || "";
 }
 
+/**
+ * applies the previously entered search to the main resource view
+ * @param pushHistory whether or not this search is recorded in browser history
+ */
+export async function applyEnteredQuery(pushHistory: boolean = false){
+	parseUrlParams();
+}
+
 export async function searchForQuery(
 	query: string, 
 	pushHistory: boolean = true
@@ -86,20 +94,17 @@ export async function searchForQuery(
 
 	try{
 		// get all search results relevant to the query
-		const relevantSoftwareIds = await getReleventQueryResults(query);
+		const relevantSoftwares = await getReleventQueryResults(query);
 		
 		// refresh the items in the resource view to only display search results
 		const view = ResourceView.main;
-		view.filterToItems(relevantSoftwareIds);
-		view.refreshItems();
+		view.showItems(relevantSoftwares);
 		
 		if (pushHistory) recordHistory(query);
 		
-		console.log(`queried '${query}', results:`, relevantSoftwareIds);	
+		console.log(`queried '${query}', results:`, relevantSoftwares);	
 
-		setTimeout(() => {
-			Spinner.hideSpinner();
-		}, 100);
+		setTimeout(() => { Spinner.hideSpinner(); }, 100);
 		updateTitleToSearch();
 	}
 	catch(e) {
@@ -108,8 +113,8 @@ export async function searchForQuery(
 	}
 }
 
-export async function getReleventQueryResults(query: string): Promise<string[]> {
-	const datas = await ModelDataCache.getModelDataAll("Software");
+export async function getReleventQueryResults(query: string): Promise<SoftwareDataAsync[]> {
+	const datas = await ResourceView.main.getFilteredItems();
 
 	// get all search results relevant to the query
 	const titleRelevant: SoftwareDataAsync[] = [];
@@ -138,15 +143,15 @@ export async function getReleventQueryResults(query: string): Promise<string[]> 
 			}
 		}
 	}
-	const relevantSoftwareIds = (
-		titleRelevant.map(s => s.id)
-			.concat(descriptionRelevant.map(s => s.id))
-			.concat(otherRelevant.map(s => s.id))
-	)
+
+	const relevantSoftwareIds = new Set(titleRelevant);
+	for(const item of [...titleRelevant, ...descriptionRelevant, ...otherRelevant]){
+		relevantSoftwareIds.add(item);
+	}
 
 	// TODO sort by relevance score
 
-	return relevantSoftwareIds;
+	return [...relevantSoftwareIds];
 }
 
 window.addEventListener("load", initializeSearch);

@@ -9,6 +9,7 @@ import {
 	urlValToFilterGroup,
 	Spinner,
 	ConfirmDialogue,
+	applyEnteredQuery,
 } from "../loader";
 
 export const styleHidden = "hidden";
@@ -232,6 +233,9 @@ export class FilterMenu {
 			setTimeout(() => {
 				Spinner.hideSpinner();
 			}, 100);
+
+			// reapply the search to the new filtered results
+			applyEnteredQuery(false);
 		}
 
 		catch(e) {

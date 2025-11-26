@@ -72,12 +72,26 @@ export class ResourceView {
 		this.containerElement.appendChild(this.noResourcesElem);
 	}
 
+	/** get all item data that is loaded for the resource view */
 	public getAllItems(): SoftwareDataAsync[] {
 		return this.itemData;
 	}
 
+	/** get only the items that are currently displayed in the resource view */
 	public getActiveItems(): SoftwareDataAsync[] {
 		return this.items.map(itm => itm.softwareData);
+	}
+
+	/** 
+	 * gets only the items included in the specific uuid set for the 
+	 * resource view 
+	 */
+	public getFilteredItems(): SoftwareDataAsync[] {
+		const items: SoftwareDataAsync[] = [];
+		for (const item of this.getAllItems()){
+			if(this.specificUids.includes(item.id)) items.push(item);
+		}
+		return items;
 	}
 
 	/** create new items based on stored item data */
@@ -113,6 +127,14 @@ export class ResourceView {
 			}
 		}
 		this.specificUids = uids.map(s => s.toLowerCase());
+	}
+
+	/** shows only the specified items in the resource view */
+	public showItems(items: SoftwareDataAsync[]): void {
+		const prevData = this.itemData;
+		this.itemData = items;
+		this.refreshItems();
+		this.itemData = prevData;
 	}
 
 	/** 

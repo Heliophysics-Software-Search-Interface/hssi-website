@@ -160,6 +160,8 @@ export class ResourceItem{
 		this.nameTagContainerElement = container;
 		this.flexSubContainer.appendChild(container);
 
+		container.append("Categories:");
+
 		// add each function category to the container
 		container.appendChild(this.createChipContainer("softwareFunctionality"));
 		

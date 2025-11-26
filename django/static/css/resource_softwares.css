@@ -31,7 +31,7 @@
 
 .header-nametags {
 	flex: 1;
-	max-width: 200px;
+	max-width: 180px;
 }
 
 .header-nametags .item-nametag:not(.hidden) {

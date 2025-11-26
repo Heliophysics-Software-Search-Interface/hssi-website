@@ -46,10 +46,7 @@ export class BaseChipFactory<T extends HSSIModelData> implements ModelChipFactor
 	protected createNametagFromData(data: T): HTMLSpanElement {
 		const tag = this.createChipFromData(data);
 		tag.classList.add(styleItemNametag);
-		tag.innerText = (
-			this.getAbbreviationFromData(data) + " | " + 
-			this.getNameFromData(data)
-		);
+		tag.innerText = this.getNameFromData(data);
 		return tag;
 	}
 

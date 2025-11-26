@@ -8,6 +8,7 @@ import {
 	type PersonDataAsync,
 	type SoftwareData,
 	type SoftwareDataAsync,
+	type FunctionalityData,
 } from "../loader";
 
 const styleNoPad = "no-pad";
@@ -154,16 +155,42 @@ export class ResourceItem{
 		);
 	}
 
-	private buildModelNametags(): void {
+	private async buildModelNametags(): Promise<void> {
 		const container = document.createElement("div");
 		container.classList.add(styleItemNametags);
 		this.nameTagContainerElement = container;
 		this.flexSubContainer.appendChild(container);
 
-		container.append("Categories:");
+		const label = document.createElement("div");
+		label.innerText = "Categories:";
+		container.append(label);
 
 		// add each function category to the container
-		container.appendChild(this.createChipContainer("softwareFunctionality"));
+		const categoryChips = document.createElement("div");
+		container.appendChild(categoryChips);
+		
+		const categoryPromises: Promise<FunctionalityData>[] = [];
+		for(const cat of this.data.softwareFunctionality){
+			categoryPromises.push(cat.getData());
+		}
+		let categories = await Promise.all(categoryPromises);
+		categories = categories.sort((a,b) => {
+			let parentIdA: any = a.parents?.[0] || "";
+			if (parentIdA instanceof Object) parentIdA = parentIdA.id || "";
+			let parentIdB: any = b.parents?.[0] || "";
+			if (parentIdB instanceof Object) parentIdB = parentIdB.id || "";
+			return (parentIdA + a.id) > (parentIdB + b.id) as any;
+		});
+		console.log(categories)
+
+		const chipPromises: Promise<HTMLSpanElement>[] = [];
+		for(const category of categories){
+			chipPromises.push(ModelData.createNametag("FunctionCategory", category.id));
+		}
+
+		Promise.all(chipPromises).then(chips => { 
+			for(const chip of chips) categoryChips.appendChild(chip); 
+		});
 		
 		// add programming languages
 		container.appendChild(this.createChipContainer("programmingLanguage"));
@@ -174,6 +201,7 @@ export class ResourceItem{
 		chipMethod = ModelData.createNametag.bind(ModelData)
 	): HTMLDivElement {
 		const container = document.createElement("div")
+
 		for(const lang of this.data[field]) {
 			appendPromisedElement(
 				container, 

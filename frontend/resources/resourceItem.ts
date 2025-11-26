@@ -117,7 +117,6 @@ export class ResourceItem{
 	private buildModelChips(): void {
 		const chipContainer = document.createElement("div");
 		this.chipContainerElement = chipContainer;
-		console.log(chipContainer);
 		chipContainer.classList.add(styleHeaderChips);
 		this.headerDiv.appendChild(chipContainer);
 		

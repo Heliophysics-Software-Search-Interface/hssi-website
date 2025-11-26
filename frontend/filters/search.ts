@@ -1,6 +1,9 @@
 import { 
 	type SoftwareDataAsync,
+	ApiQueryPopup,
+	ConfirmDialogue,
 	ModelDataCache, 
+	PopupDialogue, 
 	ResourceView,
 	Spinner, 
 } from "../loader";
@@ -81,22 +84,28 @@ export async function searchForQuery(
 
 	Spinner.showSpinner(`Searching for '${query}'`);
 
-	// get all search results relevant to the query
-	const relevantSoftwareIds = await getReleventQueryResults(query);
-	
-	// refresh the items in the resource view to only display search results
-	const view = ResourceView.getMainView();
-	view.filterToItems(relevantSoftwareIds);
-	view.refreshItems();
+	try{
+		// get all search results relevant to the query
+		const relevantSoftwareIds = await getReleventQueryResults(query);
+		
+		// refresh the items in the resource view to only display search results
+		const view = ResourceView.main;
+		view.filterToItems(relevantSoftwareIds);
+		view.refreshItems();
+		
+		if (pushHistory) recordHistory(query);
+		
+		console.log(`queried '${query}', results:`, relevantSoftwareIds);	
 
-	if (pushHistory) recordHistory(query);
-
-	console.log(`queried '${query}', results:`, relevantSoftwareIds);
-	
-	setTimeout(() => {
+		setTimeout(() => {
+			Spinner.hideSpinner();
+		}, 100);
+		updateTitleToSearch();
+	}
+	catch(e) {
 		Spinner.hideSpinner();
-	}, 100);
-	updateTitleToSearch();
+		ConfirmDialogue.getConfirmation(e?.toString() || "", "Error", "Ok", null);
+	}
 }
 
 export async function getReleventQueryResults(query: string): Promise<string[]> {

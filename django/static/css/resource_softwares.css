@@ -1,3 +1,8 @@
+.no-pad {
+	padding: 0;
+	margin: 0;
+}
+
 .no-results {
 	color: #14679e;
 	font-size: 18px;
@@ -13,6 +18,24 @@
 	border-radius: 5px;
 	padding: 20px;
 	margin-bottom: 15px;
+}
+
+.item-flex:not(.hidden) {
+	display: flex;
+}
+
+.item-main {
+	flex: 1;
+	overflow-wrap: break-word;
+}
+
+.header-nametags {
+	flex: 1;
+	max-width: 200px;
+}
+
+.header-nametags .item-nametag:not(.hidden) {
+	display: block;
 }
 
 .resource-item .author, 

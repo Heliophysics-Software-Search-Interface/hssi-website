@@ -10,6 +10,10 @@ import {
 	type SoftwareDataAsync,
 } from "../loader";
 
+const styleNoPad = "no-pad";
+const styleResourceItemFlex = "item-flex";
+const styleResourceItemMainColumn = "item-main";
+const styleItemNametags = "header-nametags";
 const styleResourceItem = "resource-item";
 const styleResourceHeader = "resource-header";
 const styleResourceTitle = "resource-title";
@@ -23,7 +27,6 @@ const styleBtnDocs = "btn-docs";
 const styleBtnPublication = "btn-publication";
 const styleBtnDoi = "btn-doi";
 const styleHeaderChips = "header-chips";
-const styleHeaderNametags = "header-nametags";
 const styleLeftColumn = "col-left";
 const styleBtnFeedback = "btn-feedback";
 const styleLogo = "logo";
@@ -63,6 +66,8 @@ export class ResourceItem{
 	
 	/** the html element that contains all the html content for this item */
 	public containerElement: HTMLDivElement = null;
+	private flexSubContainer: HTMLDivElement = null;
+	private mainContentContainer: HTMLDivElement = null;
 
 	public constructor(){
 		this.containerElement = document.createElement("div");
@@ -73,7 +78,7 @@ export class ResourceItem{
 	private buildLinkButtons(): void {
 		const bottomButtonContainer = document.createElement("div");
 		bottomButtonContainer.classList.add(styleBottomButtons);
-		this.containerElement.appendChild(bottomButtonContainer);
+		this.mainContentContainer.appendChild(bottomButtonContainer);
 		
 		if(this.data.codeRepositoryUrl){
 			const repoButton = document.createElement("a");
@@ -151,9 +156,9 @@ export class ResourceItem{
 
 	private buildModelNametags(): void {
 		const container = document.createElement("div");
-		container.classList.add(styleHeaderNametags);
+		container.classList.add(styleItemNametags);
 		this.nameTagContainerElement = container;
-		this.headerDiv.appendChild(container);
+		this.flexSubContainer.appendChild(container);
 
 		// add each function category to the container
 		container.appendChild(this.createChipContainer("softwareFunctionality"));
@@ -175,8 +180,6 @@ export class ResourceItem{
 		}
 		return container;
 	}
-
-	private counter: number = 0;
 
 	private buildAuthors(headInfoDiv: HTMLDivElement): void{
 
@@ -240,10 +243,20 @@ export class ResourceItem{
 	}
 
 	private build(): void {
-		// TODO build from this.data
+
+		this.flexSubContainer = document.createElement("div");
+		this.flexSubContainer.classList.add(styleNoPad);
+		this.flexSubContainer.classList.add(styleResourceItemFlex);
+		this.containerElement.appendChild(this.flexSubContainer);
+
+		this.mainContentContainer = document.createElement("div");
+		this.mainContentContainer.classList.add(styleNoPad);
+		this.mainContentContainer.classList.add(styleResourceItemMainColumn);
+		this.flexSubContainer.appendChild(this.mainContentContainer);
+
 		this.headerDiv = document.createElement("div");
 		this.headerDiv.classList.add(styleResourceHeader);
-		this.containerElement.appendChild(this.headerDiv);
+		this.mainContentContainer.appendChild(this.headerDiv);
 
 		const headerText = document.createElement("div");
 		headerText.classList.add(styleLeftColumn);
@@ -261,7 +274,7 @@ export class ResourceItem{
 
 		this.bodyLeftContent = document.createElement("div");
 		this.bodyLeftContent.classList.add(styleLeftColumn);
-		this.containerElement.appendChild(this.bodyLeftContent);
+		this.mainContentContainer.appendChild(this.bodyLeftContent);
 
 		this.shrinkedContent = document.createElement("div");
 		this.bodyLeftContent.appendChild(this.shrinkedContent);
@@ -312,7 +325,7 @@ export class ResourceItem{
 			this.setExpanded(!this.isExpanded())
 		);
 
-		this.containerElement.appendChild(this.expandButton);
+		this.mainContentContainer.appendChild(this.expandButton);
 		this.setExpanded(false);
 	}
 

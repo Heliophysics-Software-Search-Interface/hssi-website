@@ -123,22 +123,22 @@ export async function getReleventQueryResults(query: string): Promise<SoftwareDa
 	const splitQuery = query.toLowerCase().split(/\s+/);
 	for(const data of datas){
 		for(const term of splitQuery){
-			if(data.softwareName.toLowerCase().includes(term)) {
+			if(data.softwareName?.toLowerCase().includes(term)) {
 				titleRelevant.push(data);
 			}
 			else if (
-				data.conciseDescription.toLowerCase().includes(term) || 
+				data.conciseDescription?.toLowerCase().includes(term) || 
 				data.description.includes(term)
 			){
 				descriptionRelevant.push(data);
 			}
-			else if (data.codeRepositoryUrl.toLowerCase().includes(term)){
+			else if (data.codeRepositoryUrl?.toLowerCase().includes(term)){
 				otherRelevant.push(data);
 			}
-			else if (data.persistentIdentifier.toLowerCase().includes(term)){
+			else if (data.persistentIdentifier?.toLowerCase().includes(term)){
 				otherRelevant.push(data);
 			}
-			else if (data.id.toLowerCase().includes(term)) {
+			else if (data.id?.toLowerCase()?.includes(term)) {
 				otherRelevant.push(data);
 			}
 		}

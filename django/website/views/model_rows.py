@@ -110,6 +110,7 @@ def api_view(request: HttpRequest, uid: str) -> JsonResponse:
 	# of database rows
 	def format_controlled_list(field_name: str):
 		clist = data.get(field_name)
+		if clist is None: return
 		for i, obj in enumerate(clist):
 			name = obj.get("name", None)
 			if name: clist[i] = name

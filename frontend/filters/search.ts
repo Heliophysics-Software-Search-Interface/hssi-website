@@ -128,7 +128,7 @@ export async function getReleventQueryResults(query: string): Promise<SoftwareDa
 			}
 			else if (
 				data.conciseDescription?.toLowerCase().includes(term) || 
-				data.description.includes(term)
+				data.description?.toLowerCase().includes(term)
 			){
 				descriptionRelevant.push(data);
 			}

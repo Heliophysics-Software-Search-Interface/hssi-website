@@ -1,6 +1,6 @@
 import uuid, json, colorsys
 from django.db import models
-from django.db.models import ManyToManyField, QuerySet
+from django.db.models import ManyToManyField, QuerySet, Q
 from django.db.models.fields import related_descriptors
 from django.core.serializers import serialize
 from colorful.fields import RGBColorField
@@ -604,6 +604,13 @@ class License(HssiModel):
 
 	@classmethod
 	def get_top_field(cls): return cls._meta.get_field("name")
+
+	@classmethod
+	def get_other_licence(cls): 
+		"""return the primary 'Other' licence, the one with no URL"""
+		return cls.objects.filter(name="Other").filter(
+			Q(url="") | Q(url__isnull=True)
+		).first()
 
 	def get_search_terms(self):
 		terms = super().get_search_terms()

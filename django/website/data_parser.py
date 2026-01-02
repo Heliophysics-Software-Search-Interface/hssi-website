@@ -93,7 +93,7 @@ def parse_person(
 	if affiliation_datas:
 		for affiliation_data in affiliation_datas:
 			affil = parse_organization(affiliation_data, affil_field, affil_ident_field)
-			person.affiliation.add(affil)
+			if affil: person.affiliation.add(affil)
 
 	person.save()
 	return person

@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 import requests
 
-# from .secret_settings import *
+# from .secret_settings import * 
 
 ### The following section should be in a secret_settings.py file (imported above)
 ###

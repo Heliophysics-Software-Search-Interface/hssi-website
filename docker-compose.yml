@@ -35,7 +35,7 @@ services:
         # To persist db data, uncomment the following volumes statement, and see the outer 
         # volumes section below:
         volumes:
-            - website_db_data:/var/lib/postgresql/data
+            - website_db_data:/var/lib/postgresql
 
 
 # To persist db data, uncomment at least the next two lines, and see the further note below

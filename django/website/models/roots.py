@@ -402,7 +402,7 @@ class RepoStatus(ControlledList):
 class Image(HssiModel):
 	'''Reference to an image file and alt text description'''
 	access = AccessLevel.PUBLIC
-	url = models.URLField(blank=True, null=True)
+	url = models.URLField(max_length=2048, blank=True, null=True)
 	description = models.CharField(max_length=250)
 
 	@classmethod

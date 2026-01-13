@@ -58,6 +58,13 @@ export class ModelData {
 				}
 				factory = regionFactory;
 				break;
+			case "Phenomena":
+				let phenomFactory = new UniformListChipFactory(model);
+				phenomFactory.bgColor = "#ECF";
+				phenomFactory.borderColor = "#608";
+				phenomFactory.textColor = phenomFactory.borderColor;
+				factory = phenomFactory;
+				break;
 			default: 
 				factory = new ControlledListChipFactory(model); 
 				break;

@@ -32,11 +32,18 @@
 .header-nametags {
 	flex: 1;
 	max-width: 190px;
+	border-left: 1px solid #bcbcbd;
 	padding-left: 5px;
+	margin-left: 5px;
 }
 
 .header-nametags>div {
 	font-weight: bold;
+}
+
+.header-nametags>.section-label {
+	font-weight: bold;
+	margin-top: 5px;
 }
 
 .header-nametags .item-nametag:not(.hidden) {
@@ -109,7 +116,9 @@
 	flex: 1;
 }
 
-.header-chips .item-chip {
+.chip-container .item-chip,
+.header-chips .item-chip
+{
 	margin-left: 5px;
 	margin-bottom: 5px;
 	cursor: auto;

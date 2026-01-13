@@ -28,6 +28,8 @@ const styleBtnDocs = "btn-docs";
 const styleBtnPublication = "btn-publication";
 const styleBtnDoi = "btn-doi";
 const styleHeaderChips = "header-chips";
+const styleChipContainer = "chip-container";
+const styleSecLabel = "section-label";
 const styleLeftColumn = "col-left";
 const styleBtnFeedback = "btn-feedback";
 const styleLogo = "logo";
@@ -124,12 +126,13 @@ export class ResourceItem{
 		const chipContainer = document.createElement("div");
 		this.chipContainerElement = chipContainer;
 		chipContainer.classList.add(styleHeaderChips);
+		chipContainer.classList.add(styleChipContainer);
 		this.headerDiv.appendChild(chipContainer);
 		
 		const categoryChips = document.createElement("div");
 		chipContainer.appendChild(categoryChips);
 
-		// add each unique top-level category to the container
+		// add each unique top-level category chip to the container
 		const categoriesAdded = new Set<string>();
 		for(const categoryAsync of this.data.softwareFunctionality) {
 			(async()=>{
@@ -146,12 +149,17 @@ export class ResourceItem{
 			})();
 		}
 		
-		const proglangChips = document.createElement("div")
-		chipContainer.appendChild(proglangChips);
 		
-		// no need to check for uniqueness because db table already does
-		chipContainer.appendChild(
-			this.createChipContainer("programmingLanguage", ModelData.createChip.bind(ModelData))
+		// add other model chips
+		const auxChips = document.createElement("div")
+		chipContainer.appendChild(auxChips);
+		
+		this.populateChipContainer(
+			auxChips, 
+			[
+				"programmingLanguage", "relatedRegion", "relatedPhenomena"
+			], 
+			ModelData.createChip.bind(ModelData)
 		);
 	}
 
@@ -162,6 +170,7 @@ export class ResourceItem{
 		this.flexSubContainer.appendChild(container);
 
 		const label = document.createElement("div");
+		label.classList.add(styleSecLabel);
 		label.innerText = "Categories:";
 		container.append(label);
 
@@ -192,21 +201,36 @@ export class ResourceItem{
 			for(const chip of chips) categoryChips.appendChild(chip); 
 		});
 		
-		// add programming languages
-		container.appendChild(this.createChipContainer("programmingLanguage"));
+		// add other model chips
+		const tagLabel = document.createElement("div");
+		tagLabel.classList.add(styleSecLabel);
+		tagLabel.innerText = "Other Tags:";
+		container.append(tagLabel);
+		
+		const auxChips = document.createElement("div")
+		auxChips.classList.add(styleChipContainer);
+		container.appendChild(auxChips);
+		this.populateChipContainer(
+			auxChips, 
+			[
+				"programmingLanguage", "relatedRegion", "relatedPhenomena"
+			], 
+			ModelData.createChip.bind(ModelData)
+		);
 	}
 
-	private createChipContainer(
-		field: keyof SoftwareDataAsync, 
+	private populateChipContainer(
+		container: HTMLDivElement,
+		fields: (keyof SoftwareDataAsync)[], 
 		chipMethod = ModelData.createNametag.bind(ModelData)
 	): HTMLDivElement {
-		const container = document.createElement("div")
-
-		for(const lang of this.data[field]) {
-			appendPromisedElement(
-				container, 
-				chipMethod(softwareFieldToModelName(field), lang.id)
-			);
+		for(const field of fields){
+			for(const lang of this.data[field]) {
+				appendPromisedElement(
+					container, 
+					chipMethod(softwareFieldToModelName(field), lang.id)
+				);
+			}
 		}
 		return container;
 	}

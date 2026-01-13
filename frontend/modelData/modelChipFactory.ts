@@ -1,5 +1,4 @@
 import { 
-	colorSrcGreen,
 	type ControlledListData, 
 	type GraphListData, 
 	type HSSIModelData,
@@ -140,19 +139,6 @@ export class GraphListChipFactory<T extends GraphListData> extends ControlledLis
 		}
 		return chip;
 	}
-}
-
-export class ProgLangChipFactory extends UniformListChipFactory {
-
-	public bgColor: string = "#FFF";
-	public borderColor: string = colorSrcGreen;
-	public textColor: string = colorSrcGreen;
-	public nameMap: {[x: string]: string} = {
-		"Javascript": "JaSc",
-		"Typescript": "TySc",
-		"Fortran77": "Fo77",
-		"Fortran90": "Fo90",
-	};
 }
 
 export class FunctionCategoryChipFactory extends GraphListChipFactory<FunctionalityData> {

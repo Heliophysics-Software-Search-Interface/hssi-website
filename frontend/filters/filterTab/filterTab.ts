@@ -63,7 +63,6 @@ import {
 const styleTabHeader = "tab-header";
 const styleTabContent = "tab-content";
 
-export const colorSrcGreen = "#559e41";
 const styleVertical = "vertical";
 const styleMenu = "menu";
 const styleDropdown = "dropdown";

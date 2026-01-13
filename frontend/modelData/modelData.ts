@@ -2,13 +2,14 @@ import {
 	BaseChipFactory,
 	ControlledListChipFactory,
 	FunctionCategoryChipFactory,
-	ProgLangChipFactory,
 	UniformListChipFactory,
 	type HSSIModelData,
 	type JSONArray,
 	type ModelChipFactory,
 	type ModelName,
 } from "../loader";
+
+export const colorSrcGreen = "#559e41";
 
 export interface ModelDataAccess {
 	/** get all the data in a specified model table as a json array of each row */
@@ -31,21 +32,31 @@ export class ModelData {
 				factory = new FunctionCategoryChipFactory(model);
 				break;
 			case "ProgrammingLanguage":
-				factory = new ProgLangChipFactory(model);
+				let langFactory = new UniformListChipFactory(model);
+				langFactory.bgColor = "#FFF";
+				langFactory.borderColor = colorSrcGreen;
+				langFactory.textColor = colorSrcGreen;
+				langFactory.nameMap = {
+					"Javascript": "JaSc",
+					"Typescript": "TySc",
+					"Fortran77": "Fo77",
+					"Fortran90": "Fo90",
+				};
+				factory = langFactory;
 				break;
 			case "Region":
-				let ufact = new UniformListChipFactory(model);
-				ufact.bgColor = "#CDF";
-				ufact.borderColor = "#24A";
-				ufact.textColor = ufact.borderColor;
-				ufact.nameMap = {
+				let regionFactory = new UniformListChipFactory(model);
+				regionFactory.bgColor = "#CDF";
+				regionFactory.borderColor = "#24A";
+				regionFactory.textColor = regionFactory.borderColor;
+				regionFactory.nameMap = {
 					"Earth Atmosphere": "EAtm",
 					"Earth Magnetosphere": "EMag",
 					"Interplanetary Space": "Spce",
 					"Planetary Magnetospheres": "PMag",
 					"Solar Environment": "Solr",
 				}
-				factory = ufact;
+				factory = regionFactory;
 				break;
 			default: 
 				factory = new ControlledListChipFactory(model); 

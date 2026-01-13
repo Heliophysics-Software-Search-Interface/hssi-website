@@ -1,6 +1,6 @@
 import { 
 	FilterTab, CategoryFilterTab, FilterMenuItem, FilterGroupMaker,
-	ProgrammingLanguageFilterTab,
+	ProgrammingLanguageFilterTab, DataSourcesFilterTab, PhenomenaFilterTab,
 	RegionFilterTab,
 	FilterGroup,
 	ResourceView,
@@ -12,7 +12,6 @@ import {
 	ConfirmDialogue,
 	applyEnteredQuery,
 } from "../loader";
-import { PhenomenaFilterTab } from "./filterTab/phenomenaFilterTab";
 
 export const styleHidden = "hidden";
 export const styleSelected = "selected";
@@ -275,6 +274,7 @@ export function makeFilterMenuElement(targetView: ResourceView = null): void {
 	filterMenu.tabs.push(new ProgrammingLanguageFilterTab(filterMenu));
 	filterMenu.tabs.push(new RegionFilterTab(filterMenu));
 	filterMenu.tabs.push(new PhenomenaFilterTab(filterMenu));
+	filterMenu.tabs.push(new DataSourcesFilterTab(filterMenu));
 	document.currentScript.parentNode.appendChild(filterMenu.containerElement);
 	filterMenu.build();
 }

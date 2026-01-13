@@ -65,6 +65,13 @@ export class ModelData {
 				phenomFactory.textColor = phenomFactory.borderColor;
 				factory = phenomFactory;
 				break;
+			case "DataInput":
+				let sourceFactory = new UniformListChipFactory(model);
+				sourceFactory.bgColor = "#222";
+				sourceFactory.borderColor = "#2FB";
+				sourceFactory.textColor = sourceFactory.borderColor;
+				factory = sourceFactory;
+				break;
 			default: 
 				factory = new ControlledListChipFactory(model); 
 				break;

@@ -45,6 +45,12 @@ const faUpArrow = `<i class="fa fa-angle-up"></i>`;
 const linkHssiVocab = (
 	"https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/issues/new"
 );
+const listTagFields = [
+	"programmingLanguage", 
+	"relatedRegion", 
+	"relatedPhenomena",
+	"dataSources"
+];
 
 /**
  * represents a single software resource submitted to the HSSI database, 
@@ -154,13 +160,7 @@ export class ResourceItem{
 		const auxChips = document.createElement("div")
 		chipContainer.appendChild(auxChips);
 		
-		this.populateChipContainer(
-			auxChips, 
-			[
-				"programmingLanguage", "relatedRegion", "relatedPhenomena"
-			], 
-			ModelData.createChip.bind(ModelData)
-		);
+		this.populateChipContainer(auxChips, listTagFields, ModelData.createChip.bind(ModelData));
 	}
 
 	private async buildModelNametags(): Promise<void> {
@@ -210,13 +210,7 @@ export class ResourceItem{
 		const auxChips = document.createElement("div")
 		auxChips.classList.add(styleChipContainer);
 		container.appendChild(auxChips);
-		this.populateChipContainer(
-			auxChips, 
-			[
-				"programmingLanguage", "relatedRegion", "relatedPhenomena"
-			], 
-			ModelData.createChip.bind(ModelData)
-		);
+		this.populateChipContainer(auxChips, listTagFields, ModelData.createChip.bind(ModelData));
 	}
 
 	private populateChipContainer(

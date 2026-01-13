@@ -1,15 +1,12 @@
 import { 
-	colorSrcGreen,
 	ControlledListFilterTab, 
 	ControlledListItem, 
 	FilterMenu,
-	FilterMenuItem,
-	type JSONValue
 } from "../../loader";
 
 export class ProgrammingLanguageFilterTab extends ControlledListFilterTab {
 	
-	public get headerText(): string { return "Prog. Languages"; }
+	public get headerText(): string { return "Prog. Language"; }
 
 	public constructor(parentMenu: FilterMenu) {
 		super(parentMenu);

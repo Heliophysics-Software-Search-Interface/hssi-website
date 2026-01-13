@@ -1040,6 +1040,9 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_TT_EXPL: TTEXPL_LOGO,
 			PROP_TT_BEST: TTBEST_LOGO,
 			PROP_TOPFIELD: "url",
+			PROP_WIDGET_PROPS: {
+				WPROP_MAXLENGTH: 2048,
+			},
 		},
 		multi=False,
 	),

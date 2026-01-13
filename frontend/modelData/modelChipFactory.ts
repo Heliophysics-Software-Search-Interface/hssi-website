@@ -39,6 +39,7 @@ export class BaseChipFactory<T extends HSSIModelData> implements ModelChipFactor
 		const chip = document.createElement("span");
 		chip.classList.add(styleItemChip);
 		chip.innerText = this.getAbbreviationFromData(data);
+		chip.title = this.modelName + " - " + this.getNameFromData(data);
 		return chip;
 	}
 
@@ -71,7 +72,7 @@ export class ControlledListChipFactory<T extends ControlledListData> extends Bas
 		const listData = data as T;
 		const chip = super.createChipFromData(listData);
 		chip.innerText = this.getAbbreviationFromData(listData);
-		chip.title = listData.name;
+		chip.title = this.modelName + " - " + listData.name;
 		return chip;
 	}
 }

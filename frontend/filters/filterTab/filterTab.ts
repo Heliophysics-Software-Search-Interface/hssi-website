@@ -9,6 +9,7 @@ import {
 	ModelData,
 	ModelDataCache,
 	type SoftwareDataAsync,
+	ControlledListItem,
 } from "../../loader";
 
 /**
@@ -219,5 +220,10 @@ export class ControlledListFilterTab extends FilterTab {
 			const obB = b as { name: string };
 			return obA.name.localeCompare(obB.name);
 		});
+	}
+
+	protected override createItem(itemData: JSONValue): FilterMenuItem {
+		const item = new ControlledListItem(this, itemData);
+		return item;
 	}
 }

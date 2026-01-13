@@ -82,9 +82,35 @@ export class UniformListChipFactory extends ControlledListChipFactory<Controlled
 	public bgColor: string = "#FFF";
 	public borderColor: string = "#000";
 	public textColor: string = "#000";
+	public nameMap: {[x: string]: string} = {};
 	
 	protected override getAbbreviationFromData(data: ControlledListData): string {
-		return data.abbreviation || super.getAbbreviationFromData(data);
+		if (data.abbreviation) return data.abbreviation;
+
+		// replace the label with the item in the name map if available
+		let label = "";
+		if(this.nameMap[data.name]){
+			label = this.nameMap[data.name];
+		}
+
+		// otherwise try to guess the abbreviation based on the name
+		else{
+			let splname = data.name.replaceAll(".", "").split(" ");
+			switch(splname.length){
+				case 2:
+				label = (
+					splname[0].substring(0, 2) + 
+					splname[1].substring(0, 2)
+				);
+				break;
+				default:
+					label = data.name.substring(0, 4);
+					break;
+			}
+		}
+
+		if (label) return label;
+		return super.getAbbreviationFromData(data);
 	}
 
 	protected override createChipFromData(data: HSSIModelData): HTMLSpanElement {
@@ -121,31 +147,12 @@ export class ProgLangChipFactory extends UniformListChipFactory {
 	public bgColor: string = "#FFF";
 	public borderColor: string = colorSrcGreen;
 	public textColor: string = colorSrcGreen;
-
-	protected override getAbbreviationFromData(data: ControlledListData): string {
-		let label = "";
-		switch(data.name.toLowerCase()) {
-			case "javascript": label = "JaSc"; break;
-			case "typescript": label = "TySc"; break;
-			case "fortran77": label = "Fo77"; break;
-			case "fortran90": label = "Fo90"; break;
-			default:
-				let splname = data.name.replaceAll(".", "").split(" ");
-				switch(splname.length){
-					case 2:
-					label = (
-						splname[0].substring(0, 2) + 
-						splname[1].substring(splname[1].length - 2, splname[1].length)
-					);
-					break;
-					default:
-						label = data.name.substring(0, 4);
-						break;
-				}
-				break;
-		}
-		return label;
-	}
+	public nameMap: {[x: string]: string} = {
+		"Javascript": "JaSc",
+		"Typescript": "TySc",
+		"Fortran77": "Fo77",
+		"Fortran90": "Fo90",
+	};
 }
 
 export class FunctionCategoryChipFactory extends GraphListChipFactory<FunctionalityData> {

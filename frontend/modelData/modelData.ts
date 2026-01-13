@@ -3,6 +3,7 @@ import {
 	ControlledListChipFactory,
 	FunctionCategoryChipFactory,
 	ProgLangChipFactory,
+	UniformListChipFactory,
 	type HSSIModelData,
 	type JSONArray,
 	type ModelChipFactory,
@@ -32,7 +33,22 @@ export class ModelData {
 			case "ProgrammingLanguage":
 				factory = new ProgLangChipFactory(model);
 				break;
-			default: factory = new ControlledListChipFactory(model); 
+			case "Region":
+				let ufact = new UniformListChipFactory(model);
+				ufact.bgColor = "#CDF";
+				ufact.borderColor = "#24A";
+				ufact.textColor = ufact.borderColor;
+				ufact.nameMap = {
+					"Earth Atmosphere": "EAtm",
+					"Earth Magnetosphere": "EMag",
+					"Interplanetary Space": "Spce",
+					"Planetary Magnetospheres": "PMag",
+					"Solar Environment": "Solr",
+				}
+				factory = ufact;
+				break;
+			default: 
+				factory = new ControlledListChipFactory(model); 
 				break;
 		}
 

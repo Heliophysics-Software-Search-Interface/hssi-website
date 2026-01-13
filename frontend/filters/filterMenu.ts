@@ -1,6 +1,7 @@
 import { 
 	FilterTab, CategoryFilterTab, FilterMenuItem, FilterGroupMaker,
 	ProgrammingLanguageFilterTab,
+	RegionFilterTab,
 	FilterGroup,
 	ResourceView,
 	faCloseIcon,
@@ -271,6 +272,7 @@ export function makeFilterMenuElement(targetView: ResourceView = null): void {
 	const filterMenu = new FilterMenu(targetView);
 	filterMenu.tabs.push(new CategoryFilterTab(filterMenu));
 	filterMenu.tabs.push(new ProgrammingLanguageFilterTab(filterMenu));
+	filterMenu.tabs.push(new RegionFilterTab(filterMenu));
 	document.currentScript.parentNode.appendChild(filterMenu.containerElement);
 	filterMenu.build();
 }

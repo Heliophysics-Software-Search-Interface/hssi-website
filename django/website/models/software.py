@@ -3,6 +3,7 @@ from typing import Callable
 
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 from django.core.exceptions import ObjectDoesNotExist
 from sortedm2m.fields import SortedManyToManyField
 
@@ -60,6 +61,7 @@ class Software(HssiModel):
 		related_name='observatories'
 	)
 	softwareName = models.CharField(max_length=LEN_NAME)
+	slug = models.SlugField(max_length=150, unique=True, blank=True)
 	version = models.OneToOneField(
 		SoftwareVersion,
 		on_delete=models.SET_NULL,
@@ -207,6 +209,21 @@ class Software(HssiModel):
 		return subfields
 
 	def __str__(self): return self.softwareName
+
+	def save(self, *args, **kwargs):
+		if not self.slug:
+			self.slug = slugify(self.softwareName)
+			# Handle duplicates by appending a counter
+			original_slug = self.slug
+			counter = 1
+			while Software.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+				self.slug = f"{original_slug}-{counter}"
+				counter += 1
+		super().save(*args, **kwargs)
+
+	def get_absolute_url(self):
+		from django.urls import reverse
+		return reverse('website:software_detail', kwargs={'slug': self.slug})
 
 	'''if the software is visible on the website'''
 	def is_visible(self) -> bool:

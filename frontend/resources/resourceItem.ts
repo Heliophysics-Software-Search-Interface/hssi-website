@@ -84,6 +84,16 @@ export class ResourceItem{
 		this.containerElement.style.position = "relative";
 	}
 
+	/**
+	 * Generate a URL-safe slug from a software name
+	 */
+	private generateSlug(name: string): string {
+		return name
+			.toLowerCase()
+			.replace(/[^a-z0-9]+/g, '-')
+			.replace(/^-+|-+$/g, '');
+	}
+
 	private buildLinkButtons(): void {
 		const bottomButtonContainer = document.createElement("div");
 		bottomButtonContainer.classList.add(styleBottomButtons);
@@ -312,7 +322,13 @@ export class ResourceItem{
 		
 		const titleDiv = document.createElement("div");
 		titleDiv.classList.add(styleResourceTitle);
-		titleDiv.innerText = this.data.softwareName;
+
+		// Make the title a clickable link to the landing page
+		const titleLink = document.createElement("a");
+		titleLink.href = `/${this.generateSlug(this.data.softwareName)}`;
+		titleLink.innerText = this.data.softwareName;
+		titleLink.classList.add("software-title-link");
+		titleDiv.appendChild(titleLink);
 		headerText.appendChild(titleDiv);
 
 		const headInfoDiv = document.createElement("div");

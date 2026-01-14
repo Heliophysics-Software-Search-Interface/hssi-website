@@ -1,0 +1,410 @@
+/* Software Landing Page Styles */
+
+.software-landing-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header Section */
+.software-header {
+    background: linear-gradient(to right, #fcfcfd, #ececec);
+    border-radius: 8px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(10, 10, 10, 0.15);
+}
+
+.software-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.software-title-section {
+    flex: 1;
+}
+
+.software-name {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0 0 10px 0;
+}
+
+.software-version {
+    font-size: 1rem;
+    color: #666;
+    background-color: #e8e8e8;
+    padding: 4px 12px;
+    border-radius: 4px;
+}
+
+.software-logo-container {
+    margin-left: 20px;
+}
+
+.software-logo {
+    max-width: 180px;
+    max-height: 120px;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Action Buttons */
+.software-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.action-btn i {
+    margin-right: 6px;
+}
+
+.action-btn.btn-code {
+    background-color: #559e41;
+    color: white;
+    border: 1px solid #559e41;
+}
+
+.action-btn.btn-code:hover {
+    background-color: #478a36;
+    color: white;
+}
+
+.action-btn.btn-docs {
+    background-color: #5070e5;
+    color: white;
+    border: 1px solid #5070e5;
+}
+
+.action-btn.btn-docs:hover {
+    background-color: #4060d5;
+    color: white;
+}
+
+.action-btn.btn-publication {
+    background-color: #8e44ad;
+    color: white;
+    border: 1px solid #8e44ad;
+}
+
+.action-btn.btn-publication:hover {
+    background-color: #7d3c98;
+    color: white;
+}
+
+.action-btn.btn-doi {
+    background-color: #f47f1c;
+    color: white;
+    border: 1px solid #f47f1c;
+}
+
+.action-btn.btn-doi:hover {
+    background-color: #e06f0c;
+    color: white;
+}
+
+/* Content Sections */
+.software-content {
+    margin-bottom: 30px;
+}
+
+.software-section {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #14679e;
+    margin: 0 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #14679e;
+}
+
+.description-content {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #4d4d4d;
+}
+
+.description-content p {
+    margin-bottom: 1em;
+}
+
+/* Authors List */
+.authors-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.author-item {
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.author-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.author-name a {
+    color: #1779ba;
+    text-decoration: none;
+}
+
+.author-name a:hover {
+    text-decoration: underline;
+}
+
+.author-affiliation {
+    font-size: 0.9rem;
+    color: #666;
+    margin-left: 8px;
+}
+
+/* Metadata Grid */
+.metadata-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.metadata-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.metadata-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.metadata-label {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metadata-value {
+    color: #333;
+}
+
+.metadata-value a {
+    color: #1779ba;
+    text-decoration: none;
+}
+
+.metadata-value a:hover {
+    text-decoration: underline;
+}
+
+/* Tags */
+.tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin: 2px;
+    background-color: #e8e8e8;
+    color: #333;
+}
+
+.functionality-tag {
+    font-weight: 500;
+}
+
+.keyword-tag {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-tag {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+/* Functionality Tags */
+.functionality-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Keywords */
+.keywords-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Publications & Related Items */
+.related-items-subsection {
+    margin-bottom: 20px;
+}
+
+.related-items-subsection:last-child {
+    margin-bottom: 0;
+}
+
+.related-items-subsection h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #555;
+    margin: 0 0 10px 0;
+}
+
+.publication-item,
+.related-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.publication-item:last-child,
+.related-item:last-child {
+    margin-bottom: 0;
+}
+
+.publication-title {
+    flex: 1;
+    color: #333;
+}
+
+.publication-link {
+    color: #1779ba;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.publication-link:hover {
+    text-decoration: underline;
+}
+
+.related-item span {
+    flex: 1;
+}
+
+.related-item a {
+    color: #1779ba;
+}
+
+/* Awards */
+.awards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.award-item {
+    padding: 10px 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.award-name {
+    font-weight: 500;
+}
+
+.award-id {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.award-funder {
+    color: #555;
+    font-style: italic;
+}
+
+/* Release Notes */
+.release-notes {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    line-height: 1.6;
+}
+
+/* Back Link */
+.back-link {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.back-link a {
+    color: #1779ba;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}
+
+.back-link a i {
+    margin-right: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .software-header-content {
+        flex-direction: column;
+    }
+
+    .software-logo-container {
+        margin-left: 0;
+        margin-top: 20px;
+    }
+
+    .software-name {
+        font-size: 1.6rem;
+    }
+
+    .metadata-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .software-actions {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .software-landing-page {
+        padding: 10px;
+    }
+
+    .software-section {
+        padding: 15px;
+    }
+}

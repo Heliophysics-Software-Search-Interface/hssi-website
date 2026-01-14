@@ -5,3 +5,4 @@ from .exposed_models import *
 from .model_rows import *
 from .somef import *
 from .edit_submission import *
+from .software_detail import *

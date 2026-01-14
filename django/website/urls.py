@@ -26,5 +26,8 @@ urlpatterns = [
 	path('api/describe', views.somef.describe_view),
 	path('api/describe_form', views.somef.form_fill_view),
 	path('team/', views.team, name="team"),
-	path('export/', views.export_search_results, name='export_seach_results')
+	path('export/', views.export_search_results, name='export_seach_results'),
+
+	# Software landing page - MUST be last to avoid conflicts with other routes
+	path('<slug:slug>/', views.SoftwareDetailView.as_view(), name='software_detail'),
 ]

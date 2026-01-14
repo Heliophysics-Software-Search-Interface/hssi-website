@@ -1,0 +1,473 @@
+{% extends 'site_base_template.html' %}
+{% load static %}
+{% load markdownify %}
+
+{% block title %}{{ software.softwareName }} - HSSI{% endblock %}
+
+{% block seo_description %}
+<meta name="description" content="{{ software.conciseDescription|default:software.description|truncatewords:30 }}" />
+{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/software_detail.css' %}?v=2024-10-15" />
+{% endblock %}
+
+{% block page_content %}
+<div class="software-landing-page">
+
+    <!-- Header Section -->
+    <div class="software-header">
+        <div class="software-header-content">
+            <div class="software-title-section">
+                <h1 class="software-name">{{ software.softwareName }}</h1>
+                {% if software.version %}
+                <span class="software-version">v{{ software.version.number }}</span>
+                {% endif %}
+            </div>
+
+            {% if software.logo and software.logo.url %}
+            <div class="software-logo-container">
+                <img class="software-logo" src="{{ software.logo.url }}" alt="{{ software.softwareName }} logo">
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Action Buttons -->
+        <div class="software-actions">
+            {% if software.codeRepositoryUrl %}
+            <a href="{{ software.codeRepositoryUrl }}" class="action-btn btn-code" target="_blank">
+                <i class="fa fa-code"></i> Code
+            </a>
+            {% endif %}
+            {% if software.documentation %}
+            <a href="{{ software.documentation }}" class="action-btn btn-docs" target="_blank">
+                <i class="fa fa-book"></i> Docs
+            </a>
+            {% endif %}
+            {% if software.referencePublication and software.referencePublication.identifier %}
+            <a href="{{ software.referencePublication.identifier }}" class="action-btn btn-publication" target="_blank">
+                <i class="fa fa-file-text"></i> Publication
+            </a>
+            {% endif %}
+            {% if software.persistentIdentifier %}
+            <a href="{{ software.persistentIdentifier }}" class="action-btn btn-doi" target="_blank">
+                <i class="fa fa-link"></i> DOI
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="software-content">
+
+        <!-- Description Section -->
+        <section class="software-section">
+            <h2 class="section-title">Description</h2>
+            <div class="description-content">
+                {% if software.description %}
+                {{ software.description|markdownify }}
+                {% else %}
+                <p>No description available.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Authors Section -->
+        {% if software.authors.all %}
+        <section class="software-section">
+            <h2 class="section-title">Authors</h2>
+            <div class="authors-list">
+                {% for author in software.authors.all %}
+                <div class="author-item">
+                    <span class="author-name">
+                        {% if author.identifier %}
+                        <a href="{{ author.identifier }}" target="_blank">
+                            {{ author.firstName }} {{ author.lastName }}
+                        </a>
+                        {% else %}
+                        {{ author.firstName }} {{ author.lastName }}
+                        {% endif %}
+                    </span>
+                    {% if author.affiliation.all %}
+                    <span class="author-affiliation">
+                        ({% for org in author.affiliation.all %}{{ org.name }}{% if not forloop.last %}, {% endif %}{% endfor %})
+                    </span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Functionality Section -->
+        {% if software.softwareFunctionality.all %}
+        <section class="software-section">
+            <h2 class="section-title">Functionality</h2>
+            <div class="functionality-tags">
+                {% for func in software.softwareFunctionality.all %}
+                <span class="tag functionality-tag"
+                      style="background-color: {{ func.backgroundColor }}; color: {{ func.textColor }}">
+                    {{ func.name }}
+                </span>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Technical Details Section -->
+        <section class="software-section">
+            <h2 class="section-title">Technical Details</h2>
+            <div class="metadata-grid">
+                {% if software.programmingLanguage.all %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Programming Languages</span>
+                    <span class="metadata-value">
+                        {% for lang in software.programmingLanguage.all %}
+                        <span class="tag">{{ lang.name }}</span>
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if software.operatingSystem.all %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Operating Systems</span>
+                    <span class="metadata-value">
+                        {% for os in software.operatingSystem.all %}
+                        <span class="tag">{{ os.name }}</span>
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if software.cpuArchitecture.all %}
+                <div class="metadata-item">
+                    <span class="metadata-label">CPU Architecture</span>
+                    <span class="metadata-value">
+                        {% for arch in software.cpuArchitecture.all %}
+                        <span class="tag">{{ arch.name }}</span>
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if software.developmentStatus %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Development Status</span>
+                    <span class="metadata-value">
+                        <span class="tag status-tag">{{ software.developmentStatus.name }}</span>
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if software.publicationDate %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Publication Date</span>
+                    <span class="metadata-value">{{ software.publicationDate|date:"M d, Y" }}</span>
+                </div>
+                {% endif %}
+
+                {% if software.publisher %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Publisher</span>
+                    <span class="metadata-value">{{ software.publisher.name }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Data & File Formats Section -->
+        {% if software.dataSources.all or software.inputFormats.all or software.outputFormats.all %}
+        <section class="software-section">
+            <h2 class="section-title">Data & File Formats</h2>
+            <div class="metadata-grid">
+                {% if software.dataSources.all %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Data Sources</span>
+                    <span class="metadata-value">
+                        {% for ds in software.dataSources.all %}
+                        <span class="tag">{{ ds.name }}</span>
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if software.inputFormats.all %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Input Formats</span>
+                    <span class="metadata-value">
+                        {% for fmt in software.inputFormats.all %}
+                        <span class="tag">{{ fmt.name }}</span>
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if software.outputFormats.all %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Output Formats</span>
+                    <span class="metadata-value">
+                        {% for fmt in software.outputFormats.all %}
+                        <span class="tag">{{ fmt.name }}</span>
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Science Context Section -->
+        {% if software.relatedInstruments.all or software.relatedObservatories.all or software.relatedPhenomena.all or software.relatedRegion.all %}
+        <section class="software-section">
+            <h2 class="section-title">Science Context</h2>
+            <div class="metadata-grid">
+                {% if software.relatedInstruments.all %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Related Instruments</span>
+                    <span class="metadata-value">
+                        {% for inst in software.relatedInstruments.all %}
+                        <span class="tag">{{ inst.name }}</span>
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if software.relatedObservatories.all %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Related Observatories</span>
+                    <span class="metadata-value">
+                        {% for obs in software.relatedObservatories.all %}
+                        <span class="tag">{{ obs.name }}</span>
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if software.relatedPhenomena.all %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Related Phenomena</span>
+                    <span class="metadata-value">
+                        {% for phen in software.relatedPhenomena.all %}
+                        <span class="tag">{{ phen.name }}</span>
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if software.relatedRegion.all %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Related Regions</span>
+                    <span class="metadata-value">
+                        {% for reg in software.relatedRegion.all %}
+                        <span class="tag">{{ reg.name }}</span>
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Keywords Section -->
+        {% if software.keywords.all %}
+        <section class="software-section">
+            <h2 class="section-title">Keywords</h2>
+            <div class="keywords-list">
+                {% for keyword in software.keywords.all %}
+                <span class="tag keyword-tag">{{ keyword.name }}</span>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Publications Section -->
+        {% if software.referencePublication or software.relatedPublications.all %}
+        <section class="software-section">
+            <h2 class="section-title">Publications</h2>
+            {% if software.referencePublication %}
+            <div class="related-items-subsection">
+                <h3>Reference Publication</h3>
+                <div class="publication-item">
+                    <span class="publication-title">{{ software.referencePublication.name }}</span>
+                    {% if software.referencePublication.identifier %}
+                    <a href="{{ software.referencePublication.identifier }}" class="publication-link" target="_blank">
+                        <i class="fa fa-external-link"></i> View
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if software.relatedPublications.all %}
+            <div class="related-items-subsection">
+                <h3>Related Publications</h3>
+                {% for pub in software.relatedPublications.all %}
+                <div class="publication-item">
+                    <span class="publication-title">{{ pub.name }}</span>
+                    {% if pub.identifier %}
+                    <a href="{{ pub.identifier }}" class="publication-link" target="_blank">
+                        <i class="fa fa-external-link"></i> View
+                    </a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </section>
+        {% endif %}
+
+        <!-- Related Items Section -->
+        {% if software.relatedDatasets.all or software.relatedSoftware.all or software.interoperableSoftware.all %}
+        <section class="software-section">
+            <h2 class="section-title">Related Items</h2>
+
+            {% if software.relatedDatasets.all %}
+            <div class="related-items-subsection">
+                <h3>Related Datasets</h3>
+                {% for ds in software.relatedDatasets.all %}
+                <div class="related-item">
+                    <span>{{ ds.name }}</span>
+                    {% if ds.identifier %}
+                    <a href="{{ ds.identifier }}" target="_blank"><i class="fa fa-external-link"></i></a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if software.relatedSoftware.all %}
+            <div class="related-items-subsection">
+                <h3>Related Software</h3>
+                {% for sw in software.relatedSoftware.all %}
+                <div class="related-item">
+                    <span>{{ sw.name }}</span>
+                    {% if sw.identifier %}
+                    <a href="{{ sw.identifier }}" target="_blank"><i class="fa fa-external-link"></i></a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if software.interoperableSoftware.all %}
+            <div class="related-items-subsection">
+                <h3>Interoperable Software</h3>
+                {% for sw in software.interoperableSoftware.all %}
+                <div class="related-item">
+                    <span>{{ sw.name }}</span>
+                    {% if sw.identifier %}
+                    <a href="{{ sw.identifier }}" target="_blank"><i class="fa fa-external-link"></i></a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </section>
+        {% endif %}
+
+        <!-- Licensing & Funding Section -->
+        {% if software.license or software.funder.all or software.award.all %}
+        <section class="software-section">
+            <h2 class="section-title">Licensing & Funding</h2>
+            <div class="metadata-grid">
+                {% if software.license %}
+                <div class="metadata-item">
+                    <span class="metadata-label">License</span>
+                    <span class="metadata-value">
+                        {% if software.license.url %}
+                        <a href="{{ software.license.url }}" target="_blank">{{ software.license.name }}</a>
+                        {% else %}
+                        {{ software.license.name }}
+                        {% endif %}
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if software.licenseFileUrl %}
+                <div class="metadata-item">
+                    <span class="metadata-label">License File</span>
+                    <span class="metadata-value">
+                        <a href="{{ software.licenseFileUrl }}" target="_blank">View License File</a>
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if software.funder.all %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Funders</span>
+                    <span class="metadata-value">
+                        {% for funder in software.funder.all %}
+                        <span class="tag">{{ funder.name }}</span>
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %}
+
+                {% if software.award.all %}
+                <div class="metadata-item full-width">
+                    <span class="metadata-label">Awards</span>
+                    <div class="awards-list">
+                        {% for award in software.award.all %}
+                        <div class="award-item">
+                            <span class="award-name">{{ award.name }}</span>
+                            {% if award.identifier %}
+                            <span class="award-id">({{ award.identifier }})</span>
+                            {% endif %}
+                            {% if award.funder %}
+                            <span class="award-funder">- {{ award.funder.name }}</span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Version Information Section -->
+        {% if software.version %}
+        <section class="software-section">
+            <h2 class="section-title">Version Information</h2>
+            <div class="metadata-grid">
+                <div class="metadata-item">
+                    <span class="metadata-label">Current Version</span>
+                    <span class="metadata-value">{{ software.version.number }}</span>
+                </div>
+                {% if software.version.release_date %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Release Date</span>
+                    <span class="metadata-value">{{ software.version.release_date|date:"M d, Y" }}</span>
+                </div>
+                {% endif %}
+                {% if software.version.version_pid %}
+                <div class="metadata-item">
+                    <span class="metadata-label">Version DOI</span>
+                    <span class="metadata-value">
+                        <a href="{{ software.version.version_pid }}" target="_blank">{{ software.version.version_pid }}</a>
+                    </span>
+                </div>
+                {% endif %}
+                {% if software.version.description %}
+                <div class="metadata-item full-width">
+                    <span class="metadata-label">Release Notes</span>
+                    <div class="metadata-value release-notes">{{ software.version.description|markdownify }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
+
+    </div>
+
+    <!-- Back to Home Link -->
+    <div class="back-link">
+        <a href="{% url 'website:published_resources' %}">
+            <i class="fa fa-arrow-left"></i> Back to Software Catalog
+        </a>
+    </div>
+
+</div>
+{% endblock %}

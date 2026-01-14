@@ -5,7 +5,7 @@ import {
 
 export class RegionFilterTab extends ControlledListFilterTab {
 
-	public get headerText(): string { return "Regions"; }
+	public get headerText(): string { return "Region"; }
 
 	public constructor(parentMenu: FilterMenu) {
 		super(parentMenu);

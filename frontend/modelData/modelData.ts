@@ -67,9 +67,13 @@ export class ModelData {
 				break;
 			case "DataInput":
 				let sourceFactory = new UniformListChipFactory(model);
-				sourceFactory.bgColor = "#222";
-				sourceFactory.borderColor = "#2FB";
-				sourceFactory.textColor = sourceFactory.borderColor;
+				sourceFactory.bgColor = "#333";
+				sourceFactory.borderColor = "#2A8";
+				sourceFactory.textColor = "#2F8";
+				sourceFactory.nameMap = {
+					"HTTP/HTTPS Directories": "Http",
+					"FTP/FTPS Directories": "Ftp"
+				}
 				factory = sourceFactory;
 				break;
 			default: 

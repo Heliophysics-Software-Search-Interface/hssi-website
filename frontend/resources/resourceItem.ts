@@ -315,7 +315,7 @@ export class ResourceItem{
 
 		// Make the title a clickable link to the landing page (using UUID)
 		const titleLink = document.createElement("a");
-		titleLink.href = `/${this.data.id}/`;
+		titleLink.href = `/software/${this.data.id}/`;
 		titleLink.innerText = this.data.softwareName;
 		titleLink.classList.add("software-title-link");
 		titleDiv.appendChild(titleLink);

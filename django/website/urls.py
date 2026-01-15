@@ -29,5 +29,5 @@ urlpatterns = [
 	path('export/', views.export_search_results, name='export_seach_results'),
 
 	# Software landing page - uses UUID primary key
-	path('<uuid:pk>/', views.SoftwareDetailView.as_view(), name='software_detail'),
+	path('software/<uuid:pk>/', views.SoftwareDetailView.as_view(), name='software_detail'),
 ]

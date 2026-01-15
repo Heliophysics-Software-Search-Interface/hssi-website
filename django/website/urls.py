@@ -28,6 +28,6 @@ urlpatterns = [
 	path('team/', views.team, name="team"),
 	path('export/', views.export_search_results, name='export_seach_results'),
 
-	# Software landing page - MUST be last to avoid conflicts with other routes
-	path('<slug:slug>/', views.SoftwareDetailView.as_view(), name='software_detail'),
+	# Software landing page - uses UUID primary key
+	path('<uuid:pk>/', views.SoftwareDetailView.as_view(), name='software_detail'),
 ]

@@ -1,5 +1,4 @@
 import json
-from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 
 from ..util import *
@@ -83,23 +82,6 @@ class Person(HssiModel):
 	class Meta: 
 		ordering = ['lastName', 'firstName']
 		verbose_name_plural = 'People'
-		indexes = [
-			GinIndex(
-				fields=["firstName"],
-				name="person_first_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-			GinIndex(
-				fields=["lastName"],
-				name="person_last_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-			GinIndex(
-				fields=["identifier"],
-				name="person_ident_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-		]
 	def __str__(self): 
 		name = self.firstName + " " + self.lastName
 		if self.identifier:

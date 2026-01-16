@@ -1,7 +1,6 @@
 import datetime
 from typing import Callable
 
-from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
@@ -32,15 +31,7 @@ class SoftwareVersion(HssiModel):
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("number")
 
 	def __str__(self): return self.number
-	class Meta:
-		ordering = ['number']
-		indexes = [
-			GinIndex(
-				fields=["number"],
-				name="softwareversion_number_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-		]
+	class Meta: ordering = ['number']
 
 class Software(HssiModel):
 	access = AccessLevel.CURATOR
@@ -202,43 +193,6 @@ class Software(HssiModel):
 	class Meta:
 		ordering = ['softwareName']
 		verbose_name_plural = '  Software'
-		indexes = [
-			GinIndex(
-				fields=["softwareName"],
-				name="software_softwarename_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-			GinIndex(
-				fields=["conciseDescription"],
-				name="software_concise_desc_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-			GinIndex(
-				fields=["description"],
-				name="software_description_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-			GinIndex(
-				fields=["codeRepositoryUrl"],
-				name="software_repo_url_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-			GinIndex(
-				fields=["documentation"],
-				name="software_doc_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-			GinIndex(
-				fields=["licenseFileUrl"],
-				name="software_license_url_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-			GinIndex(
-				fields=["persistentIdentifier"],
-				name="software_pid_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-		]
 
 	@classmethod
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("softwareName")

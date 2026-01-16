@@ -1,5 +1,4 @@
 import uuid
-from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 
 from ..util import *
@@ -55,20 +54,7 @@ class Award(HssiModel):
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
 
 	def __str__(self): return self.name
-	class Meta:
-		ordering = ['name']
-		indexes = [
-			GinIndex(
-				fields=["name"],
-				name="award_name_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-			GinIndex(
-				fields=["identifier"],
-				name="award_ident_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-		]
+	class Meta: ordering = ['name']
 
 class RelatedItem(ControlledList):
 	access = AccessLevel.PUBLIC
@@ -124,16 +110,3 @@ class RelatedItem(ControlledList):
 	get_type_display: Callable[[], str]
 	
 	def __str__(self): return f"{self.name} ({self.get_type_display()})"
-	class Meta:
-		indexes = [
-			GinIndex(
-				fields=["name"],
-				name="relateditem_name_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-			GinIndex(
-				fields=["identifier"],
-				name="relateditem_ident_trgm",
-				opclasses=["gin_trgm_ops"],
-			),
-		]

@@ -11,7 +11,7 @@ const multiFieldRowStyle = "multi-field-row";
 const multiFieldPartStyle = "multi-field-part";
 const multiFieldContainerStyle = "multifield-container";
 
-type MultiField = ModelSubfield & {destroyRow?: () => void };
+type MultiField = ModelSubfield & {destroyRow?: (notify?: boolean) => void };
 
 /**
  * A special type of {@link ModelSubfield} which can be used to dynamically 
@@ -38,7 +38,8 @@ export class ModelMultiSubfield extends ModelSubfield {
 			this.name,
 			this.rowName,
 			this.type,
-			this.properties
+			this.properties,
+			this
 		);
 	}
 
@@ -65,14 +66,15 @@ export class ModelMultiSubfield extends ModelSubfield {
 		removeButton.innerHTML = faCloseIcon;
 
 		// remove on click
-		field.destroyRow = () => {
+		field.destroyRow = notify => {
+			if(notify) this.onValueChanged.triggerEvent();
 			const fieldIndex = this.multiFields.indexOf(field);
 			this.multiFields.splice(fieldIndex, 1);
 			field.destroy();
 			multiRow.remove();
 			this.requirement.applyRequirementWarningStyles();
 		}
-		removeButton.addEventListener("click", field.destroyRow);
+		removeButton.addEventListener("click", _ => field.destroyRow(true));
 
 		// add elements to root node
 		this.multiFields.push(field);
@@ -122,7 +124,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 
 	public clearMultifields(): void {
 		for(const field of this.multiFields.toReversed()){
-			field.destroyRow();
+			field.destroyRow(false);
 		}
 		this.multiFields.length = 0;
 	}

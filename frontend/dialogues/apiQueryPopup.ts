@@ -208,6 +208,31 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 		});
 	}
 
+	protected resultsFiltered_notsoftware(
+		results_in: JSONArray<DataciteItem>
+	): JSONArray<DataciteItem>{
+		return results_in.filter(x => {
+			return x.attributes?.types?.resourceTypeGeneral !== "Software";
+		});
+	}
+
+	protected resultsFiltered_dataset(
+		results_in: JSONArray<DataciteItem>
+	): JSONArray<DataciteItem>{
+		return results_in.filter(x => {
+			return x.attributes?.types?.resourceTypeGeneral === "Dataset";
+		});
+	}
+
+
+	protected resultsFiltered_notdataset(
+		results_in: JSONArray<DataciteItem>
+	): JSONArray<DataciteItem>{
+		return results_in.filter(x => {
+			return x.attributes?.types?.resourceTypeGeneral !== "Dataset";
+		});
+	}
+
 	protected resultsFiltered_concept(
 		results_in: JSONArray<DataciteItem>
 	): JSONArray<DataciteItem> {

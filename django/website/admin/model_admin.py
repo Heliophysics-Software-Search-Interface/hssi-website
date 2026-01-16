@@ -1,4 +1,4 @@
-import uuid, json
+import uuid, json, datetime
 
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
@@ -41,7 +41,7 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 		hssimodel = queryset.model
 		if not issubclass(hssimodel, HssiModel): return
 		topfield = hssimodel.get_top_field()
-	
+		second_field = hssimodel.get_second_top_field()
 		for obj in queryset:
 
 			iter_obj = obj
@@ -53,13 +53,22 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 			# which then needs to be resolved further. Multiple iterations 
 			# should solve this by continuing to resolve false keys until a
 			# non-key value is found
-			while True:
+			while iters < 100:
 				val = getattr(iter_obj, topfield.name)
+				if not val and second_field:
+					val = getattr(iter_obj, second_field.name)
 				try: uid = uuid.UUID(val)
 				except Exception: break
-				iter_obj = hssimodel.objects.get(pk=uid)
+				try: iter_obj = hssimodel.objects.get(pk=uid)
+				except: 
+					print(
+						f"ERROR: '{val}' (evaluated to '{str(uid)}') " + 
+						f"does not point to any {hssimodel.__name__} object"
+					)
+					iters = -1
+					break
 				iters += 1
-				if iters >= 100: break
+			if iters == -1: continue
 
 			if iters <= 0: 
 				print(f"'{str(val)}' does not appear to be a uuid")
@@ -171,7 +180,14 @@ class InstrumentObservatoryAdmin(HSSIModelAdmin): resource_class = InstrumentObs
 
 class LicenseResource(resources.ModelResource):
 	class Meta: model = License
-class LicenseAdmin(HSSIModelAdmin): resource_class = LicenseResource
+class LicenseAdmin(HSSIModelAdmin): 
+	resource_class = LicenseResource
+
+	def str_display(self, obj: Model): 
+		disp = super().str_display(obj)
+		if isinstance(obj, License):
+			if obj.name == "Other" and obj.url: disp += " - " + obj.url
+		return disp
 
 class OrganizationResource(resources.ModelResource):
 	class Meta: model = Organization
@@ -233,7 +249,11 @@ class SoftwareAdmin(HSSIModelAdmin):
 
 	@action(description="Add to Edit Queue")
 	def add_edit_queue(self, request: HttpRequest, queryset: QuerySet[Software]):
-		for soft in queryset: SoftwareEditQueue.create(soft)
+		for soft in queryset: 
+			SoftwareEditQueue.create(
+				soft, 
+				timezone.now() + datetime.timedelta(days=31)
+			)
 
 	actions = [
 		mark_visible,
@@ -248,7 +268,7 @@ class VisibleSoftwareAdmin(ImportExportModelAdmin): resource_class = VisibleSoft
 
 class SoftwareEditQueueResource(resources.ModelResource):
 	class Meta: Model = SoftwareEditQueue
-class SoftwareEditQueueAdmin(ImportExportModelAdmin): 
+class SoftwareEditQueueAdmin(ImportExportModelAdmin):
 	resource_class = SoftwareEditQueueResource
 
 	list_display = ('target_name', 'created', 'id')
@@ -281,9 +301,9 @@ class SubmissionInfoResource(resources.ModelResource):
 class SubmissionInfoAdmin(HSSIModelAdmin): 
 	resource_class = SubmissionInfoResource
 
-	@action(description="Email edit submission link")
+	@action(description="Email edit submission link (90 days)")
 	def email_edit_link(self, request: HttpRequest, query: QuerySet[SubmissionInfo]):
-		for info in query: v_email_edit_link(info)
+		for info in query: v_email_edit_link(info, datetime.timedelta(days=90))
 
 	actions = [
 		email_edit_link,

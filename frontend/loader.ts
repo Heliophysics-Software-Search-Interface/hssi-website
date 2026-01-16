@@ -7,12 +7,24 @@
 
 export * from "./util";
 export * from "./simpleEvent";
-export * from "./modelStructure";
+export * from "./modelData/modelStructure";
+
+export * from "./modelData/asyncModelData";
+export * from "./modelData/modelData";
+export * from "./modelData/modelChipFactory";
+export * from "./modelData/modelDataCache";
 
 export * from "./filters/filterGroup";
 export * from "./filters/filterMenuItem";
-export * from "./filters/filterTab";
+export * from "./filters/filterTab/filterTab";
+export * from "./filters/filterTab/categoryFilterTab";
+export * from "./filters/filterTab/programmingLanguageFilterTab";
+export * from "./filters/filterTab/regionFilterTab";
+export * from "./filters/filterTab/phenomenaFilterTab";
+export * from "./filters/filterTab/dataSourcesFilterTab";
 export * from "./filters/filterMenu";
+export * from "./filters/urlEncoding";
+export * from "./filters/search";
 
 export * from "./resources/resourceItem";
 export * from "./resources/resourceView";

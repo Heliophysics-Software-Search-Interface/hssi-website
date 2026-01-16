@@ -1,0 +1,10 @@
+id,name,identifier,definition
+b0750edf-f8e3-4570-8438-196ffb000b6f,Apple Silicon arm64,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/CPUArchitectures#AppleSilicon_arm64,
+d4c3cb4d-8512-47fd-b848-2c0fe5b53f3a,CPU Independent,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/CPUArchitectures#CPUIndependent,
+9254368d-26d1-49a6-afa1-be7964ed9641,GPU,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/CPUArchitectures#GPU,
+21c43002-6737-42aa-ac35-ea5f4f1d2903,HPC or HEC,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/CPUArchitectures#HPC_HEC,
+0652509f-d685-4ead-a971-03baa3340cb2,Linux aarch64 or arm64,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/CPUArchitectures#Linux_aarch64arm64,
+88086ef9-3665-4061-8456-33ad492f2753,Other,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/CPUArchitectures#Other,
+7f20d347-78eb-4cb5-984a-4a2ddd03dc1c,ppc64le,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/CPUArchitectures#ppc64le,
+d142e7e8-fe96-4b14-a774-34c5f683ce0b,Sun (SPARC),https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/CPUArchitectures#Sun(SPARC),
+13e6b1ea-f470-47de-8f4e-6f60e6b22a08,x86-64,https://Heliophysics-Software-Search-Interface.readthedocs.io/en/latest.html/CPUArchitectures#x86-64,

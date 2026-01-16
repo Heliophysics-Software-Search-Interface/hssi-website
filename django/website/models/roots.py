@@ -1,6 +1,6 @@
 import uuid, json, colorsys
 from django.db import models
-from django.db.models import ManyToManyField, QuerySet
+from django.db.models import ManyToManyField, QuerySet, Q
 from django.db.models.fields import related_descriptors
 from django.core.serializers import serialize
 from colorful.fields import RGBColorField
@@ -139,6 +139,10 @@ class HssiModel(models.Model, metaclass=HssiBase):
 
 	@classmethod
 	def get_top_field(cls) -> models.Field:
+		return None
+	
+	@classmethod
+	def get_second_top_field(cls) -> models.Field:
 		return None
 	
 	@classmethod
@@ -398,7 +402,7 @@ class RepoStatus(ControlledList):
 class Image(HssiModel):
 	'''Reference to an image file and alt text description'''
 	access = AccessLevel.PUBLIC
-	url = models.URLField(blank=True, null=True)
+	url = models.URLField(max_length=2048, blank=True, null=True)
 	description = models.CharField(max_length=250)
 
 	@classmethod
@@ -582,6 +586,11 @@ class FunctionCategory(ControlledGraphList):
 		
 		cls.objects.bulk_update(all_objs, ['backgroundColor', 'textColor'])
 
+	def get_search_terms(self):
+		arr = super().get_search_terms()
+		arr.extend(self.get_name_path().split("->"))
+		return arr
+
 	class Meta: verbose_name_plural = "Function Categories"
 	def __str__(self): return self.name
 
@@ -595,6 +604,13 @@ class License(HssiModel):
 
 	@classmethod
 	def get_top_field(cls): return cls._meta.get_field("name")
+
+	@classmethod
+	def get_other_licence(cls): 
+		"""return the primary 'Other' licence, the one with no URL"""
+		return cls.objects.filter(name="Other").filter(
+			Q(url="") | Q(url__isnull=True)
+		).first()
 
 	def get_search_terms(self):
 		terms = super().get_search_terms()

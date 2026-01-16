@@ -3,62 +3,6 @@ HSSI.spinner = null;
 HSSI.currentRequest = null;
 HSSI.resourceFilterAnchor = null;
 
-HSSI.handlePopState = function handlePopState (event) {
-	if (event.state) {
-		var  { url } = event.state;
-		var params = url.substring(1).split('&'); 
-		// reload the data based on historical URL
-		// without adding a new entry to the browser history
-		HSSI.loadContentByQueryParams(url, false).then(function() {
-			// clearing all controls but do not collapse menus
-			HSSI.clearAllFilterControls(false);
-			if (params.length > 0) {
-				if (params[0] !== 'all') {
-					// reset controls to previous states
-					params.forEach(qParam => {
-						var qPair = qParam.split('=');
-						switch (qPair[0]) {
-							case 'q':
-								$('#searchbar').val(qPair[1]);
-								HSSI.toggleSortVisible(false);
-								break;
-							case 'sort':
-								HSSI.setActiveSort(qPair[1]);
-								break;
-							case 'related_resource':
-								HSSI.toggleSortVisible(false);
-								break;
-							case 'category':
-							case 'tooltype':
-							case 'collection':
-								var filterId = qPair[1];
-								// check all boxes
-								$(`[name=${qPair[0]}_checkbox][value=${filterId}]`).prop('checked', true);
-								if ($(`form input[value=${filterId}]`).hasClass('parent_filter')) {
-									// should be in "select all" state
-									$(`.parent_filter[value=${filterId}]`).closest('li.filter_menu').addClass('selected_filter');
-									$(`.parent_filter[value=${filterId}]`).closest('li.filter_menu').find('input.sub_filter').prop('checked', true);
-								}
-								break;
-							default:
-								break;
-						}
-					});
-				}
-				HSSI.determineSelectedUnselectedParents();
-				HSSI.showResultCount(url);
-				HSSI.showAppliedFilters(url);
-			}
-		});
-
-	} else {
-		// at the beginning of history, so just reload
-		window.location.reload()
-	}
-}
-// register pop state handler to handle back/forward button clicks
-window.onpopstate = HSSI.handlePopState;
-
 HSSI.buildFilterQueryParamsAndSend = function buildFilterQueryParamsAndSend() {
 	// if we're in the mobile view, close the category
 	// menu before loading new data
@@ -413,34 +357,7 @@ HSSI.scrollToContentTop = function scrollToContentTop(delay) {
 }
 
 HSSI.showResultCount = function showResultCount(queryParamUrl) {
-	let results = $("#resource_content .callout").length;
-	if (results === 0) {
-		$('#result-count').html("No resources match your search...yet!<br/>Would you like to <a href='/submit'>submit a new resource?</a>").show();
-		$('#result-count').addClass('no-results');
-		HSSI.toggleSortVisible(false);
-	} else {
-		var collections = $("#resource_content .callout.collection").length;
-		var visibleResults = (results - collections);
-		var resources = visibleResults === 1 ? 'resource' : 'resources';
-		$('#result-count').removeClass('no-results');
-		$('#result-count').html(`Showing ${visibleResults} published ${resources}. `);
-		var params = queryParamUrl.substring(1).split('&');
-		if (params.some(param => param.startsWith('category=')
-								  || param.startsWith('q=')
-								  || param.startsWith('collection='))
-				&& visibleResults > 0) {
-			var exportLink = $('<a>(Download results)</a>');
-			exportLink.attr('href', `/export${window.location.search}`);
-			exportLink.attr('target', '_blank');
-			$('#result-count').append(exportLink);
-		}
-		if (params.some(param => param.startsWith('related_resource=')
-								  || param.startsWith('q='))) {
-			HSSI.toggleSortVisible(false);
-		} else {
-			HSSI.toggleSortVisible(true);
-		}
-	}
+	
 }
 
 /** @param {string} queryParamUrl */
@@ -536,18 +453,6 @@ $(document).ready(function () {
 		var sortType = $(this).attr('id').split('_')[2];
 		HSSI.setActiveSort(sortType);
 		HSSI.buildFilterQueryParamsAndSend();
-	});
-
-	// search button
-	$('button.search-button').on('click', function() {
-		HSSI.submitSearch();
-	});
-
-	// seach textbox
-	$('input#searchbar').on('keyup', function(evt) {
-		if (evt.originalEvent.key === 'Enter' || evt.originalEvent.keyCode === 13) {
-			HSSI.submitSearch();
-		}
 	});
 
 	// prevent accordion menu expansion when
@@ -733,47 +638,4 @@ $(document).ready(function () {
 		evt.originalEvent.preventDefault();
 		$(`#${$(this).attr('data-description-type')}-description-modal`).foundation('open');
 	});
-
-	//// REGULAR PAGE LOAD ACTIONS
-	////
-	//// this is where we handle actions we need to take
-	//// if the initial page load has any special filter
-	//// or sort settings applied, i.e. someone bookmarked
-	//// the url with query params present
-
-	if (window.location.search) {
-		var params = window.location.search.substring(1).split('&');
-		if (params.length > 0 && params[0] !== 'all') {
-			if (params.some(param => param.startsWith('category=')
-									|| param.startsWith('tooltype=')
-									|| param.startsWith('collection='))) {
-				// at least one filter was checked, so look for selected parent filters and
-				// "fake" check their children to visually represent "all selected"
-				$('.menu input.parent_filter:checked').each(function () {
-					$(this).closest('li.filter_menu').find('input.sub_filter').prop('checked', true);
-				});
-				// if the preselected filter was for collection,
-				// need to make sure the collection tab is showing
-				if (params.some(param => param.startsWith('collection='))) {
-					$('.filter-tab:contains("Collections")').click();
-				}
-			}
-			var sortParam = params.find(param => param.startsWith('sort='));
-			if (sortParam && sortParam.split('=')[1] == 'name') {
-				HSSI.setActiveSort('name');
-			}
-			// template rendering handles search box value based on "q" param
-			// so we just need to know if it's there
-			if (params.some(param => param.startsWith('related_resource=')
-								  || param.startsWith('q='))) {
-				HSSI.toggleSortVisible(false);
-			}
-			// if the initial load already has settings/params on the URL,
-			// assume the person has visited before and go straight
-			// to the content (need slight delay for some reason)
-			HSSI.scrollToContentTop(200);
-		}
-	}
-	HSSI.showResultCount(window.location.search);
-	HSSI.showAppliedFilters(window.location.search);
 });

@@ -5,9 +5,9 @@ import {
 	getStringSimilarity,
 	type JSONObject,
 	fetchTimeout,
-	type JSONValue,
 	FormGenerator,
-	ModelMultiSubfield
+	ModelMultiSubfield,
+	type ModelName
 } from "../../loader";
 
 const optionDataValue = "json-options";
@@ -25,11 +25,12 @@ const modelRowSlug = "/rows/";
 
 type ChoicesJsonStructure = { data: [string, string, string[], string?][] }
 
-interface ModelBoxProperties extends BaseProperties {
-	targetModel?: string,
+export interface ModelBoxProperties extends BaseProperties {
+	targetModel?: ModelName,
 	modelFilter?: string,
 	dropdownButton?: string,
 	allowNewEntries?: string,
+	licenseModelbox?: boolean,
 }
 
 /// Organizational types -------------------------------------------------------
@@ -148,7 +149,7 @@ export class ModelBox extends Widget {
 		if (!this.properties.caseSensitiveFilter) {
 			filterString = filterString.toLocaleUpperCase();
 		}
-		
+
 		// iterate through each option li showing options that pass the 
 		// filter while hiding others
 		const splitInput = filterString.split(" ");
@@ -158,7 +159,14 @@ export class ModelBox extends Widget {
 			const match = splitInput.every(
 				word => optionLi.data.keywords.some(kw => kw?.includes(word))
 			);
-			const visible = (match || filterString.length <= 0);
+			let visible = (match || filterString.length <= 0);
+			if (this.properties.licenseModelbox){
+				if(
+					optionLi.data.name.toUpperCase() == "OTHER" && 
+					optionLi.data.keywords.length > 1
+				)
+					visible = false;
+			}
 			optionLi.style.display = visible ? "block" : "none";
 			if (visible) this.filteredOptionLIs.push(optionLi);
 		}
@@ -205,7 +213,7 @@ export class ModelBox extends Widget {
 							subfield.fillMultiFields(jsonValue, false);
 						else subfield.fillMultiFields([jsonValue], false);
 					}
-					else subfield.fillField(jsonValue, false);
+					else subfield.fillField(jsonValue, false, true);
 				}
 			}
 			this.rowFetchAbort = null;
@@ -270,7 +278,7 @@ export class ModelBox extends Widget {
 	}
 
 	/* builds the option element list from the given options */
-	public buildOptions(options: Option[]): void {
+	private buildOptions(options: Option[]): void {
 
 		// enforce case insensitivity for keyword filtering
 		this.options = options;
@@ -293,16 +301,30 @@ export class ModelBox extends Widget {
 		this.selectedOptionIndex = -1;
 
 		// move "other" option to last in the list
+		// TODO add as property for moving any named item to bottom of list
 		let otherIndex = options.findIndex(x => {
+			if(x == null) return false;
 			return "other" == x.name.trim().toLocaleLowerCase();
 		});
 		if(otherIndex >= 0){
 			options.push(options.splice(otherIndex, 1)[0]);
 		}
 
+		// move "x independent" option to first in the list
+		// TODO add as property for moving any named item to top of list
+		if(this.properties.targetModel === "OperatingSystem"){
+			let independentIndex = options.findIndex(x => {
+				return x.name.toUpperCase().includes("INDEPENDENT");
+			});
+			if (independentIndex >= 1){
+				options.splice(0, 0, ...options.splice(independentIndex, 1));
+			}
+		}
+
 		// create and populate the dropdown list
 		this.optionListElement = document.createElement("ul");
 		for(const option of this.options) {
+			if(option == null) continue;
 			const li: OptionLi = document.createElement("li") as any;
 			li.data = option;
 			li.tabIndex = 0;
@@ -312,8 +334,9 @@ export class ModelBox extends Widget {
 			
 			li.innerText = option.name;
 			this.allOptionLIs.push(li);
-			this.optionListElement.appendChild(li);
 		}
+		this.allOptionLIs.sort((a, b) => a.data.name.localeCompare(b.data.name));
+		for(const li of this.allOptionLIs) this.optionListElement.appendChild(li);
 
 		this.optionListElement.addEventListener("click", e => this.onListClick(e));
 		this.optionListElement.addEventListener("mouseover", e => this.onListMouseover(e));
@@ -323,13 +346,14 @@ export class ModelBox extends Widget {
 	 * gets the choice data from the specified model and builds it's own 
 	 * options list based off that
 	 */
-	public async buildOptionsFromModel(modelName: string): Promise<void> {
+	private async buildOptionsFromModel(modelName: ModelName): Promise<void> {
 		let optionData: Option[] = ModelBox.optionMap.get(modelName);
 		if(!optionData){
 			const data: ChoicesJsonStructure = await (
 				await fetchTimeout(modelsUrl + modelName + modelChoicesSlug)
 			).json();
 			optionData = data.data.map(x => {
+				if(x == null) return null;
 				return {
 					id: x[0],
 					name: x[1],
@@ -459,7 +483,7 @@ export class ModelBox extends Widget {
 
 	public override setValue(value: string, notify: boolean = true): void {
 		if(!this.options) {
-			super.setValue(value);
+			super.setValue(value, notify);
 			this.buildOptionsFromModel(this.properties.targetModel).then(
 				() => this.setValue(value, notify)
 			);
@@ -473,8 +497,8 @@ export class ModelBox extends Widget {
 			this.inputElement.data = match;
 		}
 		else {
-			if(this.properties.allowNewEntries) super.setValue(value);
-			else super.setValue("");
+			if(this.properties.allowNewEntries) super.setValue(value, notify);
+			else super.setValue("", notify);
 			this.inputElement.data = null;
 		}
 	}

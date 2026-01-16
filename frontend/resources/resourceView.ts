@@ -87,6 +87,7 @@ export class ResourceView {
 	 * resource view 
 	 */
 	public getFilteredItems(): SoftwareDataAsync[] {
+		if(!this.specificUids) return this.getAllItems();
 		const items: SoftwareDataAsync[] = [];
 		for (const item of this.getAllItems()){
 			if(this.specificUids.includes(item.id)) items.push(item);

@@ -6,11 +6,13 @@ import {
 	PopupDialogue, 
 	ResourceView,
 	Spinner, 
+	fetchTimeout,
 } from "../loader";
 
 export const idSearchbar = "searchbar";
 export const idSearchButton = "searchbar-btn";
 export const searchParamQuery = "q";
+const searchApiUrl = "/api/search/";
 
 /** 
  * add event listeners to search bar / button and fill search bar with query 
@@ -49,10 +51,16 @@ function onEnterSearch(): void {
 function parseUrlParams() {
 	const search = new URLSearchParams(window.location.search);
 	const searchVal = search.get("q");
-	if (searchVal) searchForQuery(searchVal, false);
+	if (searchVal) {
+		searchForQuery(searchVal, false);
+	} else {
+		const view = ResourceView.main;
+		if (view) view.showItems(view.getFilteredItems());
+		updateTitleToSearch();
+	}
 
 	const searchbar = document.getElementById(idSearchbar) as HTMLInputElement;
-	if(searchbar) searchbar.value = searchVal;
+	if(searchbar) searchbar.value = searchVal || "";
 }
 
 function recordHistory(query: string){
@@ -89,20 +97,44 @@ export async function searchForQuery(
 	query: string, 
 	pushHistory: boolean = true
 ): Promise<void> {
+	const trimmedQuery = query.trim();
+	if (!trimmedQuery) {
+		const view = ResourceView.main;
+		if (view) view.showItems(view.getFilteredItems());
+		if (pushHistory) recordHistory("");
+		updateTitleToSearch();
+		return;
+	}
 
-	Spinner.showSpinner(`Searching for '${query}'`);
+	Spinner.showSpinner(`Searching for '${trimmedQuery}'`);
 
 	try{
-		// get all search results relevant to the query
-		const relevantSoftwares = await getReleventQueryResults(query);
-		
-		// refresh the items in the resource view to only display search results
+		const resultIds = await getRelevantQueryIds(trimmedQuery);
+		const resultData = await ModelDataCache.getModelData(
+			"VisibleSoftware",
+			resultIds
+		) as SoftwareDataAsync[];
+
 		const view = ResourceView.main;
-		view.showItems(relevantSoftwares);
+		const filteredItems = view.getFilteredItems();
+		const filteredIds = new Set(
+			filteredItems.map(item => item.id.toLowerCase())
+		);
+		const dataMap = new Map(
+			resultData.map(item => [item.id.toLowerCase(), item])
+		);
+		const filteredResults: SoftwareDataAsync[] = [];
+		for(const id of resultIds){
+			const item = dataMap.get(id.toLowerCase());
+			if(item && filteredIds.has(item.id.toLowerCase())) {
+				filteredResults.push(item);
+			}
+		}
+		view.showItems(filteredResults);
 		
-		if (pushHistory) recordHistory(query);
+		if (pushHistory) recordHistory(trimmedQuery);
 		
-		console.log(`queried '${query}', results:`, relevantSoftwares);	
+		console.log(`queried '${trimmedQuery}', results:`, filteredResults);	
 
 		setTimeout(() => { Spinner.hideSpinner(); }, 100);
 		updateTitleToSearch();
@@ -113,45 +145,16 @@ export async function searchForQuery(
 	}
 }
 
-export async function getReleventQueryResults(query: string): Promise<SoftwareDataAsync[]> {
-	const datas = await ResourceView.main.getFilteredItems();
-
-	// get all search results relevant to the query
-	const titleRelevant: SoftwareDataAsync[] = [];
-	const descriptionRelevant: SoftwareDataAsync[] = [];
-	const otherRelevant: SoftwareDataAsync[] = [];
-	const splitQuery = query.toLowerCase().split(/\s+/);
-	for(const data of datas){
-		for(const term of splitQuery){
-			if(data.softwareName?.toLowerCase().includes(term)) {
-				titleRelevant.push(data);
-			}
-			else if (
-				data.conciseDescription?.toLowerCase().includes(term) || 
-				data.description?.toLowerCase().includes(term)
-			){
-				descriptionRelevant.push(data);
-			}
-			else if (data.codeRepositoryUrl?.toLowerCase().includes(term)){
-				otherRelevant.push(data);
-			}
-			else if (data.persistentIdentifier?.toLowerCase().includes(term)){
-				otherRelevant.push(data);
-			}
-			else if (data.id?.toLowerCase()?.includes(term)) {
-				otherRelevant.push(data);
-			}
-		}
+async function getRelevantQueryIds(query: string): Promise<string[]> {
+	const url = new URL(searchApiUrl, window.location.origin);
+	url.searchParams.set(searchParamQuery, query);
+	const response = await fetchTimeout(url.toString());
+	if (!response.ok) {
+		throw new Error(`Search request failed with ${response.status}`);
 	}
-
-	const relevantSoftwareIds = new Set(titleRelevant);
-	for(const item of [...titleRelevant, ...descriptionRelevant, ...otherRelevant]){
-		relevantSoftwareIds.add(item);
-	}
-
-	// TODO sort by relevance score
-
-	return [...relevantSoftwareIds];
+	const data = await response.json();
+	if (!data?.results) return [];
+	return data.results as string[];
 }
 
 window.addEventListener("load", initializeSearch);

@@ -30,8 +30,8 @@ class SoftwareVersion(HssiModel):
 	@classmethod
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("number")
 
-	class Meta: ordering = ['number']
 	def __str__(self): return self.number
+	class Meta: ordering = ['number']
 
 class Software(HssiModel):
 	access = AccessLevel.CURATOR

@@ -45,6 +45,7 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 		"relatedRegion__name",
 		"softwareFunctionality__name",
 		"dataSources__name",
+		"relatedPhenomena__name",
 	]
 	tier_4_subtiers = [
 		[
@@ -90,7 +91,6 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 			"metadataLicense__name",
 		],
 		[
-			"relatedPhenomena__name",
 			"codeRepositoryUrl",
 			"documentation",
 		],

@@ -46,48 +46,57 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 		"softwareFunctionality__name",
 		"dataSources__name",
 	]
-	tier_4_fields = [
-		"programmingLanguage__name",
-		"publisher__name",
-		"publisher__abbreviation",
-		"publisher__identifier",
-		"authors__firstName",
-		"authors__lastName",
-		"authors__identifier",
-		"relatedInstruments__name",
-		"relatedInstruments__abbreviation",
-		"relatedObservatories__name",
-		"relatedObservatories__abbreviation",
-		"referencePublication__name",
-		"referencePublication__identifier",
-		"relatedPublications__name",
-		"relatedPublications__identifier",
-		"relatedDatasets__name",
-		"relatedDatasets__identifier",
-		"relatedSoftware__name",
-		"relatedSoftware__identifier",
-		"interoperableSoftware__name",
-		"interoperableSoftware__identifier",
-		"funder__name",
-		"funder__abbreviation",
-		"funder__identifier",
-		"award__name",
-		"award__identifier",
-		"inputFormats__name",
-		"inputFormats__extension",
-		"outputFormats__name",
-		"outputFormats__extension",
-		"cpuArchitecture__name",
-		"developmentStatus__name",
-		"operatingSystem__name",
-		"license__name",
-		"metadataLicense__name",
-		"relatedPhenomena__name",
-		"codeRepositoryUrl",
-		"documentation",
-		"licenseFileUrl",
-		"persistentIdentifier",
-		"version__number",
+	tier_4_subtiers = [
+		[
+			"publisher__name",
+			"publisher__abbreviation",
+			"authors__firstName",
+			"authors__lastName",
+			"authors__identifier",
+		],
+		[
+			"programmingLanguage__name",
+			"relatedInstruments__name",
+			"relatedInstruments__abbreviation",
+			"relatedObservatories__name",
+		],
+		[
+			"relatedObservatories__abbreviation",
+			"referencePublication__name",
+			"relatedPublications__name",
+		],
+		[
+			"relatedDatasets__name",
+			"relatedSoftware__name",
+			"interoperableSoftware__name",
+		],
+		[
+			"funder__name",
+			"funder__abbreviation",
+			"award__name",
+		],
+		[
+			"award__identifier",
+			"inputFormats__name",
+			"inputFormats__extension",
+			"outputFormats__name",
+			"outputFormats__extension",
+		],
+		[
+			"cpuArchitecture__name",
+			"developmentStatus__name",
+			"operatingSystem__name",
+			"license__name",
+			"metadataLicense__name",
+		],
+		[
+			"relatedPhenomena__name",
+			"codeRepositoryUrl",
+			"documentation",
+		],
+		[
+			"version__number",
+		],
 	]
 
 	visible_ids = list(VisibleSoftware.objects.values_list("id", flat=True))
@@ -109,7 +118,10 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 	tier_1_ids = fetch_tier_ids("tier_1", tier_1_fields)
 	tier_2_ids = fetch_tier_ids("tier_2", tier_2_fields)
 	tier_3_ids = fetch_tier_ids("tier_3", tier_3_fields)
-	tier_4_ids = fetch_tier_ids("tier_4", tier_4_fields)
+	tier_4_ids: list[str] = []
+	for index, fields in enumerate(tier_4_subtiers, start=1):
+		subtier_ids = fetch_tier_ids(f"tier_4_{index}", fields)
+		tier_4_ids.extend(subtier_ids)
 
 	result_ids: list[str] = []
 	seen: set[str] = set()

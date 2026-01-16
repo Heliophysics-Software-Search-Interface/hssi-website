@@ -1,4 +1,5 @@
 import uuid, json, colorsys
+from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 from django.db.models import ManyToManyField, QuerySet, Q
 from django.db.models.fields import related_descriptors
@@ -339,6 +340,14 @@ class Keyword(ControlledList):
 		)
 
 	def __str__(self) -> str: return self.name.title()
+	class Meta:
+		indexes = [
+			GinIndex(
+				fields=["name"],
+				name="keyword_name_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+		]
 
 class OperatingSystem(ControlledList):
 	'''Operating system on which the software can run'''
@@ -352,6 +361,14 @@ class OperatingSystem(ControlledList):
 			tooltipExplanation="The operating systems the software supports.",
 			tooltipBestPractise="Please select all the operating systems the software can successfully be installed on.",
 		)
+	class Meta:
+		indexes = [
+			GinIndex(
+				fields=["name"],
+				name="operatingsystem_name_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+		]
 
 class CpuArchitecture(ControlledList):
 	'''CPU Architecture on which the software can run'''
@@ -365,6 +382,14 @@ class CpuArchitecture(ControlledList):
 			tooltipExplanation="",
 			tooltipBestPractise="",
 		)
+	class Meta:
+		indexes = [
+			GinIndex(
+				fields=["name"],
+				name="cpuarch_name_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+		]
 
 class Phenomena(ControlledList):
 	'''Solar phenomena that relate to the software'''
@@ -378,6 +403,14 @@ class Phenomena(ControlledList):
 			tooltipExplanation="The phenomena the software supports science functionality for.",
 			tooltipBestPractise="Please select phenomena terms from a supported controlled vocabulary.",
 		)
+	class Meta:
+		indexes = [
+			GinIndex(
+				fields=["name"],
+				name="phenomena_name_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+		]
 
 class RepoStatus(ControlledList):
 	'''
@@ -397,7 +430,15 @@ class RepoStatus(ControlledList):
 			tooltipBestPractise="Please select the development status of the code repository from the list below. See repostatus.org for a description of the terms.",
 		)
 	
-	class Meta: verbose_name_plural = "Repo Statuses"
+	class Meta:
+		verbose_name_plural = "Repo Statuses"
+		indexes = [
+			GinIndex(
+				fields=["name"],
+				name="repostatus_name_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+		]
 
 class Image(HssiModel):
 	'''Reference to an image file and alt text description'''
@@ -427,6 +468,14 @@ class ProgrammingLanguage(ControlledList):
 		)
 
 	def __str__(self): return self.name + (f" {self.version}" if self.version else "")
+	class Meta:
+		indexes = [
+			GinIndex(
+				fields=["name"],
+				name="programminglang_name_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+		]
 
 class DataInput(ControlledList):
 	'''Ways that the software can accept data as input'''
@@ -444,6 +493,14 @@ class DataInput(ControlledList):
 		)
 
 	def __str__(self): return self.name
+	class Meta:
+		indexes = [
+			GinIndex(
+				fields=["name"],
+				name="datainput_name_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+		]
 
 class FileFormat(ControlledList):
 	'''File formats that are supported as input or output types by the software'''
@@ -465,6 +522,19 @@ class FileFormat(ControlledList):
 		)
 
 	def __str__(self): return self.name + (f" ({self.extension})" if self.extension else "")
+	class Meta:
+		indexes = [
+			GinIndex(
+				fields=["name"],
+				name="fileformat_name_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+			GinIndex(
+				fields=["extension"],
+				name="fileformat_ext_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+		]
 
 class Region(ControlledList):
 	'''Region of the sun which relates to the software'''
@@ -479,7 +549,15 @@ class Region(ControlledList):
 			tooltipBestPractise="Please select all physical regions the software's functionality is commonly used or intended for.",
 		)
 	
-	class Meta: ordering = ['name']
+	class Meta:
+		ordering = ['name']
+		indexes = [
+			GinIndex(
+				fields=["name"],
+				name="region_name_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+		]
 	def __str__(self): return self.name
 
 class InstrumentObservatory(ControlledList):
@@ -513,7 +591,20 @@ class InstrumentObservatory(ControlledList):
 		terms.extend(self.name.split(' '))
 		return terms
 	
-	class Meta: ordering = ['name']
+	class Meta:
+		ordering = ['name']
+		indexes = [
+			GinIndex(
+				fields=["name"],
+				name="instrument_name_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+			GinIndex(
+				fields=["abbreviation"],
+				name="instrument_abbrev_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+		]
 	def __str__(self): 
 		return f"{self.name} ({self.abbreviation})" if self.abbreviation else self.name
 
@@ -591,7 +682,15 @@ class FunctionCategory(ControlledGraphList):
 		arr.extend(self.get_name_path().split("->"))
 		return arr
 
-	class Meta: verbose_name_plural = "Function Categories"
+	class Meta:
+		verbose_name_plural = "Function Categories"
+		indexes = [
+			GinIndex(
+				fields=["name"],
+				name="functioncat_name_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+		]
 	def __str__(self): return self.name
 
 class License(HssiModel):
@@ -618,7 +717,15 @@ class License(HssiModel):
 			terms.append(self.url)
 		return terms
 	
-	class Meta: ordering = ['name']
+	class Meta:
+		ordering = ['name']
+		indexes = [
+			GinIndex(
+				fields=["name"],
+				name="license_name_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+		]
 	def __str__(self): return self.name
 
 class Organization(HssiModel):
@@ -653,7 +760,25 @@ class Organization(HssiModel):
 			terms.append(str.split(self.identifier, "ror.org/")[-1])
 		return terms
 
-	class Meta: ordering = ['name']
+	class Meta:
+		ordering = ['name']
+		indexes = [
+			GinIndex(
+				fields=["name"],
+				name="organization_name_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+			GinIndex(
+				fields=["abbreviation"],
+				name="organization_abbrev_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+			GinIndex(
+				fields=["identifier"],
+				name="organization_ident_trgm",
+				opclasses=["gin_trgm_ops"],
+			),
+		]
 	def __str__(self):
 		if self.abbreviation:
 			return f"{self.name} ({self.abbreviation})"

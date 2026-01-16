@@ -1,9 +1,10 @@
-import uuid, datetime
+import datetime
 from typing import Callable
 
 from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
+from sortedm2m.fields import SortedManyToManyField
 
 from ..util import *
 from .people import Person
@@ -47,7 +48,7 @@ class Software(HssiModel):
 		blank=True, 
 		related_name='softwares_published'
 	)
-	authors = models.ManyToManyField(Person, related_name='softwares')
+	authors = SortedManyToManyField(Person, related_name='softwares')
 	relatedInstruments = models.ManyToManyField(
 		InstrumentObservatory,
 		blank=True, 

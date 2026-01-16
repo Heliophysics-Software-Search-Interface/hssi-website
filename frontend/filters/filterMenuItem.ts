@@ -1,7 +1,12 @@
 import {
-	SimpleEvent, FilterTab,
-	type JSONArray, type JSONObject, type JSONValue,
-	FilterMenu,
+	SimpleEvent, FilterTab, FilterMenu,
+	ModelData,
+	type JSONArray, 
+	type JSONObject, 
+	type JSONValue, 
+	type CategoryFilterTab,
+	type ModelName,
+	type SoftwareDataAsync,
 } from "../loader";
 
 
@@ -25,6 +30,14 @@ export class FilterMenuItem {
 	protected data: JSONValue = null;
 	private expandButton: HTMLButtonElement = null;
 	private parentItem: FilterMenuItem = null;
+
+	public get parentFilterItem(): FilterMenuItem { return this.parentItem; }
+
+	public get targetSoftwareField(): keyof SoftwareDataAsync { 
+		return this.parentTab.targetField; 
+	}
+
+	public get targetModel(): ModelName { return this.parentTab?.targetModel; }
 	
 	/** html element that contains all other elements of the item */
 	public containerElement: HTMLLIElement = null;
@@ -69,16 +82,20 @@ export class FilterMenuItem {
 	 * create a small display element that can be used to represent this item 
 	 * anywhere in the document
 	 */
-	public createChip(): HTMLSpanElement {
-		const chip = document.createElement("span");
-		chip.classList.add(styleItemChip);
-		if(this.parentItem) chip.classList.add(styleSubchip);
-		chip.innerText = this.labelString.substring(0,4);
+	public async createChip(): Promise<HTMLSpanElement> {
+		let chip:HTMLSpanElement = null;
+		try{
+			chip = await ModelData.createChip(this.parentTab.targetModel, this.id);
+		}
+		catch{
+			chip = this.containerElement.cloneNode() as any;
+			chip.querySelector("button").remove();
+		}
 		return chip;
 	}
 
 	/** creates all display html elements for the list item */
-	public build(): void {
+	public async build(): Promise<void> {
 
 		// clear html elements
 		while(this.containerElement.childNodes.length > 0){
@@ -95,7 +112,7 @@ export class FilterMenuItem {
 		if(this.parentTab.selectedItems.includes(this)) this.checkboxElement.checked = true;
 		this.labelElement.appendChild(this.checkboxElement);
 		
-		const chip = this.createChip();
+		const chip = await this.createChip();
 		this.labelElement.appendChild(chip);
 
 		this.checkboxElement.addEventListener("click", e => {
@@ -138,9 +155,9 @@ export class FilterMenuItem {
 	}
 
 	/** creates all elements that represent an item who is a child of this */
-	public buildChildItem(child: FilterMenuItem){
+	public async buildChildItem(child: FilterMenuItem){
 		child.parentItem = this;
-		child.build();
+		await child.build();
 		child.containerElement.classList.add(styleFilterSubItem);
 	}
 
@@ -159,13 +176,40 @@ export class FilterMenuItem {
 	}
 }
 
+/** 
+ * Abstract implementation for the menu item type which implements getters 
+ * and setters for the abstract django model 'ControlledList'
+ */
 export class ControlledListItem extends FilterMenuItem {
 	public get objectData(): JSONObject { return this.data as JSONObject; }
 	public get name(): string { return this.objectData.name as any; }
 	public get abbreviation(): string { return this.objectData.abbreviation as any; }
 	public get identifier(): string { return this.objectData.identifier as any; }
+	public get labelString(): string { return this.name; }
+	
+	public set name(val: string) { this.objectData.name = val; }
+	public set abbreviation(val: string) { this.objectData.abbreviation = val; }
+	public set identifier(val: string) { this.objectData.identifier = val; }
+
+	public override async build(): Promise<void> {
+		await super.build();
+		this.checkboxElement.value = this.id;
+		this.checkboxElement.id = this.id;
+	}
+
+	public override async createChip(): Promise<HTMLSpanElement> {
+		if(this.id) return await super.createChip();
+		const chip = await ModelData.createChip(this.parentTab.targetModel, this.subItems[0].id)
+		chip.innerText = this.abbreviation;
+		chip.title = this.name;
+		return chip;
+	}
 }
 
+/** 
+ * Abstract implementation of menu items who already have nested metadata from 
+ * the django model 'ControlledGraphList'
+ */
 export class GraphListItem extends ControlledListItem {
 	public get childData(): JSONArray<JSONObject> { 
 		return this.objectData.children as any; 
@@ -175,23 +219,15 @@ export class GraphListItem extends ControlledListItem {
 	}
 }
 
+/** Menu item type used in the {@link CategoryFilterTab} */
 export class CategoryItem extends GraphListItem {
 	public get bgColor(): string { return this.objectData.backgroundColor as any; }
 	public get textColor(): string { return this.objectData.textColor as any; }
 	public get children(): CategoryItem[] { return this.subItems as any; }
 	public get labelString(): string { return this.objectData.name as any; }
 
-	public override createChip(): HTMLSpanElement {
-		let chip = super.createChip();
-		chip.style.backgroundColor = this.bgColor;
-		chip.style.borderColor = this.bgColor;
-		chip.style.color = this.textColor;
-		chip.innerText = this.abbreviation;
-		return chip;
-	}
-
-	public override build(): void {
-		super.build();
+	public override async build(): Promise<void> {
+		await super.build();
 		this.checkboxElement.value = this.id;
 		this.checkboxElement.id = this.id;
 		this.checkboxElement.classList.add(this.abbreviation);

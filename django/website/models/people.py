@@ -76,6 +76,8 @@ class Person(HssiModel):
 
 	@classmethod
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("firstName")
+	@classmethod
+	def get_second_top_field(cls) -> models.Field: return cls._meta.get_field("lastName")
 
 	class Meta: 
 		ordering = ['lastName', 'firstName']

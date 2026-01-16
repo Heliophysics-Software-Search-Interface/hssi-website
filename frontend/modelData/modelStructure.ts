@@ -1,15 +1,47 @@
 import {
 	type JSONArray,
 	type JSONObject
-} from "./loader";
+} from "../loader";
 
-export interface ArrayData extends JSONObject {
-	data: JSONArray,
-}
+export type ModelName = ( 
+	"HSSIModel" 
+	| "HssiSet" 
+	| "ControlledList"
+	| "ControlledGraphList"
+	| "Keyword"
+	| "OperatingSystem"
+	| "CpuArchitecture"
+	| "Phenomena"
+	| "RepoStatus"
+	| "Image"
+	| "ProgrammingLanguage"
+	| "DataInput"
+	| "FileFormat"
+	| "Region"
+	| "InstrumentObservatory"
+	| "FunctionCategory"
+	| "License"
+	| "Organization"
+	| "Software"
+	| "SoftwareVersion"
+	| "VisibleSoftware"
+	| "SoftwareEditQueue"
+	| "SubmissionInfo"
+	| "Award"
+	| "RelatedItem"
+	| "Person"
+	| "Submitter"
+	| "Curator"
+);
 
 export interface HSSIModelData extends JSONObject {
 	/** string represinting a unique UUID for the object */
 	id: string,
+}
+
+export interface HSSIImageData extends HSSIModelData {
+	url: string,
+	description: string,
 }
 
 export interface ControlledListData extends HSSIModelData {
@@ -28,7 +60,7 @@ export interface GraphListData extends ControlledListData {
 
 export interface KeywordData extends ControlledListData { }
 
-export interface FunctionalityData extends GraphListData { 
+export interface FunctionalityData extends GraphListData {
 	abbreviation?: string,
 	backgroundColor: string,
 	textColor: string,
@@ -49,7 +81,7 @@ export interface PersonData extends HSSIModelData {
 	lastName: string,
 	/** ORCID of the person */
 	identifier?: string,
-	affiliations: JSONArray<OrganizationData>,
+	affiliation: JSONArray<OrganizationData>,
 }
 
 export interface SoftwareData extends HSSIModelData {
@@ -65,8 +97,8 @@ export interface SoftwareData extends HSSIModelData {
 	referencePublication: ControlledListData,
 	description: string,
 	conciseDescription: string,
-	softwareFunctionality: string,
 	documentation: string,
+	softwareFunctionality: JSONArray<FunctionalityData>,
 	dataSources: JSONArray<ControlledListData>,
 	inputFormats: JSONArray<ControlledListData>,
 	outputFormats: JSONArray<ControlledListData>,
@@ -80,7 +112,7 @@ export interface SoftwareData extends HSSIModelData {
 	keywords: JSONArray<KeywordData>,
 	relatedSoftware: JSONArray<ControlledListData>,
 	interoperableSoftware: JSONArray<ControlledListData>,
-	funder: OrganizationData,
+	funder: JSONArray<OrganizationData>,
 	award: HSSIModelData,
 	codeRepositoryUrl: string,
 	logo: JSONObject,

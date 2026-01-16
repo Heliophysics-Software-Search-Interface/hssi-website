@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 import requests
 
-# from .secret_settings import *
+# from .secret_settings import * 
 
 ### The following section should be in a secret_settings.py file (imported above)
 ###
@@ -56,7 +56,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if SITE_DOMAIN == "localhost" else False
 
-ALLOWED_HOSTS = ["*"] if DEBUG else ["hssi.hsdcloud.org"]
+ALLOWED_HOSTS = ["*"] if DEBUG else ["52.2.25.84", "hssi.hsdcloud.org"]
 
 
 # Application definition
@@ -69,7 +69,8 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'django_extensions',
-	'markdownify.apps.MarkdownifyConfig'
+	'markdownify.apps.MarkdownifyConfig',
+	"sortedm2m",
 ]
 
 MIDDLEWARE = [

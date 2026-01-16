@@ -20,12 +20,6 @@ div.resource-content-header {
 	margin-bottom: 0.5em;
 }
 
-#result-count.no-results {
-	color: red;
-	width: 100%;
-	text-align: center;
-}
-
 #result-count a:hover{
 	text-decoration: underline;
 }

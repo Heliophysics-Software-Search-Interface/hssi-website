@@ -1,7 +1,159 @@
-import json, uuid, datetime
+import uuid, datetime
 from uuid import UUID
 
 from .forms.names import *
+
+def parse_organization(
+	data: dict, 
+	name_field: str, 
+	ident_field: str,
+	allow_creation: bool = True
+) -> Organization:
+	"""
+	parse a data dict representing an organization model object, given field 
+	names for the organization name and the organization's identifier  
+	Parameters:
+		data: the key-value pairs representing the organization object
+		name_field: the name of the key for the organization's name
+		ident_field: the name of the key for the organization's identifier
+	"""
+	organization_name = data.get(name_field)
+	if not organization_name: return None
+
+	# first test to see if organization top field is uuid and return the object
+	# it references if so
+	try:
+		uid = UUID(organization_name)
+		org_ref = Organization.objects.get(pk=uid)
+		return org_ref
+	
+	except:
+		org_ident = data.get(ident_field)
+		org_ref: Organization = None
+
+		# look for an return an organization with matching identifier if exists
+		if org_ident: org_ref = Organization.objects.filter(identifier=org_ident).first()
+		if org_ref: return org_ref
+
+		# build new org object from data
+		elif allow_creation:
+			organization = Organization()
+			organization.name = organization_name
+			if org_ident: organization.identifier = org_ident
+			organization.save()
+			return organization
+	
+	# returns none if no reference is found and creation of new orgs is disallowed
+	return None
+
+def parse_person(
+	data: dict, 
+	name_field: str, ident_field: str, 
+	affil_field: str, affil_ident_field: str
+) -> Person:
+	
+	person: Person = None
+	person_match: Person = None
+	person_identifier = data.get(ident_field)
+
+	# first see if author field was passed as a uuid
+	person_name: str = data.get(name_field)
+	try:
+		person_uid = UUID(person_name)
+		person_match = Person.objects.get(pk=person_uid)
+		return person_match
+	except: person_match = None
+
+	# if not, see if we can match an author with the same identifier
+	if person_identifier: 
+		person_match = Person.objects.filter(identifier=person_identifier).first()
+
+	# if there's an author match, no need to create a new object
+	if person_match: person = person_match
+
+	# if no match, create new person object
+	else:
+		person = Person()
+		person.identifier = person_identifier
+		person_spl: str = person_name.split(',')
+		lastname = ""
+		firstname = ""
+		if len(person_spl) > 1:
+			firstname = person_spl[-1]
+			lastname = person_spl[0]
+		else:
+			lastname = person_name.split()[-1]
+			firstname = person_name.replace(lastname, '').strip()
+		person.lastName = lastname
+		person.firstName = firstname
+		person.save()
+
+	# add affiliation datas
+	affiliation_datas: dict = data.get(affil_field)
+	if affiliation_datas:
+		for affiliation_data in affiliation_datas:
+			affil = parse_organization(affiliation_data, affil_field, affil_ident_field)
+			if affil: person.affiliation.add(affil)
+
+	person.save()
+	return person
+
+def parse_controlled_list(
+		target_model: type[ControlledList],
+		data: dict, 
+		name_field: str = None, 
+		ident_field: str = None,
+		definition_field: str = None,
+		allow_creation: bool = True,
+	) -> ControlledList:
+
+	name = data.get(name_field)
+	definition = data.get(definition_field)
+
+	# see if the name field is acting as a uuid reference, and return referenced object if so
+	try:
+		uuid = UUID(name)
+		reference_object = target_model.objects.get(pk=uuid)
+		return reference_object
+	
+	except:
+		ident = data.get(ident_field)
+		reference_object: ControlledList = None
+
+		# look for object with matching identifier and return it if found
+		if ident: reference_object = target_model.objects.filter(identifier=ident).first()
+		if reference_object: return reference_object
+
+		# create new object if no object with matching identifier exists
+		elif allow_creation:
+			obj = target_model()
+			if name: obj.name = name
+			if ident: obj.identifier = ident
+			if definition: obj.definition = definition
+			obj.save()
+			return obj
+	
+	# if no references were found and creation of new object is not allowed
+	return None
+
+def parse_controlled_list_reference(
+		target_model: type[ControlledList],
+		uid: str, 
+	) -> ControlledList:
+
+	if uid is None: return None
+
+	# see if the uuid reference exists, and return referenced object if so
+	try:
+		uuid = UUID(uid)
+		reference_object = target_model.objects.get(pk=uuid)
+		return reference_object
+	
+	except:
+		found_ref = target_model.objects.filter(name=uid).first()
+		if found_ref: return found_ref
+	
+	return None
 
 def handle_submission_data(data: dict, software_target: Software = None) -> uuid.UUID:
 	""" store submission data in the specified software target """
@@ -31,13 +183,10 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 
 	## DEVELOPMENT STATUS
 
-	dev_status_str = data.get(FIELD_DEVELOPMENTSTATUS)
-	try:
-		uid = UUID(dev_status_str)
-		software.developmentStatus = RepoStatus.objects.get(id=uid)
-	except Exception:
-		repostatus = RepoStatus.objects.filter(name=dev_status_str).first()
-		if repostatus: software.developmentStatus = repostatus
+	software.developmentStatus = parse_controlled_list_reference(
+		RepoStatus, 
+		data.get(FIELD_DEVELOPMENTSTATUS)
+	)
 	
 	## LOGO
 
@@ -103,55 +252,41 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 
 	license_data: dict = data.get(FIELD_LICENSE)
 	if license_data:
-		license_name = license_data.get(FIELD_LICENSE)
+		license_name: str = license_data.get(FIELD_LICENSE)
 		try:
 			uid = UUID(license_name)
 			license = License.objects.get(pk=uid)
 			software.license = license
 		except Exception:
-			license = License.objects.filter(name=license_name).first()
+			license = None
+			if license_name.upper() != "OTHER":
+				license = License.objects.filter(name=license_name).first()
 			if not license:
 				license_url = license_data.get(FIELD_LICENSEURI)
 				license = License.objects.filter(url=license_url).first()
 			if license: software.license = license
 			else:
-				license = License()
-				license.name = license_name
-				license.url = license_data.get(FIELD_LICENSEURI)
-				license.save()
-				software.license = license
+				license_url = license_data.get(FIELD_LICENSEURI)
+				if license_url:
+					license = License()
+					license.name = "Other"
+					license.url = license_data.get(FIELD_LICENSEURI)
+					license.save()
+					software.license = license
+					print(f"LICENSE SAVED: {software.license.id}")
+				else: software.license = License.get_other_licence()
 
-	## DEV STATUS
-
-	devstatus = data.get(FIELD_DEVELOPMENTSTATUS)
-	try:
-		uid = UUID(devstatus)
-		devstatus = RepoStatus.objects.get(pk=uid)
-		software.developmentStatus = devstatus
-	except Exception:
-		devstatus = RepoStatus.objects.filter(name=devstatus).first()
-		software.developmentStatus = devstatus
-	
 	## PUBLISHER
 
 	publisher_data: dict = data.get(FIELD_PUBLISHER)
-	if publisher_data:
-		publisher = Organization()
-		publisher.name = publisher_data.get(FIELD_PUBLISHER)
-		try:
-			uid = UUID(publisher.name)
-			dbpub = Organization.objects.get(pk=uid)
-			software.publisher = dbpub
-		except Exception:
-			publisher.identifier = publisher_data.get(FIELD_PUBLISHERIDENTIFIER)
-			pub_match = None
-			if publisher.name.lower() == "zenodo":
-				pub_match = Organization.objects.filter(name="Zenodo").first()
-			elif publisher.identifier: 
-				pub_match = Organization.objects.filter(identifier=publisher.identifier).first()
-			if pub_match: publisher = pub_match
-			else: publisher.save()
-			software.publisher = publisher
+	publisher_name: str = publisher_data.get(FIELD_PUBLISHER)
+	if publisher_name.lower() == "zenodo":
+		software.publisher = Organization.objects.filter(name="Zenodo").first()
+	else: software.publisher = parse_organization(
+		publisher_data, 
+		FIELD_PUBLISHER, 
+		FIELD_PUBLISHERIDENTIFIER
+	)
 
 	## VERSION
 
@@ -180,46 +315,11 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	author_datas: list[dict] = data.get(FIELD_AUTHORS)
 	if author_datas is not None: software.authors.clear()
 	for author_data in author_datas:
-		author = Person()
-		author.identifier = author_data.get(FIELD_AUTHORIDENTIFIER)
-		author_match = None
-		if author.identifier: 
-			author_match = Person.objects.filter(identifier=author.identifier).first()
-
-		# TODO some way to change author name after submission
-		if author_match: author = author_match
-		else:
-			author_name: str = author_data.get(FIELD_AUTHORS)
-			author_spl: str = author_name.split(',')
-			author_lastname = ""
-			author_firstname = ""
-			if len(author_spl) > 1:
-				author_firstname = author_spl[-1]
-				author_lastname = author_spl[0]
-			else:
-				author_lastname = author_name.split()[-1]
-				author_firstname = author_name.replace(author_lastname, '').strip()
-			author.lastName = author_lastname
-			author.firstName = author_firstname
-			author.save()
-
-		affiliation_datas: dict = author_data.get(FIELD_AUTHORAFFILIATION)
-		if affiliation_datas:
-			for affiliation_data in affiliation_datas:
-				affiliation_name = affiliation_data.get(FIELD_AUTHORAFFILIATION)
-				affiliation_id = affiliation_data.get(FIELD_AUTHORAFFILIATIONIDENTIFIER)
-
-				affiliation = Organization()
-				affiliation.name = affiliation_name
-				affiliation.identifier = affiliation_id
-				affil_match = None
-				if affiliation_id: 
-					affil_match = Organization.objects.filter(identifier=affiliation.identifier).first()
-				if affil_match: affiliation = affil_match
-				else: affiliation.save()
-				author.affiliation.add(affiliation)
-
-		author.save()
+		author = parse_person(
+			author_data, 
+			FIELD_AUTHORS, FIELD_AUTHORIDENTIFIER, 
+			FIELD_AUTHORAFFILIATION, FIELD_AUTHORAFFILIATIONIDENTIFIER
+		)
 		software.authors.add(author)
 
 	pub_date = data.get(FIELD_PUBLICATIONDATE)
@@ -232,23 +332,17 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	proglangs = data.get(FIELD_PROGRAMMINGLANGUAGE)
 	if proglangs is not None: software.programmingLanguage.clear()
 	for lang in proglangs:
-		try:
-			uid = UUID(lang)
-			software.programmingLanguage.add(ProgrammingLanguage.objects.get(pk=uid))
-		except Exception:
-			lang_ref = ProgrammingLanguage.objects.filter(name=lang).first()
-			if lang_ref: software.programmingLanguage.add(lang_ref)
+		obj = parse_controlled_list_reference(ProgrammingLanguage, lang)
+		if obj: software.programmingLanguage.add(obj)
 	
 	## KEYWORDS
 
 	keywords: list[str] = data.get(FIELD_KEYWORDS)
 	if keywords is not None: software.keywords.clear()
 	for kw in keywords:
-		try:
-			uid = UUID(kw)
-			dbkw = Keyword.objects.get(pk=uid)
-			software.keywords.add(dbkw)
-		except Exception as e:
+		kw_obj = parse_controlled_list_reference(Keyword, kw)
+		if kw_obj: software.keywords.add(kw_obj)
+		else:
 			kw_fmtd = SPACE_REPLACE.sub(' ', kw).lower()
 			kw_ref = Keyword.objects.filter(name=kw_fmtd).first()
 			if kw_ref: software.keywords.add(kw_ref)
@@ -263,87 +357,46 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	functionalities = data.get(FIELD_SOFTWAREFUNCTIONALITY)
 	if functionalities is not None: software.softwareFunctionality.clear()
 	for functionality in functionalities:
-		try:
-			uid = UUID(functionality)
-			software.softwareFunctionality.add(FunctionCategory.objects.get(pk=uid))
-		except Exception:
-			print(f"ERROR - software functionality '{functionality}' does not exist")
+		obj = parse_controlled_list_reference(FunctionCategory, functionality)
+		if obj: software.softwareFunctionality.add(obj)
 	
 	## DATA SOURCES
 	
 	data_sources = data.get(FIELD_DATASOURCES)
 	if data_sources is not None: software.dataSources.clear()
 	for datasrc in data_sources:
-		try:
-			uid = UUID(datasrc)
-			software.dataSources.add(DataInput.objects.get(pk=uid))
-		except Exception:
-			src_ref = DataInput.objects.filter(name=datasrc).first()
-			if src_ref: software.dataSources.add(src_ref)
-			else:
-				src = DataInput()
-				src.name = datasrc
-				src.save()
-				software.dataSources.add(src)
+		obj = parse_controlled_list_reference(DataInput, datasrc)
+		if obj: software.dataSources.add(obj)
 
 	## FILE FORMATS
 
 	inputs = data.get(FIELD_INPUTFORMATS)
 	if inputs is not None: software.inputFormats.clear()
 	for input in inputs:
-		try:
-			uid = UUID(input)
-			software.inputFormats.add(FileFormat.objects.get(pk=uid))
-		except Exception:
-			input_ref = FileFormat.objects.filter(name=input).first()
-			if input_ref: software.inputFormats.add(input_ref)
-			else:
-				inpt = FileFormat()
-				inpt.name = input
-				inpt.save()
-				software.inputFormats.add(inpt)
+		obj = parse_controlled_list_reference(FileFormat, input)
+		if obj: software.inputFormats.add(obj)
 	
 	outputs = data.get(FIELD_OUTPUTFORMATS)
 	if outputs is not None: software.outputFormats.clear()
 	for output in outputs:
-		try:
-			uid = UUID(output)
-			software.outputFormats.add(FileFormat.objects.get(pk=uid))
-		except Exception:
-			outref = FileFormat.objects.filter(name=output).first()
-			if outref: software.outputFormats.add(outref)
-			else:
-				out = FileFormat()
-				out.name = output
-				out.save()
-				software.outputFormats.add(out)
+		obj = parse_controlled_list_reference(FileFormat, output)
+		if obj: software.outputFormats.add(obj)
 	
 	## CPU ARCHITECTURE
 
 	architectures = data.get(FIELD_CPUARCHITECTURE)
 	if architectures is not None: software.cpuArchitecture.clear()
 	for architecture in architectures:
-		try:
-			uid = UUID(architecture)
-			software.cpuArchitecture.add(CpuArchitecture.objects.get(pk=uid))
-		except:
-			arcref = CpuArchitecture.objects.filter(name=architecture).first()
-			if arcref: software.cpuArchitecture.add(arcref)
-			else:
-				arc = CpuArchitecture()
-				arc.name = architecture
-				arc.save()
-				software.cpuArchitecture.add(arc)
+		obj = parse_controlled_list_reference(CpuArchitecture, architecture)
+		if obj: software.cpuArchitecture.add(obj)
 
 	## OPERATING SYSTEM
 
 	opsystems = data.get(FIELD_OPERATINGSYSTEM)
 	if opsystems is not None: software.operatingSystem.clear()
 	for opsys in opsystems:
-		try:
-			uid = UUID(opsys)
-			software.operatingSystem.add(OperatingSystem.objects.get(pk=uid))
-		except: print(f"invalid os entry '{opsys}'")
+		obj = parse_controlled_list_reference(OperatingSystem, opsys)
+		if obj: software.operatingSystem.add(obj)
 		
 
 	## RELATED REGION
@@ -351,34 +404,16 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	regions = data.get(FIELD_RELATEDREGION)
 	if regions is not None: software.relatedRegion.clear()
 	for region in regions:
-		try:
-			uid = UUID(region)
-			software.relatedRegion.add(Region.objects.get(pk=uid))
-		except Exception:
-			regref = Region.objects.filter(name=region)
-			if regref: software.relatedRegion.add(regref)
-			else:
-				regn = Region()
-				regn.name = region
-				regn.save()
-				software.relatedRegion.add(regn)
+		obj = parse_controlled_list_reference(Region, region)
+		if obj: software.relatedRegion.add(obj)
 
 	## RELATED PHENOMENA
 
 	phenoms = data.get(FIELD_RELATEDPHENOMENA)
 	if phenoms is not None: software.relatedPhenomena.clear()
 	for phenom in phenoms:
-		try:
-			uid = UUID(phenom)
-			software.relatedPhenomena.add(Phenomena.objects.get(pk=uid))
-		except:
-			phenomref = Phenomena.objects.filter(name=phenom).first()
-			if phenomref: software.relatedPhenomena.add(phenomref)
-			else:
-				phen = Phenomena()
-				phen.name = phenom
-				phen.save()
-				software.relatedPhenomena.add(phen)
+		obj = parse_controlled_list_reference(Phenomena, phenom)
+		if obj: software.relatedPhenomena.add(obj)
 
 	## AWARDS
 	
@@ -386,6 +421,7 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	if award_datas is not None: software.award.clear()
 	for award_data in award_datas:
 		award_name = award_data.get(FIELD_AWARDTITLE)
+		if not award_name: continue
 		try:
 			uid = UUID(award_name)
 			software.award.add(Award.objects.get(pk=uid))
@@ -405,24 +441,8 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	funder_datas: list[dict] = data.get(FIELD_FUNDER)
 	if funder_datas is not None: software.funder.clear()
 	for funder_data in funder_datas:
-		funder_name = funder_data.get(FIELD_FUNDER)
-		print(f"adding funder '{funder_name}'")
-		try:
-			uid = UUID(funder_name)
-			fnref = Organization.objects.get(pk=uid)
-			software.funder.add(fnref)
-		except Exception:
-			funder_ident = funder_data.get(FIELD_FUNDERIDENTIFIER)
-			funder_ref: Organization = None
-			if funder_ident: 
-				funder_ref = Organization.objects.filter(identifier=funder_ident).first()
-			if funder_ref: software.funder.add(funder_ref)
-			else:
-				funder = Organization()
-				funder.name = funder_name
-				if funder_ident: funder.identifier = funder_ident
-				funder.save()
-				software.funder.add(funder)
+		funder = parse_organization(funder_data, FIELD_FUNDER, FIELD_FUNDERIDENTIFIER)
+		if funder: software.funder.add(funder)
 
 	## RELATED OBJECTS
 	
@@ -494,7 +514,7 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 				identifier=intersoft, 
 				type=RelatedItemType.SOFTWARE.value
 			).first()
-			if intersoft_ref: software.relatedSoftware.add(intersoft_ref)
+			if intersoft_ref: software.interoperableSoftware.add(intersoft_ref)
 			else:
 				intersoftware = RelatedItem()
 				intersoftware.name = "UNKNOWN"
@@ -526,7 +546,7 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 				software.relatedInstruments.add(instr)
 
 	relobs_datas: list[dict] = data.get(FIELD_RELATEDOBSERVATORIES)
-	if relobs_datas is not None: software.relatedDatasets.clear()
+	if relobs_datas is not None: software.relatedObservatories.clear()
 	for relobs_data in relobs_datas:
 		obs_name: str = ""
 		if isinstance(relobs_data, dict): obs_name = relobs_data.get(FIELD_RELATEDOBSERVATORIES)

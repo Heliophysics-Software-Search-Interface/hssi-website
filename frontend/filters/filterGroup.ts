@@ -1,16 +1,26 @@
 import { 
+	faCloseIcon,
+	filterGroupToUrlVal,
 	FilterMenu, FilterMenuItem,
+	GraphListItem,
+	HssiModelDataAsync,
 	SimpleEvent,
+	styleSelected,
+	type HSSIModelData,
+	type SoftwareData,
+	type SoftwareDataAsync,
 } from "../loader";
 
+const styleFilterGroupChip = "filtergroup-container";
 const styleFilterContainer = "filter-container";
 const styleFilterControls = "filter-controls";
 const styleInvertFilter = "invert-filter";
 const styleGroupControl = "group-control";
 const styleGroupClear = "group-clear";
 const styleGroupCreate = "group-create";
+const styleGroupMode = "group-mode";
 
-enum FilterGroupMode {
+export enum FilterGroupMode {
 	Or = 0,
 	And = 1,
 }
@@ -21,6 +31,7 @@ export class FilterGroupMaker {
 	private chipContainerElement: HTMLDivElement = null;
 	private controlsContainerElement: HTMLDivElement = null;
 	private chips: ItemChip[] = [];
+	private currentMode: FilterGroupMode = FilterGroupMode.Or;
 
 	/** called whenever an item/chip is removed from the filter group maker */
 	public onItemRemoved: SimpleEvent<FilterMenuItem> = new SimpleEvent();
@@ -52,6 +63,30 @@ export class FilterGroupMaker {
 		this.controlsContainerElement.classList.add(styleFilterControls);
 		this.containerElement.appendChild(this.controlsContainerElement);
 
+		const modeAnd = document.createElement("button");
+		modeAnd.classList.add(styleGroupControl);
+		modeAnd.classList.add(styleGroupMode);
+		modeAnd.innerText = "AND";
+		this.controlsContainerElement.appendChild(modeAnd);
+		
+		const modeOr = document.createElement("button");
+		modeOr.classList.add(styleGroupControl);
+		modeOr.classList.add(styleGroupMode);
+		modeOr.classList.add(styleSelected);
+		modeOr.innerText = "OR";
+		this.controlsContainerElement.appendChild(modeOr);
+
+		modeOr.addEventListener("click", e => {
+			this.currentMode = FilterGroupMode.Or;
+			modeOr.classList.add(styleSelected);
+			modeAnd.classList.remove(styleSelected);
+		});
+		modeAnd.addEventListener("click", e => {
+			this.currentMode = FilterGroupMode.And;
+			modeAnd.classList.add(styleSelected);
+			modeOr.classList.remove(styleSelected);
+		});
+		
 		const clearFilters = document.createElement("button");
 		clearFilters.classList.add(styleGroupControl);
 		clearFilters.classList.add(styleGroupClear);
@@ -69,7 +104,13 @@ export class FilterGroupMaker {
 		this.controlsContainerElement.appendChild(createGroup);
 
 		createGroup.addEventListener("click", e => {
-			this.createGroup();
+			const group = this.createGroup();
+			try{
+				console.log("Filter group created:\n" + filterGroupToUrlVal(group));
+			}
+			catch(e) { console.error(e); }
+			this.parentMenu.addFilterGroup(group);
+			this.parentMenu.applyFilters();
 		})
 
 		this.setControlsVisible(false);
@@ -79,7 +120,7 @@ export class FilterGroupMaker {
 	 * add the specified filter item to the group list (if its not already
 	 * included), to be made into part of the filter group 
 	 */
-	public addItem(item: FilterMenuItem): void {
+	public async addItem(item: FilterMenuItem): Promise<void> {
 
 		// ensure item is not already included
 		const index = this.chips.findIndex(
@@ -89,7 +130,7 @@ export class FilterGroupMaker {
 
 		// add item and visuals
 		const chip = new ItemChip(item);
-		chip.build();
+		await chip.build();
 		this.chipContainerElement.appendChild(chip.chip);
 		this.chips.push(chip);
 		this.setControlsVisible(true);
@@ -126,7 +167,15 @@ export class FilterGroupMaker {
 	/** creates a {@link FilterGroup} from the items included in the group list */
 	public createGroup(): FilterGroup {
 		const group = new FilterGroup();
-		// TODO
+		group.mode = this.currentMode;
+		
+		for (const chip of this.chips){
+			const item = chip.itemReference;
+			if(!chip.filterInverted) group.includedItems.push(item);
+			else group.excludedItems.push(item);
+		}
+		
+		this.clearItems();
 		return group;
 	}
 }
@@ -142,24 +191,97 @@ export class FilterGroup {
 	public mode: FilterGroupMode = FilterGroupMode.Or;
 
 	/** create a small display element that represents the whole filter group */
-	public createChip(): HTMLSpanElement{
+	public createChip(): HTMLSpanElement {
 		const span = document.createElement("span");
+		span.classList.add(styleFilterGroupChip);
+		const scale = 0.9;
 		for(const inc of this.includedItems){
-			const chip = inc.createChip();
-			span.appendChild(chip);
+			const promise = inc.createChip();
+			promise.then(chip => {
+				chip.style.transform = `scale(${scale})`;
+				span.appendChild(chip);
+			});
 		}
 		for(const exc of this.excludedItems){
-			const chip = exc.createChip();
-			chip.classList.add(styleInvertFilter);
-			span.appendChild(chip);
+			const promise = exc.createChip();
+			promise.then(chip => {
+				chip.style.transform = `scale(${scale})`;
+				chip.classList.add(styleInvertFilter);
+				span.appendChild(chip);
+			});
 		}
 		return span;
+	}
+
+	/** 
+	 * returns true if the specified software resource data passes all the 
+	 * filters in the filter group 
+	 */
+	public passes(data: SoftwareDataAsync): boolean {
+
+		// ensure that the software data fields for each filter exists
+		let hasAny = this.includedItems.length <= 0;
+		for(const item of this.includedItems){
+			let fieldDataArray: Array<any> = data[item.targetSoftwareField];
+			if(!(fieldDataArray instanceof Array)) fieldDataArray = [fieldDataArray];
+
+			let hasId = false;
+			for (const fieldData of fieldDataArray){
+				if(
+					!fieldData.id || 
+					fieldData.id == item.id ||
+					!!item.subItems.find(sub => sub.id == fieldData.id)
+				){
+					hasId = true;
+					break;
+				}
+			}
+			if(!hasId) {
+				if(this.mode == FilterGroupMode.And) return false;
+			}
+			else hasAny = true;
+		}
+		if(!hasAny) return false;
+
+		// ensure that none of the software data fields for any exclusion filter exists
+		for(const item of this.excludedItems){
+			let fieldDataArray = data[item.targetSoftwareField];
+			if(!(fieldDataArray instanceof Array)) fieldDataArray = [fieldDataArray];
+			let hasId = false;
+			for (const fieldData of fieldDataArray) {
+				if(
+					!fieldData.id || 
+					fieldData.id == item.id ||
+					!!item.subItems.find(sub => sub.id == fieldData.id)
+				){
+					hasId = true;
+					break;
+				}
+			}
+			if(hasId) return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * returns a list of software data who's corresponding data passes the 
+	 * filters  in this filter group
+	 * @param softwares the softwares datas to filter against
+	 */
+	public filterSoftware(softwares: SoftwareDataAsync[]): SoftwareDataAsync[] {
+		const passed: SoftwareDataAsync[] = [];
+		for(const software of softwares) {
+			if(this.passes(software)) passed.push(software);
+		}
+		return passed;
 	}
 }
 
 class ItemChip {
 	public itemReference: FilterMenuItem = null;
 	public chip: HTMLSpanElement = null;
+	public removeButton: HTMLButtonElement = null;
 	public filterInverted: boolean = false;
 
 	public constructor(item: FilterMenuItem){
@@ -172,12 +294,22 @@ class ItemChip {
 		else this.chip.classList.remove(styleInvertFilter);
 	}
 
-	public build(): void {
-		this.chip = this.itemReference.createChip();
+	public async build(): Promise<void> {
+		this.chip = await this.itemReference.createChip();
 		this.chip.addEventListener("click", e => {
 			this.setInverted(!this.filterInverted);
 		});
-		// TODO add x button
+		this.chip.title = "Click to invert condition";
+
+		// create 'remove' button
+		this.removeButton = document.createElement("button");
+		this.removeButton.innerHTML = faCloseIcon;
+		this.removeButton.addEventListener("click", _ => {
+			this.itemReference.parentMenu.setItemSelected(
+				this.itemReference, false
+			);
+		});
+		this.chip.appendChild(this.removeButton);
 	}
 
 	public destroy(): void {

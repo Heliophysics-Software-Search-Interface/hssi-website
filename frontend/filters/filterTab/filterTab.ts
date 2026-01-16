@@ -1,8 +1,16 @@
 import {
-	SimpleEvent, fetchTimeout, FilterMenuItem, CategoryItem,
-	type JSONArray, type JSONObject, type JSONValue,
+	SimpleEvent, 
+	fetchTimeout, 
+	FilterMenuItem,
 	FilterMenu,
-} from "../loader";
+	type JSONArray, 
+	type JSONValue,
+	type ModelName,
+	ModelData,
+	ModelDataCache,
+	type SoftwareDataAsync,
+	ControlledListItem,
+} from "../../loader";
 
 /**
  * This module aims to reproduce the html structure below for each individual 
@@ -52,9 +60,6 @@ import {
  * </li>
  */
 
-export const apiModel = "/api/models/";
-export const apiSlugRowsAll = "/rows/all/";
-
 const styleTabHeader = "tab-header";
 const styleTabContent = "tab-content";
 
@@ -76,7 +81,10 @@ export class FilterTab {
 	public itemContainerElement: HTMLUListElement = null;
 
 	/** the name of the database model to fetch the filter items from */
-	public targetModel: string = "";
+	public targetModel: ModelName = "" as any;
+
+	/** the field on the software data this filter item is filtering */
+	public targetField: keyof SoftwareDataAsync = "" as any;
 
 	/** a list of filter items to be displayed directly (not as children of other items) */
 	public rootItems: FilterMenuItem[] = [];
@@ -134,6 +142,20 @@ export class FilterTab {
 		return new FilterMenuItem(this, itemData);
 	}
 
+	/** 
+	 * finds the filter menu item with the specified uid even if it's not 
+	 * a root item 
+	*/
+	public async findItemWithUid(uid: string): Promise<FilterMenuItem> {
+		if(this.rootItems?.length <= 0) await this.onReady.wait();
+		for(const item of this.rootItems){
+			if(item.id == uid) return item;
+			if(item.subItems) for(const sub of item.subItems){
+				if(sub.id == uid) return sub;
+			}
+		}
+	}
+
 	/** recreate root filter items from db model data */
 	public refreshItems(): void {
 		for(const item of this.rootItems) item.destroy();
@@ -154,7 +176,7 @@ export class FilterTab {
 		span.innerText = this.headerText;
 		this.headerElement.appendChild(span);
 
-		span.addEventListener("click", () => {
+		this.headerElement.addEventListener("click", () => {
 			this.parentMenu.selectTab(this);
 		});
 	}
@@ -185,14 +207,11 @@ export class FilterTab {
 	}
 
 	protected async fetchModelData(): Promise<void> {
-		const url = apiModel + this.targetModel + apiSlugRowsAll;
-		const data = await fetchTimeout(url);
-		const jsonData = await data.json();
-		this.modelData = jsonData.data;
+		this.modelData = [... await ModelDataCache.getModelDataAll(this.targetModel)];
 	}
 }
 
-export class ControlledGraphListFilterTab extends FilterTab {
+export class ControlledListFilterTab extends FilterTab {
 	protected override async fetchModelData(): Promise<void> {
 		await super.fetchModelData();
 		this.modelData.sort((a,b) => {
@@ -201,43 +220,9 @@ export class ControlledGraphListFilterTab extends FilterTab {
 			return obA.name.localeCompare(obB.name);
 		});
 	}
-}
-
-export class CategoryFilterTab extends ControlledGraphListFilterTab {
-
-	public get headerText(): string { return "Categories"; }
-
-	public get categories(): CategoryItem[] { return this.rootItems as CategoryItem[]; }
-	public get categoryData(): JSONArray<JSONObject> { 
-		return this.modelData as JSONArray<JSONObject>; 
-	}
-
-	public constructor(parentMenu: FilterMenu) {
-		super(parentMenu);
-		this.targetModel = "FunctionCategory";
-	}
-
-	protected override itemDataValid(itemData: JSONValue): boolean {
-		const data = itemData as JSONObject;
-		if(data?.parents instanceof Array) return data.parents.length <= 0;
-		return true;
-	}
 
 	protected override createItem(itemData: JSONValue): FilterMenuItem {
-		const category = new CategoryItem(this, itemData);
-		const data = itemData as JSONObject;
-
-		// find and parse direct children
-		if(data?.children instanceof Array){
-			for(const uid of data.children){
-				const id = uid as string;
-				const childData = this.categoryData.find(x => { return x.id == id; });
-				if(childData){
-					category.children.push(new CategoryItem(this, childData));
-				}
-			}
-		}
-
-		return category;
+		const item = new ControlledListItem(this, itemData);
+		return item;
 	}
 }

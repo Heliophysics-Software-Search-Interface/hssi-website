@@ -1,16 +1,37 @@
 import { 
 	FilterTab, CategoryFilterTab, FilterMenuItem, FilterGroupMaker,
+	ProgrammingLanguageFilterTab, DataSourcesFilterTab, PhenomenaFilterTab,
+	RegionFilterTab,
+	FilterGroup,
+	ResourceView,
+	faCloseIcon,
+	filterGroupToUrlVal,
+	type SoftwareDataAsync,
+	urlValToFilterGroup,
+	Spinner,
+	ConfirmDialogue,
+	applyEnteredQuery,
 } from "../loader";
 
+export const styleHidden = "hidden";
+export const styleSelected = "selected";
 const styleFilterMenu = "filter-menu";
-const styleSelected = "selected";
 const styleTabContainer = "tab-container";
+const styleFilterGroupContainer = "active-filters";
+const urlSymGroupDelimiter = "..";
+const searchParamFilter = "filt";
 
 export class FilterMenu {
 	
+	private static mainInstance: FilterMenu = null;
+	public static get main(): FilterMenu { return this.mainInstance; }
+
+	private activeGroupsContainerElement: HTMLDivElement = null;
 	private groupMaker: FilterGroupMaker = null;
 	private curTab: FilterTab = null;
 	private selectedItems: FilterMenuItem[] = [];
+	private activeFilterGroups: FilterGroup[] = [];
+	private view: ResourceView = null;
 
 	/** contains all elements for menu */
 	public containerElement: HTMLDivElement = null;
@@ -23,9 +44,57 @@ export class FilterMenu {
 	/** the tab that is currently selected by the user */
 	public get currentTab(): FilterTab { return this.curTab; }
 
-	public constructor() {
+	/** the resource view that the filters apply to */
+	public get targetView(): ResourceView {
+		return this.view || ResourceView.main;
+	}
+
+	public constructor(view: ResourceView = null) {
 		this.containerElement = document.createElement("div");
 		this.containerElement.classList.add(styleFilterMenu);
+
+		if(!FilterMenu.mainInstance) {
+			FilterMenu.mainInstance = this;
+			window.addEventListener("popstate", _ => { this.parseUrlParams(); } );
+		}
+
+		this.view = view;
+	}
+
+	private attachRemoveButton(chip: HTMLSpanElement, group: FilterGroup) {
+		const removeButton = document.createElement("button");
+		removeButton.innerHTML = faCloseIcon;
+		removeButton.addEventListener("click", _ => {
+			const index = this.activeFilterGroups.indexOf(group);
+			if(index >= 0){
+				this.activeFilterGroups.splice(index, 1);
+				this.applyFilters();
+			}
+		});
+		chip.appendChild(removeButton);
+	}
+
+	private async parseUrlParams(): Promise<void> {
+		const search = new URLSearchParams(window.location.search);
+		const groupVals = search.get(searchParamFilter)?.split(urlSymGroupDelimiter);
+		
+		this.activeFilterGroups.length = 0;
+		if(!groupVals) {
+			this.applyFilters(false);
+			return;
+		}
+
+		for(const groupval of groupVals) {
+			const group = await urlValToFilterGroup(groupval);
+			this.addFilterGroup(group);
+		}
+
+		try{
+			this.applyFilters(false);
+		}
+		catch{
+			window.addEventListener("DOMContentLoaded", _ => this.applyFilters());
+		}
 	}
 
 	/** build all display html elements for the {@link FilterMenu} */
@@ -42,6 +111,14 @@ export class FilterMenu {
 			this.setItemSelected(item, false);
 		});
 
+		// active filter group container
+		this.activeGroupsContainerElement = document.createElement("div");
+		this.activeGroupsContainerElement.classList.add(styleFilterGroupContainer);
+		this.activeGroupsContainerElement.classList.add(styleHidden);
+		this.activeGroupsContainerElement.append("Active Filter Groups: ");
+		this.containerElement.appendChild(this.activeGroupsContainerElement);
+
+		// tab headers
 		this.tabHeadersElement = document.createElement("div");
 		this.tabHeadersElement.classList.add(styleTabContainer);
 		this.containerElement.appendChild(this.tabHeadersElement);
@@ -59,6 +136,9 @@ export class FilterMenu {
 		// hide all tab contents except the current tab
 		for(const tab of this.tabs) tab.setContentsVisible(false);
 		this.selectTab(this.tabs[0]);
+
+		// get active filter groups from url
+		this.parseUrlParams();
 	}
 
 	/** set the current tab to the specified tab and update contents */
@@ -97,11 +177,104 @@ export class FilterMenu {
 			item.containerElement.classList.remove(styleSelected);
 		}
 	}
+
+	/** returns the tab that filters the specified software field */
+	public getTabForField(field: keyof SoftwareDataAsync): FilterTab {
+		return this.tabs.find(tab => tab.targetField == field);
+	}
+
+	public addFilterGroup(group: FilterGroup): void {
+		this.activeFilterGroups.push(group);
+	}
+
+	/** Apply all the active filter groups to the results */
+	public async applyFilters(pushHistory: boolean = true): Promise<void> {
+
+		// ensure the filters can only be applied if there is a main resource view
+		if(!this.targetView){
+			await ResourceView.onMainViewCreated.wait();
+			if(!this.targetView) {
+				console.error("No target view to apply filters for!", this);
+				return;
+			}
+		}
+
+		Spinner.showSpinner("Applying Filters");
+
+		try{
+			// clear old chips
+			this.activeGroupsContainerElement.innerHTML = "Active Filter Groups: ";
+			
+			// only filter after resources are fetched
+			if(this.targetView.getAllItems()?.length <= 0) await this.targetView.onReady.wait();
+			
+			let items = this.targetView.getAllItems();
+			for(const group of this.activeFilterGroups){
+				items = group.filterSoftware(items);
+				
+				// render chips
+				const chip = group.createChip();
+				this.activeGroupsContainerElement.append(chip);
+				this.attachRemoveButton(chip, group);
+			}
+			this.targetView.filterToItems(items.map(item => item.id));
+			this.targetView.refreshItems();
+			
+			// show/hide active groups element
+			if (this.activeFilterGroups.length > 0){
+				this.activeGroupsContainerElement.classList.remove(styleHidden);
+			}
+			else this.activeGroupsContainerElement.classList.add(styleHidden);
+			
+			// if it's the main view, we'll want to append the filters as url params
+			if(this.targetView == ResourceView.main){
+				if(pushHistory) this.recordFilterUrlParams();
+			}
+			
+			setTimeout(() => {
+				Spinner.hideSpinner();
+			}, 100);
+
+			// reapply the search to the new filtered results
+			applyEnteredQuery(false);
+		}
+
+		catch(e) {
+			Spinner.hideSpinner();
+			ConfirmDialogue.getConfirmation(e?.toString() || "", "Error", "Ok", null);
+		}
+	}
+
+	private recordFilterUrlParams(): void {
+
+		let filterParamVal = "";
+		for(const group of this.activeFilterGroups){
+			filterParamVal += filterGroupToUrlVal(group) + urlSymGroupDelimiter;
+		}
+
+		// chop off the last delimiter
+		if(filterParamVal.length > 0) {
+			filterParamVal = filterParamVal.substring(
+				0, 
+				filterParamVal.length - urlSymGroupDelimiter.length
+			);
+		}
+
+		// Record filter to browser history
+		const newUrl = new URL(window.location.href);
+		if (filterParamVal) newUrl.searchParams.set(searchParamFilter, filterParamVal);
+		else newUrl.searchParams.delete(searchParamFilter);
+		history.pushState(null, "", newUrl);
+	}
 }
 
-export function makeFilterMenuElement(): void {
-	const filterMenu = new FilterMenu();
+export function makeFilterMenuElement(targetView: ResourceView = null): void {
+	const filterMenu = new FilterMenu(targetView);
 	filterMenu.tabs.push(new CategoryFilterTab(filterMenu));
+	filterMenu.tabs.push(new ProgrammingLanguageFilterTab(filterMenu));
+	filterMenu.tabs.push(new RegionFilterTab(filterMenu));
+	filterMenu.tabs.push(new PhenomenaFilterTab(filterMenu));
+	filterMenu.tabs.push(new DataSourcesFilterTab(filterMenu));
 	document.currentScript.parentNode.appendChild(filterMenu.containerElement);
 	filterMenu.build();
 }
@@ -109,3 +282,4 @@ export function makeFilterMenuElement(): void {
 // export functionality to global scope
 const win = window as any;
 win.makeFilterMenuElement = makeFilterMenuElement;
+win.FilterMenu = FilterMenu;

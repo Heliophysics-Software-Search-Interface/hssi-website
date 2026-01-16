@@ -71,4 +71,15 @@ export class SimpleEvent<T = undefined, R = void>{
 
 		return val;
 	}
+
+	/** Waits for the next trigger and resolves with its argument */
+	public wait(): Promise<T> {
+		return new Promise(resolve => {
+			const cb = (arg: T) => {
+				this.removeListener(cb as any);
+				resolve(arg);
+			};
+			this.addListener(cb as any);
+		});
+	}
 }

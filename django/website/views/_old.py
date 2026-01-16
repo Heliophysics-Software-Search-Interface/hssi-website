@@ -227,50 +227,6 @@ def selected_resource_context(request):
 		in_lit_resources.order_by('name')
 	
 	stop_words = None
-	if search_terms:
-		word_tokens = set(word_tokenize(search_terms.lower().replace('-', ' ')))
-		stop_words = set(stopwords.words('english'))
-		tokens = [token for token in word_tokens if token.isalnum() and not token in stop_words]
-		stop_words = word_tokens.intersection(stop_words)
-	
-		credits_match_some, _ = credits_match_some_tokens(selected_resources, tokens)
-		credits_match_all = credits_match_all_tokens(selected_resources, tokens)
-		keywords_match_some, _ = keywords_match_some_tokens(selected_resources, tokens)
-		keywords_match_all = keywords_match_all_tokens(selected_resources, tokens)
-		names_match_all = names_match_all_tokens(selected_resources, tokens)
-		names_match_some, _ = names_match_some_tokens(selected_resources, tokens)
-		descriptions_match_all = descriptions_match_all_tokens(selected_resources, tokens)
-		descriptions_match_some, _ = descriptions_match_some_tokens(selected_resources, tokens)
-
-		inlit_credits_some, _ = credits_match_some_tokens(in_lit_resources, tokens)
-		inlit_credits_all = credits_match_all_tokens(in_lit_resources, tokens)
-		inlit_keywords_some, _ = keywords_match_some_tokens(in_lit_resources, tokens)
-		inlit_keywords_all = keywords_match_all_tokens(in_lit_resources, tokens)
-		inlit_names_all = names_match_all_tokens(in_lit_resources, tokens)
-		inlit_names_some, _ = names_match_some_tokens(in_lit_resources, tokens)
-
-		# Apply search result weighting, ordering
-
-		names_match_all = names_match_all.difference(credits_match_all)
-		keywords_match_all = keywords_match_all.difference(credits_match_all, names_match_all)
-		descriptions_match_all = descriptions_match_all.difference(credits_match_all, names_match_all, keywords_match_all)
-
-		credits_match_some = credits_match_some.difference(credits_match_all, keywords_match_all, names_match_all, descriptions_match_all)
-		keywords_match_some = keywords_match_some.difference(credits_match_all, keywords_match_all, names_match_all, descriptions_match_all, credits_match_some)
-		names_match_some = names_match_some.difference(credits_match_all, keywords_match_all, names_match_all, descriptions_match_all, credits_match_some, keywords_match_some)
-		descriptions_match_some = descriptions_match_some.difference(credits_match_all, keywords_match_all, names_match_all, descriptions_match_all, credits_match_some, keywords_match_some, names_match_some)
-		
-		selected_resources = {} if not tokens else \
-			list(chain(credits_match_all, keywords_match_all, names_match_all, descriptions_match_all, credits_match_some, keywords_match_some, names_match_some, descriptions_match_some))
-
-		inlit_keywords_all = inlit_keywords_all.difference(inlit_credits_all)
-		inlit_names_all = inlit_names_all.difference(inlit_credits_all, inlit_keywords_all)
-		inlit_credits_some = inlit_credits_some.difference(inlit_credits_all, inlit_keywords_all, inlit_names_all)
-		inlit_keywords_some = inlit_keywords_some.difference(inlit_credits_all, inlit_keywords_all, inlit_names_all, inlit_credits_some)
-		inlit_names_some = inlit_names_some.difference(inlit_credits_all, inlit_keywords_all, inlit_names_all, inlit_credits_some, inlit_keywords_some)
-
-		in_lit_resources = {} if not tokens else \
-			list(chain(inlit_credits_all, inlit_keywords_all, inlit_names_all, inlit_credits_some, inlit_keywords_some, inlit_names_some))
 	
 	if (not selected_category_ids) and (not selected_tooltype_ids) and (not search_terms):
 		# No category or tooltype filters and no search terms set, setting in-lit to None

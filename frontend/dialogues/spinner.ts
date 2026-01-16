@@ -140,7 +140,6 @@ export class Spinner {
 		const spinner = new Spinner();
 		spinner.targetElement = target;
 		const zIndex = Number.parseInt(window.getComputedStyle(target).zIndex) || 100000;
-		console.log(window.getComputedStyle(target));
 		spinner.backdropElement.style.zIndex = (zIndex + 100).toString();
 		spinner.backdropElement.classList.add("targeted");
 		spinner.popupElement.style.zIndex = (zIndex + 101).toString();
@@ -151,18 +150,18 @@ export class Spinner {
 	public static showSpinner(message: string = "", target: HTMLElement = null): void {
 		if(target == null) {
 			this.validateInstance();
-			this.instance.messageElement.textContent = message;
 			this.instance.show();
 			this.instance.centerPopup();
+			this.instance.messageElement.textContent = message;
 			return;
 		}
 
 		// create a spinner targeted over one html element
 		this.hideSpinner(target);
 		const spinner = this.createTargetedSpinner(target);
-		console.log(spinner);
 		this.spinnerMap.set(target, spinner);
 		spinner.show();
+		spinner.messageElement.textContent = message;
 		this.updateSpinners();
 	}
 

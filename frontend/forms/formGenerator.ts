@@ -38,10 +38,7 @@ export class FormGenerator {
 	public autofilledFromDatacite: boolean = false;
 	public autofilledFromRepo: boolean = false;
 
-	private buildForm(
-		readOnly: boolean = false, 
-		condensed: boolean = false, 
-	): void {
+	private buildForm(): void {
 
 		// don't try to generate the form without structure data
 		if(FormGenerator.structureData == null) {
@@ -63,7 +60,7 @@ export class FormGenerator {
 		
 		for(const field of this.fields) {
 			if(field instanceof Array){
-				this.buildFormSection(field, titles.shift(), i > 0, readOnly, condensed);
+				this.buildFormSection(field, titles.shift(), i > 0);
 				i++;
 				continue;
 			}
@@ -125,8 +122,6 @@ export class FormGenerator {
 		fields: ModelSubfield[], 
 		title: string,
 		collapsible: boolean = true,
-		readOnly: boolean = false,
-		condensed: boolean = false,
 	): void {
 
 		const details = document.createElement(collapsible ? "details" : "div");
@@ -138,7 +133,7 @@ export class FormGenerator {
 		for(const field of fields) {
 			const formRow = document.createElement("div") as HTMLDivElement;
 			formRow.classList.add(formRowStyle);
-			field.buildInterface(formRow, true, readOnly, condensed);
+			field.buildInterface(formRow, true);
 			details.appendChild(formRow);
 		}
 
@@ -152,25 +147,59 @@ export class FormGenerator {
 		return !this.hasAgreement || this.agreementElement.checked;
 	}
 
-	private onSubmit(e: SubmitEvent): void{
-
-		// we don't want the default html form functionality submitting anything
-		e.preventDefault();
+	private validateForSubmission(): boolean{
 
 		// check to see all required elements are filled out
 		if(!this.validateFieldRequirements()) {
 			console.log("form fields not valid!");
-			return;
+			return false;
 		}
 
 		if(!this.userHasAgreed()){
 			ConfirmDialogue.getConfirmation(
 				"Error - You must agree to the given terms, please check the " +
 				"'I agree' checkbox located at the bottom of the form.", 
-				"Metadata Agreement", "ok", "cancel"
+				"Metadata Agreement", "ok", null
 			);
-			return;
+			return false;
 		}
+
+		// check version date is later than or equal to publication date
+		// const pubDateField = this.getRootFields().find(
+		// 	x => x.name === "publicationDate" 
+		// );
+		// const verDateField = this.getRootFields().find(
+		// 	x => x.name === "versionNumber"
+		// )?.getSubfields().find(
+		// 	x => x.name === "versionDate"
+		// );
+		// if (pubDateField && verDateField){
+		// 	const pubDateStr = pubDateField.getInputElement()?.value;
+		// 	const verDateStr = verDateField.getInputElement()?.value;
+		// 	if(pubDateStr && verDateStr){
+		// 		const pubDate = new Date(pubDateStr);
+		// 		const verDate = new Date(verDateStr);
+		// 		if(pubDate.getTime() > verDate.getTime()){
+		// 			ConfirmDialogue.getConfirmation(
+		// 				"Error - The listed publication date is more recent " +
+		// 				"than the latest version date, which should not be " + 
+		// 				"possible. Please fix this.", 
+		// 				"Error - Date Conflict", "ok", null
+		// 			);
+		// 			return false;
+		// 		}
+		// 	}
+		// }
+
+		return true;
+	}
+
+	private onSubmit(e: SubmitEvent): void{
+
+		// we don't want the default html form functionality submitting anything
+		e.preventDefault();
+
+		if(!this.validateForSubmission()) return;
 
 		Spinner.showSpinner();
 
@@ -219,7 +248,15 @@ export class FormGenerator {
 				"Error", "ok", null
 			);
 		});
-		response.finally(() => Spinner.hideSpinner());
+		response.finally(async () => {
+			Spinner.hideSpinner();
+			if(!this.isEditForm) return;
+			let confirm = await ConfirmDialogue.getConfirmation(
+				"The changes to the submission have been received.", 
+				"Success", "Return to Homepage", "Continue Editing",
+			);
+			if(confirm) window.location.href = "/";
+		});
 	}
 
 	private validateFieldRequirements(): boolean {
@@ -305,7 +342,7 @@ export class FormGenerator {
 
 	public getJsonData(): JSONValue{
 
-		// get all subfields into a linear array
+		// get all subfields into a flat array
 		const subfields: ModelSubfield[] = [];
 		let outerFields: ModelSubfield[][] = this.fields as any;
 		if(outerFields.length > 0 && !(outerFields[0] instanceof Array)) {
@@ -319,8 +356,9 @@ export class FormGenerator {
 		const data: JSONObject = {};
 		for(const field of subfields){
 			data[field.name] = field.getFieldData();
+			console.log(field.name, field);
 		}
-		
+
 		return data;
 	}
 
@@ -333,8 +371,7 @@ export class FormGenerator {
 	 * to find json data about fields inside the text
 	 */
 	public static async generateForm(
-		fields: ModelSubfield[] = null, 
-		editing: boolean = false
+		fields: ModelSubfield[] = null,
 	): Promise<void> {
 
 		// warn about singleton resetting
@@ -534,6 +571,10 @@ export class FormGenerator {
 			fill(outerField);
 		}
 	}
+
+	public static async awaitFormGeneration(): Promise<void> {
+		while(this.instance == null) await new Promise(x => setTimeout(x, 100));
+	}
 }
 
 const win = window as any;
@@ -542,3 +583,5 @@ win.collapseGeneratedForm = FormGenerator.collapseFormFields.bind(FormGenerator)
 win.expandGeneratedForm = FormGenerator.expandFormFields.bind(FormGenerator);
 win.fillForm = FormGenerator.fillForm.bind(FormGenerator);
 win.debugAutofill = FormGenerator.debugAutofill.bind(FormGenerator);
+win.awaitFormGeneration = FormGenerator.awaitFormGeneration.bind(FormGenerator);
+win.FormGenerator = FormGenerator;

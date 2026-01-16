@@ -1,14 +1,18 @@
-import { ConfirmDialogue, PopupDialogue, TextInputDialogue } from "./loader";
+import { ConfirmDialogue, FormGenerator, PopupDialogue, TextInputDialogue } from "./loader";
 
+export const uuid4Regex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 export const softwareApiUrl = "/api/models/Software/rows/";
 export const modelApiUrl = "/api/view/"
 export const editApiUrl = "/sapi/software_edit_data/";
 export const requestEditUrl = "/request_edit/";
 export const csrfTokenName = "csrf-token";
 
-export type JSONValue = string | number | boolean | null | JSONObject | JSONArray;
+export type JSONValue = string | number | boolean | null | JSONObject | JSONArray | any;
 export interface JSONObject { [key: string]: JSONValue }
 export interface JSONArray<T = JSONValue> extends Array<T> { }
+export interface JSONArrayData extends JSONObject {
+	data: JSONArray,
+}
 
 /** like 'keyof' but recursively includes keys of nested types */
 export type NestedKeys<T, Prefix extends string = ""> = {
@@ -249,9 +253,48 @@ export async function requestEditSubmission(uid: string): Promise<void> {
 	});
 }
 
+/**
+ * tests a given string to see if it matches the uuid v4 format
+ * @param uid the string to test if its a uuid
+ */
+export function isUuid4(uid: string): boolean {
+	return uuid4Regex.test(uid);
+}
+
+/** append an async child to a parent element when the child is resolved */
+export function appendPromisedElement(parentElem: HTMLElement, childPromise: Promise<HTMLElement>){
+	childPromise
+		.then(x => parentElem.appendChild(x))
+		.catch(e => console.error(e));
+}
+
+async function curateEditFormInit() {
+	let uid = new URLSearchParams(window.location.search).get("uid");
+	
+	let data = null;
+	try{
+		// defined in /frontend/util.ts
+		data = await getSoftwareEditFormData(uid);
+	}
+	catch(e) { console.error(e); }
+	
+	if(data == null) {
+		await ConfirmDialogue.getConfirmation(
+			"This edit link is invalid.", "Error", "Ok", null
+		);
+		window.location.href = "/";
+		return;
+	}
+	
+	// defined in /frontend/forms/formGenerator.ts
+	await FormGenerator.awaitFormGeneration();
+	FormGenerator.fillForm(data, true);
+}
+
 const win = window as any;
 win.requestEditSubmission = requestEditSubmission;
 win.getSoftwareData = getSoftwareData;
 win.getSoftwareFormData = getSoftwareFormData;
 win.getSoftwareEditFormData = getSoftwareEditFormData;
 win.getSimpleSoftwareFormData = getSimpleSoftwareFormData;
+win.curateEditFormInit = curateEditFormInit;

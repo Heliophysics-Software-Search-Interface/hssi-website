@@ -1,0 +1,211 @@
+{
+  "softwareName": "Example Name",
+  "programmingLanguage": [
+      "Python 3.x",
+      "Fortran 203"
+  ],
+  "publicationDate": "2024-06-14",
+  "publisher": {
+    "name": "Example Publisher",
+    "abbreviation": "EP",
+    "identifier": "https://ror.org/012345678"
+  },
+  "authors": [
+    {
+      "firstName": "Isaiah",
+      "lastName": "Smith",
+      "identifier": "https://orcid.org/0000-0002-1825-0097",
+      "affiliation": [
+        {
+          "name": "Laboratory for Atmospheric and Space Physics",
+          "abbreviation": "LASP",
+          "identifier": "https://ror.org/012345678"
+        },
+        {
+          "name": "University of Colorado Boulder",
+          "abbreviation": "UC Boulder",
+          "identifier": "https://ror.org/012345678"
+        }
+      ]
+    },
+    {
+      "firstName": "Shawn",
+      "lastName": "Polson",
+      "identifier": "https://orcid.org/0000-0002-1825-0097"
+    }
+  ],
+  "relatedInstruments": [
+    {
+      "name": "Visible Spectro-Polarimeter",
+      "abbreviation": "ViSP"
+    },
+    {
+      "name": "Atmospheric Imaging Assembly",
+      "identifier": "https://doi.org/10.5281/zenodo.10994081",
+      "definition": "Instrument for observing the solar atmosphere",
+      "abbreviation": "AIA"
+    }
+  ],
+  "relatedObservatories": [
+    {
+      "name": "Solar Orbiter",
+      "identifier": "https://doi.org/10.5281/zenodo.10994081",
+      "abbreviation": "SolO"
+    },
+    {
+      "name": "Daniel K. Inouye Solar Telescope",
+      "definition": "A ground-based solar telescope.",
+      "abbreviation": "DKIST"
+    }
+  ],
+  "version": {
+    "number": "2.4.1",
+    "release_date": "2025-05-01",
+    "description": "Adds adaptive deconvolution and GPU acceleration.",
+    "version_pid": "https://doi.org/10.5281/zenodo.10994081"
+  },
+  "persistentIdentifier": "https://doi.org/10.5281/zenodo.10994081",
+  "referencePublication": {
+    "name": "Example Publication",
+    "identifier": "https://doi.org/10.5281/zenodo.10994081",
+    "definition": "A peer-reviewed article describing Example Name",
+    "authors": [
+      {
+        "firstName": "Shawn",
+        "lastName": "Polson",
+        "identifier": "https://orcid.org/0000-0002-1825-0097"
+      }
+    ],
+    "license": "MIT License"
+  },
+  "description": "This software does ALL the things, it is the BEST software.",
+  "conciseDescription": "Good software install now",
+  "softwareFunctionality": [
+    "8d417fc4-5ac8-4f1d-8d90-b310b25050dc",
+    "feebd6ed-5df0-4922-aad1-8ca14b1d75d4"
+  ],
+  "documentation": "https://docs.example.org/heliospectra",
+  "dataSources": [
+    "CDAWeb",
+    "HAPI"
+  ],
+  "inputFormats": [
+    "CDF",
+    "FITS"
+  ],
+  "outputFormats": [
+    "CDF",
+    "FITS"
+  ],
+  "cpuArchitecture": [
+    "x86-64",
+    "Apple Silicon arm64"
+  ],
+  "relatedPublications": [
+    "https://doi.org/10.5281/zenodo.10994081",
+    "https://doi.org/10.5281/zenodo.12345678"
+  ],
+  "relatedDatasets": [
+    "https://doi.org/10.5281/zenodo.10994081",
+    "https://doi.org/10.5281/zenodo.12345678"
+  ],
+  "developmentStatus": "Active",
+  "operatingSystem": [
+    "Linux",
+    "Mac"
+  ],
+  "license": {
+    "name": "GNU Library or 'Lesser' General Public Licenses (LGPL version 3)",
+    "url": "https://www.gnu.org/licenses/lgpl-3.0.html"
+  },
+  "relatedRegion": [
+    "Solar Environment",
+    "Interplanetary Space"
+  ],
+  "keywords": [
+    "spectroscopy",
+    "magnetic fields"
+  ],
+  "relatedSoftware": [
+    {
+      "name": "Related Example",
+      "identifier": "https://doi.org/10.5281/zenodo.10994081"
+    },
+    {
+      "identifier": "https://doi.org/10.5281/zenodo.10994081"
+    }
+  ],
+  "interoperableSoftware": [
+    {
+      "name": "Interoperable Example",
+      "identifier": "https://doi.org/10.5281/zenodo.10994081"
+    },
+    {
+      "identifier": "https://doi.org/10.5281/zenodo.10994081"
+    }
+  ],
+  "funder": [
+    {
+      "name": "National Science Foundation",
+      "abbreviation": "NSF",
+      "identifier": "https://ror.org/0171mag52"
+    },
+    {
+      "name": "NASA Goddard Space Flight Center",
+      "identifier": "https://ror.org/0171mag52"
+    }
+  ],
+  "award": [
+    {
+      "name": "Example Award",
+      "identifier": "NNG19PQ28C"
+    },
+    {
+      "name": "Second Example Award",
+      "identifier": "NNG19PQ28C"
+    }
+  ],
+  "codeRepositoryUrl": "https://repo.example.org/example",
+  "logo": "https://cdn.example.org/heliospectra/logo.png",
+  "relatedPhenomena": [
+    "Coronal Heating",
+    "Geomagnetic Storms"
+  ],
+  "submissionInfo": {
+    "submitter": {
+      "id": "33333333-0000-1111-2222-333344445555",
+      "email": "submitter@example.org",
+      "person": {
+        "id": "44444444-1111-2222-3333-444455556666",
+        "firstName": "Isaiah",
+        "lastName": "Smith",
+        "identifier": "https://orcid.org/0000-0002-9876-5432",
+        "affiliation": [
+          {
+            "id": "c1b2a3d4-aaaa-4f0a-9b1c-2d3e4f5a6b70",
+            "name": "Helio Data Institute",
+            "abbreviation": "HDI",
+            "identifier": "https://ror.org/012345678"
+          },
+          {
+            "id": "9a8b7c6d-eeee-4f1a-8b2c-3d4e5f6a7b90",
+            "name": "Aurora University",
+            "abbreviation": "AU",
+            "identifier": "https://ror.org/567890123"
+          }
+        ]
+      }
+    }
+  },
+  "submitter": [
+    {
+      "email": "exampl@email.org",
+      "person": 
+      {
+        "firstName": "Isaiah",
+        "lastName": "Smith",
+        "identifier": "https://orcid.org/0000-0002-1825-0097"
+      }
+    }
+  ]
+}

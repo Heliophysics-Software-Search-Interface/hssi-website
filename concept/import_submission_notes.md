@@ -35,18 +35,9 @@ These fields **must be in the json object**, otherwise the submission is not
 valid, and will not be accepted.
 
 * `submitter` *required* - array of [`Submitter`](#submitter) objects
-	* subfields:
-		* `email` *required* - email address
-		* `person` *required* [`Person`](#person) object
-			* subfields:
-				* `firstName` *required*
-				* `lastName` *required*
 * `softwareName` *required*
 * `codeRepositoryUrl` *required*
 * `authors` *required* - array of [`Person`](#person) objects
-	* subfields
-		* `firstName` *required*
-		* `lastName` *required*
 * `description` *required*
 
 ### Recommended
@@ -122,9 +113,55 @@ however they may not be applicable to some submissions.
 
 ## Object Specifications
 
+Object fields will not duplicate if a match is found, each object type has 
+different matching criteria specified below. If a match is not found, a new
+entry to the proper database field is defined. If an a match is found and 
+it has less fields filled out, the match will be updated in the database with 
+the new information. If a match is found and it has conflicting fields, the
+information from the fields already in the database will be used, and new 
+information will be ignored.
+
 ### Person
+
+References `Person` table in database, hard match on `identifier`,
+otherwise fall back to matching on a combination of `firstName` + `lastName`
+
+#### Subfields
+
+* `firstname` *required* - string
+* `lastname` *required* - string
+* `identifier` - url
+* `affiliation` - array of [`Organization`](#organization) objects
+
 ### Submitter
+
+References `Submitter` table in database, hard match on `email`
+
+#### Subfields
+
+* `email` *required* - string
+* `person` *required* - [`Person`](#person) object
+
 ### Organization
-### Function Category
+
+References `Organization` table in database, hard match on `identifier`
+
+#### subfields
+
+* `name` *required* - string
+* `abbreviation` - string
+* `identifier` - url
+
+### Observatory
+
+Same as [`Instrument`](#instrument), but handled differently in different 
+submission fields
+
 ### Instrument
-### Award
+
+References `InstrumentObservatory` table in database, hard match on `identifier`
+
+#### subfields
+* `name` *required* - url
+* `abbrevieation` *required* - url
+* `definition` - text

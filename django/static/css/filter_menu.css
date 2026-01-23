@@ -83,7 +83,6 @@
 }
 
 .filter-menu .tab-header {
-	min-width: 140px;
 	display: flex;
 	flex-wrap: wrap-reverse;
 	flex: 1 1 auto;

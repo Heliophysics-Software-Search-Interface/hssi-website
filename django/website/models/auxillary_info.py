@@ -53,8 +53,8 @@ class Award(HssiModel):
 	@classmethod
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
 
-	class Meta: ordering = ['name']
 	def __str__(self): return self.name
+	class Meta: ordering = ['name']
 
 class RelatedItem(ControlledList):
 	access = AccessLevel.PUBLIC

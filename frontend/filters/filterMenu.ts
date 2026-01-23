@@ -273,7 +273,7 @@ export function makeFilterMenuElement(targetView: ResourceView = null): void {
 	filterMenu.tabs.push(new CategoryFilterTab(filterMenu));
 	filterMenu.tabs.push(new ProgrammingLanguageFilterTab(filterMenu));
 	filterMenu.tabs.push(new RegionFilterTab(filterMenu));
-	filterMenu.tabs.push(new PhenomenaFilterTab(filterMenu));
+	// filterMenu.tabs.push(new PhenomenaFilterTab(filterMenu));
 	filterMenu.tabs.push(new DataSourcesFilterTab(filterMenu));
 	document.currentScript.parentNode.appendChild(filterMenu.containerElement);
 	filterMenu.build();

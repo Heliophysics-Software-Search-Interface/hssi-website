@@ -29,6 +29,7 @@ def api_submit(request: HttpRequest):
 	try:
 		with transaction.atomic():
 			for idx, item in enumerate(data):
+				print("Batch submission...")
 				form_data = api_submission_to_formdict(item)
 				submission_id = handle_submission_data(form_data)
 				software = SubmissionInfo.objects.get(pk=submission_id).software
@@ -39,7 +40,10 @@ def api_submit(request: HttpRequest):
 					"submissionId": str(submission_id),
 					"softwareId": str(software.id),
 				})
+				print(f"processed #{idx}")
+			print("Batch submission complete")
 	except Exception as exc:
+		print(f"Error: {str(exc)}")
 		return HttpResponseBadRequest(str(exc))
 
 	return JsonResponse({

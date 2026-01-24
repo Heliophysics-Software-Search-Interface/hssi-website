@@ -6,6 +6,7 @@ app_name = 'website' # Defines app url namespace
 urlpatterns = [
 	path('', views.published_resources, name="published_resources"),
 	path('api', views.api_view, name="rest_api"),
+	path('api/submit', views.api_submit),
 	path('FAQ/', views.FAQ, name="FAQ"),
 	path('news/', views.NewsView.as_view(), name='news'),
 	path('news/rss/', views.NewsFeed()),

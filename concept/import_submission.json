@@ -26,14 +26,14 @@
 					{
 						"name": "University of Colorado Boulder",
 						"abbreviation": "UC Boulder",
-						"identifier": "https://ror.org/012345678"
+						"identifier": "https://ror.org/123456789"
 					}
 				]
 			},
 			{
 				"firstName": "Shawn",
 				"lastName": "Polson",
-				"identifier": "https://orcid.org/0000-0002-1825-0097"
+				"identifier": "https://orcid.org/0000-0002-1825-1234"
 			}
 		],
 		"description": "This software does ALL the things, it is the BEST software.",
@@ -138,7 +138,7 @@
 			{
 				"name": "National Science Foundation",
 				"abbreviation": "NSF",
-				"identifier": "https://ror.org/0171mag52"
+				"identifier": "https://ror.org/021nxhr62"
 			},
 			{
 				"name": "NASA Goddard Space Flight Center",
@@ -152,7 +152,7 @@
 			},
 			{
 				"name": "Second Example Award",
-				"identifier": "NNG19PQ28C"
+				"identifier": "NNG19PB28C"
 			}
 		],
 		"logo": "https://cdn.example.org/heliospectra/logo.png",

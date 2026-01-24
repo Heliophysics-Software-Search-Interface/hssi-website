@@ -454,7 +454,7 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 			software.license = license
 		except Exception:
 			license = None
-			if license_name.upper() != "OTHER":
+			if license_name and license_name.upper() != "OTHER":
 				license = License.objects.filter(name=license_name).first()
 			if not license:
 				license_url = license_data.get(FIELD_LICENSEURI)
@@ -474,14 +474,15 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	## PUBLISHER
 
 	publisher_data: dict = data.get(FIELD_PUBLISHER)
-	publisher_name: str = publisher_data.get(FIELD_PUBLISHER)
-	if publisher_name.lower() == "zenodo":
-		software.publisher = Organization.objects.filter(name="Zenodo").first()
-	else: software.publisher = parse_organization(
-		publisher_data, 
-		FIELD_PUBLISHER, 
-		FIELD_PUBLISHERIDENTIFIER
-	)
+	if publisher_data:
+		publisher_name: str = publisher_data.get(FIELD_PUBLISHER)
+		if publisher_name.lower() == "zenodo":
+			software.publisher = Organization.objects.filter(name="Zenodo").first()
+		else: software.publisher = parse_organization(
+			publisher_data, 
+			FIELD_PUBLISHER, 
+			FIELD_PUBLISHERIDENTIFIER
+		)
 
 	## VERSION
 
@@ -508,7 +509,7 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	## AUTHORS
 
 	author_datas: list[dict] = data.get(FIELD_AUTHORS)
-	if author_datas is not None: software.authors.clear()
+	if author_datas: software.authors.clear()
 	for author_data in author_datas:
 		author = parse_person(
 			author_data, 
@@ -525,244 +526,264 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	## PROGRAMMING LANGUAGES
 
 	proglangs = data.get(FIELD_PROGRAMMINGLANGUAGE)
-	if proglangs is not None: software.programmingLanguage.clear()
-	for lang in proglangs:
-		obj = parse_controlled_list_reference(ProgrammingLanguage, lang)
-		if obj: software.programmingLanguage.add(obj)
+	if proglangs:
+		software.programmingLanguage.clear()
+		for lang in proglangs:
+			obj = parse_controlled_list_reference(ProgrammingLanguage, lang)
+			if obj: software.programmingLanguage.add(obj)
 	
 	## KEYWORDS
 
 	keywords: list[str] = data.get(FIELD_KEYWORDS)
-	if keywords is not None: software.keywords.clear()
-	for kw in keywords:
-		kw_obj = parse_controlled_list_reference(Keyword, kw)
-		if kw_obj: software.keywords.add(kw_obj)
-		else:
-			kw_fmtd = SPACE_REPLACE.sub(' ', kw).lower()
-			kw_ref = Keyword.objects.filter(name=kw_fmtd).first()
-			if kw_ref: software.keywords.add(kw_ref)
+	if keywords:
+		software.keywords.clear()
+		for kw in keywords:
+			kw_obj = parse_controlled_list_reference(Keyword, kw)
+			if kw_obj: software.keywords.add(kw_obj)
 			else:
-				keyword = Keyword()
-				keyword.name = kw_fmtd
-				keyword.save()
-				software.keywords.add(keyword)
+				kw_fmtd = SPACE_REPLACE.sub(' ', kw).lower()
+				kw_ref = Keyword.objects.filter(name=kw_fmtd).first()
+				if kw_ref: software.keywords.add(kw_ref)
+				else:
+					keyword = Keyword()
+					keyword.name = kw_fmtd
+					keyword.save()
+					software.keywords.add(keyword)
 
 	## FUNCTIONALITY
 
 	functionalities = data.get(FIELD_SOFTWAREFUNCTIONALITY)
-	if functionalities is not None: software.softwareFunctionality.clear()
-	for functionality in functionalities:
-		obj = parse_controlled_list_reference(FunctionCategory, functionality)
-		if obj: software.softwareFunctionality.add(obj)
+	if functionalities:
+		software.softwareFunctionality.clear()
+		for functionality in functionalities:
+			obj = parse_controlled_list_reference(FunctionCategory, functionality)
+			if obj: software.softwareFunctionality.add(obj)
 	
 	## DATA SOURCES
 	
 	data_sources = data.get(FIELD_DATASOURCES)
-	if data_sources is not None: software.dataSources.clear()
-	for datasrc in data_sources:
-		obj = parse_controlled_list_reference(DataInput, datasrc)
-		if obj: software.dataSources.add(obj)
+	if data_sources:
+		software.dataSources.clear()
+		for datasrc in data_sources:
+			obj = parse_controlled_list_reference(DataInput, datasrc)
+			if obj: software.dataSources.add(obj)
 
 	## FILE FORMATS
 
 	inputs = data.get(FIELD_INPUTFORMATS)
-	if inputs is not None: software.inputFormats.clear()
-	for input in inputs:
-		obj = parse_controlled_list_reference(FileFormat, input)
-		if obj: software.inputFormats.add(obj)
+	if inputs:
+		software.inputFormats.clear()
+		for input in inputs:
+			obj = parse_controlled_list_reference(FileFormat, input)
+			if obj: software.inputFormats.add(obj)
 	
 	outputs = data.get(FIELD_OUTPUTFORMATS)
-	if outputs is not None: software.outputFormats.clear()
-	for output in outputs:
-		obj = parse_controlled_list_reference(FileFormat, output)
-		if obj: software.outputFormats.add(obj)
+	if outputs:
+		software.outputFormats.clear()
+		for output in outputs:
+			obj = parse_controlled_list_reference(FileFormat, output)
+			if obj: software.outputFormats.add(obj)
 	
 	## CPU ARCHITECTURE
 
 	architectures = data.get(FIELD_CPUARCHITECTURE)
-	if architectures is not None: software.cpuArchitecture.clear()
-	for architecture in architectures:
-		obj = parse_controlled_list_reference(CpuArchitecture, architecture)
-		if obj: software.cpuArchitecture.add(obj)
+	if architectures:
+		software.cpuArchitecture.clear()
+		for architecture in architectures:
+			obj = parse_controlled_list_reference(CpuArchitecture, architecture)
+			if obj: software.cpuArchitecture.add(obj)
 
 	## OPERATING SYSTEM
 
 	opsystems = data.get(FIELD_OPERATINGSYSTEM)
-	if opsystems is not None: software.operatingSystem.clear()
-	for opsys in opsystems:
-		obj = parse_controlled_list_reference(OperatingSystem, opsys)
-		if obj: software.operatingSystem.add(obj)
+	if opsystems:
+		software.operatingSystem.clear()
+		for opsys in opsystems:
+			obj = parse_controlled_list_reference(OperatingSystem, opsys)
+			if obj: software.operatingSystem.add(obj)
 		
 
 	## RELATED REGION
 
 	regions = data.get(FIELD_RELATEDREGION)
-	if regions is not None: software.relatedRegion.clear()
-	for region in regions:
-		obj = parse_controlled_list_reference(Region, region)
-		if obj: software.relatedRegion.add(obj)
+	if regions:
+		software.relatedRegion.clear()
+		for region in regions:
+			obj = parse_controlled_list_reference(Region, region)
+			if obj: software.relatedRegion.add(obj)
 
 	## RELATED PHENOMENA
 
 	phenoms = data.get(FIELD_RELATEDPHENOMENA)
-	if phenoms is not None: software.relatedPhenomena.clear()
-	for phenom in phenoms:
-		obj = parse_controlled_list_reference(Phenomena, phenom)
-		if obj: software.relatedPhenomena.add(obj)
+	if phenoms:
+		software.relatedPhenomena.clear()
+		for phenom in phenoms:
+			obj = parse_controlled_list_reference(Phenomena, phenom)
+			if obj: software.relatedPhenomena.add(obj)
 
 	## AWARDS
 	
 	award_datas: list[dict] = data.get(FIELD_AWARDTITLE)
-	if award_datas is not None: software.award.clear()
-	for award_data in award_datas:
-		award_name = award_data.get(FIELD_AWARDTITLE)
-		if not award_name: continue
-		try:
-			uid = UUID(award_name)
-			software.award.add(Award.objects.get(pk=uid))
-		except Exception:
-			award_num = award_data.get(FIELD_AWARDNUMBER)
-			award_ref = Award.objects.filter(identifier=award_num).first()
-			if award_ref: software.award.add(award_ref)
-			else:
-				award = Award()
-				award.name = award_name
-				award.identifier = award_num
-				award.save()
-				software.award.add(award)
+	if award_datas:
+		software.award.clear()
+		for award_data in award_datas:
+			award_name = award_data.get(FIELD_AWARDTITLE)
+			if not award_name: continue
+			try:
+				uid = UUID(award_name)
+				software.award.add(Award.objects.get(pk=uid))
+			except Exception:
+				award_num = award_data.get(FIELD_AWARDNUMBER)
+				award_ref = Award.objects.filter(identifier=award_num).first()
+				if award_ref: software.award.add(award_ref)
+				else:
+					award = Award()
+					award.name = award_name
+					award.identifier = award_num
+					award.save()
+					software.award.add(award)
 
 	## FUNDER
 
 	funder_datas: list[dict] = data.get(FIELD_FUNDER)
-	if funder_datas is not None: software.funder.clear()
-	for funder_data in funder_datas:
-		funder = parse_organization(funder_data, FIELD_FUNDER, FIELD_FUNDERIDENTIFIER)
-		if funder: software.funder.add(funder)
+	if funder_datas:
+		software.funder.clear()
+		for funder_data in funder_datas:
+			funder = parse_organization(funder_data, FIELD_FUNDER, FIELD_FUNDERIDENTIFIER)
+			if funder: software.funder.add(funder)
 
 	## RELATED OBJECTS
 	
 	relpubs: list[str] = data.get(FIELD_RELATEDPUBLICATIONS)
-	if relpubs is not None: software.relatedPublications.clear()
-	for relpub in relpubs:
-		try:
-			uid = UUID(relpub)
-			software.relatedPublications.add(RelatedItem.objects.get(pk=uid))
-		except:
-			relpub_ref = RelatedItem.objects.filter(identifier=relpub).first()
-			if relpub_ref: software.relatedPublications.add(relpub_ref)
-			else:
-				relatedpub = RelatedItem()
-				relatedpub.name = "UNKNOWN"
-				relatedpub.identifier = relpub
-				relatedpub.type = RelatedItemType.PUBLICATION
-				relatedpub.save()
-				software.relatedPublications.add(relatedpub)
+	if relpubs:
+		software.relatedPublications.clear()
+		for relpub in relpubs:
+			try:
+				uid = UUID(relpub)
+				software.relatedPublications.add(RelatedItem.objects.get(pk=uid))
+			except:
+				relpub_ref = RelatedItem.objects.filter(identifier=relpub).first()
+				if relpub_ref: software.relatedPublications.add(relpub_ref)
+				else:
+					relatedpub = RelatedItem()
+					relatedpub.name = "UNKNOWN"
+					relatedpub.identifier = relpub
+					relatedpub.type = RelatedItemType.PUBLICATION
+					relatedpub.save()
+					software.relatedPublications.add(relatedpub)
 	
 	reldatas: list[str] = data.get(FIELD_RELATEDDATASETS)
-	if reldatas is not None: software.relatedDatasets.clear()
-	for reldat in reldatas:
-		try:
-			uid = UUID(reldat)
-			software.relatedDatasets.add(RelatedItem.objects.get(pk=uid))
-		except Exception:
-			reldat_ref = RelatedItem.objects.filter(
-				identifier=reldat, 
-				type=RelatedItemType.DATASET.value
-			).first()
-			if reldat_ref: software.relatedDatasets.add(reldat_ref)
-			else:
-				reldataset = RelatedItem()
-				reldataset.name = "UNKNOWN"
-				reldataset.identifier = reldat
-				reldataset.type = RelatedItemType.DATASET.value
-				reldataset.save()
-				software.relatedDatasets.add(reldataset)
+	if reldatas:
+		software.relatedDatasets.clear()
+		for reldat in reldatas:
+			try:
+				uid = UUID(reldat)
+				software.relatedDatasets.add(RelatedItem.objects.get(pk=uid))
+			except Exception:
+				reldat_ref = RelatedItem.objects.filter(
+					identifier=reldat, 
+					type=RelatedItemType.DATASET.value
+				).first()
+				if reldat_ref: software.relatedDatasets.add(reldat_ref)
+				else:
+					reldataset = RelatedItem()
+					reldataset.name = "UNKNOWN"
+					reldataset.identifier = reldat
+					reldataset.type = RelatedItemType.DATASET.value
+					reldataset.save()
+					software.relatedDatasets.add(reldataset)
 	
 	relsofts: list[str] = data.get(FIELD_RELATEDSOFTWARE)
-	if relsofts is not None: software.relatedSoftware.clear()
-	for relsoft in relsofts:
-		try:
-			uid = UUID(relsoft)
-			software.relatedSoftware.add(RelatedItem.objects.get(pk=uid))
-		except Exception:
-			relsoft_ref = RelatedItem.objects.filter(
-				identifier=relsoft, 
-				type=RelatedItemType.SOFTWARE.value
-			).first()
-			if relsoft_ref: software.relatedSoftware.add(relsoft_ref)
-			else:
-				relsoftware = RelatedItem()
-				relsoftware.name = "UNKNOWN"
-				relsoftware.identifier = relsoft
-				relsoftware.type = RelatedItemType.SOFTWARE.value
-				relsoftware.save()
-				software.relatedSoftware.add(relsoftware)
+	if relsofts:
+		software.relatedSoftware.clear()
+		for relsoft in relsofts:
+			try:
+				uid = UUID(relsoft)
+				software.relatedSoftware.add(RelatedItem.objects.get(pk=uid))
+			except Exception:
+				relsoft_ref = RelatedItem.objects.filter(
+					identifier=relsoft, 
+					type=RelatedItemType.SOFTWARE.value
+				).first()
+				if relsoft_ref: software.relatedSoftware.add(relsoft_ref)
+				else:
+					relsoftware = RelatedItem()
+					relsoftware.name = "UNKNOWN"
+					relsoftware.identifier = relsoft
+					relsoftware.type = RelatedItemType.SOFTWARE.value
+					relsoftware.save()
+					software.relatedSoftware.add(relsoftware)
 	
 	intersofts: list[str] = data.get(FIELD_INTEROPERABLESOFTWARE)
-	if intersofts is not None: software.interoperableSoftware.clear()
-	for intersoft in intersofts:
-		try:
-			uid = UUID(intersoft)
-			software.interoperableSoftware.add(RelatedItem.objects.get(pk=uid))
-		except Exception:
-			intersoft_ref = RelatedItem.objects.filter(
-				identifier=intersoft, 
-				type=RelatedItemType.SOFTWARE.value
-			).first()
-			if intersoft_ref: software.interoperableSoftware.add(intersoft_ref)
-			else:
-				intersoftware = RelatedItem()
-				intersoftware.name = "UNKNOWN"
-				intersoftware.identifier = intersoft
-				intersoftware.type = RelatedItemType.SOFTWARE.value
-				intersoftware.save()
-				software.interoperableSoftware.add(intersoftware)
+	if intersofts:
+		software.interoperableSoftware.clear()
+		for intersoft in intersofts:
+			try:
+				uid = UUID(intersoft)
+				software.interoperableSoftware.add(RelatedItem.objects.get(pk=uid))
+			except Exception:
+				intersoft_ref = RelatedItem.objects.filter(
+					identifier=intersoft, 
+					type=RelatedItemType.SOFTWARE.value
+				).first()
+				if intersoft_ref: software.interoperableSoftware.add(intersoft_ref)
+				else:
+					intersoftware = RelatedItem()
+					intersoftware.name = "UNKNOWN"
+					intersoftware.identifier = intersoft
+					intersoftware.type = RelatedItemType.SOFTWARE.value
+					intersoftware.save()
+					software.interoperableSoftware.add(intersoftware)
 
 	## RELATED INSTRUMENTS AND OBSERVATORIES
 
 	relinstr_datas: list[dict] = data.get(FIELD_RELATEDINSTRUMENTS)
-	if relinstr_datas is not None: software.relatedInstruments.clear()
-	for relinstr_data in relinstr_datas:
-		instr_name = relinstr_data.get(FIELD_RELATEDINSTRUMENTS)
-		try:
-			uid = UUID(instr_name)
-			software.relatedInstruments.add(InstrumentObservatory.objects.get(pk=uid))
-		except Exception:
-			instr_ident = relinstr_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
-			instr_ref = None
-			if instr_ident: instr_ref = InstrumentObservatory.objects.filter(identifier=instr_ident).first()
-			if instr_ref: software.relatedInstruments.add(instr_ref)
-			else:
-				instr = InstrumentObservatory()
-				instr.name = instr_name or "UNKNOWN"
-				instr.identifier = instr_ident
-				instr.type = InstrObsType.INSTRUMENT.value
-				instr.save()
-				software.relatedInstruments.add(instr)
+	if relinstr_datas:
+		software.relatedInstruments.clear()
+		for relinstr_data in relinstr_datas:
+			instr_name = relinstr_data.get(FIELD_RELATEDINSTRUMENTS)
+			try:
+				uid = UUID(instr_name)
+				software.relatedInstruments.add(InstrumentObservatory.objects.get(pk=uid))
+			except Exception:
+				instr_ident = relinstr_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
+				instr_ref = None
+				if instr_ident: instr_ref = InstrumentObservatory.objects.filter(identifier=instr_ident).first()
+				if instr_ref: software.relatedInstruments.add(instr_ref)
+				else:
+					instr = InstrumentObservatory()
+					instr.name = instr_name or "UNKNOWN"
+					instr.identifier = instr_ident
+					instr.type = InstrObsType.INSTRUMENT.value
+					instr.save()
+					software.relatedInstruments.add(instr)
 
 	relobs_datas: list[dict] = data.get(FIELD_RELATEDOBSERVATORIES)
-	if relobs_datas is not None: software.relatedObservatories.clear()
-	for relobs_data in relobs_datas:
-		obs_name: str = ""
-		if isinstance(relobs_data, dict): obs_name = relobs_data.get(FIELD_RELATEDOBSERVATORIES)
-		else: obs_name = relobs_data
-		try:
-			uid = UUID(obs_name)
-			software.relatedObservatories.add(InstrumentObservatory.objects.get(pk=uid))
-		except Exception:
-			# TODO FIELD_RELATEDOBSERVATORYIDENTIFIER
-			obs_ident = None
-			if isinstance(relobs_data, dict): relobs_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
-			obs_ref = None
-			if obs_ident: obs_ref = InstrumentObservatory.objects.filter(identifier=obs_ident)
-			if obs_ref: software.relatedInstruments.add(obs_ref)
-			else:
-				obs = InstrumentObservatory()
-				obs.name = obs_name or "UNKNOWN"
-				obs.identifier = obs_ident
-				obs.type = InstrObsType.OBSERVATORY.value
-				obs.save()
-				software.relatedObservatories.add(obs)
+	if relobs_datas:
+		software.relatedObservatories.clear()
+		for relobs_data in relobs_datas:
+			obs_name: str = ""
+			if isinstance(relobs_data, dict): obs_name = relobs_data.get(FIELD_RELATEDOBSERVATORIES)
+			else: obs_name = relobs_data
+			try:
+				uid = UUID(obs_name)
+				software.relatedObservatories.add(InstrumentObservatory.objects.get(pk=uid))
+			except Exception:
+				# TODO FIELD_RELATEDOBSERVATORYIDENTIFIER
+				obs_ident = None
+				if isinstance(relobs_data, dict): 
+					obs_ident = relobs_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
+				obs_ref = None
+				if obs_ident: 
+					obs_ref = InstrumentObservatory.objects.filter(identifier=obs_ident).first()
+				if obs_ref: software.relatedObservatories.add(obs_ref)
+				else:
+					obs = InstrumentObservatory()
+					obs.name = obs_name or "UNKNOWN"
+					obs.identifier = obs_ident
+					obs.type = InstrObsType.OBSERVATORY.value
+					obs.save()
+					software.relatedObservatories.add(obs)
 
 	software.save()
 	return submission.id

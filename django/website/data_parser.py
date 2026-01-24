@@ -27,7 +27,7 @@ def api_submission_to_formdict(item: dict) -> dict:
 	form: dict = {}
 
 	# required fields
-	submitter_list = require("submitter")
+	submitter_list = require(FIELD_SUBMITTERNAME)
 	if not isinstance(submitter_list, list) or len(submitter_list) < 1:
 		raise ValueError("Field 'submitter' must be a non-empty array.")
 	submitter = submitter_list[0]
@@ -40,7 +40,7 @@ def api_submission_to_formdict(item: dict) -> dict:
 	for submitter_entry in submitter_list:
 		if not isinstance(submitter_entry, dict):
 			raise ValueError("Submitter entries must be objects.")
-		email = submitter_entry.get("email")
+		email = submitter_entry.get(ROW_SUBMITTER_EMAIL)
 		if not email:
 			raise ValueError("Each submitter must include 'email'.")
 		submitter_emails.append(email)
@@ -50,17 +50,15 @@ def api_submission_to_formdict(item: dict) -> dict:
 		FIELD_SUBMITTEREMAIL: json.dumps(submitter_emails),
 	}
 
-	form[FIELD_SOFTWARENAME] = require("softwareName")
-	code_repo = item.get("codeRepositoryUrl")
-	if not code_repo:
-		code_repo = item.get("codeRepositoryURL")
+	form[FIELD_SOFTWARENAME] = require(FIELD_SOFTWARENAME)
+	code_repo = item.get(FIELD_CODEREPOSITORYURL)
 	if not code_repo:
 		raise ValueError("Missing required field 'codeRepositoryUrl'.")
 	form[FIELD_CODEREPOSITORYURL] = code_repo
-	form[FIELD_DESCRIPTION] = require("description")
+	form[FIELD_DESCRIPTION] = require(FIELD_DESCRIPTION)
 
 	# authors
-	authors = require("authors")
+	authors = require(FIELD_AUTHORS)
 	if not isinstance(authors, list) or len(authors) < 1:
 		raise ValueError("Field 'authors' must be a non-empty array.")
 	form_authors: list[dict] = []
@@ -70,24 +68,22 @@ def api_submission_to_formdict(item: dict) -> dict:
 		author_entry = {
 			FIELD_AUTHORS: full_name(author),
 		}
-		author_identifier = author.get("identifier")
+		author_identifier = author.get(ROW_PERSON_IDENTIFIER)
 		if author_identifier:
 			author_entry[FIELD_AUTHORIDENTIFIER] = author_identifier
-		affiliations = author.get("affiliation", [])
-		if affiliations is None:
-			affiliations = []
+		affiliations = author.get(ROW_PERSON_AFFILIATION, [])
 		if not isinstance(affiliations, list):
-			raise ValueError("Author 'affiliation' must be an array when provided.")
+			raise ValueError(f"Author '{ROW_PERSON_AFFILIATION}' must be an array when provided.")
 		if affiliations:
 			affil_entries: list[dict] = []
 			for affil in affiliations:
 				if not isinstance(affil, dict):
 					raise ValueError("Affiliation entries must be objects.")
-				affil_name = affil.get("name")
+				affil_name = affil.get(ROW_ORGANIZATION_NAME)
 				if not affil_name:
 					raise ValueError("Affiliation must include 'name'.")
 				affil_entry = {FIELD_AUTHORAFFILIATION: affil_name}
-				affil_ident = affil.get("identifier")
+				affil_ident = affil.get(ROW_ORGANIZATION_IDENTIFIER)
 				if affil_ident:
 					affil_entry[FIELD_AUTHORAFFILIATIONIDENTIFIER] = affil_ident
 				affil_entries.append(affil_entry)
@@ -96,103 +92,103 @@ def api_submission_to_formdict(item: dict) -> dict:
 	form[FIELD_AUTHORS] = form_authors
 
 	# recommended/optional fields
-	form[FIELD_CONCISEDESCRIPTION] = item.get("conciseDescription")
-	form[FIELD_DOCUMENTATION] = item.get("documentation")
-	form[FIELD_PERSISTENTIDENTIFIER] = item.get("persistentIdentifier")
-	form[FIELD_PUBLICATIONDATE] = item.get("publicationDate")
-	form[FIELD_REFERENCEPUBLICATION] = item.get("referencePublication")
-	form[FIELD_LICENSEFILEURL] = item.get("licenseFileUrl")
-	form[FIELD_LOGO] = item.get("logo")
+	form[FIELD_CONCISEDESCRIPTION] = item.get(FIELD_CONCISEDESCRIPTION)
+	form[FIELD_DOCUMENTATION] = item.get(FIELD_DOCUMENTATION)
+	form[FIELD_PERSISTENTIDENTIFIER] = item.get(FIELD_PERSISTENTIDENTIFIER)
+	form[FIELD_PUBLICATIONDATE] = item.get(FIELD_PUBLICATIONDATE)
+	form[FIELD_REFERENCEPUBLICATION] = item.get(FIELD_REFERENCEPUBLICATION)
+	form[FIELD_LICENSEFILEURL] = item.get(FIELD_LICENSEFILEURL)
+	form[FIELD_LOGO] = item.get(FIELD_LOGO)
 
-	publisher = item.get("publisher") or {}
+	publisher = item.get(FIELD_PUBLISHER) or {}
 	if isinstance(publisher, dict) and publisher:
 		form[FIELD_PUBLISHER] = {
-			FIELD_PUBLISHER: publisher.get("name") or "",
-			FIELD_PUBLISHERIDENTIFIER: publisher.get("identifier"),
+			FIELD_PUBLISHER: publisher.get(ROW_ORGANIZATION_NAME) or "",
+			FIELD_PUBLISHERIDENTIFIER: publisher.get(FIELD_PUBLISHERIDENTIFIER),
 		}
 	else:
 		form[FIELD_PUBLISHER] = {FIELD_PUBLISHER: ""}
 
-	license_field = item.get("license")
+	license_field = item.get(FIELD_LICENSE)
 	if isinstance(license_field, str):
 		form[FIELD_LICENSE] = {FIELD_LICENSE: license_field}
 	elif isinstance(license_field, dict) and license_field:
 		form[FIELD_LICENSE] = {
-			FIELD_LICENSE: license_field.get("name"),
-			FIELD_LICENSEURI: license_field.get("url"),
+			FIELD_LICENSE: license_field.get(ROW_LICENSE_NAME),
+			FIELD_LICENSEURI: license_field.get(ROW_LICENSE_URL),
 		}
 	else:
 		form[FIELD_LICENSE] = {}
 
-	version = item.get("version")
+	version = item.get(ROW_SOFTWARE_VERSION)
 	if isinstance(version, dict) and version:
 		form[FIELD_VERSIONNUMBER] = {
-			FIELD_VERSIONNUMBER: version.get("number"),
-			FIELD_VERSIONDATE: version.get("release_date"),
-			FIELD_VERSIONDESCRIPTION: version.get("description"),
-			FIELD_VERSIONPID: version.get("version_pid"),
+			FIELD_VERSIONNUMBER: version.get(ROW_VERSION_NUMBER),
+			FIELD_VERSIONDATE: version.get(ROW_VERSION_DATE),
+			FIELD_VERSIONDESCRIPTION: version.get(ROW_VERSION_DESCRIPTION),
+			FIELD_VERSIONPID: version.get(ROW_VERSION_PID),
 		}
 
 	def list_or_empty(key: str) -> list:
 		val = item.get(key, [])
 		return val if isinstance(val, list) else []
 
-	form[FIELD_PROGRAMMINGLANGUAGE] = list_or_empty("programmingLanguage")
-	form[FIELD_SOFTWAREFUNCTIONALITY] = list_or_empty("softwareFunctionality")
-	form[FIELD_DATASOURCES] = list_or_empty("dataSources")
-	form[FIELD_INPUTFORMATS] = list_or_empty("inputFormats")
-	form[FIELD_OUTPUTFORMATS] = list_or_empty("outputFormats")
-	form[FIELD_CPUARCHITECTURE] = list_or_empty("cpuArchitecture")
-	form[FIELD_OPERATINGSYSTEM] = list_or_empty("operatingSystem")
-	form[FIELD_RELATEDREGION] = list_or_empty("relatedRegion")
-	form[FIELD_RELATEDPHENOMENA] = list_or_empty("relatedPhenomena")
-	form[FIELD_KEYWORDS] = list_or_empty("keywords")
-	form[FIELD_RELATEDPUBLICATIONS] = list_or_empty("relatedPublications")
-	form[FIELD_RELATEDDATASETS] = list_or_empty("relatedDatasets")
-	form[FIELD_RELATEDSOFTWARE] = list_or_empty("relatedSoftware")
-	form[FIELD_INTEROPERABLESOFTWARE] = list_or_empty("interoperableSoftware")
+	form[FIELD_PROGRAMMINGLANGUAGE] = list_or_empty(FIELD_PROGRAMMINGLANGUAGE)
+	form[FIELD_SOFTWAREFUNCTIONALITY] = list_or_empty(FIELD_SOFTWAREFUNCTIONALITY)
+	form[FIELD_DATASOURCES] = list_or_empty(FIELD_DATASOURCES)
+	form[FIELD_INPUTFORMATS] = list_or_empty(FIELD_INPUTFORMATS)
+	form[FIELD_OUTPUTFORMATS] = list_or_empty(FIELD_OUTPUTFORMATS)
+	form[FIELD_CPUARCHITECTURE] = list_or_empty(FIELD_CPUARCHITECTURE)
+	form[FIELD_OPERATINGSYSTEM] = list_or_empty(FIELD_OPERATINGSYSTEM)
+	form[FIELD_RELATEDREGION] = list_or_empty(FIELD_RELATEDREGION)
+	form[FIELD_RELATEDPHENOMENA] = list_or_empty(FIELD_RELATEDPHENOMENA)
+	form[FIELD_KEYWORDS] = list_or_empty(FIELD_KEYWORDS)
+	form[FIELD_RELATEDPUBLICATIONS] = list_or_empty(FIELD_RELATEDPUBLICATIONS)
+	form[FIELD_RELATEDDATASETS] = list_or_empty(FIELD_RELATEDDATASETS)
+	form[FIELD_RELATEDSOFTWARE] = list_or_empty(FIELD_RELATEDSOFTWARE)
+	form[FIELD_INTEROPERABLESOFTWARE] = list_or_empty(FIELD_INTEROPERABLESOFTWARE)
 
-	relinstruments = list_or_empty("relatedInstruments")
+	relinstruments = list_or_empty(FIELD_RELATEDINSTRUMENTS)
 	form_relinstruments: list[dict] = []
 	for instr in relinstruments:
 		if not isinstance(instr, dict):
 			raise ValueError("Related instrument entries must be objects.")
 		form_relinstruments.append({
-			FIELD_RELATEDINSTRUMENTS: instr.get("name"),
-			FIELD_RELATEDINSTRUMENTIDENTIFIER: instr.get("identifier"),
+			FIELD_RELATEDINSTRUMENTS: instr.get(ROW_CONTROLLEDLIST_NAME),
+			FIELD_RELATEDINSTRUMENTIDENTIFIER: instr.get(ROW_CONTROLLEDLIST_IDENTIFIER),
 		})
 	form[FIELD_RELATEDINSTRUMENTS] = form_relinstruments
 
-	relobservatories = list_or_empty("relatedObservatories")
+	relobservatories = list_or_empty(FIELD_RELATEDOBSERVATORIES)
 	form_relobservatories: list[dict] = []
 	for obs in relobservatories:
 		if not isinstance(obs, dict):
 			raise ValueError("Related observatory entries must be objects.")
 		form_relobservatories.append({
-			FIELD_RELATEDOBSERVATORIES: obs.get("name"),
-			FIELD_RELATEDINSTRUMENTIDENTIFIER: obs.get("identifier"),
+			FIELD_RELATEDOBSERVATORIES: obs.get(ROW_CONTROLLEDLIST_NAME),
+			FIELD_RELATEDINSTRUMENTIDENTIFIER: obs.get(ROW_CONTROLLEDLIST_IDENTIFIER),
 		})
 	form[FIELD_RELATEDOBSERVATORIES] = form_relobservatories
 
-	funders = list_or_empty("funder")
+	funders = list_or_empty(FIELD_FUNDER)
 	form_funders: list[dict] = []
 	for funder in funders:
 		if not isinstance(funder, dict):
 			raise ValueError("Funder entries must be objects.")
 		form_funders.append({
-			FIELD_FUNDER: funder.get("name"),
-			FIELD_FUNDERIDENTIFIER: funder.get("identifier"),
+			FIELD_FUNDER: funder.get(ROW_ORGANIZATION_NAME),
+			FIELD_FUNDERIDENTIFIER: funder.get(ROW_ORGANIZATION_IDENTIFIER),
 		})
 	form[FIELD_FUNDER] = form_funders
 
-	awards = list_or_empty("award")
+	awards = list_or_empty(FIELD_AWARDTITLE)
 	form_awards: list[dict] = []
 	for award in awards:
 		if not isinstance(award, dict):
 			raise ValueError("Award entries must be objects.")
 		form_awards.append({
-			FIELD_AWARDTITLE: award.get("name"),
-			FIELD_AWARDNUMBER: award.get("identifier"),
+			FIELD_AWARDTITLE: award.get(ROW_CONTROLLEDLIST_NAME),
+			FIELD_AWARDNUMBER: award.get(ROW_CONTROLLEDLIST_IDENTIFIER),
 		})
 	form[FIELD_AWARDTITLE] = form_awards
 

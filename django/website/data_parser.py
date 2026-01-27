@@ -728,48 +728,49 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	apply_publication_date(software, data)
 	apply_controlled_m2m(
 		software, data,
-		FIELD_PROGRAMMINGLANGUAGE, ProgrammingLanguage,
-		"programmingLanguage",
+		FIELD_PROGRAMMINGLANGUAGE, 
+		ProgrammingLanguage,
+		FIELD_PROGRAMMINGLANGUAGE,
 	)
 	apply_controlled_m2m(
 		software, data,
 		FIELD_SOFTWAREFUNCTIONALITY, FunctionCategory,
-		"softwareFunctionality",
+		FIELD_SOFTWAREFUNCTIONALITY,
 	)
 	apply_controlled_m2m(
 		software, data,
 		FIELD_DATASOURCES, DataInput,
-		"dataSources",
+		FIELD_DATASOURCES,
 	)
 	apply_controlled_m2m(
 		software, data,
 		FIELD_INPUTFORMATS, FileFormat,
-		"inputFormats",
+		FIELD_INPUTFORMATS,
 	)
 	apply_controlled_m2m(
 		software, data,
 		FIELD_OUTPUTFORMATS, FileFormat,
-		"outputFormats",
+		FIELD_OUTPUTFORMATS,
 	)
 	apply_controlled_m2m(
 		software, data,
 		FIELD_CPUARCHITECTURE, CpuArchitecture,
-		"cpuArchitecture",
+		FIELD_CPUARCHITECTURE,
 	)
 	apply_controlled_m2m(
 		software, data,
 		FIELD_OPERATINGSYSTEM, OperatingSystem,
-		"operatingSystem",
+		FIELD_OPERATINGSYSTEM,
 	)
 	apply_controlled_m2m(
 		software, data,
 		FIELD_RELATEDREGION, Region,
-		"relatedRegion",
+		FIELD_RELATEDREGION,
 	)
 	apply_controlled_m2m(
 		software, data,
 		FIELD_RELATEDPHENOMENA, Phenomena,
-		"relatedPhenomena",
+		FIELD_RELATEDPHENOMENA,
 	)
 	apply_keywords(software, data)
 	apply_awards(software, data)
@@ -777,25 +778,25 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	apply_related_items(
 		software, data,
 		FIELD_RELATEDPUBLICATIONS,
-		"relatedPublications",
+		FIELD_RELATEDPUBLICATIONS,
 		RelatedItemType.PUBLICATION,
 	)
 	apply_related_items(
 		software, data,
 		FIELD_RELATEDDATASETS,
-		"relatedDatasets",
+		FIELD_RELATEDDATASETS,
 		RelatedItemType.DATASET,
 	)
 	apply_related_items(
 		software, data,
 		FIELD_RELATEDSOFTWARE,
-		"relatedSoftware",
+		FIELD_RELATEDSOFTWARE,
 		RelatedItemType.SOFTWARE,
 	)
 	apply_related_items(
 		software, data,
 		FIELD_INTEROPERABLESOFTWARE,
-		"interoperableSoftware",
+		FIELD_INTEROPERABLESOFTWARE,
 		RelatedItemType.SOFTWARE,
 	)
 	apply_related_instruments(software, data)

@@ -291,15 +291,12 @@ def parse_person(
 
 def parse_controlled_list(
 		target_model: type[ControlledList],
-		data: dict, 
-		name_field: str = None, 
-		ident_field: str = None,
-		definition_field: str = None,
+		name: str = None, 
+		identifier: str = None,
+		definition: str = None,
 		allow_creation: bool = True,
+		name_match_fallback: bool = True,
 	) -> ControlledList:
-
-	name = data.get(name_field)
-	definition = data.get(definition_field)
 
 	# see if the name field is acting as a uuid reference, and return referenced object if so
 	try:
@@ -308,18 +305,23 @@ def parse_controlled_list(
 		return reference_object
 	
 	except:
-		ident = data.get(ident_field)
+		
 		reference_object: ControlledList = None
 
 		# look for object with matching identifier and return it if found
-		if ident: reference_object = target_model.objects.filter(identifier=ident).first()
+		if identifier: reference_object = target_model.objects.filter(identifier=identifier).first()
+
+		# fallback to looking up by name if allowed
+		if not reference_object and name_match_fallback:
+			reference_object = target_model.objects.filter(name=name).first()
+		
 		if reference_object: return reference_object
 
 		# create new object if no object with matching identifier exists
 		elif allow_creation:
 			obj = target_model()
 			if name: obj.name = name
-			if ident: obj.identifier = ident
+			if identifier: obj.identifier = identifier
 			if definition: obj.definition = definition
 			obj.save()
 			return obj
@@ -557,6 +559,49 @@ def apply_controlled_m2m(
 		obj = parse_controlled_list_reference(target_model, value)
 		if obj: m2m_manager.add(obj)
 
+def apply_function_category(software: Software, fullnames: list[str]):
+	"""
+	Adds each specified FunctionCategory to the software submission. The 
+	fullnames should be in the format "Parent Name: Child Name", or just 
+	"Child Name" if it has no parent. The list can also contain UUID stings 
+	that correlate to a specific FunctionCategory item UUID
+	
+	:param software: The software submission entry to apply the function 
+		categories to
+	:type software: Software
+	:param fullnames: list of full function names to apply the function 
+		categories to, can also be UUIDs
+	:type fullnames: list[str]
+	"""
+
+	categories: list[FunctionCategory] = []
+	for fullname in fullnames:
+		subnames = fullname.split(":")
+		subnames.reverse()
+		child_name = subnames[0].strip()
+		child_matches = FunctionCategory.objects.filter(name=child_name)
+		ref_category: FunctionCategory = None
+
+		# top level category names should be unique
+		if len(subnames) == 1:
+			ref_category = child_matches.first()
+
+		# if parent name is specified, narrow down to specific category with 
+		# matching name and parent
+		elif len(subnames) == 2:
+			parent_name = subnames[1].strip()
+			ref_category = FunctionCategory.objects.filter(
+				name=parent_name, 
+				children__in=child_matches
+			).first()
+
+		# append the found category if it exists
+		if(ref_category): categories.append(ref_category)
+		else: raise Exception(f"{FunctionCategory.__name__} '{fullname}' does not exist")
+
+	# apply categories to entry
+	software.softwareFunctionality.set(categories)
+
 def apply_keywords(software: Software, data: dict) -> None:
 	"""Replace Software.keywords with Keyword references, creating when needed."""
 	keywords: list[str] = data.get(FIELD_KEYWORDS)
@@ -732,11 +777,7 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 		ProgrammingLanguage,
 		FIELD_PROGRAMMINGLANGUAGE,
 	)
-	apply_controlled_m2m(
-		software, data,
-		FIELD_SOFTWAREFUNCTIONALITY, FunctionCategory,
-		FIELD_SOFTWAREFUNCTIONALITY,
-	)
+	apply_function_category(software, data[FIELD_SOFTWAREFUNCTIONALITY])
 	apply_controlled_m2m(
 		software, data,
 		FIELD_DATASOURCES, DataInput,

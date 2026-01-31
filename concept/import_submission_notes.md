@@ -47,9 +47,10 @@ impact on the software's discoverability and usability.
 
 * `documentation` - url
 * `persistentIdentifier` - url
-* `softwareFunctionality` - array of UUIDs
-	* UUID strings must be taken from `id` field on items in:
-	`/api/models/FunctionCategory/rows/all`
+* `softwareFunctionality` - array of full names
+	* full names should be formated as `Parent Name: Child Name`, where parent
+	and child names must be **exact matches** taken from `name` field in
+	[`/api/models/FunctionCategory/rows/all`](https://hssi.hsdcloud.org/api/models/FunctionCategory/rows/all/)
 * `publicationDate` - date (ISO format string)
 * `publisher` - [`Organization`](#organization) object
 * `license` - license name string 

@@ -82,8 +82,8 @@
 		},
 		"referencePublication": "https://doi.org/10.5281/zenodo.10994081",
 		"softwareFunctionality": [
-			"8d417fc4-5ac8-4f1d-8d90-b310b25050dc",
-			"feebd6ed-5df0-4922-aad1-8ca14b1d75d4"
+			"Coordinate Transforms: Heliospheric",
+			"Data Visualization: 3D Graphics"
 		],
 		"dataSources": [
 			"CDAWeb",

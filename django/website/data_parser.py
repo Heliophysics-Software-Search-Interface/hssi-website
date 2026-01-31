@@ -294,7 +294,7 @@ def parse_controlled_list(
 		name: str = None, 
 		identifier: str = None,
 		definition: str = None,
-		allow_creation: bool = True,
+		allow_creation: bool = False,
 		name_match_fallback: bool = True,
 	) -> ControlledList:
 
@@ -329,25 +329,6 @@ def parse_controlled_list(
 	# if no references were found and creation of new object is not allowed
 	return None
 
-def parse_controlled_list_reference(
-		target_model: type[ControlledList],
-		uid: str, 
-	) -> ControlledList:
-
-	if uid is None: return None
-
-	# see if the uuid reference exists, and return referenced object if so
-	try:
-		uuid = UUID(uid)
-		reference_object = target_model.objects.get(pk=uuid)
-		return reference_object
-	
-	except:
-		found_ref = target_model.objects.filter(name=uid).first()
-		if found_ref: return found_ref
-	
-	return None
-
 def apply_software_core_fields(software: Software, data: dict) -> None:
 	"""Populate core scalar Software fields directly from submission data."""
 	software.persistentIdentifier = data.get(FIELD_PERSISTENTIDENTIFIER)
@@ -376,9 +357,10 @@ def apply_reference_publication(software: Software, data: dict) -> None:
 
 def apply_development_status(software: Software, data: dict) -> None:
 	"""Resolve and assign Software.developmentStatus from RepoStatus."""
-	software.developmentStatus = parse_controlled_list_reference(
+	software.developmentStatus = parse_controlled_list(
 		RepoStatus,
-		data.get(FIELD_DEVELOPMENTSTATUS)
+		data.get(FIELD_DEVELOPMENTSTATUS),
+		data.get(ROW_CONTROLLEDLIST_IDENTIFIER),
 	)
 
 def apply_logo(software: Software, data: dict) -> None:
@@ -556,7 +538,7 @@ def apply_controlled_m2m(
 	m2m_manager = getattr(software, m2m_attr)
 	m2m_manager.clear()
 	for value in values:
-		obj = parse_controlled_list_reference(target_model, value)
+		obj = parse_controlled_list(target_model, value)
 		if obj: m2m_manager.add(obj)
 
 def apply_function_category(software: Software, fullnames: list[str]):
@@ -609,7 +591,7 @@ def apply_keywords(software: Software, data: dict) -> None:
 
 	software.keywords.clear()
 	for kw in keywords:
-		kw_obj = parse_controlled_list_reference(Keyword, kw)
+		kw_obj = parse_controlled_list(Keyword, kw, allow_creation=True)
 		if kw_obj:
 			software.keywords.add(kw_obj)
 			continue

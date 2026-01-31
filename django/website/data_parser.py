@@ -339,11 +339,7 @@ def parse_controlled_list(
 			obj.save()
 			return obj
 
-		else:
-			raise Exception(f"{target_model.__name__} does not contain '{name or identifier}'")
-	
-	# if no references were found and creation of new object is not allowed
-	return None
+	raise Exception(f"{target_model.__name__} does not contain '{name or identifier}'")
 
 def apply_software_core_fields(software: Software, data: dict) -> None:
 	"""Populate core scalar Software fields directly from submission data."""

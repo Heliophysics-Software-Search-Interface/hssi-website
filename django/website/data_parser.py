@@ -3,6 +3,10 @@ from uuid import UUID
 
 from .forms.names import *
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+	from django.db.models.manager import ManyToManyRelatedManager
+
 def api_submission_to_formdict(item: dict) -> dict:
 	"""
 	Convert the REST API submission schema into the form-compatible dict
@@ -208,13 +212,13 @@ def parse_organization(
 		name_field: the name of the key for the organization's name
 		ident_field: the name of the key for the organization's identifier
 	"""
-	organization_name = data.get(name_field)
-	if not organization_name: return None
+	org_name: str = data.get(name_field)
+	if not org_name: return None
 
 	# first test to see if organization top field is uuid and return the object
 	# it references if so
 	try:
-		uid = UUID(organization_name)
+		uid = UUID(org_name)
 		org_ref = Organization.objects.get(pk=uid)
 		return org_ref
 	
@@ -224,12 +228,21 @@ def parse_organization(
 
 		# look for an return an organization with matching identifier if exists
 		if org_ident: org_ref = Organization.objects.filter(identifier=org_ident).first()
+		if not org_ref: org_ref = Organization.objects.filter(name=org_name).first()
 		if org_ref: return org_ref
 
 		# build new org object from data
 		elif allow_creation:
 			organization = Organization()
-			organization.name = organization_name
+			org_abbrev_match = PARENTHESIS_MATCH.findall(org_name)
+			org_name = PARENTHESIS_MATCH.sub(org_name, "")
+			organization.name = org_name
+
+			# infer abbreviation from parenthesis
+			if org_abbrev_match:
+				org_abbrev = ", ".join(org_abbrev_match)
+				organization.abbreviation = org_abbrev
+
 			if org_ident: organization.identifier = org_ident
 			organization.save()
 			return organization
@@ -312,19 +325,22 @@ def parse_controlled_list(
 		if identifier: reference_object = target_model.objects.filter(identifier=identifier).first()
 
 		# fallback to looking up by name if allowed
-		if not reference_object and name_match_fallback:
+		if not reference_object and (not identifier or name_match_fallback):
 			reference_object = target_model.objects.filter(name=name).first()
 		
 		if reference_object: return reference_object
 
 		# create new object if no object with matching identifier exists
-		elif allow_creation:
+		if allow_creation:
 			obj = target_model()
 			if name: obj.name = name
 			if identifier: obj.identifier = identifier
 			if definition: obj.definition = definition
 			obj.save()
 			return obj
+
+		else:
+			raise Exception(f"{target_model.__name__} does not contain '{name or identifier}'")
 	
 	# if no references were found and creation of new object is not allowed
 	return None
@@ -340,28 +356,32 @@ def apply_software_core_fields(software: Software, data: dict) -> None:
 
 def apply_reference_publication(software: Software, data: dict) -> None:
 	"""Resolve and assign the reference publication RelatedItem by identifier."""
-	refpub = data.get(FIELD_REFERENCEPUBLICATION)
-	if not refpub: return
+	identifier = data.get(FIELD_REFERENCEPUBLICATION)
+	if not identifier: return
 
-	refpub_ref = RelatedItem.objects.filter(identifier=refpub).first()
-	if refpub_ref:
-		software.referencePublication = refpub_ref
-		return
+	refpub: RelatedItem = parse_controlled_list(
+		RelatedItem, 
+		identifier=identifier, 
+		allow_creation=True
+	)
 
-	refpublication = RelatedItem()
-	refpublication.name = "UNKNOWN"
-	refpublication.identifier = refpub
-	refpublication.type = RelatedItemType.PUBLICATION
-	refpublication.save()
-	software.referencePublication = refpublication
+	if not refpub.name:
+		refpub.name = "UNKNOWN"
+		refpub.identifier = identifier
+		refpub.type = RelatedItemType.PUBLICATION
+		refpub.save()
+	
+	software.referencePublication = refpub
 
 def apply_development_status(software: Software, data: dict) -> None:
 	"""Resolve and assign Software.developmentStatus from RepoStatus."""
-	software.developmentStatus = parse_controlled_list(
-		RepoStatus,
-		data.get(FIELD_DEVELOPMENTSTATUS),
-		data.get(ROW_CONTROLLEDLIST_IDENTIFIER),
-	)
+	devstatus: str = data.get(FIELD_DEVELOPMENTSTATUS)
+	if devstatus:
+		software.developmentStatus = parse_controlled_list(
+			RepoStatus,
+			devstatus,
+			name_match_fallback=True
+		)
 
 def apply_logo(software: Software, data: dict) -> None:
 	"""Resolve or create an Image from logo URL and assign Software.logo."""
@@ -530,15 +550,16 @@ def apply_controlled_m2m(
 	field_key: str,
 	target_model: type[ControlledList],
 	m2m_attr: str,
+	allow_creation: bool = False,
 ) -> None:
 	"""Replace a Software M2M controlled-list field with resolved references."""
 	values = data.get(field_key)
 	if not values: return
 
-	m2m_manager = getattr(software, m2m_attr)
+	m2m_manager: ManyToManyRelatedManager = getattr(software, m2m_attr)
 	m2m_manager.clear()
 	for value in values:
-		obj = parse_controlled_list(target_model, value)
+		obj = parse_controlled_list(target_model, value, allow_creation=allow_creation)
 		if obj: m2m_manager.add(obj)
 
 def apply_function_category(software: Software, fullnames: list[str]):
@@ -591,20 +612,14 @@ def apply_keywords(software: Software, data: dict) -> None:
 
 	software.keywords.clear()
 	for kw in keywords:
-		kw_obj = parse_controlled_list(Keyword, kw, allow_creation=True)
+		kw_obj = parse_controlled_list(Keyword, kw, allow_creation=False)
 		if kw_obj:
 			software.keywords.add(kw_obj)
 			continue
 
 		kw_fmtd = SPACE_REPLACE.sub(' ', kw).lower()
-		kw_ref = Keyword.objects.filter(name=kw_fmtd).first()
-		if kw_ref:
-			software.keywords.add(kw_ref)
-		else:
-			keyword = Keyword()
-			keyword.name = kw_fmtd
-			keyword.save()
-			software.keywords.add(keyword)
+		kw_obj = parse_controlled_list(Keyword, name=kw_fmtd, allow_creation=True)
+		software.keywords.add(kw_obj)
 
 def apply_awards(software: Software, data: dict) -> None:
 	"""Replace Software.award with Award references, creating when needed."""
@@ -642,35 +657,35 @@ def apply_funders(software: Software, data: dict) -> None:
 
 def apply_related_items(
 	software: Software,
-	data: dict,
-	field_key: str,
+	items: list[str | dict],
 	m2m_attr: str,
 	item_type: RelatedItemType,
 ) -> None:
 	"""Replace a RelatedItem M2M field with resolved references of a given type."""
-	items: list[str] = data.get(field_key)
 	if not items: return
 
-	m2m_manager = getattr(software, m2m_attr)
+	m2m_manager: ManyToManyRelatedManager = getattr(software, m2m_attr)
 	m2m_manager.clear()
 	for item in items:
-		try:
-			uid = UUID(item)
-			m2m_manager.add(RelatedItem.objects.get(pk=uid))
-		except Exception:
-			lookup_kwargs = {"identifier": item}
-			if item_type != RelatedItemType.PUBLICATION:
-				lookup_kwargs["type"] = item_type.value
-			item_ref = RelatedItem.objects.filter(**lookup_kwargs).first()
-			if item_ref:
-				m2m_manager.add(item_ref)
-			else:
-				related = RelatedItem()
-				related.name = "UNKNOWN"
-				related.identifier = item
-				related.type = item_type.value if hasattr(item_type, "value") else item_type
-				related.save()
-				m2m_manager.add(related)
+
+		identifier = item
+		name = None
+		if isinstance(item, dict):
+			name = item.get(ROW_CONTROLLEDLIST_NAME)
+			identifier = item.get(ROW_AWARD_IDENTIFIER)
+
+		rel_item: RelatedItem = parse_controlled_list(
+			RelatedItem, 
+			name=name,
+			identifier=identifier,
+			allow_creation=True,
+			name_match_fallback=True
+		)
+		if not rel_item.name:
+			rel_item.type = item_type.value if hasattr(item_type, "value") else item_type
+			rel_item.name= "UNKNOWN"
+			rel_item.save()
+		m2m_manager.add(rel_item)
 
 def apply_related_instruments(software: Software, data: dict) -> None:
 	"""Replace Software.relatedInstruments with resolved instrument records."""
@@ -799,26 +814,22 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	apply_awards(software, data)
 	apply_funders(software, data)
 	apply_related_items(
-		software, data,
-		FIELD_RELATEDPUBLICATIONS,
+		software, data.get(FIELD_RELATEDPUBLICATIONS),
 		FIELD_RELATEDPUBLICATIONS,
 		RelatedItemType.PUBLICATION,
 	)
 	apply_related_items(
-		software, data,
-		FIELD_RELATEDDATASETS,
+		software, data.get(FIELD_RELATEDDATASETS),
 		FIELD_RELATEDDATASETS,
 		RelatedItemType.DATASET,
 	)
 	apply_related_items(
-		software, data,
-		FIELD_RELATEDSOFTWARE,
+		software, data.get(FIELD_RELATEDSOFTWARE),
 		FIELD_RELATEDSOFTWARE,
 		RelatedItemType.SOFTWARE,
 	)
 	apply_related_items(
-		software, data,
-		FIELD_INTEROPERABLESOFTWARE,
+		software, data.get(FIELD_INTEROPERABLESOFTWARE),
 		FIELD_INTEROPERABLESOFTWARE,
 		RelatedItemType.SOFTWARE,
 	)

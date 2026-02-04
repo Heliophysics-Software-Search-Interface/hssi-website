@@ -109,6 +109,16 @@ p.resource_info {
 	font-weight: normal;
 }
 
+.software-title-link {
+	color: inherit;
+	text-decoration: none;
+}
+
+.software-title-link:hover {
+	color: #14679e;
+	text-decoration: underline;
+}
+
 .icon-container {
 	display: -ms-grid;
 	display: grid;

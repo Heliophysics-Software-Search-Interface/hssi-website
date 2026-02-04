@@ -28,5 +28,8 @@ urlpatterns = [
 	path('api/describe_form', views.somef.form_fill_view),
 	path('api/search/', views.search_visible_software, name='search_visible_software'),
 	path('team/', views.team, name="team"),
-	path('export/', views.export_search_results, name='export_seach_results')
+	path('export/', views.export_search_results, name='export_seach_results'),
+
+	# Software landing page - uses UUID primary key
+	path('software/<uuid:pk>/', views.SoftwareDetailView.as_view(), name='software_detail'),
 ]

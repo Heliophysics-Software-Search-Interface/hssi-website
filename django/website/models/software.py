@@ -208,6 +208,10 @@ class Software(HssiModel):
 
 	def __str__(self): return self.softwareName
 
+	def get_absolute_url(self):
+		from django.urls import reverse
+		return reverse('website:software_detail', kwargs={'pk': str(self.pk)})
+
 	'''if the software is visible on the website'''
 	def is_visible(self) -> bool:
 		try:

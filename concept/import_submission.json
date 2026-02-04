@@ -1,148 +1,25 @@
 [
 	{
-		"submitter": [
-			{
-				"email": "exampl@email.org",
-				"person": {
-					"firstName": "Isaiah",
-					"lastName": "Smith",
-					"identifier": "https://orcid.org/0000-0002-1825-0097"
-				}
-			}
-		],
-		"softwareName": "Example Name",
-		"codeRepositoryUrl": "https://repo.example.org/example",
 		"authors": [
 			{
-				"firstName": "Isaiah",
+				"firstName": "Isaiah",  #First name and last name are combined on the submission form. Combine here too?
 				"lastName": "Smith",
-				"identifier": "https://orcid.org/0000-0002-1825-0097",
+				"identifier": "https://orcid.org/0009-0001-1713-2830",
 				"affiliation": [
 					{
 						"name": "Laboratory for Atmospheric and Space Physics",
-						"abbreviation": "LASP",
-						"identifier": "https://ror.org/012345678"
+						"identifier": "https://ror.org/01fcjzv38"
 					},
 					{
 						"name": "University of Colorado Boulder",
-						"abbreviation": "UC Boulder",
-						"identifier": "https://ror.org/123456789"
+						"identifier": "https://ror.org/02ttsq026"
 					}
 				]
 			},
 			{
-				"firstName": "Shawn",
+				"firstName": "Shawn",  #First name and last name are combined on the submission form. Combine here too?
 				"lastName": "Polson",
-				"identifier": "https://orcid.org/0000-0002-1825-1234"
-			}
-		],
-		"description": "This software does ALL the things, it is the BEST software.",
-		"conciseDescription": "Good software install now",
-		"documentation": "https://docs.example.org/heliospectra",
-		"publicationDate": "2024-06-14",
-		"persistentIdentifier": "https://doi.org/10.5281/zenodo.10994081",
-		"programmingLanguage": [
-			"Python 3.x",
-			"Fortran 2003"
-		],
-		"publisher": {
-			"name": "Example Publisher",
-			"abbreviation": "EP",
-			"identifier": "https://ror.org/012345678"
-		},
-		"relatedInstruments": [
-			{
-				"name": "Visible Spectro-Polarimeter",
-				"abbreviation": "ViSP"
-			},
-			{
-				"name": "Atmospheric Imaging Assembly",
-				"identifier": "https://doi.org/10.5281/zenodo.10994081",
-				"definition": "Instrument for observing the solar atmosphere",
-				"abbreviation": "AIA"
-			}
-		],
-		"relatedObservatories": [
-			{
-				"name": "Solar Orbiter",
-				"identifier": "https://doi.org/10.5281/zenodo.10994081",
-				"abbreviation": "SolO"
-			},
-			{
-				"name": "Daniel K. Inouye Solar Telescope",
-				"definition": "A ground-based solar telescope.",
-				"abbreviation": "DKIST"
-			}
-		],
-		"version": {
-			"number": "2.4.1",
-			"release_date": "2025-05-01",
-			"description": "Adds adaptive deconvolution and GPU acceleration.",
-			"version_pid": "https://doi.org/10.5281/zenodo.10994081"
-		},
-		"referencePublication": "https://doi.org/10.5281/zenodo.10994081",
-		"softwareFunctionality": [
-			"8d417fc4-5ac8-4f1d-8d90-b310b25050dc",
-			"feebd6ed-5df0-4922-aad1-8ca14b1d75d4"
-		],
-		"dataSources": [
-			"CDAWeb",
-			"HAPI"
-		],
-		"inputFormats": [
-			"CDF",
-			"FITS"
-		],
-		"outputFormats": [
-			"CDF",
-			"FITS"
-		],
-		"cpuArchitecture": [
-			"x86-64",
-			"Apple Silicon arm64"
-		],
-		"relatedPublications": [
-			"https://doi.org/10.5281/zenodo.10994081",
-			"https://doi.org/10.5281/zenodo.12345678"
-		],
-		"relatedDatasets": [
-			"https://doi.org/10.5281/zenodo.10994081",
-			"https://doi.org/10.5281/zenodo.12345678"
-		],
-		"developmentStatus": "Active",
-		"operatingSystem": [
-			"Linux",
-			"Mac"
-		],
-		"license": {
-			"name": "GNU Library or 'Lesser' General Public Licenses (LGPL version 3)",
-			"url": "https://www.gnu.org/licenses/lgpl-3.0.html"
-		},
-		"relatedRegion": [
-			"Solar Environment",
-			"Interplanetary Space"
-		],
-		"keywords": [
-			"spectroscopy",
-			"magnetic fields"
-		],
-		"relatedSoftware": [
-			"https://doi.org/10.5281/zenodo.10994081",
-			"https://doi.org/10.5281/zenodo.10994081"
-		],
-		"interoperableSoftware": [
-			"https://doi.org/10.5281/zenodo.10994081",
-			"https://doi.org/10.5281/zenodo.10994081"
-		],
-		"funder": [
-			{
-				"name": "National Science Foundation",
-				"abbreviation": "NSF",
-				"identifier": "https://ror.org/021nxhr62"
-			},
-			{
-				"name": "NASA Goddard Space Flight Center",
-				"identifier": "https://ror.org/0171mag52"
+				"identifier": "https://orcid.org/0000-0003-0619-5745"
 			}
 		],
 		"award": [
@@ -154,11 +31,125 @@
 				"name": "Second Example Award",
 				"identifier": "NNG19PB28C"
 			}
+		],		
+		"codeRepositoryUrl": "https://repo.example.org/example",		
+		"conciseDescription": "Good software install now",
+		"cpuArchitecture": [
+			"x86-64",
+			"Apple Silicon arm64"
+		],		
+		"dataSources": [
+			"CDAWeb",
+			"HAPI"
 		],
-		"logo": "https://cdn.example.org/heliospectra/logo.png",
+		"description": "This software does ALL the things, it is the BEST software EVER.",		
+		"developmentStatus": "Active",		
+		"documentation": "https://docs.example.org/heliospectra",		
+		"funder": [
+			{
+				"name": "National Science Foundation",
+				"identifier": "https://ror.org/021nxhr62"
+			},
+			{
+				"name": "NASA Heliophysics Division",
+				"identifier": "https://ror.org/03myraf72"
+			}
+		],	
+		"inputFormats": [
+			"CDF",
+			"FITS"
+		],		
+		"interoperableSoftware": [
+			"https://doi.org/10.XXXX/example",
+			"https://doi.org/10.XXXX/example"
+		],		
+		"keywords": [
+			"spectroscopy",
+			"magnetic fields"
+		],		
+		"license": {
+			"name": "GNU Library or 'Lesser' General Public Licenses (LGPL version 3)",
+			"url": "https://spdx.org/licenses/LGPL-3.0-or-later"
+		},
+		"logo": "https://cdn.example.org/heliospectra/logo.png",		
+		"operatingSystem": [
+			"Linux",
+			"Mac"
+		],
+		"outputFormats": [
+			"CDF",
+			"FITS"
+		],		
+		"persistentIdentifier": "https://doi.org/10.XXXX/example",
+		"programmingLanguage": [
+			"Python 3.x",
+			"Fortran 2003"
+		],
+		"publicationDate": "2024-06-14",		
+		"publisher": {
+			"name": "Example Publisher",
+			"identifier": "https://ror.org/012345678"
+		},		
+		"referencePublication": "https://doi.org/10.XXXX/example",		
+		"relatedDatasets": [
+			"https://doi.org/10.XXXX/example",
+			"https://doi.org/10.XXXX/example"
+		],
+		"relatedInstruments": [
+			{
+				"name": "Visible Spectro-Polarimeter",
+			},
+			{
+				"name": "Atmospheric Imaging Assembly",
+				"identifier": "https://doi.org/10.XXXX/example"
+			}
+		],		
+		"relatedObservatories": [
+			{
+				"name": "Solar Orbiter",
+				"identifier": "https://doi.org/10.XXXX/example"  #This is not possible in the submission form, but it will be needed soon.
+			},
+			{
+				"name": "Daniel K. Inouye Solar Telescope",
+				"definition": "A ground-based solar telescope."
+			}
+		],		
 		"relatedPhenomena": [
 			"Coronal Heating",
 			"Geomagnetic Storms"
-		]
+		],		
+		"relatedPublications": [
+			"https://doi.org/10.XXXX/example",
+			"https://doi.org/10.XXXX/example"
+		],
+		"relatedRegion": [
+			"Solar Environment",
+			"Interplanetary Space"
+		],
+		"relatedSoftware": [
+			"https://doi.org/10.XXXX/example",
+			"https://doi.org/10.XXXX/example"
+		],
+		"softwareFunctionality": [
+			"Data Processing and Analysis",
+			"Data Processing and Analysis: Energy Spectra"
+		],		
+		"softwareName": "Example Name",		
+		"submitter": [
+			{
+				"email": "exampl@email.org",
+				"person": {
+					"firstName": "Isaiah",  #First name and last name are combined on the submission form. Combine here too?
+					"lastName": "Smith",
+					"identifier": "https://orcid.org/0000-0002-1825-0097"  #This isn't possible on the submission form. Remove?
+				}
+			}
+		],	
+		"version": {
+			"number": "2.4.1",
+			"versionDate": "2025-05-01",
+			"description": "Adds adaptive deconvolution and GPU acceleration.",
+			"versionPID": "https://doi.org/10.XXXX/example"
+		}		
 	}
 ]

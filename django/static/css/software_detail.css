@@ -130,15 +130,69 @@
     border-radius: 8px;
     padding: 25px;
     margin-bottom: 20px;
+    --section-anim-duration: 220ms;
+    --section-anim-ease: cubic-bezier(0.2, 0, 0, 1);
+    --section-summary-gap: 20px;
+    --section-summary-padding: 10px;
+    --section-summary-border: #14679e;
 }
 
 .section-title {
     font-size: 1.3rem;
     font-weight: bold;
     color: #14679e;
-    margin: 0 0 20px 0;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #14679e;
+    margin: 0 0 var(--section-summary-gap) 0;
+    padding-bottom: var(--section-summary-padding);
+    border-bottom: 2px solid var(--section-summary-border);
+    transition: margin-bottom 160ms ease, padding-bottom 160ms ease, border-color 160ms ease;
+}
+
+/* Collapsible section controls */
+details.software-section summary {
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: 28px;
+}
+details.software-section summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Chevron: ▼ when open, ▶ when closed */
+details.software-section summary::after {
+    content: "▼";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    color: #14679e;
+}
+details.software-section:not([open]) summary::after {
+    content: "▶";
+}
+
+/* Collapsed: remove dangling border/spacing */
+details.software-section.is-collapsing,
+details.software-section:not([open]) {
+    --section-summary-gap: 0px;
+    --section-summary-padding: 0px;
+    --section-summary-border: transparent;
+    --section-anim-duration: 180ms;
+    --section-anim-ease: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Hover hint */
+details.software-section summary:hover {
+    color: #105a8a;
+}
+
+/* Animated open/close — wrapper created by the script below */
+.section-body {
+    overflow: hidden;
+    transition: max-height var(--section-anim-duration) var(--section-anim-ease);
+    will-change: max-height;
 }
 
 .description-content {

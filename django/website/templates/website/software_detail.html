@@ -62,8 +62,8 @@
     <div class="software-content">
 
         <!-- Description Section -->
-        <section class="software-section">
-            <h2 class="section-title">Description</h2>
+        <details class="software-section" open>
+            <summary class="section-title">Description</summary>
             <div class="description-content">
                 {% if software.description %}
                 {{ software.description|markdownify }}
@@ -71,12 +71,12 @@
                 <p>No description available.</p>
                 {% endif %}
             </div>
-        </section>
+        </details>
 
         <!-- Authors Section -->
         {% if software.authors.all %}
-        <section class="software-section">
-            <h2 class="section-title">Authors</h2>
+        <details class="software-section" open>
+            <summary class="section-title">Authors</summary>
             <div class="authors-list">
                 {% for author in software.authors.all %}
                 <div class="author-item">
@@ -97,13 +97,13 @@
                 </div>
                 {% endfor %}
             </div>
-        </section>
+        </details>
         {% endif %}
 
         <!-- Functionality Section -->
         {% if software.softwareFunctionality.all %}
-        <section class="software-section">
-            <h2 class="section-title">Functionality</h2>
+        <details class="software-section" open>
+            <summary class="section-title">Functionality</summary>
             <div class="functionality-tags">
                 {% for func in software.softwareFunctionality.all %}
                 <span class="tag functionality-tag"
@@ -112,12 +112,12 @@
                 </span>
                 {% endfor %}
             </div>
-        </section>
+        </details>
         {% endif %}
 
         <!-- Technical Details Section -->
-        <section class="software-section">
-            <h2 class="section-title">Technical Details</h2>
+        <details class="software-section" open>
+            <summary class="section-title">Technical Details</summary>
             <div class="metadata-grid">
                 {% if software.programmingLanguage.all %}
                 <div class="metadata-item">
@@ -175,12 +175,12 @@
                 </div>
                 {% endif %}
             </div>
-        </section>
+        </details>
 
         <!-- Data & File Formats Section -->
         {% if software.dataSources.all or software.inputFormats.all or software.outputFormats.all %}
-        <section class="software-section">
-            <h2 class="section-title">Data & File Formats</h2>
+        <details class="software-section" open>
+            <summary class="section-title">Data & File Formats</summary>
             <div class="metadata-grid">
                 {% if software.dataSources.all %}
                 <div class="metadata-item">
@@ -215,13 +215,13 @@
                 </div>
                 {% endif %}
             </div>
-        </section>
+        </details>
         {% endif %}
 
         <!-- Science Context Section -->
         {% if software.relatedInstruments.all or software.relatedObservatories.all or software.relatedPhenomena.all or software.relatedRegion.all %}
-        <section class="software-section">
-            <h2 class="section-title">Science Context</h2>
+        <details class="software-section" open>
+            <summary class="section-title">Science Context</summary>
             <div class="metadata-grid">
                 {% if software.relatedInstruments.all %}
                 <div class="metadata-item">
@@ -267,25 +267,25 @@
                 </div>
                 {% endif %}
             </div>
-        </section>
+        </details>
         {% endif %}
 
         <!-- Keywords Section -->
         {% if software.keywords.all %}
-        <section class="software-section">
-            <h2 class="section-title">Keywords</h2>
+        <details class="software-section" open>
+            <summary class="section-title">Keywords</summary>
             <div class="keywords-list">
                 {% for keyword in software.keywords.all %}
                 <span class="tag keyword-tag">{{ keyword.name }}</span>
                 {% endfor %}
             </div>
-        </section>
+        </details>
         {% endif %}
 
         <!-- Publications Section -->
         {% if software.referencePublication or software.relatedPublications.all %}
-        <section class="software-section">
-            <h2 class="section-title">Publications</h2>
+        <details class="software-section" open>
+            <summary class="section-title">Publications</summary>
             {% if software.referencePublication %}
             <div class="related-items-subsection">
                 <h3>Reference Publication</h3>
@@ -315,13 +315,13 @@
                 {% endfor %}
             </div>
             {% endif %}
-        </section>
+        </details>
         {% endif %}
 
         <!-- Related Items Section -->
         {% if software.relatedDatasets.all or software.relatedSoftware.all or software.interoperableSoftware.all %}
-        <section class="software-section">
-            <h2 class="section-title">Related Items</h2>
+        <details class="software-section" open>
+            <summary class="section-title">Related Items</summary>
 
             {% if software.relatedDatasets.all %}
             <div class="related-items-subsection">
@@ -364,13 +364,13 @@
                 {% endfor %}
             </div>
             {% endif %}
-        </section>
+        </details>
         {% endif %}
 
         <!-- Licensing & Funding Section -->
         {% if software.license or software.funder.all or software.award.all %}
-        <section class="software-section">
-            <h2 class="section-title">Licensing & Funding</h2>
+        <details class="software-section" open>
+            <summary class="section-title">Licensing & Funding</summary>
             <div class="metadata-grid">
                 {% if software.license %}
                 <div class="metadata-item">
@@ -424,13 +424,13 @@
                 </div>
                 {% endif %}
             </div>
-        </section>
+        </details>
         {% endif %}
 
         <!-- Version Information Section -->
         {% if software.version %}
-        <section class="software-section">
-            <h2 class="section-title">Version Information</h2>
+        <details class="software-section" open>
+            <summary class="section-title">Version Information</summary>
             <div class="metadata-grid">
                 <div class="metadata-item">
                     <span class="metadata-label">Current Version</span>
@@ -457,7 +457,7 @@
                 </div>
                 {% endif %}
             </div>
-        </section>
+        </details>
         {% endif %}
 
     </div>
@@ -470,4 +470,57 @@
     </div>
 
 </div>
+
+<script>
+// Animate collapsible sections: wrap each section's content in a .section-body
+// div at runtime so max-height transitions work without clobbering the
+// grid/flex layouts on the original content divs.
+document.querySelectorAll('details.software-section').forEach(details => {
+    const summary = details.querySelector('summary');
+    let closeHandler = null;
+
+    // Move every child node except <summary> into a new wrapper
+    const body = document.createElement('div');
+    body.className = 'section-body';
+    [...details.childNodes].forEach(node => {
+        if (node !== summary) body.appendChild(node);
+    });
+    details.appendChild(body);
+
+    // Seed max-height so the first close has a value to animate FROM
+    body.style.maxHeight = details.open ? body.scrollHeight + 'px' : '0';
+
+    summary.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        if (details.open) {
+            // Closing: pin to current height, reflow, then animate to 0.
+            // Only remove the open attribute after the transition ends so
+            // the browser's own display:none doesn't fire mid-animation.
+            details.classList.add('is-collapsing');
+            body.style.maxHeight = body.scrollHeight + 'px';
+            void body.offsetHeight;
+            body.style.maxHeight = '0';
+            if (closeHandler) {
+                body.removeEventListener('transitionend', closeHandler);
+            }
+            closeHandler = (event) => {
+                if (event.propertyName !== 'max-height') return;
+                details.open = false;
+                details.classList.remove('is-collapsing');
+                body.removeEventListener('transitionend', closeHandler);
+                closeHandler = null;
+            };
+            body.addEventListener('transitionend', closeHandler);
+        } else {
+            // Opening: restore open (content re-enters layout at maxHeight 0),
+            // reflow, then animate to content height.
+            details.classList.remove('is-collapsing');
+            details.open = true;
+            void body.offsetHeight;
+            body.style.maxHeight = body.scrollHeight + 'px';
+        }
+    });
+});
+</script>
 {% endblock %}

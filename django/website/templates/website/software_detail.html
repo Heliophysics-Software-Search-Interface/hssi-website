@@ -73,6 +73,16 @@
             </div>
         </details>
 
+        <!-- Concise Description Section -->
+        {% if software.conciseDescription %}
+        <details class="software-section">
+            <summary class="section-title">Concise Description</summary>
+            <div class="description-content">
+                {{ software.conciseDescription|markdownify }}
+            </div>
+        </details>
+        {% endif %}
+
         <!-- Authors Section -->
         {% if software.authors.all %}
         <details class="software-section" open>

@@ -228,7 +228,15 @@
                     <span class="metadata-label">Related Instruments</span>
                     <span class="metadata-value">
                         {% for inst in software.relatedInstruments.all %}
-                        <span class="tag">{{ inst.name }}</span>
+                        <span class="tag">
+                            {% if inst.name and inst.name != "UNKNOWN" %}
+                            {{ inst.name }}
+                            {% elif inst.identifier %}
+                            {{ inst.identifier }}
+                            {% else %}
+                            {{ inst.name }}
+                            {% endif %}
+                        </span>
                         {% endfor %}
                     </span>
                 </div>
@@ -239,7 +247,15 @@
                     <span class="metadata-label">Related Observatories</span>
                     <span class="metadata-value">
                         {% for obs in software.relatedObservatories.all %}
-                        <span class="tag">{{ obs.name }}</span>
+                        <span class="tag">
+                            {% if obs.name and obs.name != "UNKNOWN" %}
+                            {{ obs.name }}
+                            {% elif obs.identifier %}
+                            {{ obs.identifier }}
+                            {% else %}
+                            {{ obs.name }}
+                            {% endif %}
+                        </span>
                         {% endfor %}
                     </span>
                 </div>
@@ -250,7 +266,15 @@
                     <span class="metadata-label">Related Phenomena</span>
                     <span class="metadata-value">
                         {% for phen in software.relatedPhenomena.all %}
-                        <span class="tag">{{ phen.name }}</span>
+                        <span class="tag">
+                            {% if phen.name and phen.name != "UNKNOWN" %}
+                            {{ phen.name }}
+                            {% elif phen.identifier %}
+                            {{ phen.identifier }}
+                            {% else %}
+                            {{ phen.name }}
+                            {% endif %}
+                        </span>
                         {% endfor %}
                     </span>
                 </div>
@@ -261,7 +285,15 @@
                     <span class="metadata-label">Related Regions</span>
                     <span class="metadata-value">
                         {% for reg in software.relatedRegion.all %}
-                        <span class="tag">{{ reg.name }}</span>
+                        <span class="tag">
+                            {% if reg.name and reg.name != "UNKNOWN" %}
+                            {{ reg.name }}
+                            {% elif reg.identifier %}
+                            {{ reg.identifier }}
+                            {% else %}
+                            {{ reg.name }}
+                            {% endif %}
+                        </span>
                         {% endfor %}
                     </span>
                 </div>
@@ -290,11 +322,18 @@
             <div class="related-items-subsection">
                 <h3>Reference Publication</h3>
                 <div class="publication-item">
-                    <span class="publication-title">{{ software.referencePublication.name }}</span>
                     {% if software.referencePublication.identifier %}
-                    <a href="{{ software.referencePublication.identifier }}" class="publication-link" target="_blank">
-                        <i class="fa fa-external-link"></i> View
+                    <a href="{{ software.referencePublication.identifier }}" class="publication-title-link" target="_blank">
+                        {% if software.referencePublication.name and software.referencePublication.name != "UNKNOWN" %}
+                        {{ software.referencePublication.name }}
+                        {% else %}
+                        {{ software.referencePublication.identifier }}
+                        {% endif %}
                     </a>
+                    {% else %}
+                    <span class="publication-title">
+                        {{ software.referencePublication.name }}
+                    </span>
                     {% endif %}
                 </div>
             </div>
@@ -305,11 +344,18 @@
                 <h3>Related Publications</h3>
                 {% for pub in software.relatedPublications.all %}
                 <div class="publication-item">
-                    <span class="publication-title">{{ pub.name }}</span>
                     {% if pub.identifier %}
-                    <a href="{{ pub.identifier }}" class="publication-link" target="_blank">
-                        <i class="fa fa-external-link"></i> View
+                    <a href="{{ pub.identifier }}" class="publication-title-link" target="_blank">
+                        {% if pub.name and pub.name != "UNKNOWN" %}
+                        {{ pub.name }}
+                        {% else %}
+                        {{ pub.identifier }}
+                        {% endif %}
                     </a>
+                    {% else %}
+                    <span class="publication-title">
+                        {{ pub.name }}
+                    </span>
                     {% endif %}
                 </div>
                 {% endfor %}
@@ -328,9 +374,18 @@
                 <h3>Related Datasets</h3>
                 {% for ds in software.relatedDatasets.all %}
                 <div class="related-item">
-                    <span>{{ ds.name }}</span>
                     {% if ds.identifier %}
-                    <a href="{{ ds.identifier }}" target="_blank"><i class="fa fa-external-link"></i></a>
+                    <a href="{{ ds.identifier }}" class="related-item-link" target="_blank">
+                        {% if ds.name and ds.name != "UNKNOWN" %}
+                        {{ ds.name }}
+                        {% else %}
+                        {{ ds.identifier }}
+                        {% endif %}
+                    </a>
+                    {% else %}
+                    <span>
+                        {{ ds.name }}
+                    </span>
                     {% endif %}
                 </div>
                 {% endfor %}
@@ -342,9 +397,18 @@
                 <h3>Related Software</h3>
                 {% for sw in software.relatedSoftware.all %}
                 <div class="related-item">
-                    <span>{{ sw.name }}</span>
                     {% if sw.identifier %}
-                    <a href="{{ sw.identifier }}" target="_blank"><i class="fa fa-external-link"></i></a>
+                    <a href="{{ sw.identifier }}" class="related-item-link" target="_blank">
+                        {% if sw.name and sw.name != "UNKNOWN" %}
+                        {{ sw.name }}
+                        {% else %}
+                        {{ sw.identifier }}
+                        {% endif %}
+                    </a>
+                    {% else %}
+                    <span>
+                        {{ sw.name }}
+                    </span>
                     {% endif %}
                 </div>
                 {% endfor %}
@@ -356,9 +420,18 @@
                 <h3>Interoperable Software</h3>
                 {% for sw in software.interoperableSoftware.all %}
                 <div class="related-item">
-                    <span>{{ sw.name }}</span>
                     {% if sw.identifier %}
-                    <a href="{{ sw.identifier }}" target="_blank"><i class="fa fa-external-link"></i></a>
+                    <a href="{{ sw.identifier }}" class="related-item-link" target="_blank">
+                        {% if sw.name and sw.name != "UNKNOWN" %}
+                        {{ sw.name }}
+                        {% else %}
+                        {{ sw.identifier }}
+                        {% endif %}
+                    </a>
+                    {% else %}
+                    <span>
+                        {{ sw.name }}
+                    </span>
                     {% endif %}
                 </div>
                 {% endfor %}

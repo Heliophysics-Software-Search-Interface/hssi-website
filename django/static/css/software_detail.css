@@ -352,13 +352,15 @@ details.software-section summary:hover {
     color: #333;
 }
 
-.publication-link {
+.publication-title-link,
+.related-item-link {
+    flex: 1;
     color: #1779ba;
     text-decoration: none;
-    white-space: nowrap;
 }
 
-.publication-link:hover {
+.publication-title-link:hover,
+.related-item-link:hover {
     text-decoration: underline;
 }
 

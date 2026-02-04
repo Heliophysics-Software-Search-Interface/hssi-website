@@ -1,17 +1,22 @@
 id,url,description
 6e93dca4-fa4a-4743-908f-e48350f517e1,https://raw.githubusercontent.com/danielver02/ALPS/master/./ALPS_logo.png,logo for ALPS: The Arbitrary Linear Plasma Solver
+d0a1f63a-6442-44ae-9772-ba12d4a197e0,https://github.com/aburrell/apexpy/blob/main/docs/apexpy.png?raw=true,logo for ApexPy
 48a0499f-08ae-444e-91e1-39642cf5e101,https://www.fitsflow.org/ff_logo_3.png,logo for FitsFlow
 9a29c20d-6aae-491f-9962-bd790eb2ef12,https://github.com/JouleCai/geospacelab/blob/master/docs/images/logo_v1_landscape_accent_colors.png,logo for GeospaceLAB
 7382e64c-c2ff-4297-ae6b-db97c1fb3658,https://raw.githubusercontent.com/HERMES-SOC/hermes_core/main/docs/logo/hermes_logo.png,logo for HERMES Core
 44b8cb2c-7c54-44f2-be2c-022234ef8ce5,https://github.com/kgklein/PLUME/blob/main/PLUME_logo.png,logo for kgklein/PLUME: Updated Cyclotron Heating to Split positive and negative resonances
 686e6e0b-3576-411f-a6d5-d01db7380d07,https://lofar-sun-tools.readthedocs.io/en/latest/_static/logo0.png,logo for lofarSun
 44b90634-7121-4812-a381-c465ab178091,https://circleci.com/gh/NCAR/VAPOR.svg?style=svg,logo for NCAR/VAPOR
+65e3a2e5-3ed4-425e-a818-b18e1d8e3e07,https://raw.githubusercontent.com/sunpy/ndcube/master/docs/logo/ndcube.png,logo for ndcube
 44fc4047-b2bc-40d7-a411-1a994384ce04,https://raw.githubusercontent.com/aburrell/ocbpy/main/docs/figures/ocbpy_logo.gif,logo for OCBpy
 b6c4ceb7-83af-4fa6-a9a1-5c260326d0bf,https://raw.githubusercontent.com/CosmicStudioSoftware/OMMBV/main/docs/images/logo_high_res.png,logo for OMMBV
 fe4882f0-2676-4f4b-8d9f-614c03d02d2f,https://raw.githubusercontent.com/DanBrandt/EUVpy/main/./EUVpy_logo.png,logo for Overview
 12af0d56-61e1-4734-af0e-3d425639b5f5,https://raw.githubusercontent.com/kgklein/PLUME/main/PLUME_logo.png,logo for PLUME: Plasma in a Linear Uniform Magnetized Environment
+da768af4-62b9-40e6-9611-41d1e08abb38,https://punch.space.swri.edu/images/punch-logo_240w.png,logo for punchbowl
 dc6684a1-c179-43d6-94a6-29a244bfcd58,https://raw.githubusercontent.com/aurorax-space/pyaurorax/main/logo.svg,logo for PyAuroraX
 d6ce6753-9545-417c-aada-b0807c573eb1,https://raw.githubusercontent.com/SuperDARN/pydarn/master/docs/imgs/pydarn_logo.png,logo for pyDARN
+226c514e-3678-49fd-821f-d33bbfa1a32a,https://raw.githubusercontent.com/timduly4/pyglow/master/logo.png,logo for pyglow
+27591983-0393-4386-b9d0-00395696279e,https://github.com/PyGSDR/PyGS/blob/main/logo/logo.png?raw=true,logo for PyGS
 cd6a2179-dcf8-4317-bfd9-90a516fca3a8,https://raw.githubusercontent.com/louis-richard/irfu-python/master/docs/_static/logo-pyrfu.png,logo for PyRFU
 c0d3fcba-63e9-465d-a690-0fb0af3c6edf,https://raw.githubusercontent.com/pysat/pysatCDF/main/docs/images/logo.png,logo for pysatCDF
 6b3004d7-52a5-457d-b0a5-cdd188228717,https://raw.githubusercontent.com/AthKouloumvakos/PyThea/master/docs/logo/pythea_logo.png,logo for PyThea: A software package to reconstruct the 3D structure of CMEs and shock waves

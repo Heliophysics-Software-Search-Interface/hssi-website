@@ -83,6 +83,28 @@
         </details>
         {% endif %}
 
+        <!-- Reference Publication Section -->
+        {% if software.referencePublication %}
+        <details class="software-section" open>
+            <summary class="section-title">Reference Publication</summary>
+            <div class="publication-item">
+                {% if software.referencePublication.identifier %}
+                <a href="{{ software.referencePublication.identifier }}" class="publication-title-link" target="_blank">
+                    {% if software.referencePublication.name and software.referencePublication.name != "UNKNOWN" %}
+                    {{ software.referencePublication.name }}
+                    {% else %}
+                    {{ software.referencePublication.identifier }}
+                    {% endif %}
+                </a>
+                {% else %}
+                <span class="publication-title">
+                    {{ software.referencePublication.name }}
+                </span>
+                {% endif %}
+            </div>
+        </details>
+        {% endif %}
+
         <!-- Authors Section -->
         {% if software.authors.all %}
         <details class="software-section" open>
@@ -351,30 +373,10 @@
         </details>
         {% endif %}
 
-        <!-- Publications Section -->
-        {% if software.referencePublication or software.relatedPublications.all %}
+        <!-- Related Items Section -->
+        {% if software.relatedPublications.all or software.relatedDatasets.all or software.relatedSoftware.all or software.interoperableSoftware.all %}
         <details class="software-section" open>
-            <summary class="section-title">Publications</summary>
-            {% if software.referencePublication %}
-            <div class="related-items-subsection">
-                <h3>Reference Publication</h3>
-                <div class="publication-item">
-                    {% if software.referencePublication.identifier %}
-                    <a href="{{ software.referencePublication.identifier }}" class="publication-title-link" target="_blank">
-                        {% if software.referencePublication.name and software.referencePublication.name != "UNKNOWN" %}
-                        {{ software.referencePublication.name }}
-                        {% else %}
-                        {{ software.referencePublication.identifier }}
-                        {% endif %}
-                    </a>
-                    {% else %}
-                    <span class="publication-title">
-                        {{ software.referencePublication.name }}
-                    </span>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
+            <summary class="section-title">Related Items</summary>
 
             {% if software.relatedPublications.all %}
             <div class="related-items-subsection">
@@ -398,13 +400,6 @@
                 {% endfor %}
             </div>
             {% endif %}
-        </details>
-        {% endif %}
-
-        <!-- Related Items Section -->
-        {% if software.relatedDatasets.all or software.relatedSoftware.all or software.interoperableSoftware.all %}
-        <details class="software-section" open>
-            <summary class="section-title">Related Items</summary>
 
             {% if software.relatedDatasets.all %}
             <div class="related-items-subsection">

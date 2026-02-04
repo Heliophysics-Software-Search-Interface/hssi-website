@@ -101,7 +101,18 @@
                     </span>
                     {% if author.affiliation.all %}
                     <span class="author-affiliation">
-                        ({% for org in author.affiliation.all %}{{ org.name }}{% if not forloop.last %}, {% endif %}{% endfor %})
+                        (
+                        {% for org in author.affiliation.all %}
+                        {% with org_link=org.identifier|default:org.website %}
+                        {% if org_link %}
+                        <a href="{{ org_link }}" target="_blank">{{ org.name }}</a>
+                        {% else %}
+                        {{ org.name }}
+                        {% endif %}
+                        {% endwith %}
+                        {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                        )
                     </span>
                     {% endif %}
                 </div>
@@ -181,7 +192,15 @@
                 {% if software.publisher %}
                 <div class="metadata-item">
                     <span class="metadata-label">Publisher</span>
-                    <span class="metadata-value">{{ software.publisher.name }}</span>
+                    <span class="metadata-value">
+                        {% with publisher_link=software.publisher.identifier|default:software.publisher.website %}
+                        {% if publisher_link %}
+                        <a href="{{ publisher_link }}" target="_blank">{{ software.publisher.name }}</a>
+                        {% else %}
+                        {{ software.publisher.name }}
+                        {% endif %}
+                        {% endwith %}
+                    </span>
                 </div>
                 {% endif %}
             </div>
@@ -238,15 +257,17 @@
                     <span class="metadata-label">Related Instruments</span>
                     <span class="metadata-value">
                         {% for inst in software.relatedInstruments.all %}
-                        <span class="tag">
+                        {% if inst.identifier %}
+                        <a class="tag" href="{{ inst.identifier }}" target="_blank">
                             {% if inst.name and inst.name != "UNKNOWN" %}
                             {{ inst.name }}
-                            {% elif inst.identifier %}
-                            {{ inst.identifier }}
                             {% else %}
-                            {{ inst.name }}
+                            {{ inst.identifier }}
                             {% endif %}
-                        </span>
+                        </a>
+                        {% else %}
+                        <span class="tag">{{ inst.name }}</span>
+                        {% endif %}
                         {% endfor %}
                     </span>
                 </div>
@@ -257,15 +278,17 @@
                     <span class="metadata-label">Related Observatories</span>
                     <span class="metadata-value">
                         {% for obs in software.relatedObservatories.all %}
-                        <span class="tag">
+                        {% if obs.identifier %}
+                        <a class="tag" href="{{ obs.identifier }}" target="_blank">
                             {% if obs.name and obs.name != "UNKNOWN" %}
                             {{ obs.name }}
-                            {% elif obs.identifier %}
-                            {{ obs.identifier }}
                             {% else %}
-                            {{ obs.name }}
+                            {{ obs.identifier }}
                             {% endif %}
-                        </span>
+                        </a>
+                        {% else %}
+                        <span class="tag">{{ obs.name }}</span>
+                        {% endif %}
                         {% endfor %}
                     </span>
                 </div>
@@ -276,15 +299,17 @@
                     <span class="metadata-label">Related Phenomena</span>
                     <span class="metadata-value">
                         {% for phen in software.relatedPhenomena.all %}
-                        <span class="tag">
+                        {% if phen.identifier %}
+                        <a class="tag" href="{{ phen.identifier }}" target="_blank">
                             {% if phen.name and phen.name != "UNKNOWN" %}
                             {{ phen.name }}
-                            {% elif phen.identifier %}
-                            {{ phen.identifier }}
                             {% else %}
-                            {{ phen.name }}
+                            {{ phen.identifier }}
                             {% endif %}
-                        </span>
+                        </a>
+                        {% else %}
+                        <span class="tag">{{ phen.name }}</span>
+                        {% endif %}
                         {% endfor %}
                     </span>
                 </div>
@@ -295,15 +320,17 @@
                     <span class="metadata-label">Related Regions</span>
                     <span class="metadata-value">
                         {% for reg in software.relatedRegion.all %}
-                        <span class="tag">
+                        {% if reg.identifier %}
+                        <a class="tag" href="{{ reg.identifier }}" target="_blank">
                             {% if reg.name and reg.name != "UNKNOWN" %}
                             {{ reg.name }}
-                            {% elif reg.identifier %}
-                            {{ reg.identifier }}
                             {% else %}
-                            {{ reg.name }}
+                            {{ reg.identifier }}
                             {% endif %}
-                        </span>
+                        </a>
+                        {% else %}
+                        <span class="tag">{{ reg.name }}</span>
+                        {% endif %}
                         {% endfor %}
                     </span>
                 </div>
@@ -482,7 +509,13 @@
                     <span class="metadata-label">Funders</span>
                     <span class="metadata-value">
                         {% for funder in software.funder.all %}
+                        {% with funder_link=funder.identifier|default:funder.website %}
+                        {% if funder_link %}
+                        <a class="tag" href="{{ funder_link }}" target="_blank">{{ funder.name }}</a>
+                        {% else %}
                         <span class="tag">{{ funder.name }}</span>
+                        {% endif %}
+                        {% endwith %}
                         {% endfor %}
                     </span>
                 </div>

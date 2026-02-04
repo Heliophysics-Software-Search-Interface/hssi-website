@@ -238,6 +238,15 @@ details.software-section summary:hover {
     margin-left: 8px;
 }
 
+.author-affiliation a {
+    color: #1779ba;
+    text-decoration: none;
+}
+
+.author-affiliation a:hover {
+    text-decoration: underline;
+}
+
 /* Metadata Grid */
 .metadata-grid {
     display: grid;
@@ -285,6 +294,15 @@ details.software-section summary:hover {
     margin: 2px;
     background-color: #e8e8e8;
     color: #333;
+    text-decoration: none;
+}
+
+a.tag {
+    cursor: pointer;
+}
+
+a.tag:hover {
+    text-decoration: underline;
 }
 
 .functionality-tag {

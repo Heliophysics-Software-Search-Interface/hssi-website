@@ -55,6 +55,7 @@
             }
         ]
     },
+    "codemeta:buildInstructions": "http://www.sunpy.org/",
     "codemeta:referencePublication": {
       "@id": "https://doi.org/10.3847/1538-4357/ab4f7a",
       "@type": "ScholarlyWork"

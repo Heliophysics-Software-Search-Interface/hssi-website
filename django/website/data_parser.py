@@ -313,8 +313,8 @@ def parse_controlled_list(
 
 	# see if the name field is acting as a uuid reference, and return referenced object if so
 	try:
-		uuid = UUID(name)
-		reference_object = target_model.objects.get(pk=uuid)
+		uid = UUID(name)
+		reference_object = target_model.objects.get(pk=uid)
 		return reference_object
 	
 	except:
@@ -339,6 +339,7 @@ def parse_controlled_list(
 			obj.save()
 			return obj
 
+	print(f"ALLOW CREATION {allow_creation}")
 	raise Exception(f"{target_model.__name__} does not contain '{name or identifier}'")
 
 def apply_software_core_fields(software: Software, data: dict) -> None:
@@ -575,24 +576,29 @@ def apply_function_category(software: Software, fullnames: list[str]):
 
 	categories: list[FunctionCategory] = []
 	for fullname in fullnames:
-		subnames = fullname.split(":")
-		subnames.reverse()
-		child_name = subnames[0].strip()
-		child_matches = FunctionCategory.objects.filter(name=child_name)
 		ref_category: FunctionCategory = None
+		try:
+			uid = UUID(fullname)
+			ref_category = FunctionCategory.objects.get(pk=uid)
 
-		# top level category names should be unique
-		if len(subnames) == 1:
-			ref_category = child_matches.first()
+		except Exception:
+			subnames = fullname.split(":")
+			subnames.reverse()
+			child_name = subnames[0].strip()
+			child_matches = FunctionCategory.objects.filter(name=child_name)
 
-		# if parent name is specified, narrow down to specific category with 
-		# matching name and parent
-		elif len(subnames) == 2:
-			parent_name = subnames[1].strip()
-			ref_category = FunctionCategory.objects.filter(
-				name=parent_name, 
-				children__in=child_matches
-			).first()
+			# top level category names should be unique
+			if len(subnames) == 1:
+				ref_category = child_matches.first()
+
+			# if parent name is specified, narrow down to specific category with 
+			# matching name and parent
+			elif len(subnames) == 2:
+				parent_name = subnames[1].strip()
+				ref_category = FunctionCategory.objects.filter(
+					name=parent_name, 
+					children__in=child_matches
+				).first()
 
 		# append the found category if it exists
 		if(ref_category): categories.append(ref_category)
@@ -608,10 +614,12 @@ def apply_keywords(software: Software, data: dict) -> None:
 
 	software.keywords.clear()
 	for kw in keywords:
-		kw_obj = parse_controlled_list(Keyword, kw, allow_creation=False)
-		if kw_obj:
-			software.keywords.add(kw_obj)
-			continue
+		try:
+			kw_obj = parse_controlled_list(Keyword, kw, allow_creation=False)
+			if kw_obj:
+				software.keywords.add(kw_obj)
+				continue
+		except: pass
 
 		kw_fmtd = SPACE_REPLACE.sub(' ', kw).lower()
 		kw_obj = parse_controlled_list(Keyword, name=kw_fmtd, allow_creation=True)

@@ -113,11 +113,34 @@
 				"name": "Daniel K. Inouye Solar Telescope",
 				"definition": "A ground-based solar telescope."
 			}
-		],		
-		"relatedPhenomena": [
-			"Coronal Heating",
-			"Geomagnetic Storms"
-		],		
+		],
+		"version": {
+			"number": "2.4.1",
+			"release_date": "2025-05-01",
+			"description": "Adds adaptive deconvolution and GPU acceleration.",
+			"version_pid": "https://doi.org/10.5281/zenodo.10994081"
+		},
+		"referencePublication": "https://doi.org/10.5281/zenodo.10994081",
+		"softwareFunctionality": [
+			"Coordinate Transforms: Heliospheric",
+			"Data Visualization: 3D Graphics"
+		],
+		"dataSources": [
+			"CDAWeb",
+			"HAPI"
+		],
+		"inputFormats": [
+			"CDF",
+			"FITS"
+		],
+		"outputFormats": [
+			"CDF",
+			"FITS"
+		],
+		"cpuArchitecture": [
+			"x86-64",
+			"Apple Silicon arm64"
+		],
 		"relatedPublications": [
 			"https://doi.org/10.XXXX/example",
 			"https://doi.org/10.XXXX/example"

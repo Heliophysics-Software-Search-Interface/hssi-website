@@ -312,7 +312,13 @@ export class ResourceItem{
 		
 		const titleDiv = document.createElement("div");
 		titleDiv.classList.add(styleResourceTitle);
-		titleDiv.innerText = this.data.softwareName;
+
+		// Make the title a clickable link to the landing page (using UUID)
+		const titleLink = document.createElement("a");
+		titleLink.href = `/software/${this.data.id}/`;
+		titleLink.innerText = this.data.softwareName;
+		titleLink.classList.add("software-title-link");
+		titleDiv.appendChild(titleLink);
 		headerText.appendChild(titleDiv);
 
 		const headInfoDiv = document.createElement("div");

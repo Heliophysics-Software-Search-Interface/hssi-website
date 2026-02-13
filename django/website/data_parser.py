@@ -339,7 +339,6 @@ def parse_controlled_list(
 			obj.save()
 			return obj
 
-	print(f"ALLOW CREATION {allow_creation}")
 	raise Exception(f"{target_model.__name__} does not contain '{name or identifier}'")
 
 def apply_software_core_fields(software: Software, data: dict) -> None:

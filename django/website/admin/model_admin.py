@@ -17,7 +17,7 @@ from ..models.auxillary_info import RelatedItem, Award
 from ..models.roots import (
 	HssiModel, ControlledList, FunctionCategory, OperatingSystem, Phenomena, 
 	Keyword, Image, Organization, License, InstrumentObservatory, RepoStatus, 
-	DataInput, ProgrammingLanguage, FileFormat, Region
+	DataInput, ProgrammingLanguage, FileFormat, Region, CpuArchitecture
 )
 
 from ..util import *
@@ -126,6 +126,10 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 class OperatingSystemResource(resources.ModelResource):
 	class Meta: model = OperatingSystem
 class OperatingSystemAdmin(HSSIModelAdmin): resource_class = OperatingSystemResource
+
+class CpuArcitectureResource(resources.ModelResource):
+	class Meta: model = CpuArchitecture
+class CpuArchitectureAdmin(HSSIModelAdmin): resource_class = CpuArcitectureResource
 
 class PhenomenaTypeResource(resources.ModelResource):
 	class Meta: model = Phenomena

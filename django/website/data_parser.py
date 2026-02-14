@@ -96,6 +96,7 @@ def api_submission_to_formdict(item: dict) -> dict:
 	form[FIELD_AUTHORS] = form_authors
 
 	# recommended/optional fields
+	form[FIELD_DEVELOPMENTSTATUS] = item.get(FIELD_DEVELOPMENTSTATUS)
 	form[FIELD_CONCISEDESCRIPTION] = item.get(FIELD_CONCISEDESCRIPTION)
 	form[FIELD_DOCUMENTATION] = item.get(FIELD_DOCUMENTATION)
 	form[FIELD_PERSISTENTIDENTIFIER] = item.get(FIELD_PERSISTENTIDENTIFIER)

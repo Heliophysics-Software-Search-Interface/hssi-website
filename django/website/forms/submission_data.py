@@ -401,7 +401,7 @@ SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 	ModelSubfield.define(
-		name=FIELD_RELATEDINSTRUMENTIDENTIFIER,
+		name=FIELD_RELATEDOBSERVATORYIDENTIFIER,
 		type=TYPE_URL,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={

@@ -3,6 +3,7 @@ from uuid import UUID
 
 from django.utils import timezone
 from django.shortcuts import render, redirect, HttpResponse
+from django.db import transaction
 from django.http import (
 	HttpRequest, HttpResponseBadRequest, 
 	JsonResponse, HttpResponseRedirect, HttpResponseServerError,
@@ -51,13 +52,15 @@ def submit_data(request: HttpRequest) -> HttpResponse:
 	data = request.body.decode(encoding)
 	json_data = json.loads(data)
 
-	# try handle json_data and save to database
-	print("recieved form data", json_data)
-	submisison_id = handle_submission_data(json_data)
-	software: Software = SubmissionInfo.objects.get(pk=submisison_id).software
+	with transaction.atomic():
+		# try handle json_data and save to database
+		print("recieved form submission..")
+		submisison_id = handle_submission_data(json_data)
+		software: Software = SubmissionInfo.objects.get(pk=submisison_id).software
+		print("submitted!")
 
-	# mark for review edits
-	SoftwareEditQueue.create(software, timezone.now() + datetime.timedelta(days=90))
-	email_existing_edit_link(software.submissionInfo)
+		# mark for review edits
+		SoftwareEditQueue.create(software, timezone.now() + datetime.timedelta(days=90))
+		transaction.on_commit(lambda s=software: email_existing_edit_link(s.submissionInfo))
 
 	return redirect(f"/submit/submitted/?uid={str(software.pk)}")

@@ -171,7 +171,7 @@ def api_submission_to_formdict(item: dict) -> dict:
 			raise ValueError("Related observatory entries must be objects.")
 		form_relobservatories.append({
 			FIELD_RELATEDOBSERVATORIES: obs.get(ROW_CONTROLLEDLIST_NAME),
-			FIELD_RELATEDINSTRUMENTIDENTIFIER: obs.get(ROW_CONTROLLEDLIST_IDENTIFIER),
+			FIELD_RELATEDOBSERVATORYIDENTIFIER: obs.get(ROW_CONTROLLEDLIST_IDENTIFIER),
 		})
 	form[FIELD_RELATEDOBSERVATORIES] = form_relobservatories
 
@@ -734,10 +734,9 @@ def apply_related_observatories(software: Software, data: dict) -> None:
 			uid = UUID(obs_name)
 			software.relatedObservatories.add(InstrumentObservatory.objects.get(pk=uid))
 		except Exception:
-			# TODO FIELD_RELATEDOBSERVATORYIDENTIFIER
 			obs_ident = None
 			if isinstance(relobs_data, dict):
-				obs_ident = relobs_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
+				obs_ident = relobs_data.get(FIELD_RELATEDOBSERVATORYIDENTIFIER)
 			obs_ref = None
 			if obs_ident:
 				obs_ref = InstrumentObservatory.objects.filter(identifier=obs_ident).first()

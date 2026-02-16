@@ -7,6 +7,16 @@ from ..util import *
 from ..models import *
 from ..forms.submission_data import *
 
+def get_fields_param(get: QueryDict) -> list[str] | None:
+	fields: list[str] | None = None
+	fields_param: str = get.get("columns")
+	if fields_param:
+		fields = fields_param.split(",")
+	return fields
+
+def get_recursive_param(get: QueryDict) -> bool:
+	return get.get("recursive", "false").lower() == "true"
+
 def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 	"""
 	serializes (non-recursively) all objects in a specified model into json and 
@@ -24,13 +34,12 @@ def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 	objects = model.objects.all()
 	arr: list[dict[str, Any]] = []
 
-	recurse = False
-	if(request.GET.get("recursive", "0").lower() == "true"):
-		recurse = True
+	fields = get_fields_param(request.GET)
+	recurse = get_recursive_param(request.GET)
 
 	for object in objects:
 		try:
-			objdata = object.get_serialized_data(access, recurse)
+			objdata = object.get_serialized_data(access, recurse, fields=fields)
 			arr.append(objdata)
 		except Exception as e:
 			print(e)
@@ -55,14 +64,13 @@ def get_model_row(request: HttpRequest, model_name: str, uid: str) -> JsonRespon
 	try: id = uuid.UUID(uid)
 	except Exception: id = model.objects.first().id
 
-	recurse = False
-	if(request.GET.get("recursive", "").lower() == "true"):
-		recurse = True
+	fields = get_fields_param(request.GET)
+	recurse = get_recursive_param(request.GET)
 	
 	access = AccessLevel.from_user(request.user)
 	obj = model.objects.get(pk=id)
 	data: dict = None
-	try: data = obj.get_serialized_data(access, recurse)
+	try: data = obj.get_serialized_data(access, recurse, fields=fields)
 	except Exception: return HttpResponseForbidden("Unauthorized")
 
 	return JsonResponse(data)

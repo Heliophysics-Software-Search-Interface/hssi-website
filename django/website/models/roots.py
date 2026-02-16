@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 	from .auxillary_info import Award, RelatedItem
 	from .software import Software
 
+FIELD_FUNCTIONCATEGORY_FULLNAME = "fullname"
 FIELD_HAS_FOREIGN_KEY = (
 	models.ForeignKey | models.ManyToManyField | models.OneToOneField
 )
@@ -167,17 +168,18 @@ class HssiModel(models.Model, metaclass=HssiBase):
 		self, 
 		access: AccessLevel, 
 		recursive: bool = False, 
-		accessOverride: AccessLevel = AccessLevel.PUBLIC
+		access_override: AccessLevel = AccessLevel.PUBLIC,
+		fields: list[str] = None
 	) -> dict[str, Any]:
 		"""
 		return the instance fields that are available to the specified access 
 		level as data in a dictionary. Foreign keys will be fetched and nested 
 		in the data structure if 'recursive' is specified.
 		"""
-		if access < self.access and accessOverride < self.access:
+		if access < self.access and access_override < self.access:
 			raise Exception(f"Unauthorized access, {access} < {self.access}")
 		
-		datas: str = serialize('json', [self])
+		datas: str = serialize('json', [self], fields=fields)
 		data: dict[str, Any] = json.loads(datas)[0].get('fields')
 		data['id'] = str(self.id)
 
@@ -224,13 +226,20 @@ class HssiSet(HssiModel):
 		return self.target_model.objects.get(pk=self.pk).get_choice()
 	def get_tooltip(self):
 		return self.target_model.objects.get(pk=self.pk).get_tooltip()
-	def get_serialized_data(self, access, recursive = False, accessOverride = AccessLevel.PUBLIC):
+	def get_serialized_data(
+		self, 
+		access, 
+		recursive = False, 
+		accessOverride = AccessLevel.PUBLIC,
+		fields = None,
+	):
 		if access < self.access and accessOverride < self.access:
 			raise Exception(f"Unauthorized access, {access} < {self.access}")
 		return self.target_model.objects.get(pk=self.pk).get_serialized_data(
 			access, 
 			recursive, 
-			self.target_model.access
+			self.target_model.access,
+			fields
 		)
 
 	class Meta: abstract = True
@@ -303,8 +312,14 @@ class ControlledGraphList(ControlledList):
 
 		return path
 
-	def get_serialized_data(self, access, recursive = False) -> dict[str, Any]:
-		data = super().get_serialized_data(access, recursive)
+	def get_serialized_data(
+		self, 
+		access, 
+		recursive = False, 
+		access_ovr = AccessLevel.PUBLIC, 
+		fields = None
+	) -> dict[str, Any]:
+		data = super().get_serialized_data(access, recursive, access_ovr, fields)
 
 		if not hasattr(data, "children"): 
 			children: list[uuid.UUID] = []
@@ -548,6 +563,13 @@ class FunctionCategory(ControlledGraphList):
 			self.get_tooltip(),
 		)
 
+	def get_full_name(self) -> str:
+		parent = self.parent_nodes.first()
+		fullname = ""
+		if parent.name: fullname = f"{parent.name}: "
+		fullname += self.name
+		return fullname
+
 	@classmethod
 	def _form_config_redef(cls) -> None:
 		super()._form_config_redef()
@@ -593,6 +615,23 @@ class FunctionCategory(ControlledGraphList):
 		arr = super().get_search_terms()
 		arr.extend(self.get_name_path().split("->"))
 		return arr
+
+	def get_serialized_data(
+		self, 
+		access, 
+		recursive=False, 
+		access_ovr=AccessLevel.PUBLIC, 
+		fields=None
+	):
+		include_fullname = (fields and FIELD_FUNCTIONCATEGORY_FULLNAME in fields)
+		if include_fullname: 
+			fields = list(filter(lambda x: x != FIELD_FUNCTIONCATEGORY_FULLNAME, fields))
+		
+		data = super().get_serialized_data(access, recursive, access_ovr, fields)
+		if include_fullname: 
+			data[FIELD_FUNCTIONCATEGORY_FULLNAME] = self.get_full_name()
+
+		return data
 
 	class Meta: verbose_name_plural = "Function Categories"
 	def __str__(self): return self.name

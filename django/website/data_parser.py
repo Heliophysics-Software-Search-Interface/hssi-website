@@ -595,9 +595,11 @@ def apply_function_category(software: Software, fullnames: list[str]):
 			# matching name and parent
 			elif len(subnames) == 2:
 				parent_name = subnames[1].strip()
+				parent_matches = FunctionCategory.objects.filter(name=parent_name)
+
 				ref_category = FunctionCategory.objects.filter(
-					name=parent_name, 
-					children__in=child_matches
+					name=child_name, 
+					parent_nodes__in=parent_matches
 				).first()
 
 		# append the found category if it exists

@@ -532,6 +532,9 @@ class FunctionCategory(ControlledGraphList):
 		symmetrical=False,
 	)
 
+	# specified for intellisense, defined in other models
+	parent_nodes: models.Manager['FunctionCategory']
+
 	def get_choice(self) -> ModelObjectChoice:
 		choice_name = str(self)
 		if self.parent_nodes:

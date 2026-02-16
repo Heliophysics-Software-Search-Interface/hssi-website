@@ -210,6 +210,12 @@ class HssiModel(models.Model, metaclass=HssiBase):
 					try: new_val =  lookup(uuid.UUID(val), self._meta.get_field(key))
 					except: continue
 				if new_val: data[key] = new_val
+		
+		# if fields param is specified, remove any non-specified fields
+		if fields:
+			for key in data:
+				if not key in fields: del data[key]
+
 		return data
 	
 	class Meta:
@@ -321,18 +327,18 @@ class ControlledGraphList(ControlledList):
 	) -> dict[str, Any]:
 		data = super().get_serialized_data(access, recursive, access_ovr, fields)
 
-		if not hasattr(data, "children"): 
+		if not hasattr(data, "children") and (fields is None or "children" in fields): 
 			children: list[uuid.UUID] = []
 			for child in self.children.all():
 				children.append(child.id)
 			data["children"] = children
 			
-		if not hasattr(data, "parent_nodes"): 
+		if not hasattr(data, "parents") and (fields is None or "parents" in fields): 
 			parents: list[uuid.UUID] = []
 			for parent in self.parent_nodes.all():
 				parents.append(parent.id)
 			data["parents"] = parents
-			
+		
 		return data
 
 	class Meta:

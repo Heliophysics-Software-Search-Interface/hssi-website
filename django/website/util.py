@@ -6,6 +6,7 @@ from django.db.models.fields import Field
 from enum import IntEnum
 
 SPACE_REPLACE = re.compile(r'[_\-.]')
+PARENTHESIS_MATCH = re.compile(r"\(([^)]*)\)")
 
 class RequirementLevel(IntEnum):
 	OPTIONAL = 0

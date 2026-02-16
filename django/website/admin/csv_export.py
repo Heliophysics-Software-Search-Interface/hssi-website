@@ -104,12 +104,19 @@ def export_db_csv():
 	author_order = authors_field.through
 	export_model_csv(author_order)
 
-def import_model_csv(model: 'Type[models.Model]', filepath: os.PathLike | None = None):
+def import_model_csv(
+	model: 'Type[models.Model]', 
+	filepath: os.PathLike | None = None, 
+	exclude_fields: list[str] = []
+):
 	if filepath is None: filepath = model_csv_filepath(model)
 	print(f"Importing {filepath} ...")
 
 	if os.path.isfile(filepath):
-		model_resource = resources.modelresource_factory(model)()
+		model_resource_class = resources.modelresource_factory(model)
+		for excluded_field in exclude_fields:
+			del model_resource_class.fields[excluded_field]
+		model_resource = model_resource_class()
 		try:
 			dataset = tablib.Dataset().load(open(filepath).read(), format='csv')
 			result = model_resource.import_data(dataset)
@@ -147,10 +154,12 @@ def import_db_csv():
 	import_model_csv(RelatedItem)
 	import_model_csv(Submitter)
 	import_model_csv(SubmissionInfo)
-	import_model_csv(Software)
+	import_model_csv(Software, exclude_fields=["authors"])
 	import_model_csv(VisibleSoftware)
 	import_model_csv(SoftwareEditQueue)
 
 	authors_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
 	author_order = authors_field.through
 	import_model_csv(author_order)
+
+	print("Finished Importing DB!")

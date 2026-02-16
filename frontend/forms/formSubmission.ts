@@ -65,7 +65,7 @@ export type SubmissionFormData = {
 	}[],
 	relatedObservatories?: {
 		relatedObservatories?: string,
-		relatedInstrumentIdentifier?: string,
+		relatedObservatoryIdentifier?: string,
 	}[],
 	logo?: string,
 }

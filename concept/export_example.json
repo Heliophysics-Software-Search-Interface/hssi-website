@@ -1,0 +1,276 @@
+{
+    "@context": {
+      "@vocab": "https://schema.org/",
+      "prov": "http://www.w3.org/ns/prov#",
+      "sosa": "https://w3c.github.io/sdw-sosa-ssn/ssn/#SOSA",
+      "codemeta": "https://github.com/codemeta/codemeta/blob/master/codemeta.jsonld"
+    },
+    "@id": "https://doi.org/10.5281/zenodo.591887",
+    "@type": ["SoftwareSourceCode", "SoftwareApplication"],
+    "applicationCategory": ["Data Processing and Analysis", "Mission-related"],
+    "applicationSubCategory": [
+      "Data Processing and Analysis: Energy Spectra", 
+      "Mission-related: Analysis"
+    ],
+    "author": {
+        "@list": [
+            {
+                "@id": "https://orcid.org/0000-0003-4217-4642",
+                "@type": "Person",
+                "affiliation": 
+                {
+                  "@type": "Organization",
+                  "identifier": {
+                    "@id": "https://ror.org/example",
+                    "@type": "PropertyValue",
+                    "propertyID": "https://registry.identifiers.org/registry/orcid",
+                    "url": "https://ror.org/example",
+                    "value": "ror:example"
+                  },
+                  "name": "Aperio Software Ltd."
+                },
+                "familyName": "Mumford",
+                "givenName": "Stuart J. ",
+                "identifier": 
+                {
+                    "@id": "https://orcid.org/0000-0003-4217-4642",
+                    "@type": "PropertyValue",
+                    "propertyID": "https://registry.identifiers.org/registry/orcid",
+                    "url": "https://orcid.org/0000-0003-4217-4642",
+                    "value": "orcid:0000-0003-4217-4642"
+                }
+            },
+            {
+                "@id": "https://ror.org/02ttsq026",
+                "@type": "Organization",
+                "name": "University of Colorado Boulder",
+                "identifier": 
+                {
+                    "@id": "https://ror.org/02ttsq026",
+                    "@type": "PropertyValue",
+                    "propertyID": "https://registry.identifiers.org/registry/ror",
+                    "url": "https://ror.org/02ttsq026",
+                    "value": "ror:02ttsq026"
+                }
+            }
+        ]
+    },
+    "codemeta:buildInstructions": "http://www.sunpy.org/",
+    "codemeta:referencePublication": {
+      "@id": "https://doi.org/10.3847/1538-4357/ab4f7a",
+      "@type": "ScholarlyWork"
+    },
+    "codeRepository": "https://github.com/sunpy/sunpy",    
+    "codemeta:developmentStatus": "Active",
+    "creativeWorkStatus": {
+        "@id": "https://www.repostatus.org/#active",
+        "@type": "DefinedTerm",
+        "name": "Active",
+        "description": "The project has reached a stable, usable state and is being actively developed.",
+        "inDefinedTermSet": "https://www.repostatus.org",
+        "image": "https://www.repostatus.org/badges/latest/active.svg"
+     },    
+    "datePublished": "2015-06-09",
+    "description": "sunpy is a Python software package that provides fundamental tools for accessing, loading and interacting with solar physics data in Python. It includes an interface for searching and downloading data from multiple data providers, data containers for image and time series data, commonly used solar coordinate frames and associated transformations, as well as other functionality needed for solar data analysis.",
+    "funding": {
+        "@type": "MonetaryGrant",
+        "funder": {
+            "@id": "https://ror.org/004eyxv41",
+            "@type": "Organization",
+            "name": "NumFocus",
+            "identifier": {
+                "@id": "https://ror.org/004eyxv41",
+                "@type": "PropertyValue",
+                "propertyID": "https://registry.identifiers.org/registry/ror",
+                "url": "https://ror.org/004eyxv41",
+                "value": "ror:004eyxv41"
+            }            
+        },
+        "identifier": "NNG19PQ28C",
+        "name": "SunPy Award"
+    },    
+    "identifier": {
+        "@id": "https://doi.org/10.5281/zenodo.14292170",  
+        "@type": "PropertyValue",
+        "name": "DOI: 10.5281/zenodo.14292170",
+        "propertyID": "https://registry.identifiers.org/registry/doi",
+        "value": "doi:10.5281/zenodo.14292170",
+        "url": "https://doi.org/10.5281/zenodo.14292170"
+    },
+    "image": "https://raw.githubusercontent.com/sunpy/sunpy-logo/master/generated/sunpy_icon.png",   
+    "keywords": [
+      {
+        "@type": "DefinedTerm",
+        "name": "HAPI",
+        "description": "dataSources",
+        "inDefinedTermSet": "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/jsonld/DataSources.json"
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "FITS",
+        "description": "inputFormats",
+        "inDefinedTermSet": "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/jsonld/InputFileFormats.json"
+      },
+      {
+        "@type": "DefinedTerm",
+        "name": "FITS",
+        "description": "outputFormats",
+        "inDefinedTermSet": "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/jsonld/OutputFileFormats.json"
+      },    
+      {
+        "@type": "DefinedTerm",     
+        "name": "coronal mass ejections",
+        "description": "relatedPhenomena",
+        "inDefinedTermSet": "https://github.com/rmcgranaghan/Helio-KNOW/blob/main/data-models/hk_phenomenon.ttl"
+      },
+      {
+        "@type": "DefinedTerm",     
+        "name": "Data Processing and Analysis",
+        "description": "softwarefunctionality",
+        "inDefinedTermSet": "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/tree/main/ttl"
+      },      
+      {
+        "@type": "DefinedTerm",     
+        "name": "sun"
+      } 
+     ],
+    "license": {
+      "@id": "https://spdx.org/licenses/BSD-2-Clause",
+      "@type": "CreativeWork",
+      "name": "BSD-2-Clause",
+      "url": "https://spdx.org/licenses/BSD-2-Clause"
+    },
+    "mentions": [
+      {
+        "@id": "https://spase-metadata.org/SMWG/Instrument/SOHO/LASCO.html",
+        "@type": [
+            "IndividualProduct",
+            "prov:Entity",
+            "sosa:System"
+        ],
+        "description": "relatedInstruments",
+        "identifier": {
+            "@type": "PropertyValue",
+            "propertyID": "SPASE Resource ID",
+            "value": "spase://SMWG/Instrument/SOHO/LASCO"
+        },
+        "name": "Large Angle Spectroscopic Coronagraph (LASCO)",
+        "url": "https://spase-metadata.org/SMWG/Instrument/SOHO/LASCO.html"
+      },
+      {
+        "@id": "DOI or url if given",
+        "@type": [
+            "IndividualProduct",
+            "prov:Entity",
+            "sosa:System"
+        ],
+        "description": "relatedInstruments",
+        "name": "example instrument not in SPASE",
+        "url": "DOI or url if given"
+      },
+      {
+        "@id": "https://spase-metadata.org/SMWG/Observatory/SOHO.html",
+        "@type": [
+            "ResearchProject",
+            "prov:Entity",
+            "sosa:Platform"
+        ],
+        "description": "relatedObservatories",
+        "identifier": {
+            "@type": "PropertyValue",
+            "propertyID": "SPASE Resource ID",
+            "value": "spase://SMWG/Observatory/SOHO"
+        },        
+        "name": "SOHO",
+        "url": "https://spase-metadata.org/SMWG/Observatory/SOHO.html"
+      },
+      {
+        "@id": "DOI or url if given",
+        "@type": [
+            "IndividualProduct",
+            "prov:Entity",
+            "sosa:System"
+        ],
+        "description": "relatedObservatories",
+        "name": "example observatory not in SPASE",
+        "url": "DOI or url if given"
+      },
+      {
+        "@id": "http://doi.org/10.3847/1538-4365/ac1f1d",
+        "@type": "ScholarlyArticle",
+        "description": "relatedPublications",
+        "url": "http://doi.org/10.3847/1538-4365/ac1f1d"
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "description": "relatedPublications",
+        "disambiguatingDescription": "Z. S. Hamidi et al. (2019) J. Phys.: Conf. Ser. 1298 012013"
+      },      
+      {
+        "@id": "https://doi.org/10.48322/asmp-nf13",
+        "@type": "Dataset",
+        "description": "relatedDatasets",
+        "url": "https://doi.org/10.48322/asmp-nf13"
+      },        
+      {
+        "@type": "Dataset",
+        "description": "relatedDatasets",
+        "disambiguatingDescription": "Fuselier et al. (2022). MMS 4 Hot Plasma Composition Analyzer (HPCA) Ions, Level 2 (L2), Burst Mode, 0.625 s Data [Data set]. NASA Space Physics Data Facility."
+      },  
+      {
+        "@id": "https://github.com/pingswept/pysolar",
+        "@type": "SoftwareSourceCode",
+        "description": "relatedSoftware",
+        "url": "https://github.com/pingswept/pysolar"
+      },                   
+      {
+        "@id": "https://doi.org/10.5281/zenodo.2572849",
+        "@type": "SoftwareSourceCode",
+        "description": "interoperableSoftware",
+        "url": "https://doi.org/10.5281/zenodo.2572849"
+      }
+    ],    
+    "name": "sunpy: A Core Package for Solar Physics",
+    "operatingSystem": "OS Independent",
+    "programmingLanguage": "Python 3.x",
+    "processorRequirements": ["x86-64", "Apple Silicon arm64"],
+    "publisher": {
+        "@id": "https://zenodo.org/",
+        "@type": "Organization",
+        "name": "Zenodo",
+        "url": "https://zenodo.org/"
+    },
+    "spatialCoverage": [
+      {     
+         "@type": "Place",
+         "name": "Solar Environment",
+         "keywords": {
+            "@type": "DefinedTerm",
+            "description": "RelatedRegion",
+            "inDefinedTermSet": "https://github.com/rmcgranaghan/Helio-KNOW/blob/main/data-models/hk_region.ttl",
+            "name": "Solar Environment"  
+         }
+      },
+      {
+         "@type": "Place",
+         "name": "Interplanetary Space",
+         "keywords": {
+            "@type": "DefinedTerm",
+            "description": "RelatedRegion",
+            "inDefinedTermSet": "https://github.com/rmcgranaghan/Helio-KNOW/blob/main/data-models/hk_region.ttl",
+            "name": "Interplanetary Space"  
+         }
+      }
+    ],   
+    "softwareVersion": "v6.0.4",
+    "subjectOf": {
+      "@type": "DataDownload",
+      "contentUrl": "landing page url on HSSI",
+      "dateModified": "2025-03-05T12:34:56",
+      "description": "HSSI metadata describing the software",
+      "encodingFormat": "application/json",
+      "license": "https://spdx.org/licenses/CC0-1.0.html",
+      "name": "HSSI metadata for the software"
+    },
+    "version": "v6.0.4"
+}

@@ -75,7 +75,7 @@ class Software(HssiModel):
 	)
 	description = models.TextField(blank=True, null=True)
 	conciseDescription = models.TextField(max_length=200, blank=True, null=True)
-	softwareFunctionality = models.ManyToManyField(
+	softwareFunctionality = SortedManyToManyField(
 		FunctionCategory, 
 		blank=True, 
 		related_name='softwares'

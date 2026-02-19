@@ -236,7 +236,7 @@ def parse_organization(
 		elif allow_creation:
 			organization = Organization()
 			org_abbrev_match = PARENTHESIS_MATCH.findall(org_name)
-			org_name = PARENTHESIS_MATCH.sub(org_name, "")
+			org_name = PARENTHESIS_MATCH.sub("", org_name).strip()
 			organization.name = org_name
 
 			# infer abbreviation from parenthesis

@@ -28,8 +28,8 @@ def api_submit(request: HttpRequest):
 	results: list[dict] = []
 	try:
 		with transaction.atomic():
+			print("Batch submission...")
 			for idx, item in enumerate(data):
-				print("Batch submission...")
 				form_data = api_submission_to_formdict(item)
 				submission_id = handle_submission_data(form_data)
 				software = SubmissionInfo.objects.get(pk=submission_id).software

@@ -356,7 +356,6 @@ export class FormGenerator {
 		const data: JSONObject = {};
 		for(const field of subfields){
 			data[field.name] = field.getFieldData();
-			console.log(field.name, field);
 		}
 
 		return data;

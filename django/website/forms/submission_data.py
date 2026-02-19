@@ -400,18 +400,17 @@ SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
 		},
 		multi=False,
 	),
-	# TODO implement when observatory identifier is standardized
-	# ModelSubfield.define(
-	# 	name=FIELD_RELATEDINSTRUMENTIDENTIFIER,
-	# 	type=TYPE_URL,
-	# 	requirement=RequirementLevel.OPTIONAL.value,
-	# 	properties={
-	#		PROP_LABEL: "Observatory Identifier",
-	#		PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTIDENTIFIER,
-	#		PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTIDENTIFIER,
-	#	},
-	# 	multi=False,
-	# ),
+	ModelSubfield.define(
+		name=FIELD_RELATEDOBSERVATORYIDENTIFIER,
+		type=TYPE_URL,
+		requirement=RequirementLevel.OPTIONAL.value,
+		properties={
+			PROP_LABEL: "Observatory Identifier",
+			PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTIDENTIFIER,
+			PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTIDENTIFIER,
+		},
+		multi=False,
+	),
 )
 
 SUBMISSION_FORM_DATASET: ModelStructure = ModelStructure.define(
@@ -853,7 +852,6 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_WIDGET_PROPS:{
 				WPROP_DROPDOWNBUTTON: True,
 				WPROP_TARGETMODEL: Phenomena.__name__,
-				WPROP_ALLOWNEWENTRIES: True,
 			}
 		},
 		multi=True,

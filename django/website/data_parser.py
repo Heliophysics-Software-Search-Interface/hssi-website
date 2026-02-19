@@ -96,6 +96,7 @@ def api_submission_to_formdict(item: dict) -> dict:
 	form[FIELD_AUTHORS] = form_authors
 
 	# recommended/optional fields
+	form[FIELD_DEVELOPMENTSTATUS] = item.get(FIELD_DEVELOPMENTSTATUS)
 	form[FIELD_CONCISEDESCRIPTION] = item.get(FIELD_CONCISEDESCRIPTION)
 	form[FIELD_DOCUMENTATION] = item.get(FIELD_DOCUMENTATION)
 	form[FIELD_PERSISTENTIDENTIFIER] = item.get(FIELD_PERSISTENTIDENTIFIER)
@@ -170,7 +171,7 @@ def api_submission_to_formdict(item: dict) -> dict:
 			raise ValueError("Related observatory entries must be objects.")
 		form_relobservatories.append({
 			FIELD_RELATEDOBSERVATORIES: obs.get(ROW_CONTROLLEDLIST_NAME),
-			FIELD_RELATEDINSTRUMENTIDENTIFIER: obs.get(ROW_CONTROLLEDLIST_IDENTIFIER),
+			FIELD_RELATEDOBSERVATORYIDENTIFIER: obs.get(ROW_CONTROLLEDLIST_IDENTIFIER),
 		})
 	form[FIELD_RELATEDOBSERVATORIES] = form_relobservatories
 
@@ -235,7 +236,7 @@ def parse_organization(
 		elif allow_creation:
 			organization = Organization()
 			org_abbrev_match = PARENTHESIS_MATCH.findall(org_name)
-			org_name = PARENTHESIS_MATCH.sub(org_name, "")
+			org_name = PARENTHESIS_MATCH.sub("", org_name).strip()
 			organization.name = org_name
 
 			# infer abbreviation from parenthesis
@@ -594,9 +595,11 @@ def apply_function_category(software: Software, fullnames: list[str]):
 			# matching name and parent
 			elif len(subnames) == 2:
 				parent_name = subnames[1].strip()
+				parent_matches = FunctionCategory.objects.filter(name=parent_name)
+
 				ref_category = FunctionCategory.objects.filter(
-					name=parent_name, 
-					children__in=child_matches
+					name=child_name, 
+					parent_nodes__in=parent_matches
 				).first()
 
 		# append the found category if it exists
@@ -731,10 +734,9 @@ def apply_related_observatories(software: Software, data: dict) -> None:
 			uid = UUID(obs_name)
 			software.relatedObservatories.add(InstrumentObservatory.objects.get(pk=uid))
 		except Exception:
-			# TODO FIELD_RELATEDOBSERVATORYIDENTIFIER
 			obs_ident = None
 			if isinstance(relobs_data, dict):
-				obs_ident = relobs_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
+				obs_ident = relobs_data.get(FIELD_RELATEDOBSERVATORYIDENTIFIER)
 			obs_ref = None
 			if obs_ident:
 				obs_ref = InstrumentObservatory.objects.filter(identifier=obs_ident).first()

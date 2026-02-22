@@ -38,3 +38,5 @@ class HssiAdminSite(admin.AdminSite):
 			path('fetch_vocab/', fetch_vocab, name="fetch_vocab")
 		] + urls_base[-1:]
 		return urls
+
+admin_site = HssiAdminSite()

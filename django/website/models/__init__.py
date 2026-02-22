@@ -1,4 +1,3 @@
-from ._old import *
 from .structurizer import *
 from .software import *
 from .submission_info import *

@@ -1,5 +1,5 @@
 """
-This module contains functionality for retrieving json-ld data from our 
+Functionality for retrieving json-ld data from our 
 maintained HSSI vocabulary repository at 
 https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/
 """
@@ -224,4 +224,3 @@ def link_concept_children(
 			parent_obj.children.add(obj)
 			print(f"Linked '{parent_obj.name}' with child '{obj.name}'")
 	for obj in objs: obj.save()
-			

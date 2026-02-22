@@ -1,0 +1,30 @@
+from ..models import *
+from .model_admin import *
+from .site import HssiAdminSite
+
+# Register your models here.
+site = HssiAdminSite()
+site.register(Software, admin_class=SoftwareAdmin)
+site.register(SoftwareEditQueue, admin_class=SoftwareEditQueueAdmin)
+site.register(FileFormat, admin_class=FileFormatAdmin)
+site.register(ProgrammingLanguage, admin_class=ProgrammingLanguageAdmin)
+site.register(VisibleSoftware, admin_class=VisibleSoftwareAdmin)
+site.register(InstrumentObservatory, admin_class=InstrumentObservatoryAdmin)
+site.register(SoftwareVersion, admin_class=SoftwareVersionAdmin)
+site.register(FunctionCategory, admin_class=FunctionCategoryAdmin)
+site.register(Person, admin_class=PersonAdmin)
+site.register(Curator, admin_class=CuratorAdmin)
+site.register(Organization, admin_class=OrganizationAdmin)
+site.register(License, admin_class=LicenseAdmin)
+site.register(SubmissionInfo, admin_class=SubmissionInfoAdmin)
+site.register(OperatingSystem, admin_class=OperatingSystemAdmin)
+site.register(CpuArchitecture, admin_class=CpuArchitectureAdmin)
+site.register(Phenomena, admin_class=PhenomenaTypeAdmin)
+site.register(Keyword, admin_class=KeywordAdmin)
+site.register(Award, admin_class=AwardAdmin)
+site.register(Image, admin_class=ImageAdmin)
+site.register(Region, admin_class=RegionAdmin)
+site.register(RepoStatus, admin_class=RepoStatusAdmin)
+site.register(DataInput, admin_class=DataInputAdmin)
+site.register(Submitter, admin_class=SubmitterAdmin)
+site.register(RelatedItem, admin_class=DatasetAdmin)

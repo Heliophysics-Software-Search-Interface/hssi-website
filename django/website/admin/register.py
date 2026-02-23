@@ -1,6 +1,6 @@
 from ..models import *
 from .model_admin import *
-from .site import admin_site
+from .hssi_admin_site import admin_site
 
 # Register your models here.
 admin_site.register(Software, admin_class=SoftwareAdmin)

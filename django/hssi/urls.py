@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
-from website.admin.site import admin_site
+from website.admin.hssi_admin_site import admin_site
 
 urlpatterns = [
 	path('admin/', admin_site.urls),

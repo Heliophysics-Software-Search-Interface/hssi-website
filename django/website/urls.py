@@ -8,9 +8,9 @@ urlpatterns = [
 	path('api', views.api_view, name="rest_api"),
 	path('api/submit', views.api_submit),
 	path('FAQ/', views.FAQ, name="FAQ"),
-	path('news/', views.NewsView.as_view(), name='news'),
-	path('news/rss/', views.NewsFeed()),
-	path('news/<int:pk>/', views.NewsItemView.as_view(), name='news_item'),
+	#path('news/', views.NewsView.as_view(), name='news'),
+	#path('news/rss/', views.NewsFeed()),
+	#path('news/<int:pk>/', views.NewsItemView.as_view(), name='news_item'),
 	path('submit/', views.submit.view_form),
 	path('submit/submit_data/', views.submit.submit_data),
 	path('submit/submitted/', views.submit.view_confirmation),
@@ -28,7 +28,6 @@ urlpatterns = [
 	path('api/describe_form', views.somef.form_fill_view),
 	path('api/search/', views.search_visible_software, name='search_visible_software'),
 	path('team/', views.team, name="team"),
-	path('export/', views.export_search_results, name='export_seach_results'),
 
 	# Software landing page - uses UUID primary key
 	path('software/<uuid:pk>/', views.SoftwareDetailView.as_view(), name='software_detail'),

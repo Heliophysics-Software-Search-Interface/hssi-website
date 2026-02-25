@@ -16,7 +16,7 @@ from ..models.submission_info import SubmissionInfo
 from ..models.auxillary_info import RelatedItem, Award
 from ..models.roots import (
 	HssiModel, ControlledList, FunctionCategory, OperatingSystem, Phenomena, 
-	Keyword, Image, Organization, License, InstrumentObservatory, RepoStatus, 
+	Keyword, Organization, License, InstrumentObservatory, RepoStatus, 
 	DataInput, ProgrammingLanguage, FileFormat, Region, CpuArchitecture
 )
 
@@ -157,10 +157,6 @@ class KeywordAdmin(HSSIModelAdmin):
 		collapse_keyword_entries,
 		format_names,
 	]
-
-class ImageResource(resources.ModelResource):
-	class Meta: model = Image
-class ImageAdmin(HSSIModelAdmin): resource_class = ImageResource
 
 class RegionResource(resources.ModelResource):
 	class Meta: model = Region

@@ -5,7 +5,6 @@ from django.db.models.fields import related_descriptors
 from django.core.serializers import serialize
 from colorful.fields import RGBColorField
 
-from .structurizer import form_config
 from ..util import *
 
 from typing import TYPE_CHECKING, Any, NamedTuple
@@ -75,10 +74,6 @@ class HssiModel(models.Model, metaclass=HssiBase):
 		)
 
 	def get_tooltip(self) -> str: return ''
-
-	def __init_subclass__(cls) -> None:
-		cls._form_config_redef()
-		return super().__init_subclass__()
 	
 	@staticmethod
 	def collapse_objects(queryset: QuerySet['HssiModel']) -> 'HssiModel':
@@ -132,11 +127,6 @@ class HssiModel(models.Model, metaclass=HssiBase):
 		topfieldname = firstobj._meta.model.get_top_field().name
 		print(f"collapsed to '{getattr(firstobj, topfieldname)}:{firstobj.pk}'")
 		return firstobj
-
-	@classmethod
-	def _form_config_redef(cls) -> None:
-		'''Redefine the form properties for fields here'''
-		pass
 
 	@classmethod
 	def get_top_field(cls) -> models.Field:
@@ -252,24 +242,9 @@ class HssiSet(HssiModel):
 
 class ControlledList(HssiModel):
 	'''Base class for all controlled lists in the HSSI project'''
-	name = form_config(
-		models.CharField(max_length=LEN_NAME, blank=False, null=False),
-		# widgetType="ModelBox",
-		label="Name",
-		widgetProperties={
-			'requirementLevel': RequirementLevel.MANDATORY.value,
-		},
-	)
-
-	identifier = form_config(
-		models.URLField(blank=True, null=True),
-		label="Identifier",
-	)
-
-	definition = form_config(
-		models.TextField(blank=True, null=True),
-		label="Definition",
-	)
+	name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
+	identifier = models.URLField(blank=True, null=True)
+	definition = models.TextField(blank=True, null=True)
 
 	def __str__(self) -> str: return self.name
 
@@ -349,56 +324,19 @@ class ControlledGraphList(ControlledList):
 
 class Keyword(ControlledList):
 	access = AccessLevel.PUBLIC
-	@classmethod
-	def _form_config_redef(cls) -> None:
-		super()._form_config_redef()
-		form_config(
-			cls._meta.get_field(cls.name.name),
-			label="Keyword",
-			tooltipExplanation="General science keywords relevant for the software (e.g. from the AGU Index List of the UAT) not supported by other metadata fields.",
-			tooltipBestPractise="Begin typing the keyword in the box. Keywords listed in the UAT and AGU Index lists will appear in a dropdown list, please choose the correct one(s). If your keyword is not listed, please type it in.",
-		)
-
 	def __str__(self) -> str: return self.name.title()
 
 class OperatingSystem(ControlledList):
 	'''Operating system on which the software can run'''
 	access = AccessLevel.PUBLIC
-	@classmethod
-	def _form_config_redef(cls) -> None:
-		super()._form_config_redef()
-		form_config(
-			cls._meta.get_field(cls.name.name),
-			label="Operating System",
-			tooltipExplanation="The operating systems the software supports.",
-			tooltipBestPractise="Please select all the operating systems the software can successfully be installed on.",
-		)
 
 class CpuArchitecture(ControlledList):
 	'''CPU Architecture on which the software can run'''
 	access = AccessLevel.PUBLIC
-	@classmethod
-	def _form_config_redef(cls) -> None:
-		super()._form_config_redef()
-		form_config(
-			cls._meta.get_field(cls.name.name),
-			label="CPU Architecture",
-			tooltipExplanation="",
-			tooltipBestPractise="",
-		)
-
+	
 class Phenomena(ControlledList):
 	'''Solar phenomena that relate to the software'''
 	access = AccessLevel.PUBLIC
-	@classmethod
-	def _form_config_redef(cls) -> None:
-		super()._form_config_redef()
-		form_config(
-			cls._meta.get_field(cls.name.name),
-			label="Related Phenomena",
-			tooltipExplanation="The phenomena the software supports science functionality for.",
-			tooltipBestPractise="Please select phenomena terms from a supported controlled vocabulary.",
-		)
 
 class RepoStatus(ControlledList):
 	'''
@@ -407,45 +345,13 @@ class RepoStatus(ControlledList):
 	'''
 	access = AccessLevel.PUBLIC
 	image = models.URLField(blank=True, null=True)
-
-	@classmethod
-	def _form_config_redef(cls) -> None:
-		super()._form_config_redef()
-		form_config(
-			cls._meta.get_field(cls.name.name),
-			label="Development Status",
-			tooltipExplanation="The development status of the software.",
-			tooltipBestPractise="Please select the development status of the code repository from the list below. See repostatus.org for a description of the terms.",
-		)
 	
 	class Meta: verbose_name_plural = "Repo Statuses"
-
-class Image(HssiModel):
-	'''Reference to an image file and alt text description'''
-	access = AccessLevel.PUBLIC
-	url = models.URLField(max_length=2048, blank=True, null=True)
-	description = models.CharField(max_length=250)
-
-	@classmethod
-	def get_top_field(cls): return cls._meta.get_field("url")
-
-	class Meta: ordering = ['description']
-	def __str__(self): return self.url
 
 class ProgrammingLanguage(ControlledList):
 	'''Primary Programming language used to develop the software'''
 	access = AccessLevel.PUBLIC
 	version = models.CharField(max_length=LEN_NAME, blank=True, null=True)
-
-	@classmethod
-	def _form_config_redef(cls) -> None:
-		super()._form_config_redef()
-		form_config(
-			cls._meta.get_field(cls.name.name),
-			label="Programming Language",
-			tooltipExplanation="The computer programming languages most important for the software.",
-			tooltipBestPractise="Select the most important languages of the software (e.g. Python, Fortran, C), then enter any other needed details, e.g. the flavor of Fortran. This is not meant to be an exhaustive list.",
-		)
 
 	def __str__(self): return self.name + (f" {self.version}" if self.version else "")
 
@@ -453,16 +359,6 @@ class DataInput(ControlledList):
 	'''Ways that the software can accept data as input'''
 	access = AccessLevel.PUBLIC
 	abbreviation = models.CharField(max_length=LEN_ABBREVIATION, blank=True, null=True)
-
-	@classmethod
-	def _form_config_redef(cls) -> None:
-		super()._form_config_redef()
-		form_config(
-			cls._meta.get_field(cls.name.name),
-			label="Data Inputs",
-			tooltipExplanation="The data input source the software supports.",
-			tooltipBestPractise="Please select all the data input sources the software supports from the list. If a data input source your software supports is not listed, please select 'Other'. If the data input source is observatory specific, please select 'observatory-specific' and make sure to indicate the name of the observatory, mission, or group of instruments in the Related Observatory field.",
-		)
 
 	def __str__(self): return self.name
 
@@ -475,30 +371,11 @@ class FileFormat(ControlledList):
 	softwares_to: models.Manager['Software']
 	softwares_from: models.Manager['Software']
 
-	@classmethod
-	def _form_config_redef(cls) -> None:
-		super()._form_config_redef()
-		form_config(
-			cls._meta.get_field(cls.name.name),
-			label="File Formats",
-			tooltipExplanation="The file formats the software supports for data input or output.",
-			tooltipBestPractise="Please select all the file formats that your software supports for either input files or files the software generates. Only file formats supported by the software should be indicated.",
-		)
-
 	def __str__(self): return self.name + (f" ({self.extension})" if self.extension else "")
 
 class Region(ControlledList):
 	'''Region of the sun which relates to the software'''
 	access = AccessLevel.PUBLIC
-	@classmethod
-	def _form_config_redef(cls) -> None:
-		super()._form_config_redef()
-		form_config(
-			cls._meta.get_field(cls.name.name),
-			label="Related Regions",
-			tooltipExplanation="The physical region the software supports science functionality for.",
-			tooltipBestPractise="Please select all physical regions the software's functionality is commonly used or intended for.",
-		)
 	
 	class Meta: ordering = ['name']
 	def __str__(self): return self.name
@@ -506,26 +383,8 @@ class Region(ControlledList):
 class InstrumentObservatory(ControlledList):
 	'''An observatory or scientific research instrument'''
 	access = AccessLevel.PUBLIC
-	type = form_config(
-		models.IntegerField(choices=InstrObsType.choices, default=InstrObsType.UNKNOWN),
-		label="Type",
-		widgetType="NumberWidget",
-	)
-	
-	abbreviation = form_config(
-		models.CharField(max_length=LEN_NAME, null=True, blank=True),
-		label="Abbreviation",
-	)
-
-	@classmethod
-	def _form_config_redef(cls) -> None:
-		super()._form_config_redef()
-		form_config(
-			cls._meta.get_field(cls.name.name),
-			label="Instrument/Observatory",
-			tooltipExplanation="The instrument/observatory the software is designed to support.",
-			tooltipBestPractise="Begin typing the item's name in the box. Instruments/Observatories listed in the IVOA will appear in a dropdown list, please choose the correct one. If your instrument/observatory is not listed, please type in the full name.",
-		)
+	type = models.IntegerField(choices=InstrObsType.choices, default=InstrObsType.UNKNOWN)
+	abbreviation = models.CharField(max_length=LEN_NAME, null=True, blank=True)
 
 	def get_search_terms(self) -> list[str]:
 		terms = super().get_search_terms()
@@ -575,15 +434,6 @@ class FunctionCategory(ControlledGraphList):
 		if parent.name: fullname = f"{parent.name}: "
 		fullname += self.name
 		return fullname
-
-	@classmethod
-	def _form_config_redef(cls) -> None:
-		super()._form_config_redef()
-		form_config(
-			cls._meta.get_field(cls.name.name),
-			label="Functionality",
-			tooltipExplanation="A category that contains functionalities.",
-		)
 
 	@classmethod
 	def post_fetch(cls):

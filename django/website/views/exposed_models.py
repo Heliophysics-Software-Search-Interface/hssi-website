@@ -4,41 +4,7 @@ from django.apps import apps
 from django.http import JsonResponse, HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from ..forms import *
-from ..models import (
-	HssiModel, Keyword, OperatingSystem, Phenomena, RepoStatus, Image,
-	ProgrammingLanguage, DataInput, CpuArchitecture,  FileFormat, Region,
-	InstrumentObservatory, FunctionCategory, License, Organization,
-	Person, Curator, Submitter, Award, RelatedItem,
-	SubmissionInfo, SoftwareVersion, Software,
-)
-from ..models.structurizer import ModelStructure, register_structure
-
-register_structure(*[
-		ModelStructure.create(Keyword),
-		ModelStructure.create(OperatingSystem),
-		ModelStructure.create(Phenomena),
-		ModelStructure.create(RepoStatus),
-		ModelStructure.create(Image),
-		ModelStructure.create(ProgrammingLanguage),
-		ModelStructure.create(DataInput),
-		ModelStructure.create(CpuArchitecture),
-		ModelStructure.create(FileFormat),
-		ModelStructure.create(Region),
-		ModelStructure.create(InstrumentObservatory),
-		ModelStructure.create(FunctionCategory),
-		ModelStructure.create(License),
-		ModelStructure.create(Organization),
-		ModelStructure.create(Person),
-		# ModelStructure.create(Curator),
-		ModelStructure.create(Submitter),
-		ModelStructure.create(Award),
-		# ModelStructure.create(Functionality),
-		ModelStructure.create(RelatedItem),
-		# ModelStructure.create(SubmissionInfo),
-		ModelStructure.create(SoftwareVersion),
-		ModelStructure.create(Software),
-		ModelStructure.create(VisibleSoftware),
-	])
+from ..models import HssiModel, Software
 
 def get_model_structure(request: HttpRequest) -> JsonResponse:
 	structures = { "data": [

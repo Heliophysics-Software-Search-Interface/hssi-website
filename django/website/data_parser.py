@@ -385,14 +385,7 @@ def apply_logo(software: Software, data: dict) -> None:
 	"""Resolve or create an Image from logo URL and assign Software.logo."""
 	logo_url = data.get(FIELD_LOGO)
 	if not logo_url: return
-
-	img = Image.objects.filter(url=logo_url).first()
-	if not img:
-		img = Image()
-		img.description = f"logo for {software.softwareName}"
-		img.url = logo_url
-		img.save()
-	software.logo = img
+	software.logo = logo_url
 
 def split_firstname_lastname(submitter_name: str) -> tuple[str, str]:
 	"""Parse submitter full name into (first_name, last_name)."""

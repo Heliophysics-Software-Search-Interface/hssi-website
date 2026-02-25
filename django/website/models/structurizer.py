@@ -27,15 +27,6 @@ registered_structures: dict[str, 'ModelStructure'] = {}
 def register_structure(*structure: 'ModelStructure'):
 	for struct in structure: registered_structures[struct.type_name] = struct
 
-def form_config(field: models.Field, **kwargs) -> models.Field:
-	'''
-	Allows for configuration of field properties to pass as model field 
-	structure to frontend for form generation
-	'''
-	config = getattr(field, FORM_CONFIG_ATTR, {})
-	setattr(field, FORM_CONFIG_ATTR, config | kwargs)
-	return field
-
 class WidgetPrimitiveName(StrEnum):
 	char = "CharWidget"
 	number = "NumberWidget"
@@ -138,8 +129,10 @@ class ModelStructure:
 	top_field: ModelSubfield | None = None
 	subfields: list[ModelSubfield] = []
 
+	# TODO remove this or implement another form of autogeneration through 
+	# in-place definitions (maybe in Serializers when DRF is implemented?)
 	@classmethod
-	def create(cls, model: Type['HssiModel']) -> 'ModelStructure':
+	def generate(cls, model: Type['HssiModel']) -> 'ModelStructure':
 		""" create a model structure based on the given hssi model class """
 
 		structure = ModelStructure()

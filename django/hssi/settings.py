@@ -22,6 +22,8 @@ SECRET_KEY = 'abcdefg'
 SUPERUSER_NAME = None if 'SUPERUSER_NAME' not in os.environ else os.environ.get('SUPERUSER_NAME')
 SUPERUSER_PWD = None if 'SUPERUSER_PWD' not in os.environ else os.environ.get('SUPERUSER_PWD')
 
+HSSI_UPDATE_TOKEN = os.environ.get("HSSI_UPDATE_TOKEN")
+
 ADMIN_EMAIL = "admin@my-site.com"
 DEFAULT_FROM_EMAIL = "noreply@hssi.hsdcloud.org"
 

@@ -351,6 +351,21 @@ def apply_software_core_fields(software: Software, data: dict) -> None:
 	software.conciseDescription = data.get(FIELD_CONCISEDESCRIPTION)
 	software.documentation = data.get(FIELD_DOCUMENTATION)
 
+def apply_software_core_fields_partial(software: Software, data: dict) -> None:
+	"""Like apply_software_core_fields but only sets fields present in data.
+	Fields absent from data are left untouched on the software object."""
+	CORE_FIELD_MAP = {
+		FIELD_PERSISTENTIDENTIFIER: "persistentIdentifier",
+		FIELD_CODEREPOSITORYURL: "codeRepositoryUrl",
+		FIELD_SOFTWARENAME: "softwareName",
+		FIELD_DESCRIPTION: "description",
+		FIELD_CONCISEDESCRIPTION: "conciseDescription",
+		FIELD_DOCUMENTATION: "documentation",
+	}
+	for form_key, model_attr in CORE_FIELD_MAP.items():
+		if form_key in data:
+			setattr(software, model_attr, data[form_key])
+
 def apply_reference_publication(software: Software, data: dict) -> None:
 	"""Resolve and assign the reference publication RelatedItem by identifier."""
 	identifier = data.get(FIELD_REFERENCEPUBLICATION)

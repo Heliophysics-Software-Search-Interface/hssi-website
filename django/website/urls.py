@@ -7,6 +7,8 @@ urlpatterns = [
 	path('', views.published_resources, name="published_resources"),
 	path('api', views.api_view, name="rest_api"),
 	path('api/submit', views.api_submit),
+	path('api/update', views.api_update),
+	path('api/update/lookup', views.api_update_lookup),
 	path('FAQ/', views.FAQ, name="FAQ"),
 	path('news/', views.NewsView.as_view(), name='news'),
 	path('news/rss/', views.NewsFeed()),

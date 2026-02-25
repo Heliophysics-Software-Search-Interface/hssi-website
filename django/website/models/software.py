@@ -11,7 +11,7 @@ from .people import Person
 from .auxillary_info import RelatedItem, Award
 from .submission_info import SubmissionInfo
 from .roots import ( LEN_NAME, HssiModel,
-	RepoStatus, OperatingSystem, Keyword, Image, Phenomena, Organization, 
+	RepoStatus, OperatingSystem, Keyword, Phenomena, Organization, 
 	License, InstrumentObservatory, ProgrammingLanguage, FileFormat, 
 	Region, DataInput, FunctionCategory, CpuArchitecture, HssiSet,
 )
@@ -166,12 +166,7 @@ class Software(HssiModel):
 		related_name='softwares'
 	)
 	codeRepositoryUrl = models.URLField(blank=True, null=True)
-	logo = models.ForeignKey(
-		Image,
-		on_delete=models.SET_NULL, 
-		null=True, blank=True, 
-		related_name='softwares'
-	)
+	logo = models.URLField(blank=True, null=True)
 	relatedPhenomena = models.ManyToManyField(
 		Phenomena, 
 		blank=True,

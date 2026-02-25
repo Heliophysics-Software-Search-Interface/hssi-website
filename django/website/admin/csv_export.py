@@ -34,7 +34,6 @@ def model_csv_filepath(
 def remove_all_model_entries():
 	authors_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
 	models: list[Model] = [
-		Image,
 		Organization,
 		Person,
 		Curator,
@@ -75,7 +74,6 @@ def export_model_csv(model: 'Type[models.Model]', directory: str = DEFAULT_DB_EX
 		dataset_file.write(dataset.csv)
 
 def export_db_csv():
-	export_model_csv(Image)
 	export_model_csv(Organization)
 	export_model_csv(Person)
 	export_model_csv(Curator)
@@ -133,7 +131,6 @@ def import_model_csv(
 
 def import_db_csv():
 	# import order matters (?)
-	import_model_csv(Image)
 	import_model_csv(Organization)
 	import_model_csv(Person)
 	import_model_csv(Curator)

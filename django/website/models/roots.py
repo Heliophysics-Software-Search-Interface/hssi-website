@@ -348,18 +348,6 @@ class RepoStatus(ControlledList):
 	
 	class Meta: verbose_name_plural = "Repo Statuses"
 
-class Image(HssiModel):
-	'''Reference to an image file and alt text description'''
-	access = AccessLevel.PUBLIC
-	url = models.URLField(max_length=2048, blank=True, null=True)
-	description = models.CharField(max_length=250)
-
-	@classmethod
-	def get_top_field(cls): return cls._meta.get_field("url")
-
-	class Meta: ordering = ['description']
-	def __str__(self): return self.url
-
 class ProgrammingLanguage(ControlledList):
 	'''Primary Programming language used to develop the software'''
 	access = AccessLevel.PUBLIC

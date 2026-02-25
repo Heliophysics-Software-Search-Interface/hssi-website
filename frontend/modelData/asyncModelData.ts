@@ -13,7 +13,6 @@ import {
 	type SoftwareData,
 	type PersonData,
 	ModelDataCache,
-	type HSSIImageData,
 } from "../loader";
 
 export const apiModel = "/api/models/";
@@ -109,7 +108,7 @@ export interface SoftwareDataAsync extends HSSIModelData {
 	funder: Array<HssiDataAsync<OrganizationData>>,
 	award: HssiDataAsync<HSSIModelData>,
 	codeRepositoryUrl: string,
-	logo: HssiDataAsync<HSSIImageData>,
+	logo: string,
 	relatedRegion: Array<HssiDataAsync<ControlledListData>>,
 	relatedPhenomena: Array<HssiDataAsync<ControlledListData>>,
 	submissionInfo: HssiDataAsync<HSSIModelData>,
@@ -192,7 +191,7 @@ export function createAsyncSoftwareData(data: SoftwareData): SoftwareDataAsync{
 		funder: asyncify(data.funder, "Organization") as any,
 		award: asyncify(data.award, "Award") as any,
 		codeRepositoryUrl: data.codeRepositoryUrl,
-		logo: asyncify(data.logo, "Image") as any,
+		logo: data.logo,
 		relatedPhenomena: asyncify(data.relatedPhenomena, "Phenomena") as any,
 		submissionInfo: asyncify(data.submissionInfo, "SubmissionInfo") as any,
 	};

@@ -355,12 +355,12 @@ export class ResourceItem{
 		// Add logo
 		if(this.data.logo) {
 			(async () => {
-				const logo = await this.data.logo.getData();
-				if(logo.url){
+				const logo_url = this.data.logo;
+				if(logo_url){
 					const logoImage = document.createElement("img");
 					logoImage.classList.add(styleLogo);
-					logoImage.src = logo.url as any;
-					logoImage.alt = logo.description as any;
+					logoImage.src = logo_url;
+					logoImage.alt = "logo image for " + this.data.softwareName;
 					conciseDescDiv.prepend(logoImage);
 					descriptionDiv.prepend(logoImage.cloneNode());
 				}

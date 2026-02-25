@@ -26,6 +26,7 @@ services:
             - GUNICORN_BACKLOG=4096
             - GUNICORN_BIND=0.0.0.0:8000
             - GUNICORN_TIMEOUT=3600
+            - HSSI_UPDATE_TOKEN=$HSSI_UPDATE_TOKEN
 
     website_db:
         image: postgres

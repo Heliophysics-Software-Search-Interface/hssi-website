@@ -245,7 +245,7 @@ class SoftwareAdmin(HSSIModelAdmin):
 			exists = not not VisibleSoftware.objects.filter(pk=soft.pk).first()
 			if exists: continue
 			VisibleSoftware.objects.create(id=uuid.UUID(str(soft.id)))
-			print(f"made {soft.softwareName}:{soft.id} visible to public")
+			print(f"made {soft.software_name}:{soft.id} visible to public")
 
 	@action(description="Add to Edit Queue")
 	def add_edit_queue(self, request: HttpRequest, queryset: QuerySet[Software]):
@@ -286,7 +286,7 @@ class SoftwareEditQueueAdmin(ImportExportModelAdmin):
 		for item in to_remove: item.delete()
 
 	def target_name(self, obj: 'SoftwareEditQueue') -> str:
-		if obj.target_software: return obj.target_software.softwareName
+		if obj.target_software: return obj.target_software.software_name
 		return "None"
 	
 	actions = [
@@ -315,7 +315,7 @@ class SubmissionInfoAdmin(HSSIModelAdmin):
 	def submission_name(self, obj: SubmissionInfo):
 		if not obj or not obj.software:
 			return "<None>"
-		return obj.software.softwareName
+		return obj.software.software_name
 
 	def submitter_name(self, obj: SubmissionInfo):
 		if obj.submitter: return obj.submitter.fullName

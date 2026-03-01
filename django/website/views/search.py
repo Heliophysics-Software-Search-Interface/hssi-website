@@ -34,8 +34,8 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 	print(f"[search] query='{query}' tokens={tokens}")
 
 	tier_1_fields = [
-		"softwareName",
-		"conciseDescription",
+		"software_name",
+		"concise_description",
 		"description",
 	]
 	tier_2_fields = [
@@ -43,8 +43,8 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 	]
 	tier_3_fields = [
 		"relatedRegion__name",
-		"softwareFunctionality__name",
-		"dataSources__name",
+		"software_functionality__name",
+		"data_sources__name",
 		"relatedPhenomena__name",
 	]
 	tier_4_subtiers = [
@@ -56,14 +56,14 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 			"authors__identifier",
 		],
 		[
-			"programmingLanguage__name",
-			"relatedInstruments__name",
-			"relatedInstruments__abbreviation",
-			"relatedObservatories__name",
+			"programming_language__name",
+			"related_instruments__name",
+			"related_instruments__abbreviation",
+			"related_observatories__name",
 		],
 		[
-			"relatedObservatories__abbreviation",
-			"referencePublication__name",
+			"related_observatories__abbreviation",
+			"reference_publication__name",
 			"relatedPublications__name",
 		],
 		[

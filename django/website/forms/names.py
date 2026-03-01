@@ -27,9 +27,9 @@ TYPE_ORCID = "OrcidWidget"
 TYPE_DATACITEDOI = "DataciteDoiWidget"
 TYPE_MODELBOX = "ModelBox"
 
-FIELD_PERSISTENTIDENTIFIER = "persistentIdentifier"
-FIELD_PROGRAMMINGLANGUAGE = "programmingLanguage"
-FIELD_PUBLICATIONDATE = "publicationDate"
+FIELD_PERSISTENTIDENTIFIER = "persistent_identifier"
+FIELD_PROGRAMMINGLANGUAGE = "programming_language"
+FIELD_PUBLICATIONDATE = "publication_date"
 FIELD_AUTHORS = "authors"
 FIELD_AUTHORIDENTIFIER = "authorIdentifier"
 FIELD_AUTHORAFFILIATION = "authorAffiliation"
@@ -40,21 +40,21 @@ FIELD_CONTRIBUTORAFFILIATION = "contributorAffiliation"
 FIELD_CONTRIBUTORAFFILIATIONIDENTIFIER = "contributorAffiliationIdentifier"
 FIELD_PUBLISHER = "publisher"
 FIELD_PUBLISHERIDENTIFIER = "publisherIdentifier"
-FIELD_RELATEDINSTRUMENTS = "relatedInstruments"
+FIELD_RELATEDINSTRUMENTS = "related_instruments"
 FIELD_RELATEDINSTRUMENTIDENTIFIER = "relatedInstrumentIdentifier"
 FIELD_RELATEDOBSERVATORYIDENTIFIER = "relatedObservatoryIdentifier"
-FIELD_RELATEDOBSERVATORIES = "relatedObservatories"
-FIELD_SOFTWARENAME = "softwareName"
+FIELD_RELATEDOBSERVATORIES = "related_observatories"
+FIELD_SOFTWARENAME = "software_name"
 FIELD_VERSIONNUMBER = "versionNumber"
 FIELD_VERSIONDATE = "versionDate"
 FIELD_VERSIONDESCRIPTION = "versionDescription"
 FIELD_VERSIONPID = "versionPID"
-FIELD_REFERENCEPUBLICATION = "referencePublication"
+FIELD_REFERENCEPUBLICATION = "reference_publication"
 FIELD_DESCRIPTION = "description"
-FIELD_CONCISEDESCRIPTION = "conciseDescription"
-FIELD_SOFTWAREFUNCTIONALITY = "softwareFunctionality"
+FIELD_CONCISEDESCRIPTION = "concise_description"
+FIELD_SOFTWAREFUNCTIONALITY = "software_functionality"
 FIELD_DOCUMENTATION = "documentation"
-FIELD_DATASOURCES = "dataSources"
+FIELD_DATASOURCES = "data_sources"
 FIELD_INPUTFORMATS = "inputFormats"
 FIELD_OUTPUTFORMATS = "outputFormats"
 FIELD_RELATEDPUBLICATIONS = "relatedPublications"
@@ -239,9 +239,9 @@ TTBEST_CURATOREMAIL = "Please ensure that a complete email address is given."
 
 # TODO give a proper solution for mapping field names to database rows on frontend
 MODEL_FIELD_MAP = {
-	FIELD_PERSISTENTIDENTIFIER: "persistentIdentifier",
+	FIELD_PERSISTENTIDENTIFIER: "persistent_identifier",
 	FIELD_PROGRAMMINGLANGUAGE: "programmingLanguage",
-	FIELD_PUBLICATIONDATE: "publicationDate",
+	FIELD_PUBLICATIONDATE: "publication_date",
 	FIELD_AUTHORS: "authors",
 	FIELD_AUTHORIDENTIFIER: "identifier",
 	FIELD_AUTHORAFFILIATION: "affiliation",
@@ -252,20 +252,20 @@ MODEL_FIELD_MAP = {
 	FIELD_CONTRIBUTORAFFILIATIONIDENTIFIER: "identifier",
 	FIELD_PUBLISHER: "publisher",
 	FIELD_PUBLISHERIDENTIFIER: "identifier",
-	FIELD_RELATEDINSTRUMENTS: "relatedInstruments",
+	FIELD_RELATEDINSTRUMENTS: "related_instruments",
 	FIELD_RELATEDINSTRUMENTIDENTIFIER: "identifier",
-	FIELD_RELATEDOBSERVATORIES: "relatedObservatories",
-	FIELD_SOFTWARENAME: "softwareName",
+	FIELD_RELATEDOBSERVATORIES: "related_observatories",
+	FIELD_SOFTWARENAME: "software_name",
 	FIELD_VERSIONNUMBER: "version",
 	FIELD_VERSIONDATE: "release_date",
 	FIELD_VERSIONDESCRIPTION: "description",
 	FIELD_VERSIONPID: "version_pid",
-	FIELD_REFERENCEPUBLICATION: "referencePublication",
+	FIELD_REFERENCEPUBLICATION: "reference_publication",
 	FIELD_DESCRIPTION: "description",
-	FIELD_CONCISEDESCRIPTION: "conciseDescription",
-	FIELD_SOFTWAREFUNCTIONALITY: "softwareFunctionality",
+	FIELD_CONCISEDESCRIPTION: "concise_description",
+	FIELD_SOFTWAREFUNCTIONALITY: "software_functionality",
 	FIELD_DOCUMENTATION: "documentation",
-	FIELD_DATASOURCES: "dataSources",
+	FIELD_DATASOURCES: "data_sources",
 	FIELD_INPUTFORMATS: "inputFormats",
 	FIELD_OUTPUTFORMATS: "outputFormats",
 	FIELD_RELATEDPUBLICATIONS: "relatedPublications",

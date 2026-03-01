@@ -166,7 +166,7 @@ export class FormGenerator {
 
 		// check version date is later than or equal to publication date
 		// const pubDateField = this.getRootFields().find(
-		// 	x => x.name === "publicationDate" 
+		// 	x => x.name === "publication_date" 
 		// );
 		// const verDateField = this.getRootFields().find(
 		// 	x => x.name === "versionNumber"

@@ -2,10 +2,10 @@
 {% load static %}
 {% load markdownify %}
 
-{% block title %}{{ software.softwareName }} - HSSI{% endblock %}
+{% block title %}{{ software.software_name }} - HSSI{% endblock %}
 
 {% block seo_description %}
-<meta name="description" content="{{ software.conciseDescription|default:software.description|truncatewords:30 }}" />
+<meta name="description" content="{{ software.concise_description|default:software.description|truncatewords:30 }}" />
 {% endblock %}
 
 {% block head %}
@@ -20,7 +20,7 @@
     <div class="software-header">
         <div class="software-header-content">
             <div class="software-title-section">
-                <h1 class="software-name">{{ software.softwareName }}</h1>
+                <h1 class="software-name">{{ software.software_name }}</h1>
                 {% if software.version %}
                 <span class="software-version">{{ software.version.number }}</span>
                 {% endif %}
@@ -28,7 +28,7 @@
 
             {% if software.logo and software.logo.url %}
             <div class="software-logo-container">
-                <img class="software-logo" src="{{ software.logo.url }}" alt="{{ software.softwareName }} logo">
+                <img class="software-logo" src="{{ software.logo.url }}" alt="{{ software.software_name }} logo">
             </div>
             {% endif %}
         </div>
@@ -45,13 +45,13 @@
                 <i class="fa fa-book"></i> Docs
             </a>
             {% endif %}
-            {% if software.referencePublication and software.referencePublication.identifier %}
-            <a href="{{ software.referencePublication.identifier }}" class="action-btn btn-publication" target="_blank">
+            {% if software.reference_publication and software.reference_publication.identifier %}
+            <a href="{{ software.reference_publication.identifier }}" class="action-btn btn-publication" target="_blank">
                 <i class="fa fa-file-text"></i> Publication
             </a>
             {% endif %}
-            {% if software.persistentIdentifier %}
-            <a href="{{ software.persistentIdentifier }}" class="action-btn btn-doi" target="_blank">
+            {% if software.persistent_identifier %}
+            <a href="{{ software.persistent_identifier }}" class="action-btn btn-doi" target="_blank">
                 <i class="fa fa-link"></i> DOI
             </a>
             {% endif %}
@@ -74,31 +74,31 @@
         </details>
 
         <!-- Concise Description Section -->
-        {% if software.conciseDescription %}
+        {% if software.concise_description %}
         <details class="software-section">
             <summary class="section-title">Concise Description</summary>
             <div class="description-content">
-                {{ software.conciseDescription|markdownify }}
+                {{ software.concise_description|markdownify }}
             </div>
         </details>
         {% endif %}
 
         <!-- Reference Publication Section -->
-        {% if software.referencePublication %}
+        {% if software.reference_publication %}
         <details class="software-section" open>
             <summary class="section-title">Reference Publication</summary>
             <div class="publication-item">
-                {% if software.referencePublication.identifier %}
-                <a href="{{ software.referencePublication.identifier }}" class="publication-title-link" target="_blank">
-                    {% if software.referencePublication.name and software.referencePublication.name != "UNKNOWN" %}
-                    {{ software.referencePublication.name }}
+                {% if software.reference_publication.identifier %}
+                <a href="{{ software.reference_publication.identifier }}" class="publication-title-link" target="_blank">
+                    {% if software.reference_publication.name and software.reference_publication.name != "UNKNOWN" %}
+                    {{ software.reference_publication.name }}
                     {% else %}
-                    {{ software.referencePublication.identifier }}
+                    {{ software.reference_publication.identifier }}
                     {% endif %}
                 </a>
                 {% else %}
                 <span class="publication-title">
-                    {{ software.referencePublication.name }}
+                    {{ software.reference_publication.name }}
                 </span>
                 {% endif %}
             </div>
@@ -144,11 +144,11 @@
         {% endif %}
 
         <!-- Functionality Section -->
-        {% if software.softwareFunctionality.all %}
+        {% if software.software_functionality.all %}
         <details class="software-section" open>
             <summary class="section-title">Functionality</summary>
             <div class="functionality-tags">
-                {% for func in software.softwareFunctionality.all %}
+                {% for func in software.software_functionality.all %}
                 <span class="tag functionality-tag"
                       style="background-color: {{ func.backgroundColor }}; color: {{ func.textColor }}">
                     {{ func.name }}
@@ -162,11 +162,11 @@
         <details class="software-section" open>
             <summary class="section-title">Technical Details</summary>
             <div class="metadata-grid">
-                {% if software.programmingLanguage.all %}
+                {% if software.programming_language.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Programming Languages</span>
                     <span class="metadata-value">
-                        {% for lang in software.programmingLanguage.all %}
+                        {% for lang in software.programming_language.all %}
                         <span class="tag">{{ lang.name }}</span>
                         {% endfor %}
                     </span>
@@ -204,10 +204,10 @@
                 </div>
                 {% endif %}
 
-                {% if software.publicationDate %}
+                {% if software.publication_date %}
                 <div class="metadata-item">
                     <span class="metadata-label">Publication Date</span>
-                    <span class="metadata-value">{{ software.publicationDate|date:"M d, Y" }}</span>
+                    <span class="metadata-value">{{ software.publication_date|date:"M d, Y" }}</span>
                 </div>
                 {% endif %}
 
@@ -229,15 +229,15 @@
         </details>
 
         <!-- Data & File Formats Section -->
-        {% if software.dataSources.all or software.inputFormats.all or software.outputFormats.all %}
+        {% if software.data_sources.all or software.inputFormats.all or software.outputFormats.all %}
         <details class="software-section" open>
             <summary class="section-title">Data & File Formats</summary>
             <div class="metadata-grid">
-                {% if software.dataSources.all %}
+                {% if software.data_sources.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Data Sources</span>
                     <span class="metadata-value">
-                        {% for ds in software.dataSources.all %}
+                        {% for ds in software.data_sources.all %}
                         <span class="tag">{{ ds.name }}</span>
                         {% endfor %}
                     </span>
@@ -270,15 +270,15 @@
         {% endif %}
 
         <!-- Science Context Section -->
-        {% if software.relatedInstruments.all or software.relatedObservatories.all or software.relatedPhenomena.all or software.relatedRegion.all %}
+        {% if software.related_instruments.all or software.related_observatories.all or software.relatedPhenomena.all or software.relatedRegion.all %}
         <details class="software-section" open>
             <summary class="section-title">Science Context</summary>
             <div class="metadata-grid">
-                {% if software.relatedInstruments.all %}
+                {% if software.related_instruments.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Related Instruments</span>
                     <span class="metadata-value">
-                        {% for inst in software.relatedInstruments.all %}
+                        {% for inst in software.related_instruments.all %}
                         {% if inst.identifier %}
                         <a class="tag" href="{{ inst.identifier }}" target="_blank">
                             {% if inst.name and inst.name != "UNKNOWN" %}
@@ -295,11 +295,11 @@
                 </div>
                 {% endif %}
 
-                {% if software.relatedObservatories.all %}
+                {% if software.related_observatories.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Related Observatories</span>
                     <span class="metadata-value">
-                        {% for obs in software.relatedObservatories.all %}
+                        {% for obs in software.related_observatories.all %}
                         {% if obs.identifier %}
                         <a class="tag" href="{{ obs.identifier }}" target="_blank">
                             {% if obs.name and obs.name != "UNKNOWN" %}

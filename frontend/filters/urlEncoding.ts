@@ -15,15 +15,15 @@ const urlSymUidDelim = ".";
 const uidUrlEncodeLength = 7;
 
 const softwareFieldParamPairs: [keyof SoftwareDataAsync, string][] = [
-	["programmingLanguage", "p"],
+	["programming_language", "p"],
 	["publisher", "pb"],
 	["authors", "a"],
-	["relatedInstruments", "i"],
-	["relatedObservatories", "o"],
+	["related_instruments", "i"],
+	["related_observatories", "o"],
 	["version", "v"],
-	["referencePublication", "pn"],
-	["softwareFunctionality", "f"],
-	["dataSources", "ds"],
+	["reference_publication", "pn"],
+	["software_functionality", "f"],
+	["data_sources", "ds"],
 	["inputFormats", "if"],
 	["outputFormats", "of"],
 	["cpuArchitecture", "cpu"],
@@ -42,15 +42,15 @@ const softwareFieldParamPairs: [keyof SoftwareDataAsync, string][] = [
 ];
 
 const softwareFieldToModelMap: {[key: keyof SoftwareDataAsync]: ModelName} = {
-	programmingLanguage: "ProgrammingLanguage",
+	programming_language: "ProgrammingLanguage",
 	publisher: "Organization",
 	authors: "Person",
-	relatedInstruments: "InstrumentObservatory",
-	relatedObservatories: "InstrumentObservatory",
+	related_instruments: "InstrumentObservatory",
+	related_observatories: "InstrumentObservatory",
 	version: "SoftwareVersion",
-	referencePublication: "RelatedItem",
-	softwareFunctionality: "FunctionCategory",
-	dataSources: "DataInput",
+	reference_publication: "RelatedItem",
+	software_functionality: "FunctionCategory",
+	data_sources: "DataInput",
 	inputFormats: "FileFormat",
 	outputFormats: "FileFormat",
 	cpuArchitecture: "CpuArchitecture",

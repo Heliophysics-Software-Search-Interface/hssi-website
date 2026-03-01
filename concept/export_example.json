@@ -56,7 +56,7 @@
         ]
     },
     "codemeta:buildInstructions": "http://www.sunpy.org/",
-    "codemeta:referencePublication": {
+    "codemeta:reference_publication": {
       "@id": "https://doi.org/10.3847/1538-4357/ab4f7a",
       "@type": "ScholarlyWork"
     },
@@ -102,7 +102,7 @@
       {
         "@type": "DefinedTerm",
         "name": "HAPI",
-        "description": "dataSources",
+        "description": "data_sources",
         "inDefinedTermSet": "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/jsonld/DataSources.json"
       },
       {
@@ -148,7 +148,7 @@
             "prov:Entity",
             "sosa:System"
         ],
-        "description": "relatedInstruments",
+        "description": "related_instruments",
         "identifier": {
             "@type": "PropertyValue",
             "propertyID": "SPASE Resource ID",
@@ -164,7 +164,7 @@
             "prov:Entity",
             "sosa:System"
         ],
-        "description": "relatedInstruments",
+        "description": "related_instruments",
         "name": "example instrument not in SPASE",
         "url": "DOI or url if given"
       },
@@ -175,7 +175,7 @@
             "prov:Entity",
             "sosa:Platform"
         ],
-        "description": "relatedObservatories",
+        "description": "related_observatories",
         "identifier": {
             "@type": "PropertyValue",
             "propertyID": "SPASE Resource ID",
@@ -191,7 +191,7 @@
             "prov:Entity",
             "sosa:System"
         ],
-        "description": "relatedObservatories",
+        "description": "related_observatories",
         "name": "example observatory not in SPASE",
         "url": "DOI or url if given"
       },
@@ -232,7 +232,7 @@
     ],    
     "name": "sunpy: A Core Package for Solar Physics",
     "operatingSystem": "OS Independent",
-    "programmingLanguage": "Python 3.x",
+    "programming_language": "Python 3.x",
     "processorRequirements": ["x86-64", "Apple Silicon arm64"],
     "publisher": {
         "@id": "https://zenodo.org/",

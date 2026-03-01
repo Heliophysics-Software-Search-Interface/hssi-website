@@ -7,7 +7,7 @@ import {
 /** data that represents all fields in the software submission form */
 export type SubmissionFormData = {
 	submitterName?: string,
-	persistentIdentifier?: string,
+	persistent_identifier?: string,
 	codeRepositoryURL?: string,
 	authors?: {
 		authors?: string,
@@ -17,10 +17,10 @@ export type SubmissionFormData = {
 			authorAffiliationIdentifier?: string,
 		}[],
 	}[],
-	softwareName?: string,
+	software_name?: string,
 	description?: string,
-	conciseDescription?: string,
-	publicationDate?: string,
+	concise_description?: string,
+	publication_date?: string,
 	publisher?: {
 		publisher?: string,
 		publisherIdentifier?: string,
@@ -31,20 +31,20 @@ export type SubmissionFormData = {
 		versionDescription?: string,
 		versionPID?: string,
 	},
-	programmingLanguage?: string[],
+	programming_language?: string[],
 	license?: {
 		license?: string,
 		licenseURI?: string,
 	},
 	keywords?: string[],
-	softwareFunctionality?: string[],
-	dataSources?: string[],
+	software_functionality?: string[],
+	data_sources?: string[],
 	inputFormats?: string[],
 	outputFormats?: string[],
 	operatingSystem?: string[],
 	cpuArchitecture?: string[],
 	relatedRegion?: string[],
-	referencePublication?: string,
+	reference_publication?: string,
 	developmentStatus?: string,
 	documentation?: string,
 	funder?: {
@@ -59,12 +59,12 @@ export type SubmissionFormData = {
 	relatedDatasets?: string[],
 	relatedSoftware?: string[],
 	interoperableSoftware?: string[],
-	relatedInstruments?: {
-		relatedInstruments?: string,
+	related_instruments?: {
+		related_instruments?: string,
 		relatedInstrumentIdentifier?: string,
 	}[],
-	relatedObservatories?: {
-		relatedObservatories?: string,
+	related_observatories?: {
+		related_observatories?: string,
 		relatedObservatoryIdentifier?: string,
 	}[],
 	logo?: string,

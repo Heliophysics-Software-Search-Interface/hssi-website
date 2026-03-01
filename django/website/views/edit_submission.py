@@ -111,7 +111,7 @@ def email_existing_edit_link(submission: SubmissionInfo) -> bool:
 
 	print(f"Sending edit link for {item.id} to {emails}")
 	send_mail(
-		f"[HSSI] '{software.softwareName}' Submission Confirmed!", 
+		f"[HSSI] '{software.software_name}' Submission Confirmed!", 
 		message, 
 		None, 
 		emails
@@ -136,7 +136,7 @@ def email_edit_link(submission: SubmissionInfo, expire_time: timedelta = timedel
 		# f"your submissiont to HSSI. " +
 		f"You can use " +
 		f"the link below to edit your submission " + 
-		f"'{software.softwareName}': \n\n{link}\n\n" +
+		f"'{software.software_name}': \n\n{link}\n\n" +
 		f"Note that this link will expire on " +
 		f"UTC {queue_item.expiration.strftime("%Y-%m-%d %H:%M")}."
 	)
@@ -144,7 +144,7 @@ def email_edit_link(submission: SubmissionInfo, expire_time: timedelta = timedel
 	emails = submission.submitter.email_list()
 	print(f"Creating and sending edit link for {queue_item.id} to {emails}...")
 	send_mail(
-		f"[HSSI] Link to edit '{software.softwareName}' submission", 
+		f"[HSSI] Link to edit '{software.software_name}' submission", 
 		message, 
 		None, 
 		emails

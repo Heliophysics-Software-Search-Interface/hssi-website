@@ -345,11 +345,11 @@ def parse_controlled_list(
 
 def apply_software_core_fields(software: Software, data: dict) -> None:
 	"""Populate core scalar Software fields directly from submission data."""
-	software.persistentIdentifier = data.get(FIELD_PERSISTENTIDENTIFIER)
+	software.persistent_identifier = data.get(FIELD_PERSISTENTIDENTIFIER)
 	software.codeRepositoryUrl = data.get(FIELD_CODEREPOSITORYURL)
-	software.softwareName = data.get(FIELD_SOFTWARENAME)
+	software.software_name = data.get(FIELD_SOFTWARENAME)
 	software.description = data.get(FIELD_DESCRIPTION)
-	software.conciseDescription = data.get(FIELD_CONCISEDESCRIPTION)
+	software.concise_description = data.get(FIELD_CONCISEDESCRIPTION)
 	software.documentation = data.get(FIELD_DOCUMENTATION)
 
 def apply_reference_publication(software: Software, data: dict) -> None:
@@ -369,7 +369,7 @@ def apply_reference_publication(software: Software, data: dict) -> None:
 		refpub.type = RelatedItemType.PUBLICATION
 		refpub.save()
 	
-	software.referencePublication = refpub
+	software.reference_publication = refpub
 
 def apply_development_status(software: Software, data: dict) -> None:
 	"""Resolve and assign Software.developmentStatus from RepoStatus."""
@@ -528,12 +528,12 @@ def apply_authors(software: Software, data: dict) -> None:
 		software.authors.add(author)
 
 def apply_publication_date(software: Software, data: dict) -> None:
-	"""Parse and set Software.publicationDate from submission data."""
+	"""Parse and set Software.publication_date from submission data."""
 	pub_date = data.get(FIELD_PUBLICATIONDATE)
 	if not pub_date: return
 
 	pub_date = datetime.datetime.strptime(pub_date, '%Y-%m-%d').date()
-	software.publicationDate = pub_date
+	software.publication_date = pub_date
 
 def apply_controlled_m2m(
 	software: Software,
@@ -601,7 +601,7 @@ def apply_function_category(software: Software, fullnames: list[str]):
 		else: raise Exception(f"{FunctionCategory.__name__} '{fullname}' does not exist")
 
 	# apply categories to entry
-	software.softwareFunctionality.set(categories)
+	software.software_functionality.set(categories)
 
 def apply_keywords(software: Software, data: dict) -> None:
 	"""Replace Software.keywords with Keyword references, creating when needed."""
@@ -688,37 +688,37 @@ def apply_related_items(
 		m2m_manager.add(rel_item)
 
 def apply_related_instruments(software: Software, data: dict) -> None:
-	"""Replace Software.relatedInstruments with resolved instrument records."""
+	"""Replace Software.related_instruments with resolved instrument records."""
 	relinstr_datas: list[dict] = data.get(FIELD_RELATEDINSTRUMENTS)
 	if not relinstr_datas: return
 
-	software.relatedInstruments.clear()
+	software.related_instruments.clear()
 	for relinstr_data in relinstr_datas:
 		instr_name = relinstr_data.get(FIELD_RELATEDINSTRUMENTS)
 		try:
 			uid = UUID(instr_name)
-			software.relatedInstruments.add(InstrumentObservatory.objects.get(pk=uid))
+			software.related_instruments.add(InstrumentObservatory.objects.get(pk=uid))
 		except Exception:
 			instr_ident = relinstr_data.get(FIELD_RELATEDINSTRUMENTIDENTIFIER)
 			instr_ref = None
 			if instr_ident:
 				instr_ref = InstrumentObservatory.objects.filter(identifier=instr_ident).first()
 			if instr_ref:
-				software.relatedInstruments.add(instr_ref)
+				software.related_instruments.add(instr_ref)
 			else:
 				instr = InstrumentObservatory()
 				instr.name = instr_name or "UNKNOWN"
 				instr.identifier = instr_ident
 				instr.type = InstrObsType.INSTRUMENT.value
 				instr.save()
-				software.relatedInstruments.add(instr)
+				software.related_instruments.add(instr)
 
 def apply_related_observatories(software: Software, data: dict) -> None:
-	"""Replace Software.relatedObservatories with resolved observatory records."""
+	"""Replace Software.related_observatories with resolved observatory records."""
 	relobs_datas: list[dict] = data.get(FIELD_RELATEDOBSERVATORIES)
 	if not relobs_datas: return
 
-	software.relatedObservatories.clear()
+	software.related_observatories.clear()
 	for relobs_data in relobs_datas:
 		if isinstance(relobs_data, dict):
 			obs_name = relobs_data.get(FIELD_RELATEDOBSERVATORIES)
@@ -726,7 +726,7 @@ def apply_related_observatories(software: Software, data: dict) -> None:
 			obs_name = relobs_data
 		try:
 			uid = UUID(obs_name)
-			software.relatedObservatories.add(InstrumentObservatory.objects.get(pk=uid))
+			software.related_observatories.add(InstrumentObservatory.objects.get(pk=uid))
 		except Exception:
 			obs_ident = None
 			if isinstance(relobs_data, dict):
@@ -735,14 +735,14 @@ def apply_related_observatories(software: Software, data: dict) -> None:
 			if obs_ident:
 				obs_ref = InstrumentObservatory.objects.filter(identifier=obs_ident).first()
 			if obs_ref:
-				software.relatedObservatories.add(obs_ref)
+				software.related_observatories.add(obs_ref)
 			else:
 				obs = InstrumentObservatory()
 				obs.name = obs_name or "UNKNOWN"
 				obs.identifier = obs_ident
 				obs.type = InstrObsType.OBSERVATORY.value
 				obs.save()
-				software.relatedObservatories.add(obs)
+				software.related_observatories.add(obs)
 
 def handle_submission_data(data: dict, software_target: Software = None) -> uuid.UUID:
 	"""Store submission data in the specified software target."""

@@ -10,6 +10,6 @@ export class DataSourcesFilterTab extends ControlledListFilterTab {
 	public constructor(parentMenu: FilterMenu) {
 		super(parentMenu);
 		this.targetModel = "DataInput";
-		this.targetField = "dataSources";
+		this.targetField = "data_sources";
 	}
 }

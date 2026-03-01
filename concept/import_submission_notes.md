@@ -35,7 +35,7 @@ These fields **must be in the json object**, otherwise the submission is not
 valid, and will not be accepted.
 
 * `submitter` *required* - array of [`Submitter`](#submitter) objects
-* `softwareName` *required*
+* `software_name` *required*
 * `codeRepositoryUrl` *required*
 * `authors` *required* - array of [`Person`](#person) objects
 * `description` *required*
@@ -46,12 +46,12 @@ These fields can be omitted, however, doing so will likely have a negative
 impact on the software's discoverability and usability.
 
 * `documentation` - url
-* `persistentIdentifier` - url
-* `softwareFunctionality` - array of full names
+* `persistent_identifier` - url
+* `software_functionality` - array of full names
 	* full names should be formated as `Parent Name: Child Name`, where parent
 	and child names must be **exact matches** taken from `name` field in
 	[`/api/models/FunctionCategory/rows/all`](https://hssi.hsdcloud.org/api/models/FunctionCategory/rows/all/)
-* `publicationDate` - date (ISO format string)
+* `publication_date` - date (ISO format string)
 * `publisher` - [`Organization`](#organization) object
 * `license` - license name string 
 	* must be **exact match** taken from a `name` field in 
@@ -65,7 +65,7 @@ impact on the software's discoverability and usability.
 * `relatedRegion` - array of region name strings
 	* must be **exact match** taken from `name` field in
 	[`/api/models/Region/rows/all/`](https://hssi.hsdcloud.org/api/models/Region/rows/all/)
-* `programmingLanguage` - array of programming language name strings
+* `programming_language` - array of programming language name strings
 	* must be **exact match** taken from `name` field in
 	[`/api/models/ProgrammingLanguage/rows/all/`](https://hssi.hsdcloud.org/api/models/ProgrammingLanguage/rows/all/)
 * `inputFormats` - array of file format strings
@@ -89,12 +89,12 @@ impact on the software's discoverability and usability.
 These fields are helpful to have for discoverability and ease of access, 
 however they may not be applicable to some submissions.
 
-* `relatedInstruments` - array of [`Instrument`](#instrument) object
-* `relatedObservatories` - array of [`Observatory`](#observatory) object
-* `referencePublication` - url
-* `conciseDescription` - text
+* `related_instruments` - array of [`Instrument`](#instrument) object
+* `related_observatories` - array of [`Observatory`](#observatory) object
+* `reference_publication` - url
+* `concise_description` - text
 	* must be 200 characters or less
-* `dataSources` - array of data source strings
+* `data_sources` - array of data source strings
 	* must be **exact match** from `name` field in
 	[`/api/models/DataInput/rows/all/`](https://hssi.hsdcloud.org/api/models/DataInput/rows/all/)
 * `relatedPublications` - array of urls

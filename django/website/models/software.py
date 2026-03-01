@@ -37,12 +37,12 @@ class SoftwareVersion(HssiModel):
 
 class Software(HssiModel):
 	access = AccessLevel.CURATOR
-	programmingLanguage = models.ManyToManyField(
+	programming_language = models.ManyToManyField(
 		ProgrammingLanguage,
 		blank=True, 
 		related_name='softwares'
 	)
-	publicationDate = models.DateField(blank=True, null=True)
+	publication_date = models.DateField(blank=True, null=True)
 	publisher = models.ForeignKey(
 		Organization,
 		on_delete=models.SET_NULL, 
@@ -51,39 +51,39 @@ class Software(HssiModel):
 		related_name='softwares_published'
 	)
 	authors = SortedManyToManyField(Person, related_name='softwares')
-	relatedInstruments = models.ManyToManyField(
+	related_instruments = models.ManyToManyField(
 		InstrumentObservatory,
 		blank=True, 
 		related_name='softwares'
 	)
-	relatedObservatories = models.ManyToManyField(
+	related_observatories = models.ManyToManyField(
 		InstrumentObservatory,
 		blank=True, 
 		related_name='observatories'
 	)
-	softwareName = models.CharField(max_length=LEN_NAME)
+	software_name = models.CharField(max_length=LEN_NAME)
 	version = models.OneToOneField(
 		SoftwareVersion,
 		on_delete=models.SET_NULL,
 		blank=True, null=True,
 		related_name='software'
 	)
-	persistentIdentifier = models.URLField(blank=True, null=True)
-	referencePublication = models.ForeignKey(
+	persistent_identifier = models.URLField(blank=True, null=True)
+	reference_publication = models.ForeignKey(
 		RelatedItem,
 		on_delete=models.SET_NULL,
 		blank=True, null=True,
 		related_name="softwares_published"
 	)
 	description = models.TextField(blank=True, null=True)
-	conciseDescription = models.TextField(max_length=200, blank=True, null=True)
-	softwareFunctionality = models.ManyToManyField(
+	concise_description = models.TextField(max_length=200, blank=True, null=True)
+	software_functionality = models.ManyToManyField(
 		FunctionCategory, 
 		blank=True, 
 		related_name='softwares'
 	)
 	documentation = models.URLField(blank=True, null=True)
-	dataSources = models.ManyToManyField(
+	data_sources = models.ManyToManyField(
 		DataInput, 
 		blank=True,
 		related_name='softwares'
@@ -183,11 +183,11 @@ class Software(HssiModel):
 	get_developmentStatus_display: Callable[[], str]
 
 	class Meta:
-		ordering = ['softwareName']
+		ordering = ['software_name']
 		verbose_name_plural = '  Software'
 
 	@classmethod
-	def get_top_field(cls) -> models.Field: return cls._meta.get_field("softwareName")
+	def get_top_field(cls) -> models.Field: return cls._meta.get_field("software_name")
 
 	@classmethod
 	def get_subfields(cls):
@@ -198,7 +198,7 @@ class Software(HssiModel):
 				break
 		return subfields
 
-	def __str__(self): return self.softwareName
+	def __str__(self): return self.software_name
 
 	def get_absolute_url(self):
 		from django.urls import reverse

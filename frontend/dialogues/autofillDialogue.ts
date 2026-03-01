@@ -30,7 +30,7 @@ export class AutofillDialoge extends PopupDialogue {
 			catch(e) { console.error(e); }
 			Spinner.hideSpinner();
 			FormGenerator.fillForm({
-				persistentIdentifier: dataciteDoiVal
+				persistent_identifier: dataciteDoiVal
 			});
 		}
 

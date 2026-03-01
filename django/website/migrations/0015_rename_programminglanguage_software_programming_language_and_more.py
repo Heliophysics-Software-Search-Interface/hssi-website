@@ -132,4 +132,63 @@ class Migration(migrations.Migration):
             model_name='software',
             name='metadataLicense',
         ),
+        migrations.AlterModelOptions(
+            name='submissioninfo',
+            options={'ordering': ['date_modified'], 'verbose_name_plural': '  Submission Info'},
+        ),
+        migrations.RenameField(
+            model_name='submissioninfo',
+            old_name='contactCount',
+            new_name='contact_count',
+        ),
+        migrations.RenameField(
+            model_name='submissioninfo',
+            old_name='curatorLock',
+            new_name='curator_lock',
+        ),
+        migrations.RenameField(
+            model_name='submissioninfo',
+            old_name='dateModified',
+            new_name='date_modified',
+        ),
+        migrations.RenameField(
+            model_name='submissioninfo',
+            old_name='internalStatusCode',
+            new_name='internal_status_code',
+        ),
+        migrations.RenameField(
+            model_name='submissioninfo',
+            old_name='internalStatusNote',
+            new_name='internal_status_note',
+        ),
+        migrations.RenameField(
+            model_name='submissioninfo',
+            old_name='lastContactDate',
+            new_name='last_contact_date',
+        ),
+        migrations.RenameField(
+            model_name='submissioninfo',
+            old_name='leadCurator',
+            new_name='lead_curator',
+        ),
+        migrations.RenameField(
+            model_name='submissioninfo',
+            old_name='metadataVersionNumber',
+            new_name='metadata_version_number',
+        ),
+        migrations.RenameField(
+            model_name='submissioninfo',
+            old_name='modificationDescription',
+            new_name='modification_description',
+        ),
+        migrations.RenameField(
+            model_name='submissioninfo',
+            old_name='outOfSync',
+            new_name='out_of_sync',
+        ),
+        migrations.RenameField(
+            model_name='submissioninfo',
+            old_name='submissionDate',
+            new_name='submission_date',
+        ),
     ]

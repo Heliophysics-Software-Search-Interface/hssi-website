@@ -1,4 +1,4 @@
-id,firstName,lastName,identifier,affiliation
+id,given_name,family_name,identifier,affiliation
 6cb83664-92d7-445d-9116-f271790867f0,Ellianna,Abrahams,https://orcid.org/0000-0002-9879-1183,94750811-50aa-442c-8dfa-1dcb14bd266c
 1e45c8d8-ab4f-4cd7-8055-14454adc50fb,International Association of Geomagnetism and,Aeronomy,https://ror.org/013ym9476,
 b84a21c1-6b9b-4462-97fd-b83484265930,Samriddhi,Agarwal,https://orcid.org/0000-0003-4497-1637,f03f8ea3-b69c-433c-9ac8-a3e86a602110

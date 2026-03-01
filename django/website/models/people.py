@@ -42,7 +42,7 @@ class Person(HssiModel):
 
 	@staticmethod
 	def get_default_person() -> 'Person':
-		pers = Person.objects.filter(firstName="UNKNOWN").first()
+		pers = Person.objects.filter(given_name="UNKNOWN").first()
 		if not pers:
 			pers = Person()
 			pers.given_name = "UNKNOWN"

@@ -135,7 +135,7 @@ def import_model_csv(
 	else: print(filepath + " does not exist, skipping")
 
 def import_db_csv():
-	# import order matters (?)
+	# import order matters
 	import_model_csv(Organization)
 	import_model_csv(Person)
 	import_model_csv(Curator)
@@ -155,8 +155,8 @@ def import_db_csv():
 	import_model_csv(SoftwareVersion)
 	import_model_csv(RelatedItem)
 	import_model_csv(Submitter)
-	import_model_csv(SubmissionInfo)
 	import_model_csv(Software, exclude_fields=["authors"])
+	import_model_csv(SubmissionInfo)
 	import_model_csv(VisibleSoftware)
 	import_model_csv(SoftwareEditQueue)
 

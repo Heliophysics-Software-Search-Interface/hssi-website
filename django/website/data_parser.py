@@ -58,7 +58,7 @@ def api_submission_to_formdict(item: dict) -> dict:
 	form[FIELD_SOFTWARENAME] = require(FIELD_SOFTWARENAME)
 	code_repo = item.get(ROW_SOFTWARE_CODEREPOSITORYURL)
 	if not code_repo:
-		raise ValueError("Missing required field 'codeRepositoryUrl'.")
+		raise ValueError("Missing required field 'code_repository_url'.")
 	form[FIELD_CODEREPOSITORYURL] = code_repo
 	form[FIELD_DESCRIPTION] = require(FIELD_DESCRIPTION)
 
@@ -346,7 +346,7 @@ def parse_controlled_list(
 def apply_software_core_fields(software: Software, data: dict) -> None:
 	"""Populate core scalar Software fields directly from submission data."""
 	software.persistent_identifier = data.get(FIELD_PERSISTENTIDENTIFIER)
-	software.codeRepositoryUrl = data.get(FIELD_CODEREPOSITORYURL)
+	software.code_repository_url = data.get(FIELD_CODEREPOSITORYURL)
 	software.software_name = data.get(FIELD_SOFTWARENAME)
 	software.description = data.get(FIELD_DESCRIPTION)
 	software.concise_description = data.get(FIELD_CONCISEDESCRIPTION)

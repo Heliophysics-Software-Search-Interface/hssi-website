@@ -11,7 +11,7 @@
 			}
 		],
 		"software_name": "Example Name",
-		"codeRepositoryUrl": "https://repo.example.org/example",
+		"code_repository_url": "https://repo.example.org/example",
 		"authors": [
 			{
 				"given_name": "Isaiah",
@@ -118,7 +118,7 @@
 			"name": "GNU Library or 'Lesser' General Public Licenses (LGPL version 3)",
 			"url": "https://www.gnu.org/licenses/lgpl-3.0.html"
 		},
-		"relatedRegion": [
+		"related_region": [
 			"Solar Environment",
 			"Interplanetary Space"
 		],
@@ -126,11 +126,11 @@
 			"spectroscopy",
 			"magnetic fields"
 		],
-		"relatedSoftware": [
+		"related_software": [
 			"https://doi.org/10.5281/zenodo.10994081",
 			"https://doi.org/10.5281/zenodo.10994081"
 		],
-		"interoperableSoftware": [
+		"interoperable_software": [
 			"https://doi.org/10.5281/zenodo.10994081",
 			"https://doi.org/10.5281/zenodo.10994081"
 		],
@@ -156,7 +156,7 @@
 			}
 		],
 		"logo": "https://cdn.example.org/heliospectra/logo.png",
-		"relatedPhenomena": [
+		"related_phenomena": [
 			"Coronal Heating",
 			"Geomagnetic Storms"
 		]

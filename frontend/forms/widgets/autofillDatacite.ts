@@ -374,7 +374,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 
 		// set the related identifiers
 		if(relPubs) formData.related_publications = relPubs.map(doi => doiUrlPrefix + doi);
-		if(relSoftware) formData.relatedSoftware = relSoftware.map(doi => doiUrlPrefix + doi);
+		if(relSoftware) formData.related_software = relSoftware.map(doi => doiUrlPrefix + doi);
 		if(relData) formData.related_datasets = relData.map(doi => doiUrlPrefix + doi);
 
 		// version

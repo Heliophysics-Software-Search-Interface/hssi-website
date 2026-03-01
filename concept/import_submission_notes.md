@@ -36,7 +36,7 @@ valid, and will not be accepted.
 
 * `submitter` *required* - array of [`Submitter`](#submitter) objects
 * `software_name` *required*
-* `codeRepositoryUrl` *required*
+* `code_repository_url` *required*
 * `authors` *required* - array of [`Person`](#person) objects
 * `description` *required*
 
@@ -62,7 +62,7 @@ impact on the software's discoverability and usability.
 		* `release_date` - date (ISO format string)
 		* `description` - text
 		* `version_pid` - url
-* `relatedRegion` - array of region name strings
+* `related_region` - array of region name strings
 	* must be **exact match** taken from `name` field in
 	[`/api/models/Region/rows/all/`](https://hssi.hsdcloud.org/api/models/Region/rows/all/)
 * `programming_language` - array of programming language name strings
@@ -100,15 +100,15 @@ however they may not be applicable to some submissions.
 * `related_publications` - array of urls
 * `related_datasets` - array of urls
 * `keywords` - array of strings
-* `relatedSoftware` - array of urls
-* `interoperableSoftware` - array of urls
+* `related_software` - array of urls
+* `interoperable_software` - array of urls
 * `funder` - [`Organization`](#organization) object
 * `award` - array of objects
 	* subfields:
 		* `name` - string
 		* `identifier` - string
 * `logo` - url
-* `relatedPhenomena` array of phenomena strings
+* `related_phenomena` array of phenomena strings
 	* must be **exact match** from `name` field in
 	[`/api/models/Phenomena/rows/all/`](https://hssi.hsdcloud.org/api/models/Phenomena/rows/all/)
 

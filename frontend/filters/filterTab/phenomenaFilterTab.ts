@@ -10,6 +10,6 @@ export class PhenomenaFilterTab extends ControlledListFilterTab {
 	public constructor(parentMenu: FilterMenu) {
 		super(parentMenu);
 		this.targetModel = "Phenomena";
-		this.targetField = "relatedPhenomena";
+		this.targetField = "related_phenomena";
 	}
 }

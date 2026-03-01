@@ -74,17 +74,17 @@ FIELD_LICENSEFILEURL = "licenseFileURL"
 FIELD_LICENSEIDENTIFIER = "licenseIdentifier"
 FIELD_LICENSEIDENTIFIERSCHEME = "licenseIdentifierScheme"
 FIELD_SCHEMEURI = "schemeURI"
-FIELD_RELATEDREGION = "relatedRegion"
+FIELD_RELATEDREGION = "related_region"
 FIELD_KEYWORDS = "keywords"
-FIELD_RELATEDSOFTWARE = "relatedSoftware"
-FIELD_INTEROPERABLESOFTWARE = "interoperableSoftware"
+FIELD_RELATEDSOFTWARE = "related_software"
+FIELD_INTEROPERABLESOFTWARE = "interoperable_software"
 FIELD_FUNDER = "funder"
 FIELD_FUNDERIDENTIFIER = "funderIdentifier"
 FIELD_AWARDTITLE = "awardTitle"
 FIELD_AWARDNUMBER = "awardNumber"
 FIELD_CODEREPOSITORYURL = "codeRepositoryURL"
 FIELD_LOGO = "logo"
-FIELD_RELATEDPHENOMENA = "relatedPhenomena"
+FIELD_RELATEDPHENOMENA = "related_phenomena"
 FIELD_SUBMITTERNAME = "submitterName"
 FIELD_SUBMITTEREMAIL = "submitterEmail"
 FIELD_CURATORNAME = "curatorName"
@@ -109,7 +109,7 @@ ROW_AWARD_NAME = "name"
 ROW_AWARD_IDENTIFIER = "identifier"
 ROW_RELATEDITEM_TYPE = "type"
 ROW_SOFTWARE_VERSION = "version"
-ROW_SOFTWARE_CODEREPOSITORYURL = "codeRepositoryUrl"
+ROW_SOFTWARE_CODEREPOSITORYURL = "code_repository_url"
 ROW_SOFTWARE_AWARDTITLE = "award"
 
 TTEXPL_PROGRAMMINGLANGUAGE = "The computer programming languages most important for the software."
@@ -285,17 +285,17 @@ MODEL_FIELD_MAP = {
 	FIELD_LICENSEIDENTIFIER: "NONE",
 	FIELD_LICENSEIDENTIFIERSCHEME: "NONE",
 	FIELD_SCHEMEURI: "NONE",
-	FIELD_RELATEDREGION: "relatedRegion",
+	FIELD_RELATEDREGION: "related_region",
 	FIELD_KEYWORDS: "keywords",
-	FIELD_RELATEDSOFTWARE: "relatedSoftware",
-	FIELD_INTEROPERABLESOFTWARE: "interoperableSoftware",
+	FIELD_RELATEDSOFTWARE: "related_software",
+	FIELD_INTEROPERABLESOFTWARE: "interoperable_software",
 	FIELD_FUNDER: "funder",
 	FIELD_FUNDERIDENTIFIER: "identifier",
 	FIELD_AWARDTITLE: "award",
 	FIELD_AWARDNUMBER: "identifier",
-	FIELD_CODEREPOSITORYURL: "codeRepositoryUrl",
+	FIELD_CODEREPOSITORYURL: "code_repository_url",
 	FIELD_LOGO: "logo",
-	FIELD_RELATEDPHENOMENA: "relatedPhenomena",
+	FIELD_RELATEDPHENOMENA: "related_phenomena",
 	FIELD_SUBMITTERNAME: "submitter",
 	FIELD_SUBMITTEREMAIL: "email",
 	FIELD_CURATORNAME: "curator",

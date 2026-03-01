@@ -42,10 +42,10 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 		"keywords__name",
 	]
 	tier_3_fields = [
-		"relatedRegion__name",
+		"related_region__name",
 		"software_functionality__name",
 		"data_sources__name",
-		"relatedPhenomena__name",
+		"related_phenomena__name",
 	]
 	tier_4_subtiers = [
 		[
@@ -68,8 +68,8 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 		],
 		[
 			"related_datasets__name",
-			"relatedSoftware__name",
-			"interoperableSoftware__name",
+			"related_software__name",
+			"interoperable_software__name",
 		],
 		[
 			"funder__name",
@@ -91,7 +91,7 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 			"metadataLicense__name",
 		],
 		[
-			"codeRepositoryUrl",
+			"code_repository_url",
 			"documentation",
 		],
 		[

@@ -47,8 +47,8 @@ const linkHssiVocab = (
 );
 const listTagFields = [
 	"programming_language", 
-	"relatedRegion", 
-	"relatedPhenomena",
+	"related_region", 
+	"related_phenomena",
 	"data_sources"
 ];
 
@@ -89,12 +89,12 @@ export class ResourceItem{
 		bottomButtonContainer.classList.add(styleBottomButtons);
 		this.mainContentContainer.appendChild(bottomButtonContainer);
 		
-		if(this.data.codeRepositoryUrl){
+		if(this.data.code_repository_url){
 			const repoButton = document.createElement("a");
 			repoButton.classList.add(styleLinkBtn);
 			repoButton.classList.add(styleBtnCode);
 			repoButton.innerHTML = faCode + " Code";
-			repoButton.href = this.data.codeRepositoryUrl;
+			repoButton.href = this.data.code_repository_url;
 			bottomButtonContainer.appendChild(repoButton);
 		}
 

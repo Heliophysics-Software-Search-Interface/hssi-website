@@ -35,8 +35,8 @@
 
         <!-- Quick Action Buttons -->
         <div class="software-actions">
-            {% if software.codeRepositoryUrl %}
-            <a href="{{ software.codeRepositoryUrl }}" class="action-btn btn-code" target="_blank">
+            {% if software.code_repository_url %}
+            <a href="{{ software.code_repository_url }}" class="action-btn btn-code" target="_blank">
                 <i class="fa fa-code"></i> Code
             </a>
             {% endif %}
@@ -270,7 +270,7 @@
         {% endif %}
 
         <!-- Science Context Section -->
-        {% if software.related_instruments.all or software.related_observatories.all or software.relatedPhenomena.all or software.relatedRegion.all %}
+        {% if software.related_instruments.all or software.related_observatories.all or software.related_phenomena.all or software.related_region.all %}
         <details class="software-section" open>
             <summary class="section-title">Science Context</summary>
             <div class="metadata-grid">
@@ -316,11 +316,11 @@
                 </div>
                 {% endif %}
 
-                {% if software.relatedPhenomena.all %}
+                {% if software.related_phenomena.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Related Phenomena</span>
                     <span class="metadata-value">
-                        {% for phen in software.relatedPhenomena.all %}
+                        {% for phen in software.related_phenomena.all %}
                         {% if phen.identifier %}
                         <a class="tag" href="{{ phen.identifier }}" target="_blank">
                             {% if phen.name and phen.name != "UNKNOWN" %}
@@ -337,11 +337,11 @@
                 </div>
                 {% endif %}
 
-                {% if software.relatedRegion.all %}
+                {% if software.related_region.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Related Regions</span>
                     <span class="metadata-value">
-                        {% for reg in software.relatedRegion.all %}
+                        {% for reg in software.related_region.all %}
                         {% if reg.identifier %}
                         <a class="tag" href="{{ reg.identifier }}" target="_blank">
                             {% if reg.name and reg.name != "UNKNOWN" %}
@@ -374,7 +374,7 @@
         {% endif %}
 
         <!-- Related Items Section -->
-        {% if software.related_publications.all or software.related_datasets.all or software.relatedSoftware.all or software.interoperableSoftware.all %}
+        {% if software.related_publications.all or software.related_datasets.all or software.related_software.all or software.interoperable_software.all %}
         <details class="software-section" open>
             <summary class="section-title">Related Items</summary>
 
@@ -424,10 +424,10 @@
             </div>
             {% endif %}
 
-            {% if software.relatedSoftware.all %}
+            {% if software.related_software.all %}
             <div class="related-items-subsection">
                 <h3>Related Software</h3>
-                {% for sw in software.relatedSoftware.all %}
+                {% for sw in software.related_software.all %}
                 <div class="related-item">
                     {% if sw.identifier %}
                     <a href="{{ sw.identifier }}" class="related-item-link" target="_blank">
@@ -447,10 +447,10 @@
             </div>
             {% endif %}
 
-            {% if software.interoperableSoftware.all %}
+            {% if software.interoperable_software.all %}
             <div class="related-items-subsection">
                 <h3>Interoperable Software</h3>
-                {% for sw in software.interoperableSoftware.all %}
+                {% for sw in software.interoperable_software.all %}
                 <div class="related-item">
                     {% if sw.identifier %}
                     <a href="{{ sw.identifier }}" class="related-item-link" target="_blank">

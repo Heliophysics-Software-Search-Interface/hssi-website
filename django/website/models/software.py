@@ -124,20 +124,13 @@ class Software(HssiModel):
 		blank=True, 
 		related_name='softwares'
 	)
-	metadataLicense = models.ForeignKey(
-		License,
-		on_delete=models.SET_NULL, 
-		null=True, blank=True, 
-		related_name='softwares'
-	)
 	license = models.ForeignKey(
 		License,
 		on_delete=models.SET_NULL, 
 		null=True, blank=True, 
 		related_name='softwares_license'
 	)
-	licenseFileUrl = models.URLField(blank=True, null=True)
-	relatedRegion = models.ManyToManyField(
+	related_region = models.ManyToManyField(
 		Region, 
 		blank=True, 
 		related_name='softwares_region'
@@ -147,12 +140,12 @@ class Software(HssiModel):
 		blank=True, 
 		related_name='softwares'
 	)
-	relatedSoftware = models.ManyToManyField(
+	related_software = models.ManyToManyField(
 		RelatedItem,
 		blank=True,
 		related_name='softwares_related'
 	)
-	interoperableSoftware = models.ManyToManyField(
+	interoperable_software = models.ManyToManyField(
 		RelatedItem,
 		blank=True,
 		related_name='softwares_interoperable'
@@ -167,9 +160,9 @@ class Software(HssiModel):
 		blank=True, 
 		related_name='softwares'
 	)
-	codeRepositoryUrl = models.URLField(blank=True, null=True)
+	code_repository_url = models.URLField(blank=True, null=True)
 	logo = models.URLField(blank=True, null=True)
-	relatedPhenomena = models.ManyToManyField(
+	related_phenomena = models.ManyToManyField(
 		Phenomena, 
 		blank=True,
 		related_name='softwares'

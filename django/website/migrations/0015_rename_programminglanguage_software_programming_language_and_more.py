@@ -99,4 +99,37 @@ class Migration(migrations.Migration):
             old_name='relatedPublications',
             new_name='related_publications',
         ),
+        migrations.RenameField(
+            model_name='software',
+            old_name='codeRepositoryUrl',
+            new_name='code_repository_url',
+        ),
+        migrations.RenameField(
+            model_name='software',
+            old_name='interoperableSoftware',
+            new_name='interoperable_software',
+        ),
+        migrations.RenameField(
+            model_name='software',
+            old_name='relatedPhenomena',
+            new_name='related_phenomena',
+        ),
+        migrations.RenameField(
+            model_name='software',
+            old_name='relatedRegion',
+            new_name='related_region',
+        ),
+        migrations.RenameField(
+            model_name='software',
+            old_name='relatedSoftware',
+            new_name='related_software',
+        ),
+        migrations.RemoveField(
+            model_name='software',
+            name='licenseFileUrl',
+        ),
+        migrations.RemoveField(
+            model_name='software',
+            name='metadataLicense',
+        ),
     ]

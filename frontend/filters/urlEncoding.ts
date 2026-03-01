@@ -32,13 +32,13 @@ const softwareFieldParamPairs: [keyof SoftwareDataAsync, string][] = [
 	["development_status", "s"],
 	["operating_system", "os"],
 	["license", "l"],
-	["relatedRegion", "r"],
+	["related_region", "r"],
 	["keywords", "k"],
-	["relatedSoftware", "rs"],
-	["interoperableSoftware", "is"],
+	["relatrelated_softwareedSoftware", "rs"],
+	["interoperable_software", "is"],
 	["funder", "fn"],
 	["award", "aw"],
-	["relatedPhenomena", "ph"],
+	["related_phenomena", "ph"],
 ];
 
 const softwareFieldToModelMap: {[key: keyof SoftwareDataAsync]: ModelName} = {
@@ -59,13 +59,13 @@ const softwareFieldToModelMap: {[key: keyof SoftwareDataAsync]: ModelName} = {
 	development_status: "RepoStatus",
 	operating_system: "OperatingSystem",
 	license: "License",
-	relatedRegion: "Region",
+	related_region: "Region",
 	keywords: "Keyword",
-	relatedSoftware: "Software",
-	interoperableSoftware: "Software",
+	related_software: "Software",
+	interoperable_software: "Software",
 	funder: "Organization",
 	award: "Award",
-	relatedPhenomena: "Phenomena",
+	related_phenomena: "Phenomena",
 }
 
 const softwareFieldToUrlParamMap: Map<keyof SoftwareDataAsync, string> = new Map();

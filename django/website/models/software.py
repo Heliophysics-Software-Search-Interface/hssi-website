@@ -1,3 +1,5 @@
+""" Contains primary software entry data model and directly related models. """
+
 import datetime
 from typing import Callable
 

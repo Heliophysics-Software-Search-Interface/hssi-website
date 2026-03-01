@@ -1,3 +1,7 @@
+""" 
+Module which defines models related to people (authors, users) and their roles.
+"""
+
 import json
 from django.db import models
 

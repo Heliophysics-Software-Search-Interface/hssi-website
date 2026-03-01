@@ -125,7 +125,7 @@ information will be ignored.
 ### Person
 
 References `Person` table in database, hard match on `identifier`,
-otherwise fall back to matching on a combination of `firstName` + `lastName`
+otherwise fall back to matching on a combination of `given_name` + `family_name`
 
 #### Subfields
 

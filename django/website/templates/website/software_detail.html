@@ -115,10 +115,10 @@
                     <span class="author-name">
                         {% if author.identifier %}
                         <a href="{{ author.identifier }}" target="_blank">
-                            {{ author.firstName }} {{ author.lastName }}
+                            {{ author.given_name }} {{ author.family_name }}
                         </a>
                         {% else %}
-                        {{ author.firstName }} {{ author.lastName }}
+                        {{ author.given_name }} {{ author.family_name }}
                         {% endif %}
                     </span>
                     {% if author.affiliation.all %}

@@ -51,8 +51,8 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 		[
 			"publisher__name",
 			"publisher__abbreviation",
-			"authors__firstName",
-			"authors__lastName",
+			"authors__given_name",
+			"authors__family_name",
 			"authors__identifier",
 		],
 		[

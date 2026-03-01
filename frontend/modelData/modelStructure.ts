@@ -72,8 +72,8 @@ export interface OrganizationData extends HSSIModelData {
 }
 
 export interface PersonData extends HSSIModelData {
-	firstName: string,
-	lastName: string,
+	given_name: string,
+	family_name: string,
 	/** ORCID of the person */
 	identifier?: string,
 	affiliation: JSONArray<OrganizationData>,

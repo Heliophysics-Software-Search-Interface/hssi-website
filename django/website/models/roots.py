@@ -497,9 +497,6 @@ class License(HssiModel):
 	name = models.CharField(max_length=LEN_NAME)
 	url = models.URLField(blank=True, null=True)
 
-	# specified for intellisense, defined in other models
-	relatedItems: models.Manager['RelatedItem']
-
 	@classmethod
 	def get_top_field(cls): return cls._meta.get_field("name")
 

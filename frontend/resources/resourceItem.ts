@@ -247,9 +247,9 @@ export class ResourceItem{
 			// fill in the author names as they load
 			(async () => {
 				const authorData = await authorDataAsync.getData();
-				let nameStr = authorData.firstName || "";
-				if (authorData.firstName) nameStr += " ";
-				nameStr += authorData.lastName;
+				let nameStr = authorData.given_name || "";
+				if (authorData.given_name) nameStr += " ";
+				nameStr += authorData.family_name;
 				
 				if(authorData.identifier){
 					const authAnchor = document.createElement("a");

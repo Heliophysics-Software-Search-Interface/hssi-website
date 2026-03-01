@@ -4,8 +4,8 @@
 			{
 				"email": "exampl@email.org",
 				"person": {
-					"firstName": "Isaiah",
-					"lastName": "Smith",
+					"given_name": "Isaiah",
+					"family_name": "Smith",
 					"identifier": "https://orcid.org/0000-0002-1825-0097"
 				}
 			}
@@ -14,8 +14,8 @@
 		"codeRepositoryUrl": "https://repo.example.org/example",
 		"authors": [
 			{
-				"firstName": "Isaiah",
-				"lastName": "Smith",
+				"given_name": "Isaiah",
+				"family_name": "Smith",
 				"identifier": "https://orcid.org/0000-0002-1825-0097",
 				"affiliation": [
 					{
@@ -31,8 +31,8 @@
 				]
 			},
 			{
-				"firstName": "Shawn",
-				"lastName": "Polson",
+				"given_name": "Shawn",
+				"family_name": "Polson",
 				"identifier": "https://orcid.org/0000-0002-1825-1234"
 			}
 		],

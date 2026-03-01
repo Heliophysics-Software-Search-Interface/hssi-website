@@ -45,18 +45,6 @@ class RelatedItem(ControlledList):
 		default=RelatedItemType.UNKNOWN
 	)
 	identifier = models.URLField(blank=True, null=True)
-	authors = models.ManyToManyField(
-		Person,
-		blank=True,
-		related_name='relatedItems'
-	)
-	creditText = models.TextField(blank=True, null=True)
-	license = models.ForeignKey(
-		License,
-		on_delete=models.SET_NULL,
-		blank=True, null=True,
-		related_name='relatedItems'
-	)
 	
 	# specified for intellisense, defined automatically by django
 	get_type_display: Callable[[], str]

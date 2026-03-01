@@ -23,10 +23,10 @@ def api_submission_to_formdict(item: dict) -> dict:
 		return val
 
 	def full_name(person: dict) -> str:
-		first = person.get("firstName")
-		last = person.get("lastName")
+		first = person.get("given_name")
+		last = person.get("family_name")
 		if not first or not last:
-			raise ValueError("Submitter/author person must include 'firstName' and 'lastName'.")
+			raise ValueError("Submitter/author person must include 'given_name' and 'family_name'.")
 		return f"{first} {last}".strip()
 
 	form: dict = {}
@@ -290,8 +290,8 @@ def parse_person(
 		else:
 			lastname = person_name.split()[-1]
 			firstname = person_name.replace(lastname, '').strip()
-		person.lastName = lastname
-		person.firstName = firstname
+		person.family_name = lastname
+		person.given_name = firstname
 		person.save()
 
 	# add affiliation datas
@@ -407,8 +407,8 @@ def resolve_submitter(data: dict) -> Submitter:
 	submitter_found = Submitter.objects.filter(email=submitter_email).first()
 	if submitter_found:
 		sub_person_found = Person.objects.filter(
-			firstName=submitter_found.person.firstName,
-			lastName=submitter_found.person.lastName
+			given_name=submitter_found.person.given_name,
+			family_name=submitter_found.person.family_name
 		)
 		success = False
 		for person in sub_person_found:
@@ -423,8 +423,8 @@ def resolve_submitter(data: dict) -> Submitter:
 		return submitter_found
 
 	submitter_person = Person()
-	submitter_person.lastName = submitter_lastname
-	submitter_person.firstName = submitter_firstname
+	submitter_person.family_name = submitter_lastname
+	submitter_person.given_name = submitter_firstname
 	submitter_person.save()
 
 	submitter = Submitter()

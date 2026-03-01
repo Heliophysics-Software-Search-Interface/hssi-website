@@ -71,8 +71,8 @@ export class HssiModelDataAsync<T extends HSSIModelData>
 }
 
 export interface PersonDataAsync extends HSSIModelData {
-	firstName: string,
-	lastName: string,
+	given_name: string,
+	family_name: string,
 	/** ORCID of the person */
 	identifier?: string,
 	affiliation: Array<HssiDataAsync<OrganizationData>>,
@@ -200,8 +200,8 @@ export function createAsyncSoftwareData(data: SoftwareData): SoftwareDataAsync{
 export function createAsyncPersonData(data: PersonData): PersonDataAsync{
 	return {
 		id: data.id,
-		firstName: data.firstName,
-		lastName: data.lastName,
+		given_name: data.given_name,
+		family_name: data.family_name,
 		identifier: data.identifier,
 		affiliation: asyncify(data.affiliation, "Organization") as any,
 	}

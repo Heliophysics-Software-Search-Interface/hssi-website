@@ -1,4 +1,4 @@
-import uuid, re
+import re
 
 from django.contrib.auth.models import AbstractUser, AnonymousUser
 from django.db.models import Model, Manager

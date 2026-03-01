@@ -7,6 +7,7 @@ from django.apps import apps
 from django.contrib import admin
 
 from ..models import *
+from ..metadata import get_metadata
 from .csv_export import export_db_csv, import_db_csv, remove_all_model_entries
 from .parse_ttl import parse_ttl
 from .fetch_vocab import (
@@ -15,10 +16,9 @@ from .fetch_vocab import (
 )
 
 ## HSSI Admin Site
+from django.db.models import ManyToManyField
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import redirect
-from ..metadata import get_metadata
-
 from django.contrib import admin
 from django.urls import path
 

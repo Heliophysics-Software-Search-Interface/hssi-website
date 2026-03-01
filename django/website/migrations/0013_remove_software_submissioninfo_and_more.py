@@ -5,8 +5,7 @@ from django.apps.registry import Apps
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 if typing.TYPE_CHECKING:
-    from ..models.software import Software
-    from ..models.submission_info import SubmissionInfo
+    from ..models.software import Software, SubmissionInfo
 
 submission_software_map: dict[uuid.UUID, uuid.UUID]
 

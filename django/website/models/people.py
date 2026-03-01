@@ -2,17 +2,13 @@ import json
 from django.db import models
 
 from ..util import *
-from .roots import HssiModel, Organization, LEN_NAME
-
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-	from .auxillary_info import RelatedItem
+from .base import HssiModel, LEN_NAME
+from .organizations import Organization
 
 # we need to import the softwares type for intellisense
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-	from .software import Software
-	from .submission_info import SubmissionInfo
+	from .software import Software, SubmissionInfo
 
 class Person(HssiModel):
 	access = AccessLevel.PUBLIC

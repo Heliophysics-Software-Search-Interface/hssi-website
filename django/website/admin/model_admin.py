@@ -12,11 +12,10 @@ from ..models.people import Person, Curator
 from ..models.software import (
     Software, VisibleSoftware, SoftwareVersion, SoftwareEditQueue,
 )
-from ..models.submission_info import SubmissionInfo
-from ..models.auxillary_info import RelatedItem, Award
-from ..models.roots import (
-	HssiModel, ControlledList, FunctionCategory, OperatingSystem, Phenomena, 
-	Keyword, Organization, License, InstrumentObservatory, RepoStatus, 
+from ..models import (
+	SubmissionInfo, RelatedItem, Award, HssiModel, ControlledList, 
+	FunctionCategory, OperatingSystem, Phenomena, Keyword, 
+	Organization, License, InstrumentObservatory, RepoStatus, 
 	DataInput, ProgrammingLanguage, FileFormat, Region, CpuArchitecture
 )
 

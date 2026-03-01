@@ -18,7 +18,7 @@ from ..util import RequirementLevel, AccessLevel, REQ_LVL_ATTR
 from enum import StrEnum
 from typing import Type, TYPE_CHECKING, Any
 if TYPE_CHECKING:
-	from .roots import HssiModel
+	from .base import HssiModel
 
 FORM_CONFIG_ATTR = "form_config"
 

@@ -125,8 +125,13 @@ def import_model_csv(
 					f"Has errors: {str(result.has_errors())} " + 
 					f"Has validation errors: {str(result.has_validation_errors())}"
 				)
+				for err in result.row_errors():
+					print(err)
+				raise Exception("Import error!!")
 		
-		except: traceback.print_exc()
+		except Exception as e:
+			traceback.print_exc()
+			raise e
 	else: print(filepath + " does not exist, skipping")
 
 def import_db_csv():

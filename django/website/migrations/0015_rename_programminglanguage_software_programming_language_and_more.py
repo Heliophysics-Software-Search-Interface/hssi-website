@@ -64,4 +64,39 @@ class Migration(migrations.Migration):
             old_name='softwareName',
             new_name='software_name',
         ),
+        migrations.RenameField(
+            model_name='software',
+            old_name='cpuArchitecture',
+            new_name='cpu_architecture',
+        ),
+        migrations.RenameField(
+            model_name='software',
+            old_name='developmentStatus',
+            new_name='development_status',
+        ),
+        migrations.RenameField(
+            model_name='software',
+            old_name='inputFormats',
+            new_name='input_formats',
+        ),
+        migrations.RenameField(
+            model_name='software',
+            old_name='operatingSystem',
+            new_name='operating_system',
+        ),
+        migrations.RenameField(
+            model_name='software',
+            old_name='outputFormats',
+            new_name='output_formats',
+        ),
+        migrations.RenameField(
+            model_name='software',
+            old_name='relatedDatasets',
+            new_name='related_datasets',
+        ),
+        migrations.RenameField(
+            model_name='software',
+            old_name='relatedPublications',
+            new_name='related_publications',
+        ),
     ]

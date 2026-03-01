@@ -173,33 +173,33 @@
                 </div>
                 {% endif %}
 
-                {% if software.operatingSystem.all %}
+                {% if software.operating_system.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Operating Systems</span>
                     <span class="metadata-value">
-                        {% for os in software.operatingSystem.all %}
+                        {% for os in software.operating_system.all %}
                         <span class="tag">{{ os.name }}</span>
                         {% endfor %}
                     </span>
                 </div>
                 {% endif %}
 
-                {% if software.cpuArchitecture.all %}
+                {% if software.cpu_architecture.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">CPU Architecture</span>
                     <span class="metadata-value">
-                        {% for arch in software.cpuArchitecture.all %}
+                        {% for arch in software.cpu_architecture.all %}
                         <span class="tag">{{ arch.name }}</span>
                         {% endfor %}
                     </span>
                 </div>
                 {% endif %}
 
-                {% if software.developmentStatus %}
+                {% if software.development_status %}
                 <div class="metadata-item">
                     <span class="metadata-label">Development Status</span>
                     <span class="metadata-value">
-                        <span class="tag status-tag">{{ software.developmentStatus.name }}</span>
+                        <span class="tag status-tag">{{ software.development_status.name }}</span>
                     </span>
                 </div>
                 {% endif %}
@@ -229,7 +229,7 @@
         </details>
 
         <!-- Data & File Formats Section -->
-        {% if software.data_sources.all or software.inputFormats.all or software.outputFormats.all %}
+        {% if software.data_sources.all or software.input_formats.all or software.output_formats.all %}
         <details class="software-section" open>
             <summary class="section-title">Data & File Formats</summary>
             <div class="metadata-grid">
@@ -244,22 +244,22 @@
                 </div>
                 {% endif %}
 
-                {% if software.inputFormats.all %}
+                {% if software.input_formats.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Input Formats</span>
                     <span class="metadata-value">
-                        {% for fmt in software.inputFormats.all %}
+                        {% for fmt in software.input_formats.all %}
                         <span class="tag">{{ fmt.name }}</span>
                         {% endfor %}
                     </span>
                 </div>
                 {% endif %}
 
-                {% if software.outputFormats.all %}
+                {% if software.output_formats.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Output Formats</span>
                     <span class="metadata-value">
-                        {% for fmt in software.outputFormats.all %}
+                        {% for fmt in software.output_formats.all %}
                         <span class="tag">{{ fmt.name }}</span>
                         {% endfor %}
                     </span>
@@ -374,14 +374,14 @@
         {% endif %}
 
         <!-- Related Items Section -->
-        {% if software.relatedPublications.all or software.relatedDatasets.all or software.relatedSoftware.all or software.interoperableSoftware.all %}
+        {% if software.related_publications.all or software.related_datasets.all or software.relatedSoftware.all or software.interoperableSoftware.all %}
         <details class="software-section" open>
             <summary class="section-title">Related Items</summary>
 
-            {% if software.relatedPublications.all %}
+            {% if software.related_publications.all %}
             <div class="related-items-subsection">
                 <h3>Related Publications</h3>
-                {% for pub in software.relatedPublications.all %}
+                {% for pub in software.related_publications.all %}
                 <div class="publication-item">
                     {% if pub.identifier %}
                     <a href="{{ pub.identifier }}" class="publication-title-link" target="_blank">
@@ -401,10 +401,10 @@
             </div>
             {% endif %}
 
-            {% if software.relatedDatasets.all %}
+            {% if software.related_datasets.all %}
             <div class="related-items-subsection">
                 <h3>Related Datasets</h3>
-                {% for ds in software.relatedDatasets.all %}
+                {% for ds in software.related_datasets.all %}
                 <div class="related-item">
                     {% if ds.identifier %}
                     <a href="{{ ds.identifier }}" class="related-item-link" target="_blank">

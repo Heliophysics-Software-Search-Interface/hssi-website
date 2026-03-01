@@ -89,28 +89,28 @@
 			"CDAWeb",
 			"HAPI"
 		],
-		"inputFormats": [
+		"input_formats": [
 			"CDF",
 			"FITS"
 		],
-		"outputFormats": [
+		"output_formats": [
 			"CDF",
 			"FITS"
 		],
-		"cpuArchitecture": [
+		"cpu_architecture": [
 			"x86-64",
 			"Apple Silicon arm64"
 		],
-		"relatedPublications": [
+		"related_publications": [
 			"https://doi.org/10.5281/zenodo.10994081",
 			"https://doi.org/10.5281/zenodo.12345678"
 		],
-		"relatedDatasets": [
+		"related_datasets": [
 			"https://doi.org/10.5281/zenodo.10994081",
 			"https://doi.org/10.5281/zenodo.12345678"
 		],
-		"developmentStatus": "Active",
-		"operatingSystem": [
+		"development_status": "Active",
+		"operating_system": [
 			"Linux",
 			"Mac"
 		],

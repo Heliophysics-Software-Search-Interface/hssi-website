@@ -372,10 +372,10 @@ def apply_reference_publication(software: Software, data: dict) -> None:
 	software.reference_publication = refpub
 
 def apply_development_status(software: Software, data: dict) -> None:
-	"""Resolve and assign Software.developmentStatus from RepoStatus."""
+	"""Resolve and assign Software.development_status from RepoStatus."""
 	devstatus: str = data.get(FIELD_DEVELOPMENTSTATUS)
 	if devstatus:
-		software.developmentStatus = parse_controlled_list(
+		software.development_status = parse_controlled_list(
 			RepoStatus,
 			devstatus,
 			name_match_fallback=True

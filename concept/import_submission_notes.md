@@ -68,19 +68,19 @@ impact on the software's discoverability and usability.
 * `programming_language` - array of programming language name strings
 	* must be **exact match** taken from `name` field in
 	[`/api/models/ProgrammingLanguage/rows/all/`](https://hssi.hsdcloud.org/api/models/ProgrammingLanguage/rows/all/)
-* `inputFormats` - array of file format strings
+* `input_formats` - array of file format strings
 	* must be **exact match** taken from `name` field in
 	[`/api/models/FileFormat/rows/all/`](https://hssi.hsdcloud.org/api/models/FileFormat/rows/all/)
-* `outputFormats` - array of file format strings
+* `output_formats` - array of file format strings
 	* must be **exact match** taken from `name` field in
 	[`/api/models/FileFormat/rows/all/`](https://hssi.hsdcloud.org/api/models/FileFormat/rows/all/)
-* `operatingSystem` - array of OS strings
+* `operating_system` - array of OS strings
 	* must be **exact match** taken from `name` field in
 	[`/api/models/OperatingSystem/rows/all/`](https://hssi.hsdcloud.org/api/models/OperatingSystem/rows/all/)
-* `cpuArchitecture` - array of cpu architecture strings
+* `cpu_architecture` - array of cpu architecture strings
 	* must be **exact match** taken from `name` field in
 	[`/api/models/CPUArchitecture/rows/all/`](https://hssi.hsdcloud.org/api/models/CPUArchitecture/rows/all/)
-* `developmentStatus` - repo status string
+* `development_status` - repo status string
 	* must be **exact match** taken from `name` field in
 	[`/api/models/RepoStatus/rows/all/`](https://hssi.hsdcloud.org/api/models/RepoStatus/rows/all/)
 
@@ -97,8 +97,8 @@ however they may not be applicable to some submissions.
 * `data_sources` - array of data source strings
 	* must be **exact match** from `name` field in
 	[`/api/models/DataInput/rows/all/`](https://hssi.hsdcloud.org/api/models/DataInput/rows/all/)
-* `relatedPublications` - array of urls
-* `relatedDatasets` - array of urls
+* `related_publications` - array of urls
+* `related_datasets` - array of urls
 * `keywords` - array of strings
 * `relatedSoftware` - array of urls
 * `interoperableSoftware` - array of urls

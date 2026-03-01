@@ -373,9 +373,9 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		if(repoUrl) formData.codeRepositoryURL = repoUrl;
 
 		// set the related identifiers
-		if(relPubs) formData.relatedPublications = relPubs.map(doi => doiUrlPrefix + doi);
+		if(relPubs) formData.related_publications = relPubs.map(doi => doiUrlPrefix + doi);
 		if(relSoftware) formData.relatedSoftware = relSoftware.map(doi => doiUrlPrefix + doi);
-		if(relData) formData.relatedDatasets = relData.map(doi => doiUrlPrefix + doi);
+		if(relData) formData.related_datasets = relData.map(doi => doiUrlPrefix + doi);
 
 		// version
 		if(attrs.version){
@@ -412,7 +412,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		console.log(zenodoData);
 		const devStatus = zenodoData?.metadata?.custom?.["code:developmentStatus"];
 		if(devStatus){
-			formData.developmentStatus = devStatus.title?.en || devStatus.id;
+			formData.development_status = devStatus.title?.en || devStatus.id;
 		}
 
 		// programming languages

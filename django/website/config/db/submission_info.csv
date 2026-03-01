@@ -1,4 +1,4 @@
-id,software,dateModified,modificationDescription,metadataVersionNumber,submitter,curator,submissionDate,internalStatusCode,internalStatusNote,leadCurator,lastContactDate,contactCount,curatorLock,outOfSync
+id,software,date_modified,modification_description,metadata_version_number,submitter,curator,submission_date,internal_status_code,internal_status_note,lead_curator,last_contact_date,contact_count,curator_lock,out_of_sync
 46e78113-f602-445d-851d-4166f981b5f8,ac6f7ea3-062c-442f-abf9-9732a88fcc6b,2026-03-01,Initial submission,0.1.0,bf693264-286b-43dc-be4a-9f82039f4ba4,,2025-09-29,1,Not assigned or reviewed,,,0,0,0
 ece69df6-2d1a-4d9b-a70a-ba352fa511af,3fddfda7-5eca-4501-839e-765eb49a8c1b,2026-03-01,Initial submission,0.1.0,bf693264-286b-43dc-be4a-9f82039f4ba4,,2025-09-29,1,Not assigned or reviewed,,,0,0,0
 a3e3f85f-839f-4a44-8780-424239ce402b,dda4b683-307d-4145-b75c-59f61c442484,2026-03-01,Initial submission,0.1.0,bf693264-286b-43dc-be4a-9f82039f4ba4,,2025-11-17,1,Not assigned or reviewed,,,0,0,0

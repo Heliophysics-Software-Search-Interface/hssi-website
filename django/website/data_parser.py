@@ -437,11 +437,11 @@ def build_submission_info(data: dict) -> SubmissionInfo:
 	"""Create and return a SubmissionInfo with resolved submitter."""
 	submission = SubmissionInfo()
 	submission.submitter = resolve_submitter(data)
-	submission.dateModified = date.today()
-	submission.modificationDescription = "Initial submission"
-	submission.metadataVersionNumber = "0.1.0"
-	submission.submissionDate = date.today()
-	submission.internalStatusNote = "Not assigned or reviewed"
+	submission.date_modified = date.today()
+	submission.modification_description = "Initial submission"
+	submission.metadata_version_number = "0.1.0"
+	submission.submission_date = date.today()
+	submission.internal_status_note = "Not assigned or reviewed"
 	submission.save()
 	return submission
 

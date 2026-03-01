@@ -300,7 +300,7 @@ class SubmissionInfoResource(resources.ModelResource):
 	class Meta: model = SubmissionInfo
 class SubmissionInfoAdmin(HSSIModelAdmin): 
 	resource_class = SubmissionInfoResource
-	ordering = ("-submissionDate",)
+	ordering = ("-submission_date",)
 
 	@action(description="Email edit submission link (90 days)")
 	def email_edit_link(self, request: HttpRequest, query: QuerySet[SubmissionInfo]):
@@ -321,4 +321,4 @@ class SubmissionInfoAdmin(HSSIModelAdmin):
 		if obj.submitter: return obj.submitter.fullName
 		return "<None>"
 	
-	list_display = ('submission_name', 'submitter_name', 'submissionDate', 'id')
+	list_display = ('submission_name', 'submitter_name', 'submission_date', 'id')

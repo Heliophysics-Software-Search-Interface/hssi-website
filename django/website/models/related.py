@@ -1,6 +1,4 @@
-""" 
-TODO 
-"""
+""" Module to contain related items that interlink software entries """
 
 from typing import Callable
 from django.db import models

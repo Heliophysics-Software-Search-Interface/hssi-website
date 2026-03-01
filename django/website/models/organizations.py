@@ -1,6 +1,4 @@
-"""
-TODO
-"""
+""" Module for Organization and Award models """
 
 from django.db import models
 

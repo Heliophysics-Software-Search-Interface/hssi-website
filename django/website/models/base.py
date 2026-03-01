@@ -1,5 +1,6 @@
 """
-TODO
+Include base models which all models used by HSSI should inherit from, also
+pcontains utility types and constants.
 """
 
 import uuid, json

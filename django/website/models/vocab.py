@@ -1,16 +1,13 @@
-"""
-TODO
-"""
+""" Contains controlled metadata models which categorize software entries. """
 
 import colorsys
 from django.db import models
-from django.db.models import Q
 from colorful.fields import RGBColorField
 
 from ..util import *
 from .base import (
-	LEN_NAME, LEN_SHORTNAME, LEN_ABBREVIATION, FIELD_FUNCTIONCATEGORY_FULLNAME,
-	InstrObsType, ModelObjectChoice, HssiModel, ControlledList, ControlledGraphList
+	LEN_NAME, LEN_ABBREVIATION, FIELD_FUNCTIONCATEGORY_FULLNAME,
+	InstrObsType, ModelObjectChoice, ControlledList, ControlledGraphList
 )
 
 from typing import TYPE_CHECKING

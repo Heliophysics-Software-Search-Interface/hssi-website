@@ -17,7 +17,6 @@ def build_field_query(query: str, tokens: list[str], fields: list[str]) -> Q:
 			q |= Q(**{f"{field}__icontains": token})
 	return q
 
-
 def search_visible_software(request: HttpRequest) -> JsonResponse:
 	"""
 	Search visible software by query terms and return ordered result IDs.
@@ -88,15 +87,11 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 			"development_status__name",
 			"operating_system__name",
 			"license__name",
-			"metadataLicense__name",
 		],
 		[
 			"code_repository_url",
 			"documentation",
-		],
-		[
-			"version__number",
-		],
+		]
 	]
 
 	visible_ids = list(VisibleSoftware.objects.values_list("id", flat=True))

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 class Person(HssiModel):
 	access = AccessLevel.PUBLIC
-	'''Metadata to hold needed information about someone'''
+	"""Metadata to hold needed information about someone"""
 	given_name = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
 	family_name = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
 	identifier = models.URLField(blank=True, null=True)
@@ -79,7 +79,7 @@ class Person(HssiModel):
 
 class Curator(HssiModel):
 	access = AccessLevel.CURATOR
-	'''A user who is able to curate submissions'''
+	"""A user who is able to curate submissions"""
 	email = models.EmailField(null=False, blank=False)
 	person = models.OneToOneField(
 			Person, 
@@ -101,7 +101,7 @@ class Curator(HssiModel):
 
 class Submitter(HssiModel):
 	access = AccessLevel.CURATOR
-	'''A person who has submitted a software'''
+	"""A person who has submitted a software"""
 	email = models.EmailField(null=False, blank=False)
 	person = models.ForeignKey(
 			Person, 

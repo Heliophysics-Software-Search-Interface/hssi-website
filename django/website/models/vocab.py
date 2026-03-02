@@ -7,12 +7,18 @@ from colorful.fields import RGBColorField
 from ..util import *
 from .base import (
 	LEN_NAME, LEN_ABBREVIATION, FIELD_FUNCTIONCATEGORY_FULLNAME,
-	InstrObsType, ModelObjectChoice, ControlledList, ControlledGraphList
+	ModelObjectChoice, ControlledList, ControlledGraphList
 )
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
 	from .software import Software
+
+class InstrObsType(models.IntegerChoices):
+	""" Whether an entry in InstrumentObservatory is an instrument or an observatory """
+	INSTRUMENT = 1, "Instrument"
+	OBSERVATORY = 2, "Observatory"
+	UNKNOWN = 3, "Unknown"
 
 ## Models ----------------------------------------------------------------------
 
@@ -21,43 +27,43 @@ class Keyword(ControlledList):
 	def __str__(self) -> str: return self.name.title()
 
 class OperatingSystem(ControlledList):
-	'''Operating system on which the software can run'''
+	"""Operating system on which the software can run"""
 	access = AccessLevel.PUBLIC
 
 class CpuArchitecture(ControlledList):
-	'''CPU Architecture on which the software can run'''
+	"""CPU Architecture on which the software can run"""
 	access = AccessLevel.PUBLIC
 	
 class Phenomena(ControlledList):
-	'''Solar phenomena that relate to the software'''
+	"""Solar phenomena that relate to the software"""
 	access = AccessLevel.PUBLIC
 
 class RepoStatus(ControlledList):
-	'''
+	"""
 	Repo status as defined by the repostatus.org json-ld: 
 	https://www.repostatus.org/badges/latest/ontology.jsonld
-	'''
+	"""
 	access = AccessLevel.PUBLIC
 	image = models.URLField(blank=True, null=True)
 	
 	class Meta: verbose_name_plural = "Repo Statuses"
 
 class ProgrammingLanguage(ControlledList):
-	'''Primary Programming language used to develop the software'''
+	"""Primary Programming language used to develop the software"""
 	access = AccessLevel.PUBLIC
 	version = models.CharField(max_length=LEN_NAME, blank=True, null=True)
 
 	def __str__(self): return self.name + (f" {self.version}" if self.version else "")
 
 class DataInput(ControlledList):
-	'''Ways that the software can accept data as input'''
+	"""Ways that the software can accept data as input"""
 	access = AccessLevel.PUBLIC
 	abbreviation = models.CharField(max_length=LEN_ABBREVIATION, blank=True, null=True)
 
 	def __str__(self): return self.name
 
 class FileFormat(ControlledList):
-	'''File formats that are supported as input or output types by the software'''
+	"""File formats that are supported as input or output types by the software"""
 	access = AccessLevel.PUBLIC
 	extension = models.CharField(max_length=25, blank=False, null=False)
 
@@ -68,14 +74,14 @@ class FileFormat(ControlledList):
 	def __str__(self): return self.name + (f" ({self.extension})" if self.extension else "")
 
 class Region(ControlledList):
-	'''Region of the sun which relates to the software'''
+	"""Region of the sun which relates to the software"""
 	access = AccessLevel.PUBLIC
 	
 	class Meta: ordering = ['name']
 	def __str__(self): return self.name
 
 class InstrumentObservatory(ControlledList):
-	'''An observatory or scientific research instrument'''
+	"""An observatory or scientific research instrument"""
 	access = AccessLevel.PUBLIC
 	type = models.IntegerField(choices=InstrObsType.choices, default=InstrObsType.UNKNOWN)
 	abbreviation = models.CharField(max_length=LEN_NAME, null=True, blank=True)

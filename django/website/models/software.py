@@ -32,9 +32,8 @@ class SubmissionStatusCode(models.IntegerChoices):
 	REJECTED = 9, "Rejected/Abandoned"
 	SPAM = 10, "Spam"
 
-
 class SoftwareVersion(HssiModel):
-	'''A snapshot of the software metadata whenever it's updated to a new version'''
+	"""A snapshot of the software metadata whenever it's updated to a new version"""
 	access = AccessLevel.PUBLIC
 	number = models.CharField(max_length=LEN_NAME)
 	release_date = models.DateField(blank=True, null=True)
@@ -212,7 +211,7 @@ class Software(HssiModel):
 		from django.urls import reverse
 		return reverse('website:software_detail', kwargs={'pk': str(self.pk)})
 
-	'''if the software is visible on the website'''
+	"""if the software is visible on the website"""
 	def is_visible(self) -> bool:
 		try:
 			_ = self.visible
@@ -221,7 +220,7 @@ class Software(HssiModel):
 			return False
 
 class SubmissionInfo(HssiModel):
-	'''Metadata about the a piece of software submitted to HSSI'''
+	"""Metadata about the a piece of software submitted to HSSI"""
 	access = AccessLevel.CURATOR
 	software = models.ForeignKey(
 		Software,

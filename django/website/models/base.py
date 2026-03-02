@@ -31,12 +31,6 @@ class ModelObjectChoice(NamedTuple):
 	keywords: list[str]
 	tooltip: str
 
-class InstrObsType(models.IntegerChoices):
-	""" Whether an entry in InstrumentObservatory is an instrument or an observatory """
-	INSTRUMENT = 1, "Instrument"
-	OBSERVATORY = 2, "Observatory"
-	UNKNOWN = 3, "Unknown"
-
 ## Base Models for HSSI --------------------------------------------------------
 
 class HssiBase(models.base.ModelBase):

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 	from .software import Software
 
 class Organization(HssiModel):
-	'''A legal entity such as university, agency, or company'''
+	"""A legal entity such as university, agency, or company"""
 	access = AccessLevel.PUBLIC
 	name = models.CharField(max_length=LEN_NAME)
 	abbreviation = models.CharField(max_length=LEN_SHORTNAME, null=True, blank=True)
@@ -49,7 +49,7 @@ class Organization(HssiModel):
 		return self.name
 
 class Award(HssiModel):
-	'''A grant or other funding award given by an organization'''
+	"""A grant or other funding award given by an organization"""
 	access = AccessLevel.PUBLIC
 	name = models.CharField(max_length=LEN_NAME)
 	identifier = models.CharField(max_length=LEN_NAME, blank=True, null=True)

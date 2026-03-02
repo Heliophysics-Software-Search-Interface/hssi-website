@@ -7,7 +7,7 @@ from ..util import *
 from .base import ControlledList
 
 class RelatedItemType(models.IntegerChoices):
-	'''The type of an object in the RelatedField model'''
+	"""The type of an object in the RelatedField model"""
 	SOFTWARE = 1, "Software"
 	DATASET = 2, "Dataset"
 	PUBLICATION = 3, "Publication"

@@ -76,9 +76,8 @@ class Software(HssiModel):
 		related_name='observatories'
 	)
 	software_name = models.CharField(max_length=LEN_NAME)
-	version = models.OneToOneField(
+	version = models.ManyToManyField(
 		SoftwareVersion,
-		on_delete=models.SET_NULL,
 		blank=True, null=True,
 		related_name='software'
 	)
@@ -91,7 +90,7 @@ class Software(HssiModel):
 	)
 	description = models.TextField(blank=True, null=True)
 	concise_description = models.TextField(max_length=200, blank=True, null=True)
-	software_functionality = models.ManyToManyField(
+	software_functionality = SortedManyToManyField(
 		FunctionCategory, 
 		blank=True, 
 		related_name='softwares'
@@ -144,7 +143,7 @@ class Software(HssiModel):
 		null=True, blank=True, 
 		related_name='softwares_license'
 	)
-	related_region = models.ManyToManyField(
+	related_region = SortedManyToManyField(
 		Region, 
 		blank=True, 
 		related_name='softwares_region'
@@ -176,7 +175,7 @@ class Software(HssiModel):
 	)
 	code_repository_url = models.URLField(blank=True, null=True)
 	logo = models.URLField(blank=True, null=True)
-	related_phenomena = models.ManyToManyField(
+	related_phenomena = SortedManyToManyField(
 		Phenomena, 
 		blank=True,
 		related_name='softwares'

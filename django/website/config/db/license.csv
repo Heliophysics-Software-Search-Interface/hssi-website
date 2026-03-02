@@ -1,17 +1,17 @@
 id,name,url
-fb521f7d-8f04-46ba-8650-04b155094682,Apache License 2.0,https://spdx.org/licenses/Apache-2.0
+e68a8785-aed8-42d6-b7bb-4bf3d3e093b2,Apache License 2.0,https://spdx.org/licenses/Apache-2.0
 e30aeeb6-77d6-4994-a80c-320aa1222eab,"BSD 2-Clause ""Simplified"" License",https://opensource.org/licenses/BSD-2-Clause
 d7f050b7-b557-445d-a0c5-1d89918a915e,"BSD 3-Clause ""New"" or ""Revised"" License",https://spdx.org/licenses/BSD-3-Clause.html
 a634c611-9258-4997-88c2-b73c9ddf3305,Creative Commons Attribution 4.0 International,https://creativecommons.org/licenses/by/4.0/legalcode
-24a5e2c2-da5e-4ad3-a097-a60d968429cd,GNU General Public Licenses (GPL version 2),https://spdx.org/licenses/GPL-2.0
+896d22c2-c6b9-41aa-84a2-497fa34fe52f,GNU General Public Licenses (GPL version 2),https://spdx.org/licenses/GPL-2.0
 0e565a36-a0dd-44aa-84b5-e19fbfdeefd8,GNU General Public License v3.0 or later,https://www.gnu.org/licenses/gpl-3.0-standalone.html
 563dce4b-b082-4496-aa0c-174abd23aa39,GNU Lesser General Public License v3.0 only,https://www.gnu.org/licenses/lgpl-3.0-standalone.html
-6fc9e8ae-f1ff-489e-8e19-042deae5a48e,GNU Library or ‘Lesser’ General Public Licenses (LGPL version 2),https://spdx.org/licenses/LGPL-2.0
+9c80ba17-cb46-41e0-a95c-5d98c692d35f,GNU Library or ‘Lesser’ General Public Licenses (LGPL version 2),https://spdx.org/licenses/LGPL-2.0
 247e2f57-0a04-4089-be6d-8ce8825145ae,GNU Library or ‘Lesser’ General Public Licenses (LGPL version 3),https://www.gnu.org/licenses/lgpl-3.0.html
-b0711366-c411-4fd9-917b-a382cb4216fc,MIT License,https://spdx.org/licenses/MIT
-1d595e4d-b42c-4b54-b548-92fdda246501,New BSD license,https://spdx.org/licenses/BSD-3-Clause
+de2aa03a-3379-419d-a0c8-b229d79d9848,MIT License,https://spdx.org/licenses/MIT
+931c639f-015b-465d-bd65-be909c0f56ff,New BSD license,https://spdx.org/licenses/BSD-3-Clause
 bb0040df-bb23-4c25-aea4-1a35251f74ad,Open Access,info:eu-repo/semantics/openAccess
-4a16cafe-32cb-463f-934b-0b5e0c64dd88,Other,
+ec66c3a7-ea05-420d-9846-4260ddc90b20,Other,
 e29e1d53-46a9-4114-a5c0-265703f60849,Other,https://github.com/NCAR/tiegcm?tab=License-1-ov-file#readme
 a8a650af-48d4-485b-b121-19744bc7bd48,Other,https://amgeo.colorado.edu/register
 38ce50e4-3757-453a-9848-cc75a751b8ee,Other,https://opensource.org/licenses/MIT

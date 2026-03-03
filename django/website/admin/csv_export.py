@@ -55,7 +55,7 @@ def remove_all_model_entries():
 		Submitter,
 		SubmissionInfo,
 		Software,
-		VisibleSoftware,
+		VerifiedSoftware,
 		SoftwareEditQueue,
 		authors_field.through,
 	]
@@ -88,7 +88,7 @@ def export_db_csv():
 	export_model_csv(ProgrammingLanguage)
 	export_model_csv(SubmissionInfo)
 	export_model_csv(Software)
-	export_model_csv(VisibleSoftware)
+	export_model_csv(VerifiedSoftware)
 	export_model_csv(Region)
 	export_model_csv(RepoStatus)
 	export_model_csv(DataInput)
@@ -172,7 +172,7 @@ def import_db_csv():
 		]
 	)
 	import_model_csv(SubmissionInfo)
-	import_model_csv(VisibleSoftware)
+	import_model_csv(VerifiedSoftware)
 	import_model_csv(SoftwareEditQueue)
 
 	author_order = Software._meta.get_field('authors').remote_field.through

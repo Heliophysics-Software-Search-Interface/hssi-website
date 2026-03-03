@@ -10,7 +10,7 @@ from django.db.models import QuerySet, ManyToManyField
 from ..views import email_edit_link as v_email_edit_link
 from ..models.people import Person, Curator
 from ..models.software import (
-    Software, VisibleSoftware, SoftwareVersion, SoftwareEditQueue,
+    Software, VerifiedSoftware, SoftwareVersion, SoftwareEditQueue,
 )
 from ..models import (
 	SubmissionInfo, RelatedItem, Award, HssiModel, ControlledList, 
@@ -241,9 +241,9 @@ class SoftwareAdmin(HSSIModelAdmin):
 		queryset: QuerySet[Software]
 	):
 		for soft in queryset:
-			exists = not not VisibleSoftware.objects.filter(pk=soft.pk).first()
+			exists = not not VerifiedSoftware.objects.filter(pk=soft.pk).first()
 			if exists: continue
-			VisibleSoftware.objects.create(id=uuid.UUID(str(soft.id)))
+			VerifiedSoftware.objects.create(id=uuid.UUID(str(soft.id)))
 			print(f"made {soft.software_name}:{soft.id} visible to public")
 
 	@action(description="Add to Edit Queue")
@@ -261,9 +261,9 @@ class SoftwareAdmin(HSSIModelAdmin):
 		HSSIModelAdmin.collapse_model_entries,
 	]
 
-class VisibleSoftwareResource(resources.ModelResource):
-	class Meta: model = VisibleSoftware
-class VisibleSoftwareAdmin(ImportExportModelAdmin): resource_class = VisibleSoftwareResource
+class VerifiedSoftwareResource(resources.ModelResource):
+	class Meta: model = VerifiedSoftware
+class VerifiedSoftwareAdmin(ImportExportModelAdmin): resource_class = VerifiedSoftwareResource
 
 class SoftwareEditQueueResource(resources.ModelResource):
 	class Meta: Model = SoftwareEditQueue

@@ -7,7 +7,7 @@ from django.apps.registry import Apps
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 if typing.TYPE_CHECKING:
-    from ..models import Phenomena, Region, FunctionCategory, SoftwareVersion, Software
+    from ..models import SoftwareVersion, Software
 
 software_field_map: dict[
     uuid.UUID, 
@@ -103,4 +103,13 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(blank=True, null=True, related_name='software', to='website.softwareversion'),
         ),
         migrations.RunPython(apply_software_map),
+        migrations.RenameModel(
+            old_name='VisibleSoftware',
+            new_name='VerifiedSoftware',
+        ),
+        migrations.AlterField(
+            model_name='software',
+            name='version',
+            field=models.ManyToManyField(blank=True, related_name='software', to='website.softwareversion'),
+        ),
     ]

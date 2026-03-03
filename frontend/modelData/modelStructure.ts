@@ -24,7 +24,7 @@ export type ModelName = (
 	| "Organization"
 	| "Software"
 	| "SoftwareVersion"
-	| "VisibleSoftware"
+	| "VerifiedSoftware"
 	| "SoftwareEditQueue"
 	| "SubmissionInfo"
 	| "Award"

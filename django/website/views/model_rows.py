@@ -82,8 +82,8 @@ def api_view(request: HttpRequest, uid: str) -> JsonResponse:
 	access_ovr = AccessLevel.PUBLIC
 	try: 
 		softwareid = uuid.UUID(uid)
-		software = VisibleSoftware.objects.get(pk=softwareid)
-		access_ovr = VisibleSoftware.target_model.access
+		software = VerifiedSoftware.objects.get(pk=softwareid)
+		access_ovr = VerifiedSoftware.target_model.access
 	except Exception: 
 		try:
 			softwareid = uuid.UUID(uid)

@@ -8,7 +8,7 @@ import {
 } from "../loader";
 
 const styleNoResults = "no-results";
-const softwarModelName = "VisibleSoftware";
+const softwarModelName = "VerifiedSoftware";
 const idResourceContainer = "resource_content";
 
 /** 
@@ -148,10 +148,10 @@ export class ResourceView {
 
 		if(this.specificUids){
 			this.itemData = [...await (
-				ModelDataCache.getModelData("VisibleSoftware", this.specificUids) as any
+				ModelDataCache.getModelData("VerifiedSoftware", this.specificUids) as any
 			)];
 		}
-		else this.itemData = [...await ModelDataCache.getModelDataAll("VisibleSoftware")];
+		else this.itemData = [...await ModelDataCache.getModelDataAll("VerifiedSoftware")];
 
 		this.onReady.triggerEvent();
 

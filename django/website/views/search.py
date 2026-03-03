@@ -4,7 +4,7 @@ import time
 from django.db.models import Q
 from django.http import HttpRequest, JsonResponse
 
-from ..models import Software, VisibleSoftware
+from ..models import Software, VerifiedSoftware
 
 
 def build_field_query(query: str, tokens: list[str], fields: list[str]) -> Q:
@@ -94,7 +94,7 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 		]
 	]
 
-	visible_ids = list(VisibleSoftware.objects.values_list("id", flat=True))
+	visible_ids = list(VerifiedSoftware.objects.values_list("id", flat=True))
 	base_qs = Software.objects.filter(id__in=visible_ids)
 
 	def fetch_tier_ids(tier_name: str, fields: list[str]) -> list[str]:

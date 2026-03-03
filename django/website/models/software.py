@@ -1,10 +1,11 @@
 """ Contains primary software entry data model and directly related models. """
 
-import datetime
+import datetime, uuid
 from typing import Callable
 
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 from django.core.exceptions import ObjectDoesNotExist
 from sortedm2m.fields import SortedManyToManyField
 
@@ -278,9 +279,34 @@ class VerifiedSoftware(HssiSet):
 	"""Stores ids to flag softwares with the given ids as visible"""
 	access = AccessLevel.PUBLIC
 	target_model = Software
+	slug = models.CharField(max_length=LEN_NAME, unique=True, null=True)
 
-	class Meta: verbose_name_plural = 'Visible software'
-	def __str__(self): return str(self.id)
+	@classmethod
+	def create_verified(cls, software: Software) -> 'VerifiedSoftware':
+		if cls.objects.filter(pk=software.pk).first():
+			return None
+		obj = VerifiedSoftware.objects.create(
+			id=uuid.UUID(str(software.id)), 
+			slug=cls.get_unique_slug(software.software_name)
+		)
+		print(f"made {software.software_name}:{software.id} visible to public at slug '{obj.slug}'")
+		return obj
+	
+	@classmethod
+	def get_unique_slug(cls, name: str) -> str:
+		slug_orig = slugify(name.lower().replace("/","-").replace(".","-"))
+		slug = slug_orig[:LEN_NAME]
+
+		# append '-n' on the end until it is a unique slug
+		iter = 1
+		while VerifiedSoftware.objects.filter(slug=slug).first():
+			iter += 1
+			num_str = f"-{iter}"
+			slug = slug_orig[:LEN_NAME-len(num_str)] + num_str
+		
+		return slug
+
+	class Meta: verbose_name_plural = 'Verified software'
 
 class SoftwareEditQueue(HssiModel):
 	"""

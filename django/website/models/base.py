@@ -235,6 +235,14 @@ class HssiSet(HssiModel):
 			fields
 		)
 
+	def __str__(self): 
+		try:
+			software = self.target_model.objects.get(pk=self.id)
+			fieldname = self.target_model.get_top_field().name
+			return getattr(software, fieldname)
+		except:
+			return f"<None> - {self.id}"
+
 	class Meta: abstract = True
 
 class ControlledList(HssiModel):

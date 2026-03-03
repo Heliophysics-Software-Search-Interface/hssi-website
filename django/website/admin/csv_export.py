@@ -7,7 +7,6 @@ from ..models import *
 from typing import Type, TYPE_CHECKING
 if TYPE_CHECKING:
 	from django.db import models
-	from import_export import declarative
 
 # Setup ------------------------------------------------------------------------
 

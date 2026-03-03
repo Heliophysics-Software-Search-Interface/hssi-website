@@ -243,8 +243,7 @@ class SoftwareAdmin(HSSIModelAdmin):
 		for soft in queryset:
 			exists = not not VerifiedSoftware.objects.filter(pk=soft.pk).first()
 			if exists: continue
-			VerifiedSoftware.objects.create(id=uuid.UUID(str(soft.id)))
-			print(f"made {soft.software_name}:{soft.id} visible to public")
+			verified = VerifiedSoftware.create_verified(soft)
 
 	@action(description="Add to Edit Queue")
 	def add_edit_queue(self, request: HttpRequest, queryset: QuerySet[Software]):

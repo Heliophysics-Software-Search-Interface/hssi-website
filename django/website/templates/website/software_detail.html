@@ -58,6 +58,34 @@
         </div>
     </div>
 
+    <!-- Citation Section -->
+    {% if software.persistentIdentifier %}
+    <details class="software-section citation-section" data-doi="{{ software.persistentIdentifier }}">
+        <summary class="section-title">Citation</summary>
+        <div class="citation-text" id="citation-text">
+            <div class="citation-skeleton">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line" style="width: 60%"></div>
+                <div class="skeleton-line" style="width: 75%"></div>
+            </div>
+        </div>
+        <div class="citation-controls">
+            <label for="citation-style">Style</label>
+            <select id="citation-style">
+                <option value="apa" selected>APA</option>
+                <option value="harvard-cite-them-right">Harvard</option>
+                <option value="modern-language-association">MLA</option>
+                <option value="vancouver">Vancouver</option>
+                <option value="chicago-fullnote-bibliography">Chicago</option>
+                <option value="ieee">IEEE</option>
+            </select>
+            <button id="citation-copy" title="Copy to clipboard">
+                <i class="fa fa-copy"></i>
+            </button>
+        </div>
+    </details>
+    {% endif %}
+
     <!-- Main Content -->
     <div class="software-content">
 
@@ -634,4 +662,66 @@ document.querySelectorAll('details.software-section').forEach(details => {
     });
 });
 </script>
+
+{% if software.persistentIdentifier %}
+<script>
+(function() {
+    const section = document.querySelector('.citation-section');
+    if (!section) return;
+
+    const doi = section.dataset.doi;
+    const textEl = document.getElementById('citation-text');
+    const styleSelect = document.getElementById('citation-style');
+    const copyBtn = document.getElementById('citation-copy');
+
+    var skeletonHTML = '<div class="citation-skeleton">'
+        + '<div class="skeleton-line"></div>'
+        + '<div class="skeleton-line" style="width: 60%"></div>'
+        + '<div class="skeleton-line" style="width: 75%"></div>'
+        + '</div>';
+
+    function fetchCitation(style) {
+        textEl.innerHTML = skeletonHTML;
+        fetch('{% url "website:get_citation" %}?doi=' + encodeURIComponent(doi) + '&style=' + encodeURIComponent(style))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.error) {
+                    textEl.textContent = 'Error: ' + data.error;
+                } else {
+                    textEl.innerHTML = data.citation;
+                }
+            })
+            .catch(function() {
+                textEl.textContent = 'Failed to load citation.';
+            });
+    }
+
+    var loaded = false;
+
+    styleSelect.addEventListener('change', function() {
+        fetchCitation(this.value);
+    });
+
+    copyBtn.addEventListener('click', function() {
+        const text = textEl.innerText;
+        navigator.clipboard.writeText(text).then(function() {
+            copyBtn.title = 'Copied!';
+            setTimeout(function() { copyBtn.title = 'Copy to clipboard'; }, 2000);
+        });
+    });
+
+    // Fetch on first open (or immediately if already open)
+    if (section.open) {
+        fetchCitation(styleSelect.value);
+        loaded = true;
+    }
+    section.querySelector('summary').addEventListener('click', function() {
+        if (!loaded) {
+            fetchCitation(styleSelect.value);
+            loaded = true;
+        }
+    });
+})();
+</script>
+{% endif %}
 {% endblock %}

@@ -446,6 +446,108 @@ a.tag:hover {
     margin-right: 8px;
 }
 
+/* Citation Section */
+.citation-section {
+    margin-bottom: 20px;
+}
+
+.citation-text {
+    line-height: 1.8;
+    color: #333;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+.citation-text a {
+    color: #1779ba;
+    text-decoration: none;
+}
+
+.citation-text a:hover {
+    text-decoration: underline;
+}
+
+.citation-controls {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.citation-controls label {
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.citation-controls select {
+    padding: 7px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    color: #333;
+    background: white;
+    cursor: pointer;
+    max-width: 200px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.citation-controls select:hover,
+.citation-controls select:focus {
+    outline: none;
+    border-color: #4a90d9;
+    box-shadow: 0 0 0 1px #4a90d9;
+}
+
+#citation-copy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    color: #555;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: auto;
+    transition: all 0.15s ease;
+}
+
+#citation-copy:hover {
+    background-color: #f0f0f0;
+    border-color: #999;
+    color: #333;
+}
+
+/* Skeleton loading animation */
+.citation-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.skeleton-line {
+    height: 14px;
+    background: #e0e0e0;
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-line::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .software-header-content {
@@ -480,5 +582,9 @@ a.tag:hover {
 
     .software-section {
         padding: 15px;
+    }
+
+    .citation-controls {
+        flex-wrap: wrap;
     }
 }

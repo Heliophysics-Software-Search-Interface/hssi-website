@@ -13,7 +13,7 @@ from ..models.software import (
     Software, VerifiedSoftware, SoftwareVersion, SoftwareEditQueue,
 )
 from ..models import (
-	SubmissionInfo, RelatedItem, Award, HssiModel, ControlledList, 
+	SubmissionInfo, RelatedItem, Award, HssiModel, 
 	FunctionCategory, OperatingSystem, Phenomena, Keyword, 
 	Organization, License, InstrumentObservatory, RepoStatus, 
 	DataInput, ProgrammingLanguage, FileFormat, Region, CpuArchitecture
@@ -101,7 +101,7 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 	def collapse_model_entries(
 		self, 
 		request: HttpRequest, 
-		queryset: QuerySet[ControlledList]
+		queryset: QuerySet[HssiModel]
 	):
 		"""
 		Useful for if there are multiple entries that should be treated as the 

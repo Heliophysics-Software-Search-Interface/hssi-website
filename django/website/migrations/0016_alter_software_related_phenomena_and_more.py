@@ -157,4 +157,12 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(blank=True, default=website.models.people.Submitter.get_default_submitter, related_name='submission_infos', to='website.submitter'),
         ),
         migrations.RunPython(apply_submission_submitter_map),
+        migrations.RemoveField(
+            model_name='keyword',
+            name='definition',
+        ),
+        migrations.RemoveField(
+            model_name='keyword',
+            name='identifier',
+        ),
     ]

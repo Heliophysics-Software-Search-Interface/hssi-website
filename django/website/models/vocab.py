@@ -7,7 +7,7 @@ from colorful.fields import RGBColorField
 from ..util import *
 from .base import (
 	LEN_NAME, LEN_ABBREVIATION, FIELD_FUNCTIONCATEGORY_FULLNAME,
-	ModelObjectChoice, ControlledList, ControlledGraphList
+	ModelObjectChoice, HssiModel, ControlledList, ControlledGraphList
 )
 
 from typing import TYPE_CHECKING
@@ -22,9 +22,17 @@ class InstrObsType(models.IntegerChoices):
 
 ## Models ----------------------------------------------------------------------
 
-class Keyword(ControlledList):
+class Keyword(HssiModel):
 	access = AccessLevel.PUBLIC
+	name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
+
 	def __str__(self) -> str: return self.name.title()
+
+	@classmethod
+	def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
+
+	class Meta:
+		ordering = ['name']
 
 class OperatingSystem(ControlledList):
 	"""Operating system on which the software can run"""

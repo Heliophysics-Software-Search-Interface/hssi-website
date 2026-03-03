@@ -16,13 +16,12 @@ Assumptions:
 
 from __future__ import annotations
 
-import argparse
 from typing import Dict, List, Optional, Set
 
-from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
+from django.db.models.base import Model
+from django.core.management.base import CommandError
 from django.db.models.fields.related import ManyToManyField
-
+from sortedm2m.fields import SortedManyToManyField
 from rdflib import Graph, Namespace, RDF, RDFS, URIRef, Literal
 
 from ..models import FunctionCategory, ControlledGraphList
@@ -224,8 +223,26 @@ def parse_ttl(model: type[ControlledGraphList], file_url: str):
 			print(f"found match! replacing {len(oldrefs)} references..")
 			for refobj, field in oldrefs:
 				if isinstance(field, ManyToManyField):
-					getattr(refobj, field.name).remove(matched_obj)
-					getattr(refobj, field.name).add(obj)
+					# if it's a sorted m2m field, the sort_value must be 
+					# preserved so we modify the through table directly
+					if isinstance(field, SortedManyToManyField):
+						sm2m_field: SortedManyToManyField = field
+						through: type[Model] = (
+							sm2m_field.through 
+							if hasattr(sm2m_field, "through") else 
+							sm2m_field.remote_field.through
+						)
+						matched_obj_field: str = matched_obj._meta.model_name.lower()
+						kwargs = {
+							refobj._meta.model_name.lower(): refobj.pk,
+							matched_obj_field: matched_obj.pk
+						}
+						entry = through.objects.get(**kwargs)
+						setattr(entry, matched_obj_field, obj)
+						entry.save()
+					else:
+						getattr(refobj, field.name).remove(matched_obj)
+						getattr(refobj, field.name).add(obj)
 				else: setattr(refobj, field.name, obj)
 				print(f"updated field '{refobj.pk}:{field}'")
 		

@@ -126,8 +126,26 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 				print(f"found match! replacing {len(oldrefs)} references..")
 				for refobj, field in oldrefs:
 					if isinstance(field, ManyToManyField):
-						getattr(refobj, field.name).remove(matched_obj)
-						getattr(refobj, field.name).add(new_obj)
+						# if it's a sorted m2m field, the sort_value must be 
+						# preserved so we modify the through table directly
+						if isinstance(field, SortedManyToManyField):
+							sm2m_field: SortedManyToManyField = field
+							through: type[Model] = (
+								sm2m_field.through 
+								if hasattr(sm2m_field, "through") else 
+								sm2m_field.remote_field.through
+							)
+							matched_obj_field: str = matched_obj._meta.model_name.lower()
+							kwargs = {
+								refobj._meta.model_name.lower(): refobj.pk,
+								matched_obj_field: matched_obj.pk
+							}
+							entry = through.objects.get(**kwargs)
+							setattr(entry, matched_obj_field, new_obj)
+							entry.save()
+						else:
+							getattr(refobj, field.name).remove(matched_obj)
+							getattr(refobj, field.name).add(new_obj)
 					else: setattr(refobj, field.name, new_obj)
 					print(f"updated field '{refobj.pk}:{field}'")
 

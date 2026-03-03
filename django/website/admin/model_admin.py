@@ -317,7 +317,7 @@ class SubmissionInfoAdmin(HSSIModelAdmin):
 		return obj.software.software_name
 
 	def submitter_name(self, obj: SubmissionInfo):
-		if obj.submitter: return obj.submitter.fullName
+		if obj.submitter.first(): return obj.submitter.first().fullName
 		return "<None>"
 	
 	list_display = ('submission_name', 'submitter_name', 'submission_date', 'id')

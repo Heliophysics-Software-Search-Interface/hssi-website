@@ -17,12 +17,6 @@ class Organization(HssiModel):
 	abbreviation = models.CharField(max_length=LEN_SHORTNAME, null=True, blank=True)
 	website = models.URLField(blank=True, null=True)
 	identifier = models.URLField(blank=True, null=True)
-	parent_organization = models.ForeignKey(
-		'self', 
-		on_delete=models.SET_NULL, 
-		null=True, blank=True, 
-		related_name='sub_organizations'
-	)
 
 	# specified for intellisense, defined in other models
 	people: models.Manager['Person']

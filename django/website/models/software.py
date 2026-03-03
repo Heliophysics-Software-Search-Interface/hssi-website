@@ -227,12 +227,11 @@ class SubmissionInfo(HssiModel):
 		blank=True, null=True,
 		related_name='submission_info'
 	)
-	date_modified = models.DateField(auto_now=True, blank=True, null=True)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 	modification_description = models.TextField(blank=True, null=True)
 	metadata_version_number = models.CharField(max_length=50, blank=True, null=True)
-	submitter = models.ForeignKey(
+	submitter = models.ManyToManyField(
 		Submitter,
-		on_delete=models.SET_DEFAULT, 
 		default=Submitter.get_default_submitter,
 		blank=True,
 		related_name='submission_infos'
@@ -243,7 +242,7 @@ class SubmissionInfo(HssiModel):
 		null=True, blank=True, 
 		related_name='submission_infos'
 	)
-	submission_date = models.DateField(blank=True, null=True)
+	submission_date = models.DateTimeField(blank=True, null=True)
 	internal_status_code = models.IntegerField(
 		choices=SubmissionStatusCode.choices, 
 		default=SubmissionStatusCode.PROPOSED_RESOURCE

@@ -2,12 +2,13 @@
 
 import uuid, typing
 import sortedm2m.fields
+import website.models.people
 from django.db import migrations, models
 from django.apps.registry import Apps
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 if typing.TYPE_CHECKING:
-    from ..models import SoftwareVersion, Software
+    from ..models import SoftwareVersion, Software, SubmissionInfo, Submitter
 
 software_field_map: dict[
     uuid.UUID, 
@@ -57,6 +58,25 @@ def apply_software_map(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
             software.version.add(version_model.objects.get(pk=version))
         software.save()
     del software_field_map
+
+submission_submitter_map: dict[uuid.UUID, uuid.UUID] = {}
+
+def create_submission_submitter_map(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    global submission_submitter_map
+    submission_model: type['SubmissionInfo'] = apps.get_model("website", "SubmissionInfo")
+    submission_submitter_map = {}
+    for sub in submission_model.objects.all():
+        submission_submitter_map[sub.pk] = sub.submitter.pk
+
+def apply_submission_submitter_map(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    global submission_submitter_map
+    submission_model: type['SubmissionInfo'] = apps.get_model("website", "SubmissionInfo")
+    submitter_model: type['Submitter'] = apps.get_model("website", "Submitter")
+    for submission_id, submitter_id in submission_submitter_map.items():
+        submission = submission_model.objects.get(pk=submission_id)
+        submission.submitter.add(submitter_model.objects.get(pk=submitter_id))
+        submission.save()
+    del submission_submitter_map
 
 class Migration(migrations.Migration):
 
@@ -112,4 +132,29 @@ class Migration(migrations.Migration):
             name='version',
             field=models.ManyToManyField(blank=True, related_name='software', to='website.softwareversion'),
         ),
+        migrations.RunPython(create_submission_submitter_map),
+        migrations.RemoveField(
+            model_name='organization',
+            name='parent_organization',
+        ),
+        migrations.AlterField(
+            model_name='submissioninfo',
+            name='date_modified',
+            field=models.DateTimeField(auto_now=True, null=True),
+        ),
+        migrations.AlterField(
+            model_name='submissioninfo',
+            name='submission_date',
+            field=models.DateTimeField(blank=True, null=True),
+        ),
+        migrations.RemoveField(
+            model_name='submissioninfo',
+            name='submitter',
+        ),
+        migrations.AddField(
+            model_name='submissioninfo',
+            name='submitter',
+            field=models.ManyToManyField(blank=True, default=website.models.people.Submitter.get_default_submitter, related_name='submission_infos', to='website.submitter'),
+        ),
+        migrations.RunPython(apply_submission_submitter_map),
     ]

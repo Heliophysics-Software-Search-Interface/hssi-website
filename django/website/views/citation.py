@@ -29,6 +29,7 @@ def get_citation(request):
             timeout=10,
         )
         response.raise_for_status()
+        response.encoding = 'utf-8'
         citation = response.text.strip()
         return JsonResponse({'citation': citation})
     except requests.exceptions.Timeout:

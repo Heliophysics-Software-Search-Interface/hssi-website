@@ -119,6 +119,20 @@
     color: white;
 }
 
+.action-btn.btn-cite {
+    background-color: #535a7a; /* old: #4a4e61 */
+    color: white;
+    border: 1px solid #535a7a; /* old: #4a4e61 */
+    cursor: pointer;
+}
+
+.action-btn.btn-cite:hover,
+.action-btn.btn-cite-active {
+    background-color: #414660; /* old: #2c2f3a */
+    border-color: #414660; /* old: #2c2f3a */
+    color: white;
+}
+
 /* Content Sections */
 .software-content {
     margin-bottom: 30px;
@@ -449,6 +463,19 @@ a.tag:hover {
 /* Citation Section */
 .citation-section {
     margin-bottom: 20px;
+    max-height: 2000px;
+    opacity: 1;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease, margin-bottom 0.4s ease, padding 0.4s ease;
+}
+
+.citation-section.citation-hidden {
+    max-height: 0;
+    opacity: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-color: transparent;
 }
 
 .citation-notice {

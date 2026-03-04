@@ -54,13 +54,16 @@
             <a href="{{ software.persistentIdentifier }}" class="action-btn btn-doi" target="_blank">
                 <i class="fa fa-link"></i> DOI
             </a>
+            <button class="action-btn btn-cite" id="cite-me-btn">
+                <i class="fa fa-quote-left"></i> Cite Me
+            </button>
             {% endif %}
         </div>
     </div>
 
     <!-- Citation Section -->
     {% if software.persistentIdentifier %}
-    <details class="software-section citation-section" data-doi="{{ software.persistentIdentifier }}"{% if software.referencePublication and software.referencePublication.identifier %} data-ref-doi="{{ software.referencePublication.identifier }}"{% endif %}>
+    <details class="software-section citation-section citation-hidden" open data-doi="{{ software.persistentIdentifier }}"{% if software.referencePublication and software.referencePublication.identifier %} data-ref-doi="{{ software.referencePublication.identifier }}"{% endif %}>
         <summary class="section-title">Citation</summary>
         <p class="citation-notice" id="citation-notice"></p>
         {% if software.referencePublication and software.referencePublication.identifier %}
@@ -767,17 +770,30 @@ document.querySelectorAll('details.software-section').forEach(details => {
         });
     });
 
-    // Fetch on first open (or immediately if already open)
-    if (section.open) {
-        fetchAll(styleSelect.value);
-        loaded = true;
+    // "Cite Me" button toggles visibility
+    var citeBtn = document.getElementById('cite-me-btn');
+    if (citeBtn) {
+        citeBtn.addEventListener('click', function() {
+            if (section.classList.contains('citation-hidden')) {
+                section.classList.remove('citation-hidden');
+                if (!loaded) {
+                    fetchAll(styleSelect.value);
+                    loaded = true;
+                }
+                // Update section-body maxHeight after reveal
+                var body = section.querySelector('.section-body');
+                if (body) {
+                    setTimeout(function() {
+                        body.style.maxHeight = body.scrollHeight + 'px';
+                    }, 50);
+                }
+                citeBtn.classList.add('btn-cite-active');
+            } else {
+                section.classList.add('citation-hidden');
+                citeBtn.classList.remove('btn-cite-active');
+            }
+        });
     }
-    section.querySelector('summary').addEventListener('click', function() {
-        if (!loaded) {
-            fetchAll(styleSelect.value);
-            loaded = true;
-        }
-    });
 })();
 </script>
 {% endif %}

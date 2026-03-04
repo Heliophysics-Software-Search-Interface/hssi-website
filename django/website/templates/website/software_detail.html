@@ -96,7 +96,10 @@
                 <option value="chicago-fullnote-bibliography">Chicago</option>
                 <option value="ieee">IEEE</option>
             </select>
-            <button id="citation-copy" title="Copy all citations to clipboard">
+            <button id="citation-copy-software" class="citation-copy-btn" title="Copy citation to clipboard">
+                <i class="fa fa-copy"></i>
+            </button>
+            <button id="citation-copy-refpub" class="citation-copy-btn" style="display:none" title="Copy reference publication citation to clipboard">
                 <i class="fa fa-copy"></i>
             </button>
         </div>
@@ -692,7 +695,8 @@ document.querySelectorAll('details.software-section').forEach(details => {
     var softwareEl = document.getElementById('citation-text-software');
     var refpubEl = document.getElementById('citation-text-refpub');
     var styleSelect = document.getElementById('citation-style');
-    var copyBtn = document.getElementById('citation-copy');
+    var copySoftwareBtn = document.getElementById('citation-copy-software');
+    var copyRefpubBtn = document.getElementById('citation-copy-refpub');
 
     var showRefPub = refpubEl && hasRefDoi;
     var noticeEl = document.getElementById('citation-notice');
@@ -700,8 +704,12 @@ document.querySelectorAll('details.software-section').forEach(details => {
         ? 'Citations are generated from the DOIs stored on this page.'
         : 'Citation is generated from the DOI stored on this page.';
 
-    // If ref pub identifier is not a DOI, hide its subheader and text block
-    if (refpubEl && !hasRefDoi) {
+    if (showRefPub) {
+        // Show both copy buttons with specific titles
+        copySoftwareBtn.title = 'Copy software citation to clipboard';
+        copyRefpubBtn.style.display = '';
+    } else if (refpubEl) {
+        // Hide ref pub subheader, text, and copy button
         refpubEl.style.display = 'none';
         var refHeader = refpubEl.previousElementSibling;
         if (refHeader && refHeader.classList.contains('citation-subheader')) {
@@ -723,7 +731,7 @@ document.querySelectorAll('details.software-section').forEach(details => {
     function updateSectionHeight() {
         var body = section.querySelector('.section-body');
         if (body && section.open) {
-            body.style.maxHeight = body.scrollHeight + 'px';
+            body.style.maxHeight = 'none';
         }
     }
 
@@ -759,15 +767,24 @@ document.querySelectorAll('details.software-section').forEach(details => {
         fetchAll(this.value);
     });
 
-    copyBtn.addEventListener('click', function() {
-        var text = softwareEl.innerText;
-        if (refpubEl && hasRefDoi) {
-            text += '\n\n' + refpubEl.innerText;
-        }
+    function copyToClipboard(btn, text, originalTitle) {
         navigator.clipboard.writeText(text).then(function() {
-            copyBtn.title = 'Copied!';
-            setTimeout(function() { copyBtn.title = 'Copy all citations to clipboard'; }, 2000);
+            var icon = btn.querySelector('i');
+            icon.className = 'fa fa-check';
+            btn.title = 'Copied!';
+            setTimeout(function() {
+                icon.className = 'fa fa-copy';
+                btn.title = originalTitle;
+            }, 1500);
         });
+    }
+
+    copySoftwareBtn.addEventListener('click', function() {
+        copyToClipboard(this, softwareEl.innerText, this.title);
+    });
+
+    copyRefpubBtn.addEventListener('click', function() {
+        copyToClipboard(this, refpubEl.innerText, this.title);
     });
 
     // "Cite Me" button toggles visibility
@@ -780,11 +797,11 @@ document.querySelectorAll('details.software-section').forEach(details => {
                     fetchAll(styleSelect.value);
                     loaded = true;
                 }
-                // Update section-body maxHeight after reveal
+                // Remove section-body maxHeight constraint after reveal
                 var body = section.querySelector('.section-body');
                 if (body) {
                     setTimeout(function() {
-                        body.style.maxHeight = body.scrollHeight + 'px';
+                        body.style.maxHeight = 'none';
                     }, 50);
                 }
                 citeBtn.classList.add('btn-cite-active');

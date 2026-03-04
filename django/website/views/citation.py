@@ -9,6 +9,11 @@ ALLOWED_STYLES = {
     'vancouver',
     'chicago-fullnote-bibliography',
     'ieee',
+    'bibtex',
+    'nature',
+    'science',
+    'american-geophysical-union',
+    'elsevier-harvard',
 }
 
 

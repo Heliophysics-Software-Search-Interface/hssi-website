@@ -451,6 +451,20 @@ a.tag:hover {
     margin-bottom: 20px;
 }
 
+.citation-notice {
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+    margin: 0 0 16px 0;
+}
+
+.citation-subheader {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #555;
+    margin: 0 0 8px 0;
+}
+
 .citation-text {
     line-height: 1.8;
     color: #333;

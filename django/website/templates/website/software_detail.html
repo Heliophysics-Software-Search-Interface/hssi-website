@@ -60,15 +60,29 @@
 
     <!-- Citation Section -->
     {% if software.persistentIdentifier %}
-    <details class="software-section citation-section" data-doi="{{ software.persistentIdentifier }}">
+    <details class="software-section citation-section" data-doi="{{ software.persistentIdentifier }}"{% if software.referencePublication and software.referencePublication.identifier %} data-ref-doi="{{ software.referencePublication.identifier }}"{% endif %}>
         <summary class="section-title">Citation</summary>
-        <div class="citation-text" id="citation-text">
+        <p class="citation-notice" id="citation-notice"></p>
+        {% if software.referencePublication and software.referencePublication.identifier %}
+        <h3 class="citation-subheader">Software</h3>
+        {% endif %}
+        <div class="citation-text" id="citation-text-software">
             <div class="citation-skeleton">
                 <div class="skeleton-line"></div>
                 <div class="skeleton-line" style="width: 60%"></div>
                 <div class="skeleton-line" style="width: 75%"></div>
             </div>
         </div>
+        {% if software.referencePublication and software.referencePublication.identifier %}
+        <h3 class="citation-subheader">Reference Publication</h3>
+        <div class="citation-text" id="citation-text-refpub">
+            <div class="citation-skeleton">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line" style="width: 60%"></div>
+                <div class="skeleton-line" style="width: 75%"></div>
+            </div>
+        </div>
+        {% endif %}
         <div class="citation-controls">
             <label for="citation-style">Style</label>
             <select id="citation-style">
@@ -79,7 +93,7 @@
                 <option value="chicago-fullnote-bibliography">Chicago</option>
                 <option value="ieee">IEEE</option>
             </select>
-            <button id="citation-copy" title="Copy to clipboard">
+            <button id="citation-copy" title="Copy all citations to clipboard">
                 <i class="fa fa-copy"></i>
             </button>
         </div>
@@ -666,13 +680,36 @@ document.querySelectorAll('details.software-section').forEach(details => {
 {% if software.persistentIdentifier %}
 <script>
 (function() {
-    const section = document.querySelector('.citation-section');
+    var section = document.querySelector('.citation-section');
     if (!section) return;
 
-    const doi = section.dataset.doi;
-    const textEl = document.getElementById('citation-text');
-    const styleSelect = document.getElementById('citation-style');
-    const copyBtn = document.getElementById('citation-copy');
+    var doi = section.dataset.doi;
+    var refDoi = section.dataset.refDoi || '';
+    var hasRefDoi = refDoi.indexOf('https://doi.org/') === 0;
+    var softwareEl = document.getElementById('citation-text-software');
+    var refpubEl = document.getElementById('citation-text-refpub');
+    var styleSelect = document.getElementById('citation-style');
+    var copyBtn = document.getElementById('citation-copy');
+
+    var showRefPub = refpubEl && hasRefDoi;
+    var noticeEl = document.getElementById('citation-notice');
+    noticeEl.textContent = showRefPub
+        ? 'Citations are generated from the DOIs stored on this page.'
+        : 'Citation is generated from the DOI stored on this page.';
+
+    // If ref pub identifier is not a DOI, hide its subheader and text block
+    if (refpubEl && !hasRefDoi) {
+        refpubEl.style.display = 'none';
+        var refHeader = refpubEl.previousElementSibling;
+        if (refHeader && refHeader.classList.contains('citation-subheader')) {
+            refHeader.style.display = 'none';
+        }
+        // Also hide the Software subheader since there's only one citation
+        var swHeader = softwareEl.previousElementSibling;
+        if (swHeader && swHeader.classList.contains('citation-subheader')) {
+            swHeader.style.display = 'none';
+        }
+    }
 
     var skeletonHTML = '<div class="citation-skeleton">'
         + '<div class="skeleton-line"></div>'
@@ -680,44 +717,64 @@ document.querySelectorAll('details.software-section').forEach(details => {
         + '<div class="skeleton-line" style="width: 75%"></div>'
         + '</div>';
 
-    function fetchCitation(style) {
-        textEl.innerHTML = skeletonHTML;
-        fetch('{% url "website:get_citation" %}?doi=' + encodeURIComponent(doi) + '&style=' + encodeURIComponent(style))
+    function updateSectionHeight() {
+        var body = section.querySelector('.section-body');
+        if (body && section.open) {
+            body.style.maxHeight = body.scrollHeight + 'px';
+        }
+    }
+
+    function fetchOne(el, doiUrl, style) {
+        el.innerHTML = skeletonHTML;
+        updateSectionHeight();
+        fetch('{% url "website:get_citation" %}?doi=' + encodeURIComponent(doiUrl) + '&style=' + encodeURIComponent(style))
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 if (data.error) {
-                    textEl.textContent = 'Error: ' + data.error;
+                    el.textContent = 'Error: ' + data.error;
                 } else {
-                    textEl.innerHTML = data.citation;
+                    el.innerHTML = data.citation;
                 }
+                updateSectionHeight();
             })
             .catch(function() {
-                textEl.textContent = 'Failed to load citation.';
+                el.textContent = 'Failed to load citation.';
+                updateSectionHeight();
             });
+    }
+
+    function fetchAll(style) {
+        fetchOne(softwareEl, doi, style);
+        if (refpubEl && hasRefDoi) {
+            fetchOne(refpubEl, refDoi, style);
+        }
     }
 
     var loaded = false;
 
     styleSelect.addEventListener('change', function() {
-        fetchCitation(this.value);
+        fetchAll(this.value);
     });
 
     copyBtn.addEventListener('click', function() {
-        const text = textEl.innerText;
+        var text = softwareEl.innerText;
+        if (refpubEl && hasRefDoi) {
+            text += '\n\n' + refpubEl.innerText;
+        }
         navigator.clipboard.writeText(text).then(function() {
             copyBtn.title = 'Copied!';
-            setTimeout(function() { copyBtn.title = 'Copy to clipboard'; }, 2000);
+            setTimeout(function() { copyBtn.title = 'Copy all citations to clipboard'; }, 2000);
         });
     });
 
     // Fetch on first open (or immediately if already open)
     if (section.open) {
-        fetchCitation(styleSelect.value);
+        fetchAll(styleSelect.value);
         loaded = true;
     }
     section.querySelector('summary').addEventListener('click', function() {
         if (!loaded) {
-            fetchCitation(styleSelect.value);
+            fetchAll(styleSelect.value);
             loaded = true;
         }
     });

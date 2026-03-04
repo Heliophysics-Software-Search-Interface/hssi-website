@@ -1,5 +1,4 @@
 {% load static %}
-{% load custom_tags_and_filters %}
 {% get_static_prefix as STATIC_PREFIX %}
 {% load markdownify %}
 
@@ -78,40 +77,10 @@
 			{# description #}
 			<div class="small-10 medium-9 large-9" style="height: calc(100% - 60px)">
 				<div class="resource_description">
-				{% if resource.is_under_development %}
-					WEB TOOL DEVELOPMENT IN PROGRESS &mdash;
-				{% endif %}
 				{{resource.description|markdownify}}
 				</div>
 
 				<div class="resource-details hide-for-small-only">
-					{# pyhc quality spec #}
-					<div
-						class="hide-for-small-only"
-						style="display: inline-block; border-radius: 3px; outline: rgba(10,10,10,.25) 1px solid;"
-						data-tooltip title="PyHC Quality Specs" 
-						data-position="bottom" 
-						data-alignment="right"
-					>
-						<table style="margin: 0;">
-							<tr>
-								<td style="text-align: right;"> Community</td>
-								<td style="text-align: left;"> <img src="{{quality_badge_urls|index:resource.spec_community}}"> </td>
-							</tr>
-							<tr>
-								<td style="text-align: right;"> Documentation </td>
-								<td style="text-align: left";> <img src="{{quality_badge_urls|index:resource.spec_documentation}}"> </td>
-							</tr>
-							<tr>
-								<td style="text-align: right;"> Testing </td>
-								<td style="text-align: left;"> <img src="{{quality_badge_urls|index:resource.spec_testing}}"> </td>
-							</tr>
-							<tr>
-								<td style="text-align: right;"> Maturity </td>
-								<td style="text-align: left;"> <img src="{{quality_badge_urls|index:resource.spec_maturity}}"> </td>
-							</tr>
-						</table>
-					</div>
 					<div style="margin-top: 10px;">
 						<p class="resource_code">
 							Code Language(s): {{resource.code_language}}

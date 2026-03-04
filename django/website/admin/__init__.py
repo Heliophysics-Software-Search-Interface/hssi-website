@@ -1,3 +1,2 @@
-from ._old import *
-from .model_admin import *
-from .csv_export import *
+# DO NOT remove this import, the module needs to be imported so that it runs
+from . import register

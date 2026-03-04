@@ -169,7 +169,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 
 		// PID
 		const doi = zenodoData.conceptdoi || data.id;
-		formData.persistentIdentifier = doiUrlPrefix + doi;
+		formData.persistent_identifier = doiUrlPrefix + doi;
 
 		// publisher
 		formData.publisher = {
@@ -179,7 +179,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		// software name
 		if(data.attributes.titles){
 				for(const title of attrs.titles as JSONObject[]){
-					formData.softwareName = title.title as string;
+					formData.software_name = title.title as string;
 					break;
 				}
 		}
@@ -189,7 +189,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 				for(const desc of attrs.descriptions as JSONObject[]){
 					const desc_text = desc.description as string;
 					if(desc_text.length <= 200) {
-						formData.conciseDescription = desc_text;
+						formData.concise_description = desc_text;
 						if(!formData.description) {
 							formData.description = desc_text
 						}
@@ -201,8 +201,8 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 						formData.description = desc_text;
 					}
 				}
-				if(!formData.conciseDescription && formData.description){
-					formData.conciseDescription = (
+				if(!formData.concise_description && formData.description){
+					formData.concise_description = (
 						formData.description as string
 					).substring(0, 200);
 				}
@@ -317,7 +317,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		if(attrs.dates){
 			const pubdate = attrs.dates.find(item => item.dateType === "Issued");
 			if (pubdate){
-				formData.publicationDate = pubdate.date;
+				formData.publication_date = pubdate.date;
 			}
 		}
 
@@ -347,9 +347,9 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 				if(resTypeGen){
 					if(resTypeGen in resTypeGensPublication){
 						if(
-							!formData.referencePublication && 
+							!formData.reference_publication && 
 							relId.relationType === "IsDescribedBy"
-						) formData.referencePublication = relId.relatedIdentifier;
+						) formData.reference_publication = relId.relatedIdentifier;
 						else{
 							relPubs.push(relId.relatedIdentifier);
 						}
@@ -373,9 +373,9 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		if(repoUrl) formData.codeRepositoryURL = repoUrl;
 
 		// set the related identifiers
-		if(relPubs) formData.relatedPublications = relPubs.map(doi => doiUrlPrefix + doi);
-		if(relSoftware) formData.relatedSoftware = relSoftware.map(doi => doiUrlPrefix + doi);
-		if(relData) formData.relatedDatasets = relData.map(doi => doiUrlPrefix + doi);
+		if(relPubs) formData.related_publications = relPubs.map(doi => doiUrlPrefix + doi);
+		if(relSoftware) formData.related_software = relSoftware.map(doi => doiUrlPrefix + doi);
+		if(relData) formData.related_datasets = relData.map(doi => doiUrlPrefix + doi);
 
 		// version
 		if(attrs.version){
@@ -386,7 +386,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 				// version doi without multiple api queries
 				// versionPID: doiUrlPrefix + data.id, 
 			};
-			const desc = formData.description || formData.conciseDescription;
+			const desc = formData.description || formData.concise_description;
 			if(desc) {
 				formData.versionNumber.versionDescription = desc
 			}
@@ -412,16 +412,16 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		console.log(zenodoData);
 		const devStatus = zenodoData?.metadata?.custom?.["code:developmentStatus"];
 		if(devStatus){
-			formData.developmentStatus = devStatus.title?.en || devStatus.id;
+			formData.development_status = devStatus.title?.en || devStatus.id;
 		}
 
 		// programming languages
 		const progLangs = zenodoData?.metadata?.custom?.["code:programmingLanguage"];
 		if(progLangs){
-			formData.programmingLanguage = [];
+			formData.programming_language = [];
 			for(const lang of progLangs){
 				const langName = lang.title?.en || lang.id;
-				formData.programmingLanguage.push(langName);
+				formData.programming_language.push(langName);
 			}
 		}
 

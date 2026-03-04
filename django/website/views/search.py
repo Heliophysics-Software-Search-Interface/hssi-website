@@ -4,7 +4,7 @@ import time
 from django.db.models import Q
 from django.http import HttpRequest, JsonResponse
 
-from ..models import Software, VisibleSoftware
+from ..models import Software, VerifiedSoftware
 
 
 def build_field_query(query: str, tokens: list[str], fields: list[str]) -> Q:
@@ -16,7 +16,6 @@ def build_field_query(query: str, tokens: list[str], fields: list[str]) -> Q:
 		for token in tokens:
 			q |= Q(**{f"{field}__icontains": token})
 	return q
-
 
 def search_visible_software(request: HttpRequest) -> JsonResponse:
 	"""
@@ -34,42 +33,42 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 	print(f"[search] query='{query}' tokens={tokens}")
 
 	tier_1_fields = [
-		"softwareName",
-		"conciseDescription",
+		"software_name",
+		"concise_description",
 		"description",
 	]
 	tier_2_fields = [
 		"keywords__name",
 	]
 	tier_3_fields = [
-		"relatedRegion__name",
-		"softwareFunctionality__name",
-		"dataSources__name",
-		"relatedPhenomena__name",
+		"related_region__name",
+		"software_functionality__name",
+		"data_sources__name",
+		"related_phenomena__name",
 	]
 	tier_4_subtiers = [
 		[
 			"publisher__name",
 			"publisher__abbreviation",
-			"authors__firstName",
-			"authors__lastName",
+			"authors__given_name",
+			"authors__family_name",
 			"authors__identifier",
 		],
 		[
-			"programmingLanguage__name",
-			"relatedInstruments__name",
-			"relatedInstruments__abbreviation",
-			"relatedObservatories__name",
+			"programming_language__name",
+			"related_instruments__name",
+			"related_instruments__abbreviation",
+			"related_observatories__name",
 		],
 		[
-			"relatedObservatories__abbreviation",
-			"referencePublication__name",
-			"relatedPublications__name",
+			"related_observatories__abbreviation",
+			"reference_publication__name",
+			"related_publications__name",
 		],
 		[
-			"relatedDatasets__name",
-			"relatedSoftware__name",
-			"interoperableSoftware__name",
+			"related_datasets__name",
+			"related_software__name",
+			"interoperable_software__name",
 		],
 		[
 			"funder__name",
@@ -78,28 +77,24 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 		],
 		[
 			"award__identifier",
-			"inputFormats__name",
-			"inputFormats__extension",
-			"outputFormats__name",
-			"outputFormats__extension",
+			"input_formats__name",
+			"input_formats__extension",
+			"output_formats__name",
+			"output_formats__extension",
 		],
 		[
-			"cpuArchitecture__name",
-			"developmentStatus__name",
-			"operatingSystem__name",
+			"cpu_architecture__name",
+			"development_status__name",
+			"operating_system__name",
 			"license__name",
-			"metadataLicense__name",
 		],
 		[
-			"codeRepositoryUrl",
+			"code_repository_url",
 			"documentation",
-		],
-		[
-			"version__number",
-		],
+		]
 	]
 
-	visible_ids = list(VisibleSoftware.objects.values_list("id", flat=True))
+	visible_ids = list(VerifiedSoftware.objects.values_list("id", flat=True))
 	base_qs = Software.objects.filter(id__in=visible_ids)
 
 	def fetch_tier_ids(tier_name: str, fields: list[str]) -> list[str]:

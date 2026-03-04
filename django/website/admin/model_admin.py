@@ -1,22 +1,21 @@
-import uuid, json, datetime
+import uuid, datetime
 
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from django.utils import timezone
-from django.contrib.admin import action, register
+from django.contrib.admin import action
 from django.http import HttpRequest
 from django.db.models import QuerySet, ManyToManyField
 
 from ..views import email_edit_link as v_email_edit_link
 from ..models.people import Person, Curator
 from ..models.software import (
-    Software, VisibleSoftware, SoftwareVersion, SoftwareEditQueue,
+    Software, VerifiedSoftware, SoftwareVersion, SoftwareEditQueue,
 )
-from ..models.submission_info import SubmissionInfo
-from ..models.auxillary_info import RelatedItem, Award
-from ..models.roots import (
-	HssiModel, ControlledList, FunctionCategory, OperatingSystem, Phenomena, 
-	Keyword, Image, Organization, License, InstrumentObservatory, RepoStatus, 
+from ..models import (
+	SubmissionInfo, RelatedItem, Award, HssiModel, 
+	FunctionCategory, OperatingSystem, Phenomena, Keyword, 
+	Organization, License, InstrumentObservatory, RepoStatus, 
 	DataInput, ProgrammingLanguage, FileFormat, Region, CpuArchitecture
 )
 
@@ -102,7 +101,7 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 	def collapse_model_entries(
 		self, 
 		request: HttpRequest, 
-		queryset: QuerySet[ControlledList]
+		queryset: QuerySet[HssiModel]
 	):
 		"""
 		Useful for if there are multiple entries that should be treated as the 
@@ -157,10 +156,6 @@ class KeywordAdmin(HSSIModelAdmin):
 		collapse_keyword_entries,
 		format_names,
 	]
-
-class ImageResource(resources.ModelResource):
-	class Meta: model = Image
-class ImageAdmin(HSSIModelAdmin): resource_class = ImageResource
 
 class RegionResource(resources.ModelResource):
 	class Meta: model = Region
@@ -246,10 +241,9 @@ class SoftwareAdmin(HSSIModelAdmin):
 		queryset: QuerySet[Software]
 	):
 		for soft in queryset:
-			exists = not not VisibleSoftware.objects.filter(pk=soft.pk).first()
+			exists = not not VerifiedSoftware.objects.filter(pk=soft.pk).first()
 			if exists: continue
-			VisibleSoftware.objects.create(id=uuid.UUID(str(soft.id)))
-			print(f"made {soft.softwareName}:{soft.id} visible to public")
+			verified = VerifiedSoftware.create_verified(soft)
 
 	@action(description="Add to Edit Queue")
 	def add_edit_queue(self, request: HttpRequest, queryset: QuerySet[Software]):
@@ -266,9 +260,9 @@ class SoftwareAdmin(HSSIModelAdmin):
 		HSSIModelAdmin.collapse_model_entries,
 	]
 
-class VisibleSoftwareResource(resources.ModelResource):
-	class Meta: model = VisibleSoftware
-class VisibleSoftwareAdmin(ImportExportModelAdmin): resource_class = VisibleSoftwareResource
+class VerifiedSoftwareResource(resources.ModelResource):
+	class Meta: model = VerifiedSoftware
+class VerifiedSoftwareAdmin(ImportExportModelAdmin): resource_class = VerifiedSoftwareResource
 
 class SoftwareEditQueueResource(resources.ModelResource):
 	class Meta: Model = SoftwareEditQueue
@@ -290,7 +284,7 @@ class SoftwareEditQueueAdmin(ImportExportModelAdmin):
 		for item in to_remove: item.delete()
 
 	def target_name(self, obj: 'SoftwareEditQueue') -> str:
-		if obj.target_software: return obj.target_software.softwareName
+		if obj.target_software: return obj.target_software.software_name
 		return "None"
 	
 	actions = [
@@ -304,6 +298,7 @@ class SubmissionInfoResource(resources.ModelResource):
 	class Meta: model = SubmissionInfo
 class SubmissionInfoAdmin(HSSIModelAdmin): 
 	resource_class = SubmissionInfoResource
+	ordering = ("-submission_date",)
 
 	@action(description="Email edit submission link (90 days)")
 	def email_edit_link(self, request: HttpRequest, query: QuerySet[SubmissionInfo]):
@@ -316,10 +311,12 @@ class SubmissionInfoAdmin(HSSIModelAdmin):
 	]
 
 	def submission_name(self, obj: SubmissionInfo):
-		return obj.software.softwareName
+		if not obj or not obj.software:
+			return "<None>"
+		return obj.software.software_name
 
 	def submitter_name(self, obj: SubmissionInfo):
-		if obj.submitter: return obj.submitter.fullName
-		return "None"
+		if obj.submitter.first(): return obj.submitter.first().fullName
+		return "<None>"
 	
-	list_display = ('submission_name', 'submitter_name', 'submissionDate', 'id')
+	list_display = ('submission_name', 'submitter_name', 'submission_date', 'id')

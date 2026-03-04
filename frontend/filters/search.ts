@@ -111,7 +111,7 @@ export async function searchForQuery(
 	try{
 		const resultIds = await getRelevantQueryIds(trimmedQuery);
 		const resultData = await ModelDataCache.getModelData(
-			"VisibleSoftware",
+			"VerifiedSoftware",
 			resultIds
 		) as SoftwareDataAsync[];
 

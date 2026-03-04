@@ -13,6 +13,7 @@ for file in /extensions/pre-launch-scripts/*; do
 done
 
 DATABASE_SLEEP_TIME=10
+DO_MIGRATIONS=0
 
 # Create the Django project if it doesn't exist
 cd /django
@@ -56,12 +57,14 @@ for file in /extensions/django/pre-migration-scripts/*; do
 	[ -f "$file" ] && [ -x "$file" ] && echo "Running script $file ..." && "$file"
 done
 
-echo "Making project migrations ..."
-python manage.py makemigrations --no-input --verbosity 1
-echo "Making $APP_NAME app migrations ..."
-python manage.py makemigrations $APP_NAME --no-input --verbosity 1
-echo "Performing default database migrations ..."
-python manage.py migrate --no-input --verbosity 1
+if [ $DO_MIGRATIONS -gt 0 ]; then
+	echo "Making project migrations ..."
+	python manage.py makemigrations --no-input --verbosity 1
+	echo "Making $APP_NAME app migrations ..."
+	python manage.py makemigrations $APP_NAME --no-input --verbosity 1
+	echo "Performing default database migrations ..."
+	python manage.py migrate --no-input --verbosity 1
+fi
 
 echo "Checking for post-migration scripts in /extensions/django/post-migration-scripts ..."
 for file in /extensions/django/post-migration-scripts/*; do

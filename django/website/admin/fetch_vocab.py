@@ -1,5 +1,5 @@
 """
-This module contains functionality for retrieving json-ld data from our 
+Functionality for retrieving json-ld data from our 
 maintained HSSI vocabulary repository at 
 https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/
 """
@@ -8,9 +8,9 @@ import requests
 import json
 
 from ..models import (
-	HssiModel, ControlledList, ControlledGraphList, DataInput, License, 
+	ControlledList, ControlledGraphList, DataInput, License, 
 	OperatingSystem, ProgrammingLanguage, FileFormat, RepoStatus, 
-	CpuArchitecture, FunctionCategory
+	CpuArchitecture
 )
 
 from django.db.models import Model
@@ -29,6 +29,10 @@ URL_OPERATINGSYSTEMS = URL_JSONBASE + "OperatingSystems.json"
 URL_SUPPORTEDFILEFORMATS = URL_JSONBASE + "OutputFileFormats.json"
 URL_PROGRAMMINGLANGUAGES = URL_JSONBASE + "ProgrammingLanguages.json"
 URL_FUNCTIONCATEGORIES = URL_TTLBASE + "softwareFunctionality-v0.3.ttl"
+
+URL_HELIOKNOWBASE = "https://raw.githubusercontent.com/rmcgranaghan/Helio-KNOW/refs/heads/main/data-models/"
+URL_REGEIONS = URL_HELIOKNOWBASE + "hk_region.ttl"
+URL_PHENOMENA = URL_HELIOKNOWBASE + "hk_phenomenon.ttl"
 
 MODEL_URL_MAP={
 	DataInput.__name__: URL_DATAINPUTS,
@@ -224,4 +228,3 @@ def link_concept_children(
 			parent_obj.children.add(obj)
 			print(f"Linked '{parent_obj.name}' with child '{obj.name}'")
 	for obj in objs: obj.save()
-			

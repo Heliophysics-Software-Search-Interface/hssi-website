@@ -1,6 +1,6 @@
 from django.views import generic
 
-from ..models import Software, VisibleSoftware
+from ..models import Software, VerifiedSoftware
 
 
 class SoftwareDetailView(generic.DetailView):
@@ -14,5 +14,5 @@ class SoftwareDetailView(generic.DetailView):
 
     def get_queryset(self):
         # Only show visible (published) software
-        visible_ids = VisibleSoftware.objects.values_list('id', flat=True)
+        visible_ids = VerifiedSoftware.objects.values_list('id', flat=True)
         return Software.objects.filter(pk__in=visible_ids)

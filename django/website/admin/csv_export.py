@@ -7,7 +7,6 @@ from ..models import *
 from typing import Type, TYPE_CHECKING
 if TYPE_CHECKING:
 	from django.db import models
-	from import_export import declarative
 
 # Setup ------------------------------------------------------------------------
 
@@ -34,7 +33,6 @@ def model_csv_filepath(
 def remove_all_model_entries():
 	authors_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
 	models: list[Model] = [
-		Image,
 		Organization,
 		Person,
 		Curator,
@@ -56,7 +54,7 @@ def remove_all_model_entries():
 		Submitter,
 		SubmissionInfo,
 		Software,
-		VisibleSoftware,
+		VerifiedSoftware,
 		SoftwareEditQueue,
 		authors_field.through,
 	]
@@ -75,7 +73,6 @@ def export_model_csv(model: 'Type[models.Model]', directory: str = DEFAULT_DB_EX
 		dataset_file.write(dataset.csv)
 
 def export_db_csv():
-	export_model_csv(Image)
 	export_model_csv(Organization)
 	export_model_csv(Person)
 	export_model_csv(Curator)
@@ -90,7 +87,7 @@ def export_db_csv():
 	export_model_csv(ProgrammingLanguage)
 	export_model_csv(SubmissionInfo)
 	export_model_csv(Software)
-	export_model_csv(VisibleSoftware)
+	export_model_csv(VerifiedSoftware)
 	export_model_csv(Region)
 	export_model_csv(RepoStatus)
 	export_model_csv(DataInput)
@@ -100,9 +97,16 @@ def export_db_csv():
 	export_model_csv(RelatedItem)
 	export_model_csv(SoftwareEditQueue)
 
-	authors_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
-	author_order = authors_field.through
+	# Export sorted m2m order
+	author_order = Software._meta.get_field('authors').remote_field.through
+	software_func_order = Software._meta.get_field('software_functionality').remote_field.through
+	phenomena_order = Software._meta.get_field('related_phenomena').remote_field.through
+	region_order = Software._meta.get_field('related_region').remote_field.through
+
 	export_model_csv(author_order)
+	export_model_csv(software_func_order)
+	export_model_csv(phenomena_order)
+	export_model_csv(region_order)
 
 def import_model_csv(
 	model: 'Type[models.Model]', 
@@ -127,13 +131,17 @@ def import_model_csv(
 					f"Has errors: {str(result.has_errors())} " + 
 					f"Has validation errors: {str(result.has_validation_errors())}"
 				)
+				for err in result.row_errors():
+					print(err)
+				raise Exception("Import error!!")
 		
-		except: traceback.print_exc()
+		except Exception as e:
+			traceback.print_exc()
+			raise e
 	else: print(filepath + " does not exist, skipping")
 
 def import_db_csv():
-	# import order matters (?)
-	import_model_csv(Image)
+	# import order matters
 	import_model_csv(Organization)
 	import_model_csv(Person)
 	import_model_csv(Curator)
@@ -153,13 +161,27 @@ def import_db_csv():
 	import_model_csv(SoftwareVersion)
 	import_model_csv(RelatedItem)
 	import_model_csv(Submitter)
+	import_model_csv(
+		Software, 
+		exclude_fields=[
+			"authors", 
+			"software_functionality",
+			"related_phenomena",
+			"related_region",
+		]
+	)
 	import_model_csv(SubmissionInfo)
-	import_model_csv(Software, exclude_fields=["authors"])
-	import_model_csv(VisibleSoftware)
+	import_model_csv(VerifiedSoftware)
 	import_model_csv(SoftwareEditQueue)
 
-	authors_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
-	author_order = authors_field.through
+	author_order = Software._meta.get_field('authors').remote_field.through
+	software_func_order = Software._meta.get_field('software_functionality').remote_field.through
+	phenomena_order = Software._meta.get_field('related_phenomena').remote_field.through
+	region_order = Software._meta.get_field('related_region').remote_field.through
+
 	import_model_csv(author_order)
+	import_model_csv(software_func_order)
+	import_model_csv(phenomena_order)
+	import_model_csv(region_order)
 
 	print("Finished Importing DB!")

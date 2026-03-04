@@ -5,7 +5,6 @@ import django.core.validators
 import django.db.models.deletion
 import django.utils.timezone
 import uuid
-import website.models._old
 from django.conf import settings
 from django.db import migrations, models
 
@@ -210,10 +209,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('name', models.CharField(db_index=True, max_length=100)),
-                ('member_image', models.ImageField(blank=True, upload_to=website.models._old.resource_media_directory_path)),
+                ('member_image', models.ImageField(blank=True, upload_to="")),
                 ('description', models.TextField(max_length=700)),
                 ('personal_url', models.URLField(blank=True)),
-                ('order', models.PositiveIntegerField(default=website.models._old.num_team_members, validators=[django.core.validators.MaxValueValidator(website.models._old.num_team_members)])),
+                ('order', models.PositiveIntegerField(default=0, validators=[django.core.validators.MaxValueValidator(0)])),
                 ('previous_order', models.IntegerField(default=-1)),
                 ('is_alumnus', models.BooleanField(default=False)),
             ],
@@ -371,7 +370,7 @@ class Migration(migrations.Migration):
                 ('license', models.CharField(blank=True, help_text='The license under which the software is distributed', max_length=256)),
                 ('code_language', models.CharField(blank=True, default='', help_text='The primary programming language that the tool is developed in (e.g. Python, R, IDL, etc.)', max_length=256, verbose_name='Code language(s)')),
                 ('related_tools', models.CharField(blank=True, default='', help_text='List any tools related to the resource in this submission, i.e. tools that this software has expanded on, tools built off of this software, or tools that work in tandem with this software', max_length=256, verbose_name='Related Tool(s)')),
-                ('logo', models.ImageField(blank=True, help_text='Upload an (optional) logo image for the resource (limited to 1MB)', upload_to=website.models._old.resource_media_directory_path)),
+                ('logo', models.ImageField(blank=True, help_text='Upload an (optional) logo image for the resource (limited to 1MB)', upload_to="")),
                 ('logo_url', models.URLField(blank=True, help_text='<strong> Add one link only - </strong>A URL where the logo image can be fetched from (e.g. https://example.com/logo.png)', verbose_name='Logo (URL)')),
                 ('search_keywords', models.CharField(blank=True, default='', help_text="Keywords to prioritize in search, seperated by ','", max_length=256, verbose_name='Search Keywords')),
                 ('is_published', models.BooleanField(default=False, help_text='Indicates whether this is a published resource')),
@@ -565,7 +564,7 @@ class Migration(migrations.Migration):
                 ('license', models.CharField(blank=True, help_text='The license under which the software is distributed', max_length=256)),
                 ('code_language', models.CharField(blank=True, default='', help_text='The primary programming language that the tool is developed in (e.g. Python, R, IDL, etc.)', max_length=256, verbose_name='Code language(s)')),
                 ('related_tools', models.CharField(blank=True, default='', help_text='List any tools related to the resource in this submission, i.e. tools that this software has expanded on, tools built off of this software, or tools that work in tandem with this software', max_length=256, verbose_name='Related Tool(s)')),
-                ('logo', models.ImageField(blank=True, help_text='Upload an (optional) logo image for the resource (limited to 1MB)', upload_to=website.models._old.resource_media_directory_path)),
+                ('logo', models.ImageField(blank=True, help_text='Upload an (optional) logo image for the resource (limited to 1MB)', upload_to="")),
                 ('logo_url', models.URLField(blank=True, help_text='<strong> Add one link only - </strong>A URL where the logo image can be fetched from (e.g. https://example.com/logo.png)', verbose_name='Logo (URL)')),
                 ('search_keywords', models.CharField(blank=True, default='', help_text="Keywords to prioritize in search, seperated by ','", max_length=256, verbose_name='Search Keywords')),
                 ('id', models.UUIDField(editable=False, primary_key=True, serialize=False)),
@@ -678,7 +677,7 @@ class Migration(migrations.Migration):
                 ('license', models.CharField(blank=True, help_text='The license under which the software is distributed', max_length=256)),
                 ('code_language', models.CharField(blank=True, default='', help_text='The primary programming language that the tool is developed in (e.g. Python, R, IDL, etc.)', max_length=256, verbose_name='Code language(s)')),
                 ('related_tools', models.CharField(blank=True, default='', help_text='List any tools related to the resource in this submission, i.e. tools that this software has expanded on, tools built off of this software, or tools that work in tandem with this software', max_length=256, verbose_name='Related Tool(s)')),
-                ('logo', models.ImageField(blank=True, help_text='Upload an (optional) logo image for the resource (limited to 1MB)', upload_to=website.models._old.resource_media_directory_path)),
+                ('logo', models.ImageField(blank=True, help_text='Upload an (optional) logo image for the resource (limited to 1MB)', upload_to="")),
                 ('logo_url', models.URLField(blank=True, help_text='<strong> Add one link only - </strong>A URL where the logo image can be fetched from (e.g. https://example.com/logo.png)', verbose_name='Logo (URL)')),
                 ('search_keywords', models.CharField(blank=True, default='', help_text="Keywords to prioritize in search, seperated by ','", max_length=256, verbose_name='Search Keywords')),
                 ('is_published', models.BooleanField(default=False, help_text='Indicates whether this is a published resource')),

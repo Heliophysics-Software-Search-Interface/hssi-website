@@ -483,6 +483,7 @@ a.tag:hover {
     color: #666;
     font-style: italic;
     margin: 0 0 16px 0;
+    padding-left: 2px;
 }
 
 .citation-subheader {

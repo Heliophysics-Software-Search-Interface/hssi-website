@@ -705,9 +705,22 @@ document.querySelectorAll('details.software-section').forEach(details => {
 
     var showRefPub = refpubEl && hasRefDoi;
     var noticeEl = document.getElementById('citation-notice');
-    noticeEl.textContent = showRefPub
-        ? 'Citations are generated from the DOIs stored on this page.'
-        : 'Citation is generated from the DOI stored on this page.';
+
+    function updateNotice(style) {
+        var text = showRefPub
+            ? 'Citations are generated from the DOIs stored on this page.'
+            : 'Citation is generated from the DOI stored on this page.';
+        text += ' If no version is shown, consider adding the version you used.';
+        if (showRefPub) {
+            text += ' For complete attribution, please cite both the software and the reference publication.';
+        }
+        if (style === 'bibtex') {
+            text += ' Note: BibTeX entries may use @book\u2014change this to @software if needed.';
+        }
+        noticeEl.textContent = text;
+    }
+
+    updateNotice(styleSelect.value);
 
     if (showRefPub) {
         // Show both copy buttons with specific titles
@@ -770,6 +783,7 @@ document.querySelectorAll('details.software-section').forEach(details => {
 
     styleSelect.addEventListener('change', function() {
         fetchAll(this.value);
+        updateNotice(this.value);
     });
 
     function copyToClipboard(btn, text, originalTitle) {

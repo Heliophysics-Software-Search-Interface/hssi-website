@@ -10,6 +10,6 @@ export class RegionFilterTab extends ControlledListFilterTab {
 	public constructor(parentMenu: FilterMenu) {
 		super(parentMenu);
 		this.targetModel = "Region";
-		this.targetField = "relatedRegion";
+		this.targetField = "related_region";
 	}
 }

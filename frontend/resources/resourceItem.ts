@@ -46,10 +46,10 @@ const linkHssiVocab = (
 	"https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/issues/new"
 );
 const listTagFields = [
-	"programmingLanguage", 
-	"relatedRegion", 
-	"relatedPhenomena",
-	"dataSources"
+	"programming_language", 
+	"related_region", 
+	"related_phenomena",
+	"data_sources"
 ];
 
 /**
@@ -89,12 +89,12 @@ export class ResourceItem{
 		bottomButtonContainer.classList.add(styleBottomButtons);
 		this.mainContentContainer.appendChild(bottomButtonContainer);
 		
-		if(this.data.codeRepositoryUrl){
+		if(this.data.code_repository_url){
 			const repoButton = document.createElement("a");
 			repoButton.classList.add(styleLinkBtn);
 			repoButton.classList.add(styleBtnCode);
 			repoButton.innerHTML = faCode + " Code";
-			repoButton.href = this.data.codeRepositoryUrl;
+			repoButton.href = this.data.code_repository_url;
 			bottomButtonContainer.appendChild(repoButton);
 		}
 
@@ -107,23 +107,23 @@ export class ResourceItem{
 			bottomButtonContainer.appendChild(docsButton);
 		}
 
-		if(this.data.referencePublication){
+		if(this.data.reference_publication){
 			const refpubButton = document.createElement("a");
 			refpubButton.classList.add(styleLinkBtn);
 			refpubButton.classList.add(styleBtnPublication);
 			refpubButton.innerHTML = faFile + " Publication";
 			(async () => {
-				refpubButton.href = (await this.data.referencePublication.getData()).identifier;
+				refpubButton.href = (await this.data.reference_publication.getData()).identifier;
 			})();
 			bottomButtonContainer.appendChild(refpubButton);
 		}
 
-		if(this.data.persistentIdentifier){
+		if(this.data.persistent_identifier){
 			const doiButton = document.createElement("a");
 			doiButton.classList.add(styleLinkBtn);
 			doiButton.classList.add(styleBtnDoi);
 			doiButton.innerHTML = faLink + "DOI";
-			doiButton.href = this.data.persistentIdentifier;
+			doiButton.href = this.data.persistent_identifier;
 			bottomButtonContainer.appendChild(doiButton);
 		}
 	}
@@ -140,7 +140,7 @@ export class ResourceItem{
 
 		// add each unique top-level category chip to the container
 		const categoriesAdded = new Set<string>();
-		for(const categoryAsync of this.data.softwareFunctionality) {
+		for(const categoryAsync of this.data.software_functionality) {
 			(async()=>{
 				const category = await categoryAsync.getData();
 				// get id or parent id if its a child, mark id as added
@@ -179,7 +179,7 @@ export class ResourceItem{
 		container.appendChild(categoryChips);
 		
 		const categoryPromises: Promise<FunctionalityData>[] = [];
-		for(const cat of this.data.softwareFunctionality){
+		for(const cat of this.data.software_functionality){
 			categoryPromises.push(cat.getData());
 		}
 		let categories = await Promise.all(categoryPromises);
@@ -247,9 +247,9 @@ export class ResourceItem{
 			// fill in the author names as they load
 			(async () => {
 				const authorData = await authorDataAsync.getData();
-				let nameStr = authorData.firstName || "";
-				if (authorData.firstName) nameStr += " ";
-				nameStr += authorData.lastName;
+				let nameStr = authorData.given_name || "";
+				if (authorData.given_name) nameStr += " ";
+				nameStr += authorData.family_name;
 				
 				if(authorData.identifier){
 					const authAnchor = document.createElement("a");
@@ -316,7 +316,7 @@ export class ResourceItem{
 		// Make the title a clickable link to the landing page (using UUID)
 		const titleLink = document.createElement("a");
 		titleLink.href = `/software/${this.data.id}/`;
-		titleLink.innerText = this.data.softwareName;
+		titleLink.innerText = this.data.software_name;
 		titleLink.classList.add("software-title-link");
 		titleDiv.appendChild(titleLink);
 		headerText.appendChild(titleDiv);
@@ -333,15 +333,15 @@ export class ResourceItem{
 		this.shrinkedContent = document.createElement("div");
 		this.bodyLeftContent.appendChild(this.shrinkedContent);
 		
-		if((this.data.conciseDescription?.trim() ?? "").length <= 0){
+		if((this.data.concise_description?.trim() ?? "").length <= 0){
 			let concDesc = this.data.description?.trim()?.substring(0, 199) ?? "";
 			if(concDesc.length > 0) concDesc += "…";
-			this.data.conciseDescription = concDesc;
+			this.data.concise_description = concDesc;
 		}
 
 		const conciseDescDiv = document.createElement("div");
 		conciseDescDiv.classList.add(styleDescription);
-		conciseDescDiv.innerText = this.data.conciseDescription;
+		conciseDescDiv.innerText = this.data.concise_description;
 		this.shrinkedContent.appendChild(conciseDescDiv);
 		
 		this.expandedContent = document.createElement("div");
@@ -360,7 +360,7 @@ export class ResourceItem{
 					const logoImage = document.createElement("img");
 					logoImage.classList.add(styleLogo);
 					logoImage.src = logo_url;
-					logoImage.alt = "logo image for " + this.data.softwareName;
+					logoImage.alt = "logo image for " + this.data.software_name;
 					conciseDescDiv.prepend(logoImage);
 					descriptionDiv.prepend(logoImage.cloneNode());
 				}

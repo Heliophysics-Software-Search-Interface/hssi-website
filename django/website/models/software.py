@@ -1,25 +1,40 @@
-import datetime
-from typing import Callable, TYPE_CHECKING
+""" Contains primary software entry data model and directly related models. """
+
+import datetime, uuid
+from typing import Callable
 
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 from django.core.exceptions import ObjectDoesNotExist
 from sortedm2m.fields import SortedManyToManyField
 
 from ..util import *
-from .people import Person
-from .auxillary_info import RelatedItem, Award
-from .roots import ( LEN_NAME, HssiModel,
-	RepoStatus, OperatingSystem, Keyword, Phenomena, Organization, 
-	License, InstrumentObservatory, ProgrammingLanguage, FileFormat, 
-	Region, DataInput, FunctionCategory, CpuArchitecture, HssiSet,
+from .people import Person, Submitter, Curator
+from .related import RelatedItem
+from .organizations import Award, Organization
+from .base import LEN_NAME, HssiModel, HssiSet
+from .license import License
+from .vocab import (
+	RepoStatus, OperatingSystem, Keyword, Phenomena, 
+	InstrumentObservatory, ProgrammingLanguage, FileFormat, 
+	Region, DataInput, FunctionCategory, CpuArchitecture
 )
 
-if TYPE_CHECKING:
-	from .submission_info import SubmissionInfo
+class SubmissionStatusCode(models.IntegerChoices):
+	PROPOSED_RESOURCE = 1, "Proposed Resource"
+	READY_FOR_CONTACT = 2, "Ready for Contact"
+	CONTACTED = 3, "Contacted"
+	RESOURCE_DEV_PAUSED = 4, "Resource Dev Paused"
+	RECEIVED = 5, "Received"
+	IN_REVIEW_INTERNAL = 6, "In Review (Our End)"
+	IN_REVIEW_EXTERNAL = 7, "In Review (Their End)"
+	RESOURCE_CREATED = 8, "Resource Created (Published)"
+	REJECTED = 9, "Rejected/Abandoned"
+	SPAM = 10, "Spam"
 
 class SoftwareVersion(HssiModel):
-	'''A snapshot of the software metadata whenever it's updated to a new version'''
+	"""A snapshot of the software metadata whenever it's updated to a new version"""
 	access = AccessLevel.PUBLIC
 	number = models.CharField(max_length=LEN_NAME)
 	release_date = models.DateField(blank=True, null=True)
@@ -37,12 +52,12 @@ class SoftwareVersion(HssiModel):
 
 class Software(HssiModel):
 	access = AccessLevel.CURATOR
-	programmingLanguage = models.ManyToManyField(
+	programming_language = models.ManyToManyField(
 		ProgrammingLanguage,
 		blank=True, 
 		related_name='softwares'
 	)
-	publicationDate = models.DateField(blank=True, null=True)
+	publication_date = models.DateField(blank=True, null=True)
 	publisher = models.ForeignKey(
 		Organization,
 		on_delete=models.SET_NULL, 
@@ -51,83 +66,76 @@ class Software(HssiModel):
 		related_name='softwares_published'
 	)
 	authors = SortedManyToManyField(Person, related_name='softwares')
-	relatedInstruments = models.ManyToManyField(
+	related_instruments = models.ManyToManyField(
 		InstrumentObservatory,
 		blank=True, 
 		related_name='softwares'
 	)
-	relatedObservatories = models.ManyToManyField(
+	related_observatories = models.ManyToManyField(
 		InstrumentObservatory,
 		blank=True, 
 		related_name='observatories'
 	)
-	softwareName = models.CharField(max_length=LEN_NAME)
-	version = models.OneToOneField(
+	software_name = models.CharField(max_length=LEN_NAME)
+	version = models.ManyToManyField(
 		SoftwareVersion,
-		on_delete=models.SET_NULL,
-		blank=True, null=True,
+		blank=True,
 		related_name='software'
 	)
-	persistentIdentifier = models.URLField(blank=True, null=True)
-	referencePublication = models.ForeignKey(
+	persistent_identifier = models.URLField(blank=True, null=True)
+	reference_publication = models.ForeignKey(
 		RelatedItem,
 		on_delete=models.SET_NULL,
 		blank=True, null=True,
 		related_name="softwares_published"
 	)
 	description = models.TextField(blank=True, null=True)
-	conciseDescription = models.TextField(max_length=200, blank=True, null=True)
-	softwareFunctionality = models.ManyToManyField(
+	concise_description = models.TextField(max_length=200, blank=True, null=True)
+	software_functionality = SortedManyToManyField(
 		FunctionCategory, 
 		blank=True, 
 		related_name='softwares'
 	)
 	documentation = models.URLField(blank=True, null=True)
-	dataSources = models.ManyToManyField(
+	data_sources = models.ManyToManyField(
 		DataInput, 
 		blank=True,
 		related_name='softwares'
 	)
-	inputFormats = models.ManyToManyField(
+	input_formats = models.ManyToManyField(
 		FileFormat, 
 		blank=True, 
 		related_name='softwares_in'
 	)
-	outputFormats = models.ManyToManyField(
+	output_formats = models.ManyToManyField(
 		FileFormat, 
 		blank=True, 
 		related_name='softwares_out'
 	)
-	cpuArchitecture = models.ManyToManyField(
+	cpu_architecture = models.ManyToManyField(
 		CpuArchitecture,
 		blank=True,
 		related_name='softwares'
 	)
-	relatedPublications = models.ManyToManyField(
+	related_publications = models.ManyToManyField(
 		RelatedItem,
 		blank=True,
 		related_name='softwares_referenced'
 	)
-	relatedDatasets = models.ManyToManyField(
+	related_datasets = models.ManyToManyField(
 		RelatedItem,
 		blank=True,
 		related_name='softwares_data'
 	)
-	developmentStatus = models.ForeignKey(
+	development_status = models.ForeignKey(
 		RepoStatus,
 		on_delete=models.SET_NULL,
 		null=True, blank=True,
 		related_name='softwares'
 	)
-	operatingSystem = models.ManyToManyField(
+	operating_system = models.ManyToManyField(
 		OperatingSystem, 
 		blank=True, 
-		related_name='softwares'
-	)
-	metadataLicense = models.ForeignKey(
-		License,
-		on_delete=models.SET_NULL, 
-		null=True, blank=True, 
 		related_name='softwares'
 	)
 	license = models.ForeignKey(
@@ -136,8 +144,7 @@ class Software(HssiModel):
 		null=True, blank=True, 
 		related_name='softwares_license'
 	)
-	licenseFileUrl = models.URLField(blank=True, null=True)
-	relatedRegion = models.ManyToManyField(
+	related_region = SortedManyToManyField(
 		Region, 
 		blank=True, 
 		related_name='softwares_region'
@@ -147,12 +154,12 @@ class Software(HssiModel):
 		blank=True, 
 		related_name='softwares'
 	)
-	relatedSoftware = models.ManyToManyField(
+	related_software = models.ManyToManyField(
 		RelatedItem,
 		blank=True,
 		related_name='softwares_related'
 	)
-	interoperableSoftware = models.ManyToManyField(
+	interoperable_software = models.ManyToManyField(
 		RelatedItem,
 		blank=True,
 		related_name='softwares_interoperable'
@@ -167,9 +174,9 @@ class Software(HssiModel):
 		blank=True, 
 		related_name='softwares'
 	)
-	codeRepositoryUrl = models.URLField(blank=True, null=True)
+	code_repository_url = models.URLField(blank=True, null=True)
 	logo = models.URLField(blank=True, null=True)
-	relatedPhenomena = models.ManyToManyField(
+	related_phenomena = SortedManyToManyField(
 		Phenomena, 
 		blank=True,
 		related_name='softwares'
@@ -177,17 +184,17 @@ class Software(HssiModel):
 
 	# specified for intellisense, defined in other model
 	submission_info: models.Manager['SubmissionInfo']
-	visible: models.Manager['VisibleSoftware']
+	visible: models.Manager['VerifiedSoftware']
 
 	# autogenerated django integer choice string getter
-	get_developmentStatus_display: Callable[[], str]
+	get_development_status_display: Callable[[], str]
 
 	class Meta:
-		ordering = ['softwareName']
+		ordering = ['software_name']
 		verbose_name_plural = '  Software'
 
 	@classmethod
-	def get_top_field(cls) -> models.Field: return cls._meta.get_field("softwareName")
+	def get_top_field(cls) -> models.Field: return cls._meta.get_field("software_name")
 
 	@classmethod
 	def get_subfields(cls):
@@ -198,13 +205,13 @@ class Software(HssiModel):
 				break
 		return subfields
 
-	def __str__(self): return self.softwareName
+	def __str__(self): return self.software_name
 
 	def get_absolute_url(self):
 		from django.urls import reverse
 		return reverse('website:software_detail', kwargs={'pk': str(self.pk)})
 
-	'''if the software is visible on the website'''
+	"""if the software is visible on the website"""
 	def is_visible(self) -> bool:
 		try:
 			_ = self.visible
@@ -212,13 +219,94 @@ class Software(HssiModel):
 		except ObjectDoesNotExist: 
 			return False
 
-class VisibleSoftware(HssiSet):
+class SubmissionInfo(HssiModel):
+	"""Metadata about the a piece of software submitted to HSSI"""
+	access = AccessLevel.CURATOR
+	software = models.ForeignKey(
+		Software,
+		on_delete=models.CASCADE,
+		blank=True, null=True,
+		related_name='submission_info'
+	)
+	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+	modification_description = models.TextField(blank=True, null=True)
+	metadata_version_number = models.CharField(max_length=50, blank=True, null=True)
+	submitter = models.ManyToManyField(
+		Submitter,
+		default=Submitter.get_default_submitter,
+		blank=True,
+		related_name='submission_infos'
+	)
+	curator = models.ForeignKey(
+		Curator,
+		on_delete=models.SET_NULL, 
+		null=True, blank=True, 
+		related_name='submission_infos'
+	)
+	submission_date = models.DateTimeField(blank=True, null=True)
+	internal_status_code = models.IntegerField(
+		choices=SubmissionStatusCode.choices, 
+		default=SubmissionStatusCode.PROPOSED_RESOURCE
+	)
+	internal_status_note = models.TextField(blank=True, null=True)
+	lead_curator = models.ForeignKey(
+		Curator,
+		on_delete=models.SET_NULL, 
+		null=True, blank=True, 
+		related_name='submission_infos_led'
+	)
+	last_contact_date = models.DateField(blank=True, null=True)
+	contact_count = models.IntegerField(default=0)
+	curator_lock = models.BooleanField(default=False)
+	out_of_sync = models.BooleanField(default=False)
+
+	# autogenerated django integer choice string getter
+	get_internal_status_code_display: Callable[[], str]
+
+	@classmethod
+	def get_top_field(cls) -> models.Field: return cls._meta.get_field("submitter")
+
+	class Meta: 
+		ordering = ['date_modified']
+		verbose_name_plural = "  Submission Info"
+	def __str__(self): 
+		text = "Submission"
+		if self.submitter: text += f" by {str(self.submitter)}"
+		text += f" on {str(self.submission_date)}"
+		return text
+
+class VerifiedSoftware(HssiSet):
 	"""Stores ids to flag softwares with the given ids as visible"""
 	access = AccessLevel.PUBLIC
 	target_model = Software
+	slug = models.CharField(max_length=LEN_NAME, unique=True, null=True)
 
-	class Meta: verbose_name_plural = 'Visible software'
-	def __str__(self): return str(self.id)
+	@classmethod
+	def create_verified(cls, software: Software) -> 'VerifiedSoftware':
+		if cls.objects.filter(pk=software.pk).first():
+			return None
+		obj = VerifiedSoftware.objects.create(
+			id=uuid.UUID(str(software.id)), 
+			slug=cls.get_unique_slug(software.software_name)
+		)
+		print(f"made {software.software_name}:{software.id} visible to public at slug '{obj.slug}'")
+		return obj
+	
+	@classmethod
+	def get_unique_slug(cls, name: str) -> str:
+		slug_orig = slugify(name.lower().replace("/","-").replace(".","-"))
+		slug = slug_orig[:LEN_NAME]
+
+		# append '-n' on the end until it is a unique slug
+		iter = 1
+		while VerifiedSoftware.objects.filter(slug=slug).first():
+			iter += 1
+			num_str = f"-{iter}"
+			slug = slug_orig[:LEN_NAME-len(num_str)] + num_str
+		
+		return slug
+
+	class Meta: verbose_name_plural = 'Verified software'
 
 class SoftwareEditQueue(HssiModel):
 	"""

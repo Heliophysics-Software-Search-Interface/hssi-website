@@ -41,7 +41,7 @@ interface AsyncModelTypeMap {
 	"Organization" : OrganizationData,
 	"Software" : SoftwareDataAsync,
 	"SoftwareVersion" : VersionData,
-	"VisibleSoftware" : SoftwareDataAsync,
+	"VerifiedSoftware" : SoftwareDataAsync,
 	"SoftwareEditQueue" : HSSIModelData,
 	"SubmissionInfo" : HSSIModelData,
 	"Award" : ControlledListData,
@@ -63,7 +63,7 @@ export class ModelDataCache<T extends HSSIModelData>{
 
 		// link models together who represent the same thing
 		switch(model){
-			case "Software": return this.getCache("VisibleSoftware") as any;
+			case "Software": return this.getCache("VerifiedSoftware") as any;
 		}
 
 		if(!this.caches[model]){
@@ -107,7 +107,7 @@ export class ModelDataCache<T extends HSSIModelData>{
 
 	private storeModelObjectData(obj: T): void {
 		switch(this.model){
-			case "VisibleSoftware":
+			case "VerifiedSoftware":
 			case "Software": obj = createAsyncSoftwareData(obj as any) as any; break;
 			case "Person": obj = createAsyncPersonData(obj as any) as any; break;
 		}

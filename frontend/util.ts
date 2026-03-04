@@ -179,8 +179,8 @@ export async function getSoftwareEditFormData(uid: string): Promise<JSONObject> 
 		// fill form function on the form generator, given the submission info
 		if(submitter) {
 			submitter.submitterName = (
-				(submitter.person as JSONObject)?.firstName as string + " " +
-				(submitter.person as JSONObject)?.lastName as string
+				(submitter.person as JSONObject)?.given_name as string + " " +
+				(submitter.person as JSONObject)?.family_name as string
 			);
 			let emails = JSON.parse((submitter.email as string).replaceAll("'", '"'));
 			if(!(emails instanceof Array)) emails = [emails];

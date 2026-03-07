@@ -1,6 +1,92 @@
-id,name,identifier,definition
-c40fff84-4ecc-4424-a4ef-e7149737cdce,Earth Atmosphere,,
-e32cf4ff-902f-4c5c-8755-8c8ea5ea4b21,Earth Magnetosphere,,
-fc113b25-83a1-489d-aa13-35278d852712,Interplanetary Space,,
-b45a8fd0-d7be-4e9e-b757-d2b518279470,Planetary Magnetospheres,,
-471cb199-ed7a-4cf5-b8d6-34977c01fe8d,Solar Environment,,
+id,name,identifier,definition,children
+3f63704b-76f2-4996-bccf-4b4dfd6029ba,Atmosphere,https://www.helioknowledge.network/region/Atmosphere,,2f87b903-c4a9-4860-b463-e42ef2006073
+d4e8a1be-0c74-4469-a5d6-1abf1b646406,Auroral Oval,https://www.helioknowledge.network/region/AuroralOval,,
+6f5c44d7-2aff-4f2a-96fb-a4f7e89f9fa8,Auroral Oval,https://www.helioknowledge.network/region/AuroralOval,,
+21cbfdf2-5395-4325-b439-62629d33e7a1,Auroral Region,https://www.helioknowledge.network/region/AuroralRegion,,"d4e8a1be-0c74-4469-a5d6-1abf1b646406,906c0c25-1fd5-470f-a582-cd4a5b3145bd,8a87c1ea-fabf-483c-8dc7-76be1dbaa530"
+9d5a7b8e-d722-4b7a-b0d4-fb549310deeb,Auroral Region,https://www.helioknowledge.network/region/AuroralRegion,,"6f5c44d7-2aff-4f2a-96fb-a4f7e89f9fa8,b7cc2de3-4e0d-4ca7-be84-e793fb49ade5,83509663-bbbf-4662-9d5a-13c9dab8419c"
+b8ee8b2e-0b14-4754-9b57-5b9ae532a5f1,Bowshock,https://www.helioknowledge.network/region/Bowshock,,
+9612309c-988c-4eba-98a3-f295dae323a5,Chromosphere,https://www.helioknowledge.network/region/Chromosphere,,
+9ebe02c2-7c0c-482f-b289-74b356c913e7,Corona,https://www.helioknowledge.network/region/Corona,,
+32e702e1-458e-446c-ad85-59e730d580ea,Cusp,https://www.helioknowledge.network/region/Cusp,,
+35fa3e4f-b4ea-4fe0-b028-333b60805f09,Cusp,https://www.helioknowledge.network/region/Cusp,,
+b07c9168-4b13-4f0c-9862-aa6764cdaf3d,Cusp,https://www.helioknowledge.network/region/Cusp,,
+12ddfda7-0015-4d74-9c88-4d9bdafe4a7f,Dayside,https://www.helioknowledge.network/region/Dayside,,
+1617ef48-fc02-40fe-b59e-d7e186ef11b8,Dipole Standoff,https://www.helioknowledge.network/region/DipoleStandoff,,
+bb067592-bba4-4c09-a9ba-da5b9ea43870,D Region,https://www.helioknowledge.network/region/DRegion,,
+cc4f1c99-8af4-4ca1-8860-eb63c0320404,D Region,https://www.helioknowledge.network/region/DRegion,,
+906c0c25-1fd5-470f-a582-cd4a5b3145bd,Equatorward Boundary,https://www.helioknowledge.network/region/EquatorwardBoundary,,
+b7cc2de3-4e0d-4ca7-be84-e793fb49ade5,Equatorward Boundary,https://www.helioknowledge.network/region/EquatorwardBoundary,,
+75cda2e6-438c-400b-be7a-8ddf2f1bbf54,E Region,https://www.helioknowledge.network/region/ERegion,,
+fb634a21-0a11-498a-99d4-09c80fb0b297,E Region,https://www.helioknowledge.network/region/ERegion,,
+c6197827-9a36-454e-862e-0719385169b9,Exosphere,https://www.helioknowledge.network/region/Exosphere,,"fd72db03-5848-4da2-af29-5013cf56e73e,b3713ff0-9e78-4b71-9089-89686568c0be,2ebdf4e7-102b-446b-a4b8-891ec2dae283"
+bd70316a-5eff-4665-b896-b9cd194e2c69,Exosphere,https://www.helioknowledge.network/region/Exosphere,,"db19cb52-e2c0-4c17-8c89-a582c0661d41,8a759137-88f6-4732-9f06-0e6baf92795e,31d6de48-3d19-44e9-8139-a079ee4b4677"
+2f87b903-c4a9-4860-b463-e42ef2006073,Exosphere,https://www.helioknowledge.network/region/Exosphere,,"f435a7b8-aae1-43c8-9399-510e90fa4bfe,cc5ff935-0465-41a1-83cd-ae42985cc2ab,1d5238cc-1ee8-479c-8f6e-05ca94e98089"
+cec2e376-709d-4a9b-b5e5-6c9d49f05d53,F Region,https://www.helioknowledge.network/region/FRegion,,
+24c8408c-b22f-4502-845d-a33478327dea,F Region,https://www.helioknowledge.network/region/FRegion,,
+b3fca8d2-77a7-4905-aea9-3458428202ac,Geomagnetic Field,https://www.helioknowledge.network/region/GeomagneticField,,
+e50a5ccf-489d-4095-a2e9-9e13ddae3f80,Ground,https://www.helioknowledge.network/region/Ground,,
+cf350e5f-e825-4807-ac88-53aec0368610,Ground and Lower Atmosphere,https://www.helioknowledge.network/region/GroundAndLowerAtmosphere,,"b3fca8d2-77a7-4905-aea9-3458428202ac,e50a5ccf-489d-4095-a2e9-9e13ddae3f80,d959fa64-91b9-4dd3-b5bd-4090ec9d5e51,5d85ed0e-5e61-4d07-86b9-d926979ab9ef"
+79f3cd68-3d58-4773-8aa3-c80d1b33ede0,High-Latitude,https://www.helioknowledge.network/region/High-latitude,,
+fd72db03-5848-4da2-af29-5013cf56e73e,High-Latitude,https://www.helioknowledge.network/region/High-latitude,,
+f435a7b8-aae1-43c8-9399-510e90fa4bfe,High-Latitude,https://www.helioknowledge.network/region/High-latitude,,
+4f012fc0-aa9d-49c6-8e2d-88e150125811,High-Latitude,https://www.helioknowledge.network/region/High-latitude,,
+de2329dd-28cf-4c74-a128-6e88bd49a27c,High-Latitude,https://www.helioknowledge.network/region/High-latitude,,
+db19cb52-e2c0-4c17-8c89-a582c0661d41,High-Latitude,https://www.helioknowledge.network/region/High-latitude,,
+c15ceaa2-59f1-4e11-85ca-5542c94f2c4a,Inner Magnetosphere,https://www.helioknowledge.network/region/InnerMagnetosphere,,"1617ef48-fc02-40fe-b59e-d7e186ef11b8,b641ec4c-e7c0-40ac-8fbd-9d3ba29f0f29,07f471ba-1146-4ae6-9a08-4a0fbc6782a7,2662684a-e263-428e-95ad-592fbb62c5ea,ec7b98ee-3a7a-4a68-a677-7f87ea75f714,57a1c12c-35a8-4f5c-91fe-a711a569ff54"
+b641ec4c-e7c0-40ac-8fbd-9d3ba29f0f29,Inner Radiation Belt,https://www.helioknowledge.network/region/InnerRadiationBelt,,
+570cc790-dccf-4795-b3ca-5304457e5658,Interplanetary space,https://www.helioknowledge.network/region/InterplanetarySpace,,"1691a2ee-19ef-482f-ac5f-575f8fb42312,3c116d37-c3a8-4c35-81c1-121cad9416a2,53b439eb-00d2-47df-bb31-50f4adbbba3c"
+9b7aba9c-3bc2-4e41-b67f-4012a99d1f11,Ionosphere,https://www.helioknowledge.network/region/Ionosphere,,"21cbfdf2-5395-4325-b439-62629d33e7a1,b07c9168-4b13-4f0c-9862-aa6764cdaf3d,bb067592-bba4-4c09-a9ba-da5b9ea43870,75cda2e6-438c-400b-be7a-8ddf2f1bbf54,24c8408c-b22f-4502-845d-a33478327dea,1e45f65a-8652-4cf4-94f1-fad16e46abda,b167e462-c452-46ea-bd00-2fc4f7d7c9f4,5d2d0598-bf36-46be-b2a0-b9ea4178c795,3aad6aa7-7c49-4da5-99ed-ed132ee8cef5"
+23a1b828-1263-4673-bfa8-231d35978570,Ionosphere,https://www.helioknowledge.network/region/Ionosphere,,"9d5a7b8e-d722-4b7a-b0d4-fb549310deeb,32e702e1-458e-446c-ad85-59e730d580ea,cc4f1c99-8af4-4ca1-8860-eb63c0320404,fb634a21-0a11-498a-99d4-09c80fb0b297,cec2e376-709d-4a9b-b5e5-6c9d49f05d53,2cdfce4f-78a2-476a-87b3-1b53b120d962,6dae591c-774c-49f6-8f31-21ace2d3503f,0b85e81b-e8c8-4532-878f-63ce513f2986,5ec40793-8a31-4e29-9494-2d8e0460b933"
+e003b56b-0ece-48e3-9f0c-454555935b5f,Lobes,https://www.helioknowledge.network/region/Lobes,,
+cc5ff935-0465-41a1-83cd-ae42985cc2ab,Low-Latitude,https://www.helioknowledge.network/region/Low-latitude,,
+b3713ff0-9e78-4b71-9089-89686568c0be,Low-Latitude,https://www.helioknowledge.network/region/Low-latitude,,
+fd911cb2-2514-4934-8032-3548684862dd,Low-Latitude,https://www.helioknowledge.network/region/Low-latitude,,
+d12d6575-53b2-4236-93ef-68011785b998,Low-Latitude,https://www.helioknowledge.network/region/Low-latitude,,
+8a759137-88f6-4732-9f06-0e6baf92795e,Low-Latitude,https://www.helioknowledge.network/region/Low-latitude,,
+d57c0a7a-c052-43e8-bb88-aa378c50679a,Low-Latitude,https://www.helioknowledge.network/region/Low-latitude,,
+2cdfce4f-78a2-476a-87b3-1b53b120d962,Low-Latitude/Equatorial,https://www.helioknowledge.network/region/Low-latitudeEquatorial,,
+1e45f65a-8652-4cf4-94f1-fad16e46abda,Low-Latitude/Equatorial,https://www.helioknowledge.network/region/Low-latitudeEquatorial,,
+1691a2ee-19ef-482f-ac5f-575f8fb42312,Magnetopause,https://www.helioknowledge.network/region/Magnetopause,,
+a4b2e255-d6fe-44e2-a9e2-d3a7fd761de5,Magnetopause,https://www.helioknowledge.network/region/Magnetopause,,
+3c116d37-c3a8-4c35-81c1-121cad9416a2,Magnetosheath,https://www.helioknowledge.network/region/Magnetosheath,,
+a110b2ee-d9ab-4e8e-85d0-5199622ecabb,Magnetosheath,https://www.helioknowledge.network/region/Magnetosheath,,
+dc5b9f37-8f97-454d-a7aa-21cf4aa94ddc,Magnetosphere,https://www.helioknowledge.network/region/Magnetosphere,,"b8ee8b2e-0b14-4754-9b57-5b9ae532a5f1,35fa3e4f-b4ea-4fe0-b028-333b60805f09,12ddfda7-0015-4d74-9c88-4d9bdafe4a7f,cf350e5f-e825-4807-ac88-53aec0368610,c15ceaa2-59f1-4e11-85ca-5542c94f2c4a,e003b56b-0ece-48e3-9f0c-454555935b5f,a4b2e255-d6fe-44e2-a9e2-d3a7fd761de5,a110b2ee-d9ab-4e8e-85d0-5199622ecabb,1b329aa3-0bb1-43e5-91e1-b5bb1597fe7c,5ad298e6-7b7b-4ddf-8480-aac8cd0c121a,ff43ebc7-9d99-4133-bc0e-46a0e57895e8,8d511d8c-e0c5-4ef9-a993-44825e041981,e52aeadf-c5a5-4d5c-ad9f-7a0388521a54,52c0f908-3236-4bca-be9c-8ffe777f2e61"
+1b329aa3-0bb1-43e5-91e1-b5bb1597fe7c,Magnetotail,https://www.helioknowledge.network/region/Magnetotail,,"5644a31b-dfb5-4efa-9d7f-9d3ff6caab07,c0fea87d-2477-4b54-9b49-1fdcc7b7b2d9"
+5644a31b-dfb5-4efa-9d7f-9d3ff6caab07,Magnetotail Current Sheet,https://www.helioknowledge.network/region/MagnetotailCurrentSheet,,
+c0fea87d-2477-4b54-9b49-1fdcc7b7b2d9,Magnetotail Kink,https://www.helioknowledge.network/region/MagnetotailKink,,
+d959fa64-91b9-4dd3-b5bd-4090ec9d5e51,Mesosphere,https://www.helioknowledge.network/region/Mesosphere,,"79f3cd68-3d58-4773-8aa3-c80d1b33ede0,fd911cb2-2514-4934-8032-3548684862dd,ddc8571b-9711-4a1f-8a0a-e4c9881cf631"
+2ebdf4e7-102b-446b-a4b8-891ec2dae283,Mid-Latitude,https://www.helioknowledge.network/region/Mid-latitude,,
+31d6de48-3d19-44e9-8139-a079ee4b4677,Mid-Latitude,https://www.helioknowledge.network/region/Mid-latitude,,
+c9fad21d-38e5-4137-9b56-c8269b43b6a0,Mid-Latitude,https://www.helioknowledge.network/region/Mid-latitude,,
+b5abca51-3ed4-4026-8a7c-af8438e9f6c9,Mid-Latitude,https://www.helioknowledge.network/region/Mid-latitude,,
+1d5238cc-1ee8-479c-8f6e-05ca94e98089,Mid-Latitude,https://www.helioknowledge.network/region/Mid-latitude,,
+b167e462-c452-46ea-bd00-2fc4f7d7c9f4,Mid-Latitude,https://www.helioknowledge.network/region/Mid-latitude,,
+ddc8571b-9711-4a1f-8a0a-e4c9881cf631,Mid-Latitude,https://www.helioknowledge.network/region/Mid-latitude,,
+6dae591c-774c-49f6-8f31-21ace2d3503f,Mid-Latitude,https://www.helioknowledge.network/region/Mid-latitude,,
+5ad298e6-7b7b-4ddf-8480-aac8cd0c121a,Near Planet Space,https://www.helioknowledge.network/region/NearPlanetSpace,,c6197827-9a36-454e-862e-0719385169b9
+ff43ebc7-9d99-4133-bc0e-46a0e57895e8,Nightside,https://www.helioknowledge.network/region/Nightside,,
+07f471ba-1146-4ae6-9a08-4a0fbc6782a7,Outer Radiation Belt,https://www.helioknowledge.network/region/OuterRadiationBelt,,
+53b439eb-00d2-47df-bb31-50f4adbbba3c,Pause,https://www.helioknowledge.network/region/Pause,,
+2a23d80d-579e-4a27-9dad-7f5b521dfe30,Photosphere,https://www.helioknowledge.network/region/Photosphere,,
+2662684a-e263-428e-95ad-592fbb62c5ea,Plasmasphere,https://www.helioknowledge.network/region/Plasmasphere,,
+5d2d0598-bf36-46be-b2a0-b9ea4178c795,Polar Cap,https://www.helioknowledge.network/region/PolarCap,,
+0b85e81b-e8c8-4532-878f-63ce513f2986,Polar Cap,https://www.helioknowledge.network/region/PolarCap,,
+e42a252e-f115-4b7c-b9b6-9117ecba5971,Polar Vortex,https://www.helioknowledge.network/region/PolarVortex,,
+8a87c1ea-fabf-483c-8dc7-76be1dbaa530,Poleward Boundary,https://www.helioknowledge.network/region/PolewardBoundary,,
+83509663-bbbf-4662-9d5a-13c9dab8419c,Poleward Boundary,https://www.helioknowledge.network/region/PolewardBoundary,,
+8d511d8c-e0c5-4ef9-a993-44825e041981,Region 1,https://www.helioknowledge.network/region/Region1,,
+e52aeadf-c5a5-4d5c-ad9f-7a0388521a54,Region 2,https://www.helioknowledge.network/region/Region2,,
+ec7b98ee-3a7a-4a68-a677-7f87ea75f714,Ring Current,https://www.helioknowledge.network/region/RingCurrent,,654c77c4-e850-4343-b836-b5451054dde0
+92ec40e6-66f8-4836-8116-7255c2ec1c11,Solar Atmosphere,https://www.helioknowledge.network/region/SolarAtmosphere,,"9612309c-988c-4eba-98a3-f295dae323a5,9ebe02c2-7c0c-482f-b289-74b356c913e7,2a23d80d-579e-4a27-9dad-7f5b521dfe30,265723cb-2f97-42ba-89b5-004fc07d3721"
+d13be6e5-4c82-4cd3-9a7a-f669fee33fa3,Solar Convective Zone,https://www.helioknowledge.network/region/SolarConvectiveZone,,
+265723cb-2f97-42ba-89b5-004fc07d3721,Solar Interior,https://www.helioknowledge.network/region/SolarInterior,,"d13be6e5-4c82-4cd3-9a7a-f669fee33fa3,02f8ce88-febb-4463-a606-823ca5498a05"
+02f8ce88-febb-4463-a606-823ca5498a05,Solar Radiative Zone,https://www.helioknowledge.network/region/SolarRadiativeZone,,
+5d85ed0e-5e61-4d07-86b9-d926979ab9ef,Stratosphere,https://www.helioknowledge.network/region/Stratosphere,,"4f012fc0-aa9d-49c6-8e2d-88e150125811,d57c0a7a-c052-43e8-bb88-aa378c50679a,c9fad21d-38e5-4137-9b56-c8269b43b6a0,e42a252e-f115-4b7c-b9b6-9117ecba5971"
+3aad6aa7-7c49-4da5-99ed-ed132ee8cef5,Subauroral,https://www.helioknowledge.network/region/Subauroral,,
+5ec40793-8a31-4e29-9494-2d8e0460b933,Subauroral,https://www.helioknowledge.network/region/Subauroral,,
+654c77c4-e850-4343-b836-b5451054dde0,Symmetric Ring Current,https://www.helioknowledge.network/region/SymmetricRingCurrent,,
+0a85f3cd-54d3-4587-b670-de23deea7130,Thermosphere,https://www.helioknowledge.network/region/Thermosphere,,"de2329dd-28cf-4c74-a128-6e88bd49a27c,d12d6575-53b2-4236-93ef-68011785b998,b5abca51-3ed4-4026-8a7c-af8438e9f6c9"
+48b8d278-67fa-4e71-9003-44704bfcfecd,Unmagnetized Bodies,https://www.helioknowledge.network/region/UnmagnetizedBodies,,"3f63704b-76f2-4996-bccf-4b4dfd6029ba,bd70316a-5eff-4665-b896-b9cd194e2c69,23a1b828-1263-4673-bfa8-231d35978570,a5713557-8819-4027-8e9e-58e2efdcf164"
+52c0f908-3236-4bca-be9c-8ffe777f2e61,Upper Atmosphere,https://www.helioknowledge.network/region/UpperAtmosphere,,"9b7aba9c-3bc2-4e41-b67f-4012a99d1f11,0a85f3cd-54d3-4587-b670-de23deea7130"
+a5713557-8819-4027-8e9e-58e2efdcf164,Wake,https://www.helioknowledge.network/region/Wake,,
+57a1c12c-35a8-4f5c-91fe-a711a569ff54,Warm Plasma Cloak,https://www.helioknowledge.network/region/WarmPlasmaCloak,,

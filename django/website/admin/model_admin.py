@@ -262,7 +262,9 @@ class SoftwareAdmin(HSSIModelAdmin):
 
 class VerifiedSoftwareResource(resources.ModelResource):
 	class Meta: model = VerifiedSoftware
-class VerifiedSoftwareAdmin(ImportExportModelAdmin): resource_class = VerifiedSoftwareResource
+class VerifiedSoftwareAdmin(HSSIModelAdmin): 
+	list_display = ("str_display", "slug")
+	resource_class = VerifiedSoftwareResource
 
 class SoftwareEditQueueResource(resources.ModelResource):
 	class Meta: Model = SoftwareEditQueue

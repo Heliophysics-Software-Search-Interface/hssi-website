@@ -47,7 +47,11 @@ class SoftwareVersion(HssiModel):
 	@classmethod
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("number")
 
-	def __str__(self): return self.number
+	def __str__(self):
+		if self.software.first():
+			return f"{self.software.first()} - {self.number}"
+		return self.number
+
 	class Meta: ordering = ['number']
 
 class Software(HssiModel):

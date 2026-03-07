@@ -134,13 +134,6 @@ class FunctionCategory(ControlledGraphList):
 			self.get_tooltip(),
 		)
 
-	def get_full_name(self) -> str:
-		parent = self.parent_nodes.first()
-		fullname = ""
-		if parent.name: fullname = f"{parent.name}: "
-		fullname += self.name
-		return fullname
-
 	@classmethod
 	def post_fetch(cls):
 		super().post_fetch()
@@ -175,7 +168,7 @@ class FunctionCategory(ControlledGraphList):
 
 	def get_search_terms(self):
 		arr = super().get_search_terms()
-		arr.extend(self.get_name_path().split("->"))
+		arr.extend(self.get_full_name().split(": "))
 		return arr
 
 	def get_serialized_data(
@@ -197,3 +190,33 @@ class FunctionCategory(ControlledGraphList):
 
 	class Meta: verbose_name_plural = "Function Categories"
 	def __str__(self): return self.name
+
+class TurtleTest(ControlledGraphList):
+	children = models.ManyToManyField(
+		'self',
+		blank=True,
+		related_name='parent_nodes',
+		symmetrical=False,
+	)
+
+	def get_full_name(self):
+		""" get a path of all parents recursively pointing to this one """
+		path = self.name
+
+		parent = self.parent_nodes.first()
+		if parent: 
+			path = path.replace(parent.name, "").strip()
+			path = f"{parent.get_full_name()}: {path}"
+
+		return path
+
+	@classmethod
+	def post_fetch(cls):
+		
+		# we don't want no root level single object
+		roots = cls.objects.filter(parent_nodes__isnull=True)
+		if roots.count() == 1:
+			roots.first().delete()
+
+		for obj in cls.objects.all():
+			print(obj.get_full_name())

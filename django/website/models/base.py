@@ -287,17 +287,17 @@ class ControlledGraphList(ControlledList):
 		""" Returns all objects that have at least one child """
 		return cls.objects.filter(children__isnull=False).distinct().order_by("name")
 	
-	def get_name_path(self) -> str:
+	def get_full_name(self) -> str:
 		""" get a path of all parents recursively pointing to this one """
 		path = self.name
 
 		parent = self.parent_nodes.first()
 		while parent:
-			path = parent.name + "->" + path
+			path = f"{parent.name}: {path}"
 			parent = parent.parent_nodes.first()
 
 		return path
-
+	
 	def get_serialized_data(
 		self, 
 		access, 

@@ -205,13 +205,13 @@ def parse_ttl(model: type[ControlledGraphList], file_url: str):
 	print(f"updating old {model._meta.model_name} references")
 	for obj in model.objects.all():
 		if obj in old_objs: continue
-		new_path = obj.get_name_path()
+		new_path = obj.get_full_name()
 		print(f"searching for old {new_path} match..")
 
 		# find an old object with a matching path as the new object
 		matched_obj: ControlledGraphList = None
 		for old_obj in old_objs:
-			if old_obj.get_name_path() == new_path:
+			if old_obj.get_full_name() == new_path:
 				matched_obj = old_obj
 				break
 		

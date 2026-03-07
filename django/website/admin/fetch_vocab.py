@@ -45,7 +45,6 @@ MODEL_URL_MAP={
 }
 
 def get_data(url: str) -> dict | list:
-	if url.endswith('.ttl'): return get_data_turtle(url)
 	req = requests.get(url)
 	try:
 		return req.json()
@@ -54,85 +53,6 @@ def get_data(url: str) -> dict | list:
 		str_data: str = req.text
 		str_data = str_data.replace('“', '"').replace('”', '"')
 	return json.loads(str_data)
-
-def get_data_turtle(url: str) -> dict | list:
-	req = requests.get(url)
-	graph = rdflib.Graph()
-	try:
-		graph.parse(data=req.text, format='turtle')
-	except Exception as e:
-		print(f"Error parsing turtle data from {url}: {e}")
-	json_data = parse_ttl_jsonld(json.loads(graph.serialize(format='json-ld')))
-	return json_data
-
-def parse_ttl_jsonld(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
-	"""
-	Parse the turtle file data (which should be exported as a json-ld) into a 
-	proper json data format.
-	"""
-	parsed = []
-
-	# TODO we should probably remove this entire intermediary step of 
-	# converting the ttl to a json then parsing the json, and instead 
-	# just parse the ttl directly with rdflib
-
-	# get the names of the classes that inherit from Concept
-	class_names = ["Class", "Concept"]
-	cnfound = True
-	while cnfound:
-		cnfound = False
-		for entry in data:
-			val = entry.get('@type', None)
-			id = entry.get('@id', None)
-			if id and val:
-				while isinstance(val, list): val = val[0]
-				val = ttl_spl_str(val)
-				if val == "Class":
-					sckey = "subClassOf"
-					for key in entry.keys():
-						nkey = ttl_spl_str(key)
-						if nkey == "subClassOf":
-							sckey = key
-							break
-					nval = entry.get(sckey, None)
-					if nval:
-						while isinstance(nval, list): nval = nval[0]
-						if isinstance(nval, dict): 
-							nval = nval.get('@id') or nval.get('@value')
-						nval = ttl_spl_str(nval)
-						if nval in class_names:
-							id = ttl_spl_str(id)
-							if id not in class_names:
-								cnfound = True
-								class_names.append(id)
-
-	for entry in data:
-		new = {}
-		etype = entry.get('@type', None)
-		if etype:
-			while isinstance(etype, list): etype = etype[0]
-			etype = ttl_spl_str(etype)
-			if etype in class_names: etype = "Concept"
-			new['@type'] = etype
-		for entry_key, entry_value in entry.items():
-			if entry_key == '@type': continue
-			newkey = ttl_spl_str(entry_key)
-			newval = entry_value
-			split_val = not newkey.startswith('@')
-			delistify = newkey not in ["broader"]
-			if delistify: 
-				while isinstance(newval, list): newval = newval[0]
-			if isinstance(newval, dict):
-				if '@id' in newval: split_val = False
-				newval = newval.get('@value') or newval.get('@id') or newval
-				if isinstance(newval, dict):
-					if len(newval) > 0: newval = newval.values()[0]
-			if delistify:
-				while isinstance(newval, list): newval = newval[0]
-			if split_val and delistify: newval = ttl_spl_str(newval)
-			new[newkey] = newval
-		parsed.append(new)
-	return parsed
 
 def ttl_spl_str(data_str: str) -> str:
 	"""

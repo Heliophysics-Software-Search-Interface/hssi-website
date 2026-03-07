@@ -14,6 +14,16 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
 	from .software import Software
 
+REGION_MAPPING: dict[str, str] = {
+	"Earth Atmosphere": "Magnetosphere: Upper Atmosphere",
+	"Interplanetary Space": "Interplanetary space",
+	"Planetary Magnetospheres": "Magnetosphere",
+	"Earth Magnetosphere": "Magnetosphere",
+	"Solar Environment": "Solar Atmosphere"
+}
+
+## -----------------------------------------------------------------------------
+
 class InstrObsType(models.IntegerChoices):
 	""" Whether an entry in InstrumentObservatory is an instrument or an observatory """
 	INSTRUMENT = 1, "Instrument"
@@ -80,13 +90,6 @@ class FileFormat(ControlledList):
 	softwares_from: models.Manager['Software']
 
 	def __str__(self): return self.name + (f" ({self.extension})" if self.extension else "")
-
-class Region(ControlledList):
-	"""Region of the sun which relates to the software"""
-	access = AccessLevel.PUBLIC
-	
-	class Meta: ordering = ['name']
-	def __str__(self): return self.name
 
 class InstrumentObservatory(ControlledList):
 	"""An observatory or scientific research instrument"""
@@ -191,7 +194,10 @@ class FunctionCategory(ControlledGraphList):
 	class Meta: verbose_name_plural = "Function Categories"
 	def __str__(self): return self.name
 
-class TurtleTest(ControlledGraphList):
+class Region(ControlledGraphList):
+	"""Region of the sun which relates to the software"""
+	access = AccessLevel.PUBLIC
+	
 	children = models.ManyToManyField(
 		'self',
 		blank=True,
@@ -215,8 +221,12 @@ class TurtleTest(ControlledGraphList):
 		
 		# we don't want no root level single object
 		roots = cls.objects.filter(parent_nodes__isnull=True)
-		if roots.count() == 1:
-			roots.first().delete()
+		for root in roots:
+			if root.children.exists():
+				print(f"delete root {root.get_full_name()}")
+				root.delete()
 
-		for obj in cls.objects.all():
-			print(obj.get_full_name())
+		cls.apply_old_to_new_mapping(REGION_MAPPING)
+
+	class Meta: ordering = ['name']
+	def __str__(self): return self.get_full_name()

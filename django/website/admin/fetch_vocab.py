@@ -10,11 +10,8 @@ import json
 from ..models import (
 	ControlledList, ControlledGraphList, DataInput, License, 
 	OperatingSystem, ProgrammingLanguage, FileFormat, RepoStatus, 
-	CpuArchitecture
+	CpuArchitecture, Region
 )
-
-from django.db.models import Model
-import rdflib
 
 from typing import Type, Any
 
@@ -31,7 +28,7 @@ URL_PROGRAMMINGLANGUAGES = URL_JSONBASE + "ProgrammingLanguages.json"
 URL_FUNCTIONCATEGORIES = URL_TTLBASE + "softwareFunctionality-v0.3.ttl"
 
 URL_HELIOKNOWBASE = "https://raw.githubusercontent.com/rmcgranaghan/Helio-KNOW/refs/heads/main/data-models/"
-URL_REGEIONS = URL_HELIOKNOWBASE + "hk_region.ttl"
+URL_REGIONS = URL_HELIOKNOWBASE + "hk_region.ttl"
 URL_PHENOMENA = URL_HELIOKNOWBASE + "hk_phenomenon.ttl"
 
 MODEL_URL_MAP={

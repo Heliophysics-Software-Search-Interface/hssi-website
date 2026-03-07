@@ -129,7 +129,6 @@ def create_fc(
 	fc.save()
 	return fc
 
-
 def build_tree_and_persist(
 	concept: URIRef,
 	labels: Dict[URIRef, str],
@@ -173,7 +172,7 @@ def build_tree_and_persist(
 	path.remove(concept)
 	return node_row
 
-def parse_ttl(model: type[ControlledGraphList], file_url: str):
+def parse_ttl(model: type[ControlledGraphList], file_url: str, remove_old_isolated: bool = True):
 	"""
 	parse a ttl file at the specified url and create model objects for each 
 	graph node in the specified model
@@ -245,7 +244,13 @@ def parse_ttl(model: type[ControlledGraphList], file_url: str):
 				else: setattr(refobj, field.name, obj)
 				print(f"updated field '{refobj.pk}:{field}'")
 		
-	# remove all old objects
-	for obj in old_objs: obj.delete()
+	# remove old objects
+	for obj in old_objs:
+		if not remove_old_isolated:
+			if obj.parent_nodes.exists() or obj.children.exists():
+				print(f"Delete non-isolated node '{obj.get_full_name()}'")
+				obj.delete()
+		else:
+			obj.delete()
 
 	print(f"Import complete. Roots created: {created}")

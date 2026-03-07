@@ -159,7 +159,13 @@ class KeywordAdmin(HSSIModelAdmin):
 
 class RegionResource(resources.ModelResource):
 	class Meta: model = Region
-class RegionAdmin(HSSIModelAdmin): resource_class = RegionResource
+class RegionAdmin(HSSIModelAdmin): 
+	resource_class = RegionResource
+
+	def full_name(self, obj: Region) -> str:
+		return obj.get_full_name()
+	
+	list_display = ("name", "full_name", "id")
 
 class DataInputResource(resources.ModelResource):
 	class Meta: model = DataInput
@@ -292,7 +298,6 @@ class SoftwareEditQueueAdmin(ImportExportModelAdmin):
 	actions = [
 		remove_selected
 	]
-
 
 # Admin definitions for submission_info module ---------------------------------
 

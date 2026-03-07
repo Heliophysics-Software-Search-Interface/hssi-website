@@ -11,8 +11,8 @@ from ..metadata import get_metadata
 from .csv_export import export_db_csv, import_db_csv, remove_all_model_entries
 from .parse_ttl import parse_ttl
 from .fetch_vocab import (
-	DataListConcept, get_data, get_concepts, 
-	MODEL_URL_MAP, URL_FUNCTIONCATEGORIES, URL_REGEIONS, URL_PHENOMENA
+	DataListConcept, get_data, get_concepts,
+	MODEL_URL_MAP, URL_FUNCTIONCATEGORIES, URL_REGIONS, URL_PHENOMENA
 )
 
 ## HSSI Admin Site
@@ -84,12 +84,6 @@ def view_import_db_new(request: HttpRequest) -> HttpResponse:
 
 def fetch_vocab(request: HttpRequest) -> HttpResponse:
 	if not request.user.is_superuser: return
-
-	parse_ttl(TurtleTest, URL_REGEIONS)
-	print("--------")
-	TurtleTest.post_fetch()
-	
-	return redirect('admin:index')
 
 	app_label = ControlledList._meta.app_label
 	for model_name, url in MODEL_URL_MAP.items():
@@ -168,6 +162,8 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 	# complicated structure
 	parse_ttl(FunctionCategory, URL_FUNCTIONCATEGORIES)
 	FunctionCategory.post_fetch()
+	
+	parse_ttl(Region, URL_REGIONS, remove_old_isolated=False)
+	Region.post_fetch()
 
 	return redirect('admin:index')
-

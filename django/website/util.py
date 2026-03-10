@@ -83,6 +83,10 @@ def replace_database_references(old_object: Model, new_object: Model, unique_map
 	print(f"replacing {len(oldrefs)} '{old_object}' references..")
 	
 	for refobj, field in oldrefs:
+		# we don't want to update self references
+		if isinstance(refobj, old_object._meta.model):
+			continue
+
 		if isinstance(field, ManyToManyField):
 			# if it's a sorted m2m field, the sort_value must be 
 			# preserved so we modify the through table directly

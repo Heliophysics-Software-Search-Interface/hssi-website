@@ -51,10 +51,6 @@ class OperatingSystem(ControlledList):
 class CpuArchitecture(ControlledList):
 	"""CPU Architecture on which the software can run"""
 	access = AccessLevel.PUBLIC
-	
-class Phenomena(ControlledList):
-	"""Solar phenomena that relate to the software"""
-	access = AccessLevel.PUBLIC
 
 class RepoStatus(ControlledList):
 	"""
@@ -227,6 +223,21 @@ class Region(ControlledGraphList):
 		# 		root.delete()
 
 		cls.apply_old_to_new_mapping(REGION_MAPPING)
+
+	class Meta: ordering = ['name']
+	def __str__(self): return self.get_full_name()
+
+# TODO handle mapping when external phenomena list is ready
+class Phenomena(ControlledGraphList):
+	"""Solar phenomena that relate to the software"""
+	access = AccessLevel.PUBLIC
+
+	children = models.ManyToManyField(
+		'self',
+		blank=True,
+		related_name='parent_nodes',
+		symmetrical=False,
+	)
 
 	class Meta: ordering = ['name']
 	def __str__(self): return self.get_full_name()

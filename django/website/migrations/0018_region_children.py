@@ -14,4 +14,9 @@ class Migration(migrations.Migration):
             name='children',
             field=models.ManyToManyField(blank=True, related_name='parent_nodes', to='website.region'),
         ),
+        migrations.AddField(
+            model_name='phenomena',
+            name='children',
+            field=models.ManyToManyField(blank=True, related_name='parent_nodes', to='website.phenomena'),
+        ),
     ]

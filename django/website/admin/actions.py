@@ -166,4 +166,8 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 	parse_ttl(Region, URL_REGIONS, remove_only_matched=True, kill_single_root=True)
 	Region.post_fetch()
 
+	# TODO The phenomena at the specified url are definitely not ready for use quite yet
+	# parse_ttl(Phenomena, URL_PHENOMENA, remove_only_matched=True, kill_single_root=False)
+	# Phenomena.post_fetch()
+
 	return redirect('admin:index')

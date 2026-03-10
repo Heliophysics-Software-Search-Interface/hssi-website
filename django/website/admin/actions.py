@@ -163,7 +163,7 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 	parse_ttl(FunctionCategory, URL_FUNCTIONCATEGORIES)
 	FunctionCategory.post_fetch()
 	
-	parse_ttl(Region, URL_REGIONS, remove_old_isolated=False)
+	parse_ttl(Region, URL_REGIONS, remove_only_matched=True, kill_single_root=True)
 	Region.post_fetch()
 
 	return redirect('admin:index')

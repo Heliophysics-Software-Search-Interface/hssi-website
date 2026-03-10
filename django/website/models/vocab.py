@@ -220,11 +220,11 @@ class Region(ControlledGraphList):
 	def post_fetch(cls):
 		
 		# we don't want no root level single object
-		roots = cls.objects.filter(parent_nodes__isnull=True)
-		for root in roots:
-			if root.children.exists():
-				print(f"delete root {root.get_full_name()}")
-				root.delete()
+		# roots = cls.objects.filter(parent_nodes__isnull=True)
+		# for root in roots:
+		# 	if root.children.exists():
+		# 		print(f"delete root {root.get_full_name()}")
+		# 		root.delete()
 
 		cls.apply_old_to_new_mapping(REGION_MAPPING)
 

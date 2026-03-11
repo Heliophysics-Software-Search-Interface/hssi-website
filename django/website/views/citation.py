@@ -1,5 +1,7 @@
 import requests
+from django.core.cache import cache
 from django.http import JsonResponse
+from django.views.decorators.http import require_GET
 
 
 ALLOWED_STYLES = {
@@ -16,7 +18,10 @@ ALLOWED_STYLES = {
     'elsevier-harvard',
 }
 
+CACHE_TTL = 60 * 60  # 1 hour
 
+
+@require_GET
 def get_citation(request):
     doi = request.GET.get('doi', '')
     style = request.GET.get('style', 'apa')
@@ -27,6 +32,11 @@ def get_citation(request):
     if style not in ALLOWED_STYLES:
         return JsonResponse({'error': 'Unsupported citation style'}, status=400)
 
+    cache_key = f'citation:{doi}:{style}'
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return JsonResponse({'citation': cached})
+
     try:
         response = requests.get(
             doi,
@@ -36,6 +46,7 @@ def get_citation(request):
         response.raise_for_status()
         response.encoding = 'utf-8'
         citation = response.text.strip()
+        cache.set(cache_key, citation, CACHE_TTL)
         return JsonResponse({'citation': citation})
     except requests.exceptions.Timeout:
         return JsonResponse({'error': 'DOI service timed out'}, status=504)

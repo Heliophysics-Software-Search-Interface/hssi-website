@@ -120,16 +120,16 @@
 }
 
 .action-btn.btn-cite {
-    background-color: #535a7a; /* old: #4a4e61 */
+    background-color: #535a7a;
     color: white;
-    border: 1px solid #535a7a; /* old: #4a4e61 */
+    border: 1px solid #535a7a;
     cursor: pointer;
 }
 
 .action-btn.btn-cite:hover,
 .action-btn.btn-cite-active {
-    background-color: #414660; /* old: #2c2f3a */
-    border-color: #414660; /* old: #2c2f3a */
+    background-color: #414660;
+    border-color: #414660;
     color: white;
 }
 

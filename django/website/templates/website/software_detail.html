@@ -746,14 +746,22 @@ document.querySelectorAll('details.software-section').forEach(details => {
         + '<div class="skeleton-line" style="width: 75%"></div>'
         + '</div>';
 
+    var sectionBody = section.querySelector('.section-body');
+    var citationCache = {};
+
     function updateSectionHeight() {
-        var body = section.querySelector('.section-body');
-        if (body && section.open) {
-            body.style.maxHeight = 'none';
+        if (sectionBody && section.open) {
+            sectionBody.style.maxHeight = 'none';
         }
     }
 
     function fetchOne(el, doiUrl, style) {
+        var cacheKey = doiUrl + '|' + style;
+        if (citationCache[cacheKey]) {
+            el.innerHTML = citationCache[cacheKey];
+            updateSectionHeight();
+            return;
+        }
         el.innerHTML = skeletonHTML;
         updateSectionHeight();
         fetch('{% url "website:get_citation" %}?doi=' + encodeURIComponent(doiUrl) + '&style=' + encodeURIComponent(style))
@@ -762,6 +770,7 @@ document.querySelectorAll('details.software-section').forEach(details => {
                 if (data.error) {
                     el.textContent = 'Error: ' + data.error;
                 } else {
+                    citationCache[cacheKey] = data.citation;
                     el.innerHTML = data.citation;
                 }
                 updateSectionHeight();
@@ -795,6 +804,9 @@ document.querySelectorAll('details.software-section').forEach(details => {
                 icon.className = 'fa fa-copy';
                 btn.title = originalTitle;
             }, 1500);
+        }).catch(function() {
+            btn.title = 'Copy failed';
+            setTimeout(function() { btn.title = originalTitle; }, 1500);
         });
     }
 
@@ -817,10 +829,9 @@ document.querySelectorAll('details.software-section').forEach(details => {
                     loaded = true;
                 }
                 // Remove section-body maxHeight constraint after reveal
-                var body = section.querySelector('.section-body');
-                if (body) {
+                if (sectionBody) {
                     setTimeout(function() {
-                        body.style.maxHeight = 'none';
+                        sectionBody.style.maxHeight = 'none';
                     }, 50);
                 }
                 citeBtn.classList.add('btn-cite-active');

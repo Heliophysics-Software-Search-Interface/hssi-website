@@ -287,7 +287,8 @@ class ControlledGraphList(ControlledList):
 
 		# early return if region mapping is already done
 		for key, _ in mapping.items():
-			if not cls.objects.filter(name=key).exists():
+			try: cls.get_object_with_full_name(key)
+			except: 
 				print(f"Mapping cancelled: '{key}' not found")
 				return
 

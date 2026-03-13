@@ -4,6 +4,8 @@ maintained HSSI vocabulary repository at
 https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/
 """
 
+from __future__ import annotations
+
 import requests
 import json
 
@@ -27,8 +29,11 @@ URL_SUPPORTEDFILEFORMATS = URL_JSONBASE + "OutputFileFormats.json"
 URL_PROGRAMMINGLANGUAGES = URL_JSONBASE + "ProgrammingLanguages.json"
 URL_FUNCTIONCATEGORIES = URL_TTLBASE + "softwareFunctionality-v0.3.ttl"
 
+URL_HELIOPHYSICS_API = "https://api.heliophysics.net/api/"
+URL_REGIONS_JSON = URL_HELIOPHYSICS_API + "regions/"
+
 URL_HELIOKNOWBASE = "https://raw.githubusercontent.com/rmcgranaghan/Helio-KNOW/refs/heads/main/data-models/"
-URL_REGIONS = URL_HELIOKNOWBASE + "hk_region.ttl"
+URL_REGIONS_TTL = URL_HELIOKNOWBASE + "hk_region.ttl"
 URL_PHENOMENA = URL_HELIOKNOWBASE + "hk_phenomenon.ttl"
 
 MODEL_URL_MAP={
@@ -39,6 +44,7 @@ MODEL_URL_MAP={
 	ProgrammingLanguage.__name__: URL_PROGRAMMINGLANGUAGES,
 	FileFormat.__name__: URL_SUPPORTEDFILEFORMATS,
 	RepoStatus.__name__: URL_REPOSTATUS,
+	Region.__name__: URL_REGIONS_JSON,
 }
 
 def get_data(url: str) -> dict | list:
@@ -60,6 +66,25 @@ def ttl_spl_str(data_str: str) -> str:
 	if len(splitstr) > 1:
 		return splitstr[-1]
 	return data_str
+
+def get_concepts_generalized(
+	data: list[dict[str, Any]],
+	key_preflabel: str = "prefLabel", 
+	key_ident: str = "@id", 
+	key_definition: str = "definition"
+) -> list[DataListConcept]:
+	concepts: list[DataListConcept] = []
+	for item in data:
+		preflabel = item.get(key_preflabel)
+		ident = item.get(key_ident)
+		definition = item.get(key_definition)
+		if preflabel or ident or definition:
+			concept = DataListConcept()
+			if preflabel: concept.pref_label = preflabel
+			if ident: concept.identifier = ident
+			if definition: concept.definition = definition
+			concepts.append(concept)
+	return concepts
 
 def get_concepts(data: dict | list[dict]) -> list[dict]:
 	if isinstance(data, dict):

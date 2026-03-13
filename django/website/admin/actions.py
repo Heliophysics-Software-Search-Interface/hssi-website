@@ -11,8 +11,8 @@ from ..metadata import get_metadata
 from .csv_export import export_db_csv, import_db_csv, remove_all_model_entries
 from .parse_ttl import parse_ttl
 from .fetch_vocab import (
-	DataListConcept, get_data, get_concepts,
-	MODEL_URL_MAP, URL_FUNCTIONCATEGORIES, URL_REGIONS, URL_PHENOMENA
+	DataListConcept, get_data, get_concepts, get_concepts_generalized,
+	MODEL_URL_MAP, URL_FUNCTIONCATEGORIES, URL_REGIONS_TTL, URL_PHENOMENA
 )
 
 ## HSSI Admin Site
@@ -89,8 +89,11 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 	for model_name, url in MODEL_URL_MAP.items():
 		print(f"fetching vocab for {model_name}..")
 
-		concept_data = get_concepts(get_data(url))
+		data = get_data(url)
+		concept_data = get_concepts(data)
 		concepts = DataListConcept.from_concept_serialized(concept_data)
+		if not concepts:
+			concepts = get_concepts_generalized(data, "title", "id", "description")
 		model = apps.get_model(app_label, model_name)
 		if not (issubclass(model, HssiModel)):
 			raise Exception(f"{model.__name__} is not a HSSI model")
@@ -163,8 +166,9 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 	parse_ttl(FunctionCategory, URL_FUNCTIONCATEGORIES)
 	FunctionCategory.post_fetch()
 	
-	parse_ttl(Region, URL_REGIONS, remove_only_matched=True, kill_single_root=True)
-	Region.post_fetch()
+	# We are now fetching region data from a JSON url, no longer ttl
+	#parse_ttl(Region, URL_REGIONS_TTL, remove_only_matched=True, kill_single_root=True)
+	#Region.post_fetch()
 
 	# TODO The phenomena at the specified url are definitely not ready for use quite yet
 	# parse_ttl(Phenomena, URL_PHENOMENA, remove_only_matched=True, kill_single_root=False)

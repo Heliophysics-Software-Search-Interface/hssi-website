@@ -212,24 +212,6 @@ class Region(ControlledGraphList):
 
 		return path
 
-	@classmethod
-	def post_fetch(cls):
-		
-		# we don't want no root level single object
-		# roots = cls.objects.filter(parent_nodes__isnull=True)
-		# for root in roots:
-		# 	if root.children.exists():
-		# 		print(f"delete root {root.get_full_name()}")
-		# 		root.delete()
-
-		# cls.apply_old_to_new_mapping(REGION_MAPPING_TTL)
-		# we're reverting back to the previous mapping
-		region_inverse_map_ttl: dict[str, str] = {}
-		for key, value in REGION_MAPPING_TTL.items():
-			region_inverse_map_ttl[value] = key
-		cls.apply_old_to_new_mapping(region_inverse_map_ttl)
-
-
 	class Meta: ordering = ['name']
 	def __str__(self): return self.get_full_name()
 

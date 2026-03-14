@@ -7,3 +7,4 @@ from .edit_submission import *
 from .software_detail import *
 from .search import *
 from .api_submit import *
+from .citation import *

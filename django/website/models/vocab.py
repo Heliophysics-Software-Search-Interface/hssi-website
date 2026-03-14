@@ -207,18 +207,13 @@ class Region(ControlledGraphList):
 	def post_fetch(cls):
 
 		url_validator = URLValidator()
-		url_regex = re.compile(r'https?://[^\s"\'<>]+')
 
 		# validate urls in object identifier fields, and search for url 
 		# identifiers in description if not specified
 		for object in cls.objects.all():
 			try: url_validator(object.identifier)
 			except:
-				description_url: Match | None = url_regex.search(object.definition)
-				if description_url:
-					object.identifier = description_url.group()
-				else: 
-					object.identifier = ""
+				object.identifier = ""
 				object.save()
 
 

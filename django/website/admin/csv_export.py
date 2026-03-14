@@ -149,6 +149,10 @@ def import_model_csv(
 					)
 					for err in result.row_errors():
 						print(err)
+					for invalid in result.invalid_rows:
+						for field, errs in invalid.error_dict.items():
+							for err in errs:
+								print(field, err)
 					raise Exception("Import error!!")
 		
 		except Exception as e:

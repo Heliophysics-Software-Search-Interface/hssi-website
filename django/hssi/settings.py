@@ -70,7 +70,8 @@ INSTALLED_APPS = [
 	'django.contrib.staticfiles',
 	'django_extensions',
 	'markdownify.apps.MarkdownifyConfig',
-	"sortedm2m",
+	'sortedm2m',
+	'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -84,6 +85,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'hssi.urls'
+
+# allow drf views to allow requests from anyone
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+}
 
 # used to remove template caching in debug mode
 default_loaders = [

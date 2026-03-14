@@ -16,6 +16,7 @@ matplotlib
 tablib
 nltk
 rdflib # to parse .ttl files
+djangorestframework
 
 # analytics:
 google-api-core

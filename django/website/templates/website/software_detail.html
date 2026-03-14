@@ -21,14 +21,14 @@
         <div class="software-header-content">
             <div class="software-title-section">
                 <h1 class="software-name">{{ software.software_name }}</h1>
-                {% if software.version %}
-                <span class="software-version">{{ software.version.number }}</span>
+                {% if latest_version %}
+                <span class="software-version">{{ latest_version.number }}</span>
                 {% endif %}
             </div>
 
-            {% if software.logo and software.logo.url %}
+            {% if software.logo %}
             <div class="software-logo-container">
-                <img class="software-logo" src="{{ software.logo.url }}" alt="{{ software.software_name }} logo">
+                <img class="software-logo" src="{{ software.logo }}" alt="{{ software.software_name }} logo">
             </div>
             {% endif %}
         </div>
@@ -62,11 +62,11 @@
     </div>
 
     <!-- Citation Section -->
-    {% if software.persistentIdentifier %}
-    <details class="software-section citation-section citation-hidden" open data-doi="{{ software.persistentIdentifier }}"{% if software.referencePublication and software.referencePublication.identifier %} data-ref-doi="{{ software.referencePublication.identifier }}"{% endif %}>
+    {% if software.persistent_identifier %}
+    <details class="software-section citation-section citation-hidden" open data-doi="{{ software.persistent_identifier }}"{% if software.reference_publication and software.reference_publication.identifier %} data-ref-doi="{{ software.reference_publication.identifier }}"{% endif %}>
         <summary class="section-title">Citation</summary>
         <p class="citation-notice" id="citation-notice"></p>
-        {% if software.referencePublication and software.referencePublication.identifier %}
+        {% if software.reference_publication and software.reference_publication.identifier %}
         <h3 class="citation-subheader">Software</h3>
         {% endif %}
         <div class="citation-text" id="citation-text-software">
@@ -76,7 +76,7 @@
                 <div class="skeleton-line" style="width: 75%"></div>
             </div>
         </div>
-        {% if software.referencePublication and software.referencePublication.identifier %}
+        {% if software.reference_publication and software.reference_publication.identifier %}
         <h3 class="citation-subheader">Reference Publication</h3>
         <div class="citation-text" id="citation-text-refpub">
             <div class="citation-skeleton">
@@ -543,18 +543,9 @@
                 </div>
                 {% endif %}
 
-                {% if software.licenseFileUrl %}
-                <div class="metadata-item">
-                    <span class="metadata-label">License File</span>
-                    <span class="metadata-value">
-                        <a href="{{ software.licenseFileUrl }}" target="_blank">View License File</a>
-                    </span>
-                </div>
-                {% endif %}
-
-                {% if software.funder.all %}
-                <div class="metadata-item">
-                    <span class="metadata-label">Funders</span>
+        {% if software.funder.all %}
+        <div class="metadata-item">
+            <span class="metadata-label">Funders</span>
                     <span class="metadata-value">
                         {% for funder in software.funder.all %}
                         {% with funder_link=funder.identifier|default:funder.website %}
@@ -592,32 +583,32 @@
         {% endif %}
 
         <!-- Version Information Section -->
-        {% if software.version %}
+        {% if latest_version %}
         <details class="software-section" open>
             <summary class="section-title">Version Information</summary>
             <div class="metadata-grid">
                 <div class="metadata-item">
                     <span class="metadata-label">Current Version</span>
-                    <span class="metadata-value">{{ software.version.number }}</span>
+                    <span class="metadata-value">{{ latest_version.number }}</span>
                 </div>
-                {% if software.version.release_date %}
+                {% if latest_version.release_date %}
                 <div class="metadata-item">
                     <span class="metadata-label">Release Date</span>
-                    <span class="metadata-value">{{ software.version.release_date|date:"M d, Y" }}</span>
+                    <span class="metadata-value">{{ latest_version.release_date|date:"M d, Y" }}</span>
                 </div>
                 {% endif %}
-                {% if software.version.version_pid %}
+                {% if latest_version.version_pid %}
                 <div class="metadata-item">
                     <span class="metadata-label">Version DOI</span>
                     <span class="metadata-value">
-                        <a href="{{ software.version.version_pid }}" target="_blank">{{ software.version.version_pid }}</a>
+                        <a href="{{ latest_version.version_pid }}" target="_blank">{{ latest_version.version_pid }}</a>
                     </span>
                 </div>
                 {% endif %}
-                {% if software.version.description %}
+                {% if latest_version.description %}
                 <div class="metadata-item full-width">
                     <span class="metadata-label">Release Notes</span>
-                    <div class="metadata-value release-notes">{{ software.version.description|markdownify }}</div>
+                    <div class="metadata-value release-notes">{{ latest_version.description|markdownify }}</div>
                 </div>
                 {% endif %}
             </div>
@@ -688,7 +679,7 @@ document.querySelectorAll('details.software-section').forEach(details => {
 });
 </script>
 
-{% if software.persistentIdentifier %}
+{% if software.persistent_identifier %}
 <script>
 (function() {
     var section = document.querySelector('.citation-section');

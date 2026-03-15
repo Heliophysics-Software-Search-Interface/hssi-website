@@ -30,8 +30,8 @@ urlpatterns = [
 	path('api/search/', views.search_visible_software, name='search_visible_software'),
 
 	# DRF api views
-	path('api/software/', views.api.software_list_api, name='software_list_api'),
-	path('api/software/<uuid:uid>/', views.api.software_detail_api, name='software_detail_api'),
+	path('api/software/', views.api.SoftwareListAPI.as_view(), name='software_list_api'),
+	path('api/software/<uuid:uid>/', views.api.SoftwareDetailAPI.as_view(), name='software_detail_api'),
 
 	# Software landing page - uses UUID primary key
 	path('software/<uuid:pk>/', views.SoftwareDetailView.as_view(), name='software_detail'),

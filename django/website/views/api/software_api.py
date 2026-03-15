@@ -3,10 +3,11 @@
 from typing import Any
 
 from django.db.models import Model
-from rest_framework.request import Request
-from rest_framework.decorators import api_view
+from rest_framework.request import HttpRequest
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
 
 from ...models import Software, VerifiedSoftware
 from ...models.serializers import MODEL_SERIALIZER_MAP
@@ -39,27 +40,32 @@ def serialize_with_relations(obj: Model) -> dict[str, Any]:
 		data[field.name] = getattr(obj, field.name)
 	return data
 
-@api_view(["GET"])
-def software_detail_api(request: Request, uid: str) -> Response:
+class SoftwareDetailAPI(GenericAPIView):
 	"""Return a single visible Software record, with optional flat expansion."""
-	visible_ids = VerifiedSoftware.objects.values_list('id', flat=True)
-	software = Software.objects.filter(pk=uid, pk__in=visible_ids).first()
-	if software is None:
-		return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
-	flat = request.GET.get("flat", "false").lower() == "true"
-	if flat:
-		return Response(serialize_with_relations(software))
-	return Response(SoftwareSerializer(software).data)
 
-@api_view(["GET"])
-def software_list_api(request: Request) -> Response:
+	serializer_class = SoftwareSerializer
+
+	def get(self, request: HttpRequest, uid: str) -> Response:
+		visible_ids = VerifiedSoftware.objects.values_list("id", flat=True)
+		software = Software.objects.filter(pk=uid, pk__in=visible_ids).first()
+		if software is None:
+			return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+		flat = request.GET.get("flat", "false").lower() == "true"
+		if flat:
+			return Response(serialize_with_relations(software))
+		serializer: SoftwareSerializer = self.get_serializer(software)
+		return Response(serializer.data)
+
+class SoftwareListAPI(APIView):
 	"""Return a list of visible Software IDs with their names."""
-	visible_ids = VerifiedSoftware.objects.values_list('id', flat=True)
-	entries = (
-		Software.objects
-		.filter(pk__in=visible_ids)
-		.values("id", "software_name")
-		.order_by("software_name")
-	)
-	data = [{"id": str(item["id"]), "name": item["software_name"]} for item in entries]
-	return Response({"data": data})
+
+	def get(self, request: HttpRequest) -> Response:
+		visible_ids = VerifiedSoftware.objects.values_list("id", flat=True)
+		entries = (
+			Software.objects
+			.filter(pk__in=visible_ids)
+			.values("id", "software_name")
+			.order_by("software_name")
+		)
+		data = [{"id": str(item["id"]), "name": item["software_name"]} for item in entries]
+		return Response({"data": data})

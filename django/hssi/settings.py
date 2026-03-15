@@ -92,7 +92,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.AllowAny",
     ],
     "DEFAULT_RENDERER_CLASSES": [
-        "hssi.renderers.CamelCaseJSONRenderer",
+        "hssi.camel_case_renderer.CamelCaseJSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
     ],
 }

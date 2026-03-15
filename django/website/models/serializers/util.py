@@ -3,12 +3,16 @@
 import enum
 from typing import Any
 
+from django.http.request import QueryDict
 from django.db.models import Model
 from rest_framework import serializers
 
+from hssi.camel_case_renderer import JsonSet, decamelize_data
 from ...models import HssiModel
 
-class SerialFormat(enum.IntEnum):
+QPARAM_VIEW: str = "view"
+
+class SerialView(enum.IntEnum):
 	STANDARD = 1
 	USER = 2
 	JSONLD = 3
@@ -16,17 +20,20 @@ class SerialFormat(enum.IntEnum):
 class HssiSerializer(serializers.ModelSerializer):
 	"""Serializer for Software model data."""
 
-	format: SerialFormat = SerialFormat.STANDARD
+	_view: SerialView = None
 
-	def __init__(
-		self, 
-		instance: Model=None, 
-		data: dict[str, Any]=..., 
-		format: SerialFormat=..., 
-		**kwargs
-	):
-		self.type = format or SerialFormat.STANDARD
-		super().__init__(instance, data, **kwargs)
+	def view(self) -> SerialView:
+		
+		# parse serialview mode
+		if self._view is None:
+			params: QueryDict = self.context["request"].query_params
+			viewstr = params.get(QPARAM_VIEW)
+			if viewstr: 
+				self._view = SerialView[viewstr.upper()]
+			else: 
+				self._view = SerialView.STANDARD
+		
+		return self._view
 
 	def to_representation_standard(self, instance: HssiModel):
 		return super().to_representation(instance)
@@ -38,7 +45,7 @@ class HssiSerializer(serializers.ModelSerializer):
 		raise NotImplementedError
 	
 	def to_internal_value_standard(self, data: dict[str: Any]):
-		return super().create(data)
+		return super().to_internal_value(data)
 	
 	def to_internal_value_user(self, data: dict[str: Any]):
 		raise NotImplementedError
@@ -56,24 +63,25 @@ class HssiSerializer(serializers.ModelSerializer):
 		raise NotImplementedError
 
 	def to_representation(self, instance: HssiModel):
-		match self.format:
-			case SerialFormat.STANDARD: return self.to_representation_standard(instance)
-			case SerialFormat.USER: return self.to_representation_user(instance)
-			case SerialFormat.JSONLD: return self.to_representation_jsonld(instance)
+		match self.view():
+			case SerialView.STANDARD: return self.to_representation_standard(instance)
+			case SerialView.USER: return self.to_representation_user(instance)
+			case SerialView.JSONLD: return self.to_representation_jsonld(instance)
 		raise NotImplementedError
 	
-	def to_internal_value(self, data: dict[str, Any]):
-		match self.format:
-			case SerialFormat.STANDARD: return self.to_internal_value_standard(data)
-			case SerialFormat.USER: return self.to_internal_value_user(data)
-			case SerialFormat.JSONLD: return self.to_internal_value_jsonld(data)
+	def to_internal_value(self, data: JsonSet):
+		data = decamelize_data(data)
+		match self.view():
+			case SerialView.STANDARD: return self.to_internal_value_standard(data)
+			case SerialView.USER: return self.to_internal_value_user(data)
+			case SerialView.JSONLD: return self.to_internal_value_jsonld(data)
 		raise NotImplementedError
 	
 	def create(self, validated_data: dict[str: Any]):
-		match self.format:
-			case SerialFormat.STANDARD: return self.create_standard(validated_data)
-			case SerialFormat.USER: return self.create_user(validated_data)
-			case SerialFormat.JSONLD: return self.create_jsonld(validated_data)
+		match self.view():
+			case SerialView.STANDARD: return self.create_standard(validated_data)
+			case SerialView.USER: return self.create_user(validated_data)
+			case SerialView.JSONLD: return self.create_jsonld(validated_data)
 		raise NotImplementedError
 
 	class Meta:

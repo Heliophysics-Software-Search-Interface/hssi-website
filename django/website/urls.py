@@ -28,8 +28,13 @@ urlpatterns = [
 	path('api/describe_form', views.somef.form_fill_view),
 	path('api/citation/', views.get_citation, name='get_citation'),
 	path('api/search/', views.search_visible_software, name='search_visible_software'),
-	path('team/', views.team, name="team"),
+
+	# DRF api views
+	path('api/software/', views.api.software_list_api, name='software_list_api'),
+	path('api/software/<uuid:uid>/', views.api.software_detail_api, name='software_detail_api'),
 
 	# Software landing page - uses UUID primary key
 	path('software/<uuid:pk>/', views.SoftwareDetailView.as_view(), name='software_detail'),
+
+	path('team/', views.team, name="team"),
 ]

@@ -8,3 +8,4 @@ from .software_detail import *
 from .search import *
 from .api_submit import *
 from .citation import *
+from .api import *

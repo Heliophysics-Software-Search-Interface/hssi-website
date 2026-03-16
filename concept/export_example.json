@@ -56,7 +56,7 @@
         ]
     },
     "codemeta:buildInstructions": "http://www.sunpy.org/",
-    "codemeta:reference_publication": {
+    "codemeta:referencePublication": {
       "@id": "https://doi.org/10.3847/1538-4357/ab4f7a",
       "@type": "ScholarlyWork"
     },
@@ -232,7 +232,7 @@
     ],    
     "name": "sunpy: A Core Package for Solar Physics",
     "operatingSystem": "OS Independent",
-    "programming_language": "Python 3.x",
+    "programmingLanguage": "Python 3.x",
     "processorRequirements": ["x86-64", "Apple Silicon arm64"],
     "publisher": {
         "@id": "https://zenodo.org/",

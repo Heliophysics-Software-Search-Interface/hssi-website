@@ -16,6 +16,7 @@ from ...models.serializers.software import SoftwareSerializer
 
 def serialize_related(obj: Model) -> str | dict[str, Any]:
 	"""Serialize a related object using its serializer or fall back to str()."""
+	
 	serializer_cls = MODEL_SERIALIZER_MAP.get(obj.__class__)
 	if serializer_cls:
 		return serializer_cls(obj).data
@@ -23,6 +24,7 @@ def serialize_related(obj: Model) -> str | dict[str, Any]:
 
 def serialize_with_relations(obj: Model) -> dict[str, Any]:
 	"""Serialize a model instance with FK/M2M expanded via serializers or str()."""
+
 	data: dict[str, Any] = {}
 	for field in obj._meta.get_fields():
 		if field.auto_created:
@@ -50,7 +52,8 @@ class SoftwareDetailAPI(GenericAPIView):
 		software = Software.objects.filter(pk=uid, pk__in=visible_ids).first()
 		if software is None:
 			return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
-		flat = request.GET.get("flat", "false").lower() == "true"
+		view = request.GET.get("view", "").lower()
+		flat = request.GET.get("flat", "false").lower() == "true" and view != "jsonld"
 		if flat:
 			return Response(serialize_with_relations(software))
 		serializer: SoftwareSerializer = self.get_serializer(software)

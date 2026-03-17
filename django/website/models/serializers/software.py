@@ -10,7 +10,6 @@ from django.utils import timezone
 from django.utils.dateparse import parse_date
 from rest_framework import serializers
 
-from hssi.camel_case_renderer import to_camel_case
 from ..base import ControlledList, ControlledGraphList
 from ..license import License
 from ..organizations import Organization, Award

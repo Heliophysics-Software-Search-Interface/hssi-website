@@ -20,7 +20,7 @@ class Person(HssiModel):
 	given_name = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
 	family_name = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
 	identifier = models.URLField(blank=True, null=True)
-	affiliation = models.ManyToManyField(
+	affiliation: Manager[Organization] = models.ManyToManyField(
 		Organization, 
 		blank=True, 
 		related_name='people'

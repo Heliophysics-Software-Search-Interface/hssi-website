@@ -89,6 +89,7 @@ valid, and will not be accepted.
 	```
 	"description": "This software does ALL the things, it is the BEST software EVER.",	
 	```
+
 ### Recommended
 
 These fields can be omitted, however, doing so will likely have a negative 
@@ -347,7 +348,7 @@ information will be ignored.
 
 ### Person
 
-References `Person` table in database, hard match on `identifier`,
+References `Person` table in database, hard match on `identifier` if provided,
 otherwise fall back to matching on a combination of `givenName` + `familyName`
 
 #### Subfields
@@ -359,19 +360,19 @@ otherwise fall back to matching on a combination of `givenName` + `familyName`
 
 ### Submitter
 
-References `Submitter` table in database, hard match on `identifier`
+References `Submitter` table in database, hard match on `email`
 
 #### Subfields
 
 * `email` *required* - string
 * `person` *required* - [`Person`](#person) object
-* `identifier` - url
 
 ### Organization
 
-References `Organization` table in database, hard match on `identifier`
+References `Organization` table in database, hard match on `identifier`, soft
+match on `name` if identifier is not provided
 
-#### subfields
+#### Subfields
 
 * `name` *required* - string
 * `identifier` - url
@@ -385,6 +386,6 @@ submission fields
 
 References `InstrumentObservatory` table in database, hard match on `identifier`
 
-#### subfields
+#### Subfields
 * `name` *required* - text
 * `identifier` - url

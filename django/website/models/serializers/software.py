@@ -10,24 +10,17 @@ from django.utils import timezone
 from django.utils.dateparse import parse_date
 from rest_framework import serializers
 
+from hssi.camel_case_renderer import to_camel_case
+from ..base import ControlledList, ControlledGraphList
 from ..license import License
 from ..organizations import Organization, Award
 from ..people import Person, Submitter
 from ..related import RelatedItem, RelatedItemType
 from ..software import Software, SubmissionInfo, SoftwareVersion
 from ..vocab import (
-	CpuArchitecture,
-	DataInput,
-	FileFormat,
-	FunctionCategory,
-	InstrObsType,
-	InstrumentObservatory,
-	Keyword,
-	OperatingSystem,
-	Phenomena,
-	ProgrammingLanguage,
-	Region,
-	RepoStatus,
+	CpuArchitecture, DataInput, FileFormat, FunctionCategory, InstrObsType,
+	InstrumentObservatory, Keyword, OperatingSystem, Phenomena,
+	ProgrammingLanguage, Region, RepoStatus,
 )
 from .util import HssiSerializer
 from ...admin.fetch_vocab import (
@@ -402,27 +395,27 @@ class SoftwareSerializer(HssiSerializer):
 		if value is None:
 			return None
 		if not isinstance(value, str):
-			raise serializers.ValidationError("Expected a string.")
+			raise serializers.ValidationError(f"Expected string, got: {str(value)}")
 		return value.strip()
 
-	def _validate_url(self, value: str | None, field_name: str) -> str | None:
+	def _validate_url(self, value: str | None) -> str | None:
 		if value is None or value == "":
 			return None
 		validator = URLValidator()
 		try:
 			validator(value)
-		except DjangoValidationError as exc:
-			raise serializers.ValidationError({field_name: str(exc)})
+		except DjangoValidationError:
+			raise serializers.ValidationError(f"Invalid URL: '{value}'")
 		return value
 
-	def _validate_date(self, value: str | None, field_name: str):
+	def _validate_date(self, value: str | None):
 		if value is None or value == "":
 			return None
 		if not isinstance(value, str):
-			raise serializers.ValidationError({field_name: "Expected a date string."})
+			raise serializers.ValidationError(f"Invalid date: {str(value)}")
 		parsed = parse_date(value)
 		if parsed is None:
-			raise serializers.ValidationError({field_name: "Invalid date format."})
+			raise serializers.ValidationError(f"Invalid date: '{value}'")
 		return parsed
 
 	def _normalize_term(self, value: str, field_name: str) -> str:
@@ -433,34 +426,42 @@ class SoftwareSerializer(HssiSerializer):
 			raise serializers.ValidationError({field_name: "Value cannot be empty."})
 		return normalized
 
-	def _get_graph_list(self, model, value: str, field_name: str):
-		normalized = self._normalize_term(value, field_name)
+	def _get_graph_list_item(
+		self, 
+		model: type[ControlledGraphList], 
+		value: str, 
+	) -> ControlledGraphList:
+		normalized = self._normalize_term(value, model.__name__)
 		if ":" not in normalized:
 			obj = model.objects.filter(name__iexact=normalized).first()
 			if not obj:
-				raise serializers.ValidationError({field_name: f"Unknown value '{value}'."})
+				raise serializers.ValidationError({model.__name__: f"Unknown value '{value}'."})
 			return obj
 
 		parts = [part.strip() for part in normalized.split(":")]
 		parent = model.objects.filter(name__iexact=parts[0], parent_nodes__isnull=True).first()
 		if not parent:
-			raise serializers.ValidationError({field_name: f"Unknown value '{value}'."})
+			raise serializers.ValidationError({model.__name__: f"Unknown value '{value}'."})
 		for part in parts[1:]:
 			child = model.objects.filter(name__iexact=part, parent_nodes=parent).first()
 			if not child:
-				raise serializers.ValidationError({field_name: f"Unknown value '{value}'."})
+				raise serializers.ValidationError({model.__name__: f"Unknown value '{value}'."})
 			parent = child
 		return parent
 
-	def _get_controlled(self, model, value: str, field_name: str):
-		normalized = self._normalize_term(value, field_name)
+	def _get_controlled_item(
+		self, 
+		model: type[ControlledList], 
+		value: str, 
+	) -> ControlledList:
+		normalized = self._normalize_term(value, model.__name__)
 		obj = model.objects.filter(name__iexact=normalized).first()
 		if not obj:
-			raise serializers.ValidationError({field_name: f"Unknown value '{value}'."})
+			raise serializers.ValidationError({model.__name__: f"Unknown value '{value}'."})
 		return obj
 
-	def _get_or_create_keyword(self, value: str):
-		normalized = self._normalize_term(value, "keywords")
+	def _get_or_create_keyword(self, value: str) -> Keyword:
+		normalized = self._normalize_term(value, Keyword.__name__)
 		obj = Keyword.objects.filter(name__iexact=normalized).first()
 		if obj:
 			return obj
@@ -471,7 +472,7 @@ class SoftwareSerializer(HssiSerializer):
 		family_name = self._normalize_term(data.get("family_name"), "familyName")
 		identifier = data.get("identifier")
 		if identifier:
-			identifier = self._validate_url(self._strip_string(identifier), "identifier")
+			identifier = self._validate_url(self._strip_string(identifier))
 			person = Person.objects.filter(identifier=identifier).first()
 			if person:
 				if not person.given_name:
@@ -487,8 +488,8 @@ class SoftwareSerializer(HssiSerializer):
 			)
 
 		person = Person.objects.filter(
-			given_name__iexact=given_name,
-			family_name__iexact=family_name,
+			given_name=given_name,
+			family_name=family_name,
 		).first()
 		if person:
 			return person
@@ -501,7 +502,7 @@ class SoftwareSerializer(HssiSerializer):
 		name = self._normalize_term(data.get("name"), "name")
 		identifier = data.get("identifier")
 		if identifier:
-			identifier = self._validate_url(self._strip_string(identifier), "identifier")
+			identifier = self._validate_url(self._strip_string(identifier))
 			org = Organization.objects.filter(identifier=identifier).first()
 			if org:
 				if not org.name:
@@ -526,11 +527,15 @@ class SoftwareSerializer(HssiSerializer):
 			return submitter
 		return Submitter.objects.create(email=email, person=person)
 
-	def _get_or_create_instrument(self, data: dict[str, Any], instr_type: InstrObsType) -> InstrumentObservatory:
+	def _get_or_create_observatory(
+		self, 
+		data: dict[str, Any], 
+		instr_type: InstrObsType
+	) -> InstrumentObservatory:
 		name = self._normalize_term(data.get("name"), "name")
 		identifier = data.get("identifier")
 		if identifier:
-			identifier = self._validate_url(self._strip_string(identifier), "identifier")
+			identifier = self._validate_url(self._strip_string(identifier))
 			entry = InstrumentObservatory.objects.filter(identifier=identifier).first()
 			if entry:
 				return entry
@@ -539,6 +544,9 @@ class SoftwareSerializer(HssiSerializer):
 				identifier=identifier,
 				type=instr_type,
 			)
+		entry = InstrumentObservatory.objects.filter(name=name, type=instr_type).first()
+		if entry:
+			return entry
 		return InstrumentObservatory.objects.create(name=name, type=instr_type)
 
 	def _get_or_create_award(self, data: dict[str, Any]) -> Award:
@@ -556,7 +564,7 @@ class SoftwareSerializer(HssiSerializer):
 		return Award.objects.create(name=name)
 
 	def _get_or_create_related(self, url: str, item_type: RelatedItemType) -> RelatedItem:
-		identifier = self._validate_url(self._normalize_term(url, "identifier"), "identifier")
+		identifier = self._validate_url(self._normalize_term(url, "identifier"))
 		item = RelatedItem.objects.filter(identifier=identifier).first()
 		if item:
 			return item
@@ -579,7 +587,7 @@ class SoftwareSerializer(HssiSerializer):
 		]
 		errors: dict[str, Any] = {}
 		for field in required_fields:
-			if field not in data or data[field] in (None, "", []):
+			if field not in data or data[field] in (None, "", [], {}):
 				errors[field] = "This field is required."
 		if errors:
 			raise serializers.ValidationError(errors)
@@ -616,20 +624,22 @@ class SoftwareSerializer(HssiSerializer):
 		if data.get("publisher") is not None and not isinstance(data.get("publisher"), dict):
 			raise serializers.ValidationError({"publisher": "Expected an object."})
 
-		self._validate_url(self._strip_string(data.get("code_repository_url")), "codeRepositoryUrl")
-		self._validate_url(self._strip_string(data.get("documentation")), "documentation")
-		self._validate_url(self._strip_string(data.get("persistent_identifier")), "persistentIdentifier")
-		self._validate_url(self._strip_string(data.get("reference_publication")), "referencePublication")
-		self._validate_url(self._strip_string(data.get("logo")), "logo")
+		self._validate_url(self._strip_string(data.get("code_repository_url")))
+		self._validate_url(self._strip_string(data.get("documentation")))
+		self._validate_url(self._strip_string(data.get("persistent_identifier")))
+		self._validate_url(self._strip_string(data.get("reference_publication")))
+		self._validate_url(self._strip_string(data.get("logo")))
 
 		if data.get("publication_date"):
-			self._validate_date(data.get("publication_date"), "publicationDate")
+			self._validate_date(data.get("publication_date"))
 
 		concise_description = data.get("concise_description")
 		if concise_description is not None:
 			concise_description = self._strip_string(concise_description) or ""
 			if len(concise_description) > 200:
-				raise serializers.ValidationError({"conciseDescription": "Must be 200 characters or fewer."})
+				raise serializers.ValidationError(
+					{"conciseDescription": "Must be 200 characters or fewer."}
+				)
 
 		version = data.get("version")
 		if version is not None:
@@ -637,23 +647,41 @@ class SoftwareSerializer(HssiSerializer):
 				raise serializers.ValidationError({"version": "Expected an object."})
 			self._normalize_term(version.get("number"), "version.number")
 			if version.get("release_date"):
-				self._validate_date(version.get("release_date"), "version.releaseDate")
+				self._validate_date(version.get("release_date"))
 			if version.get("version_pid"):
-				self._validate_url(self._strip_string(version.get("version_pid")), "version.versionPid")
+				self._validate_url(self._strip_string(version.get("version_pid")))
 
 		return data
 
 	@transaction.atomic
 	def create_user(self, validated_data: dict[str, Any]):
 		software = Software.objects.create(
-			software_name=self._normalize_term(validated_data.get("software_name"), "softwareName"),
-			code_repository_url=self._validate_url(self._strip_string(validated_data.get("code_repository_url")), "codeRepositoryUrl"),
-			description=self._normalize_term(validated_data.get("description"), "description"),
-			concise_description=self._strip_string(validated_data.get("concise_description")),
-			documentation=self._validate_url(self._strip_string(validated_data.get("documentation")), "documentation"),
-			persistent_identifier=self._validate_url(self._strip_string(validated_data.get("persistent_identifier")), "persistentIdentifier"),
-			publication_date=self._validate_date(validated_data.get("publication_date"), "publicationDate"),
-			logo=self._validate_url(self._strip_string(validated_data.get("logo")), "logo"),
+			software_name=self._normalize_term(
+				validated_data.get("software_name"), 
+				"softwareName"
+			),
+			code_repository_url=self._validate_url(
+				self._strip_string(validated_data.get("code_repository_url"))
+			),
+			description=self._normalize_term(
+				validated_data.get("description"), 
+				"description"
+			),
+			concise_description=self._strip_string(
+				validated_data.get("concise_description")
+			),
+			documentation=self._validate_url(
+				self._strip_string(validated_data.get("documentation"))
+			),
+			persistent_identifier=self._validate_url(
+				self._strip_string(validated_data.get("persistent_identifier"))
+			),
+			publication_date=self._validate_date(
+				validated_data.get("publication_date")
+			),
+			logo=self._validate_url(
+				self._strip_string(validated_data.get("logo"))
+			),
 		)
 
 		publisher = validated_data.get("publisher")
@@ -670,12 +698,18 @@ class SoftwareSerializer(HssiSerializer):
 
 		development_status = validated_data.get("development_status")
 		if development_status:
-			software.development_status = self._get_controlled(RepoStatus, development_status, "developmentStatus")
+			software.development_status = self._get_controlled_item(RepoStatus, development_status)
 
 		software.save()
 
-		submitters = [self._get_or_create_submitter(item) for item in validated_data.get("submitter", [])]
-		authors = [self._get_or_create_person(item) for item in validated_data.get("authors", [])]
+		submitters = [
+			self._get_or_create_submitter(item) 
+			for item in validated_data.get("submitter", [])
+		]
+		authors = [
+			self._get_or_create_person(item) 
+			for item in validated_data.get("authors", [])
+		]
 		for author, author_data in zip(authors, validated_data.get("authors", []), strict=False):
 			affiliations = author_data.get("affiliation") or []
 			if isinstance(affiliations, list):
@@ -696,63 +730,63 @@ class SoftwareSerializer(HssiSerializer):
 
 		if validated_data.get("programming_language"):
 			prog_langs = [
-				self._get_controlled(ProgrammingLanguage, item, "programmingLanguage")
+				self._get_controlled_item(ProgrammingLanguage, item)
 				for item in validated_data.get("programming_language", [])
 			]
 			software.programming_language.set(prog_langs)
 
 		if validated_data.get("input_formats"):
 			formats = [
-				self._get_controlled(FileFormat, item, "inputFormats")
+				self._get_controlled_item(FileFormat, item)
 				for item in validated_data.get("input_formats", [])
 			]
 			software.input_formats.set(formats)
 
 		if validated_data.get("output_formats"):
 			formats = [
-				self._get_controlled(FileFormat, item, "outputFormats")
+				self._get_controlled_item(FileFormat, item)
 				for item in validated_data.get("output_formats", [])
 			]
 			software.output_formats.set(formats)
 
 		if validated_data.get("operating_system"):
 			operating_systems = [
-				self._get_controlled(OperatingSystem, item, "operatingSystem")
+				self._get_controlled_item(OperatingSystem, item)
 				for item in validated_data.get("operating_system", [])
 			]
 			software.operating_system.set(operating_systems)
 
 		if validated_data.get("cpu_architecture"):
 			architectures = [
-				self._get_controlled(CpuArchitecture, item, "cpuArchitecture")
+				self._get_controlled_item(CpuArchitecture, item)
 				for item in validated_data.get("cpu_architecture", [])
 			]
 			software.cpu_architecture.set(architectures)
 
 		if validated_data.get("software_functionality"):
 			functionality = [
-				self._get_graph_list(FunctionCategory, item, "softwareFunctionality")
+				self._get_graph_list_item(FunctionCategory, item)
 				for item in validated_data.get("software_functionality", [])
 			]
 			software.software_functionality.set(functionality)
 
 		if validated_data.get("related_region"):
 			regions = [
-				self._get_graph_list(Region, item, "relatedRegion")
+				self._get_graph_list_item(Region, item)
 				for item in validated_data.get("related_region", [])
 			]
 			software.related_region.set(regions)
 
 		if validated_data.get("related_phenomena"):
 			phenomena = [
-				self._get_graph_list(Phenomena, item, "relatedPhenomena")
+				self._get_graph_list_item(Phenomena, item)
 				for item in validated_data.get("related_phenomena", [])
 			]
 			software.related_phenomena.set(phenomena)
 
 		if validated_data.get("data_sources"):
 			data_sources = [
-				self._get_controlled(DataInput, item, "dataSources")
+				self._get_controlled_item(DataInput, item)
 				for item in validated_data.get("data_sources", [])
 			]
 			software.data_sources.set(data_sources)
@@ -766,14 +800,14 @@ class SoftwareSerializer(HssiSerializer):
 
 		if validated_data.get("related_instruments"):
 			instruments = [
-				self._get_or_create_instrument(item, InstrObsType.INSTRUMENT)
+				self._get_or_create_observatory(item, InstrObsType.INSTRUMENT)
 				for item in validated_data.get("related_instruments", [])
 			]
 			software.related_instruments.set(instruments)
 
 		if validated_data.get("related_observatories"):
 			observatories = [
-				self._get_or_create_instrument(item, InstrObsType.OBSERVATORY)
+				self._get_or_create_observatory(item, InstrObsType.OBSERVATORY)
 				for item in validated_data.get("related_observatories", [])
 			]
 			software.related_observatories.set(observatories)
@@ -830,10 +864,10 @@ class SoftwareSerializer(HssiSerializer):
 		version = validated_data.get("version")
 		if isinstance(version, dict):
 			version_obj = SoftwareVersion.objects.create(
-				number=self._normalize_term(version.get("number"), "version.number"),
-				release_date=self._validate_date(version.get("release_date"), "version.releaseDate"),
+				number=self._normalize_term(version.get("number"), "version_number"),
+				release_date=self._validate_date(version.get("release_date")),
 				description=self._strip_string(version.get("description")),
-				version_pid=self._validate_url(self._strip_string(version.get("version_pid")), "version.versionPid"),
+				version_pid=self._validate_url(self._strip_string(version.get("version_pid"))),
 			)
 			software.version.set([version_obj])
 

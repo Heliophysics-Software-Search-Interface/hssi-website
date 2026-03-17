@@ -3,15 +3,21 @@
 from typing import Any
 
 from django.db.models import Model
+from django.db import transaction
 from rest_framework.request import HttpRequest
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import serializers
 from rest_framework.generics import GenericAPIView
 
 from ...models import Software, VerifiedSoftware
 from ...models.serializers import MODEL_SERIALIZER_MAP
 from ...models.serializers.software import SoftwareSerializer
+from ...models.serializers.util import SerialView
 
 
 def serialize_related(obj: Model) -> str | dict[str, Any]:
@@ -59,8 +65,12 @@ class SoftwareDetailAPI(GenericAPIView):
 		serializer: SoftwareSerializer = self.get_serializer(software)
 		return Response(serializer.data)
 
+@method_decorator(csrf_exempt, name="dispatch")
 class SoftwareListAPI(APIView):
 	"""Return a list of visible Software IDs with their names."""
+
+	authentication_classes = []
+	permission_classes = [AllowAny]
 
 	def get(self, request: HttpRequest) -> Response:
 		visible_ids = VerifiedSoftware.objects.values_list("id", flat=True)
@@ -72,3 +82,33 @@ class SoftwareListAPI(APIView):
 		)
 		data = [{"id": str(item["id"]), "name": item["software_name"]} for item in entries]
 		return Response({"data": data})
+
+	def post(self, request: HttpRequest) -> Response:
+		if not isinstance(request.data, list):
+			return Response(
+				{"detail": "Root JSON value must be an array."},
+				status=status.HTTP_400_BAD_REQUEST,
+			)
+
+		results: list[dict[str, Any]] = []
+		try:
+			with transaction.atomic():
+				for idx, item in enumerate(request.data):
+					serializer = SoftwareSerializer(
+						data=item,
+						context={"request": request},
+					)
+					serializer._view = SerialView.USER
+					serializer.is_valid(raise_exception=True)
+					software = serializer.save()
+					results.append({
+						"index": idx,
+						"softwareId": str(software.id),
+					})
+		except serializers.ValidationError as exc:
+			return Response(exc.detail, status=status.HTTP_400_BAD_REQUEST)
+
+		return Response(
+			{"status": "ok", "count": len(results), "results": results},
+			status=status.HTTP_201_CREATED,
+		)

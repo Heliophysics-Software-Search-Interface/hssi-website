@@ -67,10 +67,7 @@
 			"spectroscopy",
 			"magnetic fields"
 		],		
-		"license": {
-			"name": "GNU Library or 'Lesser' General Public Licenses (LGPL version 3)",
-			"url": "https://spdx.org/licenses/LGPL-3.0-or-later"
-		},
+		"license": "GNU Library or 'Lesser' General Public Licenses (LGPL version 3)",
 		"logo": "https://cdn.example.org/heliospectra/logo.png",		
 		"operatingSystem": [
 			"Linux",

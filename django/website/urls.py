@@ -30,6 +30,7 @@ urlpatterns = [
 	path('api/search/', views.search_visible_software, name='search_visible_software'),
 
 	# DRF api views
+	path('api/submission/', views.api.SubmissionAPI.as_view(), name='software_list_api'),
 	path('api/software/', views.api.SoftwareListAPI.as_view(), name='software_list_api'),
 	path('api/software/<uuid:uid>/', views.api.SoftwareDetailAPI.as_view(), name='software_detail_api'),
 

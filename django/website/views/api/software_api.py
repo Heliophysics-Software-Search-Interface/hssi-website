@@ -4,11 +4,13 @@ from typing import Any
 
 from django.db.models import Model
 from django.db import transaction
+from rest_framework import status
 from rest_framework.request import HttpRequest
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
+from rest_framework.parsers import JSONParser
+from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import serializers
@@ -17,6 +19,7 @@ from rest_framework.generics import GenericAPIView
 from ...models import Software, VerifiedSoftware
 from ...models.serializers import MODEL_SERIALIZER_MAP
 from ...models.serializers.software import SoftwareSerializer
+from ...models.serializers.submission import SubmissionSerializer
 from ...models.serializers.util import SerialView
 
 
@@ -65,7 +68,6 @@ class SoftwareDetailAPI(GenericAPIView):
 		serializer: SoftwareSerializer = self.get_serializer(software)
 		return Response(serializer.data)
 
-@method_decorator(csrf_exempt, name="dispatch")
 class SoftwareListAPI(APIView):
 	"""Return a list of visible Software IDs with their names."""
 
@@ -83,6 +85,13 @@ class SoftwareListAPI(APIView):
 		data = [{"id": str(item["id"]), "name": item["software_name"]} for item in entries]
 		return Response({"data": data})
 
+@method_decorator(csrf_exempt, name="dispatch")
+class SubmissionAPI(APIView):
+	"""Allow submission POST requests with valid JSON data."""
+
+	authentication_classes = []
+	permission_classes = [AllowAny]
+
 	def post(self, request: HttpRequest) -> Response:
 		if not isinstance(request.data, list):
 			return Response(
@@ -94,7 +103,7 @@ class SoftwareListAPI(APIView):
 		try:
 			with transaction.atomic():
 				for idx, item in enumerate(request.data):
-					serializer = SoftwareSerializer(
+					serializer = SubmissionSerializer(
 						data=item,
 						context={"request": request},
 					)

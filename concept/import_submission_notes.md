@@ -127,7 +127,7 @@ impact on the software's discoverability and usability.
 	[`/api/models/License/rows/all`](https://hssi.hsdcloud.org/api/models/License/rows/all/)
 	* license URLs can be retrieved from the [list](https://spdx.org/licenses/) on SPDX.
 	```
-	"license": "GNU Library or 'Lesser' General Public Licenses (LGPL version 3)",
+	"license": "BSD 3-Clause \"New\" or \"Revised\" License",
 	```
 * `version` - object
 	* subfields:

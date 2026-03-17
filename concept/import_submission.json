@@ -58,7 +58,7 @@
 		"inputFormats": [
 			"CDF",
 			"FITS"
-		],		
+		],
 		"interoperableSoftware": [
 			"https://doi.org/10.XXXX/exaawde1",
 			"https://doi.org/10.XXXX/exayfgbe2"
@@ -67,7 +67,7 @@
 			"spectroscopy",
 			"magnetic fields"
 		],		
-		"license": "GNU Library or 'Lesser' General Public Licenses (LGPL version 3)",
+		"license": "BSD 3-Clause \"New\" or \"Revised\" License",
 		"logo": "https://cdn.example.org/heliospectra/logo.png",		
 		"operatingSystem": [
 			"Linux",
@@ -89,8 +89,8 @@
 		},		
 		"referencePublication": "https://doi.org/10.XXXX/stnryn",		
 		"relatedDatasets": [
-			"https://doi.org/10.XXXX/example",
-			"https://doi.org/10.XXXX/example"
+			"https://doi.org/10.XXXX/exjumpl",
+			"https://doi.org/10.XXXX/exgjmpl"
 		],
 		"relatedInstruments": [
 			{

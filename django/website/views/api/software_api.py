@@ -4,15 +4,13 @@ from typing import Any
 
 from django.db.models import Model
 from django.db import transaction
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.request import HttpRequest
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
-from rest_framework.parsers import JSONParser
-from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import serializers
 from rest_framework.generics import GenericAPIView
 
@@ -22,6 +20,10 @@ from ...models.serializers.software import SoftwareSerializer
 from ...models.serializers.submission import SubmissionSerializer
 from ...models.serializers.util import SerialView
 
+
+class HSSIGenericAPIView(GenericAPIView):
+	def get_serializer(self, *args, **kwargs) -> serializers.Serializer:
+		return super().get_serializer(*args, **kwargs)
 
 def serialize_related(obj: Model) -> str | dict[str, Any]:
 	"""Serialize a related object using its serializer or fall back to str()."""
@@ -51,10 +53,11 @@ def serialize_with_relations(obj: Model) -> dict[str, Any]:
 		data[field.name] = getattr(obj, field.name)
 	return data
 
-class SoftwareDetailAPI(GenericAPIView):
+class SoftwareDetailAPI(HSSIGenericAPIView):
 	"""Return a single visible Software record, with optional flat expansion."""
 
 	serializer_class = SoftwareSerializer
+	default_view: SerialView = SerialView.STANDARD
 
 	def get(self, request: HttpRequest, uid: str) -> Response:
 		visible_ids = VerifiedSoftware.objects.values_list("id", flat=True)
@@ -66,7 +69,11 @@ class SoftwareDetailAPI(GenericAPIView):
 		if flat:
 			return Response(serialize_with_relations(software))
 		serializer: SoftwareSerializer = self.get_serializer(software)
+		serializer.default_view = self.default_view
 		return Response(serializer.data)
+
+class SoftwareViewAPI(SoftwareDetailAPI):
+	default_view: SerialView = SerialView.USER
 
 class SoftwareListAPI(APIView):
 	"""Return a list of visible Software IDs with their names."""

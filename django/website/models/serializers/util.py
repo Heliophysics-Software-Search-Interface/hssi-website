@@ -4,13 +4,12 @@ import enum
 from typing import Any
 
 from django.http.request import QueryDict
-from django.db.models import Model
 from rest_framework import serializers
 
 from hssi.camel_case_renderer import JsonSet, decamelize_data
 from ...models import HssiModel
 
-QPARAM_VIEW: str = "view"
+Q_VIEW: str = "view"
 
 class SerialView(enum.IntEnum):
 	STANDARD = 1
@@ -21,17 +20,18 @@ class HssiSerializer(serializers.ModelSerializer):
 	"""Serializer for Software model data."""
 
 	_view: SerialView = None
+	default_view: SerialView = SerialView.STANDARD
 
 	def view(self) -> SerialView:
 		
 		# parse serialview mode
 		if self._view is None:
 			params: QueryDict = self.context["request"].query_params
-			viewstr = params.get(QPARAM_VIEW)
+			viewstr = params.get(Q_VIEW)
 			if viewstr: 
 				self._view = SerialView[viewstr.upper()]
 			else: 
-				self._view = SerialView.STANDARD
+				self._view = self.default_view
 		
 		return self._view
 

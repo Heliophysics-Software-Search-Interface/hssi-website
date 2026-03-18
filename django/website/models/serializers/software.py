@@ -251,8 +251,6 @@ class SoftwareSerializer(HssiSerializer):
 			"@id": item.identifier,
 			"@type": "ScholarlyWork",
 		}
-		if item.name:
-			data["name"] = item.name
 		return data
 
 	def _subject_of(self, instance: Software) -> dict[str, Any] | None:

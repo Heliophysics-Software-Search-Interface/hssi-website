@@ -205,6 +205,9 @@ class HssiModel(models.Model, metaclass=HssiBase):
 
 		return data
 	
+	def to_user_str(self) -> str:
+		return str(self)
+
 	class Meta:
 		abstract = True
 

@@ -3,20 +3,40 @@
 import enum
 from typing import Any
 
+from django.db.models import Model
 from django.http.request import QueryDict
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 
 from hssi.camel_case_renderer import JsonSet, decamelize_data
-from ...models import HssiModel
+from ...models import HssiModel, Software
+
+_MODEL_SERIALIZER_MAP: dict[type[Model], type[ModelSerializer]] = {}
 
 Q_VIEW: str = "view"
+
+def _register_serializers():
+	from ...models import Software
+	from .software import SoftwareSerializer
+
+	serializer_map: dict[type[Model], type[ModelSerializer]] = {
+		Software: SoftwareSerializer
+	}
+
+	for key, val in serializer_map.items():
+		_MODEL_SERIALIZER_MAP[key] = val
+
+def get_registered_serializer(model: type[Model]) -> type[ModelSerializer] | None:
+	"""Get the serializer associated with the specified model."""
+	if not _MODEL_SERIALIZER_MAP:
+		_register_serializers()
+	return _MODEL_SERIALIZER_MAP.get(model)
 
 class SerialView(enum.IntEnum):
 	STANDARD = 1
 	USER = 2
 	JSONLD = 3
 
-class HssiSerializer(serializers.ModelSerializer):
+class HssiSerializer(ModelSerializer):
 	"""Serializer for Software model data."""
 
 	_view: SerialView = None

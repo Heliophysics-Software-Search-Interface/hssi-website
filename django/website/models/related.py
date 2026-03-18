@@ -24,4 +24,11 @@ class RelatedItem(ControlledList):
 	# specified for intellisense, defined automatically by django
 	get_type_display: Callable[[], str]
 	
-	def __str__(self): return f"{self.name} ({self.get_type_display()})"
+	def to_user_str(self):
+		return self.identifier
+
+	def __str__(self): 
+		representation = self.name
+		if representation == "UNKNOWN":
+			representation = self.identifier
+		return f"{self.get_type_display()} - {representation}"

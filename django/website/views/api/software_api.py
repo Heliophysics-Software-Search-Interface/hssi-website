@@ -15,7 +15,6 @@ from rest_framework import serializers
 from rest_framework.generics import GenericAPIView
 
 from ...models import Software, VerifiedSoftware
-from ...models.serializers import MODEL_SERIALIZER_MAP
 from ...models.serializers.software import SoftwareSerializer
 from ...models.serializers.submission import SubmissionSerializer
 from ...models.serializers.util import SerialView
@@ -24,34 +23,6 @@ from ...models.serializers.util import SerialView
 class HSSIGenericAPIView(GenericAPIView):
 	def get_serializer(self, *args, **kwargs) -> serializers.Serializer:
 		return super().get_serializer(*args, **kwargs)
-
-def serialize_related(obj: Model) -> str | dict[str, Any]:
-	"""Serialize a related object using its serializer or fall back to str()."""
-	
-	serializer_cls = MODEL_SERIALIZER_MAP.get(obj.__class__)
-	if serializer_cls:
-		return serializer_cls(obj).data
-	return str(obj)
-
-def serialize_with_relations(obj: Model) -> dict[str, Any]:
-	"""Serialize a model instance with FK/M2M expanded via serializers or str()."""
-
-	data: dict[str, Any] = {}
-	for field in obj._meta.get_fields():
-		if field.auto_created:
-			continue
-		if field.many_to_many and not field.concrete:
-			continue
-		if field.many_to_many:
-			related = getattr(obj, field.name).all()
-			data[field.name] = [serialize_related(item) for item in related]
-			continue
-		if field.many_to_one:
-			related = getattr(obj, field.name)
-			data[field.name] = serialize_related(related) if related else None
-			continue
-		data[field.name] = getattr(obj, field.name)
-	return data
 
 class SoftwareDetailAPI(HSSIGenericAPIView):
 	"""Return a single visible Software record, with optional flat expansion."""
@@ -64,10 +35,6 @@ class SoftwareDetailAPI(HSSIGenericAPIView):
 		software = Software.objects.filter(pk=uid, pk__in=visible_ids).first()
 		if software is None:
 			return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
-		view = request.GET.get("view", "").lower()
-		flat = request.GET.get("flat", "false").lower() == "true" and view != "jsonld"
-		if flat:
-			return Response(serialize_with_relations(software))
 		serializer: SoftwareSerializer = self.get_serializer(software)
 		serializer.default_view = self.default_view
 		return Response(serializer.data)

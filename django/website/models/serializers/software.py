@@ -3,21 +3,75 @@
 from typing import Any, Iterable
 
 from django.http import HttpRequest
+from django.db.models import Model, Manager
 
+from .util import HssiSerializer, get_registered_serializer
 from ..organizations import Organization
 from ..people import Person
 from ..related import RelatedItem, RelatedItemType
 from ..software import Software, SoftwareVersion
 from ..vocab import InstrObsType, InstrumentObservatory
-from .util import HssiSerializer
+from ..base import HssiModel
 from ...admin.fetch_vocab import (
 	URL_DATAINPUTS, URL_SUPPORTEDFILEFORMATS, URL_FUNCTIONCATEGORIES,
 	URL_PHENOMENA,
 )
 
+def serialize_obj_userfriendly(obj: Model) -> str | dict[str, Any]:
+	"""Serialize a model object using its serializer or fall back to str()."""
+	serializer_cls = get_registered_serializer(obj.__class__)
+	if serializer_cls:
+		return serializer_cls(obj).data
+	if isinstance(obj, HssiModel):
+		return obj.to_user_str()
+	return str(obj)
+
+def serialize_with_relations(obj: Model) -> dict[str, Any]:
+	"""Serialize a model instance with FK/M2M expanded via serializers or str()."""
+
+	data: dict[str, Any] = {}
+	for field in obj._meta.get_fields():
+		if field.auto_created:
+			continue
+		if field.many_to_many and not field.concrete:
+			continue
+		if field.many_to_many:
+			related = getattr(obj, field.name).all()
+			data[field.name] = [serialize_obj_userfriendly(item) for item in related]
+			continue
+		if field.many_to_one:
+			related = getattr(obj, field.name)
+			data[field.name] = serialize_obj_userfriendly(related) if related else None
+			continue
+		data[field.name] = getattr(obj, field.name)
+	return data
 
 class SoftwareSerializer(HssiSerializer):
 	"""Serializer for Software model data."""
+
+	def to_representation_user(self, instance) -> dict[str, Any]:
+		"""
+		User friendly view for Software model - serialize all non-null 
+		fields and resolve foreign relations.
+		"""
+		data: dict[str, Any] = super().to_representation_standard(instance)
+		for key, _ in data.items():
+			value = getattr(instance, key)
+			if isinstance(value, Model):
+				data[key] = serialize_obj_userfriendly(value)
+			if isinstance(value, Manager):
+				assert(isinstance(value, Manager))
+				new_value = []
+				for item in value.all():
+					new_item = serialize_obj_userfriendly(item)
+					new_value.append(new_item)
+				data[key] = new_value
+
+		return {
+			key: val 
+			for key, val in data.items()
+			if val
+		}
 
 	def _as_list(self, items: Iterable[Any]) -> list[Any]:
 		return [item for item in items if item is not None]

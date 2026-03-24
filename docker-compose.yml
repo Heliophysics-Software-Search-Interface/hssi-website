@@ -28,7 +28,7 @@ services:
             - GUNICORN_TIMEOUT=3600
 
     website_db:
-        image: postgres
+        image: postgres:17
         container_name: website_db
         environment: 
             - POSTGRES_PASSWORD=$SUPERUSER_PWD

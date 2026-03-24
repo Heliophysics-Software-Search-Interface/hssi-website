@@ -5,7 +5,12 @@ from django.db.models import Model, Manager
 from django.db.models.fields import Field
 from enum import IntEnum
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+	from django.db.models.manager import RelatedManager
+
 SPACE_REPLACE = re.compile(r'[_\-.]')
+SOFTWARE_FUNCAT_FILEPATH = "./software_funcat_map.csv"
 
 class RequirementLevel(IntEnum):
 	OPTIONAL = 0
@@ -68,4 +73,42 @@ def find_database_references(object: Model) -> list[tuple[Model, Field]]:
 					refs.append((rel, field.field))
 			except Exception as e:
 				print(f"could not resolve '{rel_name}' on {str(object)} |", e)
-	return refs
+	return
+
+def export_software_functioncategory_names() -> str:
+	from .models import Software, FunctionCategory
+
+	# find the appropriate field name for different versions of this codebase
+	names = ["softwareName", "software_name"]
+	software_fieldname: str = ""
+	for field in Software._meta.get_fields():
+		if field.name in names:
+			software_fieldname = field.name
+			break
+	
+	names = ["softwareFunctionality", "software_functionality"]
+	category_fieldname: str = ""
+	for field in Software._meta.get_fields():
+		if field.name in names:
+			category_fieldname = field.name
+			break
+
+	software_funcat_map: dict[str, set[str]] = {}
+	for software in Software.objects.all():
+		name = getattr(software, software_fieldname)
+		funcats: RelatedManager[FunctionCategory] = getattr(software, category_fieldname)
+		if not name in software_funcat_map:
+			software_funcat_map[name] = set()
+		for funcat in funcats.all():
+			software_funcat_map[name].add(funcat.get_name_path().replace("->", ": "))
+	
+	output: str = ""
+	for software_name, funcat_fullnames in software_funcat_map.items():
+		namelist = ""
+		for funcat_fullname in funcat_fullnames:
+			namelist += f"{funcat_fullname},"
+		output += f"{software_name}={namelist[:-1]}\n"
+
+	with open(SOFTWARE_FUNCAT_FILEPATH, 'w') as file:
+		file.write(output)
+	return output

@@ -147,8 +147,8 @@ def import_software_functioncategory_names(data: str = None):
 
 		funcats: list[FunctionCategory] = []
 		for funcat_name in funcat_names:
-			# TODO get function category by full name path
-			pass
+			funcat = FunctionCategory.get_object_with_full_name(funcat_name)
+			funcats.append(funcat)
 
 		for funcat in funcats:
 			field: RelatedManager[FunctionCategory] = getattr(software, category_fieldname)

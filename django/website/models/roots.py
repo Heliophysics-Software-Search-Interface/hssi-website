@@ -291,6 +291,34 @@ class ControlledGraphList(ControlledList):
 	def get_parent_nodes(cls) -> models.QuerySet['ControlledGraphList']:
 		''' Returns all objects that have at least one child '''
 		return cls.objects.filter(children__isnull=False).distinct().order_by("name")
+
+	@classmethod
+	def get_object_with_full_name(cls, full_name: str) -> 'ControlledGraphList':
+
+		split_name = full_name.split(": ")
+
+		# set root parent to root object with same subname as first 
+		# part of fullname
+		name_query = cls.objects.filter(name=split_name[0]).filter(parent_nodes__isnull=True)
+		parent: 'ControlledGraphList' = name_query.first()
+
+		# go through subnames sequentially finding a match with the same 
+		# parent from the previous iteration
+		for subname in split_name[1:]:
+			name_query = cls.objects.filter(name=subname)
+			parent_changed = False
+			for obj in name_query:
+				if obj.parent_nodes.contains(parent):
+					parent = obj
+					parent_changed = True
+					break
+			if not parent_changed:
+				raise Exception(
+					f"Invalid full name '{full_name}', " +
+					f"resolution failed at '{subname}'"
+				)
+		
+		return parent
 	
 	def get_name_path(self) -> str:
 		""" get a path of all parents recursively pointing to this one """

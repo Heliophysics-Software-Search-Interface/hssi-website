@@ -8,8 +8,9 @@ from sortedm2m.fields import SortedManyToManyField
 from enum import IntEnum
 
 if typing.TYPE_CHECKING:
-	from django.db.models.manager import ManyToManyRelatedManager
+	from django.db.models.manager import ManyToManyRelatedManager, RelatedManager
 
+SOFTWARE_FUNCAT_FILEPATH = "./software_funcat_map.csv"
 SPACE_REPLACE = re.compile(r'[_\-.]')
 PARENTHESIS_MATCH = re.compile(r"\(([^)]*)\)")
 
@@ -138,3 +139,89 @@ def replace_database_references(old_object: Model, new_object: Model, unique_map
 				
 		else: setattr(refobj, field.name, new_object)
 		print(f"updated field '{refobj}->{field.name}'")
+
+def export_software_functioncategory_names() -> str:
+	from .models import Software, FunctionCategory
+
+	# find the appropriate field name for different versions of this codebase
+	names = ["softwareName", "software_name"]
+	software_fieldname: str = ""
+	for field in Software._meta.get_fields():
+		if field.name in names:
+			software_fieldname = field.name
+			break
+	
+	names = ["softwareFunctionality", "software_functionality"]
+	category_fieldname: str = ""
+	for field in Software._meta.get_fields():
+		if field.name in names:
+			category_fieldname = field.name
+			break
+
+	software_funcat_map: dict[str, set[str]] = {}
+	for software in Software.objects.all():
+		name = getattr(software, software_fieldname)
+		funcats: RelatedManager[FunctionCategory] = getattr(software, category_fieldname)
+		if not name in software_funcat_map:
+			software_funcat_map[name] = set()
+		for funcat in funcats.all():
+			software_funcat_map[name].add(funcat.get_name_path().replace("->", ": "))
+	
+	output: str = ""
+	for software_name, funcat_fullnames in software_funcat_map.items():
+		namelist = ""
+		for funcat_fullname in funcat_fullnames:
+			namelist += f"{funcat_fullname},"
+		output += f"{software_name}={namelist[:-1]}\n"
+
+	with open(SOFTWARE_FUNCAT_FILEPATH, 'w') as file:
+		file.write(output)
+	return output
+
+@transaction.atomic
+def import_software_functioncategory_names(data: str = None):
+	from .models import Software, FunctionCategory
+
+	if data is None:
+		with open(SOFTWARE_FUNCAT_FILEPATH, 'r') as file:
+			data = file.read()
+		
+	# find the appropriate field name for different versions of this codebase
+	names = ["softwareName", "software_name"]
+	software_fieldname: str = ""
+	for field in Software._meta.get_fields():
+		if field.name in names:
+			software_fieldname = field.name
+			break
+	
+	names = ["softwareFunctionality", "software_functionality"]
+	category_fieldname: str = ""
+	for field in Software._meta.get_fields():
+		if field.name in names:
+			category_fieldname = field.name
+			break
+	
+	lines = data.splitlines()
+	for line in lines:
+		software_name, line_data = line.split("=")
+		funcat_names = line_data.split(",")
+
+		kwargs = { software_fieldname: software_name }
+		software = Software.objects.get(**kwargs)
+
+		funcats: list[FunctionCategory] = []
+		for funcat_name in funcat_names:
+			if not funcat_name.strip(): 
+				continue
+			funcat = FunctionCategory.get_object_with_full_name(funcat_name)
+			if not funcat:
+				raise Exception(
+					f"Function category not found: '{funcat_name}' for software '{software_name}'"
+				)
+			funcats.append(funcat)
+
+		for funcat in funcats:
+			field: RelatedManager[FunctionCategory] = getattr(software, category_fieldname)
+			field.add(funcat)
+		
+		software.save()

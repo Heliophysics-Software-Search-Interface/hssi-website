@@ -74,7 +74,7 @@ def find_database_references(object: Model) -> list[tuple[Model, Field]]:
 					refs.append((rel, field.field))
 			except Exception as e:
 				print(f"could not resolve '{rel_name}' on {str(object)} |", e)
-	return
+	return refs
 
 def export_software_functioncategory_names() -> str:
 	from .models import Software, FunctionCategory
@@ -147,7 +147,13 @@ def import_software_functioncategory_names(data: str = None):
 
 		funcats: list[FunctionCategory] = []
 		for funcat_name in funcat_names:
+			if not funcat_name.strip(): 
+				continue
 			funcat = FunctionCategory.get_object_with_full_name(funcat_name)
+			if not funcat:
+				raise Exception(
+					f"Function category not found: '{funcat_name}' for software '{software_name}'"
+				)
 			funcats.append(funcat)
 
 		for funcat in funcats:

@@ -3,6 +3,7 @@ import uuid, re
 from django.contrib.auth.models import AbstractUser, AnonymousUser
 from django.db.models import Model, Manager
 from django.db.models.fields import Field
+from django.db.transaction import atomic
 from enum import IntEnum
 
 from typing import TYPE_CHECKING
@@ -112,3 +113,46 @@ def export_software_functioncategory_names() -> str:
 	with open(SOFTWARE_FUNCAT_FILEPATH, 'w') as file:
 		file.write(output)
 	return output
+
+@atomic
+def import_software_functioncategory_names(data: str = None):
+	from .models import Software, FunctionCategory
+
+	if data is None:
+		with open(SOFTWARE_FUNCAT_FILEPATH, 'r') as file:
+			data = file.read()
+		
+	# find the appropriate field name for different versions of this codebase
+	names = ["softwareName", "software_name"]
+	software_fieldname: str = ""
+	for field in Software._meta.get_fields():
+		if field.name in names:
+			software_fieldname = field.name
+			break
+	
+	names = ["softwareFunctionality", "software_functionality"]
+	category_fieldname: str = ""
+	for field in Software._meta.get_fields():
+		if field.name in names:
+			category_fieldname = field.name
+			break
+	
+	lines = data.splitlines()
+	for line in lines:
+		software_name, line_data = line.split("=")
+		funcat_names = line_data.split(",")
+
+		kwargs = { software_fieldname: software_name }
+		software = Software.objects.get(**kwargs)
+
+		funcats: list[FunctionCategory] = []
+		for funcat_name in funcat_names:
+			# TODO get function category by full name path
+			pass
+
+		for funcat in funcats:
+			field: RelatedManager[FunctionCategory] = getattr(software, category_fieldname)
+			field.add(funcat)
+		
+		software.save()
+		

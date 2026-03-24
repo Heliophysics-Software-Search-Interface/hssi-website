@@ -54,6 +54,8 @@
             <a href="{{ software.persistent_identifier }}" class="action-btn btn-doi" target="_blank">
                 <i class="fa fa-link"></i> DOI
             </a>
+            {% endif %}
+            {% if software.persistent_identifier or software.reference_publication and software.reference_publication.identifier %}
             <button class="action-btn btn-cite" id="cite-me-btn">
                 <i class="fa fa-quote-left"></i> Cite Me
             </button>
@@ -62,13 +64,12 @@
     </div>
 
     <!-- Citation Section -->
-    {% if software.persistent_identifier %}
-    <details class="software-section citation-section citation-hidden" open data-doi="{{ software.persistent_identifier }}"{% if software.reference_publication and software.reference_publication.identifier %} data-ref-doi="{{ software.reference_publication.identifier }}"{% endif %}>
+    {% if software.persistent_identifier or software.reference_publication and software.reference_publication.identifier %}
+    <details class="software-section citation-section citation-hidden" open {% if software.persistent_identifier %}data-doi="{{ software.persistent_identifier }}"{% endif %}{% if software.reference_publication and software.reference_publication.identifier %} data-ref-doi="{{ software.reference_publication.identifier }}"{% endif %}>
         <summary class="section-title">Citation</summary>
         <p class="citation-notice" id="citation-notice"></p>
-        {% if software.reference_publication and software.reference_publication.identifier %}
+        {% if software.persistent_identifier %}
         <h3 class="citation-subheader">Software</h3>
-        {% endif %}
         <div class="citation-text" id="citation-text-software">
             <div class="citation-skeleton">
                 <div class="skeleton-line"></div>
@@ -76,6 +77,7 @@
                 <div class="skeleton-line" style="width: 75%"></div>
             </div>
         </div>
+        {% endif %}
         {% if software.reference_publication and software.reference_publication.identifier %}
         <h3 class="citation-subheader">Reference Publication</h3>
         <div class="citation-text" id="citation-text-refpub">
@@ -101,12 +103,16 @@
                 <option value="science">Science</option>
                 <option value="vancouver">Vancouver</option>
             </select>
+            {% if software.persistent_identifier %}
             <button id="citation-copy-software" class="citation-copy-btn" title="Copy citation to clipboard">
                 <i class="fa fa-copy"></i>
             </button>
-            <button id="citation-copy-refpub" class="citation-copy-btn" style="display:none" title="Copy reference publication citation to clipboard">
+            {% endif %}
+            {% if software.reference_publication and software.reference_publication.identifier %}
+            <button id="citation-copy-refpub" class="citation-copy-btn" {% if software.persistent_identifier %}style="display:none"{% endif %} title="Copy reference publication citation to clipboard">
                 <i class="fa fa-copy"></i>
             </button>
+            {% endif %}
         </div>
     </details>
     {% endif %}
@@ -679,14 +685,15 @@ document.querySelectorAll('details.software-section').forEach(details => {
 });
 </script>
 
-{% if software.persistent_identifier %}
+{% if software.persistent_identifier or software.reference_publication and software.reference_publication.identifier %}
 <script>
 (function() {
     var section = document.querySelector('.citation-section');
     if (!section) return;
 
-    var doi = section.dataset.doi;
+    var doi = section.dataset.doi || '';
     var refDoi = section.dataset.refDoi || '';
+    var hasDoi = doi.indexOf('https://doi.org/') === 0;
     var hasRefDoi = refDoi.indexOf('https://doi.org/') === 0;
     var softwareEl = document.getElementById('citation-text-software');
     var refpubEl = document.getElementById('citation-text-refpub');
@@ -694,18 +701,20 @@ document.querySelectorAll('details.software-section').forEach(details => {
     var copySoftwareBtn = document.getElementById('citation-copy-software');
     var copyRefpubBtn = document.getElementById('citation-copy-refpub');
 
-    var showRefPub = refpubEl && hasRefDoi;
+    var showBoth = hasDoi && refpubEl && hasRefDoi;
     var noticeEl = document.getElementById('citation-notice');
 
     function updateNotice(style) {
-        var text = showRefPub
+        var text = showBoth
             ? 'Citations are generated from the DOIs stored on this page.'
             : 'Citation is generated from the DOI stored on this page.';
-        text += ' If no version is shown, consider adding the version you used.';
-        if (showRefPub) {
+        if (hasDoi) {
+            text += ' If no version is shown, consider adding the version you used.';
+        }
+        if (showBoth) {
             text += ' For complete attribution, please cite both the software and the reference publication.';
         }
-        if (style === 'bibtex') {
+        if (hasDoi && style === 'bibtex') {
             text += ' Note: BibTeX entries may use @book\u2014change this to @misc or @software if needed.';
         }
         noticeEl.textContent = text;
@@ -713,21 +722,20 @@ document.querySelectorAll('details.software-section').forEach(details => {
 
     updateNotice(styleSelect.value);
 
-    if (showRefPub) {
+    if (showBoth) {
         // Show both copy buttons with specific titles
-        copySoftwareBtn.title = 'Copy software citation to clipboard';
-        copyRefpubBtn.style.display = '';
-    } else if (refpubEl) {
-        // Hide ref pub subheader, text, and copy button
-        refpubEl.style.display = 'none';
-        var refHeader = refpubEl.previousElementSibling;
-        if (refHeader && refHeader.classList.contains('citation-subheader')) {
-            refHeader.style.display = 'none';
+        if (copySoftwareBtn) copySoftwareBtn.title = 'Copy software citation to clipboard';
+        if (copyRefpubBtn) copyRefpubBtn.style.display = '';
+    } else {
+        // Single citation - hide subheaders
+        var headers = section.querySelectorAll('.citation-subheader');
+        for (var i = 0; i < headers.length; i++) {
+            headers[i].style.display = 'none';
         }
-        // Also hide the Software subheader since there's only one citation
-        var swHeader = softwareEl.previousElementSibling;
-        if (swHeader && swHeader.classList.contains('citation-subheader')) {
-            swHeader.style.display = 'none';
+        // If ref pub identifier is not a valid DOI, hide its elements
+        if (refpubEl && !hasRefDoi) {
+            refpubEl.style.display = 'none';
+            if (copyRefpubBtn) copyRefpubBtn.style.display = 'none';
         }
     }
 
@@ -773,7 +781,9 @@ document.querySelectorAll('details.software-section').forEach(details => {
     }
 
     function fetchAll(style) {
-        fetchOne(softwareEl, doi, style);
+        if (softwareEl && hasDoi) {
+            fetchOne(softwareEl, doi, style);
+        }
         if (refpubEl && hasRefDoi) {
             fetchOne(refpubEl, refDoi, style);
         }
@@ -801,13 +811,17 @@ document.querySelectorAll('details.software-section').forEach(details => {
         });
     }
 
-    copySoftwareBtn.addEventListener('click', function() {
-        copyToClipboard(this, softwareEl.innerText, this.title);
-    });
+    if (copySoftwareBtn) {
+        copySoftwareBtn.addEventListener('click', function() {
+            copyToClipboard(this, softwareEl.innerText, this.title);
+        });
+    }
 
-    copyRefpubBtn.addEventListener('click', function() {
-        copyToClipboard(this, refpubEl.innerText, this.title);
-    });
+    if (copyRefpubBtn) {
+        copyRefpubBtn.addEventListener('click', function() {
+            copyToClipboard(this, refpubEl.innerText, this.title);
+        });
+    }
 
     // "Cite Me" button toggles visibility
     var citeBtn = document.getElementById('cite-me-btn');

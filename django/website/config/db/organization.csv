@@ -100,8 +100,8 @@ d4d7c0b4-1b68-436f-a169-031ae149b8e0,FHNW - University of Applied Sciences and A
 d04ed982-2b68-4d3b-bafe-a10f6b7a757a,General Dynamics Mission Systems,,,
 4d1bd815-22e8-426d-873a-9b6a6e00a419,"General Dynamics Mission Systems, USA",,,
 9ee3b8bd-e4b6-4976-9627-4dcd47456e6c,Geological Survey of Brazil,,,
-87ea06e9-fcd0-49d1-b778-05e619dc9a4d,George Mason University,,,
 7346a46c-3533-44cd-9c67-a7de3bf03154,George Mason University,,,https://ror.org/02jqj7156
+87ea06e9-fcd0-49d1-b778-05e619dc9a4d,George Mason University,,,
 769bd68e-41d6-46fd-bde6-4ef0deceece1,Georgia State University,,,https://ror.org/03qt6ba18
 e2c7305c-946e-4641-9c87-1903d7ade6bf,GFD Dennou Club,,,
 fa398bca-d28b-40f7-aac6-1bdf20e2ffe8,GFZ German Research Centre for Geosciences,,,
@@ -109,13 +109,14 @@ fa398bca-d28b-40f7-aac6-1bdf20e2ffe8,GFZ German Research Centre for Geosciences,
 974802bb-aabb-4985-9e95-6463c41146c8,GitHub,,,https://github.com
 dc6c2150-6844-42e9-90a7-0335e23f11f1,GitLab,,,
 2d166605-828d-4139-a898-c6a880c9dab1,GitLab,,,https://gitlab.com
-9325befb-4aff-470d-8fe0-fcc4d8f05094,Goddard Space Flight Center,,,
 18c9dfcc-f7fb-4194-8542-a8d3aa9ab2ff,Goddard Space Flight Center,,,
+9325befb-4aff-470d-8fe0-fcc4d8f05094,Goddard Space Flight Center,,,
 464b27d6-7ee3-410b-8697-87de0425e7e7,"Graphic Era (Deemed to be University), Dehradun",,,
 a0bf0952-5597-43f5-aed6-67d1c3dfb591,Harvard-Smithsonian Center for Astrophysics,,,
 e63d6755-8e8e-4959-9c82-f16a5ba0b4f5,Heliophysics Data and Modeling Consortium,,,https://ror.org/04xbq1n92
 4d4dd0ac-e1e3-43e1-ae4f-cdafb2dc4a5d,Heliophysics Science Division,,,https://ror.org/03myraf72
 a0407616-8d8d-4786-836f-fefa0a891fd2,https://orcid.org/0000-0001-5270-7487,,,https://orcid.org/0000-0001-5270-7487
+234b6aa8-162b-4556-9005-a4fc55a5a7b9,https://zenodo.org/records/18494048,,,https://zenodo.org/records/18494048
 42801146-472b-4d81-91f0-b30eab2819cc,IDRIS - CNRS,,,
 5b67bb43-a51c-42c3-b0dd-04a682363ca8,IEAP University Kiel,,,
 c9d60937-2e24-4752-84c3-2dff25ffe195,IIT Kharagpur,,,
@@ -158,8 +159,8 @@ b242cb07-2bcb-4afe-ba5e-e89ae812899d,Laboratory for Atmospheric and Space Physic
 3252589a-dcc2-4561-8cd6-2b07bd53217f,"Latchmoor Services, LLC",,,
 6ba02d70-7896-484c-8b8b-fab0ba7b5c36,Leibniz Institute for Astrophysics Potsdam,,,
 f39019aa-9a3f-4aca-83c1-5d99e4bb36d6,Lockheed Martin Solar and Astrophysics Laboratory,,,
-e03ba528-f640-46c1-a1bb-e1a68eea4f0a,Lockheed Martin Solar and Astrophysics Laboratory (LMSAL),,,
 4f9f3717-12d6-45c4-bdff-d991d2ac6192,Lockheed Martin Solar and Astrophysics Laboratory (LMSAL),,,
+e03ba528-f640-46c1-a1bb-e1a68eea4f0a,Lockheed Martin Solar and Astrophysics Laboratory (LMSAL),,,
 d402d7df-3761-492c-ab7f-90226678a25c,Los Alamos National Laboratory,,,https://ror.org/01e41cf67
 788eabe0-ace5-4894-a00f-4a6f85a6846a,"Madhav Institute of Technology & Science, Gwalior",,,
 b5c60d33-da63-42e9-8f8e-8a59ff177a8a,Manav Rachna University,,,
@@ -227,8 +228,8 @@ f6f529b5-f0e0-4126-b1c3-73b08d064ad1,SETI Institute & LMSAL,,,
 eeb98e70-f24e-438d-a1b4-22323da1a6ec,Smithsonian Astrophysical Observatory,,,https://ror.org/04mh52z70
 fe429ea7-35f7-4baa-b115-7c8a85bc7bd1,Smithsonian Institution,,,https://ror.org/01pp8nd67
 4212d68b-a33e-467b-b455-01a7e6a94acb,Solar Orbiter/SPICE,,,
-7d4f0f58-8d42-4a8d-a6bb-94821a2079f3,Southwest Research Institute,,,https://ror.org/03tghng59
 4c1fcf27-212f-4daa-a461-d8efeb0b03b8,Southwest Research Institute,,,
+7d4f0f58-8d42-4a8d-a6bb-94821a2079f3,Southwest Research Institute,,,https://ror.org/03tghng59
 96b3c1ef-e2f5-45df-8dc5-0d47a7422f86,"Southwest Research Institute, USA",,,
 04ece721-a0c0-42fc-acda-464ceda290ac,"Southwest Research Institute, USA",,,
 ca4f1e4d-41f2-43fa-800b-bf65fc3af244,"SP2RC, School of Mathematics and Statistics, University of Sheffield",,,
@@ -258,8 +259,8 @@ fdb29050-11b5-4b28-bdc0-da1dfc59aaba,Trinity College Dublin & Dublin Institute f
 9dff558b-5a6a-4491-b98d-0a92267b87f7,UCL-ARC,,,
 6ade9b08-e66f-4c97-a1e7-42274ec78bba,United States Department of Energy,,,https://ror.org/01bj3aw27
 95b9b2de-978d-4925-b8a4-af5ab96b746f,United States Naval Research Laboratory,,,
-fda070ab-2cf9-496e-be32-cf6ac1928735,University College London,,,https://ror.org/02jx3x895
 91d3186c-aa2c-4ac5-8a37-ede6f58d09b0,University College London,,,
+fda070ab-2cf9-496e-be32-cf6ac1928735,University College London,,,https://ror.org/02jx3x895
 e618005a-6ad1-4c05-b032-59a1d0222fc9,"University College London, Mullard Space Science Laboratory (UCL/MSSL)",,,
 19ecb440-d144-4669-bc8d-8a3c6ebf4fad,University of Alabama,,,
 c436f54b-37b5-4079-841e-5f806c4fbf2b,University of Alaska Fairbanks,,,
@@ -278,13 +279,13 @@ d6db5f01-5945-49e6-bf41-8758dae049db,University of Colorado Boulder,,,https://ro
 a413f94e-2313-4048-a58c-516aa71195bf,University of Colorado / LASP,,,
 958d4923-78bc-40e3-a8d8-1498fcd22f49,University of Delaware,,,
 ef128171-a4b0-4cc6-9bd7-409d0b326874,University of Edinburgh,,,https://ror.org/01nrxwf90
-a3f9b623-f817-4cef-872e-7df991087a57,University of Exeter,,,
 20ba9dca-cea6-4454-81c6-b546e6ae5a53,University of Exeter,,,https://ror.org/03yghzc09
+a3f9b623-f817-4cef-872e-7df991087a57,University of Exeter,,,
 ac335768-52e9-454a-870f-f702633c1a18,University of Glasgow,,,
 c6a6ef8a-9408-4b65-9d0f-7985f790e094,University of Hawaii at Manoa,,,https://ror.org/01wspgy28
 6e44f0c5-16b1-42b1-a3a6-dab766ea8eea,University of Hawaii at Manoa,,,
-da5c640b-d782-47a2-8d81-16d9a8cce129,University of Hong Kong & University of London,,,
 2064d2e3-08fd-4666-8298-8df0e497f3f3,University of Hong Kong & University of London,,,
+da5c640b-d782-47a2-8d81-16d9a8cce129,University of Hong Kong & University of London,,,
 280d57d7-1b35-4bf3-b280-7a61aca6c404,University of Iowa,,,
 ba4a74e7-9a05-478d-a5f1-3b45afe92d94,University of Leeds,,,https://ror.org/024mrxd33
 398db147-74a8-47ec-bc2b-3c63c81570c6,University of Massachusetts Amherst,,,

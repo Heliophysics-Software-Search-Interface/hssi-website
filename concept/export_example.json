@@ -209,12 +209,14 @@
       {
         "@id": "https://doi.org/10.48322/asmp-nf13",
         "@type": "Dataset",
-        "description": "relatedDatasets",
+        "name": "Related Dataset",
+        "description": "Dataset related to the software described in this metadata",
         "url": "https://doi.org/10.48322/asmp-nf13"
       },        
       {
         "@type": "Dataset",
-        "description": "relatedDatasets",
+        "name": "Related Dataset",
+        "description": "Dataset related to the software described in this metadata",
         "disambiguatingDescription": "Fuselier et al. (2022). MMS 4 Hot Plasma Composition Analyzer (HPCA) Ions, Level 2 (L2), Burst Mode, 0.625 s Data [Data set]. NASA Space Physics Data Facility."
       },  
       {

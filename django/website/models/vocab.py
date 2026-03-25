@@ -67,30 +67,16 @@ class RepoStatus(ControlledList):
 class ProgrammingLanguage(ControlledList):
 	"""Primary Programming language used to develop the software"""
 	access = AccessLevel.PUBLIC
+	homepage_filter_field = "programming_language"
 	version = models.CharField(max_length=LEN_NAME, blank=True, null=True)
-
-	def get_homepage_filter_url(self) -> str:
-		from django.urls import reverse
-		return (
-			reverse("website:published_resources")
-			+ "?"
-			+ build_software_filter_query("programming_language", self.id)
-		)
 
 	def __str__(self): return self.name + (f" {self.version}" if self.version else "")
 
 class DataInput(ControlledList):
 	"""Ways that the software can accept data as input"""
 	access = AccessLevel.PUBLIC
+	homepage_filter_field = "data_sources"
 	abbreviation = models.CharField(max_length=LEN_ABBREVIATION, blank=True, null=True)
-
-	def get_homepage_filter_url(self) -> str:
-		from django.urls import reverse
-		return (
-			reverse("website:published_resources")
-			+ "?"
-			+ build_software_filter_query("data_sources", self.id)
-		)
 
 	def __str__(self): return self.name
 
@@ -124,6 +110,7 @@ class InstrumentObservatory(ControlledList):
 
 class FunctionCategory(ControlledGraphList):
 	access = AccessLevel.PUBLIC
+	homepage_filter_field = "software_functionality"
 	abbreviation = models.CharField(max_length=5, null=True, blank=True)
 	backgroundColor = RGBColorField("Background Color", default="#FFFFFF", blank=True, null=True)
 	textColor = RGBColorField("Text Color", default="#000000", blank=True, null=True)
@@ -149,14 +136,6 @@ class FunctionCategory(ControlledGraphList):
 			choice_name,
 			self.get_search_terms(),
 			self.get_tooltip(),
-		)
-
-	def get_homepage_filter_url(self) -> str:
-		from django.urls import reverse
-		return (
-			reverse("website:published_resources")
-			+ "?"
-			+ build_software_filter_query("software_functionality", self.id)
 		)
 
 	@classmethod
@@ -219,21 +198,14 @@ class FunctionCategory(ControlledGraphList):
 class Region(ControlledGraphList):
 	"""Region of the sun which relates to the software"""
 	access = AccessLevel.PUBLIC
-	
+	homepage_filter_field = "related_region"
+
 	children = models.ManyToManyField(
 		'self',
 		blank=True,
 		related_name='parent_nodes',
 		symmetrical=False,
 	)
-
-	def get_homepage_filter_url(self) -> str:
-		from django.urls import reverse
-		return (
-			reverse("website:published_resources")
-			+ "?"
-			+ build_software_filter_query("related_region", self.id)
-		)
 
 	@classmethod
 	def post_fetch(cls):

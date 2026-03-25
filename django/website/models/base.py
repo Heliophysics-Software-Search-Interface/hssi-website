@@ -261,13 +261,25 @@ class ControlledList(HssiModel):
 
 	def get_tooltip(self): return self.definition
 
+	homepage_filter_field: str | None = None
+
+	def get_homepage_filter_url(self) -> str | None:
+		if self.homepage_filter_field is None:
+			return None
+		from django.urls import reverse
+		return (
+			reverse("website:published_resources")
+			+ "?"
+			+ build_software_filter_query(self.homepage_filter_field, self.id)
+		)
+
 	def get_search_terms(self) -> list[str]:
 		return [
 			*self.name
 				.replace(',',' ')
 				.replace(';',' ')
 				.replace(':',' ')
-				.split(), 
+				.split(),
 			self.identifier if self.identifier else '',
 		]
 

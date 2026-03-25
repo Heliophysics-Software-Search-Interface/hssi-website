@@ -303,7 +303,10 @@
                     <span class="metadata-label">Data Sources</span>
                     <span class="metadata-value">
                         {% for ds in software.data_sources.all %}
-                        <span class="tag">{{ ds.name }}</span>
+                        <a href="{{ ds.get_homepage_filter_url }}"
+                           class="tag"
+                           title="View software filtered by {{ ds.name }}"
+                           aria-label="View software filtered by {{ ds.name }}">{{ ds.name }}</a>
                         {% endfor %}
                     </span>
                 </div>

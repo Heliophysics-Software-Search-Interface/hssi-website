@@ -84,6 +84,14 @@ class DataInput(ControlledList):
 	access = AccessLevel.PUBLIC
 	abbreviation = models.CharField(max_length=LEN_ABBREVIATION, blank=True, null=True)
 
+	def get_homepage_filter_url(self) -> str:
+		from django.urls import reverse
+		return (
+			reverse("website:published_resources")
+			+ "?"
+			+ build_software_filter_query("data_sources", self.id)
+		)
+
 	def __str__(self): return self.name
 
 class FileFormat(ControlledList):

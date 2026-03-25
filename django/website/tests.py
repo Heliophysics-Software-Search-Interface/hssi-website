@@ -2,11 +2,28 @@ import uuid
 
 from django.test import SimpleTestCase
 
-from .models import FunctionCategory, ProgrammingLanguage, Region
+from .models import DataInput, FunctionCategory, ProgrammingLanguage, Region
 from .util import build_software_filter_query, shorten_software_filter_value
 
 
 class SoftwareFilterEncodingTests(SimpleTestCase):
+	def test_data_source_token_matches_frontend_encoding(self):
+		data_source_id = uuid.UUID("a1f8de3a-1bde-4995-94e5-e88e841a62a6")
+		self.assertEqual(
+			shorten_software_filter_value("data_sources", data_source_id),
+			"ofjeOhvds",
+		)
+
+	def test_data_source_homepage_filter_url(self):
+		data_source = DataInput(
+			id=uuid.UUID("a1f8de3a-1bde-4995-94e5-e88e841a62a6"),
+			name="HAPI",
+		)
+		self.assertEqual(
+			data_source.get_homepage_filter_url(),
+			f"/?{build_software_filter_query('data_sources', data_source.id)}",
+		)
+
 	def test_region_token_matches_frontend_encoding(self):
 		region_id = uuid.UUID("b450b02c-ac3e-466e-b3a1-70040b169562")
 		self.assertEqual(

@@ -16,6 +16,7 @@ SPACE_REPLACE = re.compile(r'[_\-.]')
 PARENTHESIS_MATCH = re.compile(r"\(([^)]*)\)")
 FILTER_URL_UID_ENCODE_LENGTH = 7
 SOFTWARE_FILTER_FIELD_PARAM_MAP = {
+	"data_sources": "ds",
 	"programming_language": "p",
 	"related_region": "r",
 	"software_functionality": "f",

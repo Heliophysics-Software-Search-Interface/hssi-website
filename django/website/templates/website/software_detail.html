@@ -229,7 +229,10 @@
                     <span class="metadata-label">Programming Languages</span>
                     <span class="metadata-value">
                         {% for lang in software.programming_language.all %}
-                        <span class="tag">{{ lang.name }}</span>
+                        <a href="{{ lang.get_homepage_filter_url }}"
+                           class="tag"
+                           title="View software filtered by {{ lang.name }}"
+                           aria-label="View software filtered by {{ lang.name }}">{{ lang.name }}</a>
                         {% endfor %}
                     </span>
                 </div>

@@ -69,6 +69,14 @@ class ProgrammingLanguage(ControlledList):
 	access = AccessLevel.PUBLIC
 	version = models.CharField(max_length=LEN_NAME, blank=True, null=True)
 
+	def get_homepage_filter_url(self) -> str:
+		from django.urls import reverse
+		return (
+			reverse("website:published_resources")
+			+ "?"
+			+ build_software_filter_query("programming_language", self.id)
+		)
+
 	def __str__(self): return self.name + (f" {self.version}" if self.version else "")
 
 class DataInput(ControlledList):

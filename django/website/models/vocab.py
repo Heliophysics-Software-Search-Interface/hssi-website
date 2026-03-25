@@ -135,6 +135,14 @@ class FunctionCategory(ControlledGraphList):
 			self.get_tooltip(),
 		)
 
+	def get_homepage_filter_url(self) -> str:
+		from django.urls import reverse
+		return (
+			reverse("website:published_resources")
+			+ "?"
+			+ build_software_filter_query("software_functionality", self.id)
+		)
+
 	@classmethod
 	def post_fetch(cls):
 		super().post_fetch()

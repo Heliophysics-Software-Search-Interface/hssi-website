@@ -208,10 +208,13 @@
             <summary class="section-title">Functionality</summary>
             <div class="functionality-tags">
                 {% for func in software.software_functionality.all %}
-                <span class="tag functionality-tag"
-                      style="background-color: {{ func.backgroundColor }}; color: {{ func.textColor }}">
+                <a href="{{ func.get_homepage_filter_url }}"
+                   class="tag functionality-tag"
+                   title="View software filtered by {{ func.name }}"
+                   aria-label="View software filtered by {{ func.name }}"
+                   style="background-color: {{ func.backgroundColor }}; color: {{ func.textColor }}">
                     {{ func.name }}
-                </span>
+                </a>
                 {% endfor %}
             </div>
         </details>

@@ -407,17 +407,16 @@
                     <span class="metadata-label">Related Regions</span>
                     <span class="metadata-value">
                         {% for reg in software.related_region.all %}
-                        {% if reg.identifier %}
-                        <a class="tag" href="{{ reg.identifier }}" target="_blank">
+                        <a href="{{ reg.get_homepage_filter_url }}"
+                           class="tag"
+                           title="View software filtered by {{ reg.name }}"
+                           aria-label="View software filtered by {{ reg.name }}">
                             {% if reg.name and reg.name != "UNKNOWN" %}
                             {{ reg.name }}
                             {% else %}
                             {{ reg.identifier }}
                             {% endif %}
                         </a>
-                        {% else %}
-                        <span class="tag">{{ reg.name }}</span>
-                        {% endif %}
                         {% endfor %}
                     </span>
                 </div>

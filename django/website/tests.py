@@ -2,11 +2,28 @@ import uuid
 
 from django.test import SimpleTestCase
 
-from .models import FunctionCategory, ProgrammingLanguage
+from .models import FunctionCategory, ProgrammingLanguage, Region
 from .util import build_software_filter_query, shorten_software_filter_value
 
 
 class SoftwareFilterEncodingTests(SimpleTestCase):
+	def test_region_token_matches_frontend_encoding(self):
+		region_id = uuid.UUID("b450b02c-ac3e-466e-b3a1-70040b169562")
+		self.assertEqual(
+			shorten_software_filter_value("related_region", region_id),
+			"tFCwLKwr",
+		)
+
+	def test_region_homepage_filter_url(self):
+		region = Region(
+			id=uuid.UUID("b450b02c-ac3e-466e-b3a1-70040b169562"),
+			name="Earth Magnetosphere",
+		)
+		self.assertEqual(
+			region.get_homepage_filter_url(),
+			f"/?{build_software_filter_query('related_region', region.id)}",
+		)
+
 	def test_programming_language_token_matches_frontend_encoding(self):
 		language_id = uuid.UUID("1b6ddaa6-6885-46b3-b59a-ea119e61bd74")
 		self.assertEqual(

@@ -2,8 +2,8 @@
 	{
 		"authors": [
 			{
-				"firstName": "Isaiah",  #First name and last name are combined on the submission form. Combine here too?
-				"lastName": "Smith",
+				"givenName": "Isaiah",  
+				"familyName": "Smith",
 				"identifier": "https://orcid.org/0009-0001-1713-2830",
 				"affiliation": [
 					{
@@ -17,8 +17,8 @@
 				]
 			},
 			{
-				"firstName": "Shawn",  #First name and last name are combined on the submission form. Combine here too?
-				"lastName": "Polson",
+				"givenName": "Shawn", 
+				"familyName": "Polson",
 				"identifier": "https://orcid.org/0000-0003-0619-5745"
 			}
 		],
@@ -107,11 +107,10 @@
 		"relatedObservatories": [
 			{
 				"name": "Solar Orbiter",
-				"identifier": "https://doi.org/10.XXXX/example"  #This is not possible in the submission form, but it will be needed soon.
+				"identifier": "https://doi.org/10.XXXX/example"
 			},
 			{
-				"name": "Daniel K. Inouye Solar Telescope",
-				"definition": "A ground-based solar telescope."
+				"name": "Daniel K. Inouye Solar Telescope"
 			}
 		],
 		"relatedPhenomena": [
@@ -139,9 +138,9 @@
 			{
 				"email": "exampl@email.org",
 				"person": {
-					"firstName": "Isaiah",  #First name and last name are combined on the submission form. Combine here too?
-					"lastName": "Smith",
-					"identifier": "https://orcid.org/0000-0002-1825-0097"  #This isn't possible on the submission form. Remove?
+					"givenName": "Isaiah",
+					"familyName": "Smith",
+					"identifier": "https://orcid.org/0000-0002-1825-0097" 
 				}
 			}
 		],	

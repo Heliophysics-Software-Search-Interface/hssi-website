@@ -15,7 +15,7 @@ fields are not included.
 
 ## Endpoint
 
-Send a `POST` request to `*domain*/api/submit`, the `POST` should contain `JSON` 
+Send a `POST` request to `*domain*/api/submission`, the `POST` should contain `JSON` 
 formatted body text. The root level object **must be an array**, and each item
 object in the root level array will be a separate submission.
 
@@ -182,9 +182,7 @@ impact on the software's discoverability and usability.
 	```
 * `relatedRegion` - array of region name strings. The physical region the
   software supports science or operational functionality for. 
-	* must be **exact match** taken from `name` field in
-	[`/api/models/Region/rows/all/`](https://hssi.hsdcloud.org/api/models/Region/rows/all/)
-    * In the future, these must match one of the region names found in the selected list. This will be supported by an API for search and matching.
+	* These must be an exact match to one of region names used by HelioData. This is supported by an API for search and matching. See [https://api.heliophysics.net/api/regions/](https://api.heliophysics.net/api/regions/) for more information. 
 	```
 	"relatedRegion": [
 		"Solar Environment",
@@ -286,28 +284,31 @@ however they may not be applicable to some submissions.
 	},	
 	```
 * `relatedInstruments` - array of [`Instrument`](#instrument) object
-    * In the future, these should match one of the instrument names found in SPASE. This is supported by an API for search and matching. See [https://api.heliophysics.net/api/instruments/](https://api.heliophysics.net/api/instruments/).
+    * These should match one of the instrument names found in SPASE. This is supported by an API for search and matching. See [https://api.heliophysics.net/api/instruments/](https://api.heliophysics.net/api/instruments/). If no match is found in SPASE,
+please add a URL or DOI for the instrument to help our users.
 	```
 	"relatedInstruments": [
 		{
-			"name": "Visible Spectro-Polarimeter",
+			"name": "Visible Spectro-Polarimeter"
 		},
 		{
-			"name": "Atmospheric Imaging Assembly"
+			"name": "Atmospheric Imaging Assembly",
+ 			"identifier": "https://examplelink.com"
 		}
 	],	
 	```
 * `relatedObservatories` - array of [`Observatory`](#observatory) object.
   The mission or observatory the software is designed to support.
-	* In the future, these should match one of the observatory names found in SPASE.
-      This is be supported by an API for search and matching: [https://api.heliophysics.net/api/observatories/](https://api.heliophysics.net/api/observatories/)
+	*  These should match one of the observatory names found in SPASE. This is supported by an API for search and matching. See [[https://api.heliophysics.net/api/obseratory/](https://api.heliophysics.net/api/observatories/). If no match is found in SPASE,
+please add a URL or DOI for the observatory to help our users.
 	```
 	"relatedObservatories": [
 		{
 			"name": "Solar Orbiter"
 		},
 		{
-			"name": "Daniel K. Inouye Solar Telescope"
+			"name": "Daniel K. Inouye Solar Telescope",
+ 			"identifier": "https://observatorywebsite.com"
 		}
 	],	
 	```
@@ -445,43 +446,16 @@ information will be ignored.
 References `Person` table in database, hard match on `identifier` if provided,
 otherwise fall back to matching on a combination of `givenName` + `familyName`
 
-#### Subfields
-
-* `givenName` *required* - string
-* `familyName` *required* - string
-* `identifier` - url
-* `affiliation` - array of [`Organization`](#organization) objects
-
 ### Submitter
 
 References `Submitter` table in database, hard match on `email`
-
-#### Subfields
-
-* `email` *required* - string
-* `person` *required* - [`Person`](#person) object
-* `identifier` - url
 
 ### Organization
 
 References `Organization` table in database, hard match on `identifier`, soft
 match on `name` if identifier is not provided
 
-#### Subfields
-
-* `name` *required* - string
-* `identifier` - url
-
-### Observatory
-
-Same as [`Instrument`](#instrument), but handled differently in different 
-submission fields.
-
-### Instrument
+### Instruments and Observatories
 
 References `InstrumentObservatory` table in database, hard match on `identifier`.
 the identifier is sourced from SPASE if a match is found.
-
-#### Subfields
-* `name` *required* - text
-* `identifier` - url

@@ -196,7 +196,20 @@ class LicenseAdmin(HSSIModelAdmin):
 
 class OrganizationResource(resources.ModelResource):
 	class Meta: model = Organization
-class OrganizationAdmin(HSSIModelAdmin): resource_class = OrganizationResource
+class OrganizationAdmin(HSSIModelAdmin): 
+	resource_class = OrganizationResource
+
+	def str_display(self, obj):
+		disp = super().str_display(obj)
+		if isinstance(obj, Organization):
+			if obj.identifier: 
+				ident = (
+					obj.identifier
+						.removeprefix("https://ror.org/")
+						.removeprefix("http://ror.org/")
+				)
+				disp += f" | ({ident})"
+		return disp
 
 class FileFormatResource(resources.ModelResource):
 	class Meta: model = FileFormat

@@ -12,11 +12,11 @@ from ..related import RelatedItem, RelatedItemType
 from ..software import Software, SoftwareVersion
 from ..vocab import InstrObsType, InstrumentObservatory
 from ..base import HssiModel
-from ...admin.fetch_vocab import (
-	URL_DATAINPUTS, URL_SUPPORTEDFILEFORMATS, URL_FUNCTIONCATEGORIES,
-	URL_PHENOMENA,
-)
 
+URL_TERMSET_DATASOURCE = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/jsonld/DataSources.json"
+URL_TERMSET_FILEFORMAT = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/jsonld/InputFileFormats.json"
+URL_TERMSET_PHENOMENA = "https://github.com/rmcgranaghan/Helio-KNOW/blob/main/data-models/hk_phenomenon.ttl"
+URL_TERMSET_FUNCTIONCATEGORY = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/ttl/softwareFunctionality-v0.3.ttl"
 NAME_UNKOWN = "UNKNOWN"
 
 def serialize_obj_userfriendly(obj: Model) -> str | dict[str, Any]:
@@ -291,23 +291,23 @@ class SoftwareSerializer(HssiSerializer):
 
 		keywords: list[dict[str, Any]] = []
 		keywords += [
-			self._defined_term(item.name, "dataSources", URL_DATAINPUTS)
+			self._defined_term(item.name, "dataSources", URL_TERMSET_DATASOURCE)
 			for item in instance.data_sources.all()
 		]
 		keywords += [
-			self._defined_term(item.name, "inputFormats", URL_SUPPORTEDFILEFORMATS)
+			self._defined_term(item.name, "inputFormats", URL_TERMSET_FILEFORMAT)
 			for item in instance.input_formats.all()
 		]
 		keywords += [
-			self._defined_term(item.name, "outputFormats", URL_SUPPORTEDFILEFORMATS)
+			self._defined_term(item.name, "outputFormats", URL_TERMSET_FILEFORMAT)
 			for item in instance.output_formats.all()
 		]
 		keywords += [
-			self._defined_term(item.name, "relatedPhenomena", URL_PHENOMENA)
+			self._defined_term(item.name, "relatedPhenomena", URL_TERMSET_PHENOMENA)
 			for item in instance.related_phenomena.all()
 		]
 		keywords += [
-			self._defined_term(item.name, "softwareFunctionality", URL_FUNCTIONCATEGORIES)
+			self._defined_term(item.name, "softwareFunctionality", URL_TERMSET_FUNCTIONCATEGORY)
 			for item in instance.software_functionality.all()
 		]
 		keywords += [self._defined_term(item.name) for item in instance.keywords.all()]

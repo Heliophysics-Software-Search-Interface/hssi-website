@@ -362,7 +362,7 @@ please add a URL or DOI for the observatory to help our users.
 		"magnetic fields"
 	],	
 	```
-* `relatedSoftware` - array of urls, preferable concept DOIs.
+* `relatedSoftware` - array of urls, preferably concept DOIs.
   Software that performs similar tasks but does not necessarily
   link together (which would be considered interoperable software).
   For example, two software that model the upper atmosphere of

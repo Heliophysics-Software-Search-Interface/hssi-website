@@ -266,9 +266,10 @@ class SoftwareSerializer(HssiSerializer):
 		data: dict[str, Any] = {
 			"@type": "DataDownload",
 			"contentUrl": content_url,
+			"dateModified": "2025-03-05T12:34:56",
 			"encodingFormat": "application/json",
-			"name": instance.software_name,
-			"description": instance.description,
+			"name": "HSSI metadata describing the software",
+			"description": "HSSI metadata describing the software",
 		}
 		if version.release_date:
 			data["dateModified"] = version.release_date.isoformat()

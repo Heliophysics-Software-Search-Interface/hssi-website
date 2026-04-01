@@ -428,7 +428,11 @@ class SoftwareSerializer(HssiSerializer):
 			"subjectOf": self._subject_of(instance),
 		}
 
-		return {key: value for key, value in data.items() if value not in (None, [], {})}
+		return {
+			key: value
+			for key, value in data.items()
+			if value
+		}
 
 	class Meta(HssiSerializer.Meta):
 		model = Software

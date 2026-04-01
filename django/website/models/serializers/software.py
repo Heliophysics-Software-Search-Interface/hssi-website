@@ -17,6 +17,7 @@ URL_TERMSET_DATASOURCE = "https://github.com/Heliophysics-Software-Search-Interf
 URL_TERMSET_FILEFORMAT = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/jsonld/InputFileFormats.json"
 URL_TERMSET_PHENOMENA = "https://github.com/rmcgranaghan/Helio-KNOW/blob/main/data-models/hk_phenomenon.ttl"
 URL_TERMSET_FUNCTIONCATEGORY = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/ttl/softwareFunctionality-v0.3.ttl"
+URL_TERMSET_REGIONS = "https://api.heliophysics.net/api/regions/"
 NAME_UNKOWN = "UNKNOWN"
 
 def serialize_obj_userfriendly(obj: Model) -> str | dict[str, Any]:
@@ -350,7 +351,7 @@ class SoftwareSerializer(HssiSerializer):
 				"keywords": self._defined_term(
 					item.name,
 					"RelatedRegion",
-					item.identifier,
+					URL_TERMSET_PHENOMENA,
 				),
 			}
 			for item in instance.related_region.all()

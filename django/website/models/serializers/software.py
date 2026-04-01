@@ -377,8 +377,8 @@ class SoftwareSerializer(HssiSerializer):
 
 		json_id = instance.persistent_identifier
 		if not json_id:
-			if latest_version: json_id = latest_version.version_pid
-			else: json_id = instance.code_repository_url
+			if latest_version: json_id = latest_version.version_pid.strip()
+			if not json_id: json_id = instance.code_repository_url
 
 		data: dict[str, Any] = {
 			"@context": {

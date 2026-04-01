@@ -12,10 +12,13 @@ from ..related import RelatedItem, RelatedItemType
 from ..software import Software, SoftwareVersion
 from ..vocab import InstrObsType, InstrumentObservatory
 from ..base import HssiModel
-from ...admin.fetch_vocab import (
-	URL_DATAINPUTS, URL_SUPPORTEDFILEFORMATS, URL_FUNCTIONCATEGORIES,
-	URL_PHENOMENA,
-)
+
+URL_TERMSET_DATASOURCE = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/jsonld/DataSources.json"
+URL_TERMSET_FILEFORMAT = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/jsonld/InputFileFormats.json"
+URL_TERMSET_PHENOMENA = "https://github.com/rmcgranaghan/Helio-KNOW/blob/main/data-models/hk_phenomenon.ttl"
+URL_TERMSET_FUNCTIONCATEGORY = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/ttl/softwareFunctionality-v0.3.ttl"
+URL_TERMSET_REGIONS = "https://api.heliophysics.net/api/regions/"
+NAME_UNKOWN = "UNKNOWN"
 
 def serialize_obj_userfriendly(obj: Model) -> str | dict[str, Any]:
 	"""Serialize a model object using its serializer or fall back to str()."""
@@ -204,6 +207,8 @@ class SoftwareSerializer(HssiSerializer):
 		return data
 
 	def _mentions_instrument(self, item: InstrumentObservatory, description: str) -> dict[str, Any]:
+		if not item.identifier and item.name == NAME_UNKOWN:
+			return None
 		if item.type == InstrObsType.OBSERVATORY:
 			item_type = ["ResearchProject", "prov:Entity", "sosa:Platform"]
 		else:
@@ -211,8 +216,9 @@ class SoftwareSerializer(HssiSerializer):
 		data: dict[str, Any] = {
 			"@type": item_type,
 			"description": description,
-			"name": item.name,
 		}
+		if item.name != NAME_UNKOWN:
+			data["name"] = item.name
 		if item.identifier:
 			data["@id"] = item.identifier
 			data["url"] = item.identifier
@@ -224,7 +230,9 @@ class SoftwareSerializer(HssiSerializer):
 				}
 		return data
 
-	def _mentions_related(self, item: RelatedItem, description: str) -> dict[str, Any]:
+	def _mentions_related(self, item: RelatedItem, description: str) -> dict[str, Any] | None:
+		if not item.identifier and item.name == NAME_UNKOWN:
+			return None
 		type_map = {
 			RelatedItemType.SOFTWARE: "SoftwareSourceCode",
 			RelatedItemType.DATASET: "Dataset",
@@ -233,8 +241,9 @@ class SoftwareSerializer(HssiSerializer):
 		data: dict[str, Any] = {
 			"@type": type_map.get(item.type, "CreativeWork"),
 			"description": description,
-			"name": item.name,
 		}
+		if item.name != NAME_UNKOWN:
+			data["name"] = item.name
 		if item.identifier:
 			data["@id"] = item.identifier
 			data["url"] = item.identifier
@@ -266,9 +275,10 @@ class SoftwareSerializer(HssiSerializer):
 		data: dict[str, Any] = {
 			"@type": "DataDownload",
 			"contentUrl": content_url,
+			"dateModified": "2025-03-05T12:34:56",
 			"encodingFormat": "application/json",
-			"name": instance.software_name,
-			"description": instance.description,
+			"name": "HSSI metadata describing the software",
+			"description": "HSSI metadata describing the software",
 		}
 		if version.release_date:
 			data["dateModified"] = version.release_date.isoformat()
@@ -282,23 +292,23 @@ class SoftwareSerializer(HssiSerializer):
 
 		keywords: list[dict[str, Any]] = []
 		keywords += [
-			self._defined_term(item.name, "dataSources", URL_DATAINPUTS)
+			self._defined_term(item.name, "dataSources", URL_TERMSET_DATASOURCE)
 			for item in instance.data_sources.all()
 		]
 		keywords += [
-			self._defined_term(item.name, "inputFormats", URL_SUPPORTEDFILEFORMATS)
+			self._defined_term(item.name, "inputFormats", URL_TERMSET_FILEFORMAT)
 			for item in instance.input_formats.all()
 		]
 		keywords += [
-			self._defined_term(item.name, "outputFormats", URL_SUPPORTEDFILEFORMATS)
+			self._defined_term(item.name, "outputFormats", URL_TERMSET_FILEFORMAT)
 			for item in instance.output_formats.all()
 		]
 		keywords += [
-			self._defined_term(item.name, "relatedPhenomena", URL_PHENOMENA)
+			self._defined_term(item.name, "relatedPhenomena", URL_TERMSET_PHENOMENA)
 			for item in instance.related_phenomena.all()
 		]
 		keywords += [
-			self._defined_term(item.name, "softwareFunctionality", URL_FUNCTIONCATEGORIES)
+			self._defined_term(item.name, "softwareFunctionality", URL_TERMSET_FUNCTIONCATEGORY)
 			for item in instance.software_functionality.all()
 		]
 		keywords += [self._defined_term(item.name) for item in instance.keywords.all()]
@@ -328,6 +338,7 @@ class SoftwareSerializer(HssiSerializer):
 			self._mentions_related(item, "interoperableSoftware")
 			for item in instance.interoperable_software.all()
 		]
+		mentions = filter(lambda item: item is not None, mentions)
 
 		operating_systems = [item.name for item in instance.operating_system.all()]
 		programming_languages = [str(item) for item in instance.programming_language.all()]
@@ -340,7 +351,7 @@ class SoftwareSerializer(HssiSerializer):
 				"keywords": self._defined_term(
 					item.name,
 					"RelatedRegion",
-					item.identifier,
+					URL_TERMSET_PHENOMENA,
 				),
 			}
 			for item in instance.related_region.all()
@@ -364,6 +375,11 @@ class SoftwareSerializer(HssiSerializer):
 				funding_item["@type"] = "MonetaryGrant"
 				funding_item["funder"] = self._organization_jsonld(funder)
 
+		json_id = instance.persistent_identifier
+		if not json_id:
+			if latest_version: json_id = latest_version.version_pid
+			else: json_id = instance.code_repository_url
+
 		data: dict[str, Any] = {
 			"@context": {
 				"@vocab": "https://schema.org/",
@@ -371,7 +387,7 @@ class SoftwareSerializer(HssiSerializer):
 				"sosa": "https://w3c.github.io/sdw-sosa-ssn/ssn/#SOSA",
 				"codemeta": "https://github.com/codemeta/codemeta/blob/master/codemeta.jsonld",
 			},
-			"@id": instance.persistent_identifier or instance.get_absolute_url(),
+			"@id": json_id,
 			"@type": ["SoftwareSourceCode", "SoftwareApplication"],
 			"name": instance.software_name,
 			"description": instance.description,
@@ -428,7 +444,11 @@ class SoftwareSerializer(HssiSerializer):
 			"subjectOf": self._subject_of(instance),
 		}
 
-		return {key: value for key, value in data.items() if value not in (None, [], {})}
+		return {
+			key: value
+			for key, value in data.items()
+			if value
+		}
 
 	class Meta(HssiSerializer.Meta):
 		model = Software

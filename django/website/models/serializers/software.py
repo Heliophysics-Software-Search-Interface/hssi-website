@@ -374,6 +374,11 @@ class SoftwareSerializer(HssiSerializer):
 				funding_item["@type"] = "MonetaryGrant"
 				funding_item["funder"] = self._organization_jsonld(funder)
 
+		json_id = instance.persistent_identifier
+		if not json_id:
+			if latest_version: json_id = latest_version.version_pid
+			else: json_id = instance.code_repository_url
+
 		data: dict[str, Any] = {
 			"@context": {
 				"@vocab": "https://schema.org/",
@@ -381,7 +386,7 @@ class SoftwareSerializer(HssiSerializer):
 				"sosa": "https://w3c.github.io/sdw-sosa-ssn/ssn/#SOSA",
 				"codemeta": "https://github.com/codemeta/codemeta/blob/master/codemeta.jsonld",
 			},
-			"@id": instance.persistent_identifier or instance.get_absolute_url(),
+			"@id": json_id,
 			"@type": ["SoftwareSourceCode", "SoftwareApplication"],
 			"name": instance.software_name,
 			"description": instance.description,

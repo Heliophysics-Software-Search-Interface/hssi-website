@@ -15,18 +15,25 @@
     "author": {
         "@list": [
             {
+            	"@type": "Organization",
+                "name": "The SunPy Community",
+                "parentOrganization": {
+                	"@id": "https://ror.org/example",
+                    "@type": "Organization",
+                    "identifier": {
+                      "@id": "https://ror.org/example",
+                      "@type": "PropertyValue",
+                      "propertyID": "https://registry.identifiers.org/registry/ror",
+                      "url": "https://ror.org/example",
+                      "value": "ror:example"
+                    },
+                    "name": "Example organization"
+                }
+            },
+            {
                 "@id": "https://orcid.org/0000-0003-4217-4642",
                 "@type": "Person",
-                "affiliation": 
-                {
-                  "@type": "Organization",
-                  "identifier": {
-                    "@id": "https://ror.org/example",
-                    "@type": "PropertyValue",
-                    "propertyID": "https://registry.identifiers.org/registry/orcid",
-                    "url": "https://ror.org/example",
-                    "value": "ror:example"
-                  },
+                "affiliation": {
                   "name": "Aperio Software Ltd."
                 },
                 "familyName": "Mumford",
@@ -92,7 +99,6 @@
     "identifier": {
         "@id": "https://doi.org/10.5281/zenodo.14292170",  
         "@type": "PropertyValue",
-        "name": "DOI: 10.5281/zenodo.14292170",
         "propertyID": "https://registry.identifiers.org/registry/doi",
         "value": "doi:10.5281/zenodo.14292170",
         "url": "https://doi.org/10.5281/zenodo.14292170"
@@ -129,10 +135,8 @@
         "description": "softwarefunctionality",
         "inDefinedTermSet": "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/tree/main/ttl"
       },      
-      {
-        "@type": "DefinedTerm",     
-        "name": "sun"
-      } 
+        "sun",
+        "Solar Physics"
      ],
     "license": {
       "@id": "https://spdx.org/licenses/BSD-2-Clause",
@@ -202,20 +206,24 @@
         "url": "http://doi.org/10.3847/1538-4365/ac1f1d"
       },
       {
+        "@id": "URL to publication without a DOI",
         "@type": "ScholarlyArticle",
         "description": "relatedPublications",
-        "disambiguatingDescription": "Z. S. Hamidi et al. (2019) J. Phys.: Conf. Ser. 1298 012013"
+        "url": "URL to publication without a DOI"
       },      
       {
         "@id": "https://doi.org/10.48322/asmp-nf13",
         "@type": "Dataset",
-        "description": "relatedDatasets",
+        "description": "Dataset related to the software described in this metadata",
+        "name": "Related Dataset",
         "url": "https://doi.org/10.48322/asmp-nf13"
       },        
       {
+        "@id": "URL to dataset without a DOI",
         "@type": "Dataset",
-        "description": "relatedDatasets",
-        "disambiguatingDescription": "Fuselier et al. (2022). MMS 4 Hot Plasma Composition Analyzer (HPCA) Ions, Level 2 (L2), Burst Mode, 0.625 s Data [Data set]. NASA Space Physics Data Facility."
+        "description": "Dataset related to the software described in this metadata",
+        "name": "Related Dataset",
+        "url": "URL to dataset without a DOI"
       },  
       {
         "@id": "https://github.com/pingswept/pysolar",
@@ -240,6 +248,7 @@
         "name": "Zenodo",
         "url": "https://zenodo.org/"
     },
+    "softwareVersion": "v6.0.4",    
     "spatialCoverage": [
       {     
          "@type": "Place",
@@ -262,13 +271,12 @@
          }
       }
     ],   
-    "softwareVersion": "v6.0.4",
     "subjectOf": {
       "@type": "DataDownload",
-      "contentUrl": "landing page url on HSSI",
+      "contentUrl": "(landing page url on HSSI)",
       "dateModified": "2025-03-05T12:34:56",
       "description": "HSSI metadata describing the software",
-      "encodingFormat": "application/json",
+      "encodingFormat": "application/ld+json",
       "license": "https://spdx.org/licenses/CC0-1.0.html",
       "name": "HSSI metadata for the software"
     },

@@ -15,7 +15,7 @@ fields are not included.
 
 ## Endpoint
 
-Send a `POST` request to `*domain*/api/submit`, the `POST` should contain `JSON` 
+Send a `POST` request to `*domain*/api/submission`, the `POST` should contain `JSON` 
 formatted body text. The root level object **must be an array**, and each item
 object in the root level array will be a separate submission.
 

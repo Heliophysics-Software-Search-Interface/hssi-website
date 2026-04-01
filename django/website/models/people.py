@@ -122,7 +122,13 @@ class Submitter(HssiModel):
 		if not self.email: return []
 		jsonstr: str = self.email
 		jsonstr = jsonstr.replace("'", '"')
-		return json.loads(jsonstr)
+		emails = []
+		try: 
+			emails = json.loads(jsonstr)
+			assert isinstance(emails, list)
+		except:
+			return [self.email]
+		return emails
 
 	@staticmethod
 	def get_default_submitter() -> 'Submitter':

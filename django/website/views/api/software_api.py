@@ -1,9 +1,10 @@
 """API views for Software JSON responses and optional relation expansion."""
 
 from typing import Any
+import datetime
 
-from django.db.models import Model
 from django.db import transaction
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
@@ -14,10 +15,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework import serializers
 from rest_framework.generics import GenericAPIView
 
-from ...models import Software, VerifiedSoftware
+from ...models import Software, VerifiedSoftware, SoftwareEditQueue, SubmissionInfo
 from ...models.serializers.software import SoftwareSerializer
 from ...models.serializers.submission import SubmissionSerializer
 from ...models.serializers.util import SerialView
+from ..edit_submission import email_existing_edit_link
 
 
 class HSSIGenericAPIView(GenericAPIView):
@@ -74,6 +76,7 @@ class SubmissionAPI(APIView):
 			)
 
 		results: list[dict[str, Any]] = []
+		submissions: list[Software] = []
 		try:
 			with transaction.atomic():
 				for idx, item in enumerate(request.data):
@@ -88,8 +91,14 @@ class SubmissionAPI(APIView):
 						"index": idx,
 						"softwareId": str(software.id),
 					})
+					submissions.append(software)
 		except serializers.ValidationError as exc:
 			return Response(exc.detail, status=status.HTTP_400_BAD_REQUEST)
+		
+		for submission in submissions:
+			SoftwareEditQueue.create(software, timezone.now() + datetime.timedelta(days=90))
+			submission_info = SubmissionInfo.objects.get(software=submission)
+			email_existing_edit_link(submission_info)
 
 		return Response(
 			{"status": "ok", "count": len(results), "results": results},

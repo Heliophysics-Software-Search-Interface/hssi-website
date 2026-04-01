@@ -92,9 +92,12 @@ def email_existing_edit_link(submission: SubmissionInfo) -> bool:
 	item = SoftwareEditQueue.get_latest_expiry(submission.software)
 	if not item or item.is_expired(): return False
 	
-	user: Person = submission.submitter.person
+	submitter: Submitter = submission.submitter.first()
+	emails: list[str] = []
+	for submitter in submission.submitter.all():
+		emails += submitter.email_list()
+	user: Person = submitter.person
 	software: Software = submission.software
-	emails = submission.submitter.email_list()
 	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(item.id)}"
 
 	message = (

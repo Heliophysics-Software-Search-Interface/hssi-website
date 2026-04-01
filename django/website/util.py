@@ -1,4 +1,5 @@
-import re, typing
+import base64, re, typing, uuid
+from urllib.parse import urlencode
 
 from django.contrib.auth.models import AbstractUser, AnonymousUser
 from django.db.models import Model, Manager, ManyToManyField
@@ -13,6 +14,13 @@ if typing.TYPE_CHECKING:
 SOFTWARE_FUNCAT_FILEPATH = "./software_funcat_map.csv"
 SPACE_REPLACE = re.compile(r'[_\-.]')
 PARENTHESIS_MATCH = re.compile(r"\(([^)]*)\)")
+FILTER_URL_UID_ENCODE_LENGTH = 7
+SOFTWARE_FILTER_FIELD_PARAM_MAP = {
+	"data_sources": "ds",
+	"programming_language": "p",
+	"related_region": "r",
+	"software_functionality": "f",
+}
 
 class RequirementLevel(IntEnum):
 	OPTIONAL = 0
@@ -59,6 +67,23 @@ def name_to_abbreviation(name: str) -> str:
 			splname[-1][0].upper()
 		)
 	return name
+
+def uuid_to_urlsafe_base64(uid: str | uuid.UUID) -> str:
+	"""Match the frontend UUID -> URL-safe base64 encoding."""
+	return base64.urlsafe_b64encode(uuid.UUID(str(uid)).bytes).decode().rstrip("=")
+
+def shorten_software_filter_value(field_name: str, uid: str | uuid.UUID) -> str:
+	"""Match frontend filter encoding in frontend/filters/urlEncoding.ts."""
+	try:
+		field_suffix = SOFTWARE_FILTER_FIELD_PARAM_MAP[field_name]
+	except KeyError as exc:
+		raise ValueError(f"Unsupported software filter field: {field_name}") from exc
+	short_uid = uuid_to_urlsafe_base64(uid)[:FILTER_URL_UID_ENCODE_LENGTH]
+	return f"{short_uid}{field_suffix}"
+
+def build_software_filter_query(field_name: str, uid: str | uuid.UUID) -> str:
+	"""Build the query string used by the homepage filter menu."""
+	return urlencode({"filt": shorten_software_filter_value(field_name, uid)})
 
 def find_database_references(object: Model) -> list[tuple[Model, Field]]:
 	"""

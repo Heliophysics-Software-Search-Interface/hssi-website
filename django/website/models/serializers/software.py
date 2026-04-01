@@ -17,6 +17,8 @@ from ...admin.fetch_vocab import (
 	URL_PHENOMENA,
 )
 
+NAME_UNKOWN = "UNKNOWN"
+
 def serialize_obj_userfriendly(obj: Model) -> str | dict[str, Any]:
 	"""Serialize a model object using its serializer or fall back to str()."""
 	serializer_cls = get_registered_serializer(obj.__class__)
@@ -204,6 +206,8 @@ class SoftwareSerializer(HssiSerializer):
 		return data
 
 	def _mentions_instrument(self, item: InstrumentObservatory, description: str) -> dict[str, Any]:
+		if not item.identifier and item.name == NAME_UNKOWN:
+			return None
 		if item.type == InstrObsType.OBSERVATORY:
 			item_type = ["ResearchProject", "prov:Entity", "sosa:Platform"]
 		else:
@@ -211,8 +215,9 @@ class SoftwareSerializer(HssiSerializer):
 		data: dict[str, Any] = {
 			"@type": item_type,
 			"description": description,
-			"name": item.name,
 		}
+		if item.name != NAME_UNKOWN:
+			data["name"] = item.name
 		if item.identifier:
 			data["@id"] = item.identifier
 			data["url"] = item.identifier
@@ -224,7 +229,9 @@ class SoftwareSerializer(HssiSerializer):
 				}
 		return data
 
-	def _mentions_related(self, item: RelatedItem, description: str) -> dict[str, Any]:
+	def _mentions_related(self, item: RelatedItem, description: str) -> dict[str, Any] | None:
+		if not item.identifier and item.name == NAME_UNKOWN:
+			return None
 		type_map = {
 			RelatedItemType.SOFTWARE: "SoftwareSourceCode",
 			RelatedItemType.DATASET: "Dataset",
@@ -233,8 +240,9 @@ class SoftwareSerializer(HssiSerializer):
 		data: dict[str, Any] = {
 			"@type": type_map.get(item.type, "CreativeWork"),
 			"description": description,
-			"name": item.name,
 		}
+		if item.name != NAME_UNKOWN:
+			data["name"] = item.name
 		if item.identifier:
 			data["@id"] = item.identifier
 			data["url"] = item.identifier
@@ -329,6 +337,7 @@ class SoftwareSerializer(HssiSerializer):
 			self._mentions_related(item, "interoperableSoftware")
 			for item in instance.interoperable_software.all()
 		]
+		mentions = filter(lambda item: item is not None, mentions)
 
 		operating_systems = [item.name for item in instance.operating_system.all()]
 		programming_languages = [str(item) for item in instance.programming_language.all()]

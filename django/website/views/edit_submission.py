@@ -8,7 +8,7 @@ from datetime import timedelta
 from ..data_parser import handle_submission_data
 from ..util import *
 from ..models import *
-from ..models.serializers.util import get_registered_serializer
+from ..models.serializers.util import get_registered_serializer, serialize_obj_userfriendly
 
 from ..forms import (
 	SUBMISSION_FORM_FIELDS_1,
@@ -47,8 +47,7 @@ def get_submission_data(request: HttpRequest, uid: str) -> HttpResponse:
 
 	data = queue_item.target_software.get_serialized_data(AccessLevel.CURATOR, True)
 	submission_info = SubmissionInfo.objects.filter(software=queue_item.target_software).first()
-	submitter_serializer = get_registered_serializer(Submitter)
-	submitter_data = submitter_serializer(submission_info.submitter.first()).data
+	submitter_data = serialize_obj_userfriendly(submission_info.submitter.first())
 	data["submissionInfo"] = {
 		"submitter": submitter_data
 	}

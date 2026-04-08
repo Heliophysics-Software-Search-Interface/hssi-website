@@ -1,4 +1,4 @@
-import { ConfirmDialogue, FormGenerator, PopupDialogue, TextInputDialogue } from "./loader";
+import { ConfirmDialogue, FormGenerator, PopupDialogue, TextInputDialogue, type VersionData } from "./loader";
 
 export const uuid4Regex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 export const softwareApiUrl = "/api/models/Software/rows/";
@@ -191,6 +191,13 @@ export async function getSoftwareEditFormData(uid: string): Promise<JSONObject> 
 			submitter.submitterEmail = emails;
 			data.submitterName = submitter;
 		}
+	}
+	if(data.version instanceof Array){
+		const versions: Array<VersionData> = data.version;
+		data.version = versions.reduce((acc, cur) => {
+			// iso formatted dates are sorted lexicographically
+			return cur.release_date > acc.release_date ? cur : acc;
+		}, versions[0]);
 	}
 	console.log("fetched software data: ", data);
 	return data;

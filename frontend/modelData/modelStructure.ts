@@ -63,6 +63,7 @@ export interface FunctionalityData extends GraphListData {
 
 export interface VersionData extends HSSIModelData {
 	number: string,
+	release_date: string,
 }
 
 export interface OrganizationData extends HSSIModelData {

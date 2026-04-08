@@ -5,7 +5,7 @@ from typing import Any, Iterable
 from django.http import HttpRequest
 from django.db.models import Model, Manager
 
-from .util import HssiSerializer, get_registered_serializer
+from .util import HssiSerializer, serialize_obj_userfriendly
 from ..organizations import Organization
 from ..people import Person
 from ..related import RelatedItem, RelatedItemType
@@ -19,15 +19,6 @@ URL_TERMSET_PHENOMENA = "https://github.com/rmcgranaghan/Helio-KNOW/blob/main/da
 URL_TERMSET_FUNCTIONCATEGORY = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/ttl/softwareFunctionality-v0.3.ttl"
 URL_TERMSET_REGIONS = "https://api.heliophysics.net/api/regions/"
 NAME_UNKOWN = "UNKNOWN"
-
-def serialize_obj_userfriendly(obj: Model) -> str | dict[str, Any]:
-	"""Serialize a model object using its serializer or fall back to str()."""
-	serializer_cls = get_registered_serializer(obj.__class__)
-	if serializer_cls:
-		return serializer_cls(obj).data
-	if isinstance(obj, HssiModel):
-		return obj.to_user_str()
-	return str(obj)
 
 def serialize_with_relations(obj: Model) -> dict[str, Any]:
 	"""Serialize a model instance with FK/M2M expanded via serializers or str()."""

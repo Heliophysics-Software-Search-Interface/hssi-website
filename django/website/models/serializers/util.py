@@ -15,11 +15,16 @@ _MODEL_SERIALIZER_MAP: dict[type[Model], type[ModelSerializer]] = {}
 Q_VIEW: str = "view"
 
 def _register_serializers():
-	from ...models import Software
-	from .software import SoftwareSerializer
+	from .software import Software, SoftwareSerializer
+	from .submitter import Submitter, SubmitterSerializer
+	from .person import Person, PersonSerializer
+	from .organization import Organization, OrganizationSerializer
 
 	serializer_map: dict[type[Model], type[ModelSerializer]] = {
-		Software: SoftwareSerializer
+		Software: SoftwareSerializer,
+		Submitter: SubmitterSerializer,
+		Person: PersonSerializer,
+		Organization: OrganizationSerializer,
 	}
 
 	for key, val in serializer_map.items():
@@ -30,6 +35,15 @@ def get_registered_serializer(model: type[Model]) -> type[ModelSerializer] | Non
 	if not _MODEL_SERIALIZER_MAP:
 		_register_serializers()
 	return _MODEL_SERIALIZER_MAP.get(model)
+
+def serialize_obj_userfriendly(obj: Model) -> str | dict[str, Any]:
+	"""Serialize a model object using its serializer or fall back to str()."""
+	serializer_cls = get_registered_serializer(obj.__class__)
+	if serializer_cls:
+		return serializer_cls(obj).data
+	if isinstance(obj, HssiModel):
+		return obj.to_user_str()
+	return str(obj)
 
 class SerialView(enum.IntEnum):
 	STANDARD = 1
@@ -46,12 +60,16 @@ class HssiSerializer(ModelSerializer):
 		
 		# parse serialview mode
 		if self._view is None:
-			params: QueryDict = self.context["request"].query_params
-			viewstr = params.get(Q_VIEW)
-			if viewstr: 
-				self._view = SerialView[viewstr.upper()]
-			else: 
+			req: Any | None = self.context.get("request")
+			if not req:
 				self._view = self.default_view
+			else:
+				params: QueryDict = req.query_params
+				viewstr = params.get(Q_VIEW)
+				if viewstr: 
+					self._view = SerialView[viewstr.upper()]
+				else: 
+					self._view = self.default_view
 		
 		return self._view
 

@@ -182,7 +182,11 @@ export async function getSoftwareEditFormData(uid: string): Promise<JSONObject> 
 				(submitter.person as JSONObject)?.given_name as string + " " +
 				(submitter.person as JSONObject)?.family_name as string
 			);
-			let emails = JSON.parse((submitter.email as string).replaceAll("'", '"'));
+			let emails: string | Array<string> = submitter.email;
+			try{ 
+				emails = JSON.parse((submitter.email as string).replaceAll("'", '"')); 
+			}
+			catch(e) { }
 			if(!(emails instanceof Array)) emails = [emails];
 			submitter.submitterEmail = emails;
 			data.submitterName = submitter;

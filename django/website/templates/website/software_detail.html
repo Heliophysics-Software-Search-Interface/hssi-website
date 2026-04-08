@@ -208,10 +208,13 @@
             <summary class="section-title">Functionality</summary>
             <div class="functionality-tags">
                 {% for func in software.software_functionality.all %}
-                <span class="tag functionality-tag"
-                      style="background-color: {{ func.backgroundColor }}; color: {{ func.textColor }}">
+                <a href="{{ func.get_homepage_filter_url }}"
+                   class="tag functionality-tag"
+                   title="View software filtered by {{ func.name }}"
+                   aria-label="View software filtered by {{ func.name }}"
+                   style="background-color: {{ func.backgroundColor }}; color: {{ func.textColor }}">
                     {{ func.name }}
-                </span>
+                </a>
                 {% endfor %}
             </div>
         </details>
@@ -226,7 +229,10 @@
                     <span class="metadata-label">Programming Languages</span>
                     <span class="metadata-value">
                         {% for lang in software.programming_language.all %}
-                        <span class="tag">{{ lang.name }}</span>
+                        <a href="{{ lang.get_homepage_filter_url }}"
+                           class="tag"
+                           title="View software filtered by {{ lang.name }}"
+                           aria-label="View software filtered by {{ lang.name }}">{{ lang.name }}</a>
                         {% endfor %}
                     </span>
                 </div>
@@ -297,7 +303,10 @@
                     <span class="metadata-label">Data Sources</span>
                     <span class="metadata-value">
                         {% for ds in software.data_sources.all %}
-                        <span class="tag">{{ ds.name }}</span>
+                        <a href="{{ ds.get_homepage_filter_url }}"
+                           class="tag"
+                           title="View software filtered by {{ ds.name }}"
+                           aria-label="View software filtered by {{ ds.name }}">{{ ds.name }}</a>
                         {% endfor %}
                     </span>
                 </div>
@@ -401,17 +410,16 @@
                     <span class="metadata-label">Related Regions</span>
                     <span class="metadata-value">
                         {% for reg in software.related_region.all %}
-                        {% if reg.identifier %}
-                        <a class="tag" href="{{ reg.identifier }}" target="_blank">
+                        <a href="{{ reg.get_homepage_filter_url }}"
+                           class="tag"
+                           title="View software filtered by {{ reg.name }}"
+                           aria-label="View software filtered by {{ reg.name }}">
                             {% if reg.name and reg.name != "UNKNOWN" %}
                             {{ reg.name }}
                             {% else %}
                             {{ reg.identifier }}
                             {% endif %}
                         </a>
-                        {% else %}
-                        <span class="tag">{{ reg.name }}</span>
-                        {% endif %}
                         {% endfor %}
                     </span>
                 </div>

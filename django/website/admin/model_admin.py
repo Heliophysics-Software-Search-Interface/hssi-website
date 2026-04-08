@@ -159,7 +159,13 @@ class KeywordAdmin(HSSIModelAdmin):
 
 class RegionResource(resources.ModelResource):
 	class Meta: model = Region
-class RegionAdmin(HSSIModelAdmin): resource_class = RegionResource
+class RegionAdmin(HSSIModelAdmin): 
+	resource_class = RegionResource
+
+	def full_name(self, obj: Region) -> str:
+		return obj.get_full_name()
+	
+	list_display = ("name", "full_name", "id")
 
 class DataInputResource(resources.ModelResource):
 	class Meta: model = DataInput
@@ -190,7 +196,20 @@ class LicenseAdmin(HSSIModelAdmin):
 
 class OrganizationResource(resources.ModelResource):
 	class Meta: model = Organization
-class OrganizationAdmin(HSSIModelAdmin): resource_class = OrganizationResource
+class OrganizationAdmin(HSSIModelAdmin): 
+	resource_class = OrganizationResource
+
+	def str_display(self, obj):
+		disp = super().str_display(obj)
+		if isinstance(obj, Organization):
+			if obj.identifier: 
+				ident = (
+					obj.identifier
+						.removeprefix("https://ror.org/")
+						.removeprefix("http://ror.org/")
+				)
+				disp += f" | ({ident})"
+		return disp
 
 class FileFormatResource(resources.ModelResource):
 	class Meta: model = FileFormat
@@ -262,7 +281,9 @@ class SoftwareAdmin(HSSIModelAdmin):
 
 class VerifiedSoftwareResource(resources.ModelResource):
 	class Meta: model = VerifiedSoftware
-class VerifiedSoftwareAdmin(ImportExportModelAdmin): resource_class = VerifiedSoftwareResource
+class VerifiedSoftwareAdmin(HSSIModelAdmin): 
+	list_display = ("str_display", "slug")
+	resource_class = VerifiedSoftwareResource
 
 class SoftwareEditQueueResource(resources.ModelResource):
 	class Meta: Model = SoftwareEditQueue
@@ -290,7 +311,6 @@ class SoftwareEditQueueAdmin(ImportExportModelAdmin):
 	actions = [
 		remove_selected
 	]
-
 
 # Admin definitions for submission_info module ---------------------------------
 

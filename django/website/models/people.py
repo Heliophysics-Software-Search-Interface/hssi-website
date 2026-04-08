@@ -20,7 +20,7 @@ class Person(HssiModel):
 	given_name = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
 	family_name = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
 	identifier = models.URLField(blank=True, null=True)
-	affiliation = models.ManyToManyField(
+	affiliation: Manager[Organization] = models.ManyToManyField(
 		Organization, 
 		blank=True, 
 		related_name='people'
@@ -122,7 +122,13 @@ class Submitter(HssiModel):
 		if not self.email: return []
 		jsonstr: str = self.email
 		jsonstr = jsonstr.replace("'", '"')
-		return json.loads(jsonstr)
+		emails = []
+		try: 
+			emails = json.loads(jsonstr)
+			assert isinstance(emails, list)
+		except:
+			return [self.email]
+		return emails
 
 	@staticmethod
 	def get_default_submitter() -> 'Submitter':

@@ -21,6 +21,7 @@ django/static/admin/
 django/static/colorful/
 django/static/django_extensions/
 django/static/import_export/
+django/static/rest_framework/
 django/static/js/compiled
 
 # Ignore frontend package manager bloat

@@ -13,7 +13,7 @@ for file in /extensions/pre-launch-scripts/*; do
 done
 
 DATABASE_SLEEP_TIME=10
-DO_MIGRATIONS=0
+DO_MIGRATIONS=1
 
 # Create the Django project if it doesn't exist
 cd /django

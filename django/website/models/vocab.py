@@ -1,6 +1,8 @@
 """ Contains controlled metadata models which categorize software entries. """
 
-import colorsys
+import colorsys, re
+from re import Match
+from django.core.validators import URLValidator
 from django.db import models
 from colorful.fields import RGBColorField
 
@@ -13,6 +15,16 @@ from .base import (
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
 	from .software import Software
+
+REGION_MAPPING_TTL: dict[str, str] = {
+	"Earth Atmosphere": "Magnetosphere: Upper Atmosphere",
+	"Interplanetary Space": "Interplanetary space",
+	"Planetary Magnetospheres": "Magnetosphere",
+	"Earth Magnetosphere": "Magnetosphere",
+	"Solar Environment": "Solar Atmosphere"
+}
+
+## -----------------------------------------------------------------------------
 
 class InstrObsType(models.IntegerChoices):
 	""" Whether an entry in InstrumentObservatory is an instrument or an observatory """
@@ -40,10 +52,6 @@ class OperatingSystem(ControlledList):
 
 class CpuArchitecture(ControlledList):
 	"""CPU Architecture on which the software can run"""
-	access = AccessLevel.PUBLIC
-	
-class Phenomena(ControlledList):
-	"""Solar phenomena that relate to the software"""
 	access = AccessLevel.PUBLIC
 
 class RepoStatus(ControlledList):
@@ -80,13 +88,6 @@ class FileFormat(ControlledList):
 	softwares_from: models.Manager['Software']
 
 	def __str__(self): return self.name + (f" ({self.extension})" if self.extension else "")
-
-class Region(ControlledList):
-	"""Region of the sun which relates to the software"""
-	access = AccessLevel.PUBLIC
-	
-	class Meta: ordering = ['name']
-	def __str__(self): return self.name
 
 class InstrumentObservatory(ControlledList):
 	"""An observatory or scientific research instrument"""
@@ -134,13 +135,6 @@ class FunctionCategory(ControlledGraphList):
 			self.get_tooltip(),
 		)
 
-	def get_full_name(self) -> str:
-		parent = self.parent_nodes.first()
-		fullname = ""
-		if parent.name: fullname = f"{parent.name}: "
-		fullname += self.name
-		return fullname
-
 	@classmethod
 	def post_fetch(cls):
 		super().post_fetch()
@@ -175,7 +169,7 @@ class FunctionCategory(ControlledGraphList):
 
 	def get_search_terms(self):
 		arr = super().get_search_terms()
-		arr.extend(self.get_name_path().split("->"))
+		arr.extend(self.get_full_name().split(": "))
 		return arr
 
 	def get_serialized_data(
@@ -197,3 +191,57 @@ class FunctionCategory(ControlledGraphList):
 
 	class Meta: verbose_name_plural = "Function Categories"
 	def __str__(self): return self.name
+
+class Region(ControlledGraphList):
+	"""Region of the sun which relates to the software"""
+	access = AccessLevel.PUBLIC
+	
+	children = models.ManyToManyField(
+		'self',
+		blank=True,
+		related_name='parent_nodes',
+		symmetrical=False,
+	)
+
+	@classmethod
+	def post_fetch(cls):
+
+		url_validator = URLValidator()
+
+		# validate urls in object identifier fields, and search for url 
+		# identifiers in description if not specified
+		for object in cls.objects.all():
+			try: url_validator(object.identifier)
+			except:
+				object.identifier = ""
+				object.save()
+
+
+	def get_full_name(self):
+		""" get a path of all parents recursively pointing to this one """
+		path = self.name
+
+		parent = self.parent_nodes.first()
+		if parent: 
+			path = path.replace(parent.name, "").strip()
+			path = f"{parent.get_full_name()}: {path}"
+
+		return path
+
+	class Meta: ordering = ['name']
+	def __str__(self): return self.get_full_name()
+
+# TODO handle mapping when external phenomena list is ready
+class Phenomena(ControlledGraphList):
+	"""Solar phenomena that relate to the software"""
+	access = AccessLevel.PUBLIC
+
+	children = models.ManyToManyField(
+		'self',
+		blank=True,
+		related_name='parent_nodes',
+		symmetrical=False,
+	)
+
+	class Meta: ordering = ['name']
+	def __str__(self): return self.get_full_name()

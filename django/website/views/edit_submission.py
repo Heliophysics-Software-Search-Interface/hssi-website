@@ -8,6 +8,7 @@ from datetime import timedelta
 from ..data_parser import handle_submission_data
 from ..util import *
 from ..models import *
+from ..models.serializers.util import get_registered_serializer, serialize_obj_userfriendly
 
 from ..forms import (
 	SUBMISSION_FORM_FIELDS_1,
@@ -45,6 +46,12 @@ def get_submission_data(request: HttpRequest, uid: str) -> HttpResponse:
 		return HttpResponseBadRequest("Submission edit link has expired")
 
 	data = queue_item.target_software.get_serialized_data(AccessLevel.CURATOR, True)
+	submission_info = SubmissionInfo.objects.filter(software=queue_item.target_software).first()
+	submitter_data = serialize_obj_userfriendly(submission_info.submitter.first())
+	data["submissionInfo"] = {
+		"submitter": submitter_data
+	}
+
 	return JsonResponse(data)
 
 def edit_submission(request: HttpRequest) -> HttpResponse:
@@ -92,9 +99,12 @@ def email_existing_edit_link(submission: SubmissionInfo) -> bool:
 	item = SoftwareEditQueue.get_latest_expiry(submission.software)
 	if not item or item.is_expired(): return False
 	
-	user: Person = submission.submitter.person
+	submitter: Submitter = submission.submitter.first()
+	emails: list[str] = []
+	for submitter in submission.submitter.all():
+		emails += submitter.email_list()
+	user: Person = submitter.person
 	software: Software = submission.software
-	emails = submission.submitter.email_list()
 	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(item.id)}"
 
 	message = (

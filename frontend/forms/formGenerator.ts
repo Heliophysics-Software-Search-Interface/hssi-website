@@ -31,7 +31,7 @@ export class FormGenerator {
 	private fieldContainer: HTMLDivElement = null;
 	private fields: (ModelSubfield | ModelSubfield[])[] = [];
 	private fieldSections: HTMLDetailsElement[] = [];
-	private hasAgreement: boolean = true;
+	private hasAgreement: boolean = false;
 	private agreementElement: HTMLInputElement = null;
 	private isEditForm: boolean = false;
 

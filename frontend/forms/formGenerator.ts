@@ -31,7 +31,7 @@ export class FormGenerator {
 	private fieldContainer: HTMLDivElement = null;
 	private fields: (ModelSubfield | ModelSubfield[])[] = [];
 	private fieldSections: HTMLDetailsElement[] = [];
-	private hasAgreement: boolean = true;
+	private hasAgreement: boolean = false;
 	private agreementElement: HTMLInputElement = null;
 	private isEditForm: boolean = false;
 
@@ -166,7 +166,7 @@ export class FormGenerator {
 
 		// check version date is later than or equal to publication date
 		// const pubDateField = this.getRootFields().find(
-		// 	x => x.name === "publicationDate" 
+		// 	x => x.name === "publication_date" 
 		// );
 		// const verDateField = this.getRootFields().find(
 		// 	x => x.name === "versionNumber"

@@ -27,9 +27,9 @@ TYPE_ORCID = "OrcidWidget"
 TYPE_DATACITEDOI = "DataciteDoiWidget"
 TYPE_MODELBOX = "ModelBox"
 
-FIELD_PERSISTENTIDENTIFIER = "persistentIdentifier"
-FIELD_PROGRAMMINGLANGUAGE = "programmingLanguage"
-FIELD_PUBLICATIONDATE = "publicationDate"
+FIELD_PERSISTENTIDENTIFIER = "persistent_identifier"
+FIELD_PROGRAMMINGLANGUAGE = "programming_language"
+FIELD_PUBLICATIONDATE = "publication_date"
 FIELD_AUTHORS = "authors"
 FIELD_AUTHORIDENTIFIER = "authorIdentifier"
 FIELD_AUTHORAFFILIATION = "authorAffiliation"
@@ -40,29 +40,29 @@ FIELD_CONTRIBUTORAFFILIATION = "contributorAffiliation"
 FIELD_CONTRIBUTORAFFILIATIONIDENTIFIER = "contributorAffiliationIdentifier"
 FIELD_PUBLISHER = "publisher"
 FIELD_PUBLISHERIDENTIFIER = "publisherIdentifier"
-FIELD_RELATEDINSTRUMENTS = "relatedInstruments"
+FIELD_RELATEDINSTRUMENTS = "related_instruments"
 FIELD_RELATEDINSTRUMENTIDENTIFIER = "relatedInstrumentIdentifier"
 FIELD_RELATEDOBSERVATORYIDENTIFIER = "relatedObservatoryIdentifier"
-FIELD_RELATEDOBSERVATORIES = "relatedObservatories"
-FIELD_SOFTWARENAME = "softwareName"
+FIELD_RELATEDOBSERVATORIES = "related_observatories"
+FIELD_SOFTWARENAME = "software_name"
 FIELD_VERSIONNUMBER = "versionNumber"
 FIELD_VERSIONDATE = "versionDate"
 FIELD_VERSIONDESCRIPTION = "versionDescription"
 FIELD_VERSIONPID = "versionPID"
-FIELD_REFERENCEPUBLICATION = "referencePublication"
+FIELD_REFERENCEPUBLICATION = "reference_publication"
 FIELD_DESCRIPTION = "description"
-FIELD_CONCISEDESCRIPTION = "conciseDescription"
-FIELD_SOFTWAREFUNCTIONALITY = "softwareFunctionality"
+FIELD_CONCISEDESCRIPTION = "concise_description"
+FIELD_SOFTWAREFUNCTIONALITY = "software_functionality"
 FIELD_DOCUMENTATION = "documentation"
-FIELD_DATASOURCES = "dataSources"
-FIELD_INPUTFORMATS = "inputFormats"
-FIELD_OUTPUTFORMATS = "outputFormats"
-FIELD_RELATEDPUBLICATIONS = "relatedPublications"
-FIELD_RELATEDDATASETS = "relatedDatasets"
+FIELD_DATASOURCES = "data_sources"
+FIELD_INPUTFORMATS = "input_formats"
+FIELD_OUTPUTFORMATS = "output_formats"
+FIELD_RELATEDPUBLICATIONS = "related_publications"
+FIELD_RELATEDDATASETS = "related_datasets"
 FIELD_RELATEDDATASETNAME = "relatedDatasetName"
-FIELD_DEVELOPMENTSTATUS = "developmentStatus"
-FIELD_OPERATINGSYSTEM = "operatingSystem"
-FIELD_CPUARCHITECTURE = "cpuArchitecture"
+FIELD_DEVELOPMENTSTATUS = "development_status"
+FIELD_OPERATINGSYSTEM = "operating_system"
+FIELD_CPUARCHITECTURE = "cpu_architecture"
 FIELD_METADATALICENSE = "metadataLicense"
 FIELD_METADATALICENSEURI = "metadatalicenseURI"
 FIELD_METADATALICENSEIDENTIFIER = "metadatalicenseIdentifier"
@@ -74,17 +74,17 @@ FIELD_LICENSEFILEURL = "licenseFileURL"
 FIELD_LICENSEIDENTIFIER = "licenseIdentifier"
 FIELD_LICENSEIDENTIFIERSCHEME = "licenseIdentifierScheme"
 FIELD_SCHEMEURI = "schemeURI"
-FIELD_RELATEDREGION = "relatedRegion"
+FIELD_RELATEDREGION = "related_region"
 FIELD_KEYWORDS = "keywords"
-FIELD_RELATEDSOFTWARE = "relatedSoftware"
-FIELD_INTEROPERABLESOFTWARE = "interoperableSoftware"
+FIELD_RELATEDSOFTWARE = "related_software"
+FIELD_INTEROPERABLESOFTWARE = "interoperable_software"
 FIELD_FUNDER = "funder"
 FIELD_FUNDERIDENTIFIER = "funderIdentifier"
 FIELD_AWARDTITLE = "awardTitle"
 FIELD_AWARDNUMBER = "awardNumber"
 FIELD_CODEREPOSITORYURL = "codeRepositoryURL"
 FIELD_LOGO = "logo"
-FIELD_RELATEDPHENOMENA = "relatedPhenomena"
+FIELD_RELATEDPHENOMENA = "related_phenomena"
 FIELD_SUBMITTERNAME = "submitterName"
 FIELD_SUBMITTEREMAIL = "submitterEmail"
 FIELD_CURATORNAME = "curatorName"
@@ -109,7 +109,7 @@ ROW_AWARD_NAME = "name"
 ROW_AWARD_IDENTIFIER = "identifier"
 ROW_RELATEDITEM_TYPE = "type"
 ROW_SOFTWARE_VERSION = "version"
-ROW_SOFTWARE_CODEREPOSITORYURL = "codeRepositoryUrl"
+ROW_SOFTWARE_CODEREPOSITORYURL = "code_repository_url"
 ROW_SOFTWARE_AWARDTITLE = "award"
 
 TTEXPL_PROGRAMMINGLANGUAGE = "The computer programming languages most important for the software."
@@ -223,8 +223,8 @@ TTBEST_LICENSEIDENTIFIERSCHEME = "If you chose a license from the list above or 
 TTBEST_SCHEMEURI = "If you chose a license from the list above or another license included in the SPDX listing, this field will be automatically populated. Otherwise, please enter the identifier for the license, e.g. https://spdx.org/licenses/."
 TTBEST_RELATEDREGION = "Please select all physical regions the software's functionality is commonly used or intended for."
 TTBEST_KEYWORDS = "Begin typing the keyword in the box. Keywords listed in the UAT and AGU Index lists will appear in a dropdown list, please choose the correct one(s). If your keyword is not listed, please type it in."
-TTBEST_RELATEDSOFTWARE = "Ideally, the DOI for the software code should be entered here. Otherwise, the link to the code repository can be entered here instead, e.g., https://github.com/sunpy/sunpy. If there is no public code repository, please enter a link where potential users can find more information about the software, such as the link to the related HSSI item. Publication DOIs describing the indicated software should not be listed here, but rather in the relatedPublications field."
-TTBEST_INTEROPERABLESOFTWARE = "Ideally, the DOI for the software code should be entered here. Otherwise, the link to the code repository can be entered here instead, e.g., https://github.com/sunpy/sunpy. If there is no public code repository, please enter a link where potential users can find more information about the software, such as the link to the related HSSI page. Publication DOIs describing the indicated software should not be listed here, but rather in the relatedPublications field."
+TTBEST_RELATEDSOFTWARE = "Ideally, the DOI for the software code should be entered here. Otherwise, the link to the code repository can be entered here instead, e.g., https://github.com/sunpy/sunpy. If there is no public code repository, please enter a link where potential users can find more information about the software, such as the link to the related HSSI item. Publication DOIs describing the indicated software should not be listed here, but rather in the related_publications field."
+TTBEST_INTEROPERABLESOFTWARE = "Ideally, the DOI for the software code should be entered here. Otherwise, the link to the code repository can be entered here instead, e.g., https://github.com/sunpy/sunpy. If there is no public code repository, please enter a link where potential users can find more information about the software, such as the link to the related HSSI page. Publication DOIs describing the indicated software should not be listed here, but rather in the related_publications field."
 TTBEST_FUNDER = "The name of the organization that provided the funding, e.g. NASA or The Sloan Foundation."
 TTBEST_FUNDERIDENTIFIER = "If the entity that provided funding for this software has an identifier, please copy the full identifier here, e.g. https://ror.org/027ka1x80."
 TTBEST_AWARDTITLE = "Please copy the full title of the award here."
@@ -239,9 +239,9 @@ TTBEST_CURATOREMAIL = "Please ensure that a complete email address is given."
 
 # TODO give a proper solution for mapping field names to database rows on frontend
 MODEL_FIELD_MAP = {
-	FIELD_PERSISTENTIDENTIFIER: "persistentIdentifier",
+	FIELD_PERSISTENTIDENTIFIER: "persistent_identifier",
 	FIELD_PROGRAMMINGLANGUAGE: "programmingLanguage",
-	FIELD_PUBLICATIONDATE: "publicationDate",
+	FIELD_PUBLICATIONDATE: "publication_date",
 	FIELD_AUTHORS: "authors",
 	FIELD_AUTHORIDENTIFIER: "identifier",
 	FIELD_AUTHORAFFILIATION: "affiliation",
@@ -252,28 +252,28 @@ MODEL_FIELD_MAP = {
 	FIELD_CONTRIBUTORAFFILIATIONIDENTIFIER: "identifier",
 	FIELD_PUBLISHER: "publisher",
 	FIELD_PUBLISHERIDENTIFIER: "identifier",
-	FIELD_RELATEDINSTRUMENTS: "relatedInstruments",
+	FIELD_RELATEDINSTRUMENTS: "related_instruments",
 	FIELD_RELATEDINSTRUMENTIDENTIFIER: "identifier",
-	FIELD_RELATEDOBSERVATORIES: "relatedObservatories",
-	FIELD_SOFTWARENAME: "softwareName",
+	FIELD_RELATEDOBSERVATORIES: "related_observatories",
+	FIELD_SOFTWARENAME: "software_name",
 	FIELD_VERSIONNUMBER: "version",
 	FIELD_VERSIONDATE: "release_date",
 	FIELD_VERSIONDESCRIPTION: "description",
 	FIELD_VERSIONPID: "version_pid",
-	FIELD_REFERENCEPUBLICATION: "referencePublication",
+	FIELD_REFERENCEPUBLICATION: "reference_publication",
 	FIELD_DESCRIPTION: "description",
-	FIELD_CONCISEDESCRIPTION: "conciseDescription",
-	FIELD_SOFTWAREFUNCTIONALITY: "softwareFunctionality",
+	FIELD_CONCISEDESCRIPTION: "concise_description",
+	FIELD_SOFTWAREFUNCTIONALITY: "software_functionality",
 	FIELD_DOCUMENTATION: "documentation",
-	FIELD_DATASOURCES: "dataSources",
-	FIELD_INPUTFORMATS: "inputFormats",
-	FIELD_OUTPUTFORMATS: "outputFormats",
-	FIELD_RELATEDPUBLICATIONS: "relatedPublications",
-	FIELD_RELATEDDATASETS: "relatedDatasets",
+	FIELD_DATASOURCES: "data_sources",
+	FIELD_INPUTFORMATS: "input_formats",
+	FIELD_OUTPUTFORMATS: "output_formats",
+	FIELD_RELATEDPUBLICATIONS: "related_publications",
+	FIELD_RELATEDDATASETS: "related_datasets",
 	FIELD_RELATEDDATASETNAME: "name",
-	FIELD_DEVELOPMENTSTATUS: "developmentStatus",
-	FIELD_OPERATINGSYSTEM: "operatingSystem",
-	FIELD_CPUARCHITECTURE: "cpuArchitecture",
+	FIELD_DEVELOPMENTSTATUS: "development_status",
+	FIELD_OPERATINGSYSTEM: "operating_system",
+	FIELD_CPUARCHITECTURE: "cpu_architecture",
 	FIELD_METADATALICENSE: "metadataLicense",
 	FIELD_METADATALICENSEURI: "url",
 	FIELD_METADATALICENSEIDENTIFIER: "NONE",
@@ -285,17 +285,17 @@ MODEL_FIELD_MAP = {
 	FIELD_LICENSEIDENTIFIER: "NONE",
 	FIELD_LICENSEIDENTIFIERSCHEME: "NONE",
 	FIELD_SCHEMEURI: "NONE",
-	FIELD_RELATEDREGION: "relatedRegion",
+	FIELD_RELATEDREGION: "related_region",
 	FIELD_KEYWORDS: "keywords",
-	FIELD_RELATEDSOFTWARE: "relatedSoftware",
-	FIELD_INTEROPERABLESOFTWARE: "interoperableSoftware",
+	FIELD_RELATEDSOFTWARE: "related_software",
+	FIELD_INTEROPERABLESOFTWARE: "interoperable_software",
 	FIELD_FUNDER: "funder",
 	FIELD_FUNDERIDENTIFIER: "identifier",
 	FIELD_AWARDTITLE: "award",
 	FIELD_AWARDNUMBER: "identifier",
-	FIELD_CODEREPOSITORYURL: "codeRepositoryUrl",
+	FIELD_CODEREPOSITORYURL: "code_repository_url",
 	FIELD_LOGO: "logo",
-	FIELD_RELATEDPHENOMENA: "relatedPhenomena",
+	FIELD_RELATEDPHENOMENA: "related_phenomena",
 	FIELD_SUBMITTERNAME: "submitter",
 	FIELD_SUBMITTEREMAIL: "email",
 	FIELD_CURATORNAME: "curator",

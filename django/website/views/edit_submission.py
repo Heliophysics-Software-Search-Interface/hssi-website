@@ -8,6 +8,7 @@ from datetime import timedelta
 from ..data_parser import handle_submission_data
 from ..util import *
 from ..models import *
+from ..models.serializers.util import get_registered_serializer, serialize_obj_userfriendly
 
 from ..forms import (
 	SUBMISSION_FORM_FIELDS_1,
@@ -45,6 +46,12 @@ def get_submission_data(request: HttpRequest, uid: str) -> HttpResponse:
 		return HttpResponseBadRequest("Submission edit link has expired")
 
 	data = queue_item.target_software.get_serialized_data(AccessLevel.CURATOR, True)
+	submission_info = SubmissionInfo.objects.filter(software=queue_item.target_software).first()
+	submitter_data = serialize_obj_userfriendly(submission_info.submitter.first())
+	data["submissionInfo"] = {
+		"submitter": submitter_data
+	}
+
 	return JsonResponse(data)
 
 def edit_submission(request: HttpRequest) -> HttpResponse:
@@ -92,13 +99,16 @@ def email_existing_edit_link(submission: SubmissionInfo) -> bool:
 	item = SoftwareEditQueue.get_latest_expiry(submission.software)
 	if not item or item.is_expired(): return False
 	
-	user: Person = submission.submitter.person
+	submitter: Submitter = submission.submitter.first()
+	emails: list[str] = []
+	for submitter in submission.submitter.all():
+		emails += submitter.email_list()
+	user: Person = submitter.person
 	software: Software = submission.software
-	emails = submission.submitter.email_list()
 	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(item.id)}"
 
 	message = (
-		f"Hello {user.firstName}, \n\n" +
+		f"Hello {user.given_name}, \n\n" +
 		f"Thank you for submitting your software to HSSI. Once your submission " +
 		f"is reviewed, a curator will contact you at this email.\n" +
 		f"In the meantime, you can view or edit your submission with the " +
@@ -111,7 +121,7 @@ def email_existing_edit_link(submission: SubmissionInfo) -> bool:
 
 	print(f"Sending edit link for {item.id} to {emails}")
 	send_mail(
-		f"[HSSI] '{software.softwareName}' Submission Confirmed!", 
+		f"[HSSI] '{software.software_name}' Submission Confirmed!", 
 		message, 
 		None, 
 		emails
@@ -130,13 +140,13 @@ def email_edit_link(submission: SubmissionInfo, expire_time: timedelta = timedel
 	queue_item = SoftwareEditQueue.create(software, expiration)
 	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(queue_item.id)}"
 	message = (
-		f"Hello {user.firstName}, \n\n" +
+		f"Hello {user.given_name}, \n\n" +
 		f"We have received a request to email you a new edit link. "+
 		# f"Due to some backend issues, we are resending an edit link for " + 
 		# f"your submissiont to HSSI. " +
 		f"You can use " +
 		f"the link below to edit your submission " + 
-		f"'{software.softwareName}': \n\n{link}\n\n" +
+		f"'{software.software_name}': \n\n{link}\n\n" +
 		f"Note that this link will expire on " +
 		f"UTC {queue_item.expiration.strftime("%Y-%m-%d %H:%M")}."
 	)
@@ -144,7 +154,7 @@ def email_edit_link(submission: SubmissionInfo, expire_time: timedelta = timedel
 	emails = submission.submitter.email_list()
 	print(f"Creating and sending edit link for {queue_item.id} to {emails}...")
 	send_mail(
-		f"[HSSI] Link to edit '{software.softwareName}' submission", 
+		f"[HSSI] Link to edit '{software.software_name}' submission", 
 		message, 
 		None, 
 		emails

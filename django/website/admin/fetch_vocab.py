@@ -1,20 +1,19 @@
 """
-This module contains functionality for retrieving json-ld data from our 
+Functionality for retrieving json-ld data from our 
 maintained HSSI vocabulary repository at 
 https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/
 """
+
+from __future__ import annotations
 
 import requests
 import json
 
 from ..models import (
-	HssiModel, ControlledList, ControlledGraphList, DataInput, License, 
+	ControlledList, ControlledGraphList, DataInput, License, 
 	OperatingSystem, ProgrammingLanguage, FileFormat, RepoStatus, 
-	CpuArchitecture, FunctionCategory
+	CpuArchitecture, Region
 )
-
-from django.db.models import Model
-import rdflib
 
 from typing import Type, Any
 
@@ -30,6 +29,13 @@ URL_SUPPORTEDFILEFORMATS = URL_JSONBASE + "OutputFileFormats.json"
 URL_PROGRAMMINGLANGUAGES = URL_JSONBASE + "ProgrammingLanguages.json"
 URL_FUNCTIONCATEGORIES = URL_TTLBASE + "softwareFunctionality-v0.3.ttl"
 
+URL_HELIOPHYSICS_API = "https://api.heliophysics.net/api/"
+URL_REGIONS_JSON = URL_HELIOPHYSICS_API + "regions/"
+
+URL_HELIOKNOWBASE = "https://raw.githubusercontent.com/rmcgranaghan/Helio-KNOW/refs/heads/main/data-models/"
+URL_REGIONS_TTL = URL_HELIOKNOWBASE + "hk_region.ttl"
+URL_PHENOMENA = URL_HELIOKNOWBASE + "hk_phenomenon.ttl"
+
 MODEL_URL_MAP={
 	DataInput.__name__: URL_DATAINPUTS,
 	License.__name__: URL_LICENSES,
@@ -38,10 +44,10 @@ MODEL_URL_MAP={
 	ProgrammingLanguage.__name__: URL_PROGRAMMINGLANGUAGES,
 	FileFormat.__name__: URL_SUPPORTEDFILEFORMATS,
 	RepoStatus.__name__: URL_REPOSTATUS,
+	Region.__name__: URL_REGIONS_JSON,
 }
 
 def get_data(url: str) -> dict | list:
-	if url.endswith('.ttl'): return get_data_turtle(url)
 	req = requests.get(url)
 	try:
 		return req.json()
@@ -50,85 +56,6 @@ def get_data(url: str) -> dict | list:
 		str_data: str = req.text
 		str_data = str_data.replace('“', '"').replace('”', '"')
 	return json.loads(str_data)
-
-def get_data_turtle(url: str) -> dict | list:
-	req = requests.get(url)
-	graph = rdflib.Graph()
-	try:
-		graph.parse(data=req.text, format='turtle')
-	except Exception as e:
-		print(f"Error parsing turtle data from {url}: {e}")
-	json_data = parse_ttl_jsonld(json.loads(graph.serialize(format='json-ld')))
-	return json_data
-
-def parse_ttl_jsonld(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
-	"""
-	Parse the turtle file data (which should be exported as a json-ld) into a 
-	proper json data format.
-	"""
-	parsed = []
-
-	# TODO we should probably remove this entire intermediary step of 
-	# converting the ttl to a json then parsing the json, and instead 
-	# just parse the ttl directly with rdflib
-
-	# get the names of the classes that inherit from Concept
-	class_names = ["Class", "Concept"]
-	cnfound = True
-	while cnfound:
-		cnfound = False
-		for entry in data:
-			val = entry.get('@type', None)
-			id = entry.get('@id', None)
-			if id and val:
-				while isinstance(val, list): val = val[0]
-				val = ttl_spl_str(val)
-				if val == "Class":
-					sckey = "subClassOf"
-					for key in entry.keys():
-						nkey = ttl_spl_str(key)
-						if nkey == "subClassOf":
-							sckey = key
-							break
-					nval = entry.get(sckey, None)
-					if nval:
-						while isinstance(nval, list): nval = nval[0]
-						if isinstance(nval, dict): 
-							nval = nval.get('@id') or nval.get('@value')
-						nval = ttl_spl_str(nval)
-						if nval in class_names:
-							id = ttl_spl_str(id)
-							if id not in class_names:
-								cnfound = True
-								class_names.append(id)
-
-	for entry in data:
-		new = {}
-		etype = entry.get('@type', None)
-		if etype:
-			while isinstance(etype, list): etype = etype[0]
-			etype = ttl_spl_str(etype)
-			if etype in class_names: etype = "Concept"
-			new['@type'] = etype
-		for entry_key, entry_value in entry.items():
-			if entry_key == '@type': continue
-			newkey = ttl_spl_str(entry_key)
-			newval = entry_value
-			split_val = not newkey.startswith('@')
-			delistify = newkey not in ["broader"]
-			if delistify: 
-				while isinstance(newval, list): newval = newval[0]
-			if isinstance(newval, dict):
-				if '@id' in newval: split_val = False
-				newval = newval.get('@value') or newval.get('@id') or newval
-				if isinstance(newval, dict):
-					if len(newval) > 0: newval = newval.values()[0]
-			if delistify:
-				while isinstance(newval, list): newval = newval[0]
-			if split_val and delistify: newval = ttl_spl_str(newval)
-			new[newkey] = newval
-		parsed.append(new)
-	return parsed
 
 def ttl_spl_str(data_str: str) -> str:
 	"""
@@ -139,6 +66,25 @@ def ttl_spl_str(data_str: str) -> str:
 	if len(splitstr) > 1:
 		return splitstr[-1]
 	return data_str
+
+def get_concepts_generalized(
+	data: list[dict[str, Any]],
+	key_preflabel: str = "prefLabel", 
+	key_ident: str = "@id", 
+	key_definition: str = "definition"
+) -> list[DataListConcept]:
+	concepts: list[DataListConcept] = []
+	for item in data:
+		preflabel = item.get(key_preflabel)
+		ident = item.get(key_ident)
+		definition = item.get(key_definition)
+		if preflabel or ident or definition:
+			concept = DataListConcept()
+			if preflabel: concept.pref_label = preflabel
+			if ident: concept.identifier = ident
+			if definition: concept.definition = definition
+			concepts.append(concept)
+	return concepts
 
 def get_concepts(data: dict | list[dict]) -> list[dict]:
 	if isinstance(data, dict):
@@ -224,4 +170,3 @@ def link_concept_children(
 			parent_obj.children.add(obj)
 			print(f"Linked '{parent_obj.name}' with child '{obj.name}'")
 	for obj in objs: obj.save()
-			

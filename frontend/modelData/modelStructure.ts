@@ -24,7 +24,7 @@ export type ModelName = (
 	| "Organization"
 	| "Software"
 	| "SoftwareVersion"
-	| "VisibleSoftware"
+	| "VerifiedSoftware"
 	| "SoftwareEditQueue"
 	| "SubmissionInfo"
 	| "Award"
@@ -37,11 +37,6 @@ export type ModelName = (
 export interface HSSIModelData extends JSONObject {
 	/** string represinting a unique UUID for the object */
 	id: string,
-}
-
-export interface HSSIImageData extends HSSIModelData {
-	url: string,
-	description: string,
 }
 
 export interface ControlledListData extends HSSIModelData {
@@ -68,6 +63,7 @@ export interface FunctionalityData extends GraphListData {
 
 export interface VersionData extends HSSIModelData {
 	number: string,
+	release_date: string,
 }
 
 export interface OrganizationData extends HSSIModelData {
@@ -77,45 +73,45 @@ export interface OrganizationData extends HSSIModelData {
 }
 
 export interface PersonData extends HSSIModelData {
-	firstName: string,
-	lastName: string,
+	given_name: string,
+	family_name: string,
 	/** ORCID of the person */
 	identifier?: string,
 	affiliation: JSONArray<OrganizationData>,
 }
 
 export interface SoftwareData extends HSSIModelData {
-	programmingLanguage: JSONArray<ControlledListData>,
-	publicationDate: string,
+	programming_language: JSONArray<ControlledListData>,
+	publication_date: string,
 	publisher: OrganizationData,
 	authors: JSONArray<PersonData>,
-	relatedInstruments: JSONArray<ControlledListData>,
-	relatedObservatories: JSONArray<ControlledListData>,
-	softwareName: string,
+	related_instruments: JSONArray<ControlledListData>,
+	related_observatories: JSONArray<ControlledListData>,
+	software_name: string,
 	version: VersionData,
-	persistentIdentifier: string,
-	referencePublication: ControlledListData,
+	persistent_identifier: string,
+	reference_publication: ControlledListData,
 	description: string,
-	conciseDescription: string,
+	concise_description: string,
 	documentation: string,
-	softwareFunctionality: JSONArray<FunctionalityData>,
-	dataSources: JSONArray<ControlledListData>,
-	inputFormats: JSONArray<ControlledListData>,
-	outputFormats: JSONArray<ControlledListData>,
-	cpuArchitecture: JSONArray<ControlledListData>,
-	relatedPublications: JSONArray<ControlledListData>,
-	relatedDatasets: JSONArray<ControlledListData>,
-	developmentStatus: ControlledListData,
-	operatingSystem: JSONArray<ControlledListData>,
+	software_functionality: JSONArray<FunctionalityData>,
+	data_sources: JSONArray<ControlledListData>,
+	input_formats: JSONArray<ControlledListData>,
+	output_formats: JSONArray<ControlledListData>,
+	cpu_architecture: JSONArray<ControlledListData>,
+	related_publications: JSONArray<ControlledListData>,
+	related_datasets: JSONArray<ControlledListData>,
+	development_status: ControlledListData,
+	operating_system: JSONArray<ControlledListData>,
 	license: JSONArray<ControlledListData>,
-	relatedRegion: JSONArray<ControlledListData>,
+	related_region: JSONArray<ControlledListData>,
 	keywords: JSONArray<KeywordData>,
-	relatedSoftware: JSONArray<ControlledListData>,
-	interoperableSoftware: JSONArray<ControlledListData>,
+	related_software: JSONArray<ControlledListData>,
+	interoperable_software: JSONArray<ControlledListData>,
 	funder: JSONArray<OrganizationData>,
 	award: HSSIModelData,
-	codeRepositoryUrl: string,
-	logo: JSONObject,
-	relatedPhenomena: JSONArray<ControlledListData>,
+	code_repository_url: string,
+	logo: string,
+	related_phenomena: JSONArray<ControlledListData>,
 	submissionInfo: JSONObject,
 }

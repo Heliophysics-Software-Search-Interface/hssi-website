@@ -1,5 +1,4 @@
 from ._old import *
-from .migrate import *
 from .submit import *
 from .exposed_models import *
 from .model_rows import *
@@ -8,3 +7,5 @@ from .edit_submission import *
 from .software_detail import *
 from .search import *
 from .api_submit import *
+from .citation import *
+from .api import *

@@ -25,7 +25,7 @@ export class ModelData {
 		let factory: BaseChipFactory<HSSIModelData> = null;
 
 		switch(model){
-			case "VisibleSoftware":
+			case "VerifiedSoftware":
 			case "Software":
 				factory = new BaseChipFactory(model); break;
 			case "FunctionCategory":

@@ -1,5 +1,3 @@
-{% load custom_tags_and_filters %}
-
 <form id={{form_id}} method="GET">
 	{% if is_dropdown %}
 	<ul class="vertical dropdown menu accordion-menu mobile-menu-container" data-accordion-menu>
@@ -7,8 +5,7 @@
 	<ul class="vertical menu accordion-menu" data-accordion-menu>
 	{% endif %}
 		{% for category in categories %}
-		{% with selected_subcategory_ids=category.children|id_values_list|intersection:selected_category_ids %}
-		{% if selected_category_ids and category.id not in selected_category_ids and not selected_subcategory_ids %}
+		{% if selected_category_ids and category.id not in selected_category_ids %}
 		<li class="unselected_filter filter_menu">
 		{% elif selected_category_ids and category.id in selected_category_ids %}
 		<li class="selected_filter filter_menu">
@@ -25,15 +22,10 @@
 					<label for="{{category.id}}" class="category_name {{category.abbreviation}}">{{category.name}}</label>
 				</div>
 			</a>
-			{% if selected_subcategory_ids %}
-			<ul class="menu vertical nested is-active">
-			{% else %}
 			<ul class="menu vertical nested">
-			{% endif %}
 				{% for subcategory in category.children.all %}
 				<li>
-					<input class="label sub_filter" type="checkbox" name="category_checkbox" value="{{subcategory.id}}" id="{{category.id}}_{{subcategory.id}}"
-						{% if subcategory.id in selected_subcategory_ids %} checked {% endif %} >
+					<input class="label sub_filter" type="checkbox" name="category_checkbox" value="{{subcategory.id}}" id="{{category.id}}_{{subcategory.id}}">
 					</input>
 					<label class="subcategory_name" for="{{category.id}}_{{subcategory.id}}">{{subcategory.name}}</label>
 				</li>

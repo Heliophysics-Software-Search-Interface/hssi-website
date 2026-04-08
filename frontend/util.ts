@@ -1,4 +1,4 @@
-import { ConfirmDialogue, FormGenerator, PopupDialogue, TextInputDialogue } from "./loader";
+import { ConfirmDialogue, FormGenerator, PopupDialogue, TextInputDialogue, type VersionData } from "./loader";
 
 export const uuid4Regex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 export const softwareApiUrl = "/api/models/Software/rows/";
@@ -179,14 +179,25 @@ export async function getSoftwareEditFormData(uid: string): Promise<JSONObject> 
 		// fill form function on the form generator, given the submission info
 		if(submitter) {
 			submitter.submitterName = (
-				(submitter.person as JSONObject)?.firstName as string + " " +
-				(submitter.person as JSONObject)?.lastName as string
+				(submitter.person as JSONObject)?.given_name as string + " " +
+				(submitter.person as JSONObject)?.family_name as string
 			);
-			let emails = JSON.parse((submitter.email as string).replaceAll("'", '"'));
+			let emails: string | Array<string> = submitter.email;
+			try{ 
+				emails = JSON.parse((submitter.email as string).replaceAll("'", '"')); 
+			}
+			catch(e) { }
 			if(!(emails instanceof Array)) emails = [emails];
 			submitter.submitterEmail = emails;
 			data.submitterName = submitter;
 		}
+	}
+	if(data.version instanceof Array){
+		const versions: Array<VersionData> = data.version;
+		data.version = versions.reduce((acc, cur) => {
+			// iso formatted dates are sorted lexicographically
+			return cur.release_date > acc.release_date ? cur : acc;
+		}, versions[0]);
 	}
 	console.log("fetched software data: ", data);
 	return data;

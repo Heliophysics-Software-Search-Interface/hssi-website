@@ -2,10 +2,10 @@
 {% load static %}
 {% load markdownify %}
 
-{% block title %}{{ software.softwareName }} - HSSI{% endblock %}
+{% block title %}{{ software.software_name }} - HSSI{% endblock %}
 
 {% block seo_description %}
-<meta name="description" content="{{ software.conciseDescription|default:software.description|truncatewords:30 }}" />
+<meta name="description" content="{{ software.concise_description|default:software.description|truncatewords:30 }}" />
 {% endblock %}
 
 {% block head %}
@@ -20,23 +20,23 @@
     <div class="software-header">
         <div class="software-header-content">
             <div class="software-title-section">
-                <h1 class="software-name">{{ software.softwareName }}</h1>
-                {% if software.version %}
-                <span class="software-version">{{ software.version.number }}</span>
+                <h1 class="software-name">{{ software.software_name }}</h1>
+                {% if latest_version %}
+                <span class="software-version">{{ latest_version.number }}</span>
                 {% endif %}
             </div>
 
-            {% if software.logo and software.logo.url %}
+            {% if software.logo %}
             <div class="software-logo-container">
-                <img class="software-logo" src="{{ software.logo.url }}" alt="{{ software.softwareName }} logo">
+                <img class="software-logo" src="{{ software.logo }}" alt="{{ software.software_name }} logo">
             </div>
             {% endif %}
         </div>
 
         <!-- Quick Action Buttons -->
         <div class="software-actions">
-            {% if software.codeRepositoryUrl %}
-            <a href="{{ software.codeRepositoryUrl }}" class="action-btn btn-code" target="_blank">
+            {% if software.code_repository_url %}
+            <a href="{{ software.code_repository_url }}" class="action-btn btn-code" target="_blank">
                 <i class="fa fa-code"></i> Code
             </a>
             {% endif %}
@@ -45,18 +45,77 @@
                 <i class="fa fa-book"></i> Docs
             </a>
             {% endif %}
-            {% if software.referencePublication and software.referencePublication.identifier %}
-            <a href="{{ software.referencePublication.identifier }}" class="action-btn btn-publication" target="_blank">
+            {% if software.reference_publication and software.reference_publication.identifier %}
+            <a href="{{ software.reference_publication.identifier }}" class="action-btn btn-publication" target="_blank">
                 <i class="fa fa-file-text"></i> Publication
             </a>
             {% endif %}
-            {% if software.persistentIdentifier %}
-            <a href="{{ software.persistentIdentifier }}" class="action-btn btn-doi" target="_blank">
+            {% if software.persistent_identifier %}
+            <a href="{{ software.persistent_identifier }}" class="action-btn btn-doi" target="_blank">
                 <i class="fa fa-link"></i> DOI
             </a>
             {% endif %}
+            {% if software.persistent_identifier or software.reference_publication and software.reference_publication.identifier %}
+            <button class="action-btn btn-cite" id="cite-me-btn">
+                <i class="fa fa-quote-left"></i> Cite Me
+            </button>
+            {% endif %}
         </div>
     </div>
+
+    <!-- Citation Section -->
+    {% if software.persistent_identifier or software.reference_publication and software.reference_publication.identifier %}
+    <details class="software-section citation-section citation-hidden" open {% if software.persistent_identifier %}data-doi="{{ software.persistent_identifier }}"{% endif %}{% if software.reference_publication and software.reference_publication.identifier %} data-ref-doi="{{ software.reference_publication.identifier }}"{% endif %}>
+        <summary class="section-title">Citation</summary>
+        <p class="citation-notice" id="citation-notice"></p>
+        {% if software.persistent_identifier %}
+        <h3 class="citation-subheader">Software</h3>
+        <div class="citation-text" id="citation-text-software">
+            <div class="citation-skeleton">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line" style="width: 60%"></div>
+                <div class="skeleton-line" style="width: 75%"></div>
+            </div>
+        </div>
+        {% endif %}
+        {% if software.reference_publication and software.reference_publication.identifier %}
+        <h3 class="citation-subheader">Reference Publication</h3>
+        <div class="citation-text" id="citation-text-refpub">
+            <div class="citation-skeleton">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line" style="width: 60%"></div>
+                <div class="skeleton-line" style="width: 75%"></div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="citation-controls">
+            <label for="citation-style">Style</label>
+            <select id="citation-style">
+                <option value="american-geophysical-union">AGU</option>
+                <option value="apa" selected>APA</option>
+                <option value="bibtex">BibTeX</option>
+                <option value="chicago-fullnote-bibliography">Chicago</option>
+                <option value="elsevier-harvard">Elsevier Harvard</option>
+                <option value="harvard-cite-them-right">Harvard</option>
+                <option value="ieee">IEEE</option>
+                <option value="modern-language-association">MLA</option>
+                <option value="nature">Nature</option>
+                <option value="science">Science</option>
+                <option value="vancouver">Vancouver</option>
+            </select>
+            {% if software.persistent_identifier %}
+            <button id="citation-copy-software" class="citation-copy-btn" title="Copy citation to clipboard">
+                <i class="fa fa-copy"></i>
+            </button>
+            {% endif %}
+            {% if software.reference_publication and software.reference_publication.identifier %}
+            <button id="citation-copy-refpub" class="citation-copy-btn" {% if software.persistent_identifier %}style="display:none"{% endif %} title="Copy reference publication citation to clipboard">
+                <i class="fa fa-copy"></i>
+            </button>
+            {% endif %}
+        </div>
+    </details>
+    {% endif %}
 
     <!-- Main Content -->
     <div class="software-content">
@@ -74,31 +133,31 @@
         </details>
 
         <!-- Concise Description Section -->
-        {% if software.conciseDescription %}
+        {% if software.concise_description %}
         <details class="software-section">
             <summary class="section-title">Concise Description</summary>
             <div class="description-content">
-                {{ software.conciseDescription|markdownify }}
+                {{ software.concise_description|markdownify }}
             </div>
         </details>
         {% endif %}
 
         <!-- Reference Publication Section -->
-        {% if software.referencePublication %}
+        {% if software.reference_publication %}
         <details class="software-section" open>
             <summary class="section-title">Reference Publication</summary>
             <div class="publication-item">
-                {% if software.referencePublication.identifier %}
-                <a href="{{ software.referencePublication.identifier }}" class="publication-title-link" target="_blank">
-                    {% if software.referencePublication.name and software.referencePublication.name != "UNKNOWN" %}
-                    {{ software.referencePublication.name }}
+                {% if software.reference_publication.identifier %}
+                <a href="{{ software.reference_publication.identifier }}" class="publication-title-link" target="_blank">
+                    {% if software.reference_publication.name and software.reference_publication.name != "UNKNOWN" %}
+                    {{ software.reference_publication.name }}
                     {% else %}
-                    {{ software.referencePublication.identifier }}
+                    {{ software.reference_publication.identifier }}
                     {% endif %}
                 </a>
                 {% else %}
                 <span class="publication-title">
-                    {{ software.referencePublication.name }}
+                    {{ software.reference_publication.name }}
                 </span>
                 {% endif %}
             </div>
@@ -115,10 +174,10 @@
                     <span class="author-name">
                         {% if author.identifier %}
                         <a href="{{ author.identifier }}" target="_blank">
-                            {{ author.firstName }} {{ author.lastName }}
+                            {{ author.given_name }} {{ author.family_name }}
                         </a>
                         {% else %}
-                        {{ author.firstName }} {{ author.lastName }}
+                        {{ author.given_name }} {{ author.family_name }}
                         {% endif %}
                     </span>
                     {% if author.affiliation.all %}
@@ -144,11 +203,11 @@
         {% endif %}
 
         <!-- Functionality Section -->
-        {% if software.softwareFunctionality.all %}
+        {% if software.software_functionality.all %}
         <details class="software-section" open>
             <summary class="section-title">Functionality</summary>
             <div class="functionality-tags">
-                {% for func in software.softwareFunctionality.all %}
+                {% for func in software.software_functionality.all %}
                 <span class="tag functionality-tag"
                       style="background-color: {{ func.backgroundColor }}; color: {{ func.textColor }}">
                     {{ func.name }}
@@ -162,52 +221,52 @@
         <details class="software-section" open>
             <summary class="section-title">Technical Details</summary>
             <div class="metadata-grid">
-                {% if software.programmingLanguage.all %}
+                {% if software.programming_language.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Programming Languages</span>
                     <span class="metadata-value">
-                        {% for lang in software.programmingLanguage.all %}
+                        {% for lang in software.programming_language.all %}
                         <span class="tag">{{ lang.name }}</span>
                         {% endfor %}
                     </span>
                 </div>
                 {% endif %}
 
-                {% if software.operatingSystem.all %}
+                {% if software.operating_system.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Operating Systems</span>
                     <span class="metadata-value">
-                        {% for os in software.operatingSystem.all %}
+                        {% for os in software.operating_system.all %}
                         <span class="tag">{{ os.name }}</span>
                         {% endfor %}
                     </span>
                 </div>
                 {% endif %}
 
-                {% if software.cpuArchitecture.all %}
+                {% if software.cpu_architecture.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">CPU Architecture</span>
                     <span class="metadata-value">
-                        {% for arch in software.cpuArchitecture.all %}
+                        {% for arch in software.cpu_architecture.all %}
                         <span class="tag">{{ arch.name }}</span>
                         {% endfor %}
                     </span>
                 </div>
                 {% endif %}
 
-                {% if software.developmentStatus %}
+                {% if software.development_status %}
                 <div class="metadata-item">
                     <span class="metadata-label">Development Status</span>
                     <span class="metadata-value">
-                        <span class="tag status-tag">{{ software.developmentStatus.name }}</span>
+                        <span class="tag status-tag">{{ software.development_status.name }}</span>
                     </span>
                 </div>
                 {% endif %}
 
-                {% if software.publicationDate %}
+                {% if software.publication_date %}
                 <div class="metadata-item">
                     <span class="metadata-label">Publication Date</span>
-                    <span class="metadata-value">{{ software.publicationDate|date:"M d, Y" }}</span>
+                    <span class="metadata-value">{{ software.publication_date|date:"M d, Y" }}</span>
                 </div>
                 {% endif %}
 
@@ -229,37 +288,37 @@
         </details>
 
         <!-- Data & File Formats Section -->
-        {% if software.dataSources.all or software.inputFormats.all or software.outputFormats.all %}
+        {% if software.data_sources.all or software.input_formats.all or software.output_formats.all %}
         <details class="software-section" open>
             <summary class="section-title">Data & File Formats</summary>
             <div class="metadata-grid">
-                {% if software.dataSources.all %}
+                {% if software.data_sources.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Data Sources</span>
                     <span class="metadata-value">
-                        {% for ds in software.dataSources.all %}
+                        {% for ds in software.data_sources.all %}
                         <span class="tag">{{ ds.name }}</span>
                         {% endfor %}
                     </span>
                 </div>
                 {% endif %}
 
-                {% if software.inputFormats.all %}
+                {% if software.input_formats.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Input Formats</span>
                     <span class="metadata-value">
-                        {% for fmt in software.inputFormats.all %}
+                        {% for fmt in software.input_formats.all %}
                         <span class="tag">{{ fmt.name }}</span>
                         {% endfor %}
                     </span>
                 </div>
                 {% endif %}
 
-                {% if software.outputFormats.all %}
+                {% if software.output_formats.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Output Formats</span>
                     <span class="metadata-value">
-                        {% for fmt in software.outputFormats.all %}
+                        {% for fmt in software.output_formats.all %}
                         <span class="tag">{{ fmt.name }}</span>
                         {% endfor %}
                     </span>
@@ -270,15 +329,15 @@
         {% endif %}
 
         <!-- Science Context Section -->
-        {% if software.relatedInstruments.all or software.relatedObservatories.all or software.relatedPhenomena.all or software.relatedRegion.all %}
+        {% if software.related_instruments.all or software.related_observatories.all or software.related_phenomena.all or software.related_region.all %}
         <details class="software-section" open>
             <summary class="section-title">Science Context</summary>
             <div class="metadata-grid">
-                {% if software.relatedInstruments.all %}
+                {% if software.related_instruments.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Related Instruments</span>
                     <span class="metadata-value">
-                        {% for inst in software.relatedInstruments.all %}
+                        {% for inst in software.related_instruments.all %}
                         {% if inst.identifier %}
                         <a class="tag" href="{{ inst.identifier }}" target="_blank">
                             {% if inst.name and inst.name != "UNKNOWN" %}
@@ -295,11 +354,11 @@
                 </div>
                 {% endif %}
 
-                {% if software.relatedObservatories.all %}
+                {% if software.related_observatories.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Related Observatories</span>
                     <span class="metadata-value">
-                        {% for obs in software.relatedObservatories.all %}
+                        {% for obs in software.related_observatories.all %}
                         {% if obs.identifier %}
                         <a class="tag" href="{{ obs.identifier }}" target="_blank">
                             {% if obs.name and obs.name != "UNKNOWN" %}
@@ -316,11 +375,11 @@
                 </div>
                 {% endif %}
 
-                {% if software.relatedPhenomena.all %}
+                {% if software.related_phenomena.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Related Phenomena</span>
                     <span class="metadata-value">
-                        {% for phen in software.relatedPhenomena.all %}
+                        {% for phen in software.related_phenomena.all %}
                         {% if phen.identifier %}
                         <a class="tag" href="{{ phen.identifier }}" target="_blank">
                             {% if phen.name and phen.name != "UNKNOWN" %}
@@ -337,11 +396,11 @@
                 </div>
                 {% endif %}
 
-                {% if software.relatedRegion.all %}
+                {% if software.related_region.all %}
                 <div class="metadata-item">
                     <span class="metadata-label">Related Regions</span>
                     <span class="metadata-value">
-                        {% for reg in software.relatedRegion.all %}
+                        {% for reg in software.related_region.all %}
                         {% if reg.identifier %}
                         <a class="tag" href="{{ reg.identifier }}" target="_blank">
                             {% if reg.name and reg.name != "UNKNOWN" %}
@@ -374,14 +433,14 @@
         {% endif %}
 
         <!-- Related Items Section -->
-        {% if software.relatedPublications.all or software.relatedDatasets.all or software.relatedSoftware.all or software.interoperableSoftware.all %}
+        {% if software.related_publications.all or software.related_datasets.all or software.related_software.all or software.interoperable_software.all %}
         <details class="software-section" open>
             <summary class="section-title">Related Items</summary>
 
-            {% if software.relatedPublications.all %}
+            {% if software.related_publications.all %}
             <div class="related-items-subsection">
                 <h3>Related Publications</h3>
-                {% for pub in software.relatedPublications.all %}
+                {% for pub in software.related_publications.all %}
                 <div class="publication-item">
                     {% if pub.identifier %}
                     <a href="{{ pub.identifier }}" class="publication-title-link" target="_blank">
@@ -401,10 +460,10 @@
             </div>
             {% endif %}
 
-            {% if software.relatedDatasets.all %}
+            {% if software.related_datasets.all %}
             <div class="related-items-subsection">
                 <h3>Related Datasets</h3>
-                {% for ds in software.relatedDatasets.all %}
+                {% for ds in software.related_datasets.all %}
                 <div class="related-item">
                     {% if ds.identifier %}
                     <a href="{{ ds.identifier }}" class="related-item-link" target="_blank">
@@ -424,10 +483,10 @@
             </div>
             {% endif %}
 
-            {% if software.relatedSoftware.all %}
+            {% if software.related_software.all %}
             <div class="related-items-subsection">
                 <h3>Related Software</h3>
-                {% for sw in software.relatedSoftware.all %}
+                {% for sw in software.related_software.all %}
                 <div class="related-item">
                     {% if sw.identifier %}
                     <a href="{{ sw.identifier }}" class="related-item-link" target="_blank">
@@ -447,10 +506,10 @@
             </div>
             {% endif %}
 
-            {% if software.interoperableSoftware.all %}
+            {% if software.interoperable_software.all %}
             <div class="related-items-subsection">
                 <h3>Interoperable Software</h3>
-                {% for sw in software.interoperableSoftware.all %}
+                {% for sw in software.interoperable_software.all %}
                 <div class="related-item">
                     {% if sw.identifier %}
                     <a href="{{ sw.identifier }}" class="related-item-link" target="_blank">
@@ -490,18 +549,9 @@
                 </div>
                 {% endif %}
 
-                {% if software.licenseFileUrl %}
-                <div class="metadata-item">
-                    <span class="metadata-label">License File</span>
-                    <span class="metadata-value">
-                        <a href="{{ software.licenseFileUrl }}" target="_blank">View License File</a>
-                    </span>
-                </div>
-                {% endif %}
-
-                {% if software.funder.all %}
-                <div class="metadata-item">
-                    <span class="metadata-label">Funders</span>
+        {% if software.funder.all %}
+        <div class="metadata-item">
+            <span class="metadata-label">Funders</span>
                     <span class="metadata-value">
                         {% for funder in software.funder.all %}
                         {% with funder_link=funder.identifier|default:funder.website %}
@@ -539,32 +589,32 @@
         {% endif %}
 
         <!-- Version Information Section -->
-        {% if software.version %}
+        {% if latest_version %}
         <details class="software-section" open>
             <summary class="section-title">Version Information</summary>
             <div class="metadata-grid">
                 <div class="metadata-item">
                     <span class="metadata-label">Current Version</span>
-                    <span class="metadata-value">{{ software.version.number }}</span>
+                    <span class="metadata-value">{{ latest_version.number }}</span>
                 </div>
-                {% if software.version.release_date %}
+                {% if latest_version.release_date %}
                 <div class="metadata-item">
                     <span class="metadata-label">Release Date</span>
-                    <span class="metadata-value">{{ software.version.release_date|date:"M d, Y" }}</span>
+                    <span class="metadata-value">{{ latest_version.release_date|date:"M d, Y" }}</span>
                 </div>
                 {% endif %}
-                {% if software.version.version_pid %}
+                {% if latest_version.version_pid %}
                 <div class="metadata-item">
                     <span class="metadata-label">Version DOI</span>
                     <span class="metadata-value">
-                        <a href="{{ software.version.version_pid }}" target="_blank">{{ software.version.version_pid }}</a>
+                        <a href="{{ latest_version.version_pid }}" target="_blank">{{ latest_version.version_pid }}</a>
                     </span>
                 </div>
                 {% endif %}
-                {% if software.version.description %}
+                {% if latest_version.description %}
                 <div class="metadata-item full-width">
                     <span class="metadata-label">Release Notes</span>
-                    <div class="metadata-value release-notes">{{ software.version.description|markdownify }}</div>
+                    <div class="metadata-value release-notes">{{ latest_version.description|markdownify }}</div>
                 </div>
                 {% endif %}
             </div>
@@ -634,4 +684,169 @@ document.querySelectorAll('details.software-section').forEach(details => {
     });
 });
 </script>
+
+{% if software.persistent_identifier or software.reference_publication and software.reference_publication.identifier %}
+<script>
+(function() {
+    var section = document.querySelector('.citation-section');
+    if (!section) return;
+
+    var doi = section.dataset.doi || '';
+    var refDoi = section.dataset.refDoi || '';
+    var hasDoi = doi.indexOf('https://doi.org/') === 0;
+    var hasRefDoi = refDoi.indexOf('https://doi.org/') === 0;
+    var softwareEl = document.getElementById('citation-text-software');
+    var refpubEl = document.getElementById('citation-text-refpub');
+    var styleSelect = document.getElementById('citation-style');
+    var copySoftwareBtn = document.getElementById('citation-copy-software');
+    var copyRefpubBtn = document.getElementById('citation-copy-refpub');
+
+    var showBoth = hasDoi && refpubEl && hasRefDoi;
+    var noticeEl = document.getElementById('citation-notice');
+
+    function updateNotice(style) {
+        var text = showBoth
+            ? 'Citations are generated from the DOIs stored on this page.'
+            : 'Citation is generated from the DOI stored on this page.';
+        if (hasDoi) {
+            text += ' If no version is shown, consider adding the version you used.';
+        }
+        if (showBoth) {
+            text += ' For complete attribution, please cite both the software and the reference publication.';
+        }
+        if (hasDoi && style === 'bibtex') {
+            text += ' Note: BibTeX entries may use @book\u2014change this to @misc or @software if needed.';
+        }
+        noticeEl.textContent = text;
+    }
+
+    updateNotice(styleSelect.value);
+
+    if (showBoth) {
+        // Show both copy buttons with specific titles
+        if (copySoftwareBtn) copySoftwareBtn.title = 'Copy software citation to clipboard';
+        if (copyRefpubBtn) copyRefpubBtn.style.display = '';
+    } else {
+        // Single citation - hide subheaders
+        var headers = section.querySelectorAll('.citation-subheader');
+        for (var i = 0; i < headers.length; i++) {
+            headers[i].style.display = 'none';
+        }
+        // If ref pub identifier is not a valid DOI, hide its elements
+        if (refpubEl && !hasRefDoi) {
+            refpubEl.style.display = 'none';
+            if (copyRefpubBtn) copyRefpubBtn.style.display = 'none';
+        }
+    }
+
+    var skeletonHTML = '<div class="citation-skeleton">'
+        + '<div class="skeleton-line"></div>'
+        + '<div class="skeleton-line" style="width: 60%"></div>'
+        + '<div class="skeleton-line" style="width: 75%"></div>'
+        + '</div>';
+
+    var sectionBody = section.querySelector('.section-body');
+    var citationCache = {};
+
+    function updateSectionHeight() {
+        if (sectionBody && section.open) {
+            sectionBody.style.maxHeight = 'none';
+        }
+    }
+
+    function fetchOne(el, doiUrl, style) {
+        var cacheKey = doiUrl + '|' + style;
+        if (citationCache[cacheKey]) {
+            el.innerHTML = citationCache[cacheKey];
+            updateSectionHeight();
+            return;
+        }
+        el.innerHTML = skeletonHTML;
+        updateSectionHeight();
+        fetch('{% url "website:get_citation" %}?doi=' + encodeURIComponent(doiUrl) + '&style=' + encodeURIComponent(style))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.error) {
+                    el.textContent = 'Error: ' + data.error;
+                } else {
+                    citationCache[cacheKey] = data.citation;
+                    el.innerHTML = data.citation;
+                }
+                updateSectionHeight();
+            })
+            .catch(function() {
+                el.textContent = 'Failed to load citation.';
+                updateSectionHeight();
+            });
+    }
+
+    function fetchAll(style) {
+        if (softwareEl && hasDoi) {
+            fetchOne(softwareEl, doi, style);
+        }
+        if (refpubEl && hasRefDoi) {
+            fetchOne(refpubEl, refDoi, style);
+        }
+    }
+
+    var loaded = false;
+
+    styleSelect.addEventListener('change', function() {
+        fetchAll(this.value);
+        updateNotice(this.value);
+    });
+
+    function copyToClipboard(btn, text, originalTitle) {
+        navigator.clipboard.writeText(text).then(function() {
+            var icon = btn.querySelector('i');
+            icon.className = 'fa fa-check';
+            btn.title = 'Copied!';
+            setTimeout(function() {
+                icon.className = 'fa fa-copy';
+                btn.title = originalTitle;
+            }, 1500);
+        }).catch(function() {
+            btn.title = 'Copy failed';
+            setTimeout(function() { btn.title = originalTitle; }, 1500);
+        });
+    }
+
+    if (copySoftwareBtn) {
+        copySoftwareBtn.addEventListener('click', function() {
+            copyToClipboard(this, softwareEl.innerText, this.title);
+        });
+    }
+
+    if (copyRefpubBtn) {
+        copyRefpubBtn.addEventListener('click', function() {
+            copyToClipboard(this, refpubEl.innerText, this.title);
+        });
+    }
+
+    // "Cite Me" button toggles visibility
+    var citeBtn = document.getElementById('cite-me-btn');
+    if (citeBtn) {
+        citeBtn.addEventListener('click', function() {
+            if (section.classList.contains('citation-hidden')) {
+                section.classList.remove('citation-hidden');
+                if (!loaded) {
+                    fetchAll(styleSelect.value);
+                    loaded = true;
+                }
+                // Remove section-body maxHeight constraint after reveal
+                if (sectionBody) {
+                    setTimeout(function() {
+                        sectionBody.style.maxHeight = 'none';
+                    }, 50);
+                }
+                citeBtn.classList.add('btn-cite-active');
+            } else {
+                section.classList.add('citation-hidden');
+                citeBtn.classList.remove('btn-cite-active');
+            }
+        });
+    }
+})();
+</script>
+{% endif %}
 {% endblock %}

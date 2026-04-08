@@ -1,68 +1,52 @@
+""" 
+Module which defines models related to people (authors, users) and their roles.
+"""
+
 import json
 from django.db import models
 
 from ..util import *
-from .structurizer import form_config
-from .roots import HssiModel, Organization, LEN_NAME
-
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-	from .auxillary_info import RelatedItem
+from .base import HssiModel, LEN_NAME
+from .organizations import Organization
 
 # we need to import the softwares type for intellisense
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-	from .software import Software
-	from .submission_info import SubmissionInfo
+	from .software import Software, SubmissionInfo
 
 class Person(HssiModel):
 	access = AccessLevel.PUBLIC
-	'''Metadata to hold needed information about someone'''
-	firstName = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
-	lastName = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
-	identifier = form_config(
-		models.URLField(blank=True, null=True),
-		label="Identifier",
-		tooltipExplanation="The identifier of the person, such as the ORCiD.",
-		tooltipBestPractise="Please enter the complete identifier, e.g. https://orcid.org/0000-0003-0875-2023."
-	)
-	affiliation = form_config(
-		models.ManyToManyField(
-			Organization, 
-			blank=True, 
-			related_name='people'
-		),
-		label="Affiliation",
-		tooltipExplanation="The affiliation of the person, such as an institution or other entity.",
-		tooltipBestPractise="Please enter the complete name of the affiliated entity without using acronyms (e.g. Center for Astrophysics Harvard & Smithsonian). If more than one affiliation, please enter them separately.",
-		widgetType="ModelBox",
-		widgetProperties={
-			"targetModel":"Organization"
-		}
+	"""Metadata to hold needed information about someone"""
+	given_name = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
+	family_name = models.CharField(max_length=LEN_NAME, null=False, blank=False, default="")
+	identifier = models.URLField(blank=True, null=True)
+	affiliation: Manager[Organization] = models.ManyToManyField(
+		Organization, 
+		blank=True, 
+		related_name='people'
 	)
 
 	@property
 	def fullName(self) -> str:
-		return f"{self.firstName} {self.lastName}"
+		return f"{self.given_name} {self.family_name}"
 
 	@fullName.setter
 	def fullName(self, value: str):
-		self.firstName = value.split()[0]
-		self.lastName = value.removeprefix(self.firstName).strip()
+		self.given_name = value.split()[0]
+		self.family_name = value.removeprefix(self.given_name).strip()
 
 	# specified for intellisense, defined in other models
 	softwares: models.Manager['Software']
 	submission_info: models.Manager['SubmissionInfo']
 	curator: models.Manager['Curator']
-	relatedItems: models.Manager['RelatedItem']
 
 	@staticmethod
 	def get_default_person() -> 'Person':
-		pers = Person.objects.filter(firstName="UNKNOWN").first()
+		pers = Person.objects.filter(given_name="UNKNOWN").first()
 		if not pers:
 			pers = Person()
-			pers.firstName = "UNKNOWN"
-			pers.lastName = "UNKNOWN"
+			pers.given_name = "UNKNOWN"
+			pers.family_name = "UNKNOWN"
 			pers.save()
 		return pers
 
@@ -75,45 +59,35 @@ class Person(HssiModel):
 		return terms
 
 	@classmethod
-	def get_top_field(cls) -> models.Field: return cls._meta.get_field("firstName")
+	def get_top_field(cls) -> models.Field: return cls._meta.get_field("given_name")
 	@classmethod
-	def get_second_top_field(cls) -> models.Field: return cls._meta.get_field("lastName")
+	def get_second_top_field(cls) -> models.Field: return cls._meta.get_field("family_name")
 
 	class Meta: 
-		ordering = ['lastName', 'firstName']
+		ordering = ['family_name', 'given_name']
 		verbose_name_plural = 'People'
 	def __str__(self): 
-		name = self.firstName + " " + self.lastName
+		name = self.given_name + " " + self.family_name
 		if self.identifier:
 			name += f" ({str.split(self.identifier, "orcid.org/")[-1]})"
 		return name
 
 	def to_str_lastname_firstname(self) -> str:
-		if self.lastName is None or len(self.lastName) <= 0:
-			return self.firstName
-		return f"{self.lastName}, {self.firstName}"
+		if self.family_name is None or len(self.family_name) <= 0:
+			return self.given_name
+		return f"{self.family_name}, {self.given_name}"
 
 class Curator(HssiModel):
 	access = AccessLevel.CURATOR
-	'''A user who is able to curate submissions'''
-	email = form_config(
-		models.EmailField(null=False, blank=False),
-		label="Email",
-		tooltipExplanation="The work email address of the person who reviewed the metadata.",
-		tooltipBestPractise="Please ensure that a complete email address is given.",
-	)
-	person = form_config(
-		models.OneToOneField(
+	"""A user who is able to curate submissions"""
+	email = models.EmailField(null=False, blank=False)
+	person = models.OneToOneField(
 			Person, 
 			on_delete=models.SET_DEFAULT, 
 			default=Person.get_default_person,
 			null=False, blank=False, 
 			related_name='curator'
-		),
-		label="Curator",
-		tooltipExplanation="The name of the person(s) who reviewed the metadata.",
-		tooltipBestPractise="Given name, initials and last/surname (e.g. Jack L. Doe).",
-	)
+		)
 
 	# specified for intellisense, defined in other models
 	submission_infos: models.Manager['SubmissionInfo']
@@ -127,25 +101,15 @@ class Curator(HssiModel):
 
 class Submitter(HssiModel):
 	access = AccessLevel.CURATOR
-	'''A person who has submitted a software'''
-	email = form_config(
-		models.EmailField(null=False, blank=False),
-		label="Email",
-		tooltipExplanation="The work email address of the metadata record submitter.",
-		tooltipBestPractise="Please ensure that a complete email address is given.",
-	)
-	person = form_config(
-		models.ForeignKey(
+	"""A person who has submitted a software"""
+	email = models.EmailField(null=False, blank=False)
+	person = models.ForeignKey(
 			Person, 
 			on_delete=models.SET_DEFAULT,
 			default=Person.get_default_person,
 			null=False, blank=False, 
 			related_name='submitter'
-		),
-		label="Submitter",
-		tooltipExplanation="The name of the person who submitted the metadata.",
-		tooltipBestPractise="Given name, initials and last/surname (e.g. Jack L. Doe).",
-	)
+		)
 
 	# specified for intellisense, defined in other models
 	submission_infos: models.Manager['SubmissionInfo']
@@ -158,7 +122,13 @@ class Submitter(HssiModel):
 		if not self.email: return []
 		jsonstr: str = self.email
 		jsonstr = jsonstr.replace("'", '"')
-		return json.loads(jsonstr)
+		emails = []
+		try: 
+			emails = json.loads(jsonstr)
+			assert isinstance(emails, list)
+		except:
+			return [self.email]
+		return emails
 
 	@staticmethod
 	def get_default_submitter() -> 'Submitter':

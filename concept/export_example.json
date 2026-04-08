@@ -102,7 +102,7 @@
       {
         "@type": "DefinedTerm",
         "name": "HAPI",
-        "description": "dataSources",
+        "description": "data_sources",
         "inDefinedTermSet": "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/jsonld/DataSources.json"
       },
       {
@@ -148,7 +148,7 @@
             "prov:Entity",
             "sosa:System"
         ],
-        "description": "relatedInstruments",
+        "description": "related_instruments",
         "identifier": {
             "@type": "PropertyValue",
             "propertyID": "SPASE Resource ID",
@@ -164,7 +164,7 @@
             "prov:Entity",
             "sosa:System"
         ],
-        "description": "relatedInstruments",
+        "description": "related_instruments",
         "name": "example instrument not in SPASE",
         "url": "DOI or url if given"
       },
@@ -175,7 +175,7 @@
             "prov:Entity",
             "sosa:Platform"
         ],
-        "description": "relatedObservatories",
+        "description": "related_observatories",
         "identifier": {
             "@type": "PropertyValue",
             "propertyID": "SPASE Resource ID",
@@ -191,7 +191,7 @@
             "prov:Entity",
             "sosa:System"
         ],
-        "description": "relatedObservatories",
+        "description": "related_observatories",
         "name": "example observatory not in SPASE",
         "url": "DOI or url if given"
       },
@@ -209,12 +209,14 @@
       {
         "@id": "https://doi.org/10.48322/asmp-nf13",
         "@type": "Dataset",
-        "description": "relatedDatasets",
+        "name": "Related Dataset",
+        "description": "Dataset related to the software described in this metadata",
         "url": "https://doi.org/10.48322/asmp-nf13"
       },        
       {
         "@type": "Dataset",
-        "description": "relatedDatasets",
+        "name": "Related Dataset",
+        "description": "Dataset related to the software described in this metadata",
         "disambiguatingDescription": "Fuselier et al. (2022). MMS 4 Hot Plasma Composition Analyzer (HPCA) Ions, Level 2 (L2), Burst Mode, 0.625 s Data [Data set]. NASA Space Physics Data Facility."
       },  
       {

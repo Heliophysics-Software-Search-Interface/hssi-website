@@ -166,7 +166,7 @@
 
         <!-- Authors Section -->
         {% if software.authors.all %}
-        <details class="software-section" open>
+        <details class="software-section" {% if software.authors.all|length <= 10 %}open{% endif %}>
             <summary class="section-title">Authors</summary>
             <div class="authors-list">
                 {% for author in software.authors.all %}

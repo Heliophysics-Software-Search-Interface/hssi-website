@@ -22,6 +22,19 @@ from .vocab import (
 	Region, DataInput, FunctionCategory, CpuArchitecture
 )
 
+# TODO (temporary hack): The SciX URLs below are hardcoded because adding
+# a real `scix_url` field to the Software model (migration, admin form,
+# import/export plumbing, submission UI) isn't justified for a 5-entry
+# proof-of-concept. When SciX coverage expands, replace this dict and the
+# `scix_url` property/serialization below with a real URLField on Software.
+_SCIX_URLS: dict[str, str] = {
+	"82f57fc4-357f-49d3-af4b-e8bfb0a35210": "https://scixplorer.org/abs/2024ascl.soft05005G/abstract",  # PySPEDAS
+	"13b71402-f2cb-4aa3-9b17-639652e87ca8": "https://scixplorer.org/abs/2025zndo..17857260M/abstract",  # sunpy
+	"7bd65217-fdbe-4945-a657-496a494fff48": "https://scixplorer.org/abs/2024zndo..14057789M/abstract",  # SpacePy
+	"4507d98e-44d1-40ea-8733-8047738b9a7a": "https://scixplorer.org/abs/2024zndo..12788848C/abstract",  # PlasmaPy
+	"f6e3429d-e80e-4cf6-889e-44af1e93f87d": "https://scixplorer.org/abs/2021zndo...5553156W/abstract",  # hapi server/client python
+}
+
 class SubmissionStatusCode(models.IntegerChoices):
 	PROPOSED_RESOURCE = 1, "Proposed Resource"
 	READY_FOR_CONTACT = 2, "Ready for Contact"
@@ -231,6 +244,15 @@ class Software(HssiModel):
 				sorted(group, key=lambda category: bool(parent_map[category.id]))
 			)
 		return ordered
+
+	@property
+	def scix_url(self) -> str | None:
+		return _SCIX_URLS.get(str(self.id))
+
+	def get_serialized_data(self, *args, **kwargs):
+		data = super().get_serialized_data(*args, **kwargs)
+		data["scix_url"] = self.scix_url
+		return data
 
 	def __str__(self): return self.software_name
 

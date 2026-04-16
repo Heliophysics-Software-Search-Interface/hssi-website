@@ -112,6 +112,7 @@ export interface SoftwareDataAsync extends HSSIModelData {
 	related_region: Array<HssiDataAsync<ControlledListData>>,
 	related_phenomena: Array<HssiDataAsync<ControlledListData>>,
 	submissionInfo: HssiDataAsync<HSSIModelData>,
+	scix_url?: string,
 }
 
 // -----------------------------------------------------------------------------
@@ -194,6 +195,7 @@ export function createAsyncSoftwareData(data: SoftwareData): SoftwareDataAsync{
 		logo: data.logo,
 		related_phenomena: asyncify(data.related_phenomena, "Phenomena") as any,
 		submissionInfo: asyncify(data.submissionInfo, "SubmissionInfo") as any,
+		scix_url: data.scix_url,
 	};
 }
 

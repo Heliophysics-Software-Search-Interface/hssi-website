@@ -55,6 +55,11 @@
                 <i class="fa fa-link"></i> DOI
             </a>
             {% endif %}
+            {% if software.scix_url %}
+            <a href="{{ software.scix_url }}" class="action-btn btn-scix" target="_blank">
+                <i class="fa fa-search"></i> SciX
+            </a>
+            {% endif %}
             {% if software.persistent_identifier or software.reference_publication and software.reference_publication.identifier %}
             <button class="action-btn btn-cite" id="cite-me-btn">
                 <i class="fa fa-quote-left"></i> Cite Me

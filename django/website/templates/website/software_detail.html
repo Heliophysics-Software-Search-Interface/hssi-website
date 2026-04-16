@@ -10,6 +10,9 @@
 
 {% block head %}
 {{ block.super }}
+{% if software_jsonld %}
+<script type="application/ld+json">{{ software_jsonld }}</script>
+{% endif %}
 <link rel="stylesheet" href="{% static 'css/software_detail.css' %}?v=2024-10-15" />
 {% endblock %}
 

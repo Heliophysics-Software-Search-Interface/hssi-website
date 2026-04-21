@@ -181,7 +181,15 @@ class FunctionCategoryAdmin(HSSIModelAdmin): resource_class = FunctionCategoryRe
 
 class InstrumentObservatoryResource(resources.ModelResource):
 	class Meta: model = InstrumentObservatory
-class InstrumentObservatoryAdmin(HSSIModelAdmin): resource_class = InstrumentObservatoryResource
+class InstrumentObservatoryAdmin(HSSIModelAdmin): 
+	resource_class = InstrumentObservatoryResource
+
+	def str_display(self, obj):
+		disp = super().str_display(obj)
+		if isinstance(obj, InstrumentObservatory):
+			if obj.identifier:
+				disp += f" | ({obj.identifier})"
+		return disp
 
 class LicenseResource(resources.ModelResource):
 	class Meta: model = License

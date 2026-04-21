@@ -1,8 +1,8 @@
 import uuid
 
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, TestCase
 
-from .models import DataInput, FunctionCategory, ProgrammingLanguage, Region
+from .models import DataInput, FunctionCategory, ProgrammingLanguage, Region, Software
 from .util import build_software_filter_query, shorten_software_filter_value
 
 FILTER_CASES = [
@@ -30,3 +30,56 @@ class SoftwareFilterEncodingTests(SimpleTestCase):
 					obj.get_homepage_filter_url(),
 					f"/?{build_software_filter_query(field, obj.id)}",
 				)
+
+
+class SoftwareFunctionalityOrderingTests(TestCase):
+	def test_functionality_groups_stay_together_without_inserting_parents(self):
+		names = [
+			"Data Visualization",
+			"Line Plots",
+			"Spectrogram",
+			"Models and Simulations",
+			"Data Processing and Analysis",
+			"Analysis",
+		]
+		categories = {
+			name: FunctionCategory.objects.create(name=name)
+			for name in names
+		}
+		categories["Data Visualization"].children.add(
+			categories["Line Plots"], categories["Spectrogram"]
+		)
+		categories["Data Processing and Analysis"].children.add(categories["Analysis"])
+
+		def ordered_names(selected: list[str]) -> list[str]:
+			software = Software.objects.create(software_name="Test Software")
+			software.software_functionality.set([categories[name] for name in selected])
+			return [
+				func.name
+				for func in software.get_ordered_software_functionality()
+			]
+
+		self.assertEqual(
+			ordered_names(
+				[
+					"Data Visualization",
+					"Models and Simulations",
+					"Data Processing and Analysis",
+					"Analysis",
+					"Line Plots",
+					"Spectrogram",
+				]
+			),
+			[
+				"Data Visualization",
+				"Line Plots",
+				"Spectrogram",
+				"Models and Simulations",
+				"Data Processing and Analysis",
+				"Analysis",
+			],
+		)
+		self.assertEqual(
+			ordered_names(["Line Plots", "Analysis"]),
+			["Line Plots", "Analysis"],
+		)

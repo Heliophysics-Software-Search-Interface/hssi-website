@@ -210,6 +210,28 @@ class Software(HssiModel):
 				break
 		return subfields
 
+	def get_ordered_software_functionality(self) -> list[FunctionCategory]:
+		"""Return functionality tags with parent/child groups kept together."""
+		categories = list(
+			self.software_functionality.prefetch_related("parent_nodes").all()
+		)
+		parent_map = {
+			category.id: list(category.parent_nodes.all())
+			for category in categories
+		}
+		groups: dict[uuid.UUID, list[FunctionCategory]] = {}
+		for category in categories:
+			parents = parent_map[category.id]
+			group_id = parents[0].id if parents else category.id
+			groups.setdefault(group_id, []).append(category)
+
+		ordered: list[FunctionCategory] = []
+		for group in groups.values():
+			ordered.extend(
+				sorted(group, key=lambda category: bool(parent_map[category.id]))
+			)
+		return ordered
+
 	def __str__(self): return self.software_name
 
 	def get_absolute_url(self):

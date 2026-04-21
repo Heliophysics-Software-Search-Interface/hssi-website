@@ -96,7 +96,7 @@ class SubmissionAPI(APIView):
 			return Response(exc.detail, status=status.HTTP_400_BAD_REQUEST)
 		
 		for submission in submissions:
-			SoftwareEditQueue.create(software, timezone.now() + datetime.timedelta(days=90))
+			SoftwareEditQueue.create(submission, timezone.now() + datetime.timedelta(days=90))
 			submission_info = SubmissionInfo.objects.get(software=submission)
 			email_existing_edit_link(submission_info)
 

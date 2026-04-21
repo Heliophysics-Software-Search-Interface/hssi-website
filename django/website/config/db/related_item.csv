@@ -1,4 +1,5 @@
 id,name,definition,type,identifier
+e9f3cd0c-dc03-4e78-813e-63a6a20cf173,UNKNOWN,,2,https://doi.org/10.5281/zenodo.3373812
 791ad19a-ed50-4155-b69b-f263a438f3c1,UNKNOWN,,3,https://doi.org/10.1029/2010JA015326
 2055c7d1-c47d-4e9f-84fb-f3c8ec301bbd,UNKNOWN,,1,https://github.com/aburrell/aacgmv2
 4dcfbe4d-f017-4070-bb51-52880269d5ee,UNKNOWN,,1,https://github.com/spacepy/spacepy
@@ -43,7 +44,6 @@ fe2cef27-aff2-476e-a6ec-e5c56860104d,UNKNOWN,,3,https://doi.org/10.1098/rsta.202
 84ba9d29-1c14-4d5f-a391-ce901c75a6fa,UNKNOWN,,3,https://doi.org/10.1002/2016JA023235
 d726bc9c-57d8-458c-93c9-8c28ff52988e,UNKNOWN,,3,https://doi.org/10.5194/angeo-38-481-2020
 97920070-5dbd-4a8e-821d-e9fae28e3da7,UNKNOWN,,2,https://www.bas.ac.uk/project/image-auroral-boundary-data/
-e9f3cd0c-dc03-4e78-813e-63a6a20cf173,UNKNOWN,,2,https://doi.org/10.5281/zenodo.3373812
 c8d23903-28fe-407f-a643-279fe761d261,UNKNOWN,,1,https://doi.org/10.5281/zenodo.15059161
 c33de0ef-ee70-40d0-acfb-78e850e0ed2e,UNKNOWN,,1,https://doi.org/10.5281/zenodo.4746446
 c183d4b7-9ac9-422e-b25a-48cbc96a00e2,UNKNOWN,,3,https://doi.org/10.3389/fspas.2022.1022690

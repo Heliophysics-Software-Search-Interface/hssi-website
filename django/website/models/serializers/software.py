@@ -178,7 +178,6 @@ class SoftwareSerializer(HssiSerializer):
 			subcategories.append(func.get_full_name())
 			for parent in func.parent_nodes.all():
 				categories.add(parent.name)
-		print(sorted(categories), subcategories)
 		return sorted(categories), subcategories
 
 	def _defined_term(
@@ -329,7 +328,7 @@ class SoftwareSerializer(HssiSerializer):
 			self._mentions_related(item, "interoperableSoftware")
 			for item in instance.interoperable_software.all()
 		]
-		mentions = filter(lambda item: item is not None, mentions)
+		mentions = [item for item in mentions if item is not None]
 
 		operating_systems = [item.name for item in instance.operating_system.all()]
 		programming_languages = [str(item) for item in instance.programming_language.all()]

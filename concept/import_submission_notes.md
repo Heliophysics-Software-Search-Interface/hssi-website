@@ -256,14 +256,14 @@ however they may not be applicable to some submissions.
 		"HAPI"
 	],
 	```
-* `relatedPublications` - array of DOI urls
+* `relatedPublications` - array of URLs, ideally DOI URLs, for all notable publications the software is cited in
 	```
 	"relatedPublications": [
 		"https://doi.org/10.XXXX/example",
 		"https://doi.org/10.XXXX/example"
 	],
 	```
-* `relatedDatasets` - array of urls, preferably DOIs
+* `relatedDatasets` - array of URLs, ideally DOI URLs, for all datasets related to the software
 	```
 	"relatedDatasets": [
 		"https://doi.org/10.XXXX/example",

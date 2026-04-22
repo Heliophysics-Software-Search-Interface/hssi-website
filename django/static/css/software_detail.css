@@ -119,6 +119,21 @@
     color: white;
 }
 
+.action-btn.btn-scix {
+    background-color: #60c3b2;
+    color: white;
+    border: 1px solid #60c3b2;
+}
+
+.action-btn.btn-scix:hover {
+    background-color: #50b3a2;
+    color: white;
+}
+
+.action-btn.btn-scix i {
+    transform: scaleX(-1);
+}
+
 .action-btn.btn-cite {
     background-color: #535a7a;
     color: white;

@@ -114,4 +114,5 @@ export interface SoftwareData extends HSSIModelData {
 	logo: string,
 	related_phenomena: JSONArray<ControlledListData>,
 	submissionInfo: JSONObject,
+	scix_url?: string,
 }

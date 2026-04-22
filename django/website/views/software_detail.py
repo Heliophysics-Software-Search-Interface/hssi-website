@@ -1,11 +1,16 @@
 """Views for Software detail pages."""
 
+import json
 from typing import Any, Optional
 
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import QuerySet
+from django.utils.safestring import mark_safe
 from django.views import generic
 
 from ..models import Software, VerifiedSoftware, SoftwareVersion
+from ..models.serializers.software import SoftwareSerializer
+from ..models.serializers.util import SerialView
 
 
 class SoftwareDetailView(generic.DetailView):
@@ -35,6 +40,17 @@ class SoftwareDetailView(generic.DetailView):
                 .first()
             )
             functionality_tags = software.get_ordered_software_functionality()
+            serializer = SoftwareSerializer(
+                software,
+                context={"request": self.request},
+            )
+            serializer._view = SerialView.JSONLD
+            jsonld = json.dumps(serializer.data, cls=DjangoJSONEncoder).translate({
+                ord("<"): "\\u003C",
+                ord(">"): "\\u003E",
+                ord("&"): "\\u0026",
+            })
+            context['software_jsonld'] = mark_safe(jsonld)
         context['latest_version'] = latest_version
         context['functionality_tags'] = functionality_tags
         return context

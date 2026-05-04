@@ -1,10 +1,4 @@
-"""Regression tests for PATCH /api/data/software/<uid>/ and its lookup sibling.
-
-These tests exercise the partial update endpoint and its authentication
-gate end-to-end through the DRF router, using the SubmissionSerializer's
-USER view in partial mode. They assume a Postgres test database is
-available (Django creates one automatically via ``manage.py test``).
-"""
+"""Regression tests for isolated POST updates and repository URL lookup."""
 
 import uuid
 
@@ -27,14 +21,16 @@ UPDATE_TOKEN = "test-token-please-ignore"
 
 
 @override_settings(HSSI_UPDATE_TOKEN=UPDATE_TOKEN)
-class SoftwarePartialUpdateTests(TestCase):
-	"""PATCH /api/data/software/<uid>/ behavior under the USER view."""
+class SoftwarePostUpdateTests(TestCase):
+	"""POST /api/update behavior."""
 
 	@classmethod
 	def setUpTestData(cls):
 		cls.software = Software.objects.create(
 			software_name="Test Software",
 			code_repository_url="https://example.com/test",
+			description="original",
+			documentation="https://docs.example.com/test",
 		)
 		VerifiedSoftware.create_verified(cls.software)
 		cls.submission_info = SubmissionInfo.objects.create(
@@ -47,27 +43,36 @@ class SoftwarePartialUpdateTests(TestCase):
 
 	def setUp(self):
 		self.client = APIClient()
-		self.url = f"/api/data/software/{self.software.id}/"
+		self.url = "/api/update"
 		self.auth = f"Bearer {UPDATE_TOKEN}"
 
-	def _patch(self, data, auth: str | None = None):
+	def _post(self, fields, auth: str | None = None, software_id: str | None = None):
+		body = {
+			"softwareId": software_id or str(self.software.id),
+			"fields": fields,
+		}
+		return self._post_body(body, auth=auth)
+
+	def _post_body(self, body, auth: str | None = None):
 		kwargs = {"format": "json"}
 		header = self.auth if auth is None else auth
 		if header:
 			kwargs["HTTP_AUTHORIZATION"] = header
-		return self.client.patch(self.url, data=data, **kwargs)
+		return self.client.post(self.url, data=body, **kwargs)
 
 	def test_scalar_update_sets_fk_field(self):
-		response = self._patch({"developmentStatus": "Active"})
+		response = self._post({"developmentStatus": "Active"})
+
 		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 		self.software.refresh_from_db()
 		self.assertEqual(self.software.development_status, self.active_status)
+		self.assertEqual(response.data["softwareId"], str(self.software.id))
 		self.assertIn("development_status", response.data["fieldsUpdated"])
 
 	def test_m2m_replacement_replaces_keywords(self):
 		self.software.keywords.add(Keyword.objects.create(name="old"))
 
-		response = self._patch({"keywords": ["alpha", "beta"]})
+		response = self._post({"keywords": ["alpha", "beta"]})
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 		names = sorted(self.software.keywords.values_list("name", flat=True))
@@ -77,30 +82,33 @@ class SoftwarePartialUpdateTests(TestCase):
 		self.software.keywords.add(Keyword.objects.create(name="old"))
 		self.assertEqual(self.software.keywords.count(), 1)
 
-		response = self._patch({"keywords": []})
+		response = self._post({"keywords": []})
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 		self.assertEqual(self.software.keywords.count(), 0)
 
 	def test_missing_field_leaves_value_unchanged(self):
-		self.software.description = "original"
-		self.software.save()
-
-		response = self._patch({"developmentStatus": "Active"})
+		response = self._post({"developmentStatus": "Active"})
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 		self.software.refresh_from_db()
 		self.assertEqual(self.software.description, "original")
 
+	def test_nullable_scalar_can_be_cleared(self):
+		response = self._post({"documentation": None})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		self.software.refresh_from_db()
+		self.assertIsNone(self.software.documentation)
+
 	def test_unknown_field_rejected(self):
-		response = self._patch({"notAField": "value"})
+		response = self._post({"notAField": "value"})
 
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-		# decamelize turns notAField into not_a_field before validation
 		self.assertIn("not_a_field", response.data)
 
 	def test_submitter_rejected(self):
-		response = self._patch({
+		response = self._post({
 			"submitter": [{
 				"email": "x@y.com",
 				"person": {"givenName": "A", "familyName": "B"},
@@ -111,19 +119,19 @@ class SoftwarePartialUpdateTests(TestCase):
 		self.assertIn("submitter", response.data)
 
 	def test_invalid_token_rejected(self):
-		response = self._patch({"developmentStatus": "Active"}, auth="Bearer wrong")
+		response = self._post({"developmentStatus": "Active"}, auth="Bearer wrong")
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 	def test_missing_token_rejected(self):
-		response = self._patch({"developmentStatus": "Active"}, auth="")
+		response = self._post({"developmentStatus": "Active"}, auth="")
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 	def test_malformed_auth_header_rejected(self):
-		response = self._patch({"developmentStatus": "Active"}, auth="Token wrong")
+		response = self._post({"developmentStatus": "Active"}, auth="Token wrong")
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 	def test_updates_modification_description(self):
-		response = self._patch({"developmentStatus": "Active"})
+		response = self._post({"developmentStatus": "Active"})
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 		self.submission_info.refresh_from_db()
@@ -132,49 +140,99 @@ class SoftwarePartialUpdateTests(TestCase):
 			self.submission_info.modification_description or "",
 		)
 
+	def test_missing_software_id_rejected(self):
+		response = self._post_body({"fields": {"developmentStatus": "Active"}})
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("softwareId", response.data)
+
+	def test_invalid_software_id_rejected(self):
+		response = self._post({"developmentStatus": "Active"}, software_id="not-a-uuid")
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("softwareId", response.data)
+
 	def test_not_found_for_unknown_uid(self):
-		response = self.client.patch(
-			f"/api/data/software/{uuid.uuid4()}/",
-			data={"developmentStatus": "Active"},
-			format="json",
-			HTTP_AUTHORIZATION=self.auth,
+		response = self._post(
+			{"developmentStatus": "Active"},
+			software_id=str(uuid.uuid4()),
 		)
 		self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 	def test_non_visible_software_returns_404(self):
 		hidden = Software.objects.create(software_name="Hidden")
-		# no VerifiedSoftware entry — not visible
+
+		response = self._post(
+			{"developmentStatus": "Active"},
+			software_id=str(hidden.id),
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+	def test_missing_fields_rejected(self):
+		response = self._post_body({"softwareId": str(self.software.id)})
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("fields", response.data)
+
+	def test_empty_fields_rejected(self):
+		response = self._post({})
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("detail", response.data)
+
+	def test_root_array_rejected(self):
+		response = self._post_body([{
+			"softwareId": str(self.software.id),
+			"fields": {"developmentStatus": "Active"},
+		}])
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("detail", response.data)
+
+	def test_detail_route_does_not_accept_patch(self):
 		response = self.client.patch(
-			f"/api/data/software/{hidden.id}/",
+			f"/api/data/software/{self.software.id}/",
 			data={"developmentStatus": "Active"},
 			format="json",
 			HTTP_AUTHORIZATION=self.auth,
 		)
-		self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+		self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 @override_settings(HSSI_UPDATE_TOKEN=None)
-class SoftwarePartialUpdateTokenUnsetTests(TestCase):
-	"""With no token configured, PATCH must fail closed for every request."""
+class SoftwarePostUpdateTokenUnsetTests(TestCase):
+	"""With no token configured, update endpoints fail closed."""
 
 	@classmethod
 	def setUpTestData(cls):
 		cls.software = Software.objects.create(software_name="Test Software")
 		VerifiedSoftware.create_verified(cls.software)
 
-	def test_unset_token_denies_every_patch(self):
+	def test_unset_token_denies_every_update(self):
 		client = APIClient()
-		response = client.patch(
-			f"/api/data/software/{self.software.id}/",
-			data={"developmentStatus": "Active"},
+		response = client.post(
+			"/api/update",
+			data={
+				"softwareId": str(self.software.id),
+				"fields": {"developmentStatus": "Active"},
+			},
 			format="json",
 			HTTP_AUTHORIZATION="Bearer anything",
 		)
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+	def test_unset_token_denies_lookup(self):
+		client = APIClient()
+		response = client.get(
+			"/api/update/lookup",
+			{"code_repository_url": "https://example.com/test"},
+			HTTP_AUTHORIZATION="Bearer anything",
+		)
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-class SoftwareListLookupTests(TestCase):
-	"""GET /api/list/software/ with an optional ?repo_url= filter."""
+
+@override_settings(HSSI_UPDATE_TOKEN=UPDATE_TOKEN)
+class SoftwareUpdateLookupTests(TestCase):
+	"""GET /api/update/lookup with required ?code_repository_url= filter."""
 
 	@classmethod
 	def setUpTestData(cls):
@@ -194,40 +252,92 @@ class SoftwareListLookupTests(TestCase):
 			software_name="Hidden",
 			code_repository_url="https://github.com/example/match",
 		)
-		# no VerifiedSoftware entry for this one
+
+		cls.branch_root = Software.objects.create(
+			software_name="Branch Root",
+			code_repository_url="https://github.com/example/branch",
+		)
+		VerifiedSoftware.create_verified(cls.branch_root)
+
+		cls.branch_path = Software.objects.create(
+			software_name="Branch Path",
+			code_repository_url="https://github.com/example/branch/tree/dev",
+		)
+		VerifiedSoftware.create_verified(cls.branch_path)
+
+		cls.gitlab = Software.objects.create(
+			software_name="GitLab Nested",
+			code_repository_url="https://gitlab.com/group/subgroup/project",
+		)
+		VerifiedSoftware.create_verified(cls.gitlab)
 
 	def setUp(self):
 		self.client = APIClient()
+		self.url = "/api/update/lookup"
+		self.auth = f"Bearer {UPDATE_TOKEN}"
 
-	def test_repo_url_lookup_returns_matching_software(self):
-		response = self.client.get(
-			"/api/list/software/",
-			{"repo_url": "https://github.com/example/match"},
+	def _lookup(self, url: str, auth: str | None = None):
+		kwargs = {"HTTP_AUTHORIZATION": self.auth if auth is None else auth}
+		return self.client.get(
+			self.url,
+			{"code_repository_url": url},
+			**kwargs,
 		)
-		self.assertEqual(response.status_code, status.HTTP_200_OK)
-		self.assertEqual(len(response.data["data"]), 1)
-		self.assertEqual(response.data["data"][0]["name"], "Matching")
 
-	def test_repo_url_is_case_insensitive(self):
-		response = self.client.get(
-			"/api/list/software/",
-			{"repo_url": "HTTPS://GitHub.com/example/MATCH"},
+	def _lookup_names(self, url: str) -> list[str]:
+		response = self._lookup(url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		return [entry["softwareName"] for entry in response.data["data"]]
+
+	def test_exact_lookup_returns_matching_software(self):
+		response = self._lookup("https://github.com/example/match")
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		self.assertEqual(response.data["data"][0]["softwareName"], "Matching")
+		self.assertEqual(
+			response.data["data"][0]["codeRepositoryUrl"],
+			"https://github.com/example/match",
 		)
-		self.assertEqual(response.status_code, status.HTTP_200_OK)
-		self.assertEqual(len(response.data["data"]), 1)
 
-	def test_repo_url_unknown_returns_empty(self):
-		response = self.client.get(
-			"/api/list/software/",
-			{"repo_url": "https://github.com/example/nothing"},
+	def test_lookup_is_case_insensitive(self):
+		names = self._lookup_names("HTTPS://GitHub.com/example/MATCH")
+		self.assertEqual(names, ["Matching"])
+
+	def test_trailing_slash_lookup_matches_root_url(self):
+		names = self._lookup_names("https://github.com/example/match/")
+		self.assertEqual(names, ["Matching"])
+
+	def test_git_suffix_lookup_matches_root_url(self):
+		names = self._lookup_names("https://github.com/example/match.git")
+		self.assertEqual(names, ["Matching"])
+
+	def test_github_branch_url_lookup_returns_all_normalized_matches(self):
+		names = self._lookup_names("https://github.com/example/branch/tree/main")
+		self.assertEqual(names, ["Branch Path", "Branch Root"])
+
+	def test_gitlab_tree_url_lookup_matches_nested_project(self):
+		names = self._lookup_names(
+			"https://gitlab.com/group/subgroup/project/-/tree/main"
 		)
-		self.assertEqual(response.status_code, status.HTTP_200_OK)
-		self.assertEqual(response.data["data"], [])
+		self.assertEqual(names, ["GitLab Nested"])
 
-	def test_no_filter_returns_visible_software_only(self):
-		response = self.client.get("/api/list/software/")
-		self.assertEqual(response.status_code, status.HTTP_200_OK)
-		names = [entry["name"] for entry in response.data["data"]]
-		self.assertIn("Matching", names)
-		self.assertIn("Other", names)
-		self.assertNotIn("Hidden", names)
+	def test_unknown_lookup_returns_empty(self):
+		names = self._lookup_names("https://github.com/example/nothing")
+		self.assertEqual(names, [])
+
+	def test_lookup_requires_token(self):
+		response = self._lookup("https://github.com/example/match", auth="")
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+	def test_lookup_requires_code_repository_url(self):
+		response = self.client.get(
+			self.url,
+			HTTP_AUTHORIZATION=self.auth,
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("codeRepositoryUrl", response.data)
+
+	def test_lookup_excludes_hidden_software(self):
+		names = self._lookup_names("https://github.com/example/match")
+		self.assertEqual(names, ["Matching"])

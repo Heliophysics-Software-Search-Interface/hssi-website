@@ -93,20 +93,11 @@ class HssiSerializer(ModelSerializer):
 
 	def create_standard(self, validated_data: dict[str: Any]):
 		return super().create(validated_data)
-
+	
 	def create_user(self, validated_data: dict[str: Any]):
 		raise NotImplementedError
-
+	
 	def create_jsonld(self, validated_data: dict[str: Any]):
-		raise NotImplementedError
-
-	def update_standard(self, instance: HssiModel, validated_data: dict[str: Any]):
-		return super().update(instance, validated_data)
-
-	def update_user(self, instance: HssiModel, validated_data: dict[str: Any]):
-		raise NotImplementedError
-
-	def update_jsonld(self, instance: HssiModel, validated_data: dict[str: Any]):
 		raise NotImplementedError
 
 	def to_representation(self, instance: HssiModel):
@@ -129,13 +120,6 @@ class HssiSerializer(ModelSerializer):
 			case SerialView.STANDARD: return self.create_standard(validated_data)
 			case SerialView.USER: return self.create_user(validated_data)
 			case SerialView.JSONLD: return self.create_jsonld(validated_data)
-		raise NotImplementedError
-
-	def update(self, instance: HssiModel, validated_data: dict[str: Any]):
-		match self.view():
-			case SerialView.STANDARD: return self.update_standard(instance, validated_data)
-			case SerialView.USER: return self.update_user(instance, validated_data)
-			case SerialView.JSONLD: return self.update_jsonld(instance, validated_data)
 		raise NotImplementedError
 
 	class Meta:

@@ -7,7 +7,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import QuerySet
 from django.utils.safestring import mark_safe
 from django.views import generic
-from django.http import Http404
+from django.http import Http404, HttpResponsePermanentRedirect
 
 from ..models import Software, VerifiedSoftware, SoftwareVersion
 from ..models.serializers.software import SoftwareSerializer
@@ -22,6 +22,14 @@ class SoftwareDetailView(generic.DetailView):
     model = Software
     template_name = 'website/software_detail.html'
     context_object_name = 'software'
+
+    def get(self, request, *args, **kwargs):
+        if 'pk' in self.kwargs:
+            pk = self.kwargs.get('pk')
+            software = VerifiedSoftware.objects.filter(pk=pk).first()
+            if software:
+                return HttpResponsePermanentRedirect(f"/software/{software.slug}")
+        return super().get(request, *args, **kwargs)
 
     def get_queryset(self) -> QuerySet[Software]:
         """Return only visible (published) software records."""

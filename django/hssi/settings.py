@@ -22,6 +22,10 @@ SECRET_KEY = 'abcdefg'
 SUPERUSER_NAME = None if 'SUPERUSER_NAME' not in os.environ else os.environ.get('SUPERUSER_NAME')
 SUPERUSER_PWD = None if 'SUPERUSER_PWD' not in os.environ else os.environ.get('SUPERUSER_PWD')
 
+# Bearer token required to authenticate PATCH /api/data/software/<uid>/.
+# When unset, the update endpoint denies every request.
+HSSI_UPDATE_TOKEN = os.environ.get("HSSI_UPDATE_TOKEN")
+
 ADMIN_EMAIL = "admin@my-site.com"
 DEFAULT_FROM_EMAIL = "noreply@hssi.hsdcloud.org"
 

@@ -7,6 +7,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import QuerySet
 from django.utils.safestring import mark_safe
 from django.views import generic
+from django.http import Http404
 
 from ..models import Software, VerifiedSoftware, SoftwareVersion
 from ..models.serializers.software import SoftwareSerializer
@@ -26,6 +27,20 @@ class SoftwareDetailView(generic.DetailView):
         """Return only visible (published) software records."""
         visible_ids = VerifiedSoftware.objects.values_list('id', flat=True)
         return Software.objects.filter(pk__in=visible_ids)
+
+    def get_object(self, queryset = None):
+        if not queryset:
+            queryset = self.get_queryset()
+        if 'pk' in self.kwargs:
+            return super().get_object(queryset)
+        
+        slug = self.kwargs.get('slug')
+        software = VerifiedSoftware.objects.filter(slug=slug).first()
+        if not software:
+            raise Http404
+        
+        self.kwargs['pk'] = software.pk
+        return super().get_object(queryset)
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         """Add display data to the software detail template context."""

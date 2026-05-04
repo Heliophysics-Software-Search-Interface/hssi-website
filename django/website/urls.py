@@ -38,6 +38,7 @@ urlpatterns = [
 
 	# Software landing page - uses UUID primary key
 	path('software/<uuid:pk>/', views.SoftwareDetailView.as_view(), name='software_detail'),
+	path('software/<str:slug>/', views.SoftwareDetailView.as_view(), name='software_detail'),
 
 	path('team/', views.team, name="team"),
 ]

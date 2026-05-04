@@ -371,14 +371,14 @@ class SoftwareSerializer(HssiSerializer):
 			if not json_id: json_id = instance.code_repository_url
 
 		data: dict[str, Any] = {
+			"@id": json_id,
+			"@type": ["SoftwareSourceCode", "SoftwareApplication"],
 			"@context": {
 				"@vocab": "https://schema.org/",
 				"prov": "http://www.w3.org/ns/prov#",
 				"sosa": "https://w3c.github.io/sdw-sosa-ssn/ssn/#SOSA",
 				"codemeta": "https://github.com/codemeta/codemeta/blob/master/codemeta.jsonld",
 			},
-			"@id": json_id,
-			"@type": ["SoftwareSourceCode", "SoftwareApplication"],
 			"name": instance.software_name,
 			"description": instance.description,
 			"codeRepository": instance.code_repository_url,

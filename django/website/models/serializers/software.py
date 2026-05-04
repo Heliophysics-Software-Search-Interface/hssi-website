@@ -379,20 +379,16 @@ class SoftwareSerializer(HssiSerializer):
 				"sosa": "https://w3c.github.io/sdw-sosa-ssn/ssn/#SOSA",
 				"codemeta": "https://github.com/codemeta/codemeta/blob/master/codemeta.jsonld",
 			},
-			"name": instance.software_name,
-			"description": instance.description,
-			"codeRepository": instance.code_repository_url,
-			"image": instance.logo,
-			"datePublished": instance.publication_date,
 			"applicationCategory": categories,
 			"applicationSubCategory": subcategories,
 			"author": authors,
 			"codemeta:buildInstructions": instance.documentation,
-			"codemeta:referencePublication": self._reference_publication(instance.reference_publication),
 			"codemeta:developmentStatus": (
 				instance.development_status.name
 				if instance.development_status else None
 			),
+			"codemeta:referencePublication": self._reference_publication(instance.reference_publication),
+			"codeRepository": instance.code_repository_url,
 			"creativeWorkStatus": (
 				{
 					"@id": instance.development_status.identifier,
@@ -404,6 +400,9 @@ class SoftwareSerializer(HssiSerializer):
 				}
 				if instance.development_status else None
 			),
+			"datePublished": instance.publication_date,
+			"description": instance.description,
+			"funding": funding_item or None,
 			"identifier": self._property_value(
 				instance.persistent_identifier,
 				name=(
@@ -412,6 +411,8 @@ class SoftwareSerializer(HssiSerializer):
 					else None
 				),
 			),
+			"image": instance.logo,
+			"keywords": keywords or None,
 			"license": (
 				{
 					"@id": instance.license.url,
@@ -421,17 +422,16 @@ class SoftwareSerializer(HssiSerializer):
 				}
 				if instance.license and instance.license.url else None
 			),
-			"keywords": keywords or None,
 			"mentions": mentions or None,
+			"name": instance.software_name,
 			"operatingSystem": self._maybe_single(operating_systems),
-			"programmingLanguage": self._maybe_single(programming_languages),
 			"processorRequirements": processor_requirements or None,
+			"programmingLanguage": self._maybe_single(programming_languages),
 			"publisher": self._organization_jsonld(instance.publisher),
 			"softwareVersion": latest_version.number if latest_version else None,
-			"version": latest_version.number if latest_version else None,
 			"spatialCoverage": spatial_coverage or None,
-			"funding": funding_item or None,
 			"subjectOf": self._subject_of(instance),
+			"version": latest_version.number if latest_version else None,
 		}
 
 		return {

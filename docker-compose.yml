@@ -20,7 +20,6 @@ services:
             - SUPERUSER_PWD=$SUPERUSER_PWD
             - GMAIL_EMAIL=${GMAIL_EMAIL}
             - GMAIL_APP_PASSWORD=${GMAIL_APP_PASSWORD}
-            - HSSI_UPDATE_TOKEN=${HSSI_UPDATE_TOKEN}
             - PROJECT_NAME=hssi
             - APP_NAME=website
             - GUNICORN_WORKERS=4

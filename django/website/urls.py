@@ -30,8 +30,6 @@ urlpatterns = [
 
 	# DRF api views
 	path('api/submission/', views.api.SubmissionAPI.as_view()),
-	path('api/update', views.api.SoftwareUpdateAPI.as_view()),
-	path('api/update/lookup', views.api.SoftwareUpdateLookupAPI.as_view()),
 	path('api/list/software/', views.api.SoftwareListAPI.as_view()),
 	path('api/view/software/<uuid:uid>/', views.api.SoftwareViewAPI.as_view()),
 	path('api/data/software/<uuid:uid>/', views.api.SoftwareDetailAPI.as_view()),

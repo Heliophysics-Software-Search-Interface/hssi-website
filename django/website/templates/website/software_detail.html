@@ -10,6 +10,9 @@
 
 {% block head %}
 {{ block.super }}
+{% if software_jsonld %}
+<script type="application/ld+json">{{ software_jsonld }}</script>
+{% endif %}
 <link rel="stylesheet" href="{% static 'css/software_detail.css' %}?v=2024-10-15" />
 {% endblock %}
 
@@ -53,6 +56,11 @@
             {% if software.persistent_identifier %}
             <a href="{{ software.persistent_identifier }}" class="action-btn btn-doi" target="_blank">
                 <i class="fa fa-link"></i> DOI
+            </a>
+            {% endif %}
+            {% if software.scix_url %}
+            <a href="{{ software.scix_url }}" class="action-btn btn-scix" target="_blank">
+                <i class="fa fa-search"></i> SciX
             </a>
             {% endif %}
             {% if software.persistent_identifier or software.reference_publication and software.reference_publication.identifier %}
@@ -166,7 +174,7 @@
 
         <!-- Authors Section -->
         {% if software.authors.all %}
-        <details class="software-section" open>
+        <details class="software-section" {% if software.authors.all|length <= 10 %}open{% endif %}>
             <summary class="section-title">Authors</summary>
             <div class="authors-list">
                 {% for author in software.authors.all %}
@@ -203,11 +211,11 @@
         {% endif %}
 
         <!-- Functionality Section -->
-        {% if software.software_functionality.all %}
+        {% if functionality_tags %}
         <details class="software-section" open>
             <summary class="section-title">Functionality</summary>
             <div class="functionality-tags">
-                {% for func in software.software_functionality.all %}
+                {% for func in functionality_tags %}
                 <a href="{{ func.get_homepage_filter_url }}"
                    class="tag functionality-tag"
                    title="View software filtered by {{ func.name }}"

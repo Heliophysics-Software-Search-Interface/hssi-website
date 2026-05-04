@@ -41,7 +41,7 @@ def get_citation(request):
         response = requests.get(
             doi,
             headers={'Accept': f'text/x-bibliography; style={style}'},
-            timeout=10,
+            timeout=45,
         )
         response.raise_for_status()
         response.encoding = 'utf-8'

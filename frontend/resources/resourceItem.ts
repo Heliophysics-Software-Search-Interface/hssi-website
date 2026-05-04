@@ -27,6 +27,7 @@ const styleBtnCode = "btn-code";
 const styleBtnDocs = "btn-docs";
 const styleBtnPublication = "btn-publication";
 const styleBtnDoi = "btn-doi";
+const styleBtnScix = "btn-scix";
 const styleHeaderChips = "header-chips";
 const styleChipContainer = "chip-container";
 const styleSecLabel = "section-label";
@@ -39,6 +40,7 @@ const faLink = `<i class="fa fa-link"></i>`;
 const faCode = `<i class="fa fa-code"></i>`;
 const faNews = `<i class="fa fa-news"></i>`;
 const faFile = `<i class="fa fa-file"></i>`;
+const faSearch = `<i class="fa fa-search"></i>`;
 const faDownArrow = `<i class="fa fa-angle-down"></i>`;
 const faUpArrow = `<i class="fa fa-angle-up"></i>`;
 
@@ -125,6 +127,15 @@ export class ResourceItem{
 			doiButton.innerHTML = faLink + "DOI";
 			doiButton.href = this.data.persistent_identifier;
 			bottomButtonContainer.appendChild(doiButton);
+		}
+
+		if(this.data.scix_url){
+			const scixButton = document.createElement("a");
+			scixButton.classList.add(styleLinkBtn);
+			scixButton.classList.add(styleBtnScix);
+			scixButton.innerHTML = faSearch + " SciX";
+			scixButton.href = this.data.scix_url;
+			bottomButtonContainer.appendChild(scixButton);
 		}
 	}
 

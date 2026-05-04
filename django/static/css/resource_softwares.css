@@ -201,3 +201,12 @@
 	color: #c550e5;
 	border-color: #c550e5;
 }
+
+.btn-scix {
+	color: #60c3b2;
+	border-color: #60c3b2;
+}
+
+.btn-scix i {
+	transform: scaleX(-1);
+}

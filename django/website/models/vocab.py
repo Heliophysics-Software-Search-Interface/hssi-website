@@ -193,7 +193,7 @@ class FunctionCategory(ControlledGraphList):
 		return data
 
 	class Meta: verbose_name_plural = "Function Categories"
-	def __str__(self): return self.name
+	def __str__(self): return self.get_full_name()
 
 class Region(ControlledGraphList):
 	"""Region of the sun which relates to the software"""

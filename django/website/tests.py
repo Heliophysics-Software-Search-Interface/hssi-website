@@ -100,7 +100,7 @@ class SoftwareFunctionalityOrderingTests(TestCase):
 class SoftwareDetailJsonLdTests(TestCase):
 	def _publish_software(self, **kwargs) -> Software:
 		software = Software.objects.create(**kwargs)
-		VerifiedSoftware.objects.create(id=software.id, slug=str(software.id))
+		VerifiedSoftware.create_verified(software)
 		return software
 
 	def _jsonld_scripts(self, html: str) -> list[str]:
@@ -124,7 +124,12 @@ class SoftwareDetailJsonLdTests(TestCase):
 		)
 		software.version.add(version)
 
-		url = reverse("website:software_detail", kwargs={"pk": software.pk})
+		uuid_url = reverse("website:software_detail", kwargs={"pk": software.pk})
+		url = software.get_absolute_url()
+		redirect_response = self.client.get(uuid_url)
+		self.assertEqual(redirect_response.status_code, 301)
+		self.assertEqual(redirect_response["Location"], url)
+
 		response = self.client.get(url)
 
 		self.assertEqual(response.status_code, 200)
@@ -166,7 +171,7 @@ class SoftwareDetailJsonLdTests(TestCase):
 			description=description,
 		)
 
-		url = reverse("website:software_detail", kwargs={"pk": software.pk})
+		url = software.get_absolute_url()
 		response = self.client.get(url)
 
 		self.assertEqual(response.status_code, 200)

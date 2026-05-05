@@ -5,6 +5,7 @@ from typing import Any, Optional
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import QuerySet
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views import generic
 from django.http import Http404, HttpResponsePermanentRedirect
@@ -28,7 +29,9 @@ class SoftwareDetailView(generic.DetailView):
             pk = self.kwargs.get('pk')
             software = VerifiedSoftware.objects.filter(pk=pk).first()
             if software:
-                return HttpResponsePermanentRedirect(f"/software/{software.slug}")
+                return HttpResponsePermanentRedirect(
+                    reverse('website:software_detail', kwargs={'slug': software.slug})
+                )
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self) -> QuerySet[Software]:

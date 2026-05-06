@@ -34,7 +34,9 @@ urlpatterns = [
 	path('api/update/lookup', views.api.SoftwareUpdateLookupAPI.as_view()),
 	path('api/list/software/', views.api.SoftwareListAPI.as_view()),
 	path('api/view/software/<uuid:uid>/', views.api.SoftwareViewAPI.as_view()),
+	path('api/view/software/<str:uid>/', views.api.SoftwareViewAPI.as_view()),
 	path('api/data/software/<uuid:uid>/', views.api.SoftwareDetailAPI.as_view()),
+	path('api/data/software/<str:uid>/', views.api.SoftwareDetailAPI.as_view()),
 
 	# Software landing page - uses UUID primary key
 	path('software/<uuid:pk>/', views.SoftwareDetailView.as_view(), name='software_detail'),

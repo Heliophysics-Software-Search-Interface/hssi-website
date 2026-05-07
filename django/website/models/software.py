@@ -258,6 +258,9 @@ class Software(HssiModel):
 
 	def get_absolute_url(self):
 		from django.urls import reverse
+		verified = VerifiedSoftware.objects.filter(pk=self.pk).only("slug").first()
+		if verified and verified.slug:
+			return reverse('website:software_detail', kwargs={'slug': verified.slug})
 		return reverse('website:software_detail', kwargs={'pk': str(self.pk)})
 
 	"""if the software is visible on the website"""

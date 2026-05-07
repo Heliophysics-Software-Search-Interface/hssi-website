@@ -26,6 +26,28 @@
     flex: 1;
 }
 
+.software-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.action-btn.btn-request-edit {
+    background-color: transparent;
+    color: #666;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.action-btn.btn-request-edit:hover {
+    background-color: #f0f0f0;
+    border-color: #aaa;
+    color: #333;
+}
+
 .software-name {
     font-size: 2rem;
     font-weight: bold;

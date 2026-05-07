@@ -61,6 +61,8 @@ def submit_data(request: HttpRequest) -> HttpResponse:
 
 		# mark for review edits
 		SoftwareEditQueue.create(software, timezone.now() + datetime.timedelta(days=90))
-		transaction.on_commit(lambda s=software: email_existing_edit_link(s.submissionInfo))
+		transaction.on_commit(lambda s=software: [
+			email_existing_edit_link(si) for si in s.submission_info.all()
+		])
 
 	return redirect(f"/submit/submitted/?uid={str(software.pk)}")

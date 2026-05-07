@@ -45,7 +45,6 @@ export class TextInputDialogue extends PopupDialogue {
 		this.instance.messageElement.innerText = message;
 		this.instance.buttonElement.innerText = buttonText;
 		this.instance.inputElement.value = "";
-		PopupDialogue.showPopup(this.instance);
 
 		const checkForClosedDialogue = (accept: ()=>any, cancel: ()=>any) => {
 			if(!PopupDialogue.popupIsShown()) {

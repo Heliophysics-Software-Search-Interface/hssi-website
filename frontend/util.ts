@@ -242,7 +242,7 @@ export async function requestEditSubmission(uid: string): Promise<void> {
 		message = "Please enter the email associated with the software submission.";
 	}
 
-	const email = (await TextInputDialogue.promptInput(message))?.trim();
+	const email = (await TextInputDialogue.promptInput(message, "Confirm Email"))?.trim();
 	if(email == null) return;
 
 	if(email.length <= 0){

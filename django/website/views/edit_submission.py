@@ -16,6 +16,35 @@ from ..forms import (
 	SUBMISSION_FORM_FIELDS_3
 )
 
+def _mask_email(email: str) -> str:
+	"""Masks all but the first and last characters of the local part of an email."""
+	at_pos = email.find('@')
+	if at_pos < 0:
+		return email
+	local = email[:at_pos]
+	domain = email[at_pos:]
+	if len(local) <= 1:
+		return email
+	if len(local) == 2:
+		return local[0] + '*' + domain
+	return local[0] + ('*' * (len(local) - 2)) + local[-1] + domain
+
+def get_masked_submitter_emails(request: HttpRequest, uid: str) -> HttpResponse:
+	"""Returns masked submitter email(s) for a software so the user can verify which email to enter."""
+	if request.method != "GET": return HttpResponseBadRequest("expected GET")
+	try:
+		software = Software.objects.get(pk=uuid.UUID(uid))
+		submission_info = SubmissionInfo.objects.filter(software=software).first()
+		if not submission_info:
+			return JsonResponse({"emails": []})
+		all_emails: list[str] = []
+		for submitter in submission_info.submitter.all():
+			all_emails += submitter.email_list()
+		masked = [_mask_email(e) for e in all_emails]
+		return JsonResponse({"emails": masked})
+	except Exception:
+		return HttpResponseServerError()
+
 def request_edit_link(request: HttpRequest, uid: str) -> HttpResponse:
 	""" http view for requesting an edit link to a given software uid """
 	if request.method != "POST": return HttpResponseBadRequest("expected POST")
@@ -24,14 +53,17 @@ def request_edit_link(request: HttpRequest, uid: str) -> HttpResponse:
 		if len(test_email) <= 0: return HttpResponseBadRequest()
 		id = uuid.UUID(uid)
 		software = Software.objects.get(pk=id)
-		correct_emails: list[str] = software.submissionInfo.submitter.email_list()
-		for correct_email in correct_emails:
-			if test_email == correct_email.lower():
-				email_edit_link(software.submissionInfo)
-				return HttpResponse(status=204)
+		for si in software.submission_info.all():
+			for submitter in si.submitter.all():
+				for correct_email in submitter.email_list():
+					if test_email == correct_email.lower():
+						email_edit_link(si)
+						return HttpResponse(status=204)
 		return HttpResponseBadRequest("Incorrect email")
 
-	except Exception: return HttpResponseServerError()
+	except Exception:
+		import traceback; traceback.print_exc()
+		return HttpResponseServerError()
 
 def get_submission_data(request: HttpRequest, uid: str) -> HttpResponse:
 	queue_item: SoftwareEditQueue = None
@@ -135,23 +167,24 @@ def email_edit_link(submission: SubmissionInfo, expire_time: timedelta = timedel
 	based on it to the submitter's email
 	"""
 	software: Software = submission.software
-	user: Person = submission.submitter.person
+	first_submitter: Submitter = submission.submitter.first()
+	user: Person = first_submitter.person
 	expiration: datetime.datetime = datetime.datetime.now() + expire_time
 	queue_item = SoftwareEditQueue.create(software, expiration)
 	link = f"https://hssi.hsdcloud.org/curate/edit_submission/?uid={str(queue_item.id)}"
 	message = (
 		f"Hello {user.given_name}, \n\n" +
 		f"We have received a request to email you a new edit link. "+
-		# f"Due to some backend issues, we are resending an edit link for " + 
-		# f"your submissiont to HSSI. " +
 		f"You can use " +
-		f"the link below to edit your submission " + 
+		f"the link below to edit your submission " +
 		f"'{software.software_name}': \n\n{link}\n\n" +
 		f"Note that this link will expire on " +
 		f"UTC {queue_item.expiration.strftime("%Y-%m-%d %H:%M")}."
 	)
 
-	emails = submission.submitter.email_list()
+	emails = []
+	for submitter in submission.submitter.all():
+		emails += submitter.email_list()
 	print(f"Creating and sending edit link for {queue_item.id} to {emails}...")
 	send_mail(
 		f"[HSSI] Link to edit '{software.software_name}' submission", 

@@ -104,12 +104,12 @@ def api_view(request: HttpRequest, uid: str) -> JsonResponse:
 
 	try:
 		submitter_data = SUBMISSION_FORM_SUBMITTER.serialize_model_object(
-			software.submissionInfo.submitter, 
+			software.submission_info.submitter, 
 			False,
 			access,
 			access_ovr
 		)
-		submitter_data["id"] = software.submissionInfo.submitter.id
+		submitter_data["id"] = software.submission_info.submitter.id
 		data[FIELD_SUBMITTERNAME] = submitter_data
 	except Exception as e:
 		print(e)

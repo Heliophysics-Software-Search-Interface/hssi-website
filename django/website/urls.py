@@ -15,6 +15,7 @@ urlpatterns = [
 	path('submit/submit_data/', views.submit.submit_data),
 	path('submit/submitted/', views.submit.view_confirmation),
     path('request_edit/<str:uid>/', views.request_edit_link),
+    path('api/masked_emails/<str:uid>/', views.get_masked_submitter_emails),
     path('curate/edit_submission/', views.edit_submission),
     path('curate/edit_submission/submit_data/<str:uid>/', views.submit_edits),
     path('sapi/software_edit_data/<str:uid>/', views.get_submission_data),
@@ -32,7 +33,9 @@ urlpatterns = [
 	path('api/submission/', views.api.SubmissionAPI.as_view()),
 	path('api/list/software/', views.api.SoftwareListAPI.as_view()),
 	path('api/view/software/<uuid:uid>/', views.api.SoftwareViewAPI.as_view()),
+	path('api/view/software/<str:uid>/', views.api.SoftwareViewAPI.as_view()),
 	path('api/data/software/<uuid:uid>/', views.api.SoftwareDetailAPI.as_view()),
+	path('api/data/software/<str:uid>/', views.api.SoftwareDetailAPI.as_view()),
 
 	# Software landing page - uses UUID primary key
 	path('software/<uuid:pk>/', views.SoftwareDetailView.as_view(), name='software_detail'),

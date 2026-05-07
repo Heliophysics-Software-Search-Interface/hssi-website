@@ -34,12 +34,17 @@ export class TextInputDialogue extends PopupDialogue {
 	 * @param message the message to show to the user
 	 * @param buttonText the text to appear on the button to confirm text input
 	 */
-	public static async promptInput(message: string, buttonText: string = "accept"): Promise<string> {
+	public static async promptInput(
+		message: string, 
+		title: string = "Enter Input", 
+		buttonText: string = "accept"
+	): Promise<string> {
+
 		this.validateInstance();
+		this.instance.titleElement.innerText = title;
 		this.instance.messageElement.innerText = message;
 		this.instance.buttonElement.innerText = buttonText;
 		this.instance.inputElement.value = "";
-		PopupDialogue.showPopup(this.instance);
 
 		const checkForClosedDialogue = (accept: ()=>any, cancel: ()=>any) => {
 			if(!PopupDialogue.popupIsShown()) {

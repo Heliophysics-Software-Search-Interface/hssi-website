@@ -2,6 +2,7 @@
 
 from typing import Any
 import datetime
+import uuid
 
 from django.db import transaction
 from django.utils import timezone
@@ -24,6 +25,7 @@ from .permissions import HasUpdateToken
 
 
 class HSSIGenericAPIView(GenericAPIView):
+	
 	def get_serializer(self, *args, **kwargs) -> serializers.Serializer:
 		return super().get_serializer(*args, **kwargs)
 
@@ -51,11 +53,15 @@ class SoftwareDetailAPI(HSSIGenericAPIView):
 			return SubmissionSerializer
 		return SoftwareSerializer
 
-	def _get_visible_software(self, uid: str) -> Software | None:
+	def _get_visible_software(self, uid_or_slug: str | uuid.UUID) -> Software | None:
+		if not isinstance(uid_or_slug, uuid.UUID):
+			return Software.objects.filter(
+				pk=VerifiedSoftware.objects.filter(slug=uid_or_slug).first().pk
+			).first()
 		visible_ids = VerifiedSoftware.objects.values_list("id", flat=True)
-		return Software.objects.filter(pk=uid, pk__in=visible_ids).first()
+		return Software.objects.filter(pk=uid_or_slug, pk__in=visible_ids).first()
 
-	def get(self, request: HttpRequest, uid: str) -> Response:
+	def get(self, request: HttpRequest, uid: str | uuid.UUID) -> Response:
 		software = self._get_visible_software(uid)
 		if software is None:
 			return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -63,7 +69,7 @@ class SoftwareDetailAPI(HSSIGenericAPIView):
 		serializer.default_view = self.default_view
 		return Response(serializer.data)
 
-	def patch(self, request: HttpRequest, uid: str) -> Response:
+	def patch(self, request: HttpRequest, uid: str | uuid.UUID) -> Response:
 		software = self._get_visible_software(uid)
 		if software is None:
 			return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)

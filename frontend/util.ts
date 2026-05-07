@@ -5,6 +5,7 @@ export const softwareApiUrl = "/api/models/Software/rows/";
 export const modelApiUrl = "/api/view/"
 export const editApiUrl = "/sapi/software_edit_data/";
 export const requestEditUrl = "/request_edit/";
+export const maskedEmailsApiUrl = "/api/masked_emails/";
 export const csrfTokenName = "csrf-token";
 
 export type JSONValue = string | number | boolean | null | JSONObject | JSONArray | any;
@@ -212,15 +213,36 @@ export async function getSimpleSoftwareFormData(uid: string): Promise<JSONObject
 	return data;
 }
 
-/** 
+/**
  * request an email be sent to the software submission with the specified uid,
- * prompting the user to enter an email to confirm they were the submitter 
+ * prompting the user to enter an email to confirm they were the submitter
  */
 export async function requestEditSubmission(uid: string): Promise<void> {
-	const email = (
-		await TextInputDialogue.promptInput(
-			"Please enter the email associated with the software submission."
-		))?.trim();
+	// Fetch masked email(s) to show the user which address is on file
+	let maskedEmails: string[] = [];
+	try {
+		const res = await fetchTimeout(maskedEmailsApiUrl + uid);
+		if (res.ok) {
+			const data = await res.json();
+			maskedEmails = data.emails ?? [];
+		}
+	} catch (e) {
+		console.warn("Could not fetch masked emails", e);
+	}
+
+	let message: string;
+	if (maskedEmails.length > 0) {
+		const plural = maskedEmails.length > 1;
+		message = (
+			`The email address${plural ? "es" : ""} registered with this submission ` +
+			`${plural ? "are" : "is"}:\n${maskedEmails.join("\n")}\n\n` +
+			`Enter the full email address to receive an edit link:`
+		);
+	} else {
+		message = "Please enter the email associated with the software submission.";
+	}
+
+	const email = (await TextInputDialogue.promptInput(message, "Confirm Email"))?.trim();
 	if(email == null) return;
 
 	if(email.length <= 0){
@@ -231,7 +253,7 @@ export async function requestEditSubmission(uid: string): Promise<void> {
 		return;
 	}
 
-	const url = requestEditUrl + uid;
+	const url = requestEditUrl + uid + "/";
 	const promise = fetchTimeout(url, {
 		method: "POST",
 		headers: { 

@@ -436,13 +436,13 @@ def resolve_submitter(data: dict) -> Submitter:
 def build_submission_info(data: dict) -> SubmissionInfo:
 	"""Create and return a SubmissionInfo with resolved submitter."""
 	submission = SubmissionInfo()
-	submission.submitter = resolve_submitter(data)
 	submission.date_modified = date.today()
 	submission.modification_description = "Initial submission"
 	submission.metadata_version_number = "0.1.0"
 	submission.submission_date = date.today()
 	submission.internal_status_note = "Not assigned or reviewed"
 	submission.save()
+	submission.submitter.set([resolve_submitter(data)])
 	return submission
 
 def apply_license(software: Software, data: dict) -> None:
@@ -511,7 +511,7 @@ def apply_version(software: Software, data: dict) -> None:
 	version.description = version_data.get(FIELD_VERSIONDESCRIPTION)
 	version.version_pid = version_data.get(FIELD_VERSIONPID)
 	version.save()
-	software.version = version
+	software.version.add(version)
 
 def apply_authors(software: Software, data: dict) -> None:
 	"""Replace Software.authors from submission author data."""
@@ -600,8 +600,8 @@ def apply_function_category(software: Software, fullnames: list[str]):
 		if(ref_category): categories.append(ref_category)
 		else: raise Exception(f"{FunctionCategory.__name__} '{fullname}' does not exist")
 
-	# apply categories to entry
-	software.software_functionality.set(categories)
+	# apply categories to entry (deduplicate while preserving order)
+	software.software_functionality.set(list(dict.fromkeys(categories)))
 
 def apply_keywords(software: Software, data: dict) -> None:
 	"""Replace Software.keywords with Keyword references, creating when needed."""
@@ -755,16 +755,17 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	apply_development_status(software, data)
 	apply_logo(software, data)
 
-	submission = build_submission_info(data)
-	software.submissionInfo = submission
-
 	apply_license(software, data)
 	apply_publisher(software, data)
-	apply_version(software, data)
 
 	# ensure Software is saved before any M2M assignments
 	software.save()
 
+	submission = build_submission_info(data)
+	submission.software = software
+	submission.save()
+
+	apply_version(software, data)
 	apply_authors(software, data)
 	apply_publication_date(software, data)
 	apply_controlled_m2m(

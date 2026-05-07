@@ -23,10 +23,17 @@
     <div class="software-header">
         <div class="software-header-content">
             <div class="software-title-section">
-                <h1 class="software-name">{{ software.software_name }}</h1>
-                {% if latest_version %}
-                <span class="software-version">{{ latest_version.number }}</span>
-                {% endif %}
+                <div class="software-title-row">
+                    <div>
+                        <h1 class="software-name">{{ software.software_name }}</h1>
+                        {% if latest_version %}
+                        <span class="software-version">{{ latest_version.number }}</span>
+                        {% endif %}
+                    </div>
+                    <button class="action-btn btn-request-edit" onclick="window.requestEditSubmission('{{ software.pk }}')">
+                        <i class="fa fa-pencil"></i> Request Edit Access
+                    </button>
+                </div>
             </div>
 
             {% if software.logo %}

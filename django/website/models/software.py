@@ -218,7 +218,7 @@ class Software(HssiModel):
 	def get_subfields(cls):
 		subfields = super().get_subfields()
 		for i, field in enumerate(subfields):
-			if field.name == cls.submissionInfo.name:
+			if field.name == cls.submission_info.name:
 				subfields.pop(i)
 				break
 		return subfields

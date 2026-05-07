@@ -126,14 +126,9 @@ class FunctionCategory(ControlledGraphList):
 	parent_nodes: models.Manager['FunctionCategory']
 
 	def get_choice(self) -> ModelObjectChoice:
-		choice_name = str(self)
-		if self.parent_nodes:
-			if self.parent_nodes.count() == 1:
-				choice_name = str(self.parent_nodes.first()) + ": " + choice_name
-
 		return ModelObjectChoice(
 			str(self.id), 
-			choice_name,
+			self.get_full_name(),
 			self.get_search_terms(),
 			self.get_tooltip(),
 		)

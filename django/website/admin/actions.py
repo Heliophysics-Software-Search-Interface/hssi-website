@@ -17,7 +17,7 @@ from .fetch_vocab import (
 
 ## HSSI Admin Site
 from django.db.models import ManyToManyField
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.contrib import admin
 from django.urls import path
@@ -175,3 +175,6 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 	# Phenomena.post_fetch()
 
 	return redirect('admin:index')
+
+def fetch_heliophysics_api(request: HttpRequest) -> HttpResponse:
+	return HttpResponseBadRequest()

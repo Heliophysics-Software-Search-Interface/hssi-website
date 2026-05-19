@@ -177,4 +177,6 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 	return redirect('admin:index')
 
 def fetch_heliophysics_api(request: HttpRequest) -> HttpResponse:
+	fetch_heliophysnet_vocab(InstrumentObservatory, "observatories")
+	fetch_heliophysnet_vocab(InstrumentObservatory, "instruments")
 	return HttpResponse()

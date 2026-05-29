@@ -45,6 +45,24 @@ class SoftwareFilterEncodingTests(SimpleTestCase):
 
 
 class SoftwareFunctionalityOrderingTests(TestCase):
+	def test_functionality_choice_labels_include_parent_once(self):
+		data_visualization = FunctionCategory.objects.create(name="Data Visualization")
+		spectrogram = FunctionCategory.objects.create(name="Spectrogram")
+		mission_related = FunctionCategory.objects.create(name="Mission-related")
+		analysis = FunctionCategory.objects.create(name="Analysis")
+
+		data_visualization.children.add(spectrogram)
+		mission_related.children.add(analysis)
+
+		self.assertEqual(
+			spectrogram.get_choice().name,
+			"Data Visualization: Spectrogram",
+		)
+		self.assertEqual(
+			analysis.get_choice().name,
+			"Mission-related: Analysis",
+		)
+
 	def test_functionality_groups_stay_together_without_inserting_parents(self):
 		names = [
 			"Data Visualization",

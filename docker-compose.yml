@@ -3,6 +3,7 @@ services:
         build: ./docker
         image: hssi
         container_name: HSSI
+        restart: unless-stopped
         depends_on:
             - website_db
         ports:
@@ -31,6 +32,7 @@ services:
     website_db:
         image: postgres
         container_name: website_db
+        restart: unless-stopped
         environment: 
             - POSTGRES_PASSWORD=$SUPERUSER_PWD
         # To persist db data, uncomment the following volumes statement, and see the outer 

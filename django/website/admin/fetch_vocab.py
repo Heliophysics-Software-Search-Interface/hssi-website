@@ -50,6 +50,7 @@ MODEL_URL_MAP={
 SPASE_URL = "https://spase-metadata.org/"
 HELIOPHYS_API_URL = "https://api.heliophysics.net/api/"
 HELIOPHYS_PROP_NAME = "long_name"
+HELIOPHYS_PROP_NAME_2 = "short_name"
 HELIOPHYS_PROP_DEFINITION = "description"
 HELIOPHYS_PROP_SPASEID = "spase_id"
 
@@ -208,7 +209,13 @@ def fetch_heliophysnet_vocab(model: type[ControlledList], api_slug: str):
 			continue
 		
 		details = fetch_heliophysnet_detail(api_slug, uid)
+
+		# choose the more descriptive title
 		name = details.get(HELIOPHYS_PROP_NAME)
+		name2 = details.get(HELIOPHYS_PROP_NAME_2)
+		name = name if len(name) > len(name2) else name2
+		if len(name) > 128: name = name[:128]
+
 		spase_id = details.get(HELIOPHYS_PROP_SPASEID)
 		if not spase_id: 
 			print(f"no spase id found for '{name}', skipping")

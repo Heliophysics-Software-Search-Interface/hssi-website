@@ -412,12 +412,13 @@ SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
 	),
 	ModelSubfield.define(
 		name=FIELD_RELATEDOBSERVATORYIDENTIFIER,
+		row_name=ROW_CONTROLLEDLIST_IDENTIFIER,
 		type=TYPE_URL,
 		requirement=RequirementLevel.OPTIONAL.value,
 		properties={
 			PROP_LABEL: "Observatory Identifier",
-			PROP_TT_EXPL: TTEXPL_RELATEDINSTRUMENTIDENTIFIER,
-			PROP_TT_BEST: TTBEST_RELATEDINSTRUMENTIDENTIFIER,
+			PROP_TT_EXPL: TTEXPL_RELATEDOBSERVATORIES,
+			PROP_TT_BEST: TTBEST_RELATEDOBSERVATORIES,
 		},
 		multi=False,
 	),
@@ -1017,6 +1018,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: InstrumentObservatory.__name__,
 				WPROP_ALLOWNEWENTRIES: True,
+				WPROP_MODELFILTER: "type=1",
 			},
 		},
 		multi=True,
@@ -1034,6 +1036,7 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 			PROP_WIDGET_PROPS: {
 				WPROP_TARGETMODEL: InstrumentObservatory.__name__,
 				WPROP_ALLOWNEWENTRIES: True,
+				WPROP_MODELFILTER: "type=2",
 			},
 		},
 		multi=True,

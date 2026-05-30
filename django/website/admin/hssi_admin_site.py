@@ -5,7 +5,8 @@ from .actions import (
 	view_export_db_new, 
 	view_import_db_new, 
 	view_get_metadata, 
-	fetch_vocab
+	fetch_vocab,
+	fetch_heliophysics_api
 )
 
 class HssiAdminSite(admin.AdminSite):
@@ -35,7 +36,8 @@ class HssiAdminSite(admin.AdminSite):
 			path('export_db_new/', view_export_db_new, name='export_db_new'),
 			path('import_db_new/', view_import_db_new, name='import_db_new'),
 			path('get_metadata/', view_get_metadata, name='get_metadata'),
-			path('fetch_vocab/', fetch_vocab, name="fetch_vocab")
+			path('fetch_vocab/', fetch_vocab, name="fetch_vocab"),
+			path('fetch_heliophys_api/', fetch_heliophysics_api, name="fetch_heliophys_api"),
 		] + urls_base[-1:]
 		return urls
 

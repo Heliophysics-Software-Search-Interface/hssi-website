@@ -347,10 +347,13 @@ export class ModelBox extends Widget {
 	 * options list based off that
 	 */
 	private async buildOptionsFromModel(modelName: ModelName): Promise<void> {
-		let optionData: Option[] = ModelBox.optionMap.get(modelName);
+		const modelFilter = this.properties.modelFilter ?? "";
+		const cacheKey = modelFilter ? `${modelName}|${modelFilter}` : modelName;
+		let optionData: Option[] = ModelBox.optionMap.get(cacheKey);
 		if(!optionData){
+			const queryString = modelFilter ? `?${modelFilter}` : "";
 			const data: ChoicesJsonStructure = await (
-				await fetchTimeout(modelsUrl + modelName + modelChoicesSlug)
+				await fetchTimeout(modelsUrl + modelName + modelChoicesSlug + queryString)
 			).json();
 			optionData = data.data.map(x => {
 				if(x == null) return null;
@@ -361,7 +364,7 @@ export class ModelBox extends Widget {
 					tooltip: x[3],
 				}
 			});
-			ModelBox.optionMap.set(modelName, optionData);
+			ModelBox.optionMap.set(cacheKey, optionData);
 		}
 		this.buildOptions(optionData);
 	}

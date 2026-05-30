@@ -11,13 +11,13 @@ from ..metadata import get_metadata
 from .csv_export import export_db_csv, import_db_csv, remove_all_model_entries
 from .parse_ttl import parse_ttl
 from .fetch_vocab import (
-	DataListConcept, get_data, get_concepts, get_concepts_generalized,
+	DataListConcept, get_data, get_concepts, get_concepts_generalized, fetch_heliophysnet_vocab,
 	MODEL_URL_MAP, URL_FUNCTIONCATEGORIES, URL_REGIONS_TTL, URL_PHENOMENA
 )
 
 ## HSSI Admin Site
 from django.db.models import ManyToManyField
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.contrib import admin
 from django.urls import path
@@ -175,3 +175,8 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 	# Phenomena.post_fetch()
 
 	return redirect('admin:index')
+
+def fetch_heliophysics_api(request: HttpRequest) -> HttpResponse:
+	fetch_heliophysnet_vocab(InstrumentObservatory, "observatories")
+	fetch_heliophysnet_vocab(InstrumentObservatory, "instruments")
+	return HttpResponse()

@@ -12,7 +12,7 @@ import json
 from ..models import (
 	ControlledList, ControlledGraphList, DataInput, License, 
 	OperatingSystem, ProgrammingLanguage, FileFormat, RepoStatus, 
-	CpuArchitecture, Region
+	CpuArchitecture, Region, InstrumentObservatory, InstrObsType
 )
 
 from typing import Type, Any
@@ -46,6 +46,13 @@ MODEL_URL_MAP={
 	RepoStatus.__name__: URL_REPOSTATUS,
 	Region.__name__: URL_REGIONS_JSON,
 }
+
+SPASE_URL = "https://spase-metadata.org/"
+HELIOPHYS_API_URL = "https://api.heliophysics.net/api/"
+HELIOPHYS_PROP_NAME = "long_name"
+HELIOPHYS_PROP_NAME_2 = "short_name"
+HELIOPHYS_PROP_DEFINITION = "description"
+HELIOPHYS_PROP_SPASEID = "spase_id"
 
 def get_data(url: str) -> dict | list:
 	req = requests.get(url)
@@ -170,3 +177,84 @@ def link_concept_children(
 			parent_obj.children.add(obj)
 			print(f"Linked '{parent_obj.name}' with child '{obj.name}'")
 	for obj in objs: obj.save()
+
+def fetch_heliophysnet_list(api_slug: str) -> list[dict[str, Any]]:
+	url = HELIOPHYS_API_URL + api_slug + "/"
+	print(f"fetching heliophysics data list '{api_slug}' from '{url}'")
+	data = get_data(url)
+	return data
+
+def fetch_heliophysnet_detail(api_slug: str, uid: str) -> dict[str, Any]:
+	url = HELIOPHYS_API_URL + f"{api_slug}/{uid}/"
+	print(f"fetching heliophysics item '{uid}' from '{url}'")
+	data = get_data(url)
+	return data
+
+def fetch_heliophysnet_vocab(model: type[ControlledList], api_slug: str):
+	"""
+	fetch all vocab from the heliophysics api list at the given api slug 
+	(e.g. "observatories"), creates model objects for the specified model 
+	of them, and inserts them into the corresponding table
+	"""
+	datalist = fetch_heliophysnet_list(api_slug)
+	item_count = len(datalist)
+	i = 0
+	print(f"found {item_count} items for {api_slug}")
+	for item in datalist:
+		assert isinstance(item, dict)
+		uid = item.get("id")
+		if uid is None:
+			print(f"ERROR - item has no ID:")
+			print(item)
+			continue
+		
+		details = fetch_heliophysnet_detail(api_slug, uid)
+
+		# choose the more descriptive title
+		name = details.get(HELIOPHYS_PROP_NAME)
+		name2 = details.get(HELIOPHYS_PROP_NAME_2)
+		name = name if len(name) > len(name2) else name2
+		if len(name) > 128: name = name[:128]
+
+		spase_id = details.get(HELIOPHYS_PROP_SPASEID)
+		if not spase_id: 
+			print(f"no spase id found for '{name}', skipping")
+			continue
+
+		definition = details.get(HELIOPHYS_PROP_DEFINITION)
+		spase_url = f"{SPASE_URL}{spase_id[8:]}"
+		
+		# find 
+		entry = model.objects.filter(identifier=spase_url).first()
+		if entry is None:
+			entry = model.objects.create()
+		
+		entry.name = name
+		entry.definition = definition
+		entry.identifier = spase_url
+
+		if isinstance(entry, InstrumentObservatory):
+			assert isinstance(entry, InstrumentObservatory)
+			assert isinstance(name, str)
+
+			# determine whether it's an observatory or instrument based on slug
+			if api_slug.lower() == "observatories":
+				entry.type = InstrObsType.OBSERVATORY
+			else: 
+				entry.type = InstrObsType.INSTRUMENT
+			
+			# seperate abbreviation
+			lparensplit = name.split("(")
+			if len(lparensplit) > 1:
+				rparensplit = lparensplit[-1].split(")")
+				if len(rparensplit) > 1:
+					entry.abbreviation = rparensplit[0].strip()
+					name = lparensplit[0].strip()
+					entry.name = name
+		
+		print(spase_url)
+
+		entry.save()
+		i += 1
+		print(f"saved '{name}' to {model.__name__} model [{i}/{item_count}]")
+		

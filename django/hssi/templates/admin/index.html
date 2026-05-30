@@ -23,6 +23,12 @@
 				<input type="submit" value="Fetch Vocab">
 			</form>
 		</li>
+		<li>
+			<form action="{% url 'admin:fetch_heliophys_api' %}" method="POST">
+				{% csrf_token %}
+				<input type="submit" value="Fetch heliophysics.net Vocab">
+			</form>
+		</li>
 	</ul>
 </div>
 {% endblock %}

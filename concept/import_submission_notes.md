@@ -104,7 +104,7 @@ impact on the software's discoverability and usability.
 	"persistentIdentifier": "https://doi.org/10.XXXX/conceptDOIexample",
 	```
 * `softwareFunctionality` - array of terms.
-   * must be an **exact match** taken from [`/api/models/Functionality/rows/all`](https://hssi.hsdcloud.org/api/models/Functionality/rows/all/)  **please correct this link**
+   * must be an **exact match** taken from [`/api/models/Functionality/rows/all`](https://hssi.hsdcloud.org/api/models/FunctionCategory/rows/all/)  
 	```
 	"softwareFunctionality": [
 		"Data Processing and Analysis",

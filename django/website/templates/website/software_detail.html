@@ -384,7 +384,8 @@
                     <span class="metadata-value">
                         {% for obs in software.related_observatories.all %}
                         {% if obs.identifier %}
-                        <a class="tag" href="{{ obs.identifier }}" target="_blank">
+                        <a class="tag" href="{{ obs.identifier }}" target="_blank"
+                           title="View this observatory on {% if 'helio.data.nasa.gov' in obs.identifier %}HelioData{% elif 'spase-metadata.org' in obs.identifier %}SPASE{% else %}an external site{% endif %}">
                             {% if obs.name and obs.name != "UNKNOWN" %}
                             {{ obs.name }}
                             {% else %}

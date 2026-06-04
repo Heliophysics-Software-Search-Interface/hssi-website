@@ -26,6 +26,11 @@ SUPERUSER_PWD = None if 'SUPERUSER_PWD' not in os.environ else os.environ.get('S
 # When unset, the update endpoint denies every request.
 HSSI_UPDATE_TOKEN = os.environ.get("HSSI_UPDATE_TOKEN")
 
+# Google Analytics (GA4) Measurement ID, e.g. "G-XXXXXXXXXX". When unset, the
+# analytics tag is not rendered. Only emitted in production (see
+# context_processors.export_vars) so dev traffic doesn't pollute the data.
+GA_MEASUREMENT_ID = os.environ.get("GA_MEASUREMENT_ID")
+
 ADMIN_EMAIL = "admin@my-site.com"
 DEFAULT_FROM_EMAIL = "noreply@hssi.hsdcloud.org"
 

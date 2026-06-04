@@ -47,3 +47,13 @@ from package.json
 
 * After dependencies are finished installing, simply run `npm run build` to 
 run the build script for the typescript frontend defined in package.json
+
+## Google Analytics
+
+HSSI uses Google Analytics 4 (GA4) to collect anonymous traffic statistics. To enable it, add your GA4 Measurement ID to the `.env` file:
+
+```
+GA_MEASUREMENT_ID="G-XXXXXXXXXX"
+```
+
+The analytics tag is only rendered in production (when `DEBUG` is `False`), so local development traffic is never tracked.

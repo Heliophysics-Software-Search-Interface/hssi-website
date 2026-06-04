@@ -31,6 +31,19 @@ export function getCsrfTokenValue(): string {
 }
 
 /**
+ * Send a custom event to Google Analytics, if the GA tag is present. The tag is
+ * only rendered in production (see hssi/templates/site_base_template.html), so
+ * on local/dev builds `gtag` is undefined and this is a safe no-op.
+ */
+export function trackEvent(
+	name: string,
+	params: Record<string, unknown> = {}
+): void {
+	const gtag = (window as any).gtag;
+	if (typeof gtag === "function") gtag("event", name, params);
+}
+
+/**
  * merge two objects together, recursively
  * @param target merge into this object
  * @param source values from this object will overwrite target values

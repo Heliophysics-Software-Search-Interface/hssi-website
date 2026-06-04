@@ -7,6 +7,7 @@ import {
 	ResourceView,
 	Spinner, 
 	fetchTimeout,
+	trackEvent,
 } from "../loader";
 
 export const idSearchbar = "searchbar";
@@ -133,6 +134,13 @@ export async function searchForQuery(
 		view.showItems(filteredResults);
 		
 		if (pushHistory) recordHistory(trimmedQuery);
+
+		// Report user-initiated searches to GA (pushHistory is false when we're
+		// just restoring a search from the URL, which GA's enhanced measurement
+		// already captures on full page loads — avoids double counting).
+		if (pushHistory) {
+			trackEvent("view_search_results", { search_term: trimmedQuery });
+		}
 		
 		console.log(`queried '${trimmedQuery}', results:`, filteredResults);	
 

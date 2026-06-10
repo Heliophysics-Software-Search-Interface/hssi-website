@@ -1,14 +1,15 @@
 id,name,url
-ebb5699a-0352-4786-95a0-956c27ea7312,Apache License 2.0,https://spdx.org/licenses/Apache-2.0
+11d25161-df7f-4f14-ac45-e687330b3251,Apache License 2.0,https://spdx.org/licenses/Apache-2.0
 e30aeeb6-77d6-4994-a80c-320aa1222eab,"BSD 2-Clause ""Simplified"" License",https://spdx.org/licenses/BSD-2-Clause.html
 d7f050b7-b557-445d-a0c5-1d89918a915e,"BSD 3-Clause ""New"" or ""Revised"" License",https://spdx.org/licenses/BSD-3-Clause.html
 a634c611-9258-4997-88c2-b73c9ddf3305,Creative Commons Attribution 4.0 International,https://spdx.org/licenses/CC-BY-4.0.html
-dfb7fc49-8c08-4a05-9cec-4a758656eae2,GNU General Public Licenses (GPL version 2),https://spdx.org/licenses/GPL-2.0
+cdeba6b3-a412-4d48-b3c0-7526e9b99a2c,GNU General Public Licenses (GPL version 2),https://spdx.org/licenses/GPL-2.0
 0e565a36-a0dd-44aa-84b5-e19fbfdeefd8,GNU General Public License v3.0 or later,https://spdx.org/licenses/GPL-3.0-or-later.html
 563dce4b-b082-4496-aa0c-174abd23aa39,GNU Lesser General Public License v3.0 only,https://spdx.org/licenses/LGPL-3.0-only.html
-3b8ab124-6857-46bf-8d90-6128313c5cc0,GNU Library or ‘Lesser’ General Public Licenses (LGPL version 2),https://spdx.org/licenses/LGPL-2.0
+b0d83388-595f-418a-bee8-7bddda9bcede,GNU Library or ‘Lesser’ General Public Licenses (LGPL version 2),https://spdx.org/licenses/LGPL-2.0
 247e2f57-0a04-4089-be6d-8ce8825145ae,GNU Library or ‘Lesser’ General Public Licenses (LGPL version 3),https://spdx.org/licenses/LGPL-3.0-only.html
-38ce50e4-3757-453a-9848-cc75a751b8ee,MIT License,https://spdx.org/licenses/MIT.html
-e29e1d53-46a9-4114-a5c0-265703f60849,Other,https://github.com/NCAR/tiegcm?tab=License-1-ov-file#readme
+eef6c156-35b4-433f-8d6d-2c3b5005347d,MIT License,https://spdx.org/licenses/MIT
+f181be5b-6c60-4a9c-bead-2f6b77b97b9b,New BSD license,https://spdx.org/licenses/BSD-3-Clause
+eaed823a-6b34-4462-afe8-7fee2ef0f542,Other,
 5b5c9928-9f83-4528-b96a-bd87a1598816,Other,
-a8a650af-48d4-485b-b121-19744bc7bd48,Restricted,https://amgeo.colorado.edu/register
+80bcb992-77f0-4286-89b0-2d8a70b5c3a3,Restricted,

@@ -71,7 +71,7 @@ b590fe84-d0e5-45c9-8cb2-ac973cdda47f,Thomas,Braccia,,
 eee9c593-0df0-4db7-8ab8-2a0dfcf1f27f,Daniel Garcia,Briseno,,
 bede8ae3-bc2f-4b0d-960a-2eef7f14e6d8,Ezra,Brooks,,cbffb9db-933c-4928-8b43-93b9a64ff8f4
 2f59d23f-d47f-4138-99cb-ff109a9bd78e,Collin,Brown,https://orcid.org/0000-0001-6113-4860,bbea6ab9-2135-414d-af37-d81216e13d4d
-421dff5c-1450-47ef-9fc1-9e3131401d59,Khalil,Bryant,,3263f163-f39a-4284-8d60-836619fb7395
+421dff5c-1450-47ef-9fc1-9e3131401d59,Khalil,Bryant,https://orcid.org/0000-0002-2105-0280,3263f163-f39a-4284-8d60-836619fb7395
 984412cb-de8a-4a16-bab8-f96bc1a25fc0,Dumindu,Buddhika,,
 07e65f4b-c981-4408-81d4-4a3e5f874211,Juan Camilo,Buitrago-Casas,,
 da569b72-7c06-4f8d-b6f8-118c5f2cbbb1,Aaron,Bukowski,https://orcid.org/0000-0002-1960-933X,
@@ -120,7 +120,7 @@ ba49d98a-aa7b-479d-9bee-b1eaf30b7c53,Stefan,Codrescu,https://orcid.org/0000-0002
 04ac9c44-f2d9-4c63-8607-80e33c159fc3,,Colinrsmall,,6da76f19-0dd1-47e2-8518-9c2220c5879b
 a4fe31d5-3dff-4e85-acdc-ce4e783d4bd5,AMGeO,Collaboration,,d6db5f01-5945-49e6-bf41-8758dae049db
 1be0259c-a32d-442e-a2cf-749a8e5e52a8,Hannah,Collier,https://orcid.org/0000-0001-5592-8023,96d84323-3232-4108-8ebf-2d0f2b774ac2
-6ca53604-0509-44fb-a16a-dd3b939e54e6,PlasmaPy,Community,,
+6ca53604-0509-44fb-a16a-dd3b939e54e6,PlasmaPy,Community,https://github.com/PlasmaPy/PlasmaPy/blob/main/CITATION.cff,
 432e3fb2-e9d1-4264-b653-8f90da548caf,The SunPy,Community,,
 6f5d0b1e-95ea-4cee-af20-a649f2157f70,,CoreCode,,8b64f70f-f0cb-4279-a335-a35a53f8bc55
 0d267836-dfe4-4fc1-a311-c913090079df,Matt,Craig,,1527650d-26b2-4f4c-ae09-f0b6765ed150
@@ -210,7 +210,7 @@ aa939ba6-fa40-420b-9161-1e5c492f2936,Daniel B.,Graham,https://orcid.org/0000-000
 0cb453e6-fd34-4e1a-b819-2c20a2671849,Max,Grover,https://orcid.org/0000-0002-0370-8974,dd23f515-fba1-441d-94d3-84fbb02cc550
 d9a47e4d-191a-4a60-8946-8e4783e06017,Chloé,Guennou,,
 9cce5810-9ab2-4ae5-8415-7995d8826d96,Chloé,Guennou,,ddf93c16-c5b6-4ae6-8c57-fb3b34742010
-6df10c93-97c2-4186-8a3d-3e621ba755b2,Silvina,Guidoni,,ed4bfa2d-202f-4c43-aef6-5c5eae6b080e
+6df10c93-97c2-4186-8a3d-3e621ba755b2,Silvina,Guidoni,https://orcid.org/0000-0003-1439-4218,ed4bfa2d-202f-4c43-aef6-5c5eae6b080e
 de71012b-2f50-4143-82e8-d45ce6b44bdb,Norbert G,Gyenge,https://orcid.org/0000-0003-0464-1537,ca4f1e4d-41f2-43fa-800b-bf65fc3af244
 5cb30320-44e8-4578-92eb-c08ef1e38e48,Ishtyaq,Habib,,
 b0d8ab28-e562-40b8-ae9a-3511218e347c,Colby C.,Haggerty,https://orcid.org/0000-0002-2160-7288,36c4a2d0-5f85-4c83-9bfc-77a712f0c5f4
@@ -252,7 +252,7 @@ d3cd1e9a-3001-4391-8ae7-36aec8b00d2e,Poh Zi,How,,
 f3af3493-571f-48ed-b7f3-f4446caae9f2,Zhenguang,Huang,,
 f5f21e0b-7ffe-478f-a45b-e79ef6f4d9f6,J. Marcus,Hughes,https://orcid.org/0000-0003-3410-7650,7d4f0f58-8d42-4a8d-a6bb-94821a2079f3
 74c0fad5-359f-4b65-a01c-04b588551012,Keith,Hughitt,https://orcid.org/0000-0003-0787-9559,"dee053f9-b9cc-47f3-95fb-29f12607567b,57d0434d-7405-40fc-9a70-40015e999404"
-41f67807-38d9-4a64-9e78-3936c1887bfd,Nabil,Humphrey,,
+41f67807-38d9-4a64-9e78-3936c1887bfd,Nabil,Humphrey,https://orcid.org/0000-0002-4227-2544,
 d5d036a6-922a-445e-abee-3e278934d1e7,Junyan,Huo,https://orcid.org/0000-0002-5469-7697,fda070ab-2cf9-496e-be32-cf6ac1928735
 101b010c-c65a-4fc2-aed2-c7c30ffd2378,Vishnunarayan K,I.,,
 465a2a8b-6cda-4667-a8fb-817232e46d57,,igor0sok,,
@@ -630,7 +630,7 @@ d2384c55-e472-44df-8e78-2673bbff747e,UNKNOWN,UNKNOWN,,
 26198aa3-44d8-432e-86a1-ac540e83cac1,Martin,Valgur,,5b655be5-a630-474b-8f4e-e807a7a14e97
 c154d944-30c6-453d-b43b-2982cadd277b,Jon,Vandegriff,,
 56a5e659-736c-4e6e-8fa9-4601633eaeac,Tania,Varesano,https://orcid.org/0000-0003-0256-9295,
-da165973-9ac4-45ae-9865-08b2c9d2f1f7,Thomas,Varnish,,
+da165973-9ac4-45ae-9865-08b2c9d2f1f7,Thomas,Varnish,https://orcid.org/0000-0002-8078-214X,
 c361c1ab-7e3e-43e3-90e5-83001cac2d3d,Joy,Velasquez,https://orcid.org/0009-0005-4804-0946,"7706c349-0f19-4b70-b292-4a3f7859a2ba,eeb98e70-f24e-438d-a1b4-22323da1a6ec,fe429ea7-35f7-4baa-b115-7c8a85bc7bd1"
 da979f7f-b51a-40ac-9633-9d3f40f8eb13,Akash,Verma,,
 49794b3b-7dc8-4331-8bb9-0f96017456ce,Dipanshu,Verma,https://orcid.org/0000-0003-2461-5547,a156d3ba-2456-4aa4-9448-c6a404d5781f
@@ -687,3 +687,134 @@ c7296c29-9810-4513-b9bb-cdefe18253b3,Peijin,Zhang,,
 ef23dfda-e10b-44a4-8771-ae0f29941e31,Hongyang,Zhou,https://orcid.org/0000-0003-4571-4501,
 51cf5a6d-2b14-4518-b894-84c5647a8b00,Lazar,Zivadinovic,https://orcid.org/0000-0003-1349-1606,
 ee8f3933-5f0b-4573-8696-652b412f5adf,Leah,Zuckerman,,
+66d6571e-f9a9-4a9c-9e39-62d6eab7fbf2,Mel,Abler,https://orcid.org/0000-0003-2528-8752,
+d711c0bb-654a-4ee6-a0aa-c4a548ebad4a,James,Addison,,
+9d251409-b1e3-48af-b22c-57fd39fb2dbc,Ataf Fazledin,Ahamed,,99a75459-9b73-48e5-a77f-af8ba60b4a87
+a9c013a5-89cc-4ddc-885e-0e1598bef6bc,Paula Valentina,Alarcon,https://orcid.org/0000-0002-7860-9567,a0cb956a-ffe2-4f21-8f62-82c6d2fc5aad
+26a535fa-7ec6-4289-b24d-d4b721d1acbc,Qusai,Al Shidi,https://orcid.org/0000-0003-0426-038X,a89f4f6b-97e4-4625-927e-08dd633d52d1
+f1a71008-9826-4e81-a1b7-ab866b6ed755,Takanobu,Amano,https://orcid.org/0000-0002-2140-6961,
+c414124a-1f74-40dc-8361-a215774982dc,Benjamin,Antognetti,https://orcid.org/0000-0002-1444-9680,451a81f0-e3b1-4e9a-b969-fa34f527e39a
+c269ba29-bdf3-409d-8f9a-c787c9de63ac,Christoper,Arran,https://orcid.org/0000-0002-8644-8118,04d3e6c4-2d95-46a1-ab7b-3e3e63279ee4
+7f295467-0cbd-4340-aa10-d70576b9f4d5,Haman,Bagherianlemraski,https://orcid.org/0000-0001-7381-1996,398db147-74a8-47ec-bc2b-3c63c81570c6
+88a34c1d-7084-4822-9313-52bd15051759,Julie,Barnum,https://orcid.org/0000-0001-8755-0694,b242cb07-2bcb-4afe-ba5e-e89ae812899d
+05534abb-a752-4e1b-b03d-1317b424afb8,Camilo,Bedoya-Lopez,,
+5a20f601-ccc3-49bd-a9a5-19474b81a39f,Riley,Britten,,
+90bb8639-40f8-45f3-9d76-dbd0e4dda93a,Shane,Brown,https://orcid.org/0000-0003-3309-3939,958d4923-78bc-40e3-a8d8-1498fcd22f49
+17c117c0-24a1-405e-ba74-f2fa64713533,Antoine,Brunet,,
+91271e26-8c69-450d-9428-546ead9807fd,Daniel,Carpenter,,df2eece9-956d-44d2-a946-8bd78f235caa
+d80236a7-d55c-4e4d-ad63-fd32861b2e88,Carlos,Cartagena-Sanchez,https://orcid.org/0000-0002-0486-1292,d43cb11b-552e-47ed-826b-c53aec54f31e
+b2702b5f-e96a-4029-aa2b-0e33319e66ad,Yaocheng,Chen,https://orcid.org/0000-0002-8967-4911,df4ff318-07e7-4d73-8aa5-0e6c31668b2d
+0ab593a8-001c-4d17-a32c-0bd94fb2dfa8,Sarthak,Choudhary,,
+44646662-cbdc-4f9e-9e8d-325cc6694a68,Xiangning,Chu,https://orcid.org/0000-0003-4109-0770,d6db5f01-5945-49e6-bf41-8758dae049db
+beb8f824-0093-40d0-8bf1-4f5dedbc35eb,Christian,Clauss,,
+1a6122e7-046a-45d1-80f1-6474db84e153,Sebastian,Colom,https://orcid.org/0009-0006-0863-0180,38f33214-2936-4555-8f0e-650e5376c756
+ca20169f-4d32-4ff1-99f7-e3dff93e2d6b,Michael,Contreras,,
+9e21ab6a-f745-4fad-a550-b3cefb5958ed,Chase,Davies,,
+a2c243a6-6517-4033-b0de-85f4d4af7a10,Gregor,Decristoforo,https://orcid.org/0000-0002-7616-0946,28582129-a65c-4e6b-b786-3cd757a142aa
+117737a3-c183-421f-8c43-97ddf50ac1d0,David,Drozdov,,
+3e00f1ce-96b8-4628-9521-dcaeb4d6fd40,Tiger,Du,https://orcid.org/0000-0002-8676-1710,d53087cd-5fa7-423f-bf2d-d711741840fd
+e4c075b8-f0d3-4fef-a6f7-2314db13597b,Miles A.,Engel,https://orcid.org/0000-0003-4248-9636,d402d7df-3761-492c-ab7f-90226678a25c
+887ad0a3-6c85-4bdc-a73c-40cf3e6b257b,Tamar,Ervin,https://orcid.org/0000-0002-8475-8606,8926caf8-1e5c-42e2-9c0c-c6cbf86c24ac
+a33f88ef-5a0e-40c7-94cf-14b3d401fcc9,Emmanuel,Ferdman,https://orcid.org/0009-0004-8953-0151,
+33a2f912-6b40-42c3-8a19-53a9aeed75eb,Michael,Fischer,,
+9eeb1eea-bb83-4883-b058-ba46e805f4d0,Bryan,Foo,https://orcid.org/0000-0001-5308-6870,fe6fa0d0-5481-4f2d-af9c-3efaab078a5e
+b0d116fc-5e7f-4066-8231-eec0f4c3314c,Heinz-Alexander,Fütterer,https://orcid.org/0000-0003-4397-027X,
+59040a9c-c94e-4dd9-8392-39d03fcdd59b,Rajagopalan,Gangadharan,,
+e57b8b07-3030-4b01-94d3-b0f78cacb861,Katherine,Garcia-Sage,https://orcid.org/0000-0001-6398-8755,"92f2f47f-e094-4444-9d58-f0036766f588,a4e07475-572f-48db-b2e7-5d59ea194465"
+e386ba81-c782-4a79-8a9a-3f7d229623da,Oliver,Gerland,,
+e511ca09-d5c5-4343-94c0-3316dec48d92,Seth,Gerow,https://orcid.org/0009-0008-3588-0497,2051bf0b-6d93-4bd5-8d27-18fd87836d42
+4b96a7e2-63e7-4608-baf8-b417d2e49209,Mahlet,Getahun,,15b1440b-dfd9-4a0e-ade2-57ae0581842e
+9a924e21-ef83-42d1-8c85-603ce085e43c,Beforerr,GithubUser,,
+1c746133-ef84-4392-8a6f-255c520657b4,donglai96,GithubUser,,
+c38c0e5a-a6d5-4a0f-a737-ab1635295a42,Kiril B,GithubUser,,
+cb70d994-8f5f-4975-9bd1-aea1c29d1fc2,krvidal,GithubUser,,
+a14c1c6b-0a08-4369-9602-c799e2519696,rale8469,GithubUser,,
+6cd42351-454a-4896-b635-72cd08b930f6,thigli,GithubUser,,
+e5fef452-b3fb-4b1a-84c3-c0e6a59eab8c,Tiger,GithubUser,,
+7b76318d-7aea-484b-9294-f2773c3125e1,Jessica,Gonzalez,,57e8fc39-063d-4207-a00a-d04a3273f74b
+77aa1688-e854-4e0d-8629-023def93a863,Brian,Goodall,,
+1888de98-5ffd-40a5-a9ea-a3e59cc2f276,Shauna,Gordon-McKeon,https://orcid.org/0000-0002-2373-8927,
+c1c5baa2-5bb0-486d-afb2-ce4a77382b26,Marco,Gorelli,,
+255bd9f5-9f0c-4cb8-b148-0f8f9497c878,Julia,Guimiot,,
+4579b32f-a1f5-4314-88f3-311119cf6b76,John,Haiducek,https://orcid.org/0000-0002-4027-8475,
+d4cd5333-1293-4a35-8785-b4fff2f52691,Mohammed,Haque,,60419fc7-9f25-4627-9657-9dad4825a2db
+a06cc7e6-91f6-4eee-bcd2-39452aeea748,Michael,Henderson,https://orcid.org/0000-0003-4975-9029,
+484bba5f-0f26-4faf-98f5-7fdc9ff9f62c,Aaron,Hendry,,
+f247eba4-41f2-46bb-ad5c-72477671d068,Chris,Hoang,,
+0682a315-5931-4412-b4a7-d5ac7eb040db,Tomo,Hori,,19a2e81d-6023-4ab1-b15f-d2104f51bbaa
+69f4fff5-ac59-4913-9fe7-3f39baabc826,Elliot,Johnson,,958d4923-78bc-40e3-a8d8-1498fcd22f49
+c8c9f6d0-e1cf-4d46-97e5-863c0bdaaff3,Evan,Jones,https://orcid.org/0009-0004-6699-4869,
+0445340a-5155-45dd-93dc-4db044689572,Marcin,Kastek,https://orcid.org/0009-0002-5918-4652,4aa0718e-ca16-4562-bad8-98073af3d31e
+38dc6f6f-e53f-49c5-935d-4f37dc5c1145,Anansa,Keaton-Ashanti,,78bd9671-7e58-40ef-8e2b-b793be67655e
+9b3579cb-d12b-4175-b92a-587b5c9eee72,Peter,Killick,,
+d6357c7b-2aed-4caf-927c-dbdc208e73df,Dusan,Klima,https://orcid.org/0009-0008-5134-6171,
+23e023a5-8dd1-4702-9185-d85d96ff9abf,Alf,Köhn-Seemann,https://orcid.org/0000-0002-1192-2057,56da11e9-6095-457c-be58-8cb71eeda6de
+a1385fa3-4238-4edd-8e2d-96a415f7097f,Josef,Koller,,
+9d701d41-ef39-42e2-aef3-8626fee5100d,Sundaran,Kumar,,
+bfba0beb-487a-4919-ac79-9320641ecbee,Anna,Lanteri,,
+075eb841-2cbf-4e24-9082-0c84e6c730a3,Terrance Takho,Lee,,
+5caa649e-535a-48d7-ac8c-dcde5d8e9ac3,Nicolas,Lequette,,73999e91-5511-4ad1-8785-2d6a7f227aac
+991bd921-f77b-477c-9913-54919afdb72f,Elysia,Lucas,,b242cb07-2bcb-4afe-ba5e-e89ae812899d
+28438f9e-8ed5-4b2e-baca-e6eb3c747063,Muhammad,Masood,,ef128171-a4b0-4cc6-9bd7-409d0b326874
+70cfe38c-1056-4238-adea-d1879669c8ef,Isaias,McHardy,https://orcid.org/0000-0001-5394-9445,
+854681a1-c376-4926-af46-a877f4de8d61,Asher,Merrill,,
+cb969672-b274-447b-8e26-766a3f2176a7,Dhawal,Modi,,
+9ae7f19e-b9bb-4f6c-af00-f10ef5713268,Kevin,Montes,https://orcid.org/0000-0002-0762-3708,fe6fa0d0-5481-4f2d-af9c-3efaab078a5e
+2237ece1-f4eb-4e5f-9806-a254912f5816,Leo,Murphy,,0f0a3fa8-19df-4c9e-9259-b5b4b5f06bdb
+d2f8f0cf-4b38-4a40-a262-6173918a0419,Ayris,Narock,https://orcid.org/0000-0001-6746-7455,cf788e46-c8d8-4cd7-9c36-24118587d93c
+35766e14-a2f9-4589-9f8d-7bf0e05578ac,Bao,Nguyen,https://orcid.org/0000-0002-1753-4223,6156b5f1-8bcd-4512-9d65-0833d81cd8f2
+8ffc8d77-b8ba-4a54-8e24-bf766b89cc0a,Suzanne,Nie,,
+194a9ebd-1960-4d0e-98da-896ffbbff822,Austin,Norris,,df2eece9-956d-44d2-a946-8bd78f235caa
+9d4f43e9-cc58-4b6d-b76c-2185dad007ca,Shuji,Onosawa,,
+1b128f14-a11f-42d9-a48c-cea50bc56fef,Carlos,Ortiz,,451a81f0-e3b1-4e9a-b969-fa34f527e39a
+c7e8e38b-beda-4f9b-b14a-98a1fad4d6c8,Shivam,Panda,,
+af6e91fb-aea6-4ef6-99f1-e34bd07590f8,Mahima,Pannala,,
+6aa418cf-c3c2-4910-ba4c-803394aa61f6,Dhruv,Patel,,
+6be491d2-5a72-4ecd-8fcc-be86f868aae5,Francisco Silva,Pavon,,
+110061a1-e67e-414a-a182-afe38c04e910,Preston,Pitzer,https://orcid.org/0009-0007-0655-1347,f32614d5-4fce-4412-8564-a3a2febf5ece
+6abe8f00-2c19-425b-8204-5bf5afaa9555,Shawn,Polson,https://orcid.org/0000-0003-0619-5745,b242cb07-2bcb-4afe-ba5e-e89ae812899d
+a9498c4c-07b5-44c4-960c-e03d14627f42,Luke,Powell,,7d4f0f58-8d42-4a8d-a6bb-94821a2079f3
+743031b1-1270-4800-a74b-a26ba7e18331,Marc,Pulupa,https://orcid.org/0000-0002-1573-7457,8926caf8-1e5c-42e2-9c0c-c6cbf86c24ac
+72c43b58-6fe1-4d2f-b06a-a08a33ca2b7d,Ramiz,Qudsi,https://orcid.org/0000-0001-8358-0482,80c4c74e-abb4-4730-b6b7-a2805dee334e
+37b1af20-3ebd-40c5-a8e1-d567c2aa0b4f,Lutz,Rastaetter,https://orcid.org/0000-0002-7343-4147,"92f2f47f-e094-4444-9d58-f0036766f588,a4e07475-572f-48db-b2e7-5d59ea194465"
+0cdaff7b-d0b5-4423-98f6-83402f3ed8ea,Lutz,Rastatter,,
+495087f9-d7da-4715-af09-62500dd6a65f,Warren,Rexroad,,8926caf8-1e5c-42e2-9c0c-c6cbf86c24ac
+f94eda9c-e73d-4f27-835f-d8418e181617,Steve,Richardson,https://orcid.org/0000-0002-3056-6334,630231fc-9884-48b0-a84e-e28d2c1e1ea4
+12693e1a-2b69-4468-81f6-8f8f7e3da89d,Jayden,Roberts,https://orcid.org/0009-0009-9490-5284,
+cdc67014-a56e-459a-870c-818d83dd3bc3,Shanshan,Rodriguez,https://orcid.org/0000-0003-2944-0424,d373054a-2a13-40f9-b26f-70aa3779526f
+66d5fe27-479d-450f-b0e4-c4ded057ce3e,Reynaldo,Rojas Zelaya,,
+4b510eef-1960-4614-bede-55c74f44b2bf,Armando,Salcido,,
+b6617be9-a5ef-42ac-98cb-24f266e139f7,Andrew,Sandeman,,
+8466a279-36a2-4219-be5d-066e1a7447a4,David,Schaffner,https://orcid.org/0000-0002-9180-6565,d223dc33-2063-4511-8a6e-9bdd9e58b071
+a6c3c748-dce4-4c03-ba27-073c6be7c32d,Cora,Schneck,,
+8a48a7e6-bdf7-4706-8b59-31c8490042f2,Andrew,Sheng,,
+2aac5205-34d9-40e8-8f37-d24c0dfc5c52,Benjamin,Short,https://orcid.org/0000-0003-3945-6577,
+7aed55ee-38ed-4f5a-b21b-55dd3c56b87d,Luciano,Silvestri,https://orcid.org/0000-0003-3530-7910,15d1369f-9a9d-415c-8981-42ba1e11668f
+0816969a-c8cc-42b7-a479-2e9cc2361655,Cody,Skinner,,d98abc7d-03cf-4f48-b538-0f13dfa04b11
+41a7e863-6927-4bd8-b533-7b0012ca59e7,Tomasz Adam,Skrzypczak,,
+5827a7dc-7b82-46e5-a6cf-dab022ffc741,Nikita,Smirnov,,
+33ec499b-344d-47af-9efa-9f6ae26eb15b,Brent,Smith,,ce5f429d-1073-4db9-b2fe-a9ffd13c8413
+d5d9cb56-0a9c-4780-87bb-1e2c4c76d967,Joseph,Smith,https://orcid.org/0000-0002-5978-6840,15b1440b-dfd9-4a0e-ade2-57ae0581842e
+8e1d46d8-91f6-4373-b6c1-7cd49f07569b,Stuart,Sobeske,,3263f163-f39a-4284-8d60-836619fb7395
+3d1d0ff5-81b7-46f7-a4b8-be34b048a0a5,Matteo,Spedicato,,
+566594ab-0f49-4a31-bab8-f1cdbca93e85,Tomás,Stinson,,
+794da7fd-e2ca-4085-ad55-b00dfb29f0c2,Amanda,Stricklan,,
+adbba86f-6de4-41b7-ac2b-9da8f2f32083,Shelley,Sugiharto,https://orcid.org/0009-0003-3159-0541,65c394f2-d3b6-4af1-9de5-5d0b6d13b1df
+e26803a9-8ee5-4442-a469-5a890fb7c5c9,Michaela,Švancarová,,
+590e1e63-7eca-4ce8-bebe-ded5df502ea8,Veronica,Tranquilino,,3263f163-f39a-4284-8d60-836619fb7395
+a9b6ef68-ba65-44ac-9466-d1ed88d1e489,Thomas,Ulrich,,
+3b8a7e4a-4884-4f28-8fa5-3cf57f980117,Mychal,Valle,https://orcid.org/0000-0003-4230-6916,df2eece9-956d-44d2-a946-8bd78f235caa
+f50042be-1ea4-44ee-a427-1a4e6915b30a,Steve,Vincena,https://orcid.org/0000-0002-6468-5710,df2eece9-956d-44d2-a946-8bd78f235caa
+87c8c3e8-c9a6-4cf8-baf0-b6c8cb0b97a2,Tien,'Vo,,
+abd88a2d-311f-4f15-95cb-2092bcf98ae9,Tien,Vo,https://orcid.org/0000-0002-8335-1441,b242cb07-2bcb-4afe-ba5e-e89ae812899d
+03a8d704-8e1c-495c-89d8-43a39d22d4e4,Robert S.,Weigel,https://orcid.org/0000-0002-9521-5228,87ea06e9-fcd0-49d1-b778-05e619dc9a4d
+b339be33-b6bb-421a-adc5-93cfcbe9d7e8,Tingfeng,Wu,https://orcid.org/0000-0001-8745-204X,
+22c40dda-d866-4067-ac76-ff25b100913d,Chun Hei,Yip,,
+1dda677d-a612-4545-85a1-358f37035de9,Sean A. Q.,Young,,ce5f429d-1073-4db9-b2fe-a9ffd13c8413
+51406b50-6c61-4c82-9dc4-977a06ce09cb,SunPy,Community,https://github.com/sunpy/sunpy/blob/main/CITATION.cff,
+474498bf-305f-4d17-a023-fa547ff4ce02,Haruhisa,Iijima,https://orcid.org/0000-0002-1007-181X,19a2e81d-6023-4ab1-b15f-d2104f51bbaa
+7d13b2c7-d317-42d9-8a0d-d40072fe2cb9,Maya,Mohamed,,d7785659-29b8-45bc-a051-86424d130ec4
+1059b9a3-2188-4bad-b5e6-720c17add2ef,Samuel,Jackson,,
+142f6aab-15bf-4115-a37e-76953d37a4af,Shivansh,Mishra,,
+9dfdd6b2-aa2e-4b86-a26d-ea29d946b991,Fu,Yu,,2b4ad024-92c2-4016-b24e-cc6d588b4d6e
+66e7f688-bc10-4583-9747-0432b5a2e749,,eebbaaf,,

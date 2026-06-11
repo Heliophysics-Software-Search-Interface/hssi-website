@@ -21,7 +21,7 @@
 {% block head %}
 
 	{{ block.super }}
-	
+
 	{% include "website/social_preview.html" %}
 
 	<link rel="stylesheet" href="{% static 'css/categories.css' %}?v=2024-10-15" />
@@ -49,23 +49,23 @@
 			<div class="search_form_div">
 				<div class="search_form">
 					<div class="search-container">
-						<input 
-							type="search" 
-							id="searchbar" 
-							name="q" 
-							class="search-form" 
-							value="{{request.GET.q}}" 
+						<input
+							type="search"
+							id="searchbar"
+							name="q"
+							class="search-form"
+							value="{{request.GET.q}}"
 							placeholder="Search"
 						>
 						<button type="button" class="search-button">
-							<img 
+							<img
 								id="searchbar-btn"
-								class="search-img" 
-								src="{% static 'images/blue-glass.jpg' %}" 
-								alt="search-glass" 
+								class="search-img"
+								src="{% static 'images/blue-glass.jpg' %}"
+								alt="search-glass"
 							/>
 						</button>
-					</div> 
+					</div>
 				</div>
 			</div>
 			<!--END SEARCHBAR -->
@@ -74,52 +74,64 @@
 			<details class="field-search-help">
 				<summary>Field Search Syntax</summary>
 				<div class="field-search-body">
-					Use field keywords to search for values on specific 
+					Use field keywords to search for values on specific
 					attributes associated with software entries
 					<p class="field-search-example">e.g. <code>authors:"john doe" publisher:"NASA"</code></p>
 					<div class="field-search-groups">
 						<div class="field-search-group">
 							<span class="field-search-group-label">Software</span>
-							<code>name</code>
-							<code>repository</code>
-							<code>description</code>
-							<code>version</code>
-							<code>license</code>
-							<code>status</code>
+							<span class="field-search-codes">
+								<code>name</code>
+								<code>repository</code>
+								<code>description</code>
+								<code>version</code>
+								<code>license</code>
+								<code>status</code>
+							</span>
 						</div>
 						<div class="field-search-group">
 							<span class="field-search-group-label">People &amp; Orgs</span>
-							<code>authors</code>
-							<code>publisher</code>
-							<code>funder</code>
-							<code>award</code>
+							<span class="field-search-codes">
+								<code>authors</code>
+								<code>publisher</code>
+								<code>funder</code>
+								<code>award</code>
+							</span>
 						</div>
 						<div class="field-search-group">
 							<span class="field-search-group-label">Topics</span>
-							<code>keyword</code>
-							<code>region</code>
-							<code>phenomena</code>
-							<code>category</code>
+							<span class="field-search-codes">
+								<code>keyword</code>
+								<code>region</code>
+								<code>phenomena</code>
+								<code>category</code>
+							</span>
 						</div>
 						<div class="field-search-group">
 							<span class="field-search-group-label">Technical</span>
-							<code>lang</code>
-							<code>os</code>
-							<code>cpu</code>
-							<code>input</code>
-							<code>output</code>
+							<span class="field-search-codes">
+								<code>lang</code>
+								<code>os</code>
+								<code>cpu</code>
+								<code>input</code>
+								<code>output</code>
+							</span>
 						</div>
 						<div class="field-search-group">
 							<span class="field-search-group-label">Instruments</span>
-							<code>instrument</code>
-							<code>observatory</code>
+							<span class="field-search-codes">
+								<code>instrument</code>
+								<code>observatory</code>
+							</span>
 						</div>
 						<div class="field-search-group">
 							<span class="field-search-group-label">Data &amp; Links</span>
-							<code>source</code>
-							<code>dataset</code>
-							<code>repo</code>
-							<code>docs</code>
+							<span class="field-search-codes">
+								<code>source</code>
+								<code>dataset</code>
+								<code>repo</code>
+								<code>docs</code>
+							</span>
 						</div>
 					</div>
 				</div>
@@ -147,7 +159,7 @@
 
 			{% block page_description %}
 			{% endblock %}
-			
+
 			<!-- RESOURCE CONTENT -->
 			<div id="resource_content">
 				<script> makeResourceView(); </script>
@@ -156,7 +168,7 @@
 				{% endcomment %}
 			</div>
 			<div id="loading_modal"></div>
-			
+
 		<!-- END MAIN CONTENT -->
 		</div>
 

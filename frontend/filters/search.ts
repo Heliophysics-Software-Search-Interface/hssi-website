@@ -161,7 +161,7 @@ function initializeFieldSearchHelp(): void {
 	const searchbar = document.getElementById(idSearchbar) as HTMLInputElement;
 	if (!searchbar) return;
 
-	document.querySelectorAll(".field-search-group code").forEach(chip => {
+	document.querySelectorAll(".field-search-codes code").forEach(chip => {
 		chip.addEventListener("click", () => {
 			const field = chip.textContent?.trim() ?? "";
 			const token = `${field}:""`;

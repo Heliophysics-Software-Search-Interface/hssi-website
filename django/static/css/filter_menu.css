@@ -236,7 +236,7 @@
 }
 
 .field-search-example {
-	margin: 0 0 8px;
+	margin: 0 0 15px;
 	color: #555;
 	word-break: break-all;
 }
@@ -256,9 +256,8 @@
 
 .field-search-group {
 	display: flex;
-	flex-wrap: wrap;
-	align-items: baseline;
-	gap: 3px;
+	align-items: flex-start;
+	gap: 4px;
 }
 
 .field-search-group-label {
@@ -268,9 +267,16 @@
 	text-transform: uppercase;
 	min-width: 80px;
 	flex-shrink: 0;
+	padding-top: 2px;
 }
 
-.field-search-group code {
+.field-search-codes {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 3px;
+}
+
+.field-search-codes code {
 	background-color: #ddd;
 	border-radius: 3px;
 	padding: 1px 5px;
@@ -280,7 +286,7 @@
 	white-space: nowrap;
 }
 
-.field-search-group code:hover {
+.field-search-codes code:hover {
 	background-color: #b7cfe8;
 	color: #1779ba;
 }

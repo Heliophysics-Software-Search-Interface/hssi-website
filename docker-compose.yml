@@ -22,6 +22,7 @@ services:
             - GMAIL_EMAIL=${GMAIL_EMAIL}
             - GMAIL_APP_PASSWORD=${GMAIL_APP_PASSWORD}
             - HSSI_UPDATE_TOKEN=${HSSI_UPDATE_TOKEN}
+            - GA_MEASUREMENT_ID=${GA_MEASUREMENT_ID}
             - PROJECT_NAME=hssi
             - APP_NAME=website
             - GUNICORN_WORKERS=4

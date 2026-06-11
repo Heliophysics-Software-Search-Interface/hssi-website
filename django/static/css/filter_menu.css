@@ -199,3 +199,88 @@
 .item-chip.subchip {
 	font-weight: normal;
 }
+
+/* Field search help accordion */
+.field-search-help {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	background-color: #ececec;
+	border-top: 1px solid #d0d0d0;
+	margin: 0.6rem;
+}
+
+.field-search-help > summary {
+	padding: 6px 10px;
+	cursor: pointer;
+	color: #555;
+	user-select: none;
+	list-style: none;
+}
+
+.field-search-help > summary::before {
+	content: "▸ ";
+	font-size: 10px;
+}
+
+.field-search-help[open] > summary::before {
+	content: "▾ ";
+}
+
+.field-search-help > summary:hover {
+	color: #1779ba;
+}
+
+.field-search-body {
+	padding: 6px 10px 10px;
+	border-top: 1px solid #d0d0d0;
+}
+
+.field-search-example {
+	margin: 0 0 8px;
+	color: #555;
+	word-break: break-all;
+}
+
+.field-search-example code {
+	background-color: #ddd;
+	border-radius: 3px;
+	padding: 1px 4px;
+	font-size: 11px;
+}
+
+.field-search-groups {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.field-search-group {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 3px;
+}
+
+.field-search-group-label {
+	color: #777;
+	font-size: 10px;
+	font-weight: bold;
+	text-transform: uppercase;
+	min-width: 80px;
+	flex-shrink: 0;
+}
+
+.field-search-group code {
+	background-color: #ddd;
+	border-radius: 3px;
+	padding: 1px 5px;
+	font-size: 11px;
+	color: #333;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.field-search-group code:hover {
+	background-color: #b7cfe8;
+	color: #1779ba;
+}

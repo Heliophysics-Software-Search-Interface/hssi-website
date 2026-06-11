@@ -157,4 +157,24 @@ async function getRelevantQueryIds(query: string): Promise<string[]> {
 	return data.results as string[];
 }
 
+function initializeFieldSearchHelp(): void {
+	const searchbar = document.getElementById(idSearchbar) as HTMLInputElement;
+	if (!searchbar) return;
+
+	document.querySelectorAll(".field-search-group code").forEach(chip => {
+		chip.addEventListener("click", () => {
+			const field = chip.textContent?.trim() ?? "";
+			const token = `${field}:""`;
+			const current = searchbar.value;
+			const prefix = current && !current.endsWith(" ") ? current + " " : current;
+			searchbar.value = prefix + token;
+			// place cursor between the quotes
+			const pos = searchbar.value.length - 1;
+			searchbar.focus();
+			searchbar.setSelectionRange(pos, pos);
+		});
+	});
+}
+
 window.addEventListener("load", initializeSearch);
+window.addEventListener("load", initializeFieldSearchHelp);

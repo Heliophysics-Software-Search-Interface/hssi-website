@@ -443,3 +443,33 @@ ac3716e9-e86e-480c-aa7a-ac90b8e53e16,xarray
 54187e47-8a68-4347-ae1a-6790d346ed8b,xtce
 0db63d22-841f-42b0-a116-28714069344f,zenodo
 0b364cf5-b022-4ca9-8850-40d45d90bddb,zonal
+bd40cb4e-f5ef-4a30-a7cc-e497b3345f96,ascii
+4471b0c9-6e7e-44b8-b58d-f183c0aced64,constellation mission planning
+37b706f3-d93f-4435-8b7e-d26644ddfd30,data_retrieval
+c050ce89-2037-4973-b39d-4effdc4de429,field-line tracing
+0afdfe32-c26b-4da0-b813-48bedb3ae84a,functionalization
+7aab6caf-c730-4e92-a891-31b748bd3d98,fusion
+1c4ed45b-c440-48c2-a7b3-b4b62e438e09,high-energy-density physics
+ac090fad-af67-46bf-8e8a-122f4d432f95,IDL SPEDAS
+e41385e3-a6d1-4ce4-84d0-af5642099f92,interpolation
+12d22617-06e4-40b7-ba60-524b305a6530,Langmuir probes
+e49df31a-d5b2-43ae-88e5-0ae12d74a2d2,line_plots
+7d7c940d-b068-453c-89d0-6da71dc94cbb,model-data comparison
+3bf25213-85e9-43c1-a66d-575720721d23,model output
+57b83f14-84cc-4bd2-9c79-359fa3399d25,particle moments
+527db8f6-dddd-4e7a-8f84-f081f09fe924,pitch angle distributions
+3fbfb55e-6708-47df-8c03-91ccd6da2a89,plasma astrophysics
+0505bee9-1612-4221-921b-5c2ed1196b08,plasma diagnostics
+05a4d17b-6bbc-42bc-9e4b-cbfd061336af,plasma parameters
+8f34bd37-5778-49af-bddb-8590088acc3b,plasma science
+26406797-4802-4c63-bbdf-e6cfe1a8ddf3,proton radiography
+f1951c41-caf3-4c18-9cfe-4b013bd56a38,pytplot
+6a7dd3a8-a1bb-4db2-8372-67140f439da5,radiation belts
+2166bd4c-6910-48bb-8292-a6eefc53af50,reference data
+5b838c99-5d22-4909-a9df-3aa42e5c2510,satellite flythrough
+20d35b2e-2997-48c2-a6e0-30320700bb0f,shue
+c79fdbb6-60b9-40eb-b08e-ab3e4870dfaa,spectrograms
+61dec726-3ed1-42fd-b66d-2037dacb8ab5,time series
+494b3304-bd2d-4ea0-b142-ea7c66f74dda,unit conversion
+c97fd741-40fd-4835-b490-1cf48ee277dd,wavelet analysis
+0d6202ec-dc77-4707-b2d9-d903d3467503,wave polarization

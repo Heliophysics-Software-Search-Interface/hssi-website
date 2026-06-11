@@ -7,6 +7,7 @@ import {
 	UrlWidget,
 	EmailWidget,
 	PopupDialogue,
+	trackEvent,
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -199,7 +200,27 @@ export class FormGenerator {
 		// we don't want the default html form functionality submitting anything
 		e.preventDefault();
 
-		if(!this.validateForSubmission()) return;
+		// Captured once here (the value typed at submit time) and attached to
+		// every submission event below. Public package name only — never PII.
+		const softwareName = this.getRootFields()
+			.find(f => f.name === "software_name")
+			?.getInputElement()?.value ?? "";
+
+		// Fire on every Submit click, before validation, so we capture attempts
+		// even when they fail client-side validation.
+		trackEvent("resource_submit_attempt", {
+			form_type: this.isEditForm ? "edit" : "new",
+			software_name: softwareName,
+		});
+
+		if(!this.validateForSubmission()){
+			trackEvent("resource_submit_failed", {
+				form_type: this.isEditForm ? "edit" : "new",
+				software_name: softwareName,
+				reason: "validation",
+			});
+			return;
+		}
 
 		Spinner.showSpinner();
 
@@ -237,6 +258,20 @@ export class FormGenerator {
 					"We encountered an error, please try again later.",
 					"Error", "ok", null
 				);
+				trackEvent("resource_submit_failed", {
+					form_type: this.isEditForm ? "edit" : "new",
+					software_name: softwareName,
+					reason: "server_error",
+				});
+			}
+			else {
+				// Successful submission — the reliable success signal for GA,
+				// since the form posts via fetch() + preventDefault, so GA's
+				// automatic form_submit does not fire.
+				trackEvent("resource_submitted", {
+					form_type: this.isEditForm ? "edit" : "new",
+					software_name: softwareName,
+				});
 			}
 
 			if(response.redirected) window.location.href = response.url;
@@ -247,6 +282,11 @@ export class FormGenerator {
 				"We encountered an error, please try again later. \n" + String(e),
 				"Error", "ok", null
 			);
+			trackEvent("resource_submit_failed", {
+				form_type: this.isEditForm ? "edit" : "new",
+				software_name: softwareName,
+				reason: "network_error",
+			});
 		});
 		response.finally(async () => {
 			Spinner.hideSpinner();

@@ -5,20 +5,26 @@ a25e3698-45f9-4a2a-851e-97479a2b9370,aacgm v2
 60416fc6-7ba2-4df9-b267-9ef0138663db,absorption
 a34c3b78-fac0-45c2-94c4-da38e7f364de,ace
 a41c721a-1ef3-4d95-8892-81e53bd183d9,ae index
+cfb509b2-1887-4f4c-80c8-0275b5d6b0f0,ae-index
 d4580470-6cbf-4aca-9e74-9a1efa9a6798,aeolus
 b545900b-03ff-4ce4-9b1c-38ccfde1d10d,aeronomy
 245fe922-7940-4be1-b88e-dc835bac13b2,aia
 2033f602-c828-46f5-8b11-b0b7c82e04ab,airglow
 6ed1e510-4598-4588-a1b1-08aeab8ba52e,akebono
+c882ea88-d97e-4c1d-8e87-457bf7ed98d1,all-sky-camera
+946edb6e-29ec-4d36-b310-d16afa0a28b4,all-sky-imager
 188b8376-2efd-4a49-9759-daa6607a8431,altitude adjusted corrected geomagnetic coordinates
+ecb712bd-1e24-4f6a-9004-8c1e3fb5f313,amateur-radio
 45051bdc-8e6a-446d-bbda-3cd23771cee3,amda
 15ac694c-8bcb-4621-a757-33f6ff0c3a4a,amisr
 7faf9d5d-2555-4042-9a02-14710d363599,analysis
 b7d3fa2a-34bd-4ef6-9b5f-e9f3b3440ff6,apex
+f17cf2c4-7b5c-419c-8ae3-2add8fc652dd,API
 d5da21d4-3bd2-4a0d-8915-9e6af47c53de,arase
 6dc02177-ea9e-4092-907f-8bf1ad128756,array
 e6975d71-2a58-4656-883d-c7d7f1b5bac3,artemis
 a7d9186c-ada5-4ec2-84b4-be0dd9e788be,artificial intelligence
+de2fcd45-d9ee-46d8-b138-c81faa62ed5a,astrometry
 973ce4a6-0802-4670-8b20-0f1056b2c273,astronomical algorithms
 e0410248-2b43-4409-9866-f22870ead9b5,astronomy
 846623f5-14dd-40dd-8cc4-91d8c9ee3340,astronomy astrophysics
@@ -28,16 +34,24 @@ db94b20c-8649-4aa1-af5c-2f3b7be1f047,astrophysics
 ab6ae3c5-c2df-4742-a396-96d6cf69fcb0,atmosphere
 a9976473-d600-4b1a-8240-d6294ee2074e,atmospheric imaging assembly
 897c37c9-f999-467f-8a8a-6a6f5487b0b1,atmospheric modelling
+8fd51d2e-991f-46fd-adee-96179a814023,atmospheric-modelling
+7b964481-b454-48dc-9ea6-79bf5b1e5f92,atmospheric science
 72baf0f7-35d5-4bf4-beea-49fcd78e2679,atomic data
 9b6cc008-687e-4955-8c11-5510159a2533,atomic physics
 158dfa57-4adf-4b97-8c3e-ca5face9b71a,aurora
 fd9e0df7-0f9a-4cb6-9944-6eb93fffa1a2,aurora borealis
+9b20b075-2f51-44e7-b6d0-5d60c72fd041,auroral electrojet
+bc60ddb6-b39e-46e1-95a6-ba99a381d2e6,auroral emissions
+e4a41949-ea68-44e0-97f5-b5defb0bd7eb,auroral optical emissions
 73e4f1aa-0866-4a63-9a91-96fefcbbb871,aurorax
 2feb19da-ac99-4318-978a-ca6cc75868ff,balloon borne
 96685417-2bef-4fcc-9022-c3484290b84f,barrel
 5dfe7b96-275a-4402-a6e0-8690236a16ac,batsrus
 dbb4f161-e068-424c-8943-f35f053403a9,binary
+9050825b-a63a-4e38-b77f-2c362626534b,build-on-run
+626c9361-b1dc-48ac-94d3-c716d053ec12,calendar
 bf78ea45-9c53-42ab-96b1-db056b12c2c9,calibration
+11439a17-15c6-4ea0-806a-6855e94df885,camera
 65e77135-07a0-4124-969a-f585e2defaa6,ccsds
 c1251819-ceb2-4e79-a3b9-de161ef85627,cdaweb
 2a391fb5-43e2-46c4-8515-1c7b6017b6ac,cdf
@@ -46,16 +60,20 @@ c1251819-ceb2-4e79-a3b9-de161ef85627,cdaweb
 7978ee68-7ea6-421b-8547-641004b689e0,charge exchange
 c13bbccd-ea55-4ff0-9283-30a72b9463cc,chianti
 41d35a73-8c20-4ae0-ac82-d813255a617f,chianti atomic database
+77835e03-923a-4a10-b77f-ec7646b0f000,citizen-science
 84dd116f-a104-46db-b981-a3975e1ff37d,climatological models
 f3a530ef-a3e1-4e9a-b7fc-587f21fd0250,cluster
+ff64e173-a270-424a-8f5e-5ff20582bb67,CMake
 c54c47cb-7f28-4581-9e60-b08924069f74,cme
 9fdb9926-280e-44b4-bf56-ae2fe0242d7a,cnes
 96648e95-6731-4658-b67a-8454afc8fc0f,conversion
 6789b380-e08f-4800-b51b-1666f42e3f1f,converting
 81fef49d-c1f8-4df9-b9db-dc29ed3093a8,coordinate conversion
+55a28c25-d5d1-4469-bc2c-76664cdbf6c6,coordinate-conversion
 354168d2-6268-432f-a091-7f4ab72fbef2,coordinates
 4f667e30-b2ea-4f42-a908-a3bf8da5aa00,coordinate systems
 32347f93-20dd-4c31-9578-12c44022740e,coordinate transformation
+e4d9d020-e747-4866-9a55-f2d530d5ba15,coordinate-transformation
 56765abf-02a4-4104-99d0-96ad61a95823,coordinate transformations
 5a352041-e705-4f1c-a708-794b5aa651c2,corona
 745ebe69-08e8-4075-a6f5-d368c1c5ddf0,coronagraph
@@ -69,9 +87,12 @@ ea4413b0-97b7-49ca-97de-ab105127215a,das2
 7ac1911c-a4e4-4263-a188-f72b2232d928,data
 b43adce8-73c1-4753-9832-edb3c2b7e466,data access
 35c7eac7-4a89-422f-8119-a7d489e8da55,data analysis
+297d7c4c-6b7f-49b2-a413-f72f92ac7656,database
 bded9284-fd47-488c-8913-17375acacd5c,data container
 117d3245-f2e3-42a4-a199-824f2d4d54dd,data retrieval
 6af4e4ff-ca94-4e88-a825-53c43b2b9d10,data visualization
+4e7115af-1b81-4ca7-b261-7940dd651ec8,date-conversion
+6bde188a-cfc7-4c04-baa2-4bbf96b55cb9,declination
 a6c31435-2d69-4991-8073-efbdf4e6ccee,decoding
 e68e8ad3-e443-447f-ae5f-7e39e4413aa3,decommutation
 853adb4f-709b-4aea-b519-c2c3f54cabaa,deep learning
@@ -86,8 +107,12 @@ a0359da0-9355-4217-b653-1e485c7658ea,earth magnetic field
 4811c164-7d06-4845-95ad-c71cb87bcbc1,electric field
 d041880a-b0a8-4571-afed-0c970c8a1973,electric field mapping
 0f9a1ee0-8ad6-4525-8df2-344a38d5f083,electrodynamics
+d0482a9f-dee4-40c5-91d3-a1dabee17386,electron density
+d2bc892c-45d4-4357-8b33-68ccf9b08440,electron precipitation
+49e8a801-c3f0-4043-899a-2e7da071d05b,electron temperature
 a67ac777-7ec0-4c68-ae09-541af914a323,elfin
 97c079a8-b323-4d63-801c-53b92b75484f,emission
+d1ed3417-d051-4f70-87e5-6da3bd504b6a,empirical model
 75ec7fe1-5291-4268-bdd6-2b7d5bf0d71b,enlil
 e2beef79-8312-4db0-abf2-32440274f958,ephemeris
 da67a035-f62f-4cef-b988-588229414143,equator s
@@ -96,6 +121,7 @@ da67a035-f62f-4cef-b988-588229414143,equator s
 01c8fa66-67f7-45ee-9e06-c28be6f431af,euv
 737c48fe-9cb7-43ac-a4b1-b7e8f4ab6b74,euv waves
 8b8f5063-ac8f-43b7-b1e4-33924c5fbaf5,event detection
+349385c0-fde6-4f5c-8d5b-032c34157624,excitation rates
 1db2e267-2b16-467b-9bfa-4f306429f515,extreme ultraviolet
 8ca0c394-23a1-4346-9ba5-41e70d05495a,f2py
 e2850c52-a266-474f-beb6-b24d6717a566,fast
@@ -109,24 +135,36 @@ d67d2052-c84d-4212-a291-dc1630f3215e,field line tracing
 93c0d169-b829-48fa-b3f6-afb587264596,flct
 27a4ac6f-2585-45fb-9724-f319bf968173,flight control
 a835d6e8-3c0b-4360-aed5-3bf3a446a5a0,flow field
+f733a2ea-2dd2-4423-8a63-3039a2b3cc47,fluid dynamics
 dcc2bda3-d0fc-4c28-80fa-f031fcba48e8,flux rope detection
 24c866be-7e3b-4f71-958a-ecf9260b07e2,flux rope reconstruction
 000a211b-15df-4d6b-b679-daaf781b99bb,fortran
 48c5474a-1b25-48a7-9757-dfd899628ae5,fourier local correlation tracking
 bd8f38c5-caf8-4996-a45d-ccd34ebc2b42,gaussian processes
+dae5d30f-2d46-4178-979f-bb8686f17272,general
+f1e0eb79-7f8d-40a0-ad4d-8654586815d7,geodesy
+f83bcd90-c63f-4c32-8ec6-08ef578ea471,geolocation
 ef2d1318-5e37-4140-ae47-91df65990d65,geomagnetic
 454eb6e3-dc16-4d6b-8300-a7db856bd0a2,geomagnetic cutoff
 fcef540a-15b3-4025-9b76-c8220cf6df46,geomagnetic field
 3be5059d-b41a-411f-8011-062c103b91f2,geomagnetic index
+0b027f34-27df-40eb-95f5-234761539cd3,geomagnetism
 e233ce92-6fc6-4d72-ae71-1dae63be3009,geometry
 a3c32918-fcfe-4670-823d-4679ed5ed6ae,geopack
 3325141e-4dfa-41cb-ae53-271d378e56cc,geophysical indices
+365ed46a-b2f4-4616-86ce-9c8eeacac7fb,geophysical-institute
 e8a76664-634c-4698-9535-b1f234842baf,geophysics
+04e9fd40-f52d-4d9a-9bbd-639ae7b80e6a,geoscience
 85f0af6b-4960-4865-b91a-32b99df28d81,geospace
 e7dd6813-4a6b-4250-b2b8-2217a7eaf30a,geotail
 f0ce09ec-4a54-4edd-86d0-2ffd30df77ca,gmag
+a0c6ff32-b1c4-4ec1-a5a9-e5754390143d,gnss
 f4f0731f-fbb1-49d7-8cc4-e8b1b63037de,goes
+91ccee19-d55b-424f-a88b-dfe5ab499d90,goes13
+1d8ce947-b942-478b-a054-4fedd12b2cee,goes16
+23f9b1f6-8e91-4a2a-a387-b18ed68b5ec8,gps
 0766354e-ac7f-4224-817d-a181cad23599,grad shafranov
+60b921f2-93de-4539-afa2-0c5e7593520a,grid locator
 61701154-2e95-47c4-b101-38508a224a95,ground magnetometer
 df192e2e-7ff1-4c25-b4b9-0019c6b5faab,gui
 b60d7dac-3dd2-4ddb-9cd3-95106029bdc8,hacktoberfest
@@ -136,33 +174,51 @@ c8de4ad3-1e94-421f-a3f8-8823f174b3f1,heliophysics
 a5e307ab-2e31-455c-a29c-4d5b99580a9a,heliosphere
 51c45c61-3cb7-4652-99d7-6a5a6b0f778b,hermes
 930e9cc9-28f8-45b0-ae21-f7378466c410,hinode spacecraft
+ec514634-3c8a-4744-a352-0bdf0a972f0f,horizontal wind model
 a0958e6d-62f3-452b-b282-113b08403a58,hso
 3cad6ddd-fb1a-44cd-b49f-86074ce183d9,hwm
+464b8bff-1a92-4161-af99-524f70b57acb,hwm93
 d362a612-07f1-405d-9338-fb6a79bd2729,icon
 edc90521-144a-4b02-86d6-a6f70a3e7c3e,idl
 436a1cd1-7d04-4cc2-8074-def80349f602,idl save
 caffa93f-c1bf-41b9-a24d-4eca6c41646d,igrf
+7257a461-ac0d-472f-b112-187e09d6916a,igrf12
+8c8ee209-ba4f-4160-b94a-f751b68dc51b,igrf13
 b429ef22-474f-4467-852a-18f2d209b3ec,image
 4ed9e1dd-8486-4d85-8e0c-2ac4528772a0,image analysis
 c210a733-c77f-409f-9999-f20441eb3e40,image processing
 42ce08f8-65ce-4fb4-bfd7-868717549041,image reconstruction
+d9a89a58-69d0-47bb-a847-a515cfeb2eed,IMF
+07b1a9da-35e3-4b7e-a760-d6e975ad8f2d,inclination
 8ff3ab6e-5071-41ce-8fba-4ab639e77cfd,incoherent scatter radar
 d3cc9aeb-7e16-4fb6-9d20-16b8f1391ec0,in situ measurements
 788c1684-ee6d-40b5-a595-2147ce51c68a,instability classification
 0fadecab-0e19-46cf-9a51-d43beff733df,instrumentation
 eb8669e1-42a1-401f-9d7f-de5bd66bc460,instrument response
 f55269cb-ac4c-4b21-a4df-723eb43e932f,interactive
+516292f8-0a07-4fb2-b8fe-3b6684a26d1f,interferometry
+dd12e437-7949-4d1e-97dc-8781e873b77f,International Reference Ionosphere
 b07819e6-9d2f-4d81-8935-0d61753b53c1,inverse problems
 64173d5a-053d-4bc5-b474-354399b0b062,ion drift mapping
+b903dc4f-3ed0-4f2b-a671-a309c1312ad7,ionogram
+e448c03c-7de2-4d42-9e60-815b6caa862a,ionosonde
 a06141be-91d4-4b51-b597-7dab3213178a,ionosphere
 8abdaeaa-9590-466b-8c90-dee3beeefc11,ionosphere modeling
+69de5114-dc0d-4348-a5c3-54ac4d99a006,ionosphere-modeling
 26280f9f-9c08-4b72-acd2-fe27eea943bf,ionosphere thermosphere mesosphere
+bbd193e0-c22a-4c1d-a787-3efaa787c893,ionosphere_thermosphere_mesosphere
+6982c10b-5c1b-4e3a-9ead-6d28862a752a,ionospheric fluid electrodynamics
+38b5ba56-5028-4220-81ee-72433b86d94a,ionospheric physics
+dcea5ba1-f07d-4ca8-9c00-f9249cf4eb73,ionospheric sounding
+9986c7d4-1117-40cf-bf39-516f2e7bc896,ion temperature
 c61f6818-7d02-4ed4-a509-1c169be2f4d5,iri
 ce1c86ce-b66e-4b99-a276-0eba9d18bf4a,iris
 50b5b1b8-a55d-4ec0-b110-177c6ca4c84d,istp
 433c87a4-82e2-4d6d-a333-fdca3114313c,iugonet
 615d7079-6f78-48d7-9f5b-7d1f2e9244cf,jaxa
 309be1e4-4112-4125-b248-b6a10c8cc9de,jpl
+5fb17ea3-b3a7-4c76-b772-177c5074a510,json
+62a8dc50-3578-45ed-b5e3-b000f0f15ca8,julia
 7b845cbf-40ce-48af-b5fd-2781d6e5d410,kaiju
 8d152c79-d808-4e0e-ac83-b4aafc8d1c94,kompsat
 f16c99d6-9693-4b36-8251-fda5b06acacd,kp index
@@ -170,7 +226,9 @@ f16c99d6-9693-4b36-8251-fda5b06acacd,kp index
 e2931f65-9469-48ec-9976-ba7fd84215c0,line plots
 7a939362-d9f8-4128-a646-38e81f553916,lmsal
 aeeea1d5-58cb-4b00-ac16-2b222f79d792,local
+d0890d23-23fa-4a3b-93cf-40a268e727e0,location
 cf5128b4-9704-4b0d-8933-c7185ce48247,lofar
+3c2d00ec-4922-4860-b734-58e66883f113,lowtran
 b8099afe-1fe3-485d-a8fa-f5288b2a47ae,l shell
 3e17c73a-9754-43f8-9450-f8acf8d45319,lyra
 ac4323d7-c0de-4c9a-8731-2ce1c606b2be,machine learning
@@ -185,13 +243,21 @@ cf805a2a-6a80-4133-a1cf-9913b5f2afcc,magnetic field modeling
 6f15480d-e2e4-4d35-8dd8-90f7fa64bb05,magnetic fields
 c3764d26-b0d7-4da4-92fb-0c0c8bae6982,magnetic flux ropes
 efb9c5f8-a408-4a73-bbd3-a29c81dfaa58,magnetic local time
+fe7e1d58-133a-454d-a3e0-10d0d0b005bf,magnetism
 42f3b9b7-42aa-4b73-8ea2-2594c93d2618,magnetogram
 d17a93da-de27-4b24-b606-2a8368c90185,magnetohydrodynamics
+a6f8a5e9-0a6e-4ec0-9cb2-4f89ad9f33fa,magnetometer
 e0e47e8f-eb01-4a48-b02f-cb288a3ad43a,magnetosphere
 7df2cea1-ddd0-44ab-95b5-9df4435597b5,magnetotelluric
+f5cb7636-4781-42e1-bc77-4c223c5008f2,maidenhead
 da4818d3-1894-4f67-bd44-e1a299f4a9ca,mars
+9e57b7ae-e1d6-4c79-89c3-920b34b9f98f,mars-global-surveyor
+71daa705-6da2-41d5-95e9-fa27fcb4bf0b,Mars global surveyor
+7d626d0e-652a-4820-810f-c2a585d7d804,matlab
+ff7870ce-2de0-4602-8f16-b75927adea91,matlab-python-interface
 96087f22-4a57-4b73-a13e-153bc7b6a523,maven
 b346a12f-ea41-4891-9045-161f4360fe40,meridional
+6aac037e-3f53-4ba0-b2b0-47ffd6126864,mesosphere
 a61b1be6-bc4f-467d-9ff6-e500d36c3fa6,mica
 ac95a9c6-ce70-48ed-a092-8c02cfb9ab27,mlt
 18314bac-3133-41b8-bd62-a3c0c929dd3e,mms
@@ -210,10 +276,13 @@ bec83a8d-f4e5-4dae-8279-4aada5479d52,nasa mission
 33dd35a7-1b9b-471a-b988-c8c3663bd2c7,navigation
 cc645ce7-3ca1-4c5a-9d94-f4bdf9b87c94,ndcube
 641d7ce2-271e-4984-8004-fee81fd78fbb,netcdf
+9bb1a599-dcff-4641-8d26-6158aba7d028,NetCDF4
+9b5634e7-963e-4ef3-a3c9-2a9d0ac7342f,nexrad
 48822c03-ef13-4a69-936f-edb06d4dea15,noaa
 3714cc3e-b9cf-49fb-9bd6-94108a983750,norther lights
 4d7716a7-1ada-440b-b542-df98ed896833,omni
 bcc881d3-86d1-4776-a5fc-2af976de0f07,omniweb
+06430940-3033-489d-9e86-f798d492ff54,open data
 c06b69f5-304f-46cd-b567-a3a26bba6ad4,open source
 05aa50e0-1527-407d-a3ef-b61c328fa7fb,open source software
 0b40bbce-7296-460f-99d5-02a3b1b652b4,operations
@@ -225,18 +294,22 @@ c49740b4-31a4-437b-9a2a-d4b020fba389,parker solar probe
 22570da9-86af-47ab-b2f5-b20f1d44cf04,particles
 993df0f8-8301-492c-b771-3e766e1ceb7c,photosphere
 34055ab4-4b88-4b4e-ade4-a800969d7ad0,physics
+a2db8b31-bcfb-4670-87c6-a0583a47ece4,physics-based model
 d72737b0-220f-41d8-a4ff-9b94a97c2d95,planetary
 291883aa-cb27-4618-972e-64e59631a187,planetary science
 467425d2-4e22-4151-ad17-bc97e3c0d8bd,plasma
 68a3fdc1-db80-429d-955d-9a7ea0257917,plasma instabilities
 812975f7-d2a5-4b4f-b8c4-eb5c9a418c72,plasma physics
+54b8cce6-e26d-4809-a1df-e0c422d81328,plate-scale
 52853e5a-c8ba-4ce8-9875-8120bee89742,plotting
 e304e99c-a1e8-4b31-b12b-a07e8e703ea9,pmc
 e5800464-5e79-452c-ae05-32a31154525f,pnst
 3a5fea24-1496-4efd-86c5-8445c8cf0597,poes
 9df024d6-d208-4e63-9d4e-00deeb71802e,point spread function
+0f9e5f06-4619-43dc-8495-69e59ae87c30,poker-flat-research-range
 5e645e55-fe32-48c2-8114-91d5762126c6,polar
 cee755e9-ca0c-4074-bcce-f457b5121b49,polar mesospheric clouds
+3e094a77-87f4-4740-b748-3899dc2b6c07,polynomial analysis
 5a7fe04d-7598-4122-8fbc-4fabe95b15ff,power spectra
 a9a4116e-3e4f-4cb7-8497-eba59e49fbbb,psf
 0cd449b1-882e-4c73-95e4-38409d5b2ef3,psf estimation
@@ -253,18 +326,25 @@ e0593ef1-d8ca-404f-b48d-6fe27b5d1531,quasi dipole coordinates
 3fe5a736-5843-44a8-8be5-af082dbed730,radar
 ab30f7fd-b6db-41e7-b88f-5e03311009e0,radio
 5667becf-123c-4443-ad19-db6d603141bb,radio interferometry
+de496742-b0c3-494d-b743-ae782f31d863,radio occultation
+e647adde-72ec-4bc8-ac8f-beb6510158b5,radio-occultation
 173a0a3b-1fe4-45c3-9f3e-f8557765603c,rbsp
+330865ad-407b-4a39-bc4b-918bda125344,real-height analysis
+ec9b811f-62fe-4908-b42b-b950d08c1727,reflectivity
 46c19dcd-c9c5-418d-be0d-b30db4b8ce2e,regularization
 c0cd3f2a-24f3-4ff2-9c28-ee03de6212d0,remote sensing
 8a2ca3c4-a9eb-4839-8c9c-3579783374b3,reproducible
 03bac30a-d541-42f6-afef-fc448d2964d1,rhessi
+ec224f7a-6057-4788-9cf6-4c12e721351b,rinex
 75bb205f-3b77-4cce-81db-946ef63fb29a,rotational tomography
 ce4fbe62-bf60-4924-88c6-e3413fc872eb,sami2
 b5aa09a9-9577-4221-b67e-1070d2b4c569,satellite
 da460356-759d-4e35-9b12-f9154027ecd7,satellite data
+8dd20d5d-428d-4abd-b7f2-57512caa1fa8,satellite-magnetometer
 644614e2-c3d6-4741-a921-b74be24d693a,science
 5da972d8-3b26-4d16-bad1-41d06ddf20a9,science research
 9ef246ca-94e3-439e-8cb5-99e6fb432bc2,scientific computing
+23f422cd-5ca0-4dcc-90bd-f25b4e7db13d,scikit-build-core
 2c292171-063a-4496-bb9c-b1044bbc1ad9,sciqlop
 0d9846f8-29c2-42e2-a08e-26c24af629ff,sdo
 d99fb2cc-e062-4795-87e7-5e49bddbfbc3,sep
@@ -281,10 +361,12 @@ bca84a17-1bf6-426c-8404-cc80ae987ead,solar
 7dbf8b44-ce6d-4e1b-8513-ed5796f00e01,solar wind
 8d1bff6f-648b-442d-859a-35fba1c4069f,solo
 3d090b8e-b8e0-481a-88b8-232347f68330,southern lights
+cc4ca53a-385e-4a68-80f6-81ca9b844f1f,sp3
 a0bcc826-5d43-47fa-84b9-08c3bb65b8ef,space
 1f629abd-fc09-4079-a895-d77de362d60c,spacecraft data
 b45abf60-b032-4a11-b927-ba56e1e6f2f6,spacecraft measurements
 b2c75140-07b4-45be-ada7-0f5e0bec0033,space physics
+013640e4-a0da-4e4c-86eb-68b84ce834de,space-physics
 8f27b913-c9c6-4f4c-a07c-e5585fa7fb88,space plasma
 e9c1a041-0658-41fa-bff3-6d984be93e16,space plasmas
 00306798-badf-492d-86a0-06dc929cc690,space science
@@ -294,6 +376,8 @@ cff2bf61-81e0-4f96-bb6b-ac5521a98f3a,space weather
 76503b4d-abf9-48b2-8ba4-64a54fbe2105,spectra
 55fe7d90-2260-4292-92c8-a72005c0d7a3,spectral data
 b4e50c00-fe91-46ab-9373-bd4c7f382085,spectrogram plots
+1fe692ab-c81d-49ff-947d-a64bf9e42524,spectrograph
+4c9c357f-a11b-4ede-b32c-46bac8532a13,spectrometer
 0a20ea22-d50b-4cb2-802b-733f9611c720,spectroscopy
 dbfc52db-2a28-44e7-8515-6bc5c8db9ac5,spedas
 9587b754-1224-42cd-b1c6-de0c29979782,spice
@@ -304,6 +388,7 @@ dbfc52db-2a28-44e7-8515-6bc5c8db9ac5,spedas
 6a0dbdb3-2b48-4057-8c8d-067a860f6e75,standard
 07856a45-58dc-4549-a6af-63cd4be1ce4b,statistical analysis
 f6eb2b1f-78e8-41ed-a490-c7e41f608b3f,stereo
+fc062896-5b9f-4360-aed3-6501c64a2eae,stratosphere
 8407aacc-5550-47b9-abe2-ec0688e9aa9a,sun
 858eb218-38d0-4658-af3e-97fdbbbe90b5,sunpy
 d6d6157c-8554-4e4d-b0a1-e22ce85f3665,sunrise
@@ -312,6 +397,7 @@ d6d6157c-8554-4e4d-b0a1-e22ce85f3665,sunrise
 0ea75da1-a7a5-4eed-a1fc-4a569b9ffe2b,suvi
 3f4588d5-d52c-4f7b-af2f-4966a650a2b0,swarm
 56f8498f-b862-4b70-b63a-d36e1c0ba13d,swea
+e6e309fb-d176-4c5e-ac87-193cde534286,sweep-frequency
 2bcf419e-4a17-4a02-b791-d99ab6f9203b,swia
 683925f0-eaed-47dd-bd9d-fa55550bb4d7,swmf
 45a9794b-80c0-4dbd-88f4-115015aa921f,swxsoc
@@ -342,12 +428,48 @@ ed75de78-084d-4f30-b861-a56324c4f5e1,visualization
 eabf1feb-2574-4b09-95ed-fe0e202a672d,voigt
 98bade75-9f35-483d-a693-81f7e370c618,wavelength response
 d99e7943-165f-4cef-bd72-94695d9ed511,wcs
+afb1811d-bac0-43a3-9146-ba556a8f5e5f,weather
+0888931a-e3bb-434d-a406-4a8a87ab3090,weather radar
 f3fc6956-bd7c-48ab-9a28-7a00e4d8eee7,webservices
+f6cd4aec-1d88-4dfb-ba6b-e54ecc9e4186,WGS84
 2764681e-50d6-4936-b3de-7de964ea4a91,wind
+eecc728b-21f3-4594-85f3-27c19f1fc832,winds
 e9e2c0ba-cc35-412b-9958-17a994d99d06,world coordinate system
+94255c0a-7fd6-4c77-b5a7-189898840f1a,World Magnetic Model
 8858eec2-cae8-4ba1-9f67-6952e7640e99,wps
 3428fbd7-17c1-4c7e-be9d-74dfb76b7805,wrapper
 ac3716e9-e86e-480c-aa7a-ac90b8e53e16,xarray
 79e8f814-8968-4ab4-aa8a-8644d1be9be5,x ray telescope (xrt)
 54187e47-8a68-4347-ae1a-6790d346ed8b,xtce
+0db63d22-841f-42b0-a116-28714069344f,zenodo
 0b364cf5-b022-4ca9-8850-40d45d90bddb,zonal
+bd40cb4e-f5ef-4a30-a7cc-e497b3345f96,ascii
+4471b0c9-6e7e-44b8-b58d-f183c0aced64,constellation mission planning
+37b706f3-d93f-4435-8b7e-d26644ddfd30,data_retrieval
+c050ce89-2037-4973-b39d-4effdc4de429,field-line tracing
+0afdfe32-c26b-4da0-b813-48bedb3ae84a,functionalization
+7aab6caf-c730-4e92-a891-31b748bd3d98,fusion
+1c4ed45b-c440-48c2-a7b3-b4b62e438e09,high-energy-density physics
+ac090fad-af67-46bf-8e8a-122f4d432f95,IDL SPEDAS
+e41385e3-a6d1-4ce4-84d0-af5642099f92,interpolation
+12d22617-06e4-40b7-ba60-524b305a6530,Langmuir probes
+e49df31a-d5b2-43ae-88e5-0ae12d74a2d2,line_plots
+7d7c940d-b068-453c-89d0-6da71dc94cbb,model-data comparison
+3bf25213-85e9-43c1-a66d-575720721d23,model output
+57b83f14-84cc-4bd2-9c79-359fa3399d25,particle moments
+527db8f6-dddd-4e7a-8f84-f081f09fe924,pitch angle distributions
+3fbfb55e-6708-47df-8c03-91ccd6da2a89,plasma astrophysics
+0505bee9-1612-4221-921b-5c2ed1196b08,plasma diagnostics
+05a4d17b-6bbc-42bc-9e4b-cbfd061336af,plasma parameters
+8f34bd37-5778-49af-bddb-8590088acc3b,plasma science
+26406797-4802-4c63-bbdf-e6cfe1a8ddf3,proton radiography
+f1951c41-caf3-4c18-9cfe-4b013bd56a38,pytplot
+6a7dd3a8-a1bb-4db2-8372-67140f439da5,radiation belts
+2166bd4c-6910-48bb-8292-a6eefc53af50,reference data
+5b838c99-5d22-4909-a9df-3aa42e5c2510,satellite flythrough
+20d35b2e-2997-48c2-a6e0-30320700bb0f,shue
+c79fdbb6-60b9-40eb-b08e-ab3e4870dfaa,spectrograms
+61dec726-3ed1-42fd-b66d-2037dacb8ab5,time series
+494b3304-bd2d-4ea0-b142-ea7c66f74dda,unit conversion
+c97fd741-40fd-4835-b490-1cf48ee277dd,wavelet analysis
+0d6202ec-dc77-4707-b2d9-d903d3467503,wave polarization

@@ -162,6 +162,7 @@ form .option-valid {
 	width: 100%;
 	margin: 0;
 	padding: 0;
+	overflow: hidden;
 }
 
 .widget-dropdown li {
@@ -172,6 +173,23 @@ form .option-valid {
 
 .widget-dropdown li.selected {
 	background: rgb(154, 181, 255);
+}
+
+.widget-dropdown li a::before {
+	content:"🌐";
+	font-family: monospace;
+}
+
+.widget-dropdown li a {
+	display: inline-block;
+	white-space: nowrap;
+	pointer-events: all;
+	color: #666;
+	margin-left:10px;
+}
+
+.widget-dropdown li a:hover {
+	text-decoration: underline;
 }
 
 .widget-tooltip {

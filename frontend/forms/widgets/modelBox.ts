@@ -342,8 +342,7 @@ export class ModelBox extends Widget {
 				link.href = option.identifier;
 				link.target = "_blank";
 				link.rel = "noopener noreferrer";
-				link.textContent = " ↗ " + option.identifier;
-				link.style.cssText = "margin-left:6px;font-size:11px;opacity:0.6;text-decoration:none;color:inherit;";
+				link.textContent = option.identifier;
 				link.addEventListener("click", e => e.stopPropagation());
 				li.appendChild(link);
 			}
@@ -392,7 +391,10 @@ export class ModelBox extends Widget {
 	}
 
 	private onListClick(event: Event): void {
-		const clickedOption = event.target;
+		if (event.target instanceof HTMLAnchorElement) {
+			return;
+		}
+		const clickedOption = (event.target as HTMLElement).closest("li");
 		if(clickedOption instanceof HTMLLIElement){
 			this.setSelectedOptionLI(clickedOption as OptionLi);
 			this.selectOption();
@@ -469,7 +471,10 @@ export class ModelBox extends Widget {
 
 		// we only want to hide the dropdown if something in the dropdown 
 		// isn't what's being focused
-		if(!newFocus || !this.allOptionLIs.includes(newFocus as any)){
+		if(
+			!newFocus || 
+			!this.allOptionLIs.includes((newFocus as HTMLElement).closest("li") as any)
+		) {
 			ModelBox.hideDropdown();
 		}
 	}

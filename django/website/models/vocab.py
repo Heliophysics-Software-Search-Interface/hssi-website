@@ -103,9 +103,11 @@ class InstrumentObservatory(ControlledList):
 			terms.append(self.abbreviation)
 		terms.extend(self.name.split(' '))
 		return terms
-	
+
+	def get_identifier_url(self) -> str | None: return self.identifier or None
+
 	class Meta: ordering = ['name']
-	def __str__(self): 
+	def __str__(self):
 		return f"{self.name} ({self.abbreviation})" if self.abbreviation else self.name
 
 class FunctionCategory(ControlledGraphList):

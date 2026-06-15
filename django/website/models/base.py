@@ -30,6 +30,7 @@ class ModelObjectChoice(NamedTuple):
 	name: str
 	keywords: list[str]
 	tooltip: str
+	identifier: str | None = None
 
 ## Base Models for HSSI --------------------------------------------------------
 
@@ -62,15 +63,18 @@ class HssiModel(models.Model, metaclass=HssiBase):
 		"""
 		return str(self).split()
 
-	def get_choice(self) -> ModelObjectChoice: 
+	def get_choice(self) -> ModelObjectChoice:
 		return ModelObjectChoice(
-			str(self.id), 
+			str(self.id),
 			str(self),
 			self.get_search_terms(),
 			self.get_tooltip(),
+			self.get_identifier_url(),
 		)
 
 	def get_tooltip(self) -> str: return ''
+
+	def get_identifier_url(self) -> str | None: return None
 	
 	@staticmethod
 	def collapse_objects(queryset: QuerySet['HssiModel']) -> 'HssiModel':

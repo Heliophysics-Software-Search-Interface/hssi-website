@@ -23,7 +23,7 @@ const modelsUrl = "/api/models/";
 const modelChoicesSlug = "/choices/";
 const modelRowSlug = "/rows/";
 
-type ChoicesJsonStructure = { data: [string, string, string[], string?][] }
+type ChoicesJsonStructure = { data: [string, string, string[], string?, string?][] }
 
 export interface ModelBoxProperties extends BaseProperties {
 	targetModel?: ModelName,
@@ -42,6 +42,7 @@ interface Option extends JSONObject {
 	name: string;
 	keywords: string[];
 	tooltip?: string;
+	identifier?: string;
 }
 
 /// Main defintion -------------------------------------------------------------
@@ -331,8 +332,22 @@ export class ModelBox extends Widget {
 			li.style.position = "relative";
 			li.style.display = "inline-block";
 			li.style.userSelect = "none";
-			
-			li.innerText = option.name;
+
+			const nameSpan = document.createElement("span");
+			nameSpan.textContent = option.name;
+			li.appendChild(nameSpan);
+
+			if(option.identifier) {
+				const link = document.createElement("a");
+				link.href = option.identifier;
+				link.target = "_blank";
+				link.rel = "noopener noreferrer";
+				link.textContent = " ↗ " + option.identifier;
+				link.style.cssText = "margin-left:6px;font-size:11px;opacity:0.6;text-decoration:none;color:inherit;";
+				link.addEventListener("click", e => e.stopPropagation());
+				li.appendChild(link);
+			}
+
 			this.allOptionLIs.push(li);
 		}
 		this.allOptionLIs.sort((a, b) => a.data.name.localeCompare(b.data.name));
@@ -362,6 +377,7 @@ export class ModelBox extends Widget {
 					name: x[1],
 					keywords: x[2],
 					tooltip: x[3],
+					identifier: x[4],
 				}
 			});
 			ModelBox.optionMap.set(cacheKey, optionData);

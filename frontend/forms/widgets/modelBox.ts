@@ -473,9 +473,17 @@ export class ModelBox extends Widget {
 		// isn't what's being focused
 		if(
 			!newFocus || 
-			!this.allOptionLIs.includes((newFocus as HTMLElement).closest("li") as any)
+			!this.allOptionLIs.includes(newFocus as any)
 		) {
-			ModelBox.hideDropdown();
+			const hidetime = setTimeout(() => {
+				ModelBox.hideDropdown();
+				window.removeEventListener("mouseup", hideup);
+			}, 500);
+			const hideup = (e: MouseEvent) => {
+				ModelBox.hideDropdown();
+				clearTimeout(hidetime);
+			};
+			window.addEventListener("mouseup", hideup);
 		}
 	}
 

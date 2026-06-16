@@ -145,7 +145,7 @@ class SoftwareDetailJsonLdTests(TestCase):
 		uuid_url = reverse("website:software_detail", kwargs={"pk": software.pk})
 		url = software.get_absolute_url()
 		redirect_response = self.client.get(uuid_url)
-		self.assertEqual(redirect_response.status_code, 301)
+		self.assertEqual(redirect_response.status_code, 302)
 		self.assertEqual(redirect_response["Location"], url)
 
 		response = self.client.get(url)

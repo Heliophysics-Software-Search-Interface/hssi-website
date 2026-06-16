@@ -8,7 +8,7 @@ from django.db.models import QuerySet
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views import generic
-from django.http import Http404, HttpResponsePermanentRedirect
+from django.http import Http404, HttpResponseRedirect
 
 from ..models import Software, VerifiedSoftware, SoftwareVersion
 from ..models.serializers.software import SoftwareSerializer
@@ -29,7 +29,9 @@ class SoftwareDetailView(generic.DetailView):
             pk = self.kwargs.get('pk')
             software = VerifiedSoftware.objects.filter(pk=pk).first()
             if software:
-                return HttpResponsePermanentRedirect(
+                # 302 (temporary) on purpose: a 301 would be cached by browsers and
+                # strand them on a stale slug whenever a software is later renamed.
+                return HttpResponseRedirect(
                     reverse('website:software_detail', kwargs={'slug': software.slug})
                 )
         return super().get(request, *args, **kwargs)

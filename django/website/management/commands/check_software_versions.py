@@ -29,6 +29,7 @@ import traceback
 from dataclasses import dataclass, field
 
 import requests
+from packaging.version import InvalidVersion, Version
 from django.core.management.base import BaseCommand, CommandError
 
 from website.models import Software, SoftwareVersion
@@ -37,30 +38,47 @@ from website.models import Software, SoftwareVersion
 GITHUB_API = "https://api.github.com"
 
 
-def version_tuple(version: str) -> tuple[int, ...]:
-	"""Extract a comparable numeric tuple from a version/tag string.
+def parse_version(tag: str) -> Version | None:
+	"""Parse a release tag into a ``packaging.version.Version`` for PEP 440 ordering.
 
-	Pulls out each maximal run of digits — so ``v1.2``, ``kaipy-1.1.4``,
-	``TIEGCM-3.0.1`` and even ``0.2b1`` / ``VAPOR3_1_0_RC0`` reduce to their
-	numeric components without letters merging adjacent digits together.
-	Returns an empty tuple when there is no numeric component.
+	Tries the raw tag first, so proper pre/post/dev-release semantics apply (e.g.
+	``0.2b1`` correctly sorts below ``0.2``). GitHub tags are frequently *not* PEP
+	440 compliant (``MAGE_1.25.1``, ``kaipy-1.1.4``, ``VAPOR3_1_0_RC0``,
+	``v0.30.1fix`` …); for those we fall back to joining the tag's digit runs into a
+	valid version string (``3.1.0.0``). Returns None when the tag has no numeric
+	component at all (e.g. ``Weekly``).
 	"""
-	return tuple(int(run) for run in re.findall(r"\d+", version or ""))
+	if not tag:
+		return None
+	try:
+		return Version(tag)
+	except InvalidVersion:
+		pass
+	runs = re.findall(r"\d+", tag)
+	if not runs:
+		return None
+	try:
+		return Version(".".join(runs))
+	except InvalidVersion:
+		return None
 
 
 def is_newer(candidate: str, current: str) -> bool:
 	"""Return True if ``candidate`` is a strictly higher version than ``current``.
 
-	Zero-pads the shorter tuple so e.g. ``v1.1`` and ``1.1.0`` compare equal (and
-	are therefore *not* newer), while ``1.1.1`` is newer than ``1.1``. This is what
-	prevents an older release that happens to be published more recently (a
+	Uses PEP 440 comparison via ``packaging`` (so ``v1.1`` and ``1.1.0`` are equal
+	and therefore not "newer", while ``0.2b1`` is older than ``0.2``). A release is
+	considered newer than an empty or unparseable current version (e.g. ``Weekly``),
+	but a candidate with no parseable version is never treated as newer. This is
+	what prevents an older release that happens to be published more recently (a
 	*downgrade*, e.g. a back-ported patch) from being reported as an update.
 	"""
-	cand = version_tuple(candidate)
-	cur = version_tuple(current)
-	length = max(len(cand), len(cur))
-	cand += (0,) * (length - len(cand))
-	cur += (0,) * (length - len(cur))
+	cand = parse_version(candidate)
+	if cand is None:
+		return False
+	cur = parse_version(current)
+	if cur is None:
+		return True
 	return cand > cur
 
 
@@ -150,8 +168,8 @@ def fetch_latest_release(
 
 	GitHub returns the releases list ordered by publish date, so the first entry is
 	not necessarily the highest version (a back-ported patch to an older line can be
-	published after a newer release). We therefore pick the release with the highest
-	numeric version, so the caller compares against the true latest version rather
+	published after a newer release). 	We therefore pick the release with the highest PEP 440 version (parsed via
+	``packaging``), so the caller compares against the true latest version rather
 	than merely the most recently published one.
 
 	Drafts are skipped, and full releases are preferred over pre-releases: a
@@ -176,8 +194,9 @@ def fetch_latest_release(
 	if not releases:
 		return None
 
-	finals: list[tuple[tuple[int, ...], str, dict]] = []
-	prereleases: list[tuple[tuple[int, ...], str, dict]] = []
+	finals: list[tuple[Version, str, dict]] = []
+	prereleases: list[tuple[Version, str, dict]] = []
+	fallback: tuple[str, dict] | None = None
 	for rel in releases:
 		if rel.get("draft"):
 			continue
@@ -190,14 +209,24 @@ def fetch_latest_release(
 		)
 		if not tag:
 			continue
-		entry = (version_tuple(tag), tag, rel)
-		(prereleases if rel.get("prerelease") else finals).append(entry)
+		version = parse_version(tag)
+		if version is None:
+			# No parseable version (e.g. "Weekly"); keep as a last resort only.
+			if fallback is None:
+				fallback = (tag, rel)
+			continue
+		# Treat as a pre-release if GitHub flags it OR the version itself is one.
+		is_pre = bool(rel.get("prerelease")) or version.is_prerelease
+		(prereleases if is_pre else finals).append((version, tag, rel))
 
-	# Prefer full releases; fall back to pre-releases only if there are no finals.
+	# Prefer full releases; fall back to pre-releases, then to an unversioned tag.
 	pool = finals or prereleases
-	if not pool:
+	if pool:
+		_, best_tag, best = max(pool, key=lambda entry: entry[0])
+	elif fallback:
+		best_tag, best = fallback
+	else:
 		return None
-	_, best_tag, best = max(pool, key=lambda entry: entry[0])
 	return ReleaseInfo(
 		tag=best_tag,
 		notes=best.get("body") or "",

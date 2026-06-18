@@ -27,22 +27,23 @@ def make_response(json_data, ok=True):
 
 
 class VersionCompareTests(SimpleTestCase):
-	def test_version_tuple_strips_prefixes_and_suffixes(self):
-		self.assertEqual(cmd.version_tuple("v1.2.3"), (1, 2, 3))
-		self.assertEqual(cmd.version_tuple("kaipy-1.1.4"), (1, 1, 4))
-		self.assertEqual(cmd.version_tuple("TIEGCM-3.0.1"), (3, 0, 1))
-		self.assertEqual(cmd.version_tuple("v0.30.1fix"), (0, 30, 1))
-		self.assertEqual(cmd.version_tuple(""), ())
-		self.assertEqual(cmd.version_tuple("nightly"), ())
+	def test_parse_version_handles_clean_pep440(self):
+		self.assertEqual(cmd.parse_version("v1.2.3"), cmd.Version("1.2.3"))
+		self.assertEqual(cmd.parse_version("0.7.0"), cmd.Version("0.7.0"))
+		# A PEP 440 pre-release is recognised as such.
+		self.assertTrue(cmd.parse_version("0.2b1").is_prerelease)
 
-	def test_version_tuple_does_not_merge_digits_across_letters(self):
-		# Regression: a letter between digits must not merge them, e.g. 0.2b1 must
-		# be (0, 2, 1) not (0, 21), and underscores/RC suffixes must not collapse.
-		self.assertEqual(cmd.version_tuple("0.2b1"), (0, 2, 1))
-		self.assertEqual(cmd.version_tuple("VAPOR3_1_0_RC0"), (3, 1, 0, 0))
-		# A real release must outrank an older beta of a lower line.
-		self.assertTrue(cmd.is_newer("0.7.0", "0.6.0"))
-		self.assertFalse(cmd.is_newer("0.2b1", "0.6.0"))
+	def test_parse_version_coerces_non_pep440_tags(self):
+		# Repo-name prefixes and odd suffixes are not PEP 440; digit runs are used.
+		self.assertEqual(cmd.parse_version("MAGE_1.25.1"), cmd.Version("1.25.1"))
+		self.assertEqual(cmd.parse_version("kaipy-1.1.4"), cmd.Version("1.1.4"))
+		self.assertEqual(cmd.parse_version("TIEGCM-3.0.1"), cmd.Version("3.0.1"))
+		self.assertEqual(cmd.parse_version("v0.30.1fix"), cmd.Version("0.30.1"))
+		self.assertEqual(cmd.parse_version("VAPOR3_1_0_RC0"), cmd.Version("3.1.0.0"))
+
+	def test_parse_version_returns_none_without_digits(self):
+		self.assertIsNone(cmd.parse_version("Weekly"))
+		self.assertIsNone(cmd.parse_version(""))
 
 	def test_is_newer_true_for_higher(self):
 		self.assertTrue(cmd.is_newer("v2.0.0", "v1.0.0"))
@@ -50,7 +51,7 @@ class VersionCompareTests(SimpleTestCase):
 		self.assertTrue(cmd.is_newer("v1.2.0", "v1.1.9"))
 
 	def test_is_newer_false_for_equal(self):
-		# v1.1 and 1.1.0 are the same version, so not "newer".
+		# v1.1 and 1.1.0 are the same version under PEP 440, so not "newer".
 		self.assertFalse(cmd.is_newer("v1.1", "1.1.0"))
 		self.assertFalse(cmd.is_newer("1.0.0", "1.0.0"))
 
@@ -60,8 +61,19 @@ class VersionCompareTests(SimpleTestCase):
 		self.assertFalse(cmd.is_newer("v1.0", "v2.4.0"))
 		self.assertFalse(cmd.is_newer("v0.6.0", "v1.0"))
 
-	def test_is_newer_against_empty_current(self):
+	def test_is_newer_prerelease_ordering(self):
+		# A real release outranks an older beta of a lower line; a beta does not
+		# outrank the stable release of the same line.
+		self.assertTrue(cmd.is_newer("0.7.0", "0.6.0"))
+		self.assertFalse(cmd.is_newer("0.2b1", "0.6.0"))
+		self.assertFalse(cmd.is_newer("1.0.0b1", "1.0.0"))
+
+	def test_is_newer_against_empty_or_unparseable_current(self):
 		self.assertTrue(cmd.is_newer("v1.0.0", ""))
+		self.assertTrue(cmd.is_newer("v1.0.0", "Weekly"))
+
+	def test_is_newer_false_when_candidate_unparseable(self):
+		self.assertFalse(cmd.is_newer("nightly", "1.0.0"))
 
 
 class ParseOwnerRepoTests(SimpleTestCase):

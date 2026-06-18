@@ -269,10 +269,10 @@ export class FormGenerator {
 
 			// Successful submission — the reliable success signal for GA, since
 			// the form posts via fetch() + preventDefault so GA's automatic
-			// form_submit doesn't fire. Defer the redirect until GA has sent this
-			// conversion (or a short fallback fires), so navigating away doesn't
-			// cancel it. Edit forms navigate via the finally() dialog instead, so
-			// response.redirected is normally false for them.
+			// form_submit doesn't fire. Defer the redirect until GA has processed
+			// this conversion event (or a short fallback fires), so navigating
+			// away doesn't cancel it. Edit forms navigate via the finally() dialog
+			// instead, so response.redirected is normally false for them.
 			trackEvent(
 				"resource_submitted",
 				{

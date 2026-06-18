@@ -136,8 +136,9 @@ export async function searchForQuery(
 		if (pushHistory) recordHistory(trimmedQuery);
 
 		// Report user-initiated searches to GA (pushHistory is false when we're
-		// just restoring a search from the URL, which GA's enhanced measurement
-		// already captures on full page loads — avoids double counting).
+		// restoring or reapplying an existing URL search — e.g. a full page load
+		// that GA's enhanced measurement already captures, or a filter change
+		// reapplying the current query — so this avoids double counting).
 		if (pushHistory) {
 			trackEvent("view_search_results", { search_term: trimmedQuery });
 		}

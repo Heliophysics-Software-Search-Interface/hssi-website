@@ -35,11 +35,12 @@ export function getCsrfTokenValue(): string {
  * only rendered in production (see hssi/templates/site_base_template.html), so
  * on local/dev builds `gtag` is undefined and this is a safe no-op.
  *
- * Pass `onComplete` when you need to act only after the event has been sent —
- * e.g. redirecting right after a conversion, where navigating away could
- * otherwise cancel the in-flight event. It runs via GA's `event_callback`, but
- * is guarded to fire exactly once and to still run (after a short fallback) if
- * GA never calls back or isn't present at all, so callers are never stranded.
+ * Pass `onComplete` when you need to act only after GA has processed the event
+ * command — e.g. redirecting right after a conversion, where navigating away
+ * too early could otherwise cancel the in-flight event. It runs via GA's
+ * `event_callback`, but is guarded to fire exactly once and to still run (after
+ * a short fallback) if GA never calls back or isn't present at all, so callers
+ * are never stranded.
  */
 export function trackEvent(
 	name: string,

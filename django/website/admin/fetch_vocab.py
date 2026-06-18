@@ -48,6 +48,7 @@ MODEL_URL_MAP={
 }
 
 SPASE_URL = "https://spase-metadata.org/"
+HELIODATA_MISSION_URL = "https://helio.data.nasa.gov/mission/"
 HELIOPHYS_API_URL = "https://api.heliophysics.net/api/"
 HELIOPHYS_PROP_NAME = "long_name"
 HELIOPHYS_PROP_NAME_2 = "short_name"
@@ -240,8 +241,15 @@ def fetch_heliophysnet_vocab(model: type[ControlledList], api_slug: str):
 			# determine whether it's an observatory or instrument based on slug
 			if api_slug.lower() == "observatories":
 				entry.type = InstrObsType.OBSERVATORY
+				# Prefer the richer, user-friendly HelioData mission page for
+				# outbound links; `identifier` retains the canonical SPASE PID,
+				# which the template falls back to when landing_url is empty.
+				entry.landing_url = f"{HELIODATA_MISSION_URL}{uid}"
 			else: 
 				entry.type = InstrObsType.INSTRUMENT
+				# HelioData has no confirmed standalone instrument landing page,
+				# so leave landing_url empty and let the link fall back to SPASE.
+				entry.landing_url = None
 			
 			# seperate abbreviation
 			lparensplit = name.split("(")

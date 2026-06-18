@@ -97,6 +97,11 @@ class InstrumentObservatory(ControlledList):
 	type = models.IntegerField(choices=InstrObsType.choices, default=InstrObsType.UNKNOWN)
 	abbreviation = models.CharField(max_length=LEN_NAME, null=True, blank=True)
 
+	# User-friendly landing page (e.g. a HelioData mission/instrument page) preferred
+	# for outbound links over the canonical SPASE persistent identifier. Server-derived
+	# during vocab fetch; falls back to `identifier` when empty.
+	landing_url = models.URLField(blank=True, null=True)
+
 	def get_search_terms(self) -> list[str]:
 		terms = super().get_search_terms()
 		if self.abbreviation:
@@ -105,6 +110,9 @@ class InstrumentObservatory(ControlledList):
 		return terms
 
 	def get_identifier_url(self) -> str | None: return self.identifier or None
+
+	def get_landing_url(self) -> str | None:
+		return self.landing_url or self.identifier or None
 
 	class Meta: ordering = ['name']
 	def __str__(self):

@@ -35,6 +35,15 @@ class VersionCompareTests(SimpleTestCase):
 		self.assertEqual(cmd.version_tuple(""), ())
 		self.assertEqual(cmd.version_tuple("nightly"), ())
 
+	def test_version_tuple_does_not_merge_digits_across_letters(self):
+		# Regression: a letter between digits must not merge them, e.g. 0.2b1 must
+		# be (0, 2, 1) not (0, 21), and underscores/RC suffixes must not collapse.
+		self.assertEqual(cmd.version_tuple("0.2b1"), (0, 2, 1))
+		self.assertEqual(cmd.version_tuple("VAPOR3_1_0_RC0"), (3, 1, 0, 0))
+		# A real release must outrank an older beta of a lower line.
+		self.assertTrue(cmd.is_newer("0.7.0", "0.6.0"))
+		self.assertFalse(cmd.is_newer("0.2b1", "0.6.0"))
+
 	def test_is_newer_true_for_higher(self):
 		self.assertTrue(cmd.is_newer("v2.0.0", "v1.0.0"))
 		self.assertTrue(cmd.is_newer("1.1.1", "1.1"))
@@ -137,6 +146,44 @@ class ReleaseParsingTests(SimpleTestCase):
 
 		release = cmd.fetch_latest_release(session, "owner", "repo", token=None)
 		self.assertEqual(release.tag, "v2.0.0")
+
+	def test_prefers_full_release_over_higher_prerelease(self):
+		# A pre-release that parses to a higher tuple must not win over a real
+		# release (mirrors OCBpy's old 0.2b1 beta vs the real 0.7.0).
+		payload = [
+			{
+				"html_url": "https://github.com/owner/repo/releases/tag/0.2b1",
+				"body": "beta",
+				"published_at": "2018-04-12T00:00:00Z",
+				"prerelease": True,
+			},
+			{
+				"html_url": "https://github.com/owner/repo/releases/tag/0.7.0",
+				"body": "stable",
+				"published_at": "2026-06-05T00:00:00Z",
+				"prerelease": False,
+			},
+		]
+		session = mock.Mock()
+		session.get.return_value = make_response(payload)
+
+		release = cmd.fetch_latest_release(session, "owner", "repo", token=None)
+		self.assertEqual(release.tag, "0.7.0")
+
+	def test_falls_back_to_prerelease_when_no_full_release(self):
+		payload = [
+			{
+				"html_url": "https://github.com/owner/repo/releases/tag/v1.0.0rc1",
+				"body": "rc",
+				"published_at": "2026-01-01T00:00:00Z",
+				"prerelease": True,
+			},
+		]
+		session = mock.Mock()
+		session.get.return_value = make_response(payload)
+
+		release = cmd.fetch_latest_release(session, "owner", "repo", token=None)
+		self.assertEqual(release.tag, "v1.0.0rc1")
 
 	def test_no_releases_returns_none(self):
 		session = mock.Mock()

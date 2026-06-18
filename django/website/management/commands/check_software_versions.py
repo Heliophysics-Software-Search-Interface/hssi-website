@@ -40,20 +40,12 @@ GITHUB_API = "https://api.github.com"
 def version_tuple(version: str) -> tuple[int, ...]:
 	"""Extract a comparable numeric tuple from a version/tag string.
 
-	Strips everything except digits and dots — so ``v1.2``, ``kaipy-1.1.4`` and
-	``TIEGCM-3.0.1`` reduce to their numeric components — then splits on dots.
+	Pulls out each maximal run of digits — so ``v1.2``, ``kaipy-1.1.4``,
+	``TIEGCM-3.0.1`` and even ``0.2b1`` / ``VAPOR3_1_0_RC0`` reduce to their
+	numeric components without letters merging adjacent digits together.
 	Returns an empty tuple when there is no numeric component.
 	"""
-	cleaned = re.sub(r"[^\d\.]", "", version or "").strip(".")
-	parts: list[int] = []
-	for chunk in cleaned.split("."):
-		if chunk == "":
-			continue
-		try:
-			parts.append(int(chunk))
-		except ValueError:
-			pass
-	return tuple(parts)
+	return tuple(int(run) for run in re.findall(r"\d+", version or ""))
 
 
 def is_newer(candidate: str, current: str) -> bool:
@@ -154,13 +146,17 @@ def fetch_latest_release(
 	repo: str,
 	token: str | None,
 ) -> ReleaseInfo | None:
-	"""Return the highest-version release for ``owner/repo``, or None if none exist.
+	"""Return the latest stable release for ``owner/repo``, or None if none exist.
 
 	GitHub returns the releases list ordered by publish date, so the first entry is
 	not necessarily the highest version (a back-ported patch to an older line can be
 	published after a newer release). We therefore pick the release with the highest
-	numeric version among all non-draft releases, so the caller compares against the
-	true latest version rather than merely the most recently published one.
+	numeric version, so the caller compares against the true latest version rather
+	than merely the most recently published one.
+
+	Drafts are skipped, and full releases are preferred over pre-releases: a
+	pre-release (beta/RC) is only considered when the repository has no full release
+	at all. This avoids surfacing an old beta as the "latest" version.
 
 	Raises ``requests.HTTPError`` (via ``raise_for_status``) on a non-2xx response
 	so the caller can record the failure per-software without aborting the run.
@@ -180,9 +176,8 @@ def fetch_latest_release(
 	if not releases:
 		return None
 
-	best = None
-	best_tag = ""
-	best_tuple: tuple[int, ...] | None = None
+	finals: list[tuple[tuple[int, ...], str, dict]] = []
+	prereleases: list[tuple[tuple[int, ...], str, dict]] = []
 	for rel in releases:
 		if rel.get("draft"):
 			continue
@@ -195,14 +190,14 @@ def fetch_latest_release(
 		)
 		if not tag:
 			continue
-		candidate_tuple = version_tuple(tag)
-		if best is None or candidate_tuple > best_tuple:
-			best = rel
-			best_tag = tag
-			best_tuple = candidate_tuple
+		entry = (version_tuple(tag), tag, rel)
+		(prereleases if rel.get("prerelease") else finals).append(entry)
 
-	if best is None:
+	# Prefer full releases; fall back to pre-releases only if there are no finals.
+	pool = finals or prereleases
+	if not pool:
 		return None
+	_, best_tag, best = max(pool, key=lambda entry: entry[0])
 	return ReleaseInfo(
 		tag=best_tag,
 		notes=best.get("body") or "",

@@ -200,10 +200,8 @@ export class FormGenerator {
 		// we don't want the default html form functionality submitting anything
 		e.preventDefault();
 
-		// Captured once at submit time and attached only to the successful
-		// submission event below — by then it's a server-accepted public package
-		// name. Pre-validation attempts and failures deliberately omit it: the
-		// field is still raw user input there, and GA must not receive PII.
+		// Captured once at submit time and attached to every submission event
+		// below — the public package name typed into the form.
 		const softwareName = this.getRootFields()
 			.find(f => f.name === "software_name")
 			?.getInputElement()?.value ?? "";
@@ -212,11 +210,13 @@ export class FormGenerator {
 		// even when they fail client-side validation.
 		trackEvent("resource_submit_attempt", {
 			form_type: this.isEditForm ? "edit" : "new",
+			software_name: softwareName,
 		});
 
 		if(!this.validateForSubmission()){
 			trackEvent("resource_submit_failed", {
 				form_type: this.isEditForm ? "edit" : "new",
+				software_name: softwareName,
 				reason: "validation",
 			});
 			return;
@@ -260,6 +260,7 @@ export class FormGenerator {
 				);
 				trackEvent("resource_submit_failed", {
 					form_type: this.isEditForm ? "edit" : "new",
+					software_name: softwareName,
 					reason: "server_error",
 				});
 				if(response.redirected) window.location.href = response.url;
@@ -289,6 +290,7 @@ export class FormGenerator {
 			);
 			trackEvent("resource_submit_failed", {
 				form_type: this.isEditForm ? "edit" : "new",
+				software_name: softwareName,
 				reason: "network_error",
 			});
 		});

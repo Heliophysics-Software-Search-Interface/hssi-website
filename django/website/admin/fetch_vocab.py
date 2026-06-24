@@ -50,10 +50,10 @@ MODEL_URL_MAP={
 SPASE_URL = "https://spase-metadata.org/"
 HELIODATA_MISSION_URL = "https://helio.data.nasa.gov/mission/"
 # Backend JSON endpoint behind the HelioData mission SPA. The SPA route
-# (HELIODATA_MISSION_URL) returns HTTP 200 for every path — including missions
-# that don't exist — so it can't be used to detect a real page. This backend
-# route returns 200 + mission JSON for a real mission and 404
-# {"Error": "region missing"} otherwise, so we probe it before linking.
+# (HELIODATA_MISSION_URL) returns HTTP 200 for every path, so it can't be used
+# to detect whether HelioData has useful mission data for a page. This backend
+# route returns mission JSON including datasetCount, or 404
+# {"Error": "region missing"} when the page is absent.
 HELIODATA_LOAD_MISSION_URL = "https://helio.data.nasa.gov/heliodata/app/load_mission_page/"
 HELIOPHYS_API_URL = "https://api.heliophysics.net/api/"
 HELIOPHYS_PROP_NAME = "long_name"
@@ -71,19 +71,18 @@ def get_data(url: str) -> dict | list:
 		str_data = str_data.replace('“', '"').replace('”', '"')
 	return json.loads(str_data)
 
-def heliodata_mission_exists(uid: str) -> bool | None:
+def heliodata_mission_has_datasets(uid: str) -> bool | None:
 	"""
-	Whether HelioData has a real mission landing page for `uid`.
+	Whether HelioData has a data-backed mission landing page for `uid`.
 
 	The vocab fetch pulls thousands of observatories from the heliophysics.net
-	catalog, but most (e.g. ground magnetometer/ionosonde stations) have no
-	HelioData mission page. We probe HelioData's backend page loader, which
-	returns 200 + mission JSON for a real mission and 404
-	{"Error": "region missing"} otherwise.
+	catalog. HelioData can render pages for many of them, but pages with
+	datasetCount=0 are usually sparse wrappers around the same information
+	available from SPASE. Prefer HelioData only when it has datasets to browse.
 
 	Returns:
-		True  — confirmed page exists (set landing_url to the HelioData page),
-		False — confirmed missing / 404 (clear landing_url; SPASE fallback),
+		True  — confirmed page exists with datasetCount > 0,
+		False — confirmed missing or datasetCount <= 0 (SPASE fallback),
 		None  — probe failed (timeout/network/HTTP error): undetermined, so the
 		        caller should leave any existing landing_url untouched rather than
 		        clobbering a previously-good link during a transient outage.
@@ -99,9 +98,17 @@ def heliodata_mission_exists(uid: str) -> bool | None:
 		print(f"  HelioData probe for '{uid}' returned HTTP {req.status_code}, leaving landing_url unchanged")
 		return None
 	try:
-		return "Error" not in req.json()
+		payload = req.json()
 	except Exception:
 		print(f"  HelioData probe for '{uid}' returned non-JSON 200, leaving landing_url unchanged")
+		return None
+	if isinstance(payload, dict) and payload.get("Error"):
+		return False
+	dataset_count = payload.get("datasetCount") if isinstance(payload, dict) else None
+	try:
+		return int(dataset_count) > 0
+	except (TypeError, ValueError):
+		print(f"  HelioData probe for '{uid}' did not include datasetCount, leaving landing_url unchanged")
 		return None
 
 def ttl_spl_str(data_str: str) -> str:
@@ -281,16 +288,16 @@ def fetch_heliophysnet_vocab(model: type[ControlledList], api_slug: str):
 			if api_slug.lower() == "observatories":
 				entry.type = InstrObsType.OBSERVATORY
 				# Prefer the richer, user-friendly HelioData mission page for
-				# outbound links, but only when HelioData actually has one for
-				# this uid — most fetched observatories are ground stations with
-				# no mission page. On a confirmed-missing page, clear it so the
-				# template falls back to the canonical SPASE PID in `identifier`.
+				# outbound links, but only when HelioData has datasets to browse.
+				# Zero-dataset HelioData pages are usually thinner than the
+				# canonical SPASE metadata page, so clear landing_url and fall
+				# back to `identifier` for those confirmed-sparse pages.
 				# On an undetermined probe (None: timeout/outage), leave any
 				# existing landing_url untouched rather than wiping a good link.
-				mission_exists = heliodata_mission_exists(uid)
-				if mission_exists is True:
+				mission_has_datasets = heliodata_mission_has_datasets(uid)
+				if mission_has_datasets is True:
 					entry.landing_url = f"{HELIODATA_MISSION_URL}{uid}"
-				elif mission_exists is False:
+				elif mission_has_datasets is False:
 					entry.landing_url = None
 			else: 
 				entry.type = InstrObsType.INSTRUMENT

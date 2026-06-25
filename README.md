@@ -57,3 +57,47 @@ GA_MEASUREMENT_ID="G-XXXXXXXXXX"
 ```
 
 The analytics tag is only rendered in production (when `DEBUG` is `False`), so local development traffic is never tracked.
+
+## Software Version Checker
+
+The `check_software_versions` management command detects when GitHub-hosted
+software listed in HSSI has published a newer release than the version HSSI
+currently records. It is adapted from EMAC's `git_fetch_version`, but **defaults
+to detection only** — it reports what is out of date and writes nothing unless
+you explicitly opt in with `--apply`.
+
+Run it from inside the app container:
+
+```
+docker exec HSSI sh -c 'cd /django && python manage.py check_software_versions'
+```
+
+Options:
+
+* `--apply` — opt-in; create a new `SoftwareVersion` for each out-of-date entry
+  and point the software at it. Off by default (detection only).
+* `--csv PATH` — also write the out-of-date report to a CSV file.
+* `--limit N` — only check the first N github-hosted software (useful for testing).
+* `--github-token TOKEN` — GitHub token for a higher API rate limit. Falls back
+  to the `GITHUB_TOKEN` environment variable.
+
+GitHub's anonymous API is limited to 60 requests/hour, which is easily exhausted
+on a shared IP (the command will report `HTTP 403/429` rate-limit errors). Supply
+a token to raise the limit to 5000 requests/hour:
+
+```
+docker exec -e GITHUB_TOKEN=ghp_xxx HSSI sh -c 'cd /django && python manage.py check_software_versions'
+```
+
+A token needs no special scopes — read access to public repositories is enough.
+
+Detection rules:
+
+* A software is reported as out-of-date when its repository's highest-numbered
+  GitHub release is **strictly newer** than the version HSSI records. An older
+  release that was merely published more recently (e.g. a back-ported patch) is
+  not treated as an update.
+* A software with **no version recorded at all** is also reported, with the latest
+  git release suggested as the version to apply.
+* Software whose repository has no GitHub releases is counted separately (there is
+  nothing to suggest) and is not reported as out-of-date.

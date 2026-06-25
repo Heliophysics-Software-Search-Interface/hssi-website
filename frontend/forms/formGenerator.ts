@@ -7,6 +7,7 @@ import {
 	UrlWidget,
 	EmailWidget,
 	PopupDialogue,
+	trackEvent,
 } from "../loader";
 
 const generatedFormType = "generated-form";
@@ -199,7 +200,27 @@ export class FormGenerator {
 		// we don't want the default html form functionality submitting anything
 		e.preventDefault();
 
-		if(!this.validateForSubmission()) return;
+		// Captured once at submit time and attached to every submission event
+		// below — the public package name typed into the form.
+		const softwareName = this.getRootFields()
+			.find(f => f.name === "software_name")
+			?.getInputElement()?.value ?? "";
+
+		// Fire on every Submit click, before validation, so we capture attempts
+		// even when they fail client-side validation.
+		trackEvent("resource_submit_attempt", {
+			form_type: this.isEditForm ? "edit" : "new",
+			software_name: softwareName,
+		});
+
+		if(!this.validateForSubmission()){
+			trackEvent("resource_submit_failed", {
+				form_type: this.isEditForm ? "edit" : "new",
+				software_name: softwareName,
+				reason: "validation",
+			});
+			return;
+		}
 
 		Spinner.showSpinner();
 
@@ -237,9 +258,29 @@ export class FormGenerator {
 					"We encountered an error, please try again later.",
 					"Error", "ok", null
 				);
+				trackEvent("resource_submit_failed", {
+					form_type: this.isEditForm ? "edit" : "new",
+					software_name: softwareName,
+					reason: "server_error",
+				});
+				if(response.redirected) window.location.href = response.url;
+				return;
 			}
 
-			if(response.redirected) window.location.href = response.url;
+			// Successful submission — the reliable success signal for GA, since
+			// the form posts via fetch() + preventDefault so GA's automatic
+			// form_submit doesn't fire. Defer the redirect until GA has processed
+			// this conversion event (or a short fallback fires), so navigating
+			// away doesn't cancel it. Edit forms navigate via the finally() dialog
+			// instead, so response.redirected is normally false for them.
+			trackEvent(
+				"resource_submitted",
+				{
+					form_type: this.isEditForm ? "edit" : "new",
+					software_name: softwareName,
+				},
+				() => { if(response.redirected) window.location.href = response.url; }
+			);
 		});
 		response.catch(e => {
 			Spinner.hideSpinner();
@@ -247,6 +288,11 @@ export class FormGenerator {
 				"We encountered an error, please try again later. \n" + String(e),
 				"Error", "ok", null
 			);
+			trackEvent("resource_submit_failed", {
+				form_type: this.isEditForm ? "edit" : "new",
+				software_name: softwareName,
+				reason: "network_error",
+			});
 		});
 		response.finally(async () => {
 			Spinner.hideSpinner();

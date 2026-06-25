@@ -51,13 +51,13 @@ d0dcf8b7-d032-481b-b80e-dea683cc1fa4,spiceypy
 ecd7fb7a-570b-4466-b0ea-8d4b60016036,stokespy
 110491fc-f060-4b9d-ab2c-bb0806824948,sunkit-image
 db2bcb8a-c799-4233-9699-dea23b975972,sunkit-instruments
-13b71402-f2cb-4aa3-9b17-639652e87ca8,sunpy-a-core-package-for-solar-physics
+13b71402-f2cb-4aa3-9b17-639652e87ca8,sunpy
 52e4975a-0d6d-4bb0-91a3-862f8e113091,swmf
 1fd6fa60-cd5d-4e38-bfea-ea8dc5b25eaa,swxsoc
 52d61c70-77fd-4c4a-aae8-f4e24dde6de8,tiegcm-v3-0
 15e95cb0-2008-4b98-83e9-0ce5a614b42c,viresclient
 a562afcf-b6f7-4ddd-be72-d450f8de9fc0,vswim
-f6e3429d-e80e-4cf6-889e-44af1e93f87d,hapi-server-client-python
+f6e3429d-e80e-4cf6-889e-44af1e93f87d,hapi-client
 ac1149e1-6679-4466-a445-1f6dd0ecd883,magnetospheric-swcx
 fd58b98f-87d6-441b-bec8-aa79752f3c5e,sammi-cdf
 c9f100c2-e502-4a61-94d5-87ae0f4d3646,solarmach
@@ -119,3 +119,4 @@ c47c5638-d426-4868-ae04-bc993ab0c2e1,sciencedates
 1d43d4b3-1562-4ccc-9729-49d31aa5309e,themisasi
 62ac1496-2c4b-4d93-95f0-7ee39deeb0ea,wmm2015
 9c1d2774-3eeb-4b72-bd48-fa7eb5c5e39e,wmm2020
+763e3b22-b9ac-4bee-b665-69d1acb70712,pysat

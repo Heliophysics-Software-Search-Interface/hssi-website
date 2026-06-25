@@ -362,17 +362,20 @@
                     <span class="metadata-label">Related Instruments</span>
                     <span class="metadata-value">
                         {% for inst in software.related_instruments.all %}
-                        {% if inst.identifier %}
-                        <a class="tag" href="{{ inst.identifier }}" target="_blank">
+                        {% with url=inst.get_landing_url %}
+                        {% if url %}
+                        <a class="tag" href="{{ url }}" target="_blank"
+                           title="View this instrument on {% if 'helio.data.nasa.gov' in url %}HelioData{% elif 'spase-metadata.org' in url %}SPASE{% else %}an external site{% endif %}">
                             {% if inst.name and inst.name != "UNKNOWN" %}
                             {{ inst.name }}
                             {% else %}
-                            {{ inst.identifier }}
+                            {{ url }}
                             {% endif %}
                         </a>
                         {% else %}
                         <span class="tag">{{ inst.name }}</span>
                         {% endif %}
+                        {% endwith %}
                         {% endfor %}
                     </span>
                 </div>
@@ -383,18 +386,20 @@
                     <span class="metadata-label">Related Observatories</span>
                     <span class="metadata-value">
                         {% for obs in software.related_observatories.all %}
-                        {% if obs.identifier %}
-                        <a class="tag" href="{{ obs.identifier }}" target="_blank"
-                           title="View this observatory on {% if 'helio.data.nasa.gov' in obs.identifier %}HelioData{% elif 'spase-metadata.org' in obs.identifier %}SPASE{% else %}an external site{% endif %}">
+                        {% with url=obs.get_landing_url %}
+                        {% if url %}
+                        <a class="tag" href="{{ url }}" target="_blank"
+                           title="View this observatory on {% if 'helio.data.nasa.gov' in url %}HelioData{% elif 'spase-metadata.org' in url %}SPASE{% else %}an external site{% endif %}">
                             {% if obs.name and obs.name != "UNKNOWN" %}
                             {{ obs.name }}
                             {% else %}
-                            {{ obs.identifier }}
+                            {{ url }}
                             {% endif %}
                         </a>
                         {% else %}
                         <span class="tag">{{ obs.name }}</span>
                         {% endif %}
+                        {% endwith %}
                         {% endfor %}
                     </span>
                 </div>

@@ -117,8 +117,8 @@ class SoftwareSerializer(HssiSerializer):
 			data["propertyID"] = property_id
 		if value:
 			data["value"] = value
-		if name:
-			data["name"] = name
+		#if name:
+		#	data["name"] = name
 		return data
 
 	def _organization_jsonld(self, org: Organization | None) -> dict[str, Any] | None:
@@ -265,14 +265,21 @@ class SoftwareSerializer(HssiSerializer):
 		data: dict[str, Any] = {
 			"@type": "DataDownload",
 			"contentUrl": content_url,
-			"dateModified": "2025-03-05T12:34:56",
-			"encodingFormat": "application/json",
-			"name": "HSSI metadata describing the software",
-			"description": "HSSI metadata describing the software",
+			"dateModified": None,
+			"description": "HSSI metadata describing the indicated software",
+			"encodingFormat": "application/ld+json",
+			"license": None,
+			"name": "HSSI metadata",
 		}
-		if version.release_date:
-			data["dateModified"] = version.release_date.isoformat()
-		return data
+		if instance.license:
+			data["license"] = instance.license.url
+		if instance.submission_info:
+			data["dateModified"] = (
+				instance.submission_info.filter(submission_date__isnull=False)
+					.latest("submission_date")
+					.submission_date
+			)
+		return { key: value for key, value in data.items() if value }
 
 	def to_representation_jsonld(self, instance: Software) -> dict[str, Any]:
 
@@ -336,13 +343,12 @@ class SoftwareSerializer(HssiSerializer):
 
 		spatial_coverage = [
 			{
-				"@type": "Place",
+				"@type": ["Place", "DefinedTerm"],
 				"name": item.name,
-				"keywords": self._defined_term(
-					item.name,
-					"RelatedRegion",
-					URL_TERMSET_PHENOMENA,
-				),
+				"description": "RelatedRegion",
+				"inDefinedTermSet": 
+					"https://github.com/rmcgranaghan/" + 
+					"Helio-KNOW/blob/main/data-models/hk_region.ttl",
 			}
 			for item in instance.related_region.all()
 		]
@@ -364,6 +370,8 @@ class SoftwareSerializer(HssiSerializer):
 			for funder in instance.funder.all():
 				funding_item["@type"] = "MonetaryGrant"
 				funding_item["funder"] = self._organization_jsonld(funder)
+		if not funding_item.get("name"):
+			funding_item = None
 
 		json_id = instance.persistent_identifier
 		if not json_id:
@@ -432,7 +440,13 @@ class SoftwareSerializer(HssiSerializer):
 			"softwareVersion": latest_version.number if latest_version else None,
 			"spatialCoverage": spatial_coverage or None,
 			"subjectOf": self._subject_of(instance),
+			"url": json_id,
 			"version": latest_version.number if latest_version else None,
+			"offers": {
+  				"@type": "Offer",
+  				"price": 0,
+        		"priceCurrency": "USD",
+	      	},
 		}
 
 		return {

@@ -13,6 +13,7 @@ import {
 export const idSearchbar = "searchbar";
 export const idSearchButton = "searchbar-btn";
 export const searchParamQuery = "q";
+export const searchModeQuery = "mode";
 const searchApiUrl = "/api/search/";
 
 /** 
@@ -157,6 +158,7 @@ export async function searchForQuery(
 async function getRelevantQueryIds(query: string): Promise<string[]> {
 	const url = new URL(searchApiUrl, window.location.origin);
 	url.searchParams.set(searchParamQuery, query);
+	url.searchParams.set(searchModeQuery, "id");
 	const response = await fetchTimeout(url.toString());
 	if (!response.ok) {
 		throw new Error(`Search request failed with ${response.status}`);

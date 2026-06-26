@@ -185,7 +185,8 @@ class SoftwareSerializer(HssiSerializer):
 		name: str, 
 		description: str | None = None, 
 		in_set: str | None = None
-	) -> dict[str, Any]:
+	) -> dict[str, Any] | str:
+		if not description and not in_set: return name
 		data: dict[str, Any] = {
 			"@type": "DefinedTerm",
 			"name": name,
@@ -305,7 +306,7 @@ class SoftwareSerializer(HssiSerializer):
 			for item in instance.related_phenomena.all()
 		]
 		keywords += [
-			self._defined_term(item.name, "softwareFunctionality", URL_TERMSET_FUNCTIONCATEGORY)
+			self._defined_term(item.get_full_name(), "softwareFunctionality", URL_TERMSET_FUNCTIONCATEGORY)
 			for item in instance.software_functionality.all()
 		]
 		keywords += [self._defined_term(item.name) for item in instance.keywords.all()]
@@ -379,6 +380,18 @@ class SoftwareSerializer(HssiSerializer):
 				json_id = latest_version.version_pid.strip()
 			if not json_id: json_id = instance.code_repository_url
 
+		json_pub = self._organization_jsonld(instance.publisher)
+		json_pub_ident: str = json_pub.get("@id")
+		if json_pub_ident:
+			json_pub_ident = json_pub_ident.lower()
+			if not (
+					"doi.org" in json_pub_ident or 
+					"ror.org" in json_pub_ident or 
+					"orcid.org" in json_pub_ident
+				):
+				json_pub = None
+		else: json_pub = None
+
 		data: dict[str, Any] = {
 			"@id": json_id,
 			"@type": ["SoftwareSourceCode", "SoftwareApplication"],
@@ -436,7 +449,7 @@ class SoftwareSerializer(HssiSerializer):
 			"operatingSystem": self._maybe_single(operating_systems),
 			"processorRequirements": processor_requirements or None,
 			"programmingLanguage": self._maybe_single(programming_languages),
-			"publisher": self._organization_jsonld(instance.publisher),
+			"publisher": json_pub,
 			"softwareVersion": latest_version.number if latest_version else None,
 			"spatialCoverage": spatial_coverage or None,
 			"subjectOf": self._subject_of(instance),

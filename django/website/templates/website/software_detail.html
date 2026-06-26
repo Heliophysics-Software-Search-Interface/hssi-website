@@ -362,17 +362,20 @@
                     <span class="metadata-label">Related Instruments</span>
                     <span class="metadata-value">
                         {% for inst in software.related_instruments.all %}
-                        {% if inst.identifier %}
-                        <a class="tag" href="{{ inst.identifier }}" target="_blank">
+                        {% with url=inst.get_landing_url %}
+                        {% if url %}
+                        <a class="tag" href="{{ url }}" target="_blank"
+                           title="View this instrument on {% if 'helio.data.nasa.gov' in url %}HelioData{% elif 'spase-metadata.org' in url %}SPASE{% else %}an external site{% endif %}">
                             {% if inst.name and inst.name != "UNKNOWN" %}
                             {{ inst.name }}
                             {% else %}
-                            {{ inst.identifier }}
+                            {{ url }}
                             {% endif %}
                         </a>
                         {% else %}
                         <span class="tag">{{ inst.name }}</span>
                         {% endif %}
+                        {% endwith %}
                         {% endfor %}
                     </span>
                 </div>
@@ -383,18 +386,20 @@
                     <span class="metadata-label">Related Observatories</span>
                     <span class="metadata-value">
                         {% for obs in software.related_observatories.all %}
-                        {% if obs.identifier %}
-                        <a class="tag" href="{{ obs.identifier }}" target="_blank"
-                           title="View this observatory on {% if 'helio.data.nasa.gov' in obs.identifier %}HelioData{% elif 'spase-metadata.org' in obs.identifier %}SPASE{% else %}an external site{% endif %}">
+                        {% with url=obs.get_landing_url %}
+                        {% if url %}
+                        <a class="tag" href="{{ url }}" target="_blank"
+                           title="View this observatory on {% if 'helio.data.nasa.gov' in url %}HelioData{% elif 'spase-metadata.org' in url %}SPASE{% else %}an external site{% endif %}">
                             {% if obs.name and obs.name != "UNKNOWN" %}
                             {{ obs.name }}
                             {% else %}
-                            {{ obs.identifier }}
+                            {{ url }}
                             {% endif %}
                         </a>
                         {% else %}
                         <span class="tag">{{ obs.name }}</span>
                         {% endif %}
+                        {% endwith %}
                         {% endfor %}
                     </span>
                 </div>
@@ -707,6 +712,20 @@ document.querySelectorAll('details.software-section').forEach(details => {
         }
     });
 });
+
+// Report Request-Edit-Access clicks to GA. This is a <button> (not a link), so
+// GA's enhanced measurement won't auto-track it; the software name lets each
+// click be attributed to the package whose page it fired on.
+(function() {
+    var editBtn = document.querySelector('.btn-request-edit');
+    if (editBtn && typeof gtag === 'function') {
+        editBtn.addEventListener('click', function() {
+            gtag('event', 'resource_edit_requested', {
+                software_name: '{{ software.software_name|escapejs }}',
+            });
+        });
+    }
+})();
 </script>
 
 {% if software.persistent_identifier or software.reference_publication and software.reference_publication.identifier %}
@@ -714,6 +733,13 @@ document.querySelectorAll('details.software-section').forEach(details => {
 (function() {
     var section = document.querySelector('.citation-section');
     if (!section) return;
+
+    // Public software name only (never PII), attached to GA events below so
+    // each click is attributable to the package whose page it fired on.
+    var gaSoftwareName = '{{ software.software_name|escapejs }}';
+    function trackGaEvent(name, params) {
+        if (typeof gtag === 'function') gtag('event', name, params);
+    }
 
     var doi = section.dataset.doi || '';
     var refDoi = section.dataset.refDoi || '';
@@ -838,12 +864,20 @@ document.querySelectorAll('details.software-section').forEach(details => {
     if (copySoftwareBtn) {
         copySoftwareBtn.addEventListener('click', function() {
             copyToClipboard(this, softwareEl.innerText, this.title);
+            trackGaEvent('citation_copied', {
+                software_name: gaSoftwareName,
+                citation_type: 'software',
+            });
         });
     }
 
     if (copyRefpubBtn) {
         copyRefpubBtn.addEventListener('click', function() {
             copyToClipboard(this, refpubEl.innerText, this.title);
+            trackGaEvent('citation_copied', {
+                software_name: gaSoftwareName,
+                citation_type: 'reference_publication',
+            });
         });
     }
 
@@ -853,6 +887,7 @@ document.querySelectorAll('details.software-section').forEach(details => {
         citeBtn.addEventListener('click', function() {
             if (section.classList.contains('citation-hidden')) {
                 section.classList.remove('citation-hidden');
+                trackGaEvent('cite_me_open', { software_name: gaSoftwareName });
                 if (!loaded) {
                     fetchAll(styleSelect.value);
                     loaded = true;

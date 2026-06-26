@@ -31,6 +31,46 @@ export function getCsrfTokenValue(): string {
 }
 
 /**
+ * Send a custom event to Google Analytics, if the GA tag is present. The tag is
+ * only rendered in production (see hssi/templates/site_base_template.html), so
+ * on local/dev builds `gtag` is undefined and this is a safe no-op.
+ *
+ * Pass `onComplete` when you need to act only after GA has processed the event
+ * command — e.g. redirecting right after a conversion, where navigating away
+ * too early could otherwise cancel the in-flight event. It runs via GA's
+ * `event_callback`, but is guarded to fire exactly once and to still run (after
+ * a short fallback) if GA never calls back or isn't present at all, so callers
+ * are never stranded.
+ */
+export function trackEvent(
+	name: string,
+	params: Record<string, unknown> = {},
+	onComplete?: () => void
+): void {
+	const gtag = (window as any).gtag;
+
+	if (typeof gtag !== "function") {
+		if (onComplete) onComplete();
+		return;
+	}
+
+	if (!onComplete) {
+		gtag("event", name, params);
+		return;
+	}
+
+	let done = false;
+	const finish = () => {
+		if (done) return;
+		done = true;
+		onComplete();
+	};
+	const timeoutMs = 2000;
+	gtag("event", name, { ...params, event_callback: finish, event_timeout: timeoutMs });
+	setTimeout(finish, timeoutMs);
+}
+
+/**
  * merge two objects together, recursively
  * @param target merge into this object
  * @param source values from this object will overwrite target values

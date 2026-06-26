@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 """
 Reconcile legacy (non-SPASE) instrument/observatory references to their
-canonical SPASE-backed rows — the deterministic `apply=yes` subset of the HSSI
+canonical SPASE-backed rows — the reviewed `apply=yes` subset of the HSSI
 instrument/observatory backfill.
 
 Context: HSSI's instrument/observatory vocabulary is now SPASE-backed, but a set
 of legacy (non-SPASE) `InstrumentObservatory` rows are still referenced by
 software. The backfill mapping (`backfill_mapping.csv`) classifies each legacy
-row; only `apply=yes` rows are deterministic (resolved via the
-helio.data.nasa.gov -> heliophysics.net -> SPASE bridge) and safe to apply
-without human judgment. Everything else (`apply=no`) is left untouched for
-manual review.
+row; only reviewed `apply=yes` rows are applied. Everything else (`apply=no`)
+is left untouched for manual review.
 
 What this does (idempotent, dynamic — recompute everything from the CSVs, never
 trust hard-coded counts):
@@ -22,6 +20,8 @@ trust hard-coded counts):
       - relation_action == "move":   type changes (e.g. SuperDARN
         Instrument -> Observatory) -> drop from related_instruments and add to
         related_observatories.
+    A semicolon-separated `target_identifier` value expands one legacy UUID to
+    multiple canonical UUIDs for documented one-to-many cases.
     De-duplicates within each cell.
   * After repointing, delete from instrument_observatory.csv every *legacy*
     (non-SPASE) row that is no longer referenced by any software: the now
@@ -76,6 +76,20 @@ def dedup(seq):
     return list(dict.fromkeys(seq))  # order-preserving
 
 
+def target_identifiers(cell):
+    return [x.strip() for x in (cell or "").split(";") if x.strip()]
+
+
+def expand_replace(seq, legacy, replacements):
+    expanded = []
+    for item in seq:
+        if item == legacy:
+            expanded.extend(replacements)
+        else:
+            expanded.append(item)
+    return expanded
+
+
 def main():
     # ---- mapping ----
     with open(MAPPING, newline="", encoding="utf-8") as f:
@@ -98,17 +112,21 @@ def main():
             spase_ids.add(rid)
     legacy_ids = set(id_to_row) - spase_ids
 
-    # ---- build repoint table (legacy_id -> (canonical_id, action)) ----
+    # ---- build repoint table (legacy_id -> (canonical_ids, action)) ----
     repoint = {}
     for m in apply_yes:
         legacy = m["legacy_uuid"].strip()
-        target = m["target_identifier"].strip()
+        targets = target_identifiers(m["target_identifier"])
         action = (m["relation_action"].strip() or "rewrite")
-        assert target in ident_to_id, f"canonical target not in seed: {target}"
-        canon = ident_to_id[target]
-        assert canon in spase_ids, f"canonical target is not a SPASE row: {target}"
+        assert targets, f"missing canonical target for legacy row: {legacy}"
+        canons = []
+        for target in targets:
+            assert target in ident_to_id, f"canonical target not in seed: {target}"
+            canon = ident_to_id[target]
+            assert canon in spase_ids, f"canonical target is not a SPASE row: {target}"
+            canons.append(canon)
         assert action in ("rewrite", "move"), f"unexpected action: {action!r}"
-        repoint[legacy] = (canon, action)
+        repoint[legacy] = (canons, action)
 
     # ---- apply to software.csv ----
     sw_header, sw_rows = read_csv(SOFTWARE)
@@ -119,15 +137,15 @@ def main():
     for row in sw_rows:
         ri, ro = uuids(row[ri_i]), uuids(row[ro_i])
         changed = False
-        for legacy, (canon, action) in repoint.items():
+        for legacy, (canons, action) in repoint.items():
             if legacy in ri or legacy in ro:
                 changed = True
                 if action == "rewrite":
-                    ri = [canon if x == legacy else x for x in ri]
-                    ro = [canon if x == legacy else x for x in ro]
+                    ri = expand_replace(ri, legacy, canons)
+                    ro = expand_replace(ro, legacy, canons)
                 else:  # move: legacy is an instrument, canonical an observatory
                     ri = [x for x in ri if x != legacy]
-                    ro = [x for x in ro if x != legacy] + [canon]
+                    ro = [x for x in ro if x != legacy] + canons
         if changed:
             row[ri_i] = ",".join(dedup(ri))
             row[ro_i] = ",".join(dedup(ro))
@@ -149,7 +167,7 @@ def main():
     remaining_ids = {r[c["id"]] for r in new_io_rows}
 
     # safety: every canonical target still exists; no per-cell dup UUIDs
-    canon_ids = {canon for canon, _ in repoint.values()}
+    canon_ids = {canon for canons, _ in repoint.values() for canon in canons}
     assert canon_ids <= remaining_ids, (
         f"canonical targets missing after delete: {canon_ids - remaining_ids}"
     )
@@ -169,6 +187,7 @@ def main():
     print(f"apply=yes mapping rows:       {len(apply_yes)}")
     print(f"  rewrite:                    {sum(1 for _, a in repoint.values() if a == 'rewrite')}")
     print(f"  move:                       {sum(1 for _, a in repoint.values() if a == 'move')}")
+    print(f"canonical targets:            {sum(len(canons) for canons, _ in repoint.values())}")
     print(f"software rows touched:        {touched}")
     print(f"legacy (non-SPASE) rows:      {len(legacy_ids)} -> {len(legacy_ids) - len(orphan_ids)}")
     print(f"legacy rows deleted (orphan): {len(orphan_ids)}")

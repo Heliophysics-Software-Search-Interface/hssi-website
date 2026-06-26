@@ -20,6 +20,8 @@ trust hard-coded counts):
       - relation_action == "move":   type changes (e.g. SuperDARN
         Instrument -> Observatory) -> drop from related_instruments and add to
         related_observatories.
+      - relation_action == "drop":   no SPASE equivalent exists -> remove the
+        legacy UUID from software relation cells.
     A semicolon-separated `target_identifier` value expands one legacy UUID to
     multiple canonical UUIDs for documented one-to-many cases.
     De-duplicates within each cell.
@@ -118,14 +120,14 @@ def main():
         legacy = m["legacy_uuid"].strip()
         targets = target_identifiers(m["target_identifier"])
         action = (m["relation_action"].strip() or "rewrite")
-        assert targets, f"missing canonical target for legacy row: {legacy}"
+        assert action in ("rewrite", "move", "drop"), f"unexpected action: {action!r}"
+        assert targets or action == "drop", f"missing canonical target for legacy row: {legacy}"
         canons = []
         for target in targets:
             assert target in ident_to_id, f"canonical target not in seed: {target}"
             canon = ident_to_id[target]
             assert canon in spase_ids, f"canonical target is not a SPASE row: {target}"
             canons.append(canon)
-        assert action in ("rewrite", "move"), f"unexpected action: {action!r}"
         repoint[legacy] = (canons, action)
 
     # ---- apply to software.csv ----
@@ -143,9 +145,12 @@ def main():
                 if action == "rewrite":
                     ri = expand_replace(ri, legacy, canons)
                     ro = expand_replace(ro, legacy, canons)
-                else:  # move: legacy is an instrument, canonical an observatory
+                elif action == "move":  # legacy is an instrument, canonical an observatory
                     ri = [x for x in ri if x != legacy]
                     ro = [x for x in ro if x != legacy] + canons
+                else:  # drop: no SPASE equivalent exists
+                    ri = [x for x in ri if x != legacy]
+                    ro = [x for x in ro if x != legacy]
         if changed:
             row[ri_i] = ",".join(dedup(ri))
             row[ro_i] = ",".join(dedup(ro))
@@ -187,6 +192,7 @@ def main():
     print(f"apply=yes mapping rows:       {len(apply_yes)}")
     print(f"  rewrite:                    {sum(1 for _, a in repoint.values() if a == 'rewrite')}")
     print(f"  move:                       {sum(1 for _, a in repoint.values() if a == 'move')}")
+    print(f"  drop:                       {sum(1 for _, a in repoint.values() if a == 'drop')}")
     print(f"canonical targets:            {sum(len(canons) for canons, _ in repoint.values())}")
     print(f"software rows touched:        {touched}")
     print(f"legacy (non-SPASE) rows:      {len(legacy_ids)} -> {len(legacy_ids) - len(orphan_ids)}")

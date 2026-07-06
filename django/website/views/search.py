@@ -6,6 +6,8 @@ from django.http import HttpRequest, JsonResponse
 
 from ..models import Software, VerifiedSoftware
 from ..models.people import Person
+from ..models.serializers.software import SoftwareSerializer
+from ..models.serializers.util import SerialView
 
 
 # ---------------------------------------------------------------------------
@@ -104,6 +106,23 @@ def build_field_query(query: str, tokens: list[str], fields: list[str]) -> Q:
     return q
 
 
+def serialize_results(result_ids: list[str], mode: str, request: HttpRequest) -> JsonResponse:
+    if mode == "id":
+        return JsonResponse({"results": result_ids})
+    software_map = {
+        str(s.id): s
+        for s in Software.objects.filter(id__in=result_ids)
+    }
+    jsonld_list = []
+    for uid in result_ids:
+        s = software_map.get(uid)
+        if s:
+            serializer = SoftwareSerializer(s, context={"request": request})
+            serializer._view = SerialView.JSONLD
+            jsonld_list.append(serializer.data)
+    return JsonResponse({"results": jsonld_list})
+
+
 def search_visible_software(request: HttpRequest) -> JsonResponse:
     """
     Search visible software by query terms and return ordered result IDs.
@@ -114,6 +133,9 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
     """
     start_time = time.monotonic()
     raw_query = (request.GET.get("q") or "").strip()
+    mode = (request.GET.get("mode") or "jsonld").lower()
+    if mode not in ("id", "jsonld"):
+        return JsonResponse({"error": f"Invalid mode '{mode}'. Must be 'id' or 'jsonld'."}, status=400)
     if not raw_query:
         return JsonResponse({"results": []})
 
@@ -166,7 +188,7 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
         result_ids = [str(uid) for uid in base_qs.values_list("id", flat=True)]
         total_elapsed = time.monotonic() - start_time
         print(f"[search] field-only total_results={len(result_ids)} elapsed={total_elapsed:.3f}s")
-        return JsonResponse({"results": result_ids})
+        return serialize_results(result_ids, mode, request)
 
     tokens = [token for token in re.split(r"\s+", query) if token]
     print(f"[search] query='{query}' tokens={tokens}")
@@ -263,4 +285,4 @@ def search_visible_software(request: HttpRequest) -> JsonResponse:
 
     total_elapsed = time.monotonic() - start_time
     print(f"[search] total_results={len(result_ids)} elapsed={total_elapsed:.3f}s")
-    return JsonResponse({"results": result_ids})
+    return serialize_results(result_ids, mode, request)

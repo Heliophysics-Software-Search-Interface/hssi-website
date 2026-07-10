@@ -9,11 +9,14 @@ dd23f515-fba1-441d-94d3-84fbb02cc550,Argonne National Laboratory,,,https://ror.o
 4ed5d469-0d88-453b-8228-b3807b0e2626,ASML (United States),,,https://ror.org/00gtpjy03
 ee12924f-e15f-4043-bce1-d3ea96ad3796,"Astrophysics Research Centre, School of Mathematics and Physics, Queen's University Belfast",,,
 aa2b60b1-7329-4f69-a2a0-241fe46bb7b8,Atal Bihari Vajpayee Indian Institute of Information Technology and Management,,,https://ror.org/008b3ap06
+d43cb11b-552e-47ed-826b-c53aec54f31e,Beloit College,,,
 1d4fc2b9-7641-4acc-8f34-cdb5bb6d6090,Birkeland Centre for Space Science,,,
 c642a588-41d5-4fe1-b386-1dae01b31c39,Bond,,,
 80c4c74e-abb4-4730-b6b7-a2805dee334e,Boston University,,,https://ror.org/05qwgg493
 a3303928-86fd-4ddb-82d9-512f31314dab,British Antarctic Survey,,,https://ror.org/01rhff309
+d223dc33-2063-4511-8a6e-9bdd9e58b071,Bryn Mawr College,,,
 d7785659-29b8-45bc-a051-86424d130ec4,Cairo University,,,https://ror.org/03q21mh05
+57e8fc39-063d-4207-a00a-d04a3273f74b,California Institute of Technology,,,
 122e877a-5ed6-4b19-b7e1-94800face9ab,Calvin College,,,https://ror.org/05r0q9p84
 d18ce23b-38dd-4f8d-8669-9fbf78219595,Catholic University of America,,,https://ror.org/047yk3s18
 cf31bdf7-1fa2-4f13-9a2b-a8d5e94384c1,CDPP (Centre de Données de la Physique des Plasmas),,,https://cdpp.irap.omp.eu/
@@ -29,7 +32,9 @@ ae017f21-f6fd-4c09-84b9-7fd53d0a4f5d,CIEMAT Particle Physics Unit,,,
 5d55b4c3-a310-48bf-ab5d-3fbba2c01951,Claude Bernard Lyon 1 University,,,https://ror.org/029brtt94
 9666fcca-a54d-40e8-9a78-9fa319c36f9a,Clemson University,,,https://ror.org/037s24f05
 16c60fac-8235-4ba1-81ee-60bbe306946e,CNRS / Laboratory of Plasma Physics,,,
+0f0a3fa8-19df-4c9e-9259-b5b4b5f06bdb,College of William & Mary,,,
 c320fb9d-f569-4dbb-beff-7548856b69da,Collins Aerospace,,,
+60419fc7-9f25-4627-9657-9dad4825a2db,Columbia University,,,
 ef3262ce-6dcf-4b9d-a655-973d8157c9ec,Columbus Technologies and Services,,,
 b6c303f1-ad91-40bd-aad2-371f07db70ba,Commissariat à l'Énergie Atomique (CEA),,,
 92f2f47f-e094-4444-9d58-f0036766f588,Community Coordinated Modeling Center,,,https://ror.org/01dy3j343
@@ -38,9 +43,9 @@ fb6f89b6-db57-4af1-be22-24e0fab6652f,Cooperative Institute for Research in Envir
 bf476440-fe83-4a21-bc16-faa3c7c2365a,Cornell University,,,https://ror.org/05bnh6r87
 f0cba0ab-d37c-48b0-9eca-959476b762f8,Cosmic Studio,,,
 87cbf117-5cac-4d86-8e05-fe74146dc42c,Cottage Systems,,,https://ror.org/01sqsqt89
-c1dce45f-a792-4fa2-a1ad-ceb726da9303,Daniel K. Inouye Solar Telescope,,,
 ae55eb78-ff59-47ed-ab35-377290079cd7,"Dayananda Sagar College of Engineering, Bangalore",,,
 92565337-858e-4a49-a70e-f1620e822a48,Defense Advanced Research Projects Agency,,,https://ror.org/02caytj08
+f1208fed-2de2-4de4-82a4-cc743236f009,Defense Advanced Research Projects Agency Defense Sciences Office,,,
 ee535dd7-11ea-49b7-a040-4796ffeb28a5,"Department of Astronomy, University of Michigan",,,
 14a3b2b6-8f90-4dc2-8ca2-b32d272d0c7e,"Department of Chemical Engineering, Indian Institute of Technology, Kharagpur",,,
 0eea266f-44b1-4adb-a11f-56507b7416c7,"Department of Computer Science & Technology, Indian Institute of Engineering Science & Technology, Shibpur",,,
@@ -54,6 +59,7 @@ c4feee66-4e3b-4050-bb8b-ee4ac661ac17,DLR Gesellschaft für Raumfahrtanwendungen 
 18005ced-976f-45db-a26a-626cf257f9ae,Dogfox Software LLC,,,
 fdb29050-11b5-4b28-bdc0-da1dfc59aaba,Dublin Institute for Advanced Studies,,,https://ror.org/051sx6d27
 c4f92fbc-831f-4d5b-8ee7-4f7bee13de63,"Dwarkadas Jivanlal Sanghvi College of Engineering, University of Mumbai",,,
+2051bf0b-6d93-4bd5-8d27-18fd87836d42,Embry-Riddle Aeronautical University,,,
 7c32d4a4-0a0a-4683-a44b-02e0c0ed0b35,EOX IT Services (Austria),,,https://ror.org/04yk5j107
 2e0620d8-e3ba-4d62-bfc6-4a9d1008f5c2,ETH Zurich,,,
 8e3350ef-76e3-4a63-93f6-8cecfad3b9b4,European Commission,,,https://ror.org/00k4n6c32
@@ -74,9 +80,9 @@ fa398bca-d28b-40f7-aac6-1bdf20e2ffe8,GFZ German Research Centre for Geosciences,
 dc6c2150-6844-42e9-90a7-0335e23f11f1,GitLab,,,https://gitlab.com
 ec0686b9-e659-484c-859d-2bf3bf1ea4cd,Goddard Space Flight Center,,,https://ror.org/0171mag52
 464b27d6-7ee3-410b-8697-87de0425e7e7,"Graphic Era (Deemed to be University), Dehradun",,,
+d373054a-2a13-40f9-b26f-70aa3779526f,Grinnell College,,,
 e63d6755-8e8e-4959-9c82-f16a5ba0b4f5,Heliophysics Data and Modeling Consortium,,,https://ror.org/04xbq1n92
 4d4dd0ac-e1e3-43e1-ae4f-cdafb2dc4a5d,Heliophysics Science Division,,,https://ror.org/03myraf72
-a0407616-8d8d-4786-836f-fefa0a891fd2,https://orcid.org/0000-0001-5270-7487,,,https://orcid.org/0000-0001-5270-7487
 234b6aa8-162b-4556-9005-a4fc55a5a7b9,https://zenodo.org/records/18494048,,,https://zenodo.org/records/18494048
 42801146-472b-4d81-91f0-b30eab2819cc,IDRIS - CNRS,,,
 5b67bb43-a51c-42c3-b0dd-04a682363ca8,IEAP University Kiel,,,
@@ -96,6 +102,7 @@ a156d3ba-2456-4aa4-9448-c6a404d5781f,"Indian Institute of Technology, Mandi",,,h
 ddf93c16-c5b6-4ae6-8c57-fb3b34742010,"Institut d'Astrophysique Spatiale, Université Paris-Sud",,,https://ror.org/014p8mr66
 bfbd0415-674b-4b3d-a7cf-cf48b7d28576,Institut de Recherche en Astrophysique et Planétologie,,,https://ror.org/05hm2ja81
 b544774f-8179-4cdb-a081-b169d2d4a547,"Institute of Experimental and Applied Physics, University of Kiel",,,
+4aa0718e-ca16-4562-bad8-98073af3d31e,Institute of Plasma Physics and Laser Microfusion,,,
 c1b9fb1a-156c-4256-aec0-0de9d04f3ff9,Institutet för rymdfysik,,,
 72e43df2-f177-4796-9798-5f339f42cf85,"Institut für Physik/IGAM, Karl-Franzens-Universität Graz",,,
 aa58b12c-ac01-4c56-9dbe-68e324e2da13,International Insititute of Information Technology Bhubaneswar,,,https://ror.org/00qryer39
@@ -108,10 +115,13 @@ a699e05b-d01a-40f4-bdf8-90383542a076,Jaypee Institute of Information Technology,
 7f1f1ea8-fb99-400f-8867-1e87baf7ea13,Jet Propulsion Laboratory,,,https://ror.org/027k65916
 c84428f2-df59-4ecd-b725-25cf6ab57f72,Johns Hopkins Applied Physics Laboratory,,,https://ror.org/029pp9z10
 75a35465-262f-44eb-a95b-8013565930d7,Johns Hopkins University,,,https://ror.org/00za53h95
+ce5f429d-1073-4db9-b2fe-a9ffd13c8413,Johns Hopkins University Applied Physics Laboratory,,,
 aee7d2cf-e54e-4773-9aff-ec23ae0d6752,Johnson Space Flight Center,,,https://ror.org/04xx4z452
 f93b4358-47aa-4a69-b067-8b9118784639,"JSS Academy of Technical Education, Bengaluru",,,
+df4ff318-07e7-4d73-8aa5-0e6c31668b2d,Korea Astronomy and Space Science Institute,,,
 127ba808-3072-4d0f-8551-6ee0f84248fd,KTH Royal Institute of Technology,,,https://ror.org/026vcq606
 abee784b-f274-46d4-984c-e1248431a31a,Kyung Hee University,,,https://ror.org/01zqcg218
+73999e91-5511-4ad1-8785-2d6a7f227aac,Laboratoire de Physique des Plasmas,,,
 d25e3c9b-ee3a-42dd-bac3-44b19f0f6121,"Laboratoire de Physique des Plasmas, Ecole Polytechnique",,,
 b242cb07-2bcb-4afe-ba5e-e89ae812899d,Laboratory for Atmospheric and Space Physics,,,https://ror.org/01fcjzv38
 9e5aa6d0-8571-4948-942a-9abd57d3a45c,Laboratory of Plasma Physics (LPP/CNRS),,,https://ror.org/05c95bg36
@@ -121,15 +131,22 @@ f39019aa-9a3f-4aca-83c1-5d99e4bb36d6,Lockheed Martin Solar and Astrophysics Labo
 d402d7df-3761-492c-ab7f-90226678a25c,Los Alamos National Laboratory,,,https://ror.org/01e41cf67
 788eabe0-ace5-4894-a00f-4a6f85a6846a,"Madhav Institute of Technology & Science, Gwalior",,,https://ror.org/01pj5v964
 b5c60d33-da63-42e9-8f8e-8a59ff177a8a,Manav Rachna University,,,https://ror.org/0117a2k50
+15b1440b-dfd9-4a0e-ade2-57ae0581842e,Marietta College,,,
 fe6fa0d0-5481-4f2d-af9c-3efaab078a5e,Massachusetts Institute of Technology,,,https://ror.org/042nb2s44
 4084b0d7-4f88-49b7-8551-903f09e8cdd3,Maulana Azad National Institute of Technology Bhopal,,,https://ror.org/026vtd268
 f2b7cd55-88f8-4d18-8953-6737e554e0fb,"Meta Platforms Inc., UK",,,
+15d1369f-9a9d-415c-8981-42ba1e11668f,Michigan State University,,,
 db2743cc-cea3-4aa0-b9db-81ca915b00a0,Michigan Tech Research Institute,,,
 5b655be5-a630-474b-8f4e-e807a7a14e97,Milrem Robotics,,,
 1527650d-26b2-4f4c-ae09-f0b6765ed150,Minnesota State University Moorhead,,,https://ror.org/03msdae35
 41afdfb5-a0cc-4f65-ba47-a3ca1e4b3989,MIT Haystack Observatory,,,
 734ce4bc-b28b-4325-8410-16face99cf08,"Mullard Space Science Laboratory, University College London",,,
+19a2e81d-6023-4ab1-b15f-d2104f51bbaa,Nagoya University,,,
 c54c58a8-d0b7-417e-afa1-437110e3c9ea,Nanyang Technological University,,,https://ror.org/02e7b5302
+38f33214-2936-4555-8f0e-650e5376c756,NASA Ames Research Center,,,
+85a8bd4b-2fbe-4977-867a-fd7fe5747f40,NASA Ionospheric Connections Explorer (ICON),,,
+d093f002-e155-46ce-bcdb-cff9d09357d4,NASA Scintillation Observations and Response of the Ionosphere to Electrodynamics (SORTIE),,,
+ed8a7a1a-63b3-408a-97f4-caf7b9ca42b9,NASA Scintillation Prediction Observations Research Task (SPORT),,,
 a4e07475-572f-48db-b2e7-5d59ea194465,National Aeronautics and Space Administration,,,https://ror.org/027ka1x80
 52650b8d-56ca-4b30-b808-b53ad36b0d81,National Center for Atmospheric Research,,,https://ror.org/05cvfcr44
 09b88fff-03a4-4fa2-ba3a-84f9c1d46275,"National Institute of Science Education and Research, Bhubaneswar",,,https://ror.org/02r2k1c68
@@ -143,21 +160,29 @@ bbea6ab9-2135-414d-af37-d81216e13d4d,Naval Research Laboratory,,,https://ror.org
 ade5c922-07e2-4b18-8261-bff06c32e709,NCAR High Altitude Observatory,,,https://ror.org/03773p874
 2081365c-44f8-4f7f-9170-0ed5519cfac7,Netaji Subhas University of Technology,,,https://ror.org/01fczmh85
 bd9b52ac-d477-4f34-bb3d-1e3129dbec17,New Jersey Institute of Technology,,,https://ror.org/05e74xb87
+7ac0a685-6b1f-4469-85d5-3398cfab1fa6,NOAA Constellation Observing System for Meteorology Ionosphere and Climate (COSMIC-2),,,
 7c87654b-e8ee-4373-8fd5-83971f805da5,Nord Software,,,
+a0cb956a-ffe2-4f21-8f62-82c6d2fc5aad,North Carolina State University,,,
 8bfb79d8-3fbb-465b-b346-5408e5bff3f2,Northumbria University,,,https://ror.org/049e6bc10
+5c95c463-a7e1-4bf9-a4b2-ae646aa52e20,NumFOCUS,,,https://ror.org/004eyxv41
 0a971d7e-9ccd-42d7-876a-02284f41b663,Nvidia,,,
 24663c30-0fda-443d-856f-6f755fb676ef,NWRA,,,
 a472058b-8ba7-48e3-aa56-1648f765ff24,ODC Space,,,
 212df364-d85e-45cb-aff4-4eba3d24ae70,Odisha University of Technology and Research,,,https://ror.org/031jmyr19
+1e7a4ba5-a5be-47ef-9415-d567e906b3ee,Office of Naval Research,,,
+c8d7f443-08ac-418b-b6ff-8c64c06a7d0f,Olist,,,
+99a75459-9b73-48e5-a77f-af8ba60b4a87,OpenRefactory Inc.,,,
 94deb791-bbbc-4a96-978d-e354346ab98e,Oregon State University,,,https://ror.org/00ysfqy60
 d5ef6e22-85a7-4b21-8e29-d1096357dca9,"Oxford Research Software Engineering Team, University of Oxford",,,
 94a648a6-bd72-46fe-bffe-389ea3297df2,Paradox Cat GmbH,,,
+d98abc7d-03cf-4f48-b538-0f13dfa04b11,Phoenix Security Labs,,,
 cbffb9db-933c-4928-8b43-93b9a64ff8f4,PickNik Robotics,,,
 83afd744-0fa5-402f-8fa6-ad45dec9f2f6,Planetary Science Institute,,,
 1a6a5187-63e8-4838-919c-283cdd39e805,Planetary Transportation Systems GmbH,,,
 b6a5b82f-2daf-4814-ab1c-6cd1483a3f65,Predictive Science,,,
 6c76d454-a7b1-4e84-863b-d0ff716f8858,Princeton University,,,https://ror.org/00hx57361
 b48fbcd1-b715-4ef5-a5fa-8fd13411c0e9,Project Calliope,,,
+2b4ad024-92c2-4016-b24e-cc6d588b4d6e,Purple Mountain Observatory,,,https://ror.org/02eb4t121
 a148a363-b43d-423e-ad44-623a180ec6bb,Rice University,,,https://ror.org/008zs3103
 5af21e63-f600-4fd4-a3f6-da021ce4df20,"Rosseland Centre for Solar Physics, University of Oslo",,,
 d699f0e4-a50c-483b-ac1d-73e725531832,Royal Observatory of Belgium,,,https://ror.org/00hjks330
@@ -193,9 +218,15 @@ b236b588-6c29-4a4c-ba1b-3ba42dada2b8,Stoneris,,,
 93c9be72-c330-40f5-81cc-8e2600a964c2,Swedish Defence Research Agency,,,https://ror.org/0470cgs30
 fd54e7d5-09c3-4bf4-8f01-a7dac8022ad2,Swedish Institute of Space Physics,,,https://ror.org/043kppn11
 14b7348c-636f-4142-b5ed-eea92095ad44,Swedish National Space Board,,,https://ror.org/04t512h04
+65c394f2-d3b6-4af1-9de5-5d0b6d13b1df,Texas A&M University,,,
+9f215f26-4c18-4f81-af36-d0f8d5bbc248,The Catholic University of America,,,
+78bd9671-7e58-40ef-8e2b-b793be67655e,The University of Texas at Austin,,,
+f65c7e09-eb08-4339-bd93-89bf444dbe53,The University of Texas at Dallas,,,
+28582129-a65c-4e6b-b786-3cd757a142aa,UiT The Arctic University of Norway,,,
 34f273ac-b78b-4881-88ba-7b4afe4d2144,United States Air Force Office of Scientific Research,,,https://ror.org/011e9bt93
 6ade9b08-e66f-4c97-a1e7-42274ec78bba,United States Department of Energy,,,https://ror.org/01bj3aw27
 28885b21-d882-4e7e-818a-b35f4f6563a9,United States Geological Survey,,,https://ror.org/035a68863
+6a5857d4-c12e-436b-b304-770deeffb890,Universities Space Research Association,,,https://ror.org/043pgqy52
 fda070ab-2cf9-496e-be32-cf6ac1928735,University College London,,,https://ror.org/02jx3x895
 e618005a-6ad1-4c05-b032-59a1d0222fc9,"University College London, Mullard Space Science Laboratory (UCL/MSSL)",,,
 19ecb440-d144-4669-bc8d-8a3c6ebf4fad,University of Alabama,,,https://ror.org/03xrrjk67
@@ -229,55 +260,22 @@ e40f286a-3d79-4793-9a08-6cc52237b5f3,University of Rochester,,,https://ror.org/0
 fa54b15f-9620-4e57-b8d8-9c8cac5d69a5,University of Saskatchewan,,,https://ror.org/010x8gc63
 8ed44163-4384-4622-af9b-458efbdc52ed,University of Scranton,,,https://ror.org/05xwb6v37
 7e963725-347b-4ce7-8738-92e557f8a8a6,University of Sheffield,,,https://ror.org/05krs5044
+56da11e9-6095-457c-be58-8cb71eeda6de,University of Stuttgart,,,
 b4e53c0a-b3ad-4b19-b5ca-0dde57afc6a2,University of Texas at Dallas,,,https://ror.org/049emcs32
 0d817634-9fe6-49c2-92d6-da7861dada96,University of Toronto,,,https://ror.org/03dbr7087
 acb7415f-70c1-466c-a1c0-e4deb76c479f,University of Turku,,,https://ror.org/05vghhr25
 916bb4a6-0502-4490-85da-6789b4ac2588,University of Warsaw,,,https://ror.org/039bjqg32
 e76dba73-0203-4932-8859-d41c6c3b426c,University of Washington eScience Institute,,,
+451a81f0-e3b1-4e9a-b969-fa34f527e39a,University of Wisconsin–Madison,,,
+04d3e6c4-2d95-46a1-ab7b-3e3e63279ee4,University of York,,,
 c0f87ae4-ceff-4fa6-ab94-6cc740e81cda,Uppsala University,,,https://ror.org/048a87296
 47774bae-cdfe-416f-92d2-5577e4157b83,"Uptycs India Pvt. Ltd., India",,,
 a48c479b-9ffb-424a-95d0-613e4e81343a,USGS Astrogeology Science Centerlogy,,,https://ror.org/02623eb90
+630231fc-9884-48b0-a84e-e28d2c1e1ea4,U.S. Naval Research Laboratory,,,
+d53087cd-5fa7-423f-bf2d-d711741840fd,Vanderbilt University,,,
 83147b35-82e8-402a-a3e4-3b145b9d6c66,Ventspils University of Applied Sciences,,,https://ror.org/03sc6wx59
 f32614d5-4fce-4412-8564-a3a2febf5ece,Virginia Tech,,,https://ror.org/02smfhw86
 dace2874-853c-4489-81e5-e39957d81e45,Visionscarto.net,,,
 a89f4f6b-97e4-4625-927e-08dd633d52d1,West Virginia University,,,https://ror.org/011vxgd24
 1624d9fe-e9ac-4009-a115-22b739bc80c2,"Workato Gmbh, Germany",,,
 ee990b81-8115-4ab4-8a7f-68a4d0bb345d,Zenodo,,,https://zenodo.org
-d43cb11b-552e-47ed-826b-c53aec54f31e,Beloit College,,,
-d223dc33-2063-4511-8a6e-9bdd9e58b071,Bryn Mawr College,,,
-57e8fc39-063d-4207-a00a-d04a3273f74b,California Institute of Technology,,,
-0f0a3fa8-19df-4c9e-9259-b5b4b5f06bdb,College of William & Mary,,,
-60419fc7-9f25-4627-9657-9dad4825a2db,Columbia University,,,
-2051bf0b-6d93-4bd5-8d27-18fd87836d42,Embry-Riddle Aeronautical University,,,
-d373054a-2a13-40f9-b26f-70aa3779526f,Grinnell College,,,
-4aa0718e-ca16-4562-bad8-98073af3d31e,Institute of Plasma Physics and Laser Microfusion,,,
-ce5f429d-1073-4db9-b2fe-a9ffd13c8413,Johns Hopkins University Applied Physics Laboratory,,,
-df4ff318-07e7-4d73-8aa5-0e6c31668b2d,Korea Astronomy and Space Science Institute,,,
-73999e91-5511-4ad1-8785-2d6a7f227aac,Laboratoire de Physique des Plasmas,,,
-15b1440b-dfd9-4a0e-ade2-57ae0581842e,Marietta College,,,
-15d1369f-9a9d-415c-8981-42ba1e11668f,Michigan State University,,,
-19a2e81d-6023-4ab1-b15f-d2104f51bbaa,Nagoya University,,,
-38f33214-2936-4555-8f0e-650e5376c756,NASA Ames Research Center,,,
-a0cb956a-ffe2-4f21-8f62-82c6d2fc5aad,North Carolina State University,,,
-5c95c463-a7e1-4bf9-a4b2-ae646aa52e20,NumFOCUS,,,https://ror.org/004eyxv41
-99a75459-9b73-48e5-a77f-af8ba60b4a87,OpenRefactory Inc.,,,
-d98abc7d-03cf-4f48-b538-0f13dfa04b11,Phoenix Security Labs,,,
-65c394f2-d3b6-4af1-9de5-5d0b6d13b1df,Texas A&M University,,,
-78bd9671-7e58-40ef-8e2b-b793be67655e,The University of Texas at Austin,,,
-28582129-a65c-4e6b-b786-3cd757a142aa,UiT The Arctic University of Norway,,,
-56da11e9-6095-457c-be58-8cb71eeda6de,University of Stuttgart,,,
-451a81f0-e3b1-4e9a-b969-fa34f527e39a,University of Wisconsin–Madison,,,
-04d3e6c4-2d95-46a1-ab7b-3e3e63279ee4,University of York,,,
-630231fc-9884-48b0-a84e-e28d2c1e1ea4,U.S. Naval Research Laboratory,,,
-d53087cd-5fa7-423f-bf2d-d711741840fd,Vanderbilt University,,,
-2b4ad024-92c2-4016-b24e-cc6d588b4d6e,Purple Mountain Observatory,,,https://ror.org/02eb4t121
-f1208fed-2de2-4de4-82a4-cc743236f009,Defense Advanced Research Projects Agency Defense Sciences Office,,,
-85a8bd4b-2fbe-4977-867a-fd7fe5747f40,NASA Ionospheric Connections Explorer (ICON),,,
-d093f002-e155-46ce-bcdb-cff9d09357d4,NASA Scintillation Observations and Response of the Ionosphere to Electrodynamics (SORTIE),,,
-ed8a7a1a-63b3-408a-97f4-caf7b9ca42b9,NASA Scintillation Prediction Observations Research Task (SPORT),,,
-7ac0a685-6b1f-4469-85d5-3398cfab1fa6,NOAA Constellation Observing System for Meteorology Ionosphere and Climate (COSMIC-2),,,
-1e7a4ba5-a5be-47ef-9415-d567e906b3ee,Office of Naval Research,,,
-c8d7f443-08ac-418b-b6ff-8c64c06a7d0f,Olist,,,
-9f215f26-4c18-4f81-af36-d0f8d5bbc248,The Catholic University of America,,,
-f65c7e09-eb08-4339-bd93-89bf444dbe53,The University of Texas at Dallas,,,
-6a5857d4-c12e-436b-b304-770deeffb890,Universities Space Research Association,,,https://ror.org/043pgqy52

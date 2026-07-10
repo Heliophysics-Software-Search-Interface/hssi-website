@@ -1,9 +1,4 @@
 id,number,release_date,description,version_pid
-e472c8ac-3201-47b1-9b68-548470e2e1cd,,,,
-ec7ffd3e-e01b-49ff-a216-f784b18bc3b5,,,,
-b0ca53aa-353d-43c1-b0e6-7f1618157f04,,,,
-4d5a6882-a0ee-4007-8161-9589b42755bb,,,,
-1844964a-4416-4a1f-b75a-de6e147a94e4,,,,
 2cf30c2c-f0c2-438b-b06c-161010b220ed,,,,
 d6470d5f-b06b-4738-81af-ee955543b3fe,,,,
 a07984cc-8642-4529-8fb0-2cf86bba6097,,,,
@@ -13,6 +8,11 @@ bc54e5f8-d4ad-41dc-8b65-f43d0d3a2594,,,,
 06dd5cad-7b47-44c3-9713-968b4506ac8c,,,,
 098937ae-7fa8-4ce2-b1df-25c8177a79d3,,,,
 7b4c65e3-95e0-4657-b24c-ef07a172efb1,,,,
+1844964a-4416-4a1f-b75a-de6e147a94e4,,,,
+e472c8ac-3201-47b1-9b68-548470e2e1cd,,,,
+4d5a6882-a0ee-4007-8161-9589b42755bb,,,,
+b0ca53aa-353d-43c1-b0e6-7f1618157f04,,,,
+ec7ffd3e-e01b-49ff-a216-f784b18bc3b5,,,,
 805322d4-c206-4fc9-95d9-565ef3dce27c,0.0.19,2025-08-28,"What's Changed
 
 Don't do work we won't use by @svank in https://github.com/punch-mission/punchbowl/pull/562
@@ -53,9 +53,9 @@ Consolidate changelog by @jmbhughes in https://github.com/punch-mission/punchbow
 
 
 Full Changelog: https://github.com/punch-mission/punchbowl/compare/0.0.18...0.0.19",https://doi.org/10.5281/zenodo.17873768
-65693f8b-2110-4731-8d40-6ec3f66461e7,0.0.4,2020-06-24,,
 4065a0c8-f748-4a1c-8b6e-d8f4456ad08a,0.0.4,2020-06-24,,
 5a09f1b8-80de-49b3-a3b6-8b2ba2c1b400,0.0.4,2020-06-24,,
+65693f8b-2110-4731-8d40-6ec3f66461e7,0.0.4,2020-06-24,,
 cbdc9192-0700-4b8c-9d81-a546c7da7ef6,0.2.0,2025-03-28,,
 339bbaba-05c4-4250-b0d5-274c4b82e19d,0.3.33,2025-04-08,,
 3749f9c1-01cc-4215-bdaa-ce875dc2612a,0.3.33,2025-04-08,,
@@ -255,6 +255,7 @@ Warnings issued by SpacePy are now associated with the line of the calling code,
 fe96bba1-7e66-459c-b309-fcf4ec392d95,1.0.0,2024-06-25,,https://doi.org/10.5281/zenodo.12532077
 c3f869a7-acb1-4acb-9bcd-31629f3354d3,1.0.0,,Version declared in setup.cfg package metadata,
 1f2d02af-2123-475d-bdbb-a513a31d7c65,1.0.2,2020-04-28,Added `upload_zenodo.py --use-sandbox` flag to avoid cluttering Zenodo with test uploads (thanks to @kasbah). Moved package to src/ layout.,https://doi.org/10.5281/zenodo.3772154
+4c9fe152-70c7-473c-a7e5-d740f2fb43bb,1.1.0,2025-07-17,,https://doi.org/10.5281/zenodo.16018479
 fe3225e5-6e9f-47b8-b404-159fb13bc6a7,1.1.0,2025-07-17,,https://doi.org/10.5281/zenodo.16018479
 342a31b4-e91f-4c9a-b257-e6faa4b2c1fd,1.1.0,2020-05-04,"Rename, refactor",
 21569a8a-5f22-41f6-9ab0-a194112585be,1.1.0,2020-05-04,"rename, refactor",
@@ -315,7 +316,6 @@ Prepare v1.1.0 by @jmbhughes in https://github.com/punch-mission/regularizepsf/p
 
 
 Full Changelog: https://github.com/punch-mission/regularizepsf/compare/1.0.2...1.1.0",https://doi.org/10.5281/zenodo.16018479
-4c9fe152-70c7-473c-a7e5-d740f2fb43bb,1.1.0,2025-07-17,,https://doi.org/10.5281/zenodo.16018479
 33e56e13-92b3-4beb-94df-962409ff3b01,1.1.1,2021-02-11,"cleanup, CMake >= 3.10, better feedback, Numpy 1.20 types. Changes include: cmake >= 3.10, pep517 compliance, improved documentation, cmake template updates",
 fa053159-ef35-4f07-94af-5a516898b5e4,1.1.1,2021-02-11,,
 5cab45b3-d5a4-41fe-8b60-83d9fa4ad25c,1.17.0,2026-02-05,"Adds experimental support for level 2 DKIST data.
@@ -325,8 +325,11 @@ Adds a dev script to automate incrementing a schema version number.
 Remove support for globussdk < 4.
 Deprecate attrs.PolarimetricAccuracy.",https://zenodo.org/records/18494048
 3a3f50b8-c704-4a96-8e15-891fed3a9418,1.3.6,2025-08-05,,
+67541655-55bb-4e8b-afa9-d1df648259cf,2026.2.0,2026-02-20,Latest stable release as recorded in CITATION.cff. See https://docs.plasmapy.org/en/stable/whatsnew/index.html for changelog.,https://doi.org/10.5281/zenodo.18706665
 6d75acbb-2e7e-4474-a57d-074b531e4205,2.0.2a2,2025-09-27,,
+5027af12-c9b2-4091-8dd2-392995c0cc6a,2.1.2,2026-06-08,"PySPEDAS 2.1.2 updates the geopack and hapiclient dependencies, modernizes the optional MTH5 dependency stack, improves PSP and STEREO data loading, and includes plotting and data-service fixes from the 2.1.1 and 2.1.2 releases.",https://doi.org/10.5281/zenodo.20567447
 96094ddf-0ef2-40f3-be26-a087a361eda4,2.2.0,,,
+1769fb1e-5d11-488d-8a5d-92fce2980b2a,25.12.1,2025-12-01,,
 7ed6fcf6-6082-4bb3-9aa8-5f84d1d2cc71,2.6.0,2020-07-30,"This major release incorporates AACGM-v2.6 coefficients (2015-2020) derived using the IGRF13 model. Other changes include removing a deprecated routine, providing version targets for other deprecated routines, and consolidating similar unit and integration tests.",https://doi.org/10.5281/zenodo.3598705
 e254f32e-e6ba-4cb7-b8c0-1f439326d875,3.3.7,2026-03-12,,
 ad00f5f5-a94b-4328-b0ef-a7da88ed37cb,6.0.0,2025-09-04,"The Space Packet Parser Python library is a generalized, configurable packet decoding library for CCSDS telemetry packets based on the XTCE standard for packet structure definitions. It supports complex and polymorphic packet structures, using the XTCE UML model to represent dynamic inheritance structures and conditionals based on previously parsed data fields. The core functionality of the library is the configuration of an XtcePacketDefinition object from a static XTCE XML document. The configured definition object can then iterate over binary data, parsing and yielding parsed Packet objects containing the decoded packet field values in a generator pattern. The binary data may originate from an in-memory binary object, a buffered file reader opened in binary mode, or a python socket object; in every case, a small buffer is used to read chunks of data to reduce memory footprint. The space_packet_parser library supports robust error handling, is capable of handling malformed packet structures, and can dynamically parse muxed APID packet streams.",https://doi.org/10.5281/zenodo.17055485
@@ -354,13 +357,13 @@ e89f1bb4-4011-4351-9cac-ebaa2f7db5d3,MSWCX,2025-08-01,Code used to produce the r
 b75d9ba8-2a95-4209-b833-7580dc988d68,release-0.1.0,2022-02-11,"0.1.0 (2022-02-10) Please see the full release notes at https://spacepy.github.io/dbprocessing/release_notes.html This is the first public packaged release of dbprocessing. For the convenience of those working directly from git checkouts, these release notes summarize changes made since the creation of the public repository on 2020-07-15. New features Support for processes that take no input was added, as part of many enhancements to <code>DBRunner.py</code>. New script <code>linkUningested.py</code> to find files which match product format but are not in database, and symlink them to the incoming directory so they can be ingested. Python 3 support was added. Added options <code>--count</code>, <code>--exist</code>, and <code>--quiet</code> to <code>printProcessQueue.py</code> to allow flow control in shell scripts based on the process queue state. Added options <code>--product</code> to filter output and <code>--sort</code> to <code>printProcessQueue.py</code> to sort output. Initial PostgreSQL support was added. Deprecations and removals None Dependency requirements SQLAlchemy and dateutil are required. No minimum version has been established, but dbprocessing is known to work with SQLAlchemy 1.1 and dateutil 2.6. Major bugfixes Fixed <code>ProcessQueue.buildChildren</code> on older databases without <code>yesterday</code> and <code>tomorrow</code> columns in the <code>Productprocesslink</code> table. Fixed <code>runMe</code> to always maintain the <code>output_interface</code> version specified by the code. Updates to a code's interface version will increment the quality version of its output (not the interface); updates to a file's interface version will increment the quality version of child files (rather than assuming children were up-to-date and failing to reprocess them). Fixed <code>buildChildren</code> to only look for files which are recorded in the database as existing on disk. Most notably, this means <code>ProcessQueue.py</code> will not attempt to use nonexistent files as inputs to processing.",https://doi.org/10.5281/zenodo.6047134
 a7178ef1-9978-49b3-9c94-92ce9af71656,release-0.1.0,2022-02-11,"0.1.0 (2022-02-10) Please see the full release notes at https://spacepy.github.io/dbprocessing/release_notes.html This is the first public packaged release of dbprocessing. For the convenience of those working directly from git checkouts, these release notes summarize changes made since the creation of the public repository on 2020-07-15. New features Support for processes that take no input was added, as part of many enhancements to <code>DBRunner.py</code>. New script <code>linkUningested.py</code> to find files which match product format but are not in database, and symlink them to the incoming directory so they can be ingested. Python 3 support was added. Added options <code>--count</code>, <code>--exist</code>, and <code>--quiet</code> to <code>printProcessQueue.py</code> to allow flow control in shell scripts based on the process queue state. Added options <code>--product</code> to filter output and <code>--sort</code> to <code>printProcessQueue.py</code> to sort output. Initial PostgreSQL support was added. Deprecations and removals None Dependency requirements SQLAlchemy and dateutil are required. No minimum version has been established, but dbprocessing is known to work with SQLAlchemy 1.1 and dateutil 2.6. Major bugfixes Fixed <code>ProcessQueue.buildChildren</code> on older databases without <code>yesterday</code> and <code>tomorrow</code> columns in the <code>Productprocesslink</code> table. Fixed <code>runMe</code> to always maintain the <code>output_interface</code> version specified by the code. Updates to a code's interface version will increment the quality version of its output (not the interface); updates to a file's interface version will increment the quality version of child files (rather than assuming children were up-to-date and failing to reprocess them). Fixed <code>buildChildren</code> to only look for files which are recorded in the database as existing on disk. Most notably, this means <code>ProcessQueue.py</code> will not attempt to use nonexistent files as inputs to processing.",https://doi.org/10.5281/zenodo.6047134
 e591ca85-b274-47b8-8bc3-a5a043595847,v0.0.1,2024-08-07,,https://doi.org/10.5281/zenodo.13252274
-4d19151d-d0dc-4b3d-8131-0aff0d0c682b,v0.0.4,2022-09-08,,
-8fd16c1d-2f7d-46fe-8673-5bac38637406,v0.0.4,2020-09-23,,
-28aaa3c9-54ec-4add-aca7-f3b65ea4b972,v0.0.4,2020-06-24,,
 7a2b8e9b-3c11-4793-9016-845e49392faa,v0.0.4,2020-06-24,,
 f16869b5-9a86-4a6a-a7e6-291599c393d3,v0.0.4,2020-09-23,,
-b1c2d5cd-bc45-4187-a396-449b9cd5902e,v0.1,2023-04-25,This version was used to create figures for the ISR paper.,https://doi.org/10.5281/zenodo.154533
+28aaa3c9-54ec-4add-aca7-f3b65ea4b972,v0.0.4,2020-06-24,,
+8fd16c1d-2f7d-46fe-8673-5bac38637406,v0.0.4,2020-09-23,,
+4d19151d-d0dc-4b3d-8131-0aff0d0c682b,v0.0.4,2022-09-08,,
 4ad06caa-6bb5-488e-b7d4-832caedfae0b,v0.1,2023-04-25,This version was used to create figures for the ISR paper.,https://doi.org/10.5281/zenodo.154533
+b1c2d5cd-bc45-4187-a396-449b9cd5902e,v0.1,2023-04-25,This version was used to create figures for the ISR paper.,https://doi.org/10.5281/zenodo.154533
 9fbc8f2c-3361-49ae-8e4e-520132d8161d,v.0.1.0,2025-11-14,"Helio-Lite v0.1.0
 
 Abstract
@@ -555,6 +558,7 @@ Tag: v0.1.0
 
 License: Apache-2.0",https://doi.org/10.5281/zenodo.17069414
 fbf8f21e-ec8b-494f-925a-d7f1f5421975,v0.1.0,2020-08-01,Predstorm now works in a basic capacity in real-time.,https://doi.org/10.5281/zenodo.3750759
+284c471d-f3fd-4716-b937-e3e82b33f1e3,v0.10.0,2025-09-22,,https://doi.org/10.5281/zenodo.17176824
 73969edf-16c6-4fce-8199-cec7734f7d55,v0.10.0,2025-09-22,"Core Changes:
 - Use consistent DateTime format across Speasy/SciQLop
 - Update Python AppImage version to 3.12.11 in build script
@@ -575,7 +579,28 @@ TSCat GUI:
 Speasy Integration:
 - Improved float conversion in fill values cleanup
 - Better data handling capabilities with latest Speasy version",https://doi.org/10.5281/zenodo.17176824
-284c471d-f3fd-4716-b937-e3e82b33f1e3,v0.10.0,2025-09-22,,https://doi.org/10.5281/zenodo.17176824
+77e06914-a337-44d6-838e-d183099c28d3,v0.10.2,2025-09-13,"What's Changed
+
+
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/352
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/353
+
+[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/354
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/355
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/356
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/357
+
+Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/358
+
+Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pull/360
+
+
+Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
 72495f33-327b-4010-92b1-ca7e9ebbce24,v0.10.2,2025-09-13,"What's Changed
 
 
@@ -928,28 +953,6 @@ Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pul
 
 
 Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
-77e06914-a337-44d6-838e-d183099c28d3,v0.10.2,2025-09-13,"What's Changed
-
-
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/352
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/353
-
-[pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/LM-SAL/aiapy/pull/354
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/355
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/356
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/357
-
-Updates from the package template by @nabobalis in https://github.com/LM-SAL/aiapy/pull/358
-
-Add sunpy timerange support by @nabobalis in https://github.com/LM-SAL/aiapy/pull/360
-
-
-Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https://doi.org/10.5281/zenodo.17114673
 80131c50-da6a-438e-8d1d-fec4098e632d,v0.10.2,2025-09-13,"What's Changed
 
 
@@ -976,14 +979,14 @@ Full Changelog: https://github.com/LM-SAL/aiapy/compare/v0.10.1...v0.10.2",https
 199524cd-c795-4f3f-888b-96444aa28431,v0.11.0,2025-06-13,,https://doi.org/10.5281/zenodo.15656924
 56077274-c839-41fc-a092-44fd672b82c0,v0.11.0,2025-06-13,,https://doi.org/10.5281/zenodo.15656924
 0923946b-dc89-423b-939f-f8210bafb17d,v0.13.0,2025-04-27,,https://doi.org/10.5281/zenodo.15292625
-22919330-1ca7-4ce5-81af-7e3b0e0327c0,v0.13.0,2025-04-27,See https://viresclient.readthedocs.io/en/latest/release_notes.html,https://doi.org/10.5281/zenodo.15292625
 b1ca3a10-d80f-4a8c-b6e5-9f659d1b8e12,v0.13.0,2025-04-27,See https://viresclient.readthedocs.io/en/latest/release_notes.html,https://doi.org/10.5281/zenodo.15292625
+22919330-1ca7-4ce5-81af-7e3b0e0327c0,v0.13.0,2025-04-27,See https://viresclient.readthedocs.io/en/latest/release_notes.html,https://doi.org/10.5281/zenodo.15292625
 26bcfcdc-8b98-4eb4-8ef2-fc8588d98430,v0.2.0,2023-03-22,,
 14f38f56-7803-4b90-8729-28c1d4173f89,v0.2.1,2021-10-06,Python client for HAPI,https://doi.org/10.5281/zenodo.5553156
-f90e0d1d-310a-46af-a0ec-a2ee134848c5,v0.2.2,2025-06-07,,https://doi.org/10.5281/zenodo.15615510
-cdac3bf6-0e41-4008-948e-ec7e8712cd95,v0.2.2,2025-06-07,,https://doi.org/10.5281/zenodo.15615510
-3a94ccfb-5b52-4164-b621-86f7a19abc84,v0.2.2,2025-06-07,,https://doi.org/10.5281/zenodo.15615510
 8d740938-657e-4ec8-b2f1-96bafe0b337b,v0.2.2,2025-06-07,,https://doi.org/10.5281/zenodo.15615510
+3a94ccfb-5b52-4164-b621-86f7a19abc84,v0.2.2,2025-06-07,,https://doi.org/10.5281/zenodo.15615510
+cdac3bf6-0e41-4008-948e-ec7e8712cd95,v0.2.2,2025-06-07,,https://doi.org/10.5281/zenodo.15615510
+f90e0d1d-310a-46af-a0ec-a2ee134848c5,v0.2.2,2025-06-07,,https://doi.org/10.5281/zenodo.15615510
 69814054-5821-4629-a71f-97d63a9e76f5,v0.2.3,2024-07-06,,https://doi.org/10.5281/zenodo.12668802
 2f08e9e6-59d9-4ab1-96bd-90085bab2e72,v0.26.5,2025-05-30,"[0.26.4] - 2025-05-30
 
@@ -999,12 +1002,12 @@ Changed
 
 
 Standardized download exception handling.",https://doi.org/10.5281/zenodo.15554430
+9c5498dd-805c-4d87-bd95-2aff00033d85,v0.2.9,2026-06-08,,https://doi.org/10.5281/zenodo.20598746
 a1ae344f-0bcc-40a2-afeb-8b1804a8a17c,v0.3.0,2022-11-03,,https://doi.org/10.5281/zenodo.7277517
+e1dd4601-0405-4baf-ba1f-7fc8bcea4038,v0.3.1,2011-03-08,,
 705bbc6b-7f6d-44ae-b461-b896fcc35ff8,v0.3.1,2024-07-31,,
 bb62a245-2e27-41f0-8467-0031a3eb1272,v0.3.1,2024-07-31,,
-e1dd4601-0405-4baf-ba1f-7fc8bcea4038,v0.3.1,2011-03-08,,
 8df2d4e9-17fb-47f4-ae70-83fa204a2ff4,v0.3.2,2022-05-12,,https://doi.org/10.5281/zenodo.6544438
-a3fd0cc4-19f4-4d58-ad30-18a20314ffd0,v0.4.0,2021-11-18,"PyThea is an open-source software package that can be used to reconstruct the 3D structure of Coronal Mass Ejections (CMEs) and shock waves and determine their kinematics using remote-sensing observations. The tool implements the Graduated Cylindrical Shell (GCS) model that can be used to reconstruct CMEs and two geometrical models, namely a spheroid and ellipsoid model to reconstruct shock waves. It also implements remote-sensing observations from multiple viewpoints such as the Solar and Heliospheric Observatory (SoHO) and Solar Terrestrial Relations Observatory (STEREO).",https://doi.org/10.5281/zenodo.5683557
 5728f218-588b-40bc-9412-62a261fef2b1,v0.4.0,2025-08-28,"What's Changed
 
 
@@ -1035,12 +1038,13 @@ Fix issues with some obs by @nabobalis in https://github.com/LM-SAL/irispy/pull/
 
 
 Full Changelog: https://github.com/LM-SAL/irispy/compare/v0.3.1...v0.4.0",https://doi.org/10.5281/zenodo.16989847
-ebe3e0b9-101a-44d2-a0dd-207212f45841,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
+a3fd0cc4-19f4-4d58-ad30-18a20314ffd0,v0.4.0,2021-11-18,"PyThea is an open-source software package that can be used to reconstruct the 3D structure of Coronal Mass Ejections (CMEs) and shock waves and determine their kinematics using remote-sensing observations. The tool implements the Graduated Cylindrical Shell (GCS) model that can be used to reconstruct CMEs and two geometrical models, namely a spheroid and ellipsoid model to reconstruct shock waves. It also implements remote-sensing observations from multiple viewpoints such as the Solar and Heliospheric Observatory (SoHO) and Solar Terrestrial Relations Observatory (STEREO).",https://doi.org/10.5281/zenodo.5683557
 7b54feb6-1fc0-4c7f-8a70-f1d3353e4c9c,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
 c9a46ee5-4790-483f-ab16-612e7de367e3,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
+ebe3e0b9-101a-44d2-a0dd-207212f45841,v0.4.3,2025-04-03,"Data loader (and downloader) for Solar Orbiter/EPD energetic charged particle sensors EPT, HET, and STEP. Supports level 2, 3, and low latency data provided by ESA's Solar Orbiter Archive.",https://doi.org/10.5281/zenodo.15130823
 4e6f76aa-4515-4aac-bc89-0f79a65875df,v0.5.0,2025-04-08,,
-8155ff78-4060-4adb-ace8-e640ad648c35,v0.5.0,2025-01-29,Python package of the multi-spacecraft longitudinal configuration plotter Solar-MACH,https://doi.org/10.5281/zenodo.14763546
 3f5027b1-ea6e-4c6e-bd69-ead2be9e4969,v0.5.0,2025-01-29,Python package of the multi-spacecraft longitudinal configuration plotter Solar-MACH,https://doi.org/10.5281/zenodo.14763546
+8155ff78-4060-4adb-ace8-e640ad648c35,v0.5.0,2025-01-29,Python package of the multi-spacecraft longitudinal configuration plotter Solar-MACH,https://doi.org/10.5281/zenodo.14763546
 c6a6a698-31ca-42fe-8adc-11d71dd4de75,v0.6.1,2025-08-14,"fiasco provides a Python interface to the CHIANTI, an atomic database used primarily for astrophysical spectroscopy.",https://doi.org/10.5281/zenodo.16876516
 839f52ab-5581-4a2c-b1e2-445b5fc0a9f4,v0.6.1,2025-02-20,,https://doi.org/10.5281/zenodo.15619797
 c26b138d-f0ec-452b-b113-cc9b8b07aab9,v0.6.2,2025-07-10,,https://doi.org/10.5281/zenodo.15852260
@@ -1048,30 +1052,30 @@ e95c7eb5-db3b-4d93-a80e-662c317e313f,v0.7.0,2025-10-16,,
 36634f22-729b-4bba-9242-ac24e30cd59c,v0.9.0,2018-07-25,Uses zip files with ascii data inside,
 4d02db22-9fae-43f5-ae85-1f3aa8358c4a,v0.9.1,2018-08-16,Add Matlab HWM93 demo,
 621382b1-8824-423a-b638-b639c8cd3762,v1.0,2016-11-06,"for Poker Flat Digital Meridian Spectrometer, which uses netCDF",https://doi.org/10.5281/zenodo.167565
-794ecb52-d47a-4511-a068-cb64c22becc2,v1.0.0,2023-03-28,,https://doi.org/10.5281/zenodo.7779553
-a02c9235-9a0d-4809-9214-56458ce75c36,v1.0.0,2023-12-19,"The first release of codes to generate EUHFORIA output in the format of OpenGGCM inputs, visualize the results of OpenGGCM outputs, and perform the dynamic time warping analysis to assess the performance of OpenGGCM results.",https://doi.org/10.5281/zenodo.10404881
-27d74e70-04a2-47a5-bf86-9a628390600e,v1.0.0,2023-03-28,,https://doi.org/10.5281/zenodo.7779553
-aaa77213-92f1-4219-b3c0-c9b1c457dfa9,v1.0.0,2025-04-15,,https://doi.org/10.5281/zenodo.15214471
 da9df327-7416-41b6-93ce-1a029348ea1a,v1.0.0,2024-02-19,,
 9efe7f97-9092-4d82-9edd-33cb55286c19,v1.0.0,2024-02-19,,
 ca5aa811-7bc0-4836-8c58-cfff67f7cd2b,v1.0.0,2023-03-28,,https://doi.org/10.5281/zenodo.7779553
+aaa77213-92f1-4219-b3c0-c9b1c457dfa9,v1.0.0,2025-04-15,,https://doi.org/10.5281/zenodo.15214471
+27d74e70-04a2-47a5-bf86-9a628390600e,v1.0.0,2023-03-28,,https://doi.org/10.5281/zenodo.7779553
+a02c9235-9a0d-4809-9214-56458ce75c36,v1.0.0,2023-12-19,"The first release of codes to generate EUHFORIA output in the format of OpenGGCM inputs, visualize the results of OpenGGCM outputs, and perform the dynamic time warping analysis to assess the performance of OpenGGCM results.",https://doi.org/10.5281/zenodo.10404881
+794ecb52-d47a-4511-a068-cb64c22becc2,v1.0.0,2023-03-28,,https://doi.org/10.5281/zenodo.7779553
 e162adaa-2799-4859-937f-50b6936189ac,v1.0.12,2025-03-31,This release adds the functionality to auto-load the latest or a specific version of geopack coefficients.,https://doi.org/10.5281/zenodo.15110787
 ba4a1dc4-9db4-4d0e-873d-b20cc6c8ed99,v1.0.2,2025-06-03,A Python package to support metadata attribute management for Space Weather data processing pipelines.,https://doi.org/10.5281/zenodo.15587327
 6a683ab1-a983-43aa-ab13-955ed11f67ec,v1.0.5,2018-07-30,"Update selftest, cleanup prereqs. Includes Pep8 compliance, additional self-tests, mypy type checking, and updated MSIS API.",https://doi.org/10.5281/zenodo.1323860
-2f122a4b-85e6-43bd-84dd-8ea8833dbd5c,v1.1.0,2025-04-07,,https://doi.org/10.5281/zenodo.15170693
 00b9a7a9-9714-4ad8-b67e-ac5e9ef97b1d,v1.1.0,2023-04-25,Python wrapper for the International Reference Ionosphere (IRI) 2016 model.,https://doi.org/10.5281/zenodo.240895
+2f122a4b-85e6-43bd-84dd-8ea8833dbd5c,v1.1.0,2025-04-07,,https://doi.org/10.5281/zenodo.15170693
 3299f395-a619-4c6b-9e57-aa9e162df2ed,v1.1.1,2018-08-15,"Modernization release including documentation improvements, CI template updates, badge updates, and cleanup. No detailed v1.1.1 release notes are provided in the GitHub release.",
 f8d455bb-a7ef-47fb-9e88-34a0c04f256e,v1.11.1,2024-12-19,Python bugfix for Python 3.9,https://doi.org/10.5281/zenodo.14532758
-a4b7771d-84af-48fc-988c-fe2b25f284a5,v1.1.3,2025-09-30,First contribution from outside core development team.  Minor bug fixes.,https://doi.org/10.5281/zenodo.17236774
 79c29d1a-a4d4-4cd9-a33e-0b01b78acdc6,v1.1.3,2025-09-30,,https://doi.org/10.5281/zenodo.17236774
+a4b7771d-84af-48fc-988c-fe2b25f284a5,v1.1.3,2025-09-30,First contribution from outside core development team.  Minor bug fixes.,https://doi.org/10.5281/zenodo.17236774
 2ea15194-557e-4866-9891-9be85eece609,v1.16.2,2023-11-15,"Fixed numerous bugs, including xarray API update. Requires Python 3.8+ as Python 3.7 library support and wheel availability is dwindling.",https://doi.org/10.5281/zenodo.10130117
-01dd9ee7-a39c-4ee5-a42c-ee6ce98280b3,v1.1.8,2024-12-02,Minor release primarily to update documentation and how it is compiled on ReadTheDocs.  This should not introduce new functionality.,https://doi.org/10.5281/zenodo.14174414
 6bdd5f8e-b62f-4608-b620-4e5ba21d0de4,v1.1.8,2024-12-02,Minor release primarily to update documentation and how it is compiled on ReadTheDocs.  This should not introduce new functionality.,https://doi.org/10.5281/zenodo.14174414
+01dd9ee7-a39c-4ee5-a42c-ee6ce98280b3,v1.1.8,2024-12-02,Minor release primarily to update documentation and how it is compiled on ReadTheDocs.  This should not introduce new functionality.,https://doi.org/10.5281/zenodo.14174414
+e7bb6f64-32e9-4ace-a52d-3a6c68d7fcfe,v.1.2.0,2025-09-17,"This new version splits the n = \pm 1 cyclotron resonances into separate components, rather than keeping the previous summation of the two terms. This changes the column numbering scheme. See output.md for details.",https://doi.org/10.5281/zenodo.17148711
 c0947346-ed13-4710-bc61-d900dde724aa,v.1.2.0,2025-09-17,"This new version splits the n = \pm 1 cyclotron resonances into separate components, rather than keeping the previous summation of the two terms. This changes the column numbering scheme. See output.md for details.",https://doi.org/10.5281/zenodo.17148711
 64114880-3a98-4098-8724-73517fc370f7,v.1.2.0,2025-09-17,"This new version splits the n = \pm 1 cyclotron resonances into separate components, rather than keeping the previous summation of the two terms. This changes the column numbering scheme. See output.md for details.",https://doi.org/10.5281/zenodo.17148711
-e7bb6f64-32e9-4ace-a52d-3a6c68d7fcfe,v.1.2.0,2025-09-17,"This new version splits the n = \pm 1 cyclotron resonances into separate components, rather than keeping the previous summation of the two terms. This changes the column numbering scheme. See output.md for details.",https://doi.org/10.5281/zenodo.17148711
-2a16e356-a4b5-43da-ad88-5bc280041a51,v1.2.0,2021-04-27,Update for newer numpy.datetime64,https://doi.org/10.5281/zenodo.4722490
 f51deff9-a299-4ad0-8f64-7fba5cda5bc0,v1.2.0,2026-02-21,Upgrade to Python 3.11; adds TimeUtilities fallback and explicit timeutil dependency; removes obsolete Poetry/Meson/legacy build artifacts.,
+2a16e356-a4b5-43da-ad88-5bc280041a51,v1.2.0,2021-04-27,Update for newer numpy.datetime64,https://doi.org/10.5281/zenodo.4722490
 45d7ac93-eac3-42f9-831e-4f2b4c7bd6c3,v1.2.6,2025-10-17,,https://doi.org/10.5281/zenodo.17382178
 b3bcd985-3eb4-4a75-8625-3a2170ae3322,v1.2.6,2025-10-17,,https://doi.org/10.5281/zenodo.17382178
 f6033b8e-8caf-47f1-8b20-10eb9bbc5708,v1.3.0,2021-02-10,"python >= 3.7, to keep up with NEP29 stack, src/ layout",https://doi.org/10.5281/zenodo.4527817
@@ -1092,14 +1096,14 @@ f6033b8e-8caf-47f1-8b20-10eb9bbc5708,v1.3.0,2021-02-10,"python >= 3.7, to keep u
 - [UiowaEphTool] products are registered with UiowaEphTool as provider by @jeandet in #233",https://doi.org/10.5281/zenodo.17065425
 d79af729-07cb-4f62-a850-4105d1dbe544,v1.7.0,2024-01-09,"Working release wrapping up late 2022 and all 2023 changes, before implementing Git Submodules in Gemini3D. CI passes: Linux (GCC 9,10,11,12,13, Intel oneAPI 2024.0), macOS (GCC 13).",https://doi.org/10.5281/zenodo.10475267
 33f9f5f0-0c47-4c38-aa52-8065602723c3,v1.8.0,2025-05-25,Python >= 3.9. Correct and extended precision,https://doi.org/10.5281/zenodo.15509872
-3e215f0b-1322-479a-86de-23fa39d97f80,v2.1.0,2025-01-07,,https://doi.org/10.5281/zenodo.14610316
 62accfb6-ddf6-4a62-80eb-32e0cbe6f7f4,v2.1.0,2025-01-07,,https://doi.org/10.5281/zenodo.14610316
+3e215f0b-1322-479a-86de-23fa39d97f80,v2.1.0,2025-01-07,,https://doi.org/10.5281/zenodo.14610316
 08c8e2c5-6eee-4a53-a8c3-07ba36d0c67e,v2.3,2022-11-23,,https://doi.org/10.5281/zenodo.7352323
-188773e3-5e90-4f4a-aecc-217c9ad335f0,v2.3.4,2025-10-06,,
 b2a9c431-40e1-45c7-8812-e272ad338625,v2.3.4,2025-10-06,,
+188773e3-5e90-4f4a-aecc-217c9ad335f0,v2.3.4,2025-10-06,,
 60a0bd7a-7f19-4637-ba21-dd04bdeb3e2d,v2.4.0,,,
-f9a36086-b4a4-4546-8f43-06198f8d6b8f,v2.4.12,2024-02-15,,https://doi.org/10.5281/zenodo.10678695
 b326270f-10f2-42a2-8c50-6d24636fa19a,v2.4.12,2024-02-15,,https://doi.org/10.5281/zenodo.10678695
+f9a36086-b4a4-4546-8f43-06198f8d6b8f,v2.4.12,2024-02-15,,https://doi.org/10.5281/zenodo.10678695
 554261ce-ffd8-4498-94b5-c8462b53d458,v2.4.12,2024-02-15,,https://doi.org/10.5281/zenodo.10678695
 5cda2e87-d51d-4257-8b85-76871462c88b,v3,2025-10-22,"The International Geomagnetic Reference Field (IGRF) is a standard mathematical description of the Earth's main magnetic field. It is used widely in studies of the Earth's deep interior, crust, ionosphere, and magnetosphere. The model is developed and maintained by the International Association of Geomagnetism and Aeronomy (IAGA). The coefficients for the 14th generation of IGRF model were finalized by an IAGA task force in November 2024. The IGRF is the product of a global collaborative effort between magnetic field modelers and the institutes involved in collecting and disseminating magnetic field data collected from satellites, observatories, and surveys around the world.
 
@@ -1117,10 +1121,13 @@ There will be a journal article in topical collection ""International Geomagneti
 53d5a345-0e21-4774-b994-876f2f30b95d,v3.0.0,2026-03-26,"dascasi name, modernize",https://doi.org/10.5281/zenodo.19229352
 2e233a5b-12c8-429c-88ca-bff7df84cd81,v3.1.0,2023-02-19,Use pyproject.toml alone. f2py builds on first use of import lowtran function e.g. lowtran.check() or pytest or similar. Patched to work again on Windows with Python >= 3.8.,https://doi.org/10.5281/zenodo.7654888
 28748f09-0f75-4e4c-be52-b1a0a32bff46,v3.2.0,2025-07-08,Added enu2ecefv support and downrange-crossrange-above coordinate conversions. Includes nvector module addition and improvements to ECI coordinate handling.,
+04ac34c6-5c16-4236-abec-6799ad4a8c69,v3.2.2,2025-03-20,"Bug-fix and maintenance release that includes test data in the source distribution, updates `.gitignore`, updates Zenodo affiliations and references, clarifies the public-release statement, and updates operational tests for Python 3.9 and Ubuntu 22.04.",https://doi.org/10.5281/zenodo.15059161
+0f9e38b8-cf06-4e1c-acd7-221fde477c26,v3.2.2,2025-03-20,"Bug-fix and maintenance release that includes test data in the source distribution, updates `.gitignore`, updates Zenodo affiliations and references, clarifies the public-release statement, and updates operational tests for Python 3.9 and Ubuntu 22.04.",https://doi.org/10.5281/zenodo.15059161
 60086707-4d85-43ce-9f16-d4a4aab512c2,v4.1.2,2025-05-16,,https://doi.org/10.5281/zenodo.15441879
 6fa7d423-c089-4baf-862d-a947c95e41d2,v4.1.2,2025-05-16,,https://doi.org/10.5281/zenodo.15441879
 03fd6c3f-5608-4156-be8a-4059cdc003fe,v4.1.2,2025-05-16,,https://doi.org/10.5281/zenodo.15441879
 e16b5881-30d9-4145-8a68-6283cb4bca4c,v7.0.2,2025-09-19,"sunpy is a software library that provides fundamental tools for accessing, loading and interacting with solar physics data in Python",https://doi.org/10.5281/zenodo.17162925
+bfd71894-f21a-4b00-807c-8aeade878018,v7.1.2,2026-04-19,"SunPy 7.1.2 fixes a bug where SIP distortion information in a Map WCS was ignored. Since 7.1.0, the patch releases also corrected local file URI handling on Windows and improved SPICE time-conversion accuracy.",
 dd9572da-058b-4339-b6be-7907039dcf1a,v8.0.0,2025-10-27,"[8.0.0] - 2025-10-27
 
 Version bump to fix api breaking issues and add Python 3.14 support.
@@ -1142,10 +1149,3 @@ Swapped order of spice error check and found flag check decorators to avoid spur
 7d8f4d54-4a67-4c59-b294-c48afaaac6ee,version 0.4.1,2024-08-08,"The XRTpy Python package is a specialized tool developed for the analysis of observations made by the X-Ray Telescope (XRT) aboard the Hinode spacecraft. Hinode is a joint mission involving space agencies from Japan, the United States, and Europe, launched with the primary aim of providing multi-wavelength data from the photosphere to the upper corona, enabling continuous observations of the Sun. XRTpy offers a comprehensive range of functionalities, including object-oriented representation of instrument configuration, effective area calculations, temperature response computation, light leak subtraction, image sharpening, estimation of electron temperature, and emission measure derivation. These capabilities empower researchers to explore and analyze XRT data comprehensively, contributing to a deeper understanding of solar phenomena.",https://doi.org/10.5281/zenodo.13157914
 879f9080-2075-4a6b-b7a5-6dd841af015f,Version 1.0-prealpha,2024-09-04,,https://doi.org/10.5281/zenodo.13685579
 a64aaf31-e9b7-4a55-ae92-7e7df9a944d7,Weekly,2025-11-03,Weekly installers are untested an may not be stable.  Built with commit e7f820e0eea5396b470aa4e5182ea85c2fdf9099 on 03_11_25 (DD-MM-YY),https://doi.org/10.5281/zenodo.17513578
-67541655-55bb-4e8b-afa9-d1df648259cf,2026.2.0,2026-02-20,Latest stable release as recorded in CITATION.cff. See https://docs.plasmapy.org/en/stable/whatsnew/index.html for changelog.,https://doi.org/10.5281/zenodo.18706665
-5027af12-c9b2-4091-8dd2-392995c0cc6a,2.1.2,2026-06-08,"PySPEDAS 2.1.2 updates the geopack and hapiclient dependencies, modernizes the optional MTH5 dependency stack, improves PSP and STEREO data loading, and includes plotting and data-service fixes from the 2.1.1 and 2.1.2 releases.",https://doi.org/10.5281/zenodo.20567447
-1769fb1e-5d11-488d-8a5d-92fce2980b2a,25.12.1,2025-12-01,,
-9c5498dd-805c-4d87-bd95-2aff00033d85,v0.2.9,2026-06-08,,https://doi.org/10.5281/zenodo.20598746
-bfd71894-f21a-4b00-807c-8aeade878018,v7.1.2,2026-04-19,"SunPy 7.1.2 fixes a bug where SIP distortion information in a Map WCS was ignored. Since 7.1.0, the patch releases also corrected local file URI handling on Windows and improved SPICE time-conversion accuracy.",
-0f9e38b8-cf06-4e1c-acd7-221fde477c26,v3.2.2,2025-03-20,"Bug-fix and maintenance release that includes test data in the source distribution, updates `.gitignore`, updates Zenodo affiliations and references, clarifies the public-release statement, and updates operational tests for Python 3.9 and Ubuntu 22.04.",https://doi.org/10.5281/zenodo.15059161
-04ac34c6-5c16-4236-abec-6799ad4a8c69,v3.2.2,2025-03-20,"Bug-fix and maintenance release that includes test data in the source distribution, updates `.gitignore`, updates Zenodo affiliations and references, clarifies the public-release statement, and updates operational tests for Python 3.9 and Ubuntu 22.04.",https://doi.org/10.5281/zenodo.15059161

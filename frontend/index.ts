@@ -2,16 +2,16 @@
  * entry point module for the website frontend logic
  */
 
-import { 
+import {
 	// widgets to initialize
-	CharWidget, NumberWidget, UrlWidget, EmailWidget, DateWidget, 
-	TextAreaWidget, CheckboxWidget, Widget, AutofillSomefWidget, 
+	CharWidget, NumberWidget, UrlWidget, EmailWidget, DateWidget,
+	TextAreaWidget, CheckboxWidget, Widget, AutofillSomefWidget,
 	ModelBox, FormGenerator, RorWidget, OrcidWidget, DataciteDoiWidget,
-	AutofillDataciteWidget, AutofillDialoge,
+	AutofillDataciteWidget, AutofillDialoge, AuthorIdentifierWidget,
 
 	// dialogues
 	RorFinder, OrcidFinder, DoiDataciteFinder,
-	ConfirmDialogue, TextInputDialogue, 
+	ConfirmDialogue, TextInputDialogue,
 } from "./loader";
 
 function initForms() {
@@ -28,6 +28,7 @@ function initForms() {
 		RorWidget,
 		OrcidWidget,
 		DataciteDoiWidget,
+		AuthorIdentifierWidget,
 		ModelBox,
 		AutofillSomefWidget,
 		AutofillDataciteWidget,

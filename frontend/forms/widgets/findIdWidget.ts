@@ -211,11 +211,8 @@ export class AuthorIdentifierWidget extends FindIdWidget {
 	private onCheckboxChange(): void {
 		const currentValue = this.inputElement?.value ?? "";
 		if (this.isOrgCheckbox.checked) {
-			if (this.isOrcidUrl(currentValue)) {
-				this.isOrgCheckbox.checked = false;
-				return;
-			}
-			this.switchToRorMode(currentValue);
+			const valueForRor = this.isOrcidUrl(currentValue) ? "" : currentValue;
+			this.switchToRorMode(valueForRor);
 		} else {
 			this.switchToOrcidMode();
 		}

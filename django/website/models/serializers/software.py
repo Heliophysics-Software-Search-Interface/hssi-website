@@ -135,7 +135,25 @@ class SoftwareSerializer(HssiSerializer):
 			data["url"] = org.website
 		return data
 
+	def _person_is_org(self, person: Person) -> bool:
+		return bool(person.identifier and "ror.org" in person.identifier)
+
 	def _person_jsonld(self, person: Person) -> dict[str, Any]:
+		affiliations = self._as_list(
+			self._organization_jsonld(org) for org in person.affiliation.all()
+		)
+		if self._person_is_org(person):
+			data: dict[str, Any] = {
+				"@type": "Organization",
+				"name": person.fullName,
+			}
+			if person.identifier:
+				data["@id"] = person.identifier
+				data["identifier"] = self._property_value(person.identifier)
+			if affiliations:
+				data["parentOrganization"] = self._maybe_single(affiliations)
+			return data
+
 		data: dict[str, Any] = {
 			"@type": "Person",
 			"givenName": person.given_name,
@@ -144,9 +162,6 @@ class SoftwareSerializer(HssiSerializer):
 		if person.identifier:
 			data["@id"] = person.identifier
 			data["identifier"] = self._property_value(person.identifier)
-		affiliations = self._as_list(
-			self._organization_jsonld(org) for org in person.affiliation.all()
-		)
 		if affiliations:
 			data["affiliation"] = self._maybe_single(affiliations)
 		return data

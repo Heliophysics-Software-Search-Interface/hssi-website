@@ -116,7 +116,7 @@ export class OrcidWidget extends FindIdWidget {
 }
 
 export class DataciteDoiWidget extends FindIdWidget {
-	protected get placeholderExample(): string { 
+	protected get placeholderExample(): string {
 		return "https://doi.org/10.5281/zenodo.00000000";
 	}
 	protected override onFindButtonPressed(): void {
@@ -124,5 +124,145 @@ export class DataciteDoiWidget extends FindIdWidget {
 			.setTarget(this.parentField)
 			.withFilters(this.properties[propResultFilters]);
 		PopupDialogue.showPopup(popup);
+	}
+}
+
+export class AuthorIdentifierWidget extends FindIdWidget {
+
+	private isOrgCheckbox: HTMLInputElement = null;
+	private isOrgMode: boolean = false;
+
+	private static readonly ROR_PREFIX = "https://ror.org/";
+	private static readonly ROR_PATTERN = /^https?:\/\/ror\.org\//;
+	private static readonly ORCID_PATTERN = /^https?:\/\/orcid\.org\//;
+
+	private isRorUrl(url: string): boolean {
+		return AuthorIdentifierWidget.ROR_PATTERN.test(url);
+	}
+
+	private isOrcidUrl(url: string): boolean {
+		return AuthorIdentifierWidget.ORCID_PATTERN.test(url);
+	}
+
+	protected override get placeholderExample(): string {
+		return this.isOrgMode
+			? "https://ror.org/00000xxxx"
+			: "https://orcid.org/0000-0000-0000-0000";
+	}
+
+	protected override onFindButtonPressed(): void {
+		if (this.isOrgMode) {
+			const rorPopup = RorFinder.getInstance()
+				.setTarget(this.parentField)
+				.withFilters(this.properties[propResultFilters]);
+			PopupDialogue.showPopup(rorPopup);
+		} else {
+			const orcidPopup = OrcidFinder.getInstance()
+				.setTarget(this.parentField)
+				.withFilters(this.properties[propResultFilters]);
+			PopupDialogue.showPopup(orcidPopup);
+		}
+	}
+
+	override onDataSelected(data: JSONObject): void {
+		super.onDataSelected(data);
+		if (this.isOrgMode) return;
+
+		const field = this.parentField;
+		const siblings = field.parent?.getSubfields() ?? [];
+		let affiliationField: ModelMultiSubfield = null;
+		for (const sibling of siblings) {
+			if (sibling instanceof ModelMultiSubfield) affiliationField = sibling;
+		}
+		if (!affiliationField || affiliationField.hasValidInput()) return;
+
+		const orcidData = data as OrcidItem;
+		const affiliationNames = orcidData["institution-name"];
+		affiliationField.clearField();
+		for (const affilName of affiliationNames) {
+			const f = affiliationField.addNewMultifieldWithValue(affilName);
+			f.expandSubfields();
+		}
+	}
+
+	private buildCheckbox(readOnly: boolean): void {
+		const label = document.createElement("label");
+		label.style.display = "flex";
+		label.style.alignItems = "center";
+		label.style.gap = "0.35em";
+		label.style.fontSize = "0.85em";
+		label.style.marginBottom = "0.25em";
+		label.style.userSelect = "none";
+		label.style.cursor = "pointer";
+
+		this.isOrgCheckbox = document.createElement("input");
+		this.isOrgCheckbox.type = "checkbox";
+		this.isOrgCheckbox.disabled = readOnly;
+
+		label.appendChild(this.isOrgCheckbox);
+		label.appendChild(document.createTextNode("Is Organization"));
+		this.element.appendChild(label);
+
+		if (!readOnly) {
+			this.isOrgCheckbox.addEventListener("change", () => this.onCheckboxChange());
+		}
+	}
+
+	private onCheckboxChange(): void {
+		const currentValue = this.inputElement?.value ?? "";
+		if (this.isOrgCheckbox.checked) {
+			const valueForRor = this.isOrcidUrl(currentValue) ? "" : currentValue;
+			this.switchToRorMode(valueForRor);
+		} else {
+			this.switchToOrcidMode();
+		}
+	}
+
+	private switchToRorMode(currentValue: string): void {
+		this.isOrgMode = true;
+		this.isOrgCheckbox.checked = true;
+		if (!currentValue) this.inputElement.value = AuthorIdentifierWidget.ROR_PREFIX;
+		this.inputElement.placeholder =
+			"Use 'find' button or paste URL (ex: " + this.placeholderExample + ")";
+		this.updateValidationState();
+	}
+
+	private switchToOrcidMode(): void {
+		this.isOrgMode = false;
+		this.isOrgCheckbox.checked = false;
+		const currentValue = this.inputElement?.value ?? "";
+		if (this.isRorUrl(currentValue)) this.inputElement.value = "";
+		this.inputElement.placeholder =
+			"Use 'find' button or paste URL (ex: " + this.placeholderExample + ")";
+		this.updateValidationState();
+	}
+
+	private updateValidationState(): void {
+		const value = this.inputElement?.value ?? "";
+		if (this.isOrgMode && value && !this.isRorUrl(value)) {
+			this.inputElement.setCustomValidity(
+				"Organization identifier must be a ROR URL (https://ror.org/...)"
+			);
+		} else {
+			this.inputElement.setCustomValidity("");
+		}
+	}
+
+	override setValue(value: string, notify: boolean = true): void {
+		super.setValue(value, notify);
+		if (!this.isOrgCheckbox) return;
+		if (this.isRorUrl(value)) this.switchToRorMode(value);
+		else if (this.isOrcidUrl(value)) this.switchToOrcidMode();
+	}
+
+	override initialize(readOnly: boolean = false): void {
+		this.buildCheckbox(readOnly);
+		super.initialize(readOnly);
+		this.inputElement.addEventListener("input", () => {
+			this.updateValidationState();
+			const val = this.inputElement.value;
+			if (this.isRorUrl(val) && !this.isOrgMode) this.switchToRorMode(val);
+			else if (this.isOrcidUrl(val) && this.isOrgMode) this.switchToOrcidMode();
+		});
 	}
 }

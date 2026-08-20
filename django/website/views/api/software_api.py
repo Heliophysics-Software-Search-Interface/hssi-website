@@ -19,7 +19,7 @@ from rest_framework.generics import GenericAPIView
 from ...models import Software, VerifiedSoftware, SoftwareEditQueue, SubmissionInfo
 from ...models.serializers.software import SoftwareSerializer
 from ...models.serializers.submission import SubmissionSerializer
-from ...models.serializers.util import SerialView
+from ...models.serializers.util import Q_VIEW, SerialView
 from ..edit_submission import email_existing_edit_link
 from .permissions import HasUpdateToken
 
@@ -108,6 +108,11 @@ class SoftwareListAPI(APIView):
 	``slug`` is included because it, not ``name``, is the key the detail
 	endpoints accept. Without it a consumer has to reimplement
 	``VerifiedSoftware.get_unique_slug`` to build a slug URL from a name.
+
+	``?view=jsonld`` returns the full JSON-LD serialization of every
+	listed record instead of the id/name/slug entries, so harvesters
+	like SciX can pull all metadata in one request rather than one
+	request per record.
 	"""
 
 	authentication_classes = []
@@ -120,6 +125,20 @@ class SoftwareListAPI(APIView):
 		repo_url = request.query_params.get("repo_url")
 		if repo_url:
 			queryset = queryset.filter(code_repository_url__iexact=repo_url.strip())
+
+		view = request.query_params.get(Q_VIEW)
+		if view is not None and view.lower() != "jsonld":
+			return Response(
+				{"detail": f"Unsupported view '{view}'. This endpoint supports view=jsonld."},
+				status=status.HTTP_400_BAD_REQUEST,
+			)
+		if view:
+			data = []
+			for software in queryset.order_by("software_name"):
+				serializer = SoftwareSerializer(software, context={"request": request})
+				serializer._view = SerialView.JSONLD
+				data.append(serializer.data)
+			return Response({"data": data})
 
 		entries = queryset.values("id", "software_name").order_by("software_name")
 		data = [

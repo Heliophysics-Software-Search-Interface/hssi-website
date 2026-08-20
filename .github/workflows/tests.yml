@@ -1,0 +1,47 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  django-tests:
+    runs-on: ubuntu-latest
+    # The job runs inside a container on the same Docker network as the
+    # postgres service, so the service's name resolves as a hostname. The
+    # service is named website_db to match the HOST hardcoded in
+    # django/hssi/settings.py, which lets CI run with no settings changes.
+    container: python:3.13-slim
+    services:
+      website_db:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      SUPERUSER_PWD: postgres
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        # docker/requirements.txt is the pinned set the prod image installs.
+        # django-extensions comes from docker/django-requirements.pip, which
+        # is not installed wholesale here because its unpinned `django` entry
+        # could override the pinned version. pip-requirements/*.txt mirrors
+        # the extension requirements the prod container installs at launch.
+        run: |
+          pip install --no-cache-dir -r docker/requirements.txt django-extensions
+          for f in pip-requirements/*.txt; do pip install --no-cache-dir -r "$f"; done
+      - name: Run Django test suite
+        working-directory: django
+        run: python manage.py test website

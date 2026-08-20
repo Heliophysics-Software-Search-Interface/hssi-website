@@ -231,3 +231,34 @@ class SoftwareListLookupTests(TestCase):
 		self.assertIn("Matching", names)
 		self.assertIn("Other", names)
 		self.assertNotIn("Hidden", names)
+
+	def test_every_entry_carries_its_slug(self):
+		response = self.client.get("/api/list/software/")
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		slugs = {entry["name"]: entry["slug"] for entry in response.data["data"]}
+		self.assertEqual(slugs["Matching"], "matching")
+		self.assertEqual(slugs["Other"], "other")
+
+	def test_listed_slug_resolves_on_the_detail_endpoint(self):
+		"""A display name is not a usable key; the slug shipped beside it is.
+
+		"PyMap3D" slugs to "pymap3d", so a consumer reading `name` off this
+		endpoint and substituting it into the detail URL gets nothing back.
+		Reading `slug` instead round-trips.
+		"""
+		software = Software.objects.create(
+			software_name="PyMap3D",
+			code_repository_url="https://github.com/example/pymap3d",
+		)
+		VerifiedSoftware.create_verified(software)
+
+		response = self.client.get("/api/list/software/")
+		entry = next(
+			item for item in response.data["data"] if item["name"] == "PyMap3D"
+		)
+		self.assertEqual(entry["slug"], "pymap3d")
+		self.assertNotEqual(entry["slug"], entry["name"])
+
+		detail = self.client.get(f"/api/view/software/{entry['slug']}/?view=jsonld")
+		self.assertEqual(detail.status_code, status.HTTP_200_OK)
+		self.assertEqual(detail.json()["name"], "PyMap3D")

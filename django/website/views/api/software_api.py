@@ -55,9 +55,15 @@ class SoftwareDetailAPI(HSSIGenericAPIView):
 
 	def _get_visible_software(self, uid_or_slug: str | uuid.UUID) -> Software | None:
 		if not isinstance(uid_or_slug, uuid.UUID):
-			return Software.objects.filter(
-				pk=VerifiedSoftware.objects.filter(slug=uid_or_slug).first().pk
-			).first()
+			# Resolve the slug first: an unknown slug has to fall through to a
+			# None return so callers can answer 404. Reading `.pk` straight off
+			# the queryset's `.first()` raised AttributeError on a miss, which
+			# surfaced to clients as a 500 and made a mistyped slug look like a
+			# broken endpoint.
+			verified = VerifiedSoftware.objects.filter(slug=uid_or_slug).first()
+			if verified is None:
+				return None
+			return Software.objects.filter(pk=verified.pk).first()
 		visible_ids = VerifiedSoftware.objects.values_list("id", flat=True)
 		return Software.objects.filter(pk=uid_or_slug, pk__in=visible_ids).first()
 

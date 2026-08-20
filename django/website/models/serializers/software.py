@@ -289,12 +289,17 @@ class SoftwareSerializer(HssiSerializer):
 		}
 		if instance.license:
 			data["license"] = instance.license.url
-		if instance.submission_info:
-			data["dateModified"] = (
-				instance.submission_info.filter(submission_date__isnull=False)
-					.latest("submission_date")
-					.submission_date
-			)
+		# `submission_info` is a RelatedManager, so testing it directly is
+		# always truthy and `.latest()` raised DoesNotExist for a published
+		# software with no dated SubmissionInfo, which 500'd the landing page
+		# and both JSON-LD API endpoints for that record.
+		latest_submission = (
+			instance.submission_info.filter(submission_date__isnull=False)
+				.order_by("submission_date")
+				.last()
+		)
+		if latest_submission:
+			data["dateModified"] = latest_submission.submission_date
 		return { key: value for key, value in data.items() if value }
 
 	def to_representation_jsonld(self, instance: Software) -> dict[str, Any]:

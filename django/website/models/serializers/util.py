@@ -5,6 +5,7 @@ from typing import Any
 
 from django.db.models import Model
 from django.http.request import QueryDict
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 
 from hssi.camel_case_renderer import JsonSet, decamelize_data
@@ -66,8 +67,18 @@ class HssiSerializer(ModelSerializer):
 			else:
 				params: QueryDict = req.query_params
 				viewstr = params.get(Q_VIEW)
-				if viewstr: 
-					self._view = SerialView[viewstr.upper()]
+				if viewstr:
+					try:
+						self._view = SerialView[viewstr.upper()]
+					except KeyError:
+						# An unrecognized value must 400, not 500: this is
+						# reached lazily from Response(serializer.data), and
+						# an uncaught KeyError there reads as a server outage
+						# to API consumers constructing these URLs by hand.
+						valid = ", ".join(v.name.lower() for v in SerialView)
+						raise ValidationError({
+							Q_VIEW: f"Unsupported view '{viewstr}'. Valid values: {valid}.",
+						})
 				else: 
 					self._view = self.default_view
 		

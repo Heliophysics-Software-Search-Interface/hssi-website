@@ -89,6 +89,15 @@ export class ModelDataCache<T extends HSSIModelData>{
 		else return await cache.getData(uid);
 	}
 
+	public static async fetchPage<M extends ModelName>(
+		model: M,
+		offset: number,
+		limit: number
+	): Promise<{ items: AsyncModelTypeMap[M][], total: number }> {
+		const cache = this.getCache(model);
+		return await cache.fetchPageData(offset, limit);
+	}
+
 	// Instance Implementation -------------------------------------------------
 
 	private constructor(targetModel: ModelName) {
@@ -139,6 +148,23 @@ export class ModelDataCache<T extends HSSIModelData>{
 
 		// remove promise to signal it is no longer fetching the data with specified uid
 		this.promiseMap.delete(uid);
+	}
+
+	private async fetchPageData(offset: number, limit: number): Promise<{ items: T[], total: number }> {
+		if (this.allDataFetched) {
+			const all = [...this.dataMap.values()];
+			return { items: all.slice(offset, offset + limit), total: all.length };
+		}
+		const url = `${apiModel}${this.targetModel}${apiSlugRowsAll}?offset=${offset}&limit=${limit}`;
+		const result = await fetchTimeout(url);
+		const data = await result.json() as { data: JSONArray, total: number };
+		const pageItems: T[] = [];
+		for (const obj of data.data) {
+			const raw = obj as any;
+			this.storeModelObjectData(raw);
+			pageItems.push(this.dataMap.get(raw.id));
+		}
+		return { items: pageItems, total: data.total };
 	}
 
 	private async fetchAllModelData(): Promise<void> {

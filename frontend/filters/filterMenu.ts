@@ -201,16 +201,30 @@ export class FilterMenu {
 			return;
 		}
 
+		// no active filters: go back to paginated mode, clear any uid restriction
+		if (this.activeFilterGroups.length === 0) {
+			await this.targetView.resetToPaginatedMode();
+			this.targetView.clearFilter();
+			this.activeGroupsContainerElement.classList.add(styleHidden);
+			this.targetView.refreshItems();
+			if (this.targetView === ResourceView.main && pushHistory) this.recordFilterUrlParams();
+			applyEnteredQuery(false);
+			return;
+		}
+
+		// has active filters: ensure all data is loaded before filtering
+		await this.targetView.awaitAllItems();
+
 		Spinner.showSpinner("Applying Filters");
 
 		try{
 			// clear old chips
 			this.activeGroupsContainerElement.innerHTML = "Active Filter Groups: ";
-			
+
 			let items = this.targetView.getAllItems();
 			for(const group of this.activeFilterGroups){
 				items = group.filterSoftware(items);
-				
+
 				// render chips
 				const chip = group.createChip();
 				this.activeGroupsContainerElement.append(chip);
@@ -218,18 +232,14 @@ export class FilterMenu {
 			}
 			this.targetView.filterToItems(items.map(item => item.id));
 			this.targetView.refreshItems();
-			
-			// show/hide active groups element
-			if (this.activeFilterGroups.length > 0){
-				this.activeGroupsContainerElement.classList.remove(styleHidden);
-			}
-			else this.activeGroupsContainerElement.classList.add(styleHidden);
-			
+
+			this.activeGroupsContainerElement.classList.remove(styleHidden);
+
 			// if it's the main view, we'll want to append the filters as url params
 			if(this.targetView == ResourceView.main){
 				if(pushHistory) this.recordFilterUrlParams();
 			}
-			
+
 			setTimeout(() => {
 				Spinner.hideSpinner();
 			}, 100);

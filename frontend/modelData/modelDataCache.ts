@@ -1,9 +1,8 @@
 import { 
 	type PersonDataAsync, 
 	type SoftwareDataAsync,
-	type JSONArrayData, 
-	type JSONArray, 
-	type JSONObject,
+	type JSONArrayData,
+	type JSONArray,
 	type ControlledListData,
 	type FunctionalityData,
 	type GraphListData,
@@ -104,11 +103,17 @@ export class ModelDataCache<T extends HSSIModelData>{
 		this.targetModel = targetModel;
 	}
 
+	private static readonly BATCH_CHUNK_SIZE = 50;
+	private static readonly BATCH_DELAY_MS = 100;
+
 	private targetModel: ModelName = null;
 	private dataMap: Map<string, T> = new Map();
-	private promiseMap: Map<string, Promise<void>> = new Map();
 	private promiseAll: Promise<void> = null;
 	private allDataFetched: boolean = false;
+	private batchQueue: string[] = [];
+	private batchTimeout: ReturnType<typeof setTimeout> | null = null;
+	private batchPromise: Promise<void> | null = null;
+	private batchResolve: (() => void) | null = null;
 
 	public get hasFetchedAllData(): boolean { return this.allDataFetched; }
 
@@ -123,31 +128,35 @@ export class ModelDataCache<T extends HSSIModelData>{
 		this.dataMap.set(obj.id, obj);
 	}
 
-	private async fetchData(uid: string): Promise<void> {
+	private async flushBatch(): Promise<void> {
+		const uids = [...this.batchQueue];
+		const resolve = this.batchResolve;
+		this.batchQueue = [];
+		this.batchTimeout = null;
+		this.batchPromise = null;
+		this.batchResolve = null;
 
-		// prevent simultaneous fetch calls
-		if(this.promiseAll){
-			await this.promiseAll;
-			return;
-		}
-		const existingPromise = this.promiseMap.get(uid);
-		if(existingPromise){
-			await existingPromise;
-			return;
-		}
-
-		// fetch data through api and format to async if possible
-		try{
-			const result = await fetchTimeout(apiModel + this.targetModel + "/rows/" + uid);
-			const data: JSONObject = await result.json();
-			this.storeModelObjectData(data as any);
-		}
-		catch(e){
-			console.error(`Error fetching '${this.model}' data with id '${uid}'`, e);
+		const missing = uids.filter(uid => !this.dataMap.has(uid));
+		if (missing.length > 0) {
+			const chunks: string[][] = [];
+			for (let i = 0; i < missing.length; i += ModelDataCache.BATCH_CHUNK_SIZE) {
+				chunks.push(missing.slice(i, i + ModelDataCache.BATCH_CHUNK_SIZE));
+			}
+			try {
+				await Promise.all(chunks.map(chunk => this.fetchBatchChunk(chunk)));
+			} catch(e) {
+				console.error(`Error batch-fetching '${this.model}' data`, e);
+			}
 		}
 
-		// remove promise to signal it is no longer fetching the data with specified uid
-		this.promiseMap.delete(uid);
+		resolve();
+	}
+
+	private async fetchBatchChunk(uids: string[]): Promise<void> {
+		const url = `${apiModel}${this.targetModel}${apiSlugRowsAll}?ids=${uids.join(",")}`;
+		const result = await fetchTimeout(url);
+		const data: JSONArrayData = await result.json();
+		for (const obj of data.data) this.storeModelObjectData(obj as any);
 	}
 
 	private async fetchPageData(offset: number, limit: number): Promise<{ items: T[], total: number }> {
@@ -210,21 +219,28 @@ export class ModelDataCache<T extends HSSIModelData>{
 
 	public async getData(uid: string): Promise<T> {
 
-		if(!isUuid4(uid)) {
-			throw new Error(`${uid} is not properly formatted as uuid v4`);
+		if(!isUuid4(uid)) throw new Error(`${uid} is not properly formatted as uuid v4`);
+
+		if (this.dataMap.has(uid)) return this.dataMap.get(uid);
+
+		if (this.promiseAll) {
+			await this.promiseAll;
+			return this.dataMap.get(uid);
 		}
 
-		// fetch data if not already downloaded
-		if(!this.dataMap.has(uid)){
-			let promise = this.promiseMap.get(uid);
-			if(promise) await promise;
-			else {
-				let promise = this.fetchData(uid);
-				this.promiseMap.set(uid, promise);
-				await promise;
-			}
+		if (!this.batchQueue.includes(uid)) this.batchQueue.push(uid);
+
+		if (!this.batchPromise) {
+			this.batchPromise = new Promise<void>(resolve => { this.batchResolve = resolve; });
 		}
-		
+
+		if (this.batchTimeout === null) {
+			this.batchTimeout = setTimeout(
+				() => this.flushBatch(), ModelDataCache.BATCH_DELAY_MS
+			);
+		}
+
+		await this.batchPromise;
 		return this.dataMap.get(uid);
 	}
 

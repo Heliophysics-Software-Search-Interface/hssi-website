@@ -32,6 +32,12 @@ def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 		raise Exception(f"Unauthorized access, {access} < {model.access}")
 		
 	objects = model.objects.all()
+
+	ids_param = request.GET.get("ids")
+	if ids_param:
+		ids = [i.strip() for i in ids_param.split(",") if i.strip()]
+		objects = objects.filter(pk__in=ids)
+
 	total = objects.count()
 
 	offset_param = request.GET.get("offset")

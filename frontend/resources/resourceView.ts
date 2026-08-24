@@ -8,6 +8,7 @@ import {
 } from "../loader";
 
 const styleNoResults = "no-results";
+const stylePageControls = "page-controls";
 const softwarModelName = "VerifiedSoftware";
 const idResourceContainer = "resource_content";
 
@@ -80,11 +81,7 @@ export class ResourceView {
 
 	private buildPaginationControls(): void {
 		this.paginationControlsEl = document.createElement("div");
-		this.paginationControlsEl.style.display = "flex";
-		this.paginationControlsEl.style.justifyContent = "center";
-		this.paginationControlsEl.style.alignItems = "center";
-		this.paginationControlsEl.style.gap = "1em";
-		this.paginationControlsEl.style.padding = "1em 0";
+		this.paginationControlsEl.classList.add(stylePageControls);
 		this.paginationControlsEl.classList.add(styleHidden);
 		this.containerElement.appendChild(this.paginationControlsEl);
 	}

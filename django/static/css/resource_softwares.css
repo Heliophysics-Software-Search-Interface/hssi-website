@@ -210,3 +210,26 @@
 .btn-scix i {
 	transform: scaleX(-1);
 }
+
+.page-controls {
+	display: flex; 
+	justify-content: center; 
+	align-items: center; 
+	gap: 1em; 
+	padding: 1em 0px;
+}
+
+.page-controls button {
+	padding: 10px;
+	padding-bottom: 7px;
+	border-radius: 20px;
+}
+
+.page-controls button:enabled {
+	outline: 1px solid #3598db;
+	cursor: pointer;
+}
+
+.page-controls button:disabled {
+	outline: 1px solid #bcbcbd;
+}

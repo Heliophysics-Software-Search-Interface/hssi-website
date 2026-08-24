@@ -213,9 +213,9 @@ export class FilterMenu {
 		}
 
 		// has active filters: ensure all data is loaded before filtering
+		Spinner.showSpinner("Applying Filters");
 		await this.targetView.awaitAllItems();
 
-		Spinner.showSpinner("Applying Filters");
 
 		try{
 			// clear old chips

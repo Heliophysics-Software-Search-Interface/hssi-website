@@ -77,8 +77,14 @@ export class FilterMenu {
 	private async parseUrlParams(): Promise<void> {
 		const search = new URLSearchParams(window.location.search);
 		const groupVals = search.get(searchParamFilter)?.split(urlSymGroupDelimiter);
-		
+
 		this.activeFilterGroups.length = 0;
+
+		// wait for resources to be ready before applying filters, so the spinner
+		// inside applyFilters only covers actual filter computation
+		if (!this.targetView) await ResourceView.onMainViewCreated.wait();
+		if (this.targetView.getAllItems()?.length <= 0) await this.targetView.onReady.wait();
+
 		if(!groupVals) {
 			this.applyFilters(false);
 			return;
@@ -190,13 +196,9 @@ export class FilterMenu {
 	/** Apply all the active filter groups to the results */
 	public async applyFilters(pushHistory: boolean = true): Promise<void> {
 
-		// ensure the filters can only be applied if there is a main resource view
-		if(!this.targetView){
-			await ResourceView.onMainViewCreated.wait();
-			if(!this.targetView) {
-				console.error("No target view to apply filters for!", this);
-				return;
-			}
+		if(!this.targetView) {
+			console.error("No target view to apply filters for!", this);
+			return;
 		}
 
 		Spinner.showSpinner("Applying Filters");
@@ -204,9 +206,6 @@ export class FilterMenu {
 		try{
 			// clear old chips
 			this.activeGroupsContainerElement.innerHTML = "Active Filter Groups: ";
-			
-			// only filter after resources are fetched
-			if(this.targetView.getAllItems()?.length <= 0) await this.targetView.onReady.wait();
 			
 			let items = this.targetView.getAllItems();
 			for(const group of this.activeFilterGroups){

@@ -231,3 +231,90 @@ class SoftwareListLookupTests(TestCase):
 		self.assertIn("Matching", names)
 		self.assertIn("Other", names)
 		self.assertNotIn("Hidden", names)
+
+	def test_every_entry_carries_its_slug(self):
+		response = self.client.get("/api/list/software/")
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		slugs = {entry["name"]: entry["slug"] for entry in response.data["data"]}
+		self.assertEqual(slugs["Matching"], "matching")
+		self.assertEqual(slugs["Other"], "other")
+
+	def test_listed_slug_resolves_on_the_detail_endpoint(self):
+		"""A display name is not a usable key; the slug shipped beside it is.
+
+		"PyMap3D" slugs to "pymap3d", so a consumer reading `name` off this
+		endpoint and substituting it into the detail URL gets nothing back.
+		Reading `slug` instead round-trips.
+		"""
+		software = Software.objects.create(
+			software_name="PyMap3D",
+			code_repository_url="https://github.com/example/pymap3d",
+		)
+		VerifiedSoftware.create_verified(software)
+
+		response = self.client.get("/api/list/software/")
+		entry = next(
+			item for item in response.data["data"] if item["name"] == "PyMap3D"
+		)
+		self.assertEqual(entry["slug"], "pymap3d")
+		self.assertNotEqual(entry["slug"], entry["name"])
+
+		detail = self.client.get(f"/api/view/software/{entry['slug']}/?view=jsonld")
+		self.assertEqual(detail.status_code, status.HTTP_200_OK)
+		self.assertEqual(detail.json()["name"], "PyMap3D")
+
+
+class SoftwareListJsonLdDumpTests(TestCase):
+	"""GET /api/list/software/?view=jsonld returns all records' JSON-LD."""
+
+	@classmethod
+	def setUpTestData(cls):
+		for name, repo in (
+			("Matching", "https://github.com/example/match"),
+			("Other", "https://github.com/example/other"),
+		):
+			software = Software.objects.create(
+				software_name=name,
+				code_repository_url=repo,
+			)
+			VerifiedSoftware.create_verified(software)
+		Software.objects.create(
+			software_name="Hidden",
+			code_repository_url="https://github.com/example/hidden",
+		)
+
+	def setUp(self):
+		self.client = APIClient()
+
+	def test_jsonld_view_dumps_every_visible_record(self):
+		response = self.client.get("/api/list/software/", {"view": "jsonld"})
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		data = response.json()["data"]
+		self.assertEqual([entry["name"] for entry in data], ["Matching", "Other"])
+		for entry in data:
+			self.assertIn("@context", entry)
+			self.assertIn("codeRepository", entry)
+
+	def test_jsonld_view_matches_the_detail_endpoint_output(self):
+		"""The dump is the same serialization as /api/view/, just batched."""
+		dump = self.client.get("/api/list/software/", {"view": "jsonld"})
+		entry = dump.json()["data"][0]
+		software_id = VerifiedSoftware.objects.get(slug="matching").pk
+		detail = self.client.get(f"/api/view/software/{software_id}/?view=jsonld")
+		self.assertEqual(entry, detail.json())
+
+	def test_jsonld_view_composes_with_repo_url_filter(self):
+		response = self.client.get(
+			"/api/list/software/",
+			{"view": "jsonld", "repo_url": "https://github.com/example/match"},
+		)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		data = response.json()["data"]
+		self.assertEqual(len(data), 1)
+		self.assertEqual(data[0]["name"], "Matching")
+
+	def test_unsupported_view_returns_400(self):
+		for bad in ("json-ld", "user", "standard", "nonsense"):
+			with self.subTest(view=bad):
+				response = self.client.get("/api/list/software/", {"view": bad})
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

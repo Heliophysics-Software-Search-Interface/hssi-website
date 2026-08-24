@@ -24,6 +24,7 @@ TYPE_AUTOFILLSOMEF = "AutofillSomefWidget"
 TYPE_AUTOFILLDATACITE = "AutofillDataciteWidget"
 TYPE_ROR = "RorWidget"
 TYPE_ORCID = "OrcidWidget"
+TYPE_AUTHORIDENTIFIER = "AuthorIdentifierWidget"
 TYPE_DATACITEDOI = "DataciteDoiWidget"
 TYPE_MODELBOX = "ModelBox"
 

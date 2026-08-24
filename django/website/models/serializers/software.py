@@ -135,7 +135,25 @@ class SoftwareSerializer(HssiSerializer):
 			data["url"] = org.website
 		return data
 
+	def _person_is_org(self, person: Person) -> bool:
+		return bool(person.identifier and "ror.org" in person.identifier)
+
 	def _person_jsonld(self, person: Person) -> dict[str, Any]:
+		affiliations = self._as_list(
+			self._organization_jsonld(org) for org in person.affiliation.all()
+		)
+		if self._person_is_org(person):
+			data: dict[str, Any] = {
+				"@type": "Organization",
+				"name": person.fullName,
+			}
+			if person.identifier:
+				data["@id"] = person.identifier
+				data["identifier"] = self._property_value(person.identifier)
+			if affiliations:
+				data["parentOrganization"] = self._maybe_single(affiliations)
+			return data
+
 		data: dict[str, Any] = {
 			"@type": "Person",
 			"givenName": person.given_name,
@@ -144,9 +162,6 @@ class SoftwareSerializer(HssiSerializer):
 		if person.identifier:
 			data["@id"] = person.identifier
 			data["identifier"] = self._property_value(person.identifier)
-		affiliations = self._as_list(
-			self._organization_jsonld(org) for org in person.affiliation.all()
-		)
 		if affiliations:
 			data["affiliation"] = self._maybe_single(affiliations)
 		return data
@@ -274,12 +289,17 @@ class SoftwareSerializer(HssiSerializer):
 		}
 		if instance.license:
 			data["license"] = instance.license.url
-		if instance.submission_info:
-			data["dateModified"] = (
-				instance.submission_info.filter(submission_date__isnull=False)
-					.latest("submission_date")
-					.submission_date
-			)
+		# `submission_info` is a RelatedManager, so testing it directly is
+		# always truthy and `.latest()` raised DoesNotExist for a published
+		# software with no dated SubmissionInfo, which 500'd the landing page
+		# and both JSON-LD API endpoints for that record.
+		latest_submission = (
+			instance.submission_info.filter(submission_date__isnull=False)
+				.order_by("submission_date")
+				.last()
+		)
+		if latest_submission:
+			data["dateModified"] = latest_submission.submission_date
 		return { key: value for key, value in data.items() if value }
 
 	def to_representation_jsonld(self, instance: Software) -> dict[str, Any]:

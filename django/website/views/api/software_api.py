@@ -19,7 +19,7 @@ from rest_framework.generics import GenericAPIView
 from ...models import Software, VerifiedSoftware, SoftwareEditQueue, SubmissionInfo
 from ...models.serializers.software import SoftwareSerializer
 from ...models.serializers.submission import SubmissionSerializer
-from ...models.serializers.util import SerialView
+from ...models.serializers.util import Q_VIEW, SerialView
 from ..edit_submission import email_existing_edit_link
 from .permissions import HasUpdateToken
 
@@ -55,9 +55,15 @@ class SoftwareDetailAPI(HSSIGenericAPIView):
 
 	def _get_visible_software(self, uid_or_slug: str | uuid.UUID) -> Software | None:
 		if not isinstance(uid_or_slug, uuid.UUID):
-			return Software.objects.filter(
-				pk=VerifiedSoftware.objects.filter(slug=uid_or_slug).first().pk
-			).first()
+			# Resolve the slug first: an unknown slug has to fall through to a
+			# None return so callers can answer 404. Reading `.pk` straight off
+			# the queryset's `.first()` raised AttributeError on a miss, which
+			# surfaced to clients as a 500 and made a mistyped slug look like a
+			# broken endpoint.
+			verified = VerifiedSoftware.objects.filter(slug=uid_or_slug).first()
+			if verified is None:
+				return None
+			return Software.objects.filter(pk=verified.pk).first()
 		visible_ids = VerifiedSoftware.objects.values_list("id", flat=True)
 		return Software.objects.filter(pk=uid_or_slug, pk__in=visible_ids).first()
 
@@ -93,26 +99,56 @@ class SoftwareViewAPI(SoftwareDetailAPI):
 	default_view: SerialView = SerialView.USER
 
 class SoftwareListAPI(APIView):
-	"""Return a list of visible Software IDs with their names.
+	"""Return a list of visible Software IDs with their names and slugs.
 
 	Supports an optional ``?repo_url=`` query parameter for exact-match
 	lookup by ``code_repository_url``. This is the lookup path used by
 	the updater to resolve a repo URL to a software UUID.
+
+	``slug`` is included because it, not ``name``, is the key the detail
+	endpoints accept. Without it a consumer has to reimplement
+	``VerifiedSoftware.get_unique_slug`` to build a slug URL from a name.
+
+	``?view=jsonld`` returns the full JSON-LD serialization of every
+	listed record instead of the id/name/slug entries, so harvesters
+	like SciX can pull all metadata in one request rather than one
+	request per record.
 	"""
 
 	authentication_classes = []
 	permission_classes = [AllowAny]
 
 	def get(self, request: HttpRequest) -> Response:
-		visible_ids = VerifiedSoftware.objects.values_list("id", flat=True)
-		queryset = Software.objects.filter(pk__in=visible_ids)
+		slugs = dict(VerifiedSoftware.objects.values_list("id", "slug"))
+		queryset = Software.objects.filter(pk__in=slugs.keys())
 
 		repo_url = request.query_params.get("repo_url")
 		if repo_url:
 			queryset = queryset.filter(code_repository_url__iexact=repo_url.strip())
 
+		view = request.query_params.get(Q_VIEW)
+		if view is not None and view.lower() != "jsonld":
+			return Response(
+				{"detail": f"Unsupported view '{view}'. This endpoint supports view=jsonld."},
+				status=status.HTTP_400_BAD_REQUEST,
+			)
+		if view:
+			data = []
+			for software in queryset.order_by("software_name"):
+				serializer = SoftwareSerializer(software, context={"request": request})
+				serializer._view = SerialView.JSONLD
+				data.append(serializer.data)
+			return Response({"data": data})
+
 		entries = queryset.values("id", "software_name").order_by("software_name")
-		data = [{"id": str(item["id"]), "name": item["software_name"]} for item in entries]
+		data = [
+			{
+				"id": str(item["id"]),
+				"name": item["software_name"],
+				"slug": slugs.get(item["id"]),
+			}
+			for item in entries
+		]
 		return Response({"data": data})
 
 @method_decorator(csrf_exempt, name="dispatch")

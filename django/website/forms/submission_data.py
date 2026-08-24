@@ -192,7 +192,7 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 	ModelSubfield.define(
 		name=FIELD_AUTHORIDENTIFIER,
 		row_name=ROW_PERSON_IDENTIFIER,
-		type=TYPE_ORCID,
+		type=TYPE_AUTHORIDENTIFIER,
 		requirement=RequirementLevel.RECOMMENDED,
 		properties={
 			PROP_LABEL: "Author Identifier",

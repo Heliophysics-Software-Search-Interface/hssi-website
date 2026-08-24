@@ -203,3 +203,72 @@ class SoftwareDetailJsonLdTests(TestCase):
 
 		data = json.loads(scripts[0])
 		self.assertEqual(data["description"], description)
+
+
+class SoftwareApiSlugLookupTests(TestCase):
+	"""Slug-keyed lookups on /api/view/ and /api/data/ resolve or 404."""
+
+	@classmethod
+	def setUpTestData(cls):
+		cls.software = Software.objects.create(
+			software_name="PyMap3D",
+			code_repository_url="https://example.com/pymap3d",
+		)
+		cls.verified = VerifiedSoftware.create_verified(cls.software)
+
+	def test_slug_resolves_to_software(self):
+		self.assertEqual(self.verified.slug, "pymap3d")
+		response = self.client.get("/api/view/software/pymap3d/?view=jsonld")
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response.json()["name"], "PyMap3D")
+
+	def test_unknown_slug_returns_404(self):
+		for path in (
+			"/api/view/software/no-such-software/",
+			"/api/view/software/no-such-software/?view=jsonld",
+			"/api/data/software/no-such-software/",
+		):
+			with self.subTest(path=path):
+				self.assertEqual(self.client.get(path).status_code, 404)
+
+	def test_display_name_that_is_not_the_slug_returns_404(self):
+		"""The list endpoint's display name is not a valid lookup key.
+
+		Only the slug is. A caller substituting the name used to get a 500,
+		which read as an outage rather than a wrong key.
+		"""
+		response = self.client.get("/api/view/software/PyMap3D/?view=jsonld")
+		self.assertEqual(response.status_code, 404)
+
+	def test_unpublished_software_is_not_reachable_by_slug(self):
+		unpublished = Software.objects.create(software_name="Unpublished")
+		response = self.client.get(f"/api/view/software/{unpublished.pk}/")
+		self.assertEqual(response.status_code, 404)
+
+
+class SoftwareApiViewParamTests(TestCase):
+	"""The ?view= param on the detail endpoints validates instead of 500ing."""
+
+	@classmethod
+	def setUpTestData(cls):
+		cls.software = Software.objects.create(software_name="View Param Test")
+		VerifiedSoftware.create_verified(cls.software)
+
+	def test_unsupported_view_value_returns_400(self):
+		for path in (
+			f"/api/view/software/{self.software.pk}/?view=json-ld",
+			f"/api/view/software/view-param-test/?view=bogus",
+			f"/api/data/software/{self.software.pk}/?view=json-ld",
+		):
+			with self.subTest(path=path):
+				response = self.client.get(path)
+				self.assertEqual(response.status_code, 400)
+				self.assertIn("Unsupported view", str(response.json()))
+
+	def test_valid_view_values_are_case_insensitive(self):
+		for viewstr in ("jsonld", "JSONLD", "JsonLd", "standard", "user"):
+			with self.subTest(view=viewstr):
+				response = self.client.get(
+					f"/api/view/software/{self.software.pk}/?view={viewstr}"
+				)
+				self.assertEqual(response.status_code, 200)

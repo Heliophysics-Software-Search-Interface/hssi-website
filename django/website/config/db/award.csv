@@ -1,30 +1,112 @@
 id,name,identifier,funder
 bfafc4e8-dfe0-4a79-b4cd-ebc22698469a,,,
-84efccd3-fbbb-4f57-8c7f-4fa2bb1fb9ef,AIDA (Artificial Intelligence Data Analysis) in Heliophysics,776262,
-c14a860f-8c9e-417e-b06b-8709aaa36102,Collaborative Research: CEDAR--Assimilative Analysis of Low- and Mid-latitude Ionospheric Electrodynamics,AGS-1651393,
-22d9179a-489f-46e4-a11b-0e2f6b5b2e7e,Collaborative Research: Frameworks: An open source software ecosystem for plasma physics,1931435,
-b39696c2-0608-4310-b240-3d93708b1019,Collaborative Research: Frameworks: An open source software ecosystem for plasma physics,1931388,
-b0b1eb10-9347-4fc8-ac9a-ce250e82f2a3,Collaborative Research: Frameworks: An open source software ecosystem for plasma physics,1931429,
-2b73ec11-2aea-4d37-888b-453e5fe86b97,Collaborative Research: Frameworks: An open source software ecosystem for plasma physics,1931393,
-2d670657-eaad-46f8-9128-4ceb4d044bd0,"Collaborative Research: Inferring High Latitude Convection Patterns Using SuperDARN, DMSP and ACE",1259508,
-f0efaf1b-9ddd-4e19-8bd9-bece2bc23ef0,Collaborative Research: The Evolution of Magnetic Skeletons During 3D Magnetic Reconnection,DE-SC0016363,
-6df8b4d4-8874-48f1-9d28-adff1f97b35b,MMS,NNG04EB99C,
-d40495ad-974a-4889-ad82-03d9f9bf4551,NASA Goddard Space Flight Center HSD Support Partnership,80NSSC21M0180,
-cce1ddeb-a82f-44b3-ae8a-4e8737aca5ba,NASA grant,80NSSC18K1203,
-616d4bff-b91f-4565-b589-a399c4f8fa5c,NASA grant,NNX10AT02G,
-e4d2b621-f80d-4a1a-9a7c-bea03c8556b3,NASA Grant 80NSSC23K0256,80NSSC23K0256,
-47f0aecc-fb8e-4582-ac27-b9b5eb9a0273,NASA Heliophysics Data Environment Enhancements,80NSSC20K0176,
-5a63263c-70dd-4108-92bb-9db26336ac7b,NASA Heliophysics Data Environment Enhancements (HDEE),80NSSC20K0174,
-7eff6858-2b98-433b-95b6-de11563bb12c,NASA ROSES-2020 B.5 Living With a Star Science program element,NNH20ZDA001N-LWS,
-e25042db-95c9-4d94-8fb9-209e9e96bb0a,Plasma Jet Fronts: Energy Conversion and Particle Acceleration,139/18,
-03ab3ee8-fbc6-4a4e-a2da-da87a6c2d5ab,Polarimeter to UNify the Corona and Heliosphere (PUNCH),80GSFC18C0014,
-0e7f7325-9f0a-4b7d-927d-0f4017897601,Postdoctoral Fellowship: AGS-PRF: Advancing Heliophysics with Automated Machine Learning and Open-Source Integration,2444918,
-1b450570-2ce6-4876-981a-4ead37fd5e51,Solar EneRgetic ParticlE aNalysis plaTform for the INner hEliosphere (SERPENTINE),101004159,
-82ef064b-0da8-4370-a15c-63a43fb8554d,Solar Orbiter/SPICE,80NSSC19K1000,
-de5e1b91-3280-47eb-976f-55d19b5af289,Space Precipitation Impacts (SPI),,
-2b6022eb-fadb-4a93-8029-6490b437c73a,Space Weather Research-to-Operations-to-Research (SWR2O2R),80NSSC22K0272,
-9c84fc24-d881-4694-bfa4-eb0e66217949,SPEDAS Community Support,NNG17PZ01C,
-bc69efa0-7ec8-48e5-9d20-740a57ef12fe,The Energetic Solar Eruptions: Data and Analysis Tools (SOLER),101134999,
-483628fd-437f-41f5-a74e-a4c6ca480883,THEMIS,NAS5-02099,
-931009e7-1480-4de8-82a1-379e58f4af5f,U.S. Naval Research Laboratory award,N00173191G016,
-6c2c1ea4-9588-4f38-ae6b-6235a3f9426e,U.S. Naval Research Laboratory award,N0017322P0744,
+84efccd3-fbbb-4f57-8c7f-4fa2bb1fb9ef,AIDA (Artificial Intelligence Data Analysis) in Heliophysics,776262,8e3350ef-76e3-4a63-93f6-8cecfad3b9b4
+c14a860f-8c9e-417e-b06b-8709aaa36102,Collaborative Research: CEDAR--Assimilative Analysis of Low- and Mid-latitude Ionospheric Electrodynamics,AGS-1651393,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+22d9179a-489f-46e4-a11b-0e2f6b5b2e7e,Collaborative Research: Frameworks: An open source software ecosystem for plasma physics,1931435,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+b39696c2-0608-4310-b240-3d93708b1019,Collaborative Research: Frameworks: An open source software ecosystem for plasma physics,1931388,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+b0b1eb10-9347-4fc8-ac9a-ce250e82f2a3,Collaborative Research: Frameworks: An open source software ecosystem for plasma physics,1931429,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+2b73ec11-2aea-4d37-888b-453e5fe86b97,Collaborative Research: Frameworks: An open source software ecosystem for plasma physics,1931393,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+2d670657-eaad-46f8-9128-4ceb4d044bd0,"Collaborative Research: Inferring High Latitude Convection Patterns Using SuperDARN, DMSP and ACE",1259508,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+f0efaf1b-9ddd-4e19-8bd9-bece2bc23ef0,Collaborative Research: The Evolution of Magnetic Skeletons During 3D Magnetic Reconnection,DE-SC0016363,6ade9b08-e66f-4c97-a1e7-42274ec78bba
+6df8b4d4-8874-48f1-9d28-adff1f97b35b,MMS,NNG04EB99C,a4e07475-572f-48db-b2e7-5d59ea194465
+d40495ad-974a-4889-ad82-03d9f9bf4551,NASA Goddard Space Flight Center HSD Support Partnership,80NSSC21M0180,a4e07475-572f-48db-b2e7-5d59ea194465
+cce1ddeb-a82f-44b3-ae8a-4e8737aca5ba,NASA grant,80NSSC18K1203,a4e07475-572f-48db-b2e7-5d59ea194465
+616d4bff-b91f-4565-b589-a399c4f8fa5c,NASA grant,NNX10AT02G,a4e07475-572f-48db-b2e7-5d59ea194465
+e4d2b621-f80d-4a1a-9a7c-bea03c8556b3,NASA Grant 80NSSC23K0256,80NSSC23K0256,a4e07475-572f-48db-b2e7-5d59ea194465
+47f0aecc-fb8e-4582-ac27-b9b5eb9a0273,NASA Heliophysics Data Environment Enhancements,80NSSC20K0176,a4e07475-572f-48db-b2e7-5d59ea194465
+5a63263c-70dd-4108-92bb-9db26336ac7b,NASA Heliophysics Data Environment Enhancements (HDEE),80NSSC20K0174,a4e07475-572f-48db-b2e7-5d59ea194465
+7eff6858-2b98-433b-95b6-de11563bb12c,NASA ROSES-2020 B.5 Living With a Star Science program element,NNH20ZDA001N-LWS,a4e07475-572f-48db-b2e7-5d59ea194465
+e25042db-95c9-4d94-8fb9-209e9e96bb0a,Plasma Jet Fronts: Energy Conversion and Particle Acceleration,139/18,14b7348c-636f-4142-b5ed-eea92095ad44
+03ab3ee8-fbc6-4a4e-a2da-da87a6c2d5ab,Polarimeter to UNify the Corona and Heliosphere (PUNCH),80GSFC18C0014,a4e07475-572f-48db-b2e7-5d59ea194465
+0e7f7325-9f0a-4b7d-927d-0f4017897601,Postdoctoral Fellowship: AGS-PRF: Advancing Heliophysics with Automated Machine Learning and Open-Source Integration,2444918,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+1b450570-2ce6-4876-981a-4ead37fd5e51,Solar EneRgetic ParticlE aNalysis plaTform for the INner hEliosphere (SERPENTINE),101004159,8e3350ef-76e3-4a63-93f6-8cecfad3b9b4
+82ef064b-0da8-4370-a15c-63a43fb8554d,Solar Orbiter/SPICE,80NSSC19K1000,a4e07475-572f-48db-b2e7-5d59ea194465
+de5e1b91-3280-47eb-976f-55d19b5af289,Space Precipitation Impacts (SPI),,ec0686b9-e659-484c-859d-2bf3bf1ea4cd
+2b6022eb-fadb-4a93-8029-6490b437c73a,Space Weather Research-to-Operations-to-Research (SWR2O2R),80NSSC22K0272,4d4dd0ac-e1e3-43e1-ae4f-cdafb2dc4a5d
+9c84fc24-d881-4694-bfa4-eb0e66217949,SPEDAS Community Support,NNG17PZ01C,a4e07475-572f-48db-b2e7-5d59ea194465
+bc69efa0-7ec8-48e5-9d20-740a57ef12fe,The Energetic Solar Eruptions: Data and Analysis Tools (SOLER),101134999,8e3350ef-76e3-4a63-93f6-8cecfad3b9b4
+483628fd-437f-41f5-a74e-a4c6ca480883,THEMIS,NAS5-02099,a4e07475-572f-48db-b2e7-5d59ea194465
+931009e7-1480-4de8-82a1-379e58f4af5f,U.S. Naval Research Laboratory award,N00173191G016,bbea6ab9-2135-414d-af37-d81216e13d4d
+6c2c1ea4-9588-4f38-ae6b-6235a3f9426e,U.S. Naval Research Laboratory award,N0017322P0744,bbea6ab9-2135-414d-af37-d81216e13d4d
+e8f19c3a-cce2-43ab-9ffe-410dab7485d9,Academy of Finland project,314664,934158d0-e44b-4090-8aae-280ee5ae768f
+1a2263f5-2d83-44b2-babf-7625e2e390c8,Advanced Modular Incoherent Scatter Radar (AMISR) Operations and Maintenance,AGS-1840962,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+8df78f03-30b0-47d2-b253-e870b696b6fe,A High-Performance Adaptive Simulation Framework for Space-Weather Modeling (SWMF),NCC5-614,a4e07475-572f-48db-b2e7-5d59ea194465
+b3a95e5c-6c49-4086-98ce-2dce7d0bc61a,Air Force Office of Scientific Research award,FA9559-16-1-0364,34f273ac-b78b-4881-88ba-7b4afe4d2144
+58d38f2f-299d-4c58-81e7-9cae37397da6,C1 project Internal Funds KU Leuven,C14/19/089,b5f27746-09ff-4269-b6d5-c32fc1b2d11b
+eebab35e-9cfe-4bce-8bc2-73772f19656e,Characterizing High-latitude Ionospheric Fluid Turbulence and Radio Scintillation with New Observations and Data-Driven Modeling,2027300,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+6f0f48a3-97e8-48e8-8daf-b2f0a18fb936,Consolidated Grant,ST/T00021X/1,f0c58f65-cf25-46c5-b716-9c82564901c6
+6197e038-c158-45ba-aca8-a59428272167,Data Science Institute Postdoctoral Matching Fund,,90d331b9-ec35-4f29-9879-1b9819ee0b35
+ebc514ba-2487-42a6-b657-a7e959eabece,dbprocessing: Space Science Data Processing Controller in Python,80NSSC21K0307,a4e07475-572f-48db-b2e7-5d59ea194465
+8fa54077-9e9a-40b4-9b30-e57ab20ea9c4,EarthCube Data Capabilities: Collaborative Proposal: Assimilative Mapping of Geospace Observations,ICER-1928327,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+a911b2ed-d02e-4466-80ba-2a9f46fd32e0,EarthCube Data Capabilities: Collaborative Proposal: Assimilative Mapping of Geospace Observations,ICER-1928358,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+3f42d689-0746-4a68-a17d-0d62143e503e,EarthCube Data Capabilities: Collaborative Proposal: Assimilative Mapping of Geospace Observations,ICER-1928403,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+7836a1df-58fb-447b-9a20-112746613b70,EarthCube Data Capabilities--Jupyter Meets the Earth: Enabling Discovery in Geoscience through Interactive Computing at Scale,1928406,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+704698e9-88b4-4ed0-81ea-36c6e2a7eac2,EarthCube Data Capabilities--Jupyter Meets the Earth: Enabling Discovery in Geoscience through Interactive Computing at Scale,1928374,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+55377cf8-f4ad-48d3-90ea-de14a577ac32,Enabling Transformational Science and Engineering Through Collaborative Visualization and Data Analysis,09-06379,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+3a1d62c5-ffcc-4126-8892-f48ec88a3460,Enhanced lead time for geomagnetic storms,P31659,1241b7fb-f105-44bc-bfce-b952c018f3c4
+5e436c1c-8128-496d-84d7-c4d01f4e14a4,Enhancing Heliophysics Python Library Interoperability by Adapting Common Data Models,80NSSC21K0304,a4e07475-572f-48db-b2e7-5d59ea194465
+d3382fe5-20eb-4a2d-9078-11fd484ae7bd,Hinode X-Ray Telescope,NNM07AB07C,a4e07475-572f-48db-b2e7-5d59ea194465
+531ef7c5-d8fe-43f2-8494-368d07c133b8,Improving SpiceyPy: the Python SPICE interface,80NSSC25K7040,a4e07475-572f-48db-b2e7-5d59ea194465
+0ea9ff0a-ad15-441b-a258-dff3466ac3cd,Improving the Usability of sunpy's Data Downloader,,5c95c463-a7e1-4bf9-a4b2-ae646aa52e20
+08b7d7d4-90e1-4ddc-a0eb-6820acf6952d,ITR:  Gleaning Insight into Large Time-Varying Scientific and Engineering Data,03-25934,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+7592b136-a6f6-459e-846e-5d37ae14e567,Kamodo Containerized Space Weather Models,80NSSC21C0585,a4e07475-572f-48db-b2e7-5d59ea194465
+28df1422-3517-435c-9983-1cfba3aac0ca,Kamodo Containerized Space Weather Models,80NSSC20C0290,a4e07475-572f-48db-b2e7-5d59ea194465
+ceeadf39-c8be-483c-a4b9-d50dad256740,"Kvantum Institute funding for the development of GeospaceLAB, University of Oulu",,5639973f-3756-4eda-a4ec-1c2b928968b3
+8c3ec185-4c68-4788-ab43-775b6b068539,Major Research Instrumentation,AGS-1919310,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+b0b26093-852d-41f0-8990-aa2da4177360,MAVEN mission support through the NASA Mars Exploration Program,NNH10CC04C,a4e07475-572f-48db-b2e7-5d59ea194465
+44ae23c1-6496-4902-b550-9a228665310b,Mercury in the solar wind: adaptive kinetic model for space weather at solar system's innermost planet,101124960,4b222312-4d70-4dbd-b2bf-4b9c5fddf368
+87e22d13-7ee2-428f-8571-b71e82917290,NASA AI/ML Use Case Program,80NSSC21K1370,a4e07475-572f-48db-b2e7-5d59ea194465
+76582921-b278-49bc-82ed-971c627a0795,NASA contract NAS5-38099,NAS5-38099,a4e07475-572f-48db-b2e7-5d59ea194465
+45614314-602a-417a-a415-a5542087edd0,NASA Cooperative Agreement,NNG11PL10A,a4e07475-572f-48db-b2e7-5d59ea194465
+0f3ceaf3-c768-4781-869c-76d684e9cecd,NASA DRIVE Science Center,80NSSC20K0600,a4e07475-572f-48db-b2e7-5d59ea194465
+20f8b053-6983-4c13-849e-92b2fe839afd,NASA Heliophysics Supporting Research,80NSSC20K1313,a4e07475-572f-48db-b2e7-5d59ea194465
+3f8caee6-0f62-4119-92a9-41bd563f43b1,NASA Hinode program support,,a4e07475-572f-48db-b2e7-5d59ea194465
+d6458790-fd93-4112-8aaf-17dbe820f31f,NASA HMI contract to Stanford University,NAS5-02139,a4e07475-572f-48db-b2e7-5d59ea194465
+f9647783-ec64-4e97-9477-1d95410037d2,NASA HSR grant,80NSSC19K0855,a4e07475-572f-48db-b2e7-5d59ea194465
+3fa6e49a-dee9-47cb-a48f-87d9cb33b5cf,NASA Living With a Star,80NSSC17K0681,a4e07475-572f-48db-b2e7-5d59ea194465
+898d34f3-a1e1-422a-818a-040d9fe6b4b0,NASA Living With a Star,80NSSC20K0185,a4e07475-572f-48db-b2e7-5d59ea194465
+52979117-9fce-4467-a1ee-d51b8ee1258a,NASA Living With a Star,80NSSC20K0190,a4e07475-572f-48db-b2e7-5d59ea194465
+d1648e45-57f1-42dc-8f2e-60bfc983d81b,NASA Living With a Star,80NSSC20K1778,a4e07475-572f-48db-b2e7-5d59ea194465
+44ccbf3c-f6aa-416d-a6c2-c0955452b5f3,NASA Magnetospheric Multiscale,80NSSC19K0564,a4e07475-572f-48db-b2e7-5d59ea194465
+084511c1-ea7a-4b07-8bcd-e677b222a461,NASA Postdoctoral Program,,a4e07475-572f-48db-b2e7-5d59ea194465
+5d4cd37a-d7c3-4d30-b441-48183362d026,NASA SDO/AIA contract to Lockheed Martin Solar and Astrophysics Laboratory,NNG04EA00C,a4e07475-572f-48db-b2e7-5d59ea194465
+fbcfb0dc-ff8e-414a-ac5e-db7ec1a1b5c2,NASA Solar System Workings,80NSSC20K0854,a4e07475-572f-48db-b2e7-5d59ea194465
+0891547a-b63b-4b9c-90ab-f5dca4a02861,National Aeronautics and Space Administration award,80NSSC21K0047,a4e07475-572f-48db-b2e7-5d59ea194465
+295eb333-38f3-456f-a05a-4cda6a5abf1e,National Aeronautics and Space Administration contract,NNN06AA01C,a4e07475-572f-48db-b2e7-5d59ea194465
+c9953b00-27eb-4a5e-84b8-6ff8be6b1dcb,National Aeronautics and Space Administration grant,80NSSC21K1318,a4e07475-572f-48db-b2e7-5d59ea194465
+abefdf84-d4c9-4960-b610-d4dd05220f5b,National Aeronautics and Space Administration grant,80NSSC21K1354,a4e07475-572f-48db-b2e7-5d59ea194465
+15ea04fe-2e0b-4cf9-8791-3e73b6edd9a1,National Aeronautics and Space Administration grant,80NSSC21K0458,a4e07475-572f-48db-b2e7-5d59ea194465
+54188328-6bdf-45dd-b831-f51aa4008361,National Aeronautics and Space Administration grant,80NSSC24K0071,a4e07475-572f-48db-b2e7-5d59ea194465
+d3c4f9a6-6af0-4eba-b1ed-6e8127be7201,National Aeronautics and Space Administration grant,80NSSC20K0195,a4e07475-572f-48db-b2e7-5d59ea194465
+1f0b1ea1-354c-4b51-8eed-2d89ed323e3a,National Aeronautics and Space Administration grant,80NSSC24K0552,a4e07475-572f-48db-b2e7-5d59ea194465
+f1e01e3a-10d5-41e1-b033-cbbd7816f5e2,National Aeronautics and Space Administration grant,80NSSC24K0260,a4e07475-572f-48db-b2e7-5d59ea194465
+4f0ca594-3700-453e-ad07-576ed8f4d0e3,National Aeronautics and Space Administration grant,80NSSC20K1273,a4e07475-572f-48db-b2e7-5d59ea194465
+2dcfc6b2-0763-4fb9-879f-33e66fda5c32,National Aeronautics and Space Administration grant,80NSSC19K0912,a4e07475-572f-48db-b2e7-5d59ea194465
+f53e89a5-63c3-4c6d-9bc3-db5eea533b93,National Aeronautics and Space Administration grant,80NSSC24K1241,a4e07475-572f-48db-b2e7-5d59ea194465
+fe3bfb00-455a-46d1-99a5-f977e2a87269,National Aeronautics and Space Administration grant,NNX15AU57G,a4e07475-572f-48db-b2e7-5d59ea194465
+d6d7b323-d4b9-46f3-8f41-5f5feab90b82,National Aeronautics and Space Administration grant,80NSSC20K1581,a4e07475-572f-48db-b2e7-5d59ea194465
+fe169145-2a14-4919-8584-e89bcca94486,National Aeronautics and Space Administration grant,80NSSC22K0061,a4e07475-572f-48db-b2e7-5d59ea194465
+06b9d069-b6ac-4465-8e3f-887d6b658fef,National Aeronautics and Space Administration grant,80NSSC20K1786,a4e07475-572f-48db-b2e7-5d59ea194465
+92b21119-5990-4b0b-b60e-03e2c7568d5f,NSF PREEVENTS,1663800,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+a20e7e39-2591-4241-a8e0-b8dbd6f57113,NSF Space Weather with Quantified Uncertainty,PHY-2027555,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+929ca1aa-1282-4b1b-9d27-1436b12e5c80,Office of Naval Research Multidisciplinary University Research Initiative grant,ONR15-FOA-0011,1e7a4ba5-a5be-47ef-9415-d567e906b3ee
+b0af9da1-5d54-4dd2-be9f-79e51b1e9d05,Parker Solar Probe Integrated Science Investigation of the Sun,136435,c84428f2-df59-4ecd-b725-25cf6ab57f72
+4acddf85-fcdc-4744-9f89-7a9174d42cd0,PlasmaPy Infrastructure and Maintenance,80NSSC25K0360,a4e07475-572f-48db-b2e7-5d59ea194465
+ebb17407-49fb-40b8-9cf3-f931b3a0358b,Postgraduate Research Studentship,,cdbe3c65-8ac5-4eb8-af51-53a6e969e5b3
+0f11fabc-3f03-4476-adfb-387dca895e7c,Research and Development Grant,059RDEN-1,4910d9ce-52be-4e08-9dd4-d1d013b7641b
+ed08279c-a254-4279-b8d5-4f9bb29f07b0,Science and Technology Facilities Council grant,ST/S000240/1,f0c58f65-cf25-46c5-b716-9c82564901c6
+9d5dfaeb-dcc6-4504-af7a-c708fdbcfc0e,Scientific and Technological Excellence by Leveraging LOFAR Advancements in Radio Astronomy,952439,8e3350ef-76e3-4a63-93f6-8cecfad3b9b4
+a76fea8a-7cf6-4c14-858f-96246bafbffb,SI2-SSE: Wavelet Enabled Progressive Data Access and Storage Protocol (WASP),ACI-14-40412,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+0579e91b-6fe8-43a3-91f1-05a59409a8f6,SIDC Data Exploitation,PRODEX-12,1e6cfcf1-e74d-4a24-89d8-ac40137f044e
+68a9b11e-313e-4950-a7aa-72b70fe039fd,SunPy support for multidimensional data and spectropolarimetric analysis,19-HDEE19_2-0018,a4e07475-572f-48db-b2e7-5d59ea194465
+f3b008b1-6cd7-4810-aa8c-8aa46242d8a7,"Swarm Data, Innovation, and Science Cluster (Swarm DISC)",4000109587/13/I-NB,1e6cfcf1-e74d-4a24-89d8-ac40137f044e
+463bfdaf-50ab-40ec-abd1-92d7d58f6403,Swedish National Space Agency postdoctoral grant,DNR-155A/17,14b7348c-636f-4142-b5ed-eea92095ad44
+8d7a00ee-e068-4c8d-952c-e2f3c20f6d8a,SWiM,B2/191/P1/SWiM,03b59ca0-3bb1-4994-a103-3bb4d03602dc
+a41c320b-c274-4291-ba36-a1c88493e7ec,TIMED/GUVI Project,NNX14AK74G,a4e07475-572f-48db-b2e7-5d59ea194465
+9f9f0d0b-0196-461d-ab65-3c32291af507,Understanding the high-latitude geospace system to the point of prediction: The Heliophysics KNOWledge Network (Helio-KNOW),80NSSC21K0622,a4e07475-572f-48db-b2e7-5d59ea194465
+2adca1f3-a9c8-4f91-91b6-3b353547f9cc,U.S. National Science Foundation grant,AGS-1952737,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+d72fda36-c177-4c50-a7a6-71121ed5eadc,U.S. National Science Foundation grant,AGS-2033787,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+d5b6f181-a410-411f-9fc9-3eefe515bf4f,U.S. National Science Foundation grant,1503389,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
+07dab8d4-4651-4f07-be32-5cc7a953b79e,"Van Allen Probes Radiation Belt Storm Probe, Energetic particle, Composition, and Thermal plasma suite",967399,c84428f2-df59-4ecd-b725-25cf6ab57f72
+0842077a-882d-4fc7-b441-c50848e01998,Virtual Observatories,05-S3CVO05-11,a4e07475-572f-48db-b2e7-5d59ea194465
+653032f7-4282-47e7-85a5-50d304b96506,WEAVE,G.0025.23N,2ec788a5-449c-4032-90dd-62235065901a

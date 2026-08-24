@@ -6,7 +6,7 @@ e211347f-4b04-4765-a230-295f366390d1,spacepy-dbprocessing
 b8495e18-9a18-4e8f-8b88-85db6e74ec22,spedas-space-physics-environment-data-analysis-system
 13659e76-e911-41da-bf99-30eb7b05defc,the-ccmc-kamodo-analysis-suite
 ad9602aa-4d82-4f9f-9ef5-053f92f2c9ff,geopack
-a74cb76b-da08-4412-817f-3240e52c5dde,xrtpy-a-hinode-x-ray-telescope-python-package
+a74cb76b-da08-4412-817f-3240e52c5dde,xrtpy
 e2069dd1-ba2f-45fa-b2b7-9052a16f74cc,kaipy
 e57951e6-9761-421e-b482-aebfd2804c81,amgeo
 428a1d93-e1a5-407b-90a4-9bb2b85e39ec,autoplot
@@ -35,7 +35,7 @@ c5b93d11-92e0-46cd-8616-427edce159d2,mavenpy
 59c24c09-5ecd-44c8-a324-5a7da62c634b,plume-plasma-in-a-linear-uniform-magnetized-environment
 a73ebc78-1f89-4af8-8f67-2e35de947d16,pyaurorax
 dab7d824-81ec-49ba-911a-b3d081469a84,pydarn
-a53ebbd1-0f08-4bf6-aeaa-90067a3b1312,pyiri2016-official-release-of-the-iri2016-wrapper-in-python
+a53ebbd1-0f08-4bf6-aeaa-90067a3b1312,pyiri2016
 bdd706f0-b987-446b-b650-78d9d86f00b2,pyrfu
 9188840c-25ba-4ec8-b8c3-d32413aaf7a0,pysatcdf
 9de35b9b-704e-4cf3-b580-fff54b9ede15,pythea-a-software-package-to-reconstruct-the-3d-structure-of-cmes-and-shock-waves
@@ -78,7 +78,6 @@ e8b6fe34-d598-4d53-86d0-288bc004c3e7,jswoboda-geodatapython-isr-sim-paper
 43700827-e657-4937-ae69-c333b70d3756,asilib
 2fd43ecd-9910-48f4-bf08-f07a4445cdf2,euvpy
 4507d98e-44d1-40ea-8733-8047738b9a7a,plasmapy
-8ee452af-f474-42ab-900a-691a1e25257f,xrtpy
 37a18000-2d1f-41db-afe6-6545f817bcb7,punchbowl
 84062431-340c-4ac1-bdc9-a79a431d9869,pygs
 b5742bb7-4c8e-45cd-9429-65cb75f32795,aidapy
@@ -102,7 +101,6 @@ a81dc380-707e-4d2a-8995-ffe2454026ea,gimamag
 c0c97c0f-c50b-44b5-9b95-c599e99004fa,goesutils
 b677d3e7-9934-4e08-b823-8809798f2028,hwm-93
 30f42aa0-cca9-4cb7-8479-7149e5f20112,igrf-13
-b23a6e1f-e548-4477-bc3a-eb537c1cc5bb,iri-2016
 b26b964d-c772-4fe5-893e-74bd9148806a,iri-90
 40b44149-d3f3-45a5-8d44-424b4c886b7a,lowtran
 d7baab30-c95a-40e7-b076-287fb90de9d5,madrigalweb
@@ -120,3 +118,6 @@ c47c5638-d426-4868-ae04-bc993ab0c2e1,sciencedates
 62ac1496-2c4b-4d93-95f0-7ee39deeb0ea,wmm2015
 9c1d2774-3eeb-4b72-bd48-fa7eb5c5e39e,wmm2020
 763e3b22-b9ac-4bee-b665-69d1acb70712,pysat
+68f29968-0830-437d-a249-ba47ac22b0b4,dkist-user-tools
+ff74234b-46ca-4d5a-9008-fd9e3643f565,adelphi
+683398f6-8f62-49a6-9eb3-bf926a9b621c,mgsutils

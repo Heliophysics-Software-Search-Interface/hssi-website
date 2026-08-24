@@ -32,6 +32,18 @@ def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 		raise Exception(f"Unauthorized access, {access} < {model.access}")
 		
 	objects = model.objects.all()
+	total = objects.count()
+
+	offset_param = request.GET.get("offset")
+	limit_param = request.GET.get("limit")
+	if offset_param is not None or limit_param is not None:
+		try:
+			offset = int(offset_param or 0)
+			limit = int(limit_param or 25)
+		except ValueError:
+			return HttpResponseBadRequest("offset and limit must be integers")
+		objects = objects[offset:offset + limit]
+
 	arr: list[dict[str, Any]] = []
 
 	fields = get_fields_param(request.GET)
@@ -44,8 +56,8 @@ def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 		except Exception as e:
 			print(e)
 			continue
-	
-	return JsonResponse({"data": arr})
+
+	return JsonResponse({"data": arr, "total": total})
 
 def get_model_row(request: HttpRequest, model_name: str, uid: str) -> JsonResponse:
 	""" 

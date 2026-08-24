@@ -111,13 +111,16 @@ export async function searchForQuery(
 	Spinner.showSpinner(`Searching for '${trimmedQuery}'`);
 
 	try{
+		const view = ResourceView.main;
+
+		// ensure all software is loaded so search covers the full dataset
+		if (view) await view.awaitAllItems();
+
 		const resultIds = await getRelevantQueryIds(trimmedQuery);
 		const resultData = await ModelDataCache.getModelData(
 			"VerifiedSoftware",
 			resultIds
 		) as SoftwareDataAsync[];
-
-		const view = ResourceView.main;
 		const filteredItems = view.getFilteredItems();
 		const filteredIds = new Set(
 			filteredItems.map(item => item.id.toLowerCase())

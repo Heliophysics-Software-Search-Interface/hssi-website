@@ -115,7 +115,15 @@ export class ResourceView {
 		this.paginationControlsEl.classList.remove(styleHidden);
 	}
 
-	private async loadPage(offset: number): Promise<void> {
+	private recordPageUrlParam(push: boolean = true): void {
+		const page = Math.floor(this.paginationOffset / this.PAGE_SIZE) + 1;
+		const newUrl = new URL(window.location.href);
+		if (page <= 1) newUrl.searchParams.delete("page");
+		else newUrl.searchParams.set("page", String(page));
+		if (push) history.pushState(null, "", newUrl);
+	}
+
+	private async loadPage(offset: number, pushHistory: boolean = true): Promise<void> {
 		if (offset < 0 || offset >= this.paginationTotal) return;
 		Spinner.showSpinner("Loading...", this.containerElement);
 		this.paginationOffset = offset;
@@ -125,8 +133,19 @@ export class ResourceView {
 		this.specificUids = null;
 		this.refreshItems();
 		this.updatePaginationControls();
+		if (pushHistory) this.recordPageUrlParam();
 		this.containerElement.scrollIntoView({ behavior: "smooth" });
 		Spinner.hideSpinner(this.containerElement);
+	}
+
+	/** restore the correct page when the user navigates back/forward */
+	public async onPopState(): Promise<void> {
+		if (!this.paginatedMode) return;
+		const pageParam = new URLSearchParams(window.location.search).get("page");
+		const page = Math.max(1, parseInt(pageParam || "1", 10));
+		const offset = (page - 1) * this.PAGE_SIZE;
+		if (offset === this.paginationOffset) return;
+		await this.loadPage(offset, false);
 	}
 
 	/** load all software data and exit paginated mode; no-op if already in full mode */
@@ -248,8 +267,10 @@ export class ResourceView {
 			const hasFilter = urlParams.has("filt");
 			if (!hasSearch && !hasFilter) {
 				this.paginatedMode = true;
-				this.paginationOffset = 0;
-				const { items, total } = await ModelDataCache.fetchPage(softwarModelName, 0, this.PAGE_SIZE);
+				const pageParam = urlParams.get("page");
+				const initialPage = Math.max(1, parseInt(pageParam || "1", 10));
+				this.paginationOffset = (initialPage - 1) * this.PAGE_SIZE;
+				const { items, total } = await ModelDataCache.fetchPage(softwarModelName, this.paginationOffset, this.PAGE_SIZE);
 				this.itemData = items;
 				this.paginationTotal = total;
 			} else {
@@ -275,6 +296,8 @@ function makeResourceView(uids: string[]) {
 	node.appendChild(view.containerElement);
 	view.setParentElement(node);
 	view.fetchAndBuild();
+
+	window.addEventListener("popstate", () => view.onPopState());
 }
 
 // expose to global

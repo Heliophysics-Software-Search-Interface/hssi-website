@@ -67,10 +67,11 @@ function parseUrlParams() {
 
 function recordHistory(query: string){
 
-	// Record search to browser history
+	// Record search to browser history; clear page since search and pagination are mutually exclusive
 	const newUrl = new URL(window.location.href);
 	if (query) newUrl.searchParams.set(searchParamQuery, query);
 	else newUrl.searchParams.delete(searchParamQuery);
+	newUrl.searchParams.delete("page");
 	history.pushState(null, "", newUrl);
 }
 

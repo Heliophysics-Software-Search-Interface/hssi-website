@@ -269,10 +269,11 @@ export class FilterMenu {
 			);
 		}
 
-		// Record filter to browser history
+		// Record filter to browser history; clear page since pagination and filters are mutually exclusive
 		const newUrl = new URL(window.location.href);
 		if (filterParamVal) newUrl.searchParams.set(searchParamFilter, filterParamVal);
 		else newUrl.searchParams.delete(searchParamFilter);
+		newUrl.searchParams.delete("page");
 		history.pushState(null, "", newUrl);
 	}
 }

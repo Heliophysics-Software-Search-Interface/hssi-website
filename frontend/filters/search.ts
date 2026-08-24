@@ -92,7 +92,7 @@ function getSearchTerm(): string {
  * applies the previously entered search to the main resource view
  * @param pushHistory whether or not this search is recorded in browser history
  */
-export async function applyEnteredQuery(pushHistory: boolean = false){
+export async function applyEnteredQuery(){
 	parseUrlParams();
 }
 

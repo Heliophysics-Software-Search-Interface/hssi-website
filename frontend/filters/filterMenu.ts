@@ -208,7 +208,7 @@ export class FilterMenu {
 			this.activeGroupsContainerElement.classList.add(styleHidden);
 			this.targetView.refreshItems();
 			if (this.targetView === ResourceView.main && pushHistory) this.recordFilterUrlParams();
-			applyEnteredQuery(false);
+			applyEnteredQuery();
 			return;
 		}
 
@@ -245,7 +245,7 @@ export class FilterMenu {
 			}, 100);
 
 			// reapply the search to the new filtered results
-			applyEnteredQuery(false);
+			applyEnteredQuery();
 		}
 
 		catch(e) {

@@ -201,16 +201,30 @@ export class FilterMenu {
 			return;
 		}
 
+		// no active filters: go back to paginated mode, clear any uid restriction
+		if (this.activeFilterGroups.length === 0) {
+			await this.targetView.resetToPaginatedMode();
+			this.targetView.clearFilter();
+			this.activeGroupsContainerElement.classList.add(styleHidden);
+			this.targetView.refreshItems();
+			if (this.targetView === ResourceView.main && pushHistory) this.recordFilterUrlParams();
+			applyEnteredQuery();
+			return;
+		}
+
+		// has active filters: ensure all data is loaded before filtering
 		Spinner.showSpinner("Applying Filters");
+		await this.targetView.awaitAllItems();
+
 
 		try{
 			// clear old chips
 			this.activeGroupsContainerElement.innerHTML = "Active Filter Groups: ";
-			
+
 			let items = this.targetView.getAllItems();
 			for(const group of this.activeFilterGroups){
 				items = group.filterSoftware(items);
-				
+
 				// render chips
 				const chip = group.createChip();
 				this.activeGroupsContainerElement.append(chip);
@@ -218,24 +232,20 @@ export class FilterMenu {
 			}
 			this.targetView.filterToItems(items.map(item => item.id));
 			this.targetView.refreshItems();
-			
-			// show/hide active groups element
-			if (this.activeFilterGroups.length > 0){
-				this.activeGroupsContainerElement.classList.remove(styleHidden);
-			}
-			else this.activeGroupsContainerElement.classList.add(styleHidden);
-			
+
+			this.activeGroupsContainerElement.classList.remove(styleHidden);
+
 			// if it's the main view, we'll want to append the filters as url params
 			if(this.targetView == ResourceView.main){
 				if(pushHistory) this.recordFilterUrlParams();
 			}
-			
+
 			setTimeout(() => {
 				Spinner.hideSpinner();
 			}, 100);
 
 			// reapply the search to the new filtered results
-			applyEnteredQuery(false);
+			applyEnteredQuery();
 		}
 
 		catch(e) {
@@ -259,10 +269,11 @@ export class FilterMenu {
 			);
 		}
 
-		// Record filter to browser history
+		// Record filter to browser history; clear page since pagination and filters are mutually exclusive
 		const newUrl = new URL(window.location.href);
 		if (filterParamVal) newUrl.searchParams.set(searchParamFilter, filterParamVal);
 		else newUrl.searchParams.delete(searchParamFilter);
+		newUrl.searchParams.delete("page");
 		history.pushState(null, "", newUrl);
 	}
 }

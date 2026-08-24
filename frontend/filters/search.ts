@@ -67,10 +67,11 @@ function parseUrlParams() {
 
 function recordHistory(query: string){
 
-	// Record search to browser history
+	// Record search to browser history; clear page since search and pagination are mutually exclusive
 	const newUrl = new URL(window.location.href);
 	if (query) newUrl.searchParams.set(searchParamQuery, query);
 	else newUrl.searchParams.delete(searchParamQuery);
+	newUrl.searchParams.delete("page");
 	history.pushState(null, "", newUrl);
 }
 
@@ -91,7 +92,7 @@ function getSearchTerm(): string {
  * applies the previously entered search to the main resource view
  * @param pushHistory whether or not this search is recorded in browser history
  */
-export async function applyEnteredQuery(pushHistory: boolean = false){
+export async function applyEnteredQuery(){
 	parseUrlParams();
 }
 
@@ -111,13 +112,16 @@ export async function searchForQuery(
 	Spinner.showSpinner(`Searching for '${trimmedQuery}'`);
 
 	try{
+		const view = ResourceView.main;
+
+		// ensure all software is loaded so search covers the full dataset
+		if (view) await view.awaitAllItems();
+
 		const resultIds = await getRelevantQueryIds(trimmedQuery);
 		const resultData = await ModelDataCache.getModelData(
 			"VerifiedSoftware",
 			resultIds
 		) as SoftwareDataAsync[];
-
-		const view = ResourceView.main;
 		const filteredItems = view.getFilteredItems();
 		const filteredIds = new Set(
 			filteredItems.map(item => item.id.toLowerCase())

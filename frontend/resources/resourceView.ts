@@ -8,6 +8,7 @@ import {
 } from "../loader";
 
 const styleNoResults = "no-results";
+const stylePageControls = "page-controls";
 const softwarModelName = "VerifiedSoftware";
 const idResourceContainer = "resource_content";
 
@@ -25,7 +26,12 @@ export class ResourceView {
 	private parentElement: HTMLElement = null;
 	private itemData: SoftwareDataAsync[] = [];
 	private items: ResourceItem[] = [];
-	
+	private paginatedMode: boolean = false;
+	private paginationOffset: number = 0;
+	private paginationTotal: number = 0;
+	private paginationControlsEl: HTMLDivElement = null;
+	private readonly PAGE_SIZE = 25;
+
 	public onReady: SimpleEvent = null;
 
 	private static resourceViewMap: Map<HTMLElement, ResourceView> = new Map();
@@ -70,6 +76,108 @@ export class ResourceView {
 		);
 
 		this.containerElement.appendChild(this.noResourcesElem);
+		this.buildPaginationControls();
+	}
+
+	private buildPaginationControls(): void {
+		this.paginationControlsEl = document.createElement("div");
+		this.paginationControlsEl.classList.add(stylePageControls);
+		this.paginationControlsEl.classList.add(styleHidden);
+		this.containerElement.appendChild(this.paginationControlsEl);
+	}
+
+	private updatePaginationControls(): void {
+		if (!this.paginationControlsEl) return;
+		this.paginationControlsEl.innerHTML = "";
+		if (!this.paginatedMode) {
+			this.paginationControlsEl.classList.add(styleHidden);
+			return;
+		}
+		const currentPage = Math.floor(this.paginationOffset / this.PAGE_SIZE) + 1;
+		const totalPages = Math.ceil(this.paginationTotal / this.PAGE_SIZE) || 1;
+
+		const prevBtn = document.createElement("button");
+		prevBtn.textContent = "← Previous";
+		prevBtn.disabled = this.paginationOffset === 0;
+		prevBtn.addEventListener("click", () => this.loadPage(this.paginationOffset - this.PAGE_SIZE));
+
+		const pageIndicator = document.createElement("span");
+		pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+
+		const nextBtn = document.createElement("button");
+		nextBtn.textContent = "Next →";
+		nextBtn.disabled = this.paginationOffset + this.PAGE_SIZE >= this.paginationTotal;
+		nextBtn.addEventListener("click", () => this.loadPage(this.paginationOffset + this.PAGE_SIZE));
+
+		this.paginationControlsEl.appendChild(prevBtn);
+		this.paginationControlsEl.appendChild(pageIndicator);
+		this.paginationControlsEl.appendChild(nextBtn);
+		this.paginationControlsEl.classList.remove(styleHidden);
+	}
+
+	private recordPageUrlParam(push: boolean = true): void {
+		const page = Math.floor(this.paginationOffset / this.PAGE_SIZE) + 1;
+		const newUrl = new URL(window.location.href);
+		if (page <= 1) newUrl.searchParams.delete("page");
+		else newUrl.searchParams.set("page", String(page));
+		if (push) history.pushState(null, "", newUrl);
+	}
+
+	private async loadPage(offset: number, pushHistory: boolean = true): Promise<void> {
+		if (offset < 0 || offset >= this.paginationTotal) return;
+		Spinner.showSpinner("Loading...", this.containerElement);
+		this.paginationOffset = offset;
+		const { items, total } = await ModelDataCache.fetchPage(softwarModelName, offset, this.PAGE_SIZE);
+		this.itemData = items;
+		this.paginationTotal = total;
+		this.specificUids = null;
+		this.refreshItems();
+		this.updatePaginationControls();
+		if (pushHistory) this.recordPageUrlParam();
+		this.containerElement.scrollIntoView({ behavior: "smooth" });
+		Spinner.hideSpinner(this.containerElement);
+	}
+
+	/** restore the correct page when the user navigates back/forward */
+	public async onPopState(): Promise<void> {
+		if (!this.paginatedMode) return;
+		const pageParam = new URLSearchParams(window.location.search).get("page");
+		const page = Math.max(1, parseInt(pageParam || "1", 10));
+		const offset = (page - 1) * this.PAGE_SIZE;
+		if (offset === this.paginationOffset) return;
+		await this.loadPage(offset, false);
+	}
+
+	/** load all software data and exit paginated mode; no-op if already in full mode */
+	public async awaitAllItems(): Promise<void> {
+		if (!this.paginatedMode && ModelDataCache.getCache(softwarModelName).hasFetchedAllData) return;
+		const allItems = [...await ModelDataCache.getModelDataAll(softwarModelName)];
+		this.itemData = allItems;
+		this.paginatedMode = false;
+		this.updatePaginationControls();
+	}
+
+	/** return to page 0 of paginated mode; no-op if already paginated */
+	public async resetToPaginatedMode(): Promise<void> {
+		if (this.paginatedMode) return;
+		this.paginatedMode = true;
+		this.paginationOffset = 0;
+		const cache = ModelDataCache.getCache(softwarModelName);
+		if (cache.hasFetchedAllData) {
+			const all = [...await ModelDataCache.getModelDataAll(softwarModelName)];
+			this.itemData = all.slice(0, this.PAGE_SIZE);
+			this.paginationTotal = all.length;
+		} else {
+			const { items, total } = await ModelDataCache.fetchPage(softwarModelName, 0, this.PAGE_SIZE);
+			this.itemData = items;
+			this.paginationTotal = total;
+		}
+		this.updatePaginationControls();
+	}
+
+	/** clear any active uid filter so all loaded items are shown */
+	public clearFilter(): void {
+		this.specificUids = null;
 	}
 
 	/** get all item data that is loaded for the resource view */
@@ -112,6 +220,9 @@ export class ResourceView {
 			this.items.push(item);
 		}
 
+		// keep pagination controls at the bottom
+		if (this.paginationControlsEl) this.containerElement.appendChild(this.paginationControlsEl);
+
 		// display no results if no results found, or hide it if there is results
 		if(this.items.length <= 0) this.noResourcesElem.classList.remove(styleHidden);
 		else this.noResourcesElem.classList.add(styleHidden);
@@ -146,16 +257,31 @@ export class ResourceView {
 
 		Spinner.showSpinner("Fetching Software Data...", this.containerElement);
 
-		if(this.specificUids){
+		if (this.specificUids) {
 			this.itemData = [...await (
-				ModelDataCache.getModelData("VerifiedSoftware", this.specificUids) as any
+				ModelDataCache.getModelData(softwarModelName, this.specificUids) as any
 			)];
+		} else {
+			const urlParams = new URLSearchParams(window.location.search);
+			const hasSearch = urlParams.has("q");
+			const hasFilter = urlParams.has("filt");
+			if (!hasSearch && !hasFilter) {
+				this.paginatedMode = true;
+				const pageParam = urlParams.get("page");
+				const initialPage = Math.max(1, parseInt(pageParam || "1", 10));
+				this.paginationOffset = (initialPage - 1) * this.PAGE_SIZE;
+				const { items, total } = await ModelDataCache.fetchPage(softwarModelName, this.paginationOffset, this.PAGE_SIZE);
+				this.itemData = items;
+				this.paginationTotal = total;
+			} else {
+				this.itemData = [...await ModelDataCache.getModelDataAll(softwarModelName)];
+			}
 		}
-		else this.itemData = [...await ModelDataCache.getModelDataAll("VerifiedSoftware")];
 
 		this.onReady.triggerEvent();
 
 		this.refreshItems();
+		this.updatePaginationControls();
 		Spinner.hideSpinner(this.containerElement);
 	}
 }
@@ -170,6 +296,8 @@ function makeResourceView(uids: string[]) {
 	node.appendChild(view.containerElement);
 	view.setParentElement(node);
 	view.fetchAndBuild();
+
+	window.addEventListener("popstate", () => view.onPopState());
 }
 
 // expose to global

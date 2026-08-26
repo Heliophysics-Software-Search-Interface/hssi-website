@@ -47,6 +47,7 @@ ea191ba5-0d50-4903-b18a-84ffc2e3effb,https://doi.org/10.25080/Majora-92bf1922-01
 b15ae3ac-bcfa-41d3-8097-8d990bb3035b,https://doi.org/10.3389/fspas.2023.1119775,,3,https://doi.org/10.3389/fspas.2023.1119775
 631cf93d-cbc7-47a6-89ac-73ac5a6a0242,https://doi.org/10.48550/arxiv.2303.00854,,3,https://doi.org/10.48550/arxiv.2303.00854
 175c0df4-eb7f-4c4e-9577-89a2093b9c92,https://github.com/astropy/astropy,,1,https://github.com/astropy/astropy
+5c7aadf4-b55d-4990-8ae7-ee4e24da590b,https://github.com/astropy/astropy-iers-data,,1,https://github.com/astropy/astropy-iers-data
 e71d1549-c86d-40e5-b1f5-b9e95fac978e,https://github.com/brandon-rhodes/python-sgp4,,1,https://github.com/brandon-rhodes/python-sgp4
 47b0f562-245f-44f9-9cc3-817b140e85cc,https://github.com/ClancyWalters/cppmap3d,,1,https://github.com/ClancyWalters/cppmap3d
 acfdd22c-a6e0-4038-bbbc-a49c7154af60,https://github.com/dateutil/dateutil,,1,https://github.com/dateutil/dateutil
@@ -361,6 +362,7 @@ ee430146-ee60-4e1f-8ed7-32afd600bd0d,https://doi.org/10.1029/98JA00014,,3,https:
 6513cd62-c207-46a1-82b1-446bae27ad08,https://doi.org/10.1029/GL008i011p01147,,3,https://doi.org/10.1029/GL008i011p01147
 91a4847e-cba9-49fd-9b0b-a35a5cb94e61,https://doi.org/10.1029/JC085iC12p07495,,3,https://doi.org/10.1029/JC085iC12p07495
 da4fdfa6-166a-43b8-8b07-0fbf20535a62,https://doi.org/10.1038/s41550-025-02747-9,,3,https://doi.org/10.1038/s41550-025-02747-9
+cf8892df-5c82-4140-9e2b-59dc779fadad,https://doi.org/10.1051/0004-6361/201322068,,3,https://doi.org/10.1051/0004-6361/201322068
 6c3305b3-69e7-4a7e-94d9-f6989ff1165d,https://doi.org/10.1051/0004-6361/201731344,,3,https://doi.org/10.1051/0004-6361/201731344
 83bd7c2c-18d7-47e1-992b-d94cce5b8d4f,https://doi.org/10.1051/0004-6361/201936838,,3,https://doi.org/10.1051/0004-6361/201936838
 a4701dea-9b0c-4bcd-8565-02703c2b9333,https://doi.org/10.1051/0004-6361/202039848,,3,https://doi.org/10.1051/0004-6361/202039848
@@ -422,6 +424,7 @@ af3a8845-1363-467f-b94c-826d3abeea4d,https://doi.org/10.34515/DATA.GND-0059-0006
 b267b01d-9b0e-4640-868d-5d89a38a9922,https://doi.org/10.34515/DATA.GND-0059-0006-0205_v01,,2,https://doi.org/10.34515/DATA.GND-0059-0006-0205_v01
 ff81155a-7f38-4a1f-bf06-791a1478eee1,https://doi.org/10.34515/DATA.GND-0062-0006-0204_v01,,2,https://doi.org/10.34515/DATA.GND-0062-0006-0204_v01
 745b1209-20c1-4aab-9729-f3841c462e6c,https://doi.org/10.3847/0004-637X/821/2/127,,3,https://doi.org/10.3847/0004-637X/821/2/127
+9207cb80-8f26-43e0-894c-f9fe92a774ea,https://doi.org/10.3847/1538-3881/aabc4f,,3,https://doi.org/10.3847/1538-3881/aabc4f
 f0167dee-5130-45a3-8cbb-a35facaa27d5,https://doi.org/10.3847/1538-3881/abb465,,3,https://doi.org/10.3847/1538-3881/abb465
 ef3125b0-1752-401a-b056-18c63b58c133,https://doi.org/10.3847/1538-4357/833/2/284,,3,https://doi.org/10.3847/1538-4357/833/2/284
 407acc45-0bd4-4e6d-b40a-497e5868c809,https://doi.org/10.3847/1538-4357/aac779,,3,https://doi.org/10.3847/1538-4357/aac779
@@ -431,6 +434,7 @@ fad99862-4c10-4953-b110-4f6cac6d8687,https://doi.org/10.3847/1538-4357/ac043b,,3
 f56a845c-b38e-425b-b4a9-648fc2652775,https://doi.org/10.3847/1538-4357/ac0e33,,3,https://doi.org/10.3847/1538-4357/ac0e33
 52b9d9a7-30ec-49e7-8f4f-6bf02caccfab,https://doi.org/10.3847/1538-4357/ac43b6,,3,https://doi.org/10.3847/1538-4357/ac43b6
 8eb89343-307d-4c95-8697-adba45f23e2b,https://doi.org/10.3847/1538-4357/ac4af6,,3,https://doi.org/10.3847/1538-4357/ac4af6
+a00a417c-27fa-41ce-93fc-61fd21c78b9a,https://doi.org/10.3847/1538-4357/ac7c74,,3,https://doi.org/10.3847/1538-4357/ac7c74
 7a607f5b-9dde-46dd-8f70-f2c6dad92658,https://doi.org/10.3847/1538-4357/acc655,,3,https://doi.org/10.3847/1538-4357/acc655
 5f67c48c-c3a9-408d-af60-5d05712f562f,https://doi.org/10.3847/1538-4357/aceef8,,3,https://doi.org/10.3847/1538-4357/aceef8
 34404cf7-0e17-449b-a85a-8fda6e4b2fa9,https://doi.org/10.3847/1538-4357/ad6765,,2,https://doi.org/10.3847/1538-4357/ad6765
@@ -565,6 +569,7 @@ c182ebc2-cbf9-4ea5-8196-de1f2c2d7b1d,https://doi.org/10.5880/GFZ.2.3.2023.001,,2
 923637b5-926c-458d-b399-8f100423605a,https://doi.org/10.7910/DVN/DZYLHK,,2,https://doi.org/10.7910/DVN/DZYLHK
 ed7c8487-55bb-4642-8c7c-798aa998dd62,https://doi.org/10.7910/DVN/EBCFKM,,2,https://doi.org/10.7910/DVN/EBCFKM
 9ced3677-69ce-47b8-bcfc-884a5b058938,https://doi.org/10.7910/DVN/WSEY4T,,2,https://doi.org/10.7910/DVN/WSEY4T
+a8010471-c762-442b-8cc9-3308e82ed75d,https://ds9.si.edu/,,1,https://ds9.si.edu/
 5c8f1d66-cc6e-4f7c-a2a6-cb1338416d97,https://ergsc.isee.nagoya-u.ac.jp/psa-gnd/pub/raw/,,2,https://ergsc.isee.nagoya-u.ac.jp/psa-gnd/pub/raw/
 ef40edf9-aa19-492a-81dd-aae6b6747704,https://ergsc.isee.nagoya-u.ac.jp/psa-pwing/pub/raw/lamp/,,2,https://ergsc.isee.nagoya-u.ac.jp/psa-pwing/pub/raw/lamp/
 20faa781-a8fc-4370-804a-d5f8dbd8065f,https://gdex.ucar.edu/datasets/d897007/,,2,https://gdex.ucar.edu/datasets/d897007/
@@ -583,14 +588,19 @@ c6c2b49a-a969-427e-bb98-04eb8945ba38,https://github.com/AndrewAnnex/SpiceyPy,,1,
 7c8f084a-a706-4672-aff7-50c6e84bddbb,https://github.com/argallmr/pymms,,1,https://github.com/argallmr/pymms
 6f8420f0-e462-497b-9bbf-92f0a8e9410a,https://github.com/asdf-format/asdf,,1,https://github.com/asdf-format/asdf
 203affc5-83bd-407e-aead-04ce3ca3c33e,https://github.com/astroML/astroML,,1,https://github.com/astroML/astroML
+e7949cae-7491-4a59-991e-3d96ecf34025,https://github.com/astropy/asdf-astropy,,1,https://github.com/astropy/asdf-astropy
 459ea88b-fb93-4ba4-bae9-97dcd2e218aa,https://github.com/astropy/astroquery,,1,https://github.com/astropy/astroquery
 dc82db1d-8877-4da0-80cc-baeb0009be39,https://github.com/astropy/astroscrappy,,1,https://github.com/astropy/astroscrappy
+1b4eb746-8fb9-43db-8210-795e1f15ab33,https://github.com/astropy/ccdproc,,1,https://github.com/astropy/ccdproc
+f2d0b50f-75a1-49d2-95cd-7762ac359268,https://github.com/astropy/pyvo,,1,https://github.com/astropy/pyvo
 cb62bc63-76a9-4439-98d2-07be264070dd,https://github.com/astropy/reproject,,1,https://github.com/astropy/reproject
+6063003d-6bfb-4912-8dd1-71656347a492,https://github.com/astropy/specutils,,1,https://github.com/astropy/specutils
 7ddfec41-df77-4c7f-b142-7a6fa85ea6ef,https://github.com/aurorax-space/pyaurorax,,1,https://github.com/aurorax-space/pyaurorax
 3c772c19-3ff9-4585-b42e-9b5b3758ad16,https://github.com/autoplot/cdfj,,1,https://github.com/autoplot/cdfj
 edbb704b-a785-4fb5-a862-659e4add317c,https://github.com/autoplot/pds4-jparser,,1,https://github.com/autoplot/pds4-jparser
 30522db5-ac74-478c-b55e-ec518e127507,https://github.com/autoplot/python,,1,https://github.com/autoplot/python
 a035e523-7597-4da5-824a-cd90fa61edcf,https://github.com/Brandonleighpanos/k-means-analysis-of-MgII-spectra,,1,https://github.com/Brandonleighpanos/k-means-analysis-of-MgII-spectra
+8a1106a8-7ba0-497b-b327-454ef7d8be11,https://github.com/brandon-rhodes/python-jplephem,,1,https://github.com/brandon-rhodes/python-jplephem
 da79095f-f335-4346-b4b8-e71d28269a23,https://github.com/Cambridge-ICCS/FTorch,,1,https://github.com/Cambridge-ICCS/FTorch
 ebddce94-6eca-4141-9b80-88e9a3b4aa04,https://github.com/casacore/python-casacore,,1,https://github.com/casacore/python-casacore
 5fc21d6f-9569-4aa4-81f6-b7aa9e37f292,https://github.com/ccsdspy/ccsdspy,,1,https://github.com/ccsdspy/ccsdspy
@@ -637,6 +647,7 @@ d21727d9-472f-4428-af72-c14e3454e663,https://github.com/henry2004y/VisAnaMatlab,
 ac8893f4-7a48-4e54-a66a-7bb24b738830,https://github.com/HERMES-SOC/hermes_core,,1,https://github.com/HERMES-SOC/hermes_core
 a0dd6c27-d1cb-488b-955b-c4af5dc24924,https://github.com/i4Ds/IRISreader,,1,https://github.com/i4Ds/IRISreader
 6f561b6a-6bc4-4fdf-87ff-ec1497bce635,https://github.com/IMAP-Science-Operations-Center/imap_processing,,1,https://github.com/IMAP-Science-Operations-Center/imap_processing
+b1feb813-acac-4fee-a993-8ee98b69a39b,https://github.com/jehturner/ndmapper,,1,https://github.com/jehturner/ndmapper
 7f070b61-a167-4d6a-bb69-459495f3b11d,https://github.com/jgieseler/Solar-MACH,,1,https://github.com/jgieseler/Solar-MACH
 0063651d-7278-4eb2-bcdb-d54399bdbc3b,https://github.com/jswoboda/SimISR,,1,https://github.com/jswoboda/SimISR
 bb8e82ab-8f67-41a2-b813-22d1bb0f46f4,https://github.com/jupyterhub/the-littlest-jupyterhub,,1,https://github.com/jupyterhub/the-littlest-jupyterhub
@@ -645,6 +656,8 @@ d348f6bc-a029-45f1-8a20-786bce2095a2,https://github.com/klaundal/pyAMPS,,1,https
 98e8ab00-10e2-448b-b9f2-e8cf43a32e08,https://github.com/lanl/dbprocessing,,1,https://github.com/lanl/dbprocessing
 2649aa29-a3cb-4f3b-80c6-f87dffcf876a,https://github.com/lanl/RAM-SCB,,1,https://github.com/lanl/RAM-SCB
 5848c1bf-25d0-4cf7-ab8c-472de8dd9567,https://github.com/lasp/cdflib,,1,https://github.com/lasp/cdflib
+c6e638ee-b88c-4fd0-8655-0f76baf5253f,https://github.com/liberfa/erfa,,1,https://github.com/liberfa/erfa
+d6ca9e0e-68d6-4241-bfe5-0d42af1057f1,https://github.com/liberfa/pyerfa,,1,https://github.com/liberfa/pyerfa
 e50fa18f-d5d5-4d6f-a702-ad3786750d95,https://github.com/lkilcommons/geospacepy-lite,,1,https://github.com/lkilcommons/geospacepy-lite
 d0fbec6e-7f68-4ef7-8d57-9764215963ce,https://github.com/lkilcommons/OvationPyme,,1,https://github.com/lkilcommons/OvationPyme
 98e04d27-a04f-4757-a192-6318063d6270,https://github.com/LM-SAL/aiapy,,1,https://github.com/LM-SAL/aiapy
@@ -765,5 +778,6 @@ f4614bba-b29f-44b8-9421-93a3f3a8c8b2,https://www.lmsal.com/solarsoft/,,1,https:/
 d0707947-b8fe-42cc-929b-7b7d9968c31c,https://www.ngdc.noaa.gov/IAGA/vmod/coeffs/,,2,https://www.ngdc.noaa.gov/IAGA/vmod/coeffs/
 135e3a5c-1986-4773-87db-db1ab69dfeb1,https://www.nv5geospatialsoftware.com/Products/IDL,,1,https://www.nv5geospatialsoftware.com/Products/IDL
 b45f21a1-528e-4602-88af-435319cc500b,https://www.paraview.org/,,1,https://www.paraview.org/
+50a304ad-4523-4f72-943a-68d4863d1f08,https://www.star.bristol.ac.uk/mbt/topcat,,1,https://www.star.bristol.ac.uk/mbt/topcat
 dd282d43-47cc-4868-9176-267c0e6c2ba5,https://xrt.cfa.harvard.edu/data_products/Level2_Synoptics/,,2,https://xrt.cfa.harvard.edu/data_products/Level2_Synoptics/
 92febd62-d578-4633-9f3c-ea8716a9e3d2,https://xrt.cfa.harvard.edu/level1/,,2,https://xrt.cfa.harvard.edu/level1/

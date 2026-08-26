@@ -70,6 +70,7 @@ c54c47cb-7f28-4581-9e60-b08924069f74,cme
 4471b0c9-6e7e-44b8-b58d-f183c0aced64,constellation mission planning
 96648e95-6731-4658-b67a-8454afc8fc0f,conversion
 6789b380-e08f-4800-b51b-1666f42e3f1f,converting
+30c1b218-7330-4a9a-b5bd-a8c8a2ecdd4e,coordinate
 81fef49d-c1f8-4df9-b9db-dc29ed3093a8,coordinate conversion
 55a28c25-d5d1-4469-bc2c-76664cdbf6c6,coordinate-conversion
 354168d2-6268-432f-a091-7f4ab72fbef2,coordinates
@@ -82,6 +83,7 @@ e4d9d020-e747-4866-9a55-f2d530d5ba15,coordinate-transformation
 6e6ee660-fd57-49db-980c-3ff90a7fe052,coronal holes
 b5c68956-cc9e-4b7e-85f4-0bc5312205e4,coronal mass ejections
 21991143-0622-4f5f-a416-95bbc102bd42,cosmic ray
+af059aea-23f2-4793-8bdc-82c19e0ab5dd,cosmology
 d99b93d6-ef4e-4f4f-89c2-eacbcbf2ad62,cspice
 6d5fde02-72ca-4635-9dd4-a1876654edaf,csv
 eea8a4c8-cf70-4b4d-858e-79568f436994,CubeSat
@@ -278,6 +280,7 @@ a61b1be6-bc4f-467d-9ff6-e500d36c3fa6,mica
 ac95a9c6-ce70-48ed-a092-8c02cfb9ab27,mlt
 18314bac-3133-41b8-bd62-a3c0c929dd3e,mms
 7d7c940d-b068-453c-89d0-6da71dc94cbb,model-data comparison
+cb327c2d-25e9-4645-9a16-adf50a331ff8,modeling
 3bf25213-85e9-43c1-a66d-575720721d23,model output
 be23c95d-5265-48aa-8b90-54320ec84ee2,models
 baefae43-290d-4ede-8b95-634176232557,modified apex
@@ -437,6 +440,7 @@ e6e309fb-d176-4c5e-ac87-193cde534286,sweep-frequency
 683925f0-eaed-47dd-bd9d-fa55550bb4d7,swmf
 45a9794b-80c0-4dbd-88f4-115015aa921f,swxsoc
 6fdf1fc4-4652-489c-af98-75e586da76c9,synthetic
+b6bee5bc-660e-493e-9a39-850259cc2b71,table
 c2262f18-b5e2-48b8-8682-f9cf5a087d31,telemetry
 4bacdcb5-ecd6-48b5-8c3b-79c8e99bfffd,temperature response
 e0e82ae3-c718-4a0a-a802-3886b0782894,themis
@@ -453,6 +457,7 @@ d7b30d6c-b700-4372-8be3-2623ce607af9,tsyganenko
 738959c3-765d-4b2d-a8f7-610f4c266b69,tsyganenko model
 3201363e-3fb6-41b8-bf71-aed8e39224f5,ulysses
 494b3304-bd2d-4ea0-b142-ea7c66f74dda,unit conversion
+6393023d-1f42-4c57-a974-5a64f8b22317,units
 b95cabe0-b5f4-4fd0-895f-2a335f560048,upper atmosphere
 2d6ce044-2ef5-4cce-899f-4e50ad24cd79,validation
 da6087fe-fa8d-4253-b3da-ed76f7332796,van allen probes
@@ -674,6 +679,7 @@ a9f7937a-0e87-4126-93e5-75c3b80dd2be,REMIX
 0e1b5b40-f62e-47c1-8329-80b122a01415,reproducibility
 daaf633f-d448-44dc-9a13-eae1860d2f5f,s3
 41bac1bc-25db-4de6-9a8d-22deb140be91,sammi
+dd32afae-8e8f-4461-a0be-1b6feb6f3bb7,samp
 a724b5fe-6a88-46a0-89b4-c5feace3d1c4,scientific software
 1783d06f-fb7d-425c-8021-b65669165d8f,scientific visualization
 2dbdadf8-c0d6-468b-9a51-0d74f07db7f1,scintillation

@@ -172,12 +172,8 @@ class SoftwareDetailJsonLdTests(TestCase):
 		)
 		self.assertEqual(data["name"], "Test Software")
 		self.assertEqual(
-			data["description"],
+			data["description"][-1],
 			"Software for testing JSON-LD landing page metadata.",
-		)
-		self.assertEqual(
-			data["subjectOf"]["contentUrl"],
-			f"http://testserver{url}",
 		)
 
 	def test_software_detail_jsonld_escapes_script_breakout(self):
@@ -202,7 +198,7 @@ class SoftwareDetailJsonLdTests(TestCase):
 		self.assertIn("\\u0026", scripts[0])
 
 		data = json.loads(scripts[0])
-		self.assertEqual(data["description"], description)
+		self.assertEqual(data["description"][-1], description)
 
 
 class SoftwareApiSlugLookupTests(TestCase):

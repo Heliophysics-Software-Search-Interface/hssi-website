@@ -9,7 +9,7 @@ from .util import HssiSerializer, serialize_obj_userfriendly
 from ..organizations import Organization
 from ..people import Person
 from ..related import RelatedItem, RelatedItemType
-from ..software import Software, SoftwareVersion
+from ..software import Software, SoftwareVersion, VerifiedSoftware
 from ..vocab import InstrObsType, InstrumentObservatory
 from ..base import HssiModel
 
@@ -125,6 +125,7 @@ class SoftwareSerializer(HssiSerializer):
 		if org is None:
 			return None
 		data: dict[str, Any] = {
+			"@id": None,
 			"@type": "Organization",
 			"name": org.name,
 		}
@@ -133,6 +134,7 @@ class SoftwareSerializer(HssiSerializer):
 			data["identifier"] = self._property_value(org.identifier)
 		if org.website:
 			data["url"] = org.website
+		data = { key: value for key, value in data.items() if value is not None }
 		return data
 
 	def _person_is_org(self, person: Person) -> bool:
@@ -268,7 +270,7 @@ class SoftwareSerializer(HssiSerializer):
 		}
 		return data
 
-	def _subject_of(self, instance: Software) -> dict[str, Any] | None:
+	def _subject_of(self, instance: Software, json_id: str) -> dict[str, Any] | None:
 		version: SoftwareVersion | None = instance.version.first()
 		if not version:
 			return None
@@ -278,13 +280,16 @@ class SoftwareSerializer(HssiSerializer):
 			content_url = request.build_absolute_uri(instance.get_absolute_url())
 		else:
 			content_url = instance.get_absolute_url()
+		slug = VerifiedSoftware.objects.filter(id=instance.id).first()
+		if not slug: slug = instance.id
 		data: dict[str, Any] = {
-			"@type": "DataDownload",
-			"contentUrl": content_url,
+			"@id": f"https://hssi.hsdcloud.org/api/view/software/{slug}/?view=jsonld",
+			"@type": ["CreativeWork", "dcat:CatalogRecord"],
+			"about": json_id,
 			"dateModified": None,
 			"description": "HSSI metadata describing the indicated software",
 			"encodingFormat": "application/ld+json",
-			"license": None,
+			"license": "",
 			"name": "HSSI metadata",
 		}
 		if instance.license:
@@ -300,7 +305,7 @@ class SoftwareSerializer(HssiSerializer):
 		)
 		if latest_submission:
 			data["dateModified"] = latest_submission.submission_date
-		return { key: value for key, value in data.items() if value }
+		return { key: value for key, value in data.items() if value is not None }
 
 	def to_representation_jsonld(self, instance: Software) -> dict[str, Any]:
 
@@ -413,6 +418,29 @@ class SoftwareSerializer(HssiSerializer):
 					json_pub = None
 			else: json_pub = None
 
+		request: HttpRequest | None = self.context.get("request")
+		content_url = ""
+		if request:
+			content_url = request.build_absolute_uri(instance.get_absolute_url())
+		
+		json_identifiers = []
+		json_identifier = self._property_value(
+			instance.persistent_identifier,
+			name=(
+				f"DOI: {instance.persistent_identifier.split('doi.org/')[-1]}"
+				if instance.persistent_identifier and "doi.org/" in instance.persistent_identifier
+				else None
+			),
+		)
+		if json_identifier:
+			json_identifiers.append(json_identifier)
+		json_identifiers.append({
+			"@type": "PropertyValue",
+        	"propertyID": "HSSI",
+        	"url": content_url,
+        	"value": instance.software_name
+		})
+
 		data: dict[str, Any] = {
 			"@id": json_id,
 			"@type": ["SoftwareSourceCode", "SoftwareApplication"],
@@ -421,6 +449,7 @@ class SoftwareSerializer(HssiSerializer):
 				"prov": "http://www.w3.org/ns/prov#",
 				"sosa": "https://w3c.github.io/sdw-sosa-ssn/ssn/#SOSA",
 				"codemeta": "https://github.com/codemeta/codemeta/blob/master/codemeta.jsonld",
+		        "dcat": "http://www.w3.org/ns/dcat#",
 			},
 			"applicationCategory": categories,
 			"applicationSubCategory": subcategories,
@@ -446,14 +475,7 @@ class SoftwareSerializer(HssiSerializer):
 			"datePublished": instance.publication_date,
 			"description": instance.description,
 			"funding": funding_item or None,
-			"identifier": self._property_value(
-				instance.persistent_identifier,
-				name=(
-					f"DOI: {instance.persistent_identifier.split('doi.org/')[-1]}"
-					if instance.persistent_identifier and "doi.org/" in instance.persistent_identifier
-					else None
-				),
-			),
+			"identifier": json_identifiers,
 			"image": instance.logo,
 			"keywords": keywords or None,
 			"license": (
@@ -473,7 +495,7 @@ class SoftwareSerializer(HssiSerializer):
 			"publisher": json_pub,
 			"softwareVersion": latest_version.number if latest_version else None,
 			"spatialCoverage": spatial_coverage or None,
-			"subjectOf": self._subject_of(instance),
+			"subjectOf": self._subject_of(instance, json_id),
 			"url": json_id,
 			"version": latest_version.number if latest_version else None,
 			"offers": {

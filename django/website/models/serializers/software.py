@@ -441,6 +441,10 @@ class SoftwareSerializer(HssiSerializer):
         	"value": instance.software_name
 		})
 
+		descriptions = [
+			desc for desc in [instance.concise_description, instance.description] if desc
+		]
+
 		data: dict[str, Any] = {
 			"@id": json_id,
 			"@type": ["SoftwareSourceCode", "SoftwareApplication"],
@@ -473,7 +477,7 @@ class SoftwareSerializer(HssiSerializer):
 				if instance.development_status else None
 			),
 			"datePublished": instance.publication_date,
-			"description": instance.description,
+			"description": descriptions,
 			"funding": funding_item or None,
 			"identifier": json_identifiers,
 			"image": instance.logo,

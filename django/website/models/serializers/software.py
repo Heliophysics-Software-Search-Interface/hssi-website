@@ -146,6 +146,7 @@ class SoftwareSerializer(HssiSerializer):
 		)
 		if self._person_is_org(person):
 			data: dict[str, Any] = {
+				"@id": None,
 				"@type": "Organization",
 				"name": person.fullName,
 			}
@@ -154,9 +155,10 @@ class SoftwareSerializer(HssiSerializer):
 				data["identifier"] = self._property_value(person.identifier)
 			if affiliations:
 				data["parentOrganization"] = self._maybe_single(affiliations)
-			return data
+			return { key: value for key, value in data.items() if value is not None }
 
 		data: dict[str, Any] = {
+			"@id": None,
 			"@type": "Person",
 			"givenName": person.given_name,
 			"familyName": person.family_name,
@@ -166,7 +168,7 @@ class SoftwareSerializer(HssiSerializer):
 			data["identifier"] = self._property_value(person.identifier)
 		if affiliations:
 			data["affiliation"] = self._maybe_single(affiliations)
-		return data
+		return { key: value for key, value in data.items() if value is not None }
 
 	def _author_list(self, instance: Software) -> dict[str, Any] | None:
 		authors = self._as_list(
@@ -250,7 +252,10 @@ class SoftwareSerializer(HssiSerializer):
 		data: dict[str, Any] = {
 			"@id": None,
 			"@type": type_map.get(item.type, "CreativeWork"),
-			"description": description,
+			"description": 
+				description 
+					if not item.type == RelatedItemType.DATASET else 
+				"Dataset related to the software described as indicated in the HSSI metadata.",
 		}
 		if item.name != NAME_UNKOWN:
 			data["name"] = item.name

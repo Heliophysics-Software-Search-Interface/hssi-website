@@ -416,6 +416,7 @@ class SoftwareSerializer(HssiSerializer):
 			if not json_id: json_id = instance.code_repository_url
 
 		json_pub = self._organization_jsonld(instance.publisher)
+		print(instance.publisher)
 		if json_pub:
 			json_pub_ident: str = json_pub.get("@id")
 			if json_pub_ident:
@@ -423,7 +424,8 @@ class SoftwareSerializer(HssiSerializer):
 				if not (
 						"doi.org" in json_pub_ident or 
 						"ror.org" in json_pub_ident or 
-						"orcid.org" in json_pub_ident
+						"orcid.org" in json_pub_ident or
+						"zenodo.org" in json_pub_ident
 					):
 					json_pub = None
 			else: json_pub = None

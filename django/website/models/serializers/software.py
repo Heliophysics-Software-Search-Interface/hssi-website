@@ -289,10 +289,9 @@ class SoftwareSerializer(HssiSerializer):
 			"dateModified": None,
 			"description": "HSSI metadata describing the indicated software",
 			"encodingFormat": "application/ld+json",
-			"license": "",
 			"name": "HSSI metadata",
 		}
-		if instance.license:
+		if instance.license and instance.license.url:
 			data["license"] = instance.license.url
 		# `submission_info` is a RelatedManager, so testing it directly is
 		# always truthy and `.latest()` raised DoesNotExist for a published

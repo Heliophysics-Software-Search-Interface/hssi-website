@@ -222,6 +222,7 @@ class SoftwareSerializer(HssiSerializer):
 		else:
 			item_type = ["IndividualProduct", "prov:Entity", "sosa:System"]
 		data: dict[str, Any] = {
+			"@id": None,
 			"@type": item_type,
 			"description": description,
 		}
@@ -247,6 +248,7 @@ class SoftwareSerializer(HssiSerializer):
 			RelatedItemType.PUBLICATION: "ScholarlyArticle",
 		}
 		data: dict[str, Any] = {
+			"@id": None,
 			"@type": type_map.get(item.type, "CreativeWork"),
 			"description": description,
 		}
@@ -378,25 +380,29 @@ class SoftwareSerializer(HssiSerializer):
 			for item in instance.related_region.all()
 		]
 
-		funding_item: dict[str, Any] = {}
+		funding_items: list[dict[str, Any]] = []
 		for award in instance.award.all():
-			grant: dict[str, Any] = {
-				"@type": "MonetaryGrant",
-				"name": award.name,
-			}
+			funding_item: dict[str, Any] = {}
 			funding_item["@type"] = "MonetaryGrant"
 			funding_item["name"] = award.name
-			if award.identifier:
-				grant["identifier"] = award.identifier
 			if award.funder:
-				grant["funder"] = self._organization_jsonld(award.funder)
-			break
-		if not funding_item or not "funder" in funding_item:
+				funding_item["funder"] = self._organization_jsonld(award.funder)
+			if award.identifier:
+				funding_item["identifier"] = award.identifier
+			funding_items.append(funding_item)
+
+		no_funder_listed = not funding_items
+		if no_funder_listed:
+			for item in funding_items:
+				if "funder" in item:
+					no_funder_listed = False
+					break
+		if no_funder_listed:
 			for funder in instance.funder.all():
 				funding_item["@type"] = "MonetaryGrant"
 				funding_item["funder"] = self._organization_jsonld(funder)
-		if not funding_item.get("name"):
-			funding_item = None
+		if not funding_items:
+			funding_items = None
 
 		json_id = instance.persistent_identifier
 		if not json_id:
@@ -471,13 +477,13 @@ class SoftwareSerializer(HssiSerializer):
 					"name": instance.development_status.name,
 					"description": instance.development_status.definition,
 					"inDefinedTermSet": "https://www.repostatus.org",
-					"image": instance.development_status.image,
+					"image": instance.development_status.image or None,
 				}
 				if instance.development_status else None
 			),
 			"datePublished": instance.publication_date,
 			"description": descriptions,
-			"funding": funding_item or None,
+			"funding": funding_items or None,
 			"identifier": json_identifiers,
 			"image": instance.logo,
 			"keywords": keywords or None,

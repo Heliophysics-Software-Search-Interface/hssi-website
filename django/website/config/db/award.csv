@@ -1,5 +1,5 @@
 id,name,identifier,funder
-bfafc4e8-dfe0-4a79-b4cd-ebc22698469a,,,
+bfafc4e8-dfe0-4a79-b4cd-ebc22698469a,NASA's Heliophysics Data Environment Enhancement program,,a4e07475-572f-48db-b2e7-5d59ea194465
 e8f19c3a-cce2-43ab-9ffe-410dab7485d9,Academy of Finland project,314664,934158d0-e44b-4090-8aae-280ee5ae768f
 1a2263f5-2d83-44b2-babf-7625e2e390c8,Advanced Modular Incoherent Scatter Radar (AMISR) Operations and Maintenance,AGS-1840962,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
 8df78f03-30b0-47d2-b253-e870b696b6fe,A High-Performance Adaptive Simulation Framework for Space-Weather Modeling (SWMF),NCC5-614,a4e07475-572f-48db-b2e7-5d59ea194465
@@ -43,7 +43,7 @@ b0b26093-852d-41f0-8990-aa2da4177360,MAVEN mission support through the NASA Mars
 d40495ad-974a-4889-ad82-03d9f9bf4551,NASA Goddard Space Flight Center HSD Support Partnership,80NSSC21M0180,a4e07475-572f-48db-b2e7-5d59ea194465
 616d4bff-b91f-4565-b589-a399c4f8fa5c,NASA grant,NNX10AT02G,a4e07475-572f-48db-b2e7-5d59ea194465
 cce1ddeb-a82f-44b3-ae8a-4e8737aca5ba,NASA grant,80NSSC18K1203,a4e07475-572f-48db-b2e7-5d59ea194465
-e4d2b621-f80d-4a1a-9a7c-bea03c8556b3,NASA Grant 80NSSC23K0256,80NSSC23K0256,a4e07475-572f-48db-b2e7-5d59ea194465
+e4d2b621-f80d-4a1a-9a7c-bea03c8556b3,PyGS: Analysis Tools for Small-Scale Magnetic Flux Ropes Based on the Grad-Shafranov Reconstruction Method (80NSSC23K0256),80NSSC23K0256,a4e07475-572f-48db-b2e7-5d59ea194465
 47f0aecc-fb8e-4582-ac27-b9b5eb9a0273,NASA Heliophysics Data Environment Enhancements,80NSSC20K0176,a4e07475-572f-48db-b2e7-5d59ea194465
 5a63263c-70dd-4108-92bb-9db26336ac7b,NASA Heliophysics Data Environment Enhancements (HDEE),80NSSC20K0174,a4e07475-572f-48db-b2e7-5d59ea194465
 20f8b053-6983-4c13-849e-92b2fe839afd,NASA Heliophysics Supporting Research,80NSSC20K1313,a4e07475-572f-48db-b2e7-5d59ea194465
@@ -108,7 +108,10 @@ a41c320b-c274-4291-ba36-a1c88493e7ec,TIMED/GUVI Project,NNX14AK74G,a4e07475-572f
 d5b6f181-a410-411f-9fc9-3eefe515bf4f,U.S. National Science Foundation grant,1503389,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
 d72fda36-c177-4c50-a7a6-71121ed5eadc,U.S. National Science Foundation grant,AGS-2033787,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5
 6c2c1ea4-9588-4f38-ae6b-6235a3f9426e,U.S. Naval Research Laboratory award,N0017322P0744,bbea6ab9-2135-414d-af37-d81216e13d4d
-931009e7-1480-4de8-82a1-379e58f4af5f,U.S. Naval Research Laboratory award,N00173191G016,bbea6ab9-2135-414d-af37-d81216e13d4d
+931009e7-1480-4de8-82a1-379e58f4af5f,PR 76-3033-19 PYSAT AND DINEOFS- A GENERALIZED SPACE WEATHER SYSTEM,N00173191G016,bbea6ab9-2135-414d-af37-d81216e13d4d
 07dab8d4-4651-4f07-be32-5cc7a953b79e,"Van Allen Probes Radiation Belt Storm Probe, Energetic particle, Composition, and Thermal plasma suite",967399,c84428f2-df59-4ecd-b725-25cf6ab57f72
 0842077a-882d-4fc7-b441-c50848e01998,Virtual Observatories,05-S3CVO05-11,a4e07475-572f-48db-b2e7-5d59ea194465
 653032f7-4282-47e7-85a5-50d304b96506,WEAVE,G.0025.23N,2ec788a5-449c-4032-90dd-62235065901a
+512b597e-e610-406c-b1c3-ca64484a96c7,NASA DRIVE Science Center for Geospace Storms,80NSSC22M0163,a4e07475-572f-48db-b2e7-5d59ea194465
+d9d28457-4c1c-4089-939d-6ce358f99715,NASA grant,80NSSC20K0178,
+efaffffe-aec1-4f69-b8e7-a94fcad94da6,The Continued Operation of COSMIC in Support of Operational and Research Applications for Years 2012-2015,AGS-1033112,d5a4780e-bb5f-4a1c-8ce0-641a66110ac5

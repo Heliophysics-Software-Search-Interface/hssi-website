@@ -1,0 +1,16 @@
+# Runtime pip requirements for the HSSI app container.
+#
+# Every file in this directory is installed (pip install -r) on container start
+# by docker/launch.sh. Add project dependencies here, one per line, as in a
+# standard requirements.txt — they do not need to live in separate files.
+#
+# Note: the authoritative, fully pinned dependency set is the uv-compiled
+# docker/requirements.txt (installed at image build time). This file is for
+# additional runtime dependencies layered on top of that image.
+
+django-markdownify==0.9.5
+
+# Used by website/management/commands/check_software_versions.py for
+# PEP 440-correct version comparison. Already present transitively via
+# docker/requirements.txt, but declared explicitly since we import it directly.
+packaging>=21.3

@@ -7,8 +7,10 @@ from django.urls import reverse
 from django.test import SimpleTestCase, TestCase
 
 from .models import (
+	Award,
 	DataInput,
 	FunctionCategory,
+	Organization,
 	ProgrammingLanguage,
 	Region,
 	Software,
@@ -199,6 +201,52 @@ class SoftwareDetailJsonLdTests(TestCase):
 
 		data = json.loads(scripts[0])
 		self.assertEqual(data["description"][-1], description)
+
+	def test_software_detail_with_funders_and_no_awards(self):
+		software = self._publish_software(software_name="Funder Only Software")
+		software.funder.add(
+			Organization.objects.create(name="NASA"),
+			Organization.objects.create(name="NSF"),
+		)
+
+		response = self.client.get(software.get_absolute_url())
+		self.assertEqual(response.status_code, 200)
+		data = json.loads(self._jsonld_scripts(response.content.decode())[0])
+		self.assertEqual(
+			data["funder"],
+			[
+				{"@type": "Organization", "name": "NASA"},
+				{"@type": "Organization", "name": "NSF"},
+			],
+		)
+		self.assertNotIn("funding", data)
+		api_response = self.client.get(
+			f"/api/view/software/{software.pk}/?view=jsonld"
+		)
+		self.assertEqual(api_response.status_code, 200)
+		self.assertEqual(api_response.json()["funder"], data["funder"])
+		self.assertNotIn("funding", api_response.json())
+
+	def test_software_with_award_keeps_existing_funding_shape(self):
+		software = self._publish_software(software_name="Awarded Software")
+		numfocus = Organization.objects.create(name="NumFOCUS")
+		software.award.add(Award.objects.create(name="Research Grant", funder=numfocus))
+		software.funder.add(numfocus, Organization.objects.create(name="NASA"))
+
+		response = self.client.get(software.get_absolute_url())
+		self.assertEqual(response.status_code, 200)
+		data = json.loads(self._jsonld_scripts(response.content.decode())[0])
+		self.assertEqual(
+			data["funding"],
+			[
+				{
+					"@type": "MonetaryGrant",
+					"name": "Research Grant",
+					"funder": {"@type": "Organization", "name": "NumFOCUS"},
+				},
+			],
+		)
+		self.assertNotIn("funder", data)
 
 
 class SoftwareApiSlugLookupTests(TestCase):

@@ -396,18 +396,10 @@ class SoftwareSerializer(HssiSerializer):
 				funding_item["identifier"] = award.identifier
 			funding_items.append(funding_item)
 
-		no_funder_listed = not funding_items
-		if no_funder_listed:
-			for item in funding_items:
-				if "funder" in item:
-					no_funder_listed = False
-					break
-		if no_funder_listed:
-			for funder in instance.funder.all():
-				funding_item["@type"] = "MonetaryGrant"
-				funding_item["funder"] = self._organization_jsonld(funder)
-		if not funding_items:
-			funding_items = None
+		funder_items = (
+			[self._organization_jsonld(funder) for funder in instance.funder.all()]
+			if not funding_items else None
+		)
 
 		json_id = instance.persistent_identifier
 		if not json_id:
@@ -490,6 +482,7 @@ class SoftwareSerializer(HssiSerializer):
 			),
 			"datePublished": instance.publication_date,
 			"description": descriptions,
+			"funder": funder_items or None,
 			"funding": funding_items or None,
 			"identifier": json_identifiers,
 			"image": instance.logo,

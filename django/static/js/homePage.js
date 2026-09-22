@@ -444,17 +444,6 @@ $(document).ready(function () {
 
 	//// HOOK UP EVENT HANDLERS
 
-	// sort buttons
-	$('div#sort_menu .sort-button').on('click', function() {
-		if ($(this).attr('selected')) {
-			// is already the selected sort method, no change
-			return;
-		}
-		var sortType = $(this).attr('id').split('_')[2];
-		HSSI.setActiveSort(sortType);
-		HSSI.buildFilterQueryParamsAndSend();
-	});
-
 	// prevent accordion menu expansion when
 	// clicking on a parent filter name to select it
 	$('div.filter_label label').on('click', function(evt) {

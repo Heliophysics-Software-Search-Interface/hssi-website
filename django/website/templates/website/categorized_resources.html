@@ -25,7 +25,7 @@
 	{% include "website/social_preview.html" %}
 
 	<link rel="stylesheet" href="{% static 'css/categories.css' %}?v=2024-10-15" />
-	<link rel="stylesheet" href="{% static 'css/resources.css' %}?v=2024-10-15" />
+	<link rel="stylesheet" href="{% static 'css/resources.css' %}?v=2026-09-22" />
 	<link rel="stylesheet" href="{% static 'css/media.css' %}?v=2024-10-15" />
 	<link rel="stylesheet" href="{% static 'css/app.css' %}?v=2024-10-15" />
 	<link rel="stylesheet" href="{% static 'css/filter_menu.css' %}" />
@@ -33,7 +33,7 @@
 
 	{% include "website/category_styling.html" %}
 
-	<script type="text/javascript" src="{% static 'js/homePage.js' %}?v=2024-10-15"></script>
+	<script type="text/javascript" src="{% static 'js/homePage.js' %}?v=2026-09-22"></script>
 	<script type="text/javascript" src="{% static 'js/spin.js' %}"></script>
 
 {% endblock %}
@@ -160,6 +160,16 @@
 
 			{% block page_description %}
 			{% endblock %}
+
+			<div class="resource-content-header">
+				<div id="result-count" role="status" aria-live="polite"></div>
+				<div id="sort_menu" role="group" aria-label="Sort resources">
+					<span class="sort-label">Sort by:</span>
+					<button type="button" class="button sort-button active-sort" data-sort="date" aria-pressed="true">Last Modified Date</button>
+					<button type="button" class="button sort-button" data-sort="create" aria-pressed="false">Created Date</button>
+					<button type="button" class="button sort-button" data-sort="name" aria-pressed="false">Name</button>
+				</div>
+			</div>
 
 			<!-- RESOURCE CONTENT -->
 			<div id="resource_content">

@@ -135,8 +135,18 @@
     <!-- Main Content -->
     <div class="software-content">
 
-        <!-- Description Section -->
+        <!-- Concise Description Section -->
+        {% if software.concise_description %}
         <details class="software-section" open>
+            <summary class="section-title">Concise Description</summary>
+            <div class="description-content">
+                {{ software.concise_description|markdownify }}
+            </div>
+        </details>
+        {% endif %}
+
+        <!-- Description Section -->
+        <details class="software-section">
             <summary class="section-title">Description</summary>
             <div class="description-content">
                 {% if software.description %}
@@ -146,16 +156,6 @@
                 {% endif %}
             </div>
         </details>
-
-        <!-- Concise Description Section -->
-        {% if software.concise_description %}
-        <details class="software-section">
-            <summary class="section-title">Concise Description</summary>
-            <div class="description-content">
-                {{ software.concise_description|markdownify }}
-            </div>
-        </details>
-        {% endif %}
 
         <!-- Reference Publication Section -->
         {% if software.reference_publication %}

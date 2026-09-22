@@ -5,6 +5,7 @@ import uuid
 
 from django.urls import reverse
 from django.test import SimpleTestCase, TestCase
+from django.utils import timezone
 
 from .models import (
 	DataInput,
@@ -13,6 +14,7 @@ from .models import (
 	Region,
 	Software,
 	SoftwareVersion,
+	SubmissionInfo,
 	VerifiedSoftware,
 )
 from .util import build_software_filter_query, shorten_software_filter_value
@@ -23,6 +25,55 @@ FILTER_CASES = [
 	("programming_language",   ProgrammingLanguage,  "1b6ddaa6-6885-46b3-b59a-ea119e61bd74", "G23apmip"),
 	("software_functionality", FunctionCategory,     "332b6567-bdd1-4132-a0c5-532e78b5538c", "MytlZ73f"),
 ]
+
+
+class HomepageResultSortingTests(TestCase):
+	@classmethod
+	def setUpTestData(cls):
+		cls.alpha = Software.objects.create(
+			software_name="Alpha", publication_date=datetime.date(2020, 1, 1)
+		)
+		cls.beta = Software.objects.create(
+			software_name="beta", publication_date=datetime.date(2024, 1, 1)
+		)
+		cls.zulu = Software.objects.create(software_name="Zulu")
+		for software in (cls.alpha, cls.beta, cls.zulu):
+			VerifiedSoftware.create_verified(software)
+		Software.objects.create(
+			software_name="Hidden", publication_date=datetime.date(2026, 1, 1)
+		)
+		for software, year in ((cls.alpha, 2022), (cls.alpha, 2025), (cls.beta, 2023)):
+			SubmissionInfo.objects.create(
+				software=software,
+				submission_date=timezone.make_aware(datetime.datetime(year, 1, 1)),
+			)
+
+	def get_page(self, sort, offset=0, limit=2):
+		response = self.client.get(
+			"/api/models/VerifiedSoftware/rows/all/",
+			{"sort": sort, "offset": offset, "limit": limit},
+		)
+		self.assertEqual(response.status_code, 200)
+		return response.json()
+
+	def test_modified_date_sorts_full_catalog_before_paging(self):
+		first = self.get_page("date")
+		self.assertEqual(first["total"], 3)
+		self.assertEqual([item["software_name"] for item in first["data"]], ["Alpha", "beta"])
+		self.assertTrue(first["data"][0]["metadata_modified_date"].startswith("2025-01-01"))
+		second = self.get_page("date", offset=2)
+		self.assertEqual(second["data"][0]["software_name"], "Zulu")
+		self.assertIsNone(second["data"][0]["metadata_modified_date"])
+
+	def test_created_date_uses_publication_date_and_name_is_alphabetical(self):
+		self.assertEqual(
+			[item["software_name"] for item in self.get_page("create")["data"]],
+			["beta", "Alpha"],
+		)
+		self.assertEqual(
+			[item["software_name"] for item in self.get_page("name")["data"]],
+			["Alpha", "beta"],
+		)
 
 
 class SoftwareFilterEncodingTests(SimpleTestCase):

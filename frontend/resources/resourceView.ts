@@ -11,6 +11,12 @@ const styleNoResults = "no-results";
 const stylePageControls = "page-controls";
 const softwarModelName = "VerifiedSoftware";
 const idResourceContainer = "resource_content";
+type ResourceSort = "date" | "create" | "name";
+
+function resourceSortFromUrl(): ResourceSort {
+	const value = new URLSearchParams(window.location.search).get("sort");
+	return value === "create" || value === "name" ? value : "date";
+}
 
 /** 
  * a list-style display that shows users different software resource entries 
@@ -31,6 +37,7 @@ export class ResourceView {
 	private paginationTotal: number = 0;
 	private paginationControlsEl: HTMLDivElement = null;
 	private readonly PAGE_SIZE = 25;
+	private sort: ResourceSort = resourceSortFromUrl();
 
 	public onReady: SimpleEvent = null;
 
@@ -77,6 +84,60 @@ export class ResourceView {
 
 		this.containerElement.appendChild(this.noResourcesElem);
 		this.buildPaginationControls();
+		this.updateSortControls();
+		document.querySelectorAll<HTMLButtonElement>("#sort_menu .sort-button").forEach(button => {
+			button.addEventListener("click", () => {
+				this.setSort(button.dataset.sort as ResourceSort);
+			});
+		});
+	}
+
+	private updateSortControls(): void {
+		const hasSearch = !!new URLSearchParams(window.location.search).get("q")?.trim();
+		const menu = document.getElementById("sort_menu");
+		const count = this.paginatedMode ? this.paginationTotal : this.items.length;
+		if (menu) menu.hidden = hasSearch || count === 0;
+		document.querySelectorAll<HTMLButtonElement>("#sort_menu .sort-button").forEach(button => {
+			const active = button.dataset.sort === this.sort;
+			button.classList.toggle("active-sort", active);
+			button.setAttribute("aria-pressed", String(active));
+		});
+	}
+
+	public updateResultHeader(): void {
+		const count = this.paginatedMode ? this.paginationTotal : this.items.length;
+		const label = document.getElementById("result-count");
+		if (label) label.textContent = `Showing ${count} ${count === 1 ? "resource" : "resources"}.`;
+		this.updateSortControls();
+	}
+
+	private sortItems(items: SoftwareDataAsync[]): SoftwareDataAsync[] {
+		const sorted = [...items];
+		const nameOrder = (a: SoftwareDataAsync, b: SoftwareDataAsync) =>
+			a.software_name.localeCompare(b.software_name, undefined, { sensitivity: "base" });
+		if (this.sort === "name") return sorted.sort(nameOrder);
+		const field = this.sort === "create" ? "publication_date" : "metadata_modified_date";
+		return sorted.sort((a, b) => {
+			const first = a[field] || "";
+			const second = b[field] || "";
+			if (!first) return second ? 1 : nameOrder(a, b);
+			if (!second) return -1;
+			return second.localeCompare(first) || nameOrder(a, b);
+		});
+	}
+
+	private async setSort(sort: ResourceSort): Promise<void> {
+		if (sort === this.sort) return;
+		this.sort = sort;
+		const url = new URL(window.location.href);
+		if (sort === "date") url.searchParams.delete("sort");
+		else url.searchParams.set("sort", sort);
+		url.searchParams.delete("page");
+		history.pushState(null, "", url);
+		this.paginationOffset = 0;
+		this.updateSortControls();
+		if (this.paginatedMode) await this.loadPage(0, false);
+		else this.refreshItems();
 	}
 
 	private buildPaginationControls(): void {
@@ -127,7 +188,7 @@ export class ResourceView {
 		if (offset < 0 || offset >= this.paginationTotal) return;
 		Spinner.showSpinner("Loading...", this.containerElement);
 		this.paginationOffset = offset;
-		const { items, total } = await ModelDataCache.fetchPage(softwarModelName, offset, this.PAGE_SIZE);
+		const { items, total } = await ModelDataCache.fetchPage(softwarModelName, offset, this.PAGE_SIZE, this.sort);
 		this.itemData = items;
 		this.paginationTotal = total;
 		this.specificUids = null;
@@ -140,11 +201,17 @@ export class ResourceView {
 
 	/** restore the correct page when the user navigates back/forward */
 	public async onPopState(): Promise<void> {
-		if (!this.paginatedMode) return;
+		const previousSort = this.sort;
+		this.sort = resourceSortFromUrl();
+		this.updateSortControls();
+		if (!this.paginatedMode) {
+			if (this.sort !== previousSort) this.refreshItems();
+			return;
+		}
 		const pageParam = new URLSearchParams(window.location.search).get("page");
 		const page = Math.max(1, parseInt(pageParam || "1", 10));
 		const offset = (page - 1) * this.PAGE_SIZE;
-		if (offset === this.paginationOffset) return;
+		if (offset === this.paginationOffset && this.sort === previousSort) return;
 		await this.loadPage(offset, false);
 	}
 
@@ -162,16 +229,9 @@ export class ResourceView {
 		if (this.paginatedMode) return;
 		this.paginatedMode = true;
 		this.paginationOffset = 0;
-		const cache = ModelDataCache.getCache(softwarModelName);
-		if (cache.hasFetchedAllData) {
-			const all = [...await ModelDataCache.getModelDataAll(softwarModelName)];
-			this.itemData = all.slice(0, this.PAGE_SIZE);
-			this.paginationTotal = all.length;
-		} else {
-			const { items, total } = await ModelDataCache.fetchPage(softwarModelName, 0, this.PAGE_SIZE);
-			this.itemData = items;
-			this.paginationTotal = total;
-		}
+		const { items, total } = await ModelDataCache.fetchPage(softwarModelName, 0, this.PAGE_SIZE, this.sort);
+		this.itemData = items;
+		this.paginationTotal = total;
 		this.updatePaginationControls();
 	}
 
@@ -204,14 +264,15 @@ export class ResourceView {
 	}
 
 	/** create new items based on stored item data */
-	public refreshItems(): void {
+	public refreshItems(preserveOrder: boolean = false): void {
 
 		// remove all old items
 		for(const oldItem of this.items) oldItem.destroy();
 		this.items.length = 0;
 
 		// create new items from data
-		for(const data of this.itemData) {
+		const dataToShow = preserveOrder || this.paginatedMode ? this.itemData : this.sortItems(this.itemData);
+		for(const data of dataToShow) {
 			if(this.specificUids != null) {
 				if(!(this.specificUids.includes(data.id.toLowerCase()))) continue;
 			}
@@ -226,6 +287,7 @@ export class ResourceView {
 		// display no results if no results found, or hide it if there is results
 		if(this.items.length <= 0) this.noResourcesElem.classList.remove(styleHidden);
 		else this.noResourcesElem.classList.add(styleHidden);
+		this.updateResultHeader();
 	}
 
 	/** 
@@ -242,10 +304,10 @@ export class ResourceView {
 	}
 
 	/** shows only the specified items in the resource view */
-	public showItems(items: SoftwareDataAsync[]): void {
+	public showItems(items: SoftwareDataAsync[], preserveOrder: boolean = false): void {
 		const prevData = this.itemData;
 		this.itemData = items;
-		this.refreshItems();
+		this.refreshItems(preserveOrder);
 		this.itemData = prevData;
 	}
 
@@ -270,7 +332,7 @@ export class ResourceView {
 				const pageParam = urlParams.get("page");
 				const initialPage = Math.max(1, parseInt(pageParam || "1", 10));
 				this.paginationOffset = (initialPage - 1) * this.PAGE_SIZE;
-				const { items, total } = await ModelDataCache.fetchPage(softwarModelName, this.paginationOffset, this.PAGE_SIZE);
+				const { items, total } = await ModelDataCache.fetchPage(softwarModelName, this.paginationOffset, this.PAGE_SIZE, this.sort);
 				this.itemData = items;
 				this.paginationTotal = total;
 			} else {

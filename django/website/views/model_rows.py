@@ -1,6 +1,8 @@
 import json, uuid, enum
 
 import django.apps
+from django.db.models import F, Max, OuterRef, Subquery
+from django.db.models.functions import Lower
 from django.http import *
 
 from ..util import *
@@ -38,6 +40,27 @@ def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 		ids = [i.strip() for i in ids_param.split(",") if i.strip()]
 		objects = objects.filter(pk__in=ids)
 
+	# The homepage pages verified software. Sort in the database so each page
+	# reflects the ordering of the entire catalog, not just its 25 cards.
+	if model is VerifiedSoftware:
+		sort = request.GET.get("sort")
+		software = Software.objects.filter(pk=OuterRef("pk"))
+		if sort == "date":
+			latest_submission = SubmissionInfo.objects.filter(
+				software_id=OuterRef("pk"), submission_date__isnull=False
+			).order_by("-submission_date")
+			objects = objects.annotate(
+				_sort_date=Subquery(latest_submission.values("submission_date")[:1])
+			).order_by(F("_sort_date").desc(nulls_last=True), "pk")
+		elif sort == "create":
+			objects = objects.annotate(
+				_sort_date=Subquery(software.values("publication_date")[:1])
+			).order_by(F("_sort_date").desc(nulls_last=True), "pk")
+		elif sort == "name":
+			objects = objects.annotate(
+				_sort_name=Lower(Subquery(software.values("software_name")[:1]))
+			).order_by(F("_sort_name").asc(nulls_last=True), "pk")
+
 	total = objects.count()
 
 	offset_param = request.GET.get("offset")
@@ -62,6 +85,20 @@ def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 		except Exception as e:
 			print(e)
 			continue
+
+	if model is VerifiedSoftware and arr:
+		# Match the source used for JSON-LD subjectOf.dateModified. Fetch the
+		# dates in one query instead of one query per homepage card.
+		modified_by_id = {
+			str(row["software_id"]): row["latest"]
+			for row in SubmissionInfo.objects.filter(
+				software_id__in=[item["id"] for item in arr],
+				submission_date__isnull=False,
+			).values("software_id").annotate(latest=Max("submission_date"))
+		}
+		for item in arr:
+			modified = modified_by_id.get(item["id"])
+			item["metadata_modified_date"] = modified.isoformat() if modified else None
 
 	return JsonResponse({"data": arr, "total": total})
 

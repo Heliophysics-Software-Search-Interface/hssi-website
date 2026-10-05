@@ -396,10 +396,10 @@ class SoftwareSerializer(HssiSerializer):
 				funding_item["identifier"] = award.identifier
 			funding_items.append(funding_item)
 
-		funder_items = (
-			[self._organization_jsonld(funder) for funder in instance.funder.all()]
-			if not funding_items else None
-		)
+		# Software funders are independent of recorded awards (schema:CreativeWork).
+		funder_items = [
+			self._organization_jsonld(funder) for funder in instance.funder.all()
+		]
 
 		json_id = instance.persistent_identifier
 		if not json_id:

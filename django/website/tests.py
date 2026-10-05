@@ -312,6 +312,30 @@ class SoftwareDetailJsonLdTests(TestCase):
 			funding=[{"@type": "MonetaryGrant", "name": "Research Grant"}],
 		)
 
+	def test_software_list_jsonld_includes_entire_catalog_with_funder_only_record(self):
+		"""One funder-only record must not take down the harvesters' full list."""
+		self._publish_software(software_name="A Regular Software")
+		funder_only = self._publish_software(software_name="B Funder Only Software")
+		nasa = Organization.objects.create(name="NASA")
+		funder_only.funder.add(nasa)
+		awarded = self._publish_software(software_name="C Awarded Software")
+		awarded.funder.add(nasa)
+		awarded.award.add(Award.objects.create(name="Research Grant", funder=nasa))
+
+		plain_response = self.client.get("/api/list/software/")
+		self.assertEqual(plain_response.status_code, 200)
+		response = self.client.get("/api/list/software/?view=jsonld")
+		self.assertEqual(response.status_code, 200)
+		data = response.json()["data"]
+		self.assertEqual(
+			[item["name"] for item in data],
+			[item["name"] for item in plain_response.json()["data"]],
+		)
+		self.assertEqual(len(data), 3)
+		self.assertEqual(data[1]["funder"], [{"@type": "Organization", "name": "NASA"}])
+		self.assertNotIn("funding", data[1])
+		self.assertEqual(data[2]["funding"][0]["name"], "Research Grant")
+
 
 class SoftwareApiSlugLookupTests(TestCase):
 	"""Slug-keyed lookups on /api/view/ and /api/data/ resolve or 404."""

@@ -7,6 +7,7 @@ available (Django creates one automatically via ``manage.py test``).
 """
 
 import uuid
+from urllib.parse import urlsplit
 
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -18,6 +19,7 @@ from .models import (
 	License,
 	RepoStatus,
 	Software,
+	SoftwareVersion,
 	SubmissionInfo,
 	VerifiedSoftware,
 )
@@ -312,6 +314,33 @@ class SoftwareListJsonLdDumpTests(TestCase):
 		data = response.json()["data"]
 		self.assertEqual(len(data), 1)
 		self.assertEqual(data[0]["name"], "Matching")
+
+	def test_subject_of_id_links_to_the_slug_detail_endpoint(self):
+		"""`subjectOf.@id` must be a fetchable URL, keyed on the slug.
+
+		It was built by interpolating the VerifiedSoftware row itself, whose
+		`__str__` is the display name, so "PySPEDAS" produced
+		`/api/view/software/PySPEDAS/`, a 404 for most of the catalog.
+		"""
+		software = Software.objects.create(
+			software_name="PySPEDAS",
+			code_repository_url="https://github.com/example/pyspedas",
+		)
+		VerifiedSoftware.create_verified(software)
+		software.version.add(SoftwareVersion.objects.create(number="1.0.0"))
+
+		dump = self.client.get("/api/list/software/", {"view": "jsonld"})
+		entry = next(
+			item for item in dump.json()["data"] if item["name"] == "PySPEDAS"
+		)
+		subject_id = entry["subjectOf"]["@id"]
+		self.assertIn("/api/view/software/pyspedas/", subject_id)
+		self.assertNotIn("PySPEDAS", subject_id)
+
+		parts = urlsplit(subject_id)
+		detail = self.client.get(f"{parts.path}?{parts.query}")
+		self.assertEqual(detail.status_code, status.HTTP_200_OK)
+		self.assertEqual(detail.json()["name"], "PySPEDAS")
 
 	def test_unsupported_view_returns_400(self):
 		for bad in ("json-ld", "user", "standard", "nonsense"):

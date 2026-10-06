@@ -1,6 +1,7 @@
 import uuid, datetime, json
 from uuid import UUID
 from datetime import date
+from django.utils import timezone
 
 from .forms.names import *
 
@@ -836,5 +837,6 @@ def handle_submission_data(data: dict, software_target: Software = None) -> uuid
 	apply_related_instruments(software, data)
 	apply_related_observatories(software, data)
 
+	software.date_modified = timezone.now()
 	software.save()
 	return submission.id

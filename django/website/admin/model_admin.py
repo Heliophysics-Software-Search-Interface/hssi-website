@@ -287,6 +287,15 @@ class SoftwareAdmin(HSSIModelAdmin):
 		HSSIModelAdmin.collapse_model_entries,
 	]
 
+	def save_related(self, request, form, formsets, change):
+		super().save_related(request, form, formsets, change)
+		# After super() the M2Ms are written too. `changed_data` covers scalar
+		# and M2M fields (sortedm2m reports reorders), so a Save with no edits
+		# does not move the date.
+		if form.changed_data:
+			form.instance.date_modified = timezone.now()
+			form.instance.save(update_fields=["date_modified"])
+
 class VerifiedSoftwareResource(resources.ModelResource):
 	class Meta: model = VerifiedSoftware
 class VerifiedSoftwareAdmin(HSSIModelAdmin): 

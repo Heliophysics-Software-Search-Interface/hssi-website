@@ -456,19 +456,44 @@ class SoftwareDateModifiedTests(TestCase):
 		self.assertEqual(created.software_name, "Parsed, edited")
 		self.assertGreater(created.date_modified, old)
 
-	def test_edit_link_failure_rolls_back_metadata_and_stamp(self):
+	def _post_edit(self, queue_item):
+		return self.client.post(
+			f"/curate/edit_submission/submit_data/{queue_item.id}/",
+			data=json.dumps(self._form_dict("Should not persist")),
+			content_type="application/json",
+		)
+
+	def test_edit_link_failure_midway_rolls_back_metadata(self):
 		from unittest import mock
 
 		queue_item = SoftwareEditQueue.create(self.software)
+		# Raises after the parser's first save has written the new name.
 		with mock.patch(
 			"website.data_parser.apply_related_observatories",
 			side_effect=RuntimeError("boom"),
-		):
-			response = self.client.post(
-				f"/curate/edit_submission/submit_data/{queue_item.id}/",
-				data=json.dumps(self._form_dict("Should not persist")),
-				content_type="application/json",
-			)
+		) as failing_step:
+			response = self._post_edit(queue_item)
+		failing_step.assert_called_once()
+		self.assertEqual(response.status_code, 500)
+		self.software.refresh_from_db()
+		self.assertEqual(self.software.software_name, "Stamped")
+		self.assertIsNone(self.software.date_modified)
+
+	def test_edit_link_failure_after_final_save_rolls_back_stamp(self):
+		from unittest import mock
+		from . import data_parser
+
+		def parse_then_fail(*args, **kwargs):
+			data_parser.handle_submission_data(*args, **kwargs)
+			raise RuntimeError("boom after the final save")
+
+		queue_item = SoftwareEditQueue.create(self.software)
+		with mock.patch(
+			"website.views.edit_submission.handle_submission_data",
+			side_effect=parse_then_fail,
+		) as wrapped:
+			response = self._post_edit(queue_item)
+		wrapped.assert_called_once()
 		self.assertEqual(response.status_code, 500)
 		self.software.refresh_from_db()
 		self.assertEqual(self.software.software_name, "Stamped")

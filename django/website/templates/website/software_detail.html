@@ -13,7 +13,7 @@
 {% if software_jsonld %}
 <script type="application/ld+json">{{ software_jsonld }}</script>
 {% endif %}
-<link rel="stylesheet" href="{% static 'css/software_detail.css' %}?v=2024-10-15" />
+<link rel="stylesheet" href="{% static 'css/software_detail.css' %}?v=2026-10-08" />
 {% endblock %}
 
 {% block page_content %}
@@ -455,7 +455,10 @@
             <summary class="section-title">Keywords</summary>
             <div class="keywords-list">
                 {% for keyword in software.keywords.all %}
-                <span class="tag keyword-tag">{{ keyword.name }}</span>
+                <a href="{{ keyword.get_homepage_filter_url }}"
+                   class="tag keyword-tag"
+                   title="View software filtered by {{ keyword.name }}"
+                   aria-label="View software filtered by {{ keyword.name }}">{{ keyword.name }}</a>
                 {% endfor %}
             </div>
         </details>

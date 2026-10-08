@@ -31,6 +31,7 @@ export class ResourceView {
 	private paginationTotal: number = 0;
 	private paginationControlsEl: HTMLDivElement = null;
 	private readonly PAGE_SIZE = 25;
+	private dataLoaded: boolean = false;
 
 	public onReady: SimpleEvent = null;
 
@@ -77,6 +78,12 @@ export class ResourceView {
 
 		this.containerElement.appendChild(this.noResourcesElem);
 		this.buildPaginationControls();
+	}
+
+	private updateResultHeader(): void {
+		const count = this.paginatedMode ? this.paginationTotal : this.items.length;
+		const label = document.getElementById("result-count");
+		if (label && this.dataLoaded) label.textContent = `Showing ${count} ${count === 1 ? "resource" : "resources"}.`;
 	}
 
 	private buildPaginationControls(): void {
@@ -226,6 +233,7 @@ export class ResourceView {
 		// display no results if no results found, or hide it if there is results
 		if(this.items.length <= 0) this.noResourcesElem.classList.remove(styleHidden);
 		else this.noResourcesElem.classList.add(styleHidden);
+		this.updateResultHeader();
 	}
 
 	/** 
@@ -278,6 +286,7 @@ export class ResourceView {
 			}
 		}
 
+		this.dataLoaded = true;
 		this.onReady.triggerEvent();
 
 		this.refreshItems();

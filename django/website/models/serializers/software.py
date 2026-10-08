@@ -287,11 +287,7 @@ class SoftwareSerializer(HssiSerializer):
 			content_url = request.build_absolute_uri(instance.get_absolute_url())
 		else:
 			content_url = instance.get_absolute_url()
-		# `.first()` returns the VerifiedSoftware row, not its slug, and
-		# HssiSet.__str__ renders the software *name*, so interpolating the
-		# row emitted e.g. `/api/view/software/PySPEDAS/`, which 404s. Same
-		# lookup as `Software.get_absolute_url`: key on the slug, fall back
-		# to the UUID.
+		# Key the URL on the slug, falling back to the UUID, as Software.get_absolute_url does.
 		verified = VerifiedSoftware.objects.filter(pk=instance.pk).only("slug").first()
 		slug = verified.slug if verified and verified.slug else instance.id
 		data: dict[str, Any] = {

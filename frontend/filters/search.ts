@@ -57,7 +57,10 @@ function parseUrlParams() {
 		searchForQuery(searchVal, false);
 	} else {
 		const view = ResourceView.main;
-		if (view) view.showItems(view.getFilteredItems());
+		if (view) {
+			view.showItems(view.getFilteredItems());
+			view.updateResultHeader();
+		}
 		updateTitleToSearch();
 	}
 
@@ -105,6 +108,7 @@ export async function searchForQuery(
 		const view = ResourceView.main;
 		if (view) view.showItems(view.getFilteredItems());
 		if (pushHistory) recordHistory("");
+		if (view) view.updateResultHeader();
 		updateTitleToSearch();
 		return;
 	}
@@ -113,6 +117,7 @@ export async function searchForQuery(
 
 	try{
 		const view = ResourceView.main;
+		if (view && view.getAllItems().length === 0) await view.onReady.wait();
 
 		// ensure all software is loaded so search covers the full dataset
 		if (view) await view.awaitAllItems();
@@ -136,9 +141,10 @@ export async function searchForQuery(
 				filteredResults.push(item);
 			}
 		}
-		view.showItems(filteredResults);
+		view.showItems(filteredResults, true);
 		
 		if (pushHistory) recordHistory(trimmedQuery);
+		view.updateResultHeader();
 
 		// Report user-initiated searches to GA (pushHistory is false when we're
 		// restoring or reapplying an existing URL search — e.g. a full page load

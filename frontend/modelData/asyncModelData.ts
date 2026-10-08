@@ -81,6 +81,7 @@ export interface PersonDataAsync extends HSSIModelData {
 export interface SoftwareDataAsync extends HSSIModelData {
 	programming_language: Array<HssiDataAsync<ControlledListData>>,
 	publication_date: string,
+	metadata_modified_date?: string,
 	publisher: HssiDataAsync<OrganizationData>,
 	authors: Array<HssiDataAsync<PersonDataAsync>>,
 	related_instruments: Array<HssiDataAsync<ControlledListData>>,
@@ -164,6 +165,7 @@ export function createAsyncSoftwareData(data: SoftwareData): SoftwareDataAsync{
 		id: data.id,
 		programming_language: asyncify(data.programming_language, "ProgrammingLanguage") as any,
 		publication_date: data.publication_date,
+		metadata_modified_date: data.metadata_modified_date,
 		publisher: asyncify(data.publisher, "Organization") as any,
 		authors: asyncify(data.authors, "Person") as any,
 		related_instruments: asyncify(data.related_instruments, "InstrumentObservatory") as any,

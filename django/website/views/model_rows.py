@@ -1,6 +1,8 @@
 import json, uuid, enum
 
 import django.apps
+from django.db.models import F, OuterRef, Subquery
+from django.db.models.functions import Coalesce, Lower
 from django.http import *
 
 from ..util import *
@@ -38,6 +40,38 @@ def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 		ids = [i.strip() for i in ids_param.split(",") if i.strip()]
 		objects = objects.filter(pk__in=ids)
 
+	# The homepage pages verified software. Sort in the database so each page
+	# reflects the ordering of the entire catalog, not just its 25 cards.
+	if model is VerifiedSoftware:
+		sort = request.GET.get("sort")
+		software = Software.objects.filter(pk=OuterRef("pk"))
+		# Equal dates fall back to the name, as resourceView.ts does when it
+		# re-sorts each page, so a run of tied records stays alphabetical
+		# across page boundaries instead of restarting on every page.
+		name = Lower(Subquery(software.values("software_name")[:1]))
+		if sort == "date":
+			# Same source as JSON-LD subjectOf.dateModified: the stamped
+			# Software.date_modified, else the newest submission date.
+			latest_submission = SubmissionInfo.objects.filter(
+				software_id=OuterRef("pk"), submission_date__isnull=False
+			).order_by("-submission_date")
+			objects = objects.annotate(
+				_sort_date=Coalesce(
+					Subquery(software.values("date_modified")[:1]),
+					Subquery(latest_submission.values("submission_date")[:1]),
+				),
+				_sort_name=name,
+			).order_by(F("_sort_date").desc(nulls_last=True), "_sort_name", "pk")
+		elif sort == "create":
+			objects = objects.annotate(
+				_sort_date=Subquery(software.values("publication_date")[:1]),
+				_sort_name=name,
+			).order_by(F("_sort_date").desc(nulls_last=True), "_sort_name", "pk")
+		elif sort == "name":
+			objects = objects.annotate(_sort_name=name).order_by(
+				F("_sort_name").asc(nulls_last=True), "pk"
+			)
+
 	total = objects.count()
 
 	offset_param = request.GET.get("offset")
@@ -62,6 +96,24 @@ def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 		except Exception as e:
 			print(e)
 			continue
+
+	if model is VerifiedSoftware and arr:
+		# Match the source used for JSON-LD subjectOf.dateModified. Fetch the
+		# dates in one query instead of one query per homepage card.
+		latest_submission = SubmissionInfo.objects.filter(
+			software_id=OuterRef("pk"), submission_date__isnull=False
+		).order_by("-submission_date")
+		modified_by_id = {
+			str(row["id"]): row["date_modified"] or row["_fallback"]
+			for row in Software.objects.filter(
+				id__in=[item["id"] for item in arr]
+			).annotate(
+				_fallback=Subquery(latest_submission.values("submission_date")[:1])
+			).values("id", "date_modified", "_fallback")
+		}
+		for item in arr:
+			modified = modified_by_id.get(item["id"])
+			item["metadata_modified_date"] = modified.isoformat() if modified else None
 
 	return JsonResponse({"data": arr, "total": total})
 

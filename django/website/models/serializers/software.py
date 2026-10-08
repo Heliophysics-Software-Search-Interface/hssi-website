@@ -301,10 +301,6 @@ class SoftwareSerializer(HssiSerializer):
 		}
 		if instance.license and instance.license.url:
 			data["license"] = instance.license.url
-		# `submission_info` is a RelatedManager, so testing it directly is
-		# always truthy and `.latest()` raised DoesNotExist for a published
-		# software with no dated SubmissionInfo, which 500'd the landing page
-		# and both JSON-LD API endpoints for that record.
 		latest_submission = (
 			instance.submission_info.filter(submission_date__isnull=False)
 				.order_by("submission_date")

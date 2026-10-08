@@ -87,6 +87,28 @@ class HomepageResultSortingTests(TestCase):
 			["Alpha", "beta"],
 		)
 
+	def test_equal_dates_break_ties_by_name_across_pages(self):
+		# pks run opposite to the names, so a pk tie-break would reverse them
+		for uid, name in (
+			("ffffffff-ffff-4fff-bfff-ffffffffffff", "Able"),
+			("88888888-8888-4888-8888-888888888888", "baker"),
+			("00000000-0000-4000-8000-000000000000", "Charlie"),
+		):
+			VerifiedSoftware.create_verified(Software.objects.create(
+				id=uuid.UUID(uid),
+				software_name=name,
+				date_modified=timezone.make_aware(datetime.datetime(2030, 1, 1, 12, 0, 0)),
+				publication_date=datetime.date(2030, 1, 1),
+			))
+		for sort in ("date", "create"):
+			with self.subTest(sort=sort):
+				names = [
+					item["software_name"]
+					for offset in (0, 2)
+					for item in self.get_page(sort, offset=offset)["data"]
+				]
+				self.assertEqual(names[:3], ["Able", "baker", "Charlie"])
+
 
 class SoftwareFilterEncodingTests(SimpleTestCase):
 	def test_tokens_match_frontend_encoding(self):

@@ -1,6 +1,7 @@
 import json, uuid, enum
 
 from django.core.mail import send_mail
+from django.db import transaction
 from django.http import *
 from django.shortcuts import render
 from datetime import timedelta
@@ -115,7 +116,10 @@ def submit_edits(request: HttpRequest, uid: str) -> HttpResponse:
 		encoding = request.encoding or "utf-8"
 		data = request.body.decode(encoding)
 		json_data = json.loads(data)
-		handle_submission_data(json_data, queue_item.target_software)
+		# Inside the try so a failure exits the transaction before the
+		# handler below catches it, rolling back any partial write.
+		with transaction.atomic():
+			handle_submission_data(json_data, queue_item.target_software)
 
 	except Exception as e: 
 		print(e)

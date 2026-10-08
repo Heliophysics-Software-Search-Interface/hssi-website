@@ -194,6 +194,17 @@ class Software(HssiModel):
 	)
 	code_repository_url = models.URLField(blank=True, null=True)
 	logo = models.URLField(blank=True, null=True)
+	# Last change to this record's metadata through the supported write paths:
+	# the admin change form (only when the form reports changed fields), the
+	# submission serializer's create/update (POST /api/submission/ and PATCH),
+	# and the submission parser (public form, legacy /api/submit, edit link).
+	# Deliberately not stamped: edits to related rows alone (Person,
+	# Organization, Award, RelatedItem, License, SoftwareVersion, vocab),
+	# SubmissionInfo edits, publishing, slug changes, the collapse/fix-uuid/
+	# fetch-vocab admin actions, CSV import/restore, and bulk or raw SQL
+	# writes. Null means "not stamped yet"; the JSON-LD falls back to the
+	# newest submission date. See issue #103.
+	date_modified = models.DateTimeField(null=True, blank=True, editable=False)
 	related_phenomena: Manager[Phenomena] = SortedManyToManyField(
 		Phenomena, 
 		blank=True,

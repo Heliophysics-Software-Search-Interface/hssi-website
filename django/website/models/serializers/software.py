@@ -306,8 +306,9 @@ class SoftwareSerializer(HssiSerializer):
 				.order_by("submission_date")
 				.last()
 		)
-		if latest_submission:
-			data["dateModified"] = latest_submission.submission_date
+		data["dateModified"] = instance.date_modified or (
+			latest_submission.submission_date if latest_submission else None
+		)
 		return { key: value for key, value in data.items() if value is not None }
 
 	def to_representation_jsonld(self, instance: Software) -> dict[str, Any]:

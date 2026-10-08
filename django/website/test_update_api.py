@@ -389,6 +389,13 @@ class SoftwareDateModifiedTests(TestCase):
 			self._jsonld(self.software)["subjectOf"]["dateModified"].startswith("2025-01-01")
 		)
 
+	def test_subject_of_is_emitted_without_a_version(self):
+		"""The catalog record exists whether or not the software has a version."""
+		self.assertFalse(self.software.version.exists())
+		subject_of = self._jsonld(self.software)["subjectOf"]
+		self.assertEqual(subject_of["@type"], ["CreativeWork", "dcat:CatalogRecord"])
+		self.assertTrue(subject_of["dateModified"].startswith("2025-01-01"))
+
 	def test_jsonld_prefers_the_stamp_once_set(self):
 		self.software.version.add(SoftwareVersion.objects.create(number="1.0"))
 		Software.objects.filter(pk=self.software.pk).update(

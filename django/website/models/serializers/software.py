@@ -277,10 +277,7 @@ class SoftwareSerializer(HssiSerializer):
 		}
 		return data
 
-	def _subject_of(self, instance: Software, json_id: str) -> dict[str, Any] | None:
-		version: SoftwareVersion | None = instance.version.first()
-		if not version:
-			return None
+	def _subject_of(self, instance: Software, json_id: str) -> dict[str, Any]:
 		content_url = None
 		request: HttpRequest | None = self.context.get("request")
 		if request:

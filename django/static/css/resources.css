@@ -48,7 +48,8 @@ div.resource-content-header {
 	color: #1779ba;
 	border: 1px solid #1779ba;
 	background-color: transparent;
-	margin-bottom: 0;
+	margin: 0;
+	padding: 0.5rem;
 }
 
 #sort_menu .sort-button:hover {

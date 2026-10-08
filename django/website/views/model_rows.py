@@ -1,8 +1,8 @@
 import json, uuid, enum
 
 import django.apps
-from django.db.models import F, Max, OuterRef, Subquery
-from django.db.models.functions import Lower
+from django.db.models import F, OuterRef, Subquery
+from django.db.models.functions import Coalesce, Lower
 from django.http import *
 
 from ..util import *
@@ -46,11 +46,16 @@ def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 		sort = request.GET.get("sort")
 		software = Software.objects.filter(pk=OuterRef("pk"))
 		if sort == "date":
+			# Same source as JSON-LD subjectOf.dateModified: the stamped
+			# Software.date_modified, else the newest submission date.
 			latest_submission = SubmissionInfo.objects.filter(
 				software_id=OuterRef("pk"), submission_date__isnull=False
 			).order_by("-submission_date")
 			objects = objects.annotate(
-				_sort_date=Subquery(latest_submission.values("submission_date")[:1])
+				_sort_date=Coalesce(
+					Subquery(software.values("date_modified")[:1]),
+					Subquery(latest_submission.values("submission_date")[:1]),
+				)
 			).order_by(F("_sort_date").desc(nulls_last=True), "pk")
 		elif sort == "create":
 			objects = objects.annotate(
@@ -89,12 +94,16 @@ def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 	if model is VerifiedSoftware and arr:
 		# Match the source used for JSON-LD subjectOf.dateModified. Fetch the
 		# dates in one query instead of one query per homepage card.
+		latest_submission = SubmissionInfo.objects.filter(
+			software_id=OuterRef("pk"), submission_date__isnull=False
+		).order_by("-submission_date")
 		modified_by_id = {
-			str(row["software_id"]): row["latest"]
-			for row in SubmissionInfo.objects.filter(
-				software_id__in=[item["id"] for item in arr],
-				submission_date__isnull=False,
-			).values("software_id").annotate(latest=Max("submission_date"))
+			str(row["id"]): row["date_modified"] or row["_fallback"]
+			for row in Software.objects.filter(
+				id__in=[item["id"] for item in arr]
+			).annotate(
+				_fallback=Subquery(latest_submission.values("submission_date")[:1])
+			).values("id", "date_modified", "_fallback")
 		}
 		for item in arr:
 			modified = modified_by_id.get(item["id"])

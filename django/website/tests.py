@@ -68,6 +68,15 @@ class HomepageResultSortingTests(TestCase):
 		self.assertEqual(second["data"][0]["software_name"], "Zulu")
 		self.assertIsNone(second["data"][0]["metadata_modified_date"])
 
+	def test_modified_date_prefers_the_stamp_over_submission_date(self):
+		Software.objects.filter(pk=self.beta.pk).update(
+			date_modified=timezone.make_aware(datetime.datetime(2026, 3, 1))
+		)
+		page = self.get_page("date")
+		self.assertEqual([item["software_name"] for item in page["data"]], ["beta", "Alpha"])
+		self.assertTrue(page["data"][0]["metadata_modified_date"].startswith("2026-03-01"))
+		self.assertTrue(page["data"][1]["metadata_modified_date"].startswith("2025-01-01"))
+
 	def test_created_date_uses_publication_date_and_name_is_alphabetical(self):
 		self.assertEqual(
 			[item["software_name"] for item in self.get_page("create")["data"]],

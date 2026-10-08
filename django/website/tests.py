@@ -10,6 +10,7 @@ from .models import (
 	Award,
 	DataInput,
 	FunctionCategory,
+	Keyword,
 	Organization,
 	ProgrammingLanguage,
 	Region,
@@ -44,6 +45,26 @@ class SoftwareFilterEncodingTests(SimpleTestCase):
 					obj.get_homepage_filter_url(),
 					f"/?{build_software_filter_query(field, obj.id)}",
 				)
+
+	def test_keyword_homepage_filter_url_uses_field_search(self):
+		keyword = Keyword(id=uuid.uuid4(), name="pyhc package")
+		self.assertEqual(
+			keyword.get_homepage_filter_url(),
+			"/?q=keyword%3A%22pyhc+package%22",
+		)
+
+
+class SoftwareDetailKeywordLinkTests(TestCase):
+	def test_keywords_link_to_homepage_field_search(self):
+		software = Software.objects.create(software_name="Test Software")
+		VerifiedSoftware.create_verified(software)
+		software.keywords.add(Keyword.objects.create(name="pyhc package"))
+
+		response = self.client.get(software.get_absolute_url())
+
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, 'href="/?q=keyword%3A%22pyhc+package%22"')
+		self.assertContains(response, 'title="View software filtered by pyhc package"')
 
 
 class SoftwareFunctionalityOrderingTests(TestCase):

@@ -287,8 +287,9 @@ class SoftwareSerializer(HssiSerializer):
 			content_url = request.build_absolute_uri(instance.get_absolute_url())
 		else:
 			content_url = instance.get_absolute_url()
-		slug = VerifiedSoftware.objects.filter(id=instance.id).first()
-		if not slug: slug = instance.id
+		# Key the URL on the slug, falling back to the UUID, as Software.get_absolute_url does.
+		verified = VerifiedSoftware.objects.filter(pk=instance.pk).only("slug").first()
+		slug = verified.slug if verified and verified.slug else instance.id
 		data: dict[str, Any] = {
 			"@id": f"https://hssi.hsdcloud.org/api/view/software/{slug}/?view=jsonld",
 			"@type": ["CreativeWork", "dcat:CatalogRecord"],
@@ -300,10 +301,6 @@ class SoftwareSerializer(HssiSerializer):
 		}
 		if instance.license and instance.license.url:
 			data["license"] = instance.license.url
-		# `submission_info` is a RelatedManager, so testing it directly is
-		# always truthy and `.latest()` raised DoesNotExist for a published
-		# software with no dated SubmissionInfo, which 500'd the landing page
-		# and both JSON-LD API endpoints for that record.
 		latest_submission = (
 			instance.submission_info.filter(submission_date__isnull=False)
 				.order_by("submission_date")

@@ -525,7 +525,6 @@ a9a4116e-3e4f-4cb7-8497-eba59e49fbbb,psf
 d07af06c-ad30-458a-bfbf-09d17aab4c52,psp
 b2ddb587-a044-4423-8ef7-775e54eaddb4,Pulsating Aurora
 53595745-bdd9-4a84-9d41-a3b0f8bf83ff,punch
-dafb54de-1750-408c-b675-ded62c1ba58e,pyhc
 542b4a5d-5028-4fdd-8f6f-b69546e3373c,pysat
 4d6a1fcb-4a48-4bb8-ac16-e47941708b4f,python
 0226a986-1efc-41e4-9384-efd7b05ce4aa,python 3
@@ -736,3 +735,17 @@ ac3716e9-e86e-480c-aa7a-ac90b8e53e16,xarray
 c40db589-b006-48dc-97b8-8d190d9c1a51,yaml
 0db63d22-841f-42b0-a116-28714069344f,zenodo
 0b364cf5-b022-4ca9-8850-40d45d90bddb,zonal
+a82430c3-5bb3-48d9-a5b6-1a356f42552a,auroral oval
+9111760a-0e90-4859-9f38-db1f5d639837,emission measure
+e51c4b21-0f44-4a39-b795-0df0df02cb6c,field-line boundary
+dde6742e-951e-4939-bd0f-695cb72c2f22,GeoJSON
+277c35dd-f320-4bc9-8efb-25ee9d91c9fe,gravity waves
+970b65b3-3bb5-4879-a789-9de7969cfb73,impax
+0baffff4-b803-4504-8847-4617dd2f78e0,instrument control
+f32bfe8b-0e9e-4e85-8437-de9c7ad51cbb,neutral atmosphere
+abf8cc5b-7b67-4e1a-a136-073aac3a0088,neutral winds
+93a9c6e7-2b69-4a54-8cc8-6ae322b124fe,northern lights
+47a1bbd0-f1d9-4bcd-bb8c-1396ee448426,polar cap
+cdaa6470-f0b8-4fac-b1c6-5297c7cade8a,solarsoft
+fb54f7a2-a5f2-435b-88d9-0671358e79d7,turbulence
+8cf19d88-8749-4179-972c-64509a9ad0f0,pyhc package

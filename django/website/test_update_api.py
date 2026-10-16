@@ -6,7 +6,8 @@ USER view in partial mode. They assume a Postgres test database is
 available (Django creates one automatically via ``manage.py test``).
 """
 
-import uuid
+import datetime, json, uuid
+from urllib.parse import urlsplit
 
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -16,8 +17,11 @@ from rest_framework.test import APIClient
 from .models import (
 	Keyword,
 	License,
+	Person,
 	RepoStatus,
 	Software,
+	SoftwareEditQueue,
+	SoftwareVersion,
 	SubmissionInfo,
 	VerifiedSoftware,
 )
@@ -313,8 +317,249 @@ class SoftwareListJsonLdDumpTests(TestCase):
 		self.assertEqual(len(data), 1)
 		self.assertEqual(data[0]["name"], "Matching")
 
+	def test_subject_of_id_links_to_the_slug_detail_endpoint(self):
+		"""`subjectOf.@id` must be a fetchable URL, keyed on the slug.
+
+		It was built by interpolating the VerifiedSoftware row itself, whose
+		`__str__` is the display name, so "PySPEDAS" produced
+		`/api/view/software/PySPEDAS/`, a 404 for most of the catalog.
+		"""
+		software = Software.objects.create(
+			software_name="PySPEDAS",
+			code_repository_url="https://github.com/example/pyspedas",
+		)
+		VerifiedSoftware.create_verified(software)
+		software.version.add(SoftwareVersion.objects.create(number="1.0.0"))
+
+		dump = self.client.get("/api/list/software/", {"view": "jsonld"})
+		entry = next(
+			item for item in dump.json()["data"] if item["name"] == "PySPEDAS"
+		)
+		subject_id = entry["subjectOf"]["@id"]
+		self.assertIn("/api/view/software/pyspedas/", subject_id)
+		self.assertNotIn("PySPEDAS", subject_id)
+
+		parts = urlsplit(subject_id)
+		detail = self.client.get(f"{parts.path}?{parts.query}")
+		self.assertEqual(detail.status_code, status.HTTP_200_OK)
+		self.assertEqual(detail.json()["name"], "PySPEDAS")
+
 	def test_unsupported_view_returns_400(self):
 		for bad in ("json-ld", "user", "standard", "nonsense"):
 			with self.subTest(view=bad):
 				response = self.client.get("/api/list/software/", {"view": bad})
 				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+@override_settings(HSSI_UPDATE_TOKEN=UPDATE_TOKEN)
+class SoftwareDateModifiedTests(TestCase):
+	"""`Software.date_modified` is stamped only by the supported write paths.
+
+	See issue #103 for the paths that stamp and the ones that deliberately
+	do not.
+	"""
+
+	SUBMITTER = {"email": "ada@example.com", "person": {"givenName": "Ada", "familyName": "Lovelace"}}
+	AUTHOR = {"givenName": "Ada", "familyName": "Lovelace"}
+
+	def setUp(self):
+		self.client = APIClient()
+		self.software = Software.objects.create(
+			software_name="Stamped",
+			code_repository_url="https://github.com/example/stamped",
+		)
+		VerifiedSoftware.create_verified(self.software)
+		self.submission_info = SubmissionInfo.objects.create(
+			software=self.software,
+			submission_date=timezone.make_aware(datetime.datetime(2025, 1, 1)),
+		)
+		RepoStatus.objects.create(name="Active")
+
+	def _jsonld(self, software: Software) -> dict:
+		response = self.client.get(f"/api/view/software/{software.id}/", {"view": "jsonld"})
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.content)
+		return response.json()
+
+	# JSON-LD output ---------------------------------------------------------
+
+	def test_jsonld_falls_back_to_submission_date_while_unstamped(self):
+		self.software.version.add(SoftwareVersion.objects.create(number="1.0"))
+		self.assertIsNone(self.software.date_modified)
+		self.assertTrue(
+			self._jsonld(self.software)["subjectOf"]["dateModified"].startswith("2025-01-01")
+		)
+
+	def test_subject_of_is_emitted_without_a_version(self):
+		"""The catalog record exists whether or not the software has a version."""
+		self.assertFalse(self.software.version.exists())
+		subject_of = self._jsonld(self.software)["subjectOf"]
+		self.assertEqual(subject_of["@type"], ["CreativeWork", "dcat:CatalogRecord"])
+		self.assertTrue(subject_of["dateModified"].startswith("2025-01-01"))
+
+	def test_jsonld_prefers_the_stamp_once_set(self):
+		self.software.version.add(SoftwareVersion.objects.create(number="1.0"))
+		Software.objects.filter(pk=self.software.pk).update(
+			date_modified=timezone.make_aware(datetime.datetime(2026, 6, 15, 12, 0))
+		)
+		self.assertTrue(
+			self._jsonld(self.software)["subjectOf"]["dateModified"].startswith("2026-06-15")
+		)
+
+	# API write paths --------------------------------------------------------
+
+	def test_patch_stamps(self):
+		before = timezone.now()
+		response = self.client.patch(
+			f"/api/data/software/{self.software.id}/",
+			data={"developmentStatus": "Active"},
+			format="json",
+			HTTP_AUTHORIZATION=f"Bearer {UPDATE_TOKEN}",
+		)
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		self.software.refresh_from_db()
+		self.assertIsNotNone(self.software.date_modified)
+		self.assertGreaterEqual(self.software.date_modified, before)
+
+	def test_submission_api_stamps_new_record(self):
+		before = timezone.now()
+		response = self.client.post(
+			"/api/submission/",
+			data=[{
+				"submitter": [self.SUBMITTER],
+				"softwareName": "Created via API",
+				"codeRepositoryUrl": "https://github.com/example/created",
+				"authors": [self.AUTHOR],
+				"description": "A description.",
+			}],
+			format="json",
+		)
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		created = Software.objects.get(software_name="Created via API")
+		self.assertIsNotNone(created.date_modified)
+		self.assertGreaterEqual(created.date_modified, before)
+
+	# Submission parser (public form, legacy /api/submit, edit link) ---------
+
+	def _form_dict(self, name: str) -> dict:
+		return {
+			"software_name": name,
+			"codeRepositoryURL": "https://github.com/example/parsed",
+			"submitterName": {"submitterName": "Ada Lovelace", "submitterEmail": "ada@example.com"},
+			"software_functionality": [],
+		}
+
+	def test_parser_stamps_create_and_edit(self):
+		from .data_parser import handle_submission_data
+
+		before = timezone.now()
+		submission_id = handle_submission_data(self._form_dict("Parsed"))
+		created = SubmissionInfo.objects.get(pk=submission_id).software
+		self.assertGreaterEqual(created.date_modified, before)
+
+		old = timezone.make_aware(datetime.datetime(2020, 1, 1))
+		Software.objects.filter(pk=created.pk).update(date_modified=old)
+		handle_submission_data(self._form_dict("Parsed, edited"), created)
+		created.refresh_from_db()
+		self.assertEqual(created.software_name, "Parsed, edited")
+		self.assertGreater(created.date_modified, old)
+
+	def _post_edit(self, queue_item):
+		return self.client.post(
+			f"/curate/edit_submission/submit_data/{queue_item.id}/",
+			data=json.dumps(self._form_dict("Should not persist")),
+			content_type="application/json",
+		)
+
+	def test_edit_link_failure_midway_rolls_back_metadata(self):
+		from unittest import mock
+
+		queue_item = SoftwareEditQueue.create(self.software)
+		# Raises after the parser's first save has written the new name.
+		with mock.patch(
+			"website.data_parser.apply_related_observatories",
+			side_effect=RuntimeError("boom"),
+		) as failing_step:
+			response = self._post_edit(queue_item)
+		failing_step.assert_called_once()
+		self.assertEqual(response.status_code, 500)
+		self.software.refresh_from_db()
+		self.assertEqual(self.software.software_name, "Stamped")
+		self.assertIsNone(self.software.date_modified)
+
+	def test_edit_link_failure_after_final_save_rolls_back_stamp(self):
+		from unittest import mock
+		from . import data_parser
+
+		def parse_then_fail(*args, **kwargs):
+			data_parser.handle_submission_data(*args, **kwargs)
+			raise RuntimeError("boom after the final save")
+
+		queue_item = SoftwareEditQueue.create(self.software)
+		with mock.patch(
+			"website.views.edit_submission.handle_submission_data",
+			side_effect=parse_then_fail,
+		) as wrapped:
+			response = self._post_edit(queue_item)
+		wrapped.assert_called_once()
+		self.assertEqual(response.status_code, 500)
+		self.software.refresh_from_db()
+		self.assertEqual(self.software.software_name, "Stamped")
+		self.assertIsNone(self.software.date_modified)
+
+	# Admin change form ------------------------------------------------------
+
+	def _admin_form(self, software: Software):
+		from django.contrib.auth import get_user_model
+		from django.test import RequestFactory
+		from .admin.hssi_admin_site import admin_site
+		from .admin.model_admin import SoftwareAdmin
+
+		request = RequestFactory().get("/")
+		request.user = get_user_model().objects.create_superuser("curator", "c@example.com", "pw")
+		model_admin = SoftwareAdmin(Software, admin_site)
+		form_class = model_admin.get_form(request, software, change=True)
+		initial = form_class(instance=software)
+		data = {
+			name: initial[name].value()
+			for name in initial.fields
+			if initial[name].value() not in (None, "", [])
+		}
+		return request, model_admin, form_class, data
+
+	def _admin_save(self, request, model_admin, form_class, data, software):
+		form = form_class(data, instance=software)
+		self.assertTrue(form.is_valid(), form.errors)
+		# Same sequence as ModelAdmin._changeform_view: save_form attaches
+		# form.save_m2m, which save_related then calls.
+		new_object = model_admin.save_form(request, form, change=True)
+		model_admin.save_model(request, new_object, form, True)
+		model_admin.save_related(request, form, [], True)
+		software.refresh_from_db()
+
+	def test_admin_save_without_changes_does_not_stamp(self):
+		ada = Person.objects.create(given_name="Ada", family_name="Lovelace")
+		self.software.authors.set([ada])
+		request, model_admin, form_class, data = self._admin_form(self.software)
+
+		self._admin_save(request, model_admin, form_class, data, self.software)
+		self.assertIsNone(self.software.date_modified)
+
+	def test_admin_scalar_change_stamps(self):
+		ada = Person.objects.create(given_name="Ada", family_name="Lovelace")
+		self.software.authors.set([ada])
+		request, model_admin, form_class, data = self._admin_form(self.software)
+
+		data["description"] = "Edited by a curator."
+		self._admin_save(request, model_admin, form_class, data, self.software)
+		self.assertIsNotNone(self.software.date_modified)
+
+	def test_admin_author_reorder_stamps(self):
+		ada = Person.objects.create(given_name="Ada", family_name="Lovelace")
+		grace = Person.objects.create(given_name="Grace", family_name="Hopper")
+		self.software.authors.set([ada, grace])
+		request, model_admin, form_class, data = self._admin_form(self.software)
+
+		data["authors"] = [grace.pk, ada.pk]
+		self._admin_save(request, model_admin, form_class, data, self.software)
+		self.assertIsNotNone(self.software.date_modified)
+		self.assertEqual(list(self.software.authors.all()), [grace, ada])

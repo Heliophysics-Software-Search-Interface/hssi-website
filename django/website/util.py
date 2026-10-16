@@ -85,6 +85,13 @@ def build_software_filter_query(field_name: str, uid: str | uuid.UUID) -> str:
 	"""Build the query string used by the homepage filter menu."""
 	return urlencode({"filt": shorten_software_filter_value(field_name, uid)})
 
+def build_software_field_search_query(field_alias: str, value: str) -> str:
+	"""
+	Build the query string for a homepage field search (e.g. keyword:"value"),
+	which frontend/filters/search.ts runs on page load
+	"""
+	return urlencode({"q": f'{field_alias}:"{value}"'})
+
 def find_database_references(object: Model) -> list[tuple[Model, Field]]:
 	"""
 	get all (related object, field) pairs on all objects in the database that 

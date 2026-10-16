@@ -593,6 +593,7 @@ class SubmissionSerializer(HssiSerializer):
 	@transaction.atomic
 	def create_user(self, validated_data: dict[str, Any]):
 		software = Software()
+		software.date_modified = timezone.now()
 		self._apply_user_fields(software, validated_data)
 
 		# Submitter is write-once and only attached during initial
@@ -620,6 +621,7 @@ class SubmissionSerializer(HssiSerializer):
 				"submitter": "Updating submitter is not supported via PATCH."
 			})
 
+		instance.date_modified = timezone.now()
 		self._apply_user_fields(instance, validated_data)
 
 		# Touch the most-recent SubmissionInfo so ``date_modified`` auto_now

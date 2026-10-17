@@ -360,7 +360,8 @@ a.tag:hover {
     font-weight: 500;
 }
 
-.keyword-tag {
+.keyword-tag,
+a.keyword-tag:hover {
     background-color: #d4edda;
     color: #155724;
 }

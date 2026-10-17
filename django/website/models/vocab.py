@@ -43,6 +43,18 @@ class Keyword(HssiModel):
 	@classmethod
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
 
+	def get_homepage_filter_url(self) -> str:
+		"""
+		Keywords have no filter menu tab, so link to the homepage's keyword
+		field search instead of a filter group
+		"""
+		from django.urls import reverse
+		return (
+			reverse("website:published_resources")
+			+ "?"
+			+ build_software_field_search_query("keyword", self.name)
+		)
+
 	class Meta:
 		ordering = ['name']
 

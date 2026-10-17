@@ -13,7 +13,7 @@
 {% if software_jsonld %}
 <script type="application/ld+json">{{ software_jsonld }}</script>
 {% endif %}
-<link rel="stylesheet" href="{% static 'css/software_detail.css' %}?v=2024-10-15" />
+<link rel="stylesheet" href="{% static 'css/software_detail.css' %}?v=2026-10-08" />
 {% endblock %}
 
 {% block page_content %}
@@ -135,8 +135,18 @@
     <!-- Main Content -->
     <div class="software-content">
 
-        <!-- Description Section -->
+        <!-- Concise Description Section -->
+        {% if software.concise_description %}
         <details class="software-section" open>
+            <summary class="section-title">Concise Description</summary>
+            <div class="description-content">
+                {{ software.concise_description|markdownify }}
+            </div>
+        </details>
+        {% endif %}
+
+        <!-- Description Section -->
+        <details class="software-section">
             <summary class="section-title">Description</summary>
             <div class="description-content">
                 {% if software.description %}
@@ -146,16 +156,6 @@
                 {% endif %}
             </div>
         </details>
-
-        <!-- Concise Description Section -->
-        {% if software.concise_description %}
-        <details class="software-section">
-            <summary class="section-title">Concise Description</summary>
-            <div class="description-content">
-                {{ software.concise_description|markdownify }}
-            </div>
-        </details>
-        {% endif %}
 
         <!-- Reference Publication Section -->
         {% if software.reference_publication %}
@@ -455,7 +455,10 @@
             <summary class="section-title">Keywords</summary>
             <div class="keywords-list">
                 {% for keyword in software.keywords.all %}
-                <span class="tag keyword-tag">{{ keyword.name }}</span>
+                <a href="{{ keyword.get_homepage_filter_url }}"
+                   class="tag keyword-tag"
+                   title="View software filtered by {{ keyword.name }}"
+                   aria-label="View software filtered by {{ keyword.name }}">{{ keyword.name }}</a>
                 {% endfor %}
             </div>
         </details>
@@ -597,7 +600,7 @@
 
                 {% if software.award.all %}
                 <div class="metadata-item full-width">
-                    <span class="metadata-label">Awards</span>
+                    <span class="metadata-label">Funding Awards</span>
                     <div class="awards-list">
                         {% for award in software.award.all %}
                         <div class="award-item">

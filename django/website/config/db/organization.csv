@@ -139,7 +139,7 @@ df4ff318-07e7-4d73-8aa5-0e6c31668b2d,Korea Astronomy and Space Science Institute
 b5f27746-09ff-4269-b6d5-c32fc1b2d11b,KU Leuven,,,https://ror.org/05f950310
 abee784b-f274-46d4-984c-e1248431a31a,Kyung Hee University,,,https://ror.org/01zqcg218
 b242cb07-2bcb-4afe-ba5e-e89ae812899d,Laboratory for Atmospheric and Space Physics,,,https://ror.org/01fcjzv38
-9e5aa6d0-8571-4948-942a-9abd57d3a45c,Laboratory of Plasma Physics (LPP/CNRS),,,https://ror.org/05c95bg36
+9e5aa6d0-8571-4948-942a-9abd57d3a45c,Laboratoire de Physique des Plasmas,LPP,https://www.lpp.polytechnique.fr,https://ror.org/05c95bg36
 3252589a-dcc2-4561-8cd6-2b07bd53217f,"Latchmoor Services, LLC",,,
 6ba02d70-7896-484c-8b8b-fab0ba7b5c36,Leibniz Institute for Astrophysics Potsdam,,,https://ror.org/03mrbr458
 f39019aa-9a3f-4aca-83c1-5d99e4bb36d6,Lockheed Martin Solar and Astrophysics Laboratory,,,
@@ -200,7 +200,7 @@ d98abc7d-03cf-4f48-b538-0f13dfa04b11,Phoenix Security Labs,,,
 cbffb9db-933c-4928-8b43-93b9a64ff8f4,PickNik Robotics,,,
 83afd744-0fa5-402f-8fa6-ad45dec9f2f6,Planetary Science Institute,,,https://ror.org/05vvg9554
 1a6a5187-63e8-4838-919c-283cdd39e805,Planetary Transportation Systems GmbH,,,
-b6a5b82f-2daf-4814-ab1c-6cd1483a3f65,Predictive Science,,,
+b6a5b82f-2daf-4814-ab1c-6cd1483a3f65,Predictive Science,,,https://ror.org/05canvq15
 6c76d454-a7b1-4e84-863b-d0ff716f8858,Princeton University,,,https://ror.org/00hx57361
 b48fbcd1-b715-4ef5-a5fa-8fd13411c0e9,Project Calliope,,,
 2b4ad024-92c2-4016-b24e-cc6d588b4d6e,Purple Mountain Observatory,,,https://ror.org/02eb4t121
@@ -317,3 +317,12 @@ a89f4f6b-97e4-4625-927e-08dd633d52d1,West Virginia University,,,https://ror.org/
 fe0e823d-ecf6-428e-8978-114a3da130c3,"W. W. Hansen Experimental Physics Laboratory, Stanford University",,,
 4e92444c-1316-4147-8b32-d886aec427f8,Yale University,,,https://ror.org/03v76x132
 ee990b81-8115-4ab4-8a7f-68a4d0bb345d,Zenodo,,,https://zenodo.org
+5f3960da-3370-4cd0-b042-3a5b3a441a85,Bureau international des poids et mesures,,,https://ror.org/055vkyj43
+5dd521b1-9cc3-4d00-bfb9-12f307fe55c2,Canada Foundation for Innovation,,,https://ror.org/000az4664
+19c996a0-7605-4691-9958-6ca1b6687316,Canadian Space Agency,,,https://ror.org/03a1gte98
+0ed78bea-c0ef-4a4e-a229-c77d426a3d5e,Centrum Wiskunde & Informatica,,,https://ror.org/00x7ekv49
+229784fa-fa31-4cb0-bb7a-b9c6f07191ef,Chalmers University of Technology,,,https://ror.org/040wg7k59
+51aac10b-9df0-44ab-91a2-c74244d125ff,Government of Alberta,,,https://ror.org/006b2g567
+d588612e-1a9f-434d-9d1a-a04f8b7b6617,Irida Labs,,,https://ror.org/02hcnd264
+ad6ef081-d34d-4e02-bafb-6453865d5bbe,Technical University of Denmark,,,https://ror.org/04qtj9h94
+fa3302bd-a4c1-4865-8745-933f2aa8563a,University of Alabama in Huntsville,,,https://ror.org/02zsxwr40

@@ -277,18 +277,16 @@ class SoftwareSerializer(HssiSerializer):
 		}
 		return data
 
-	def _subject_of(self, instance: Software, json_id: str) -> dict[str, Any] | None:
-		version: SoftwareVersion | None = instance.version.first()
-		if not version:
-			return None
+	def _subject_of(self, instance: Software, json_id: str) -> dict[str, Any]:
 		content_url = None
 		request: HttpRequest | None = self.context.get("request")
 		if request:
 			content_url = request.build_absolute_uri(instance.get_absolute_url())
 		else:
 			content_url = instance.get_absolute_url()
-		slug = VerifiedSoftware.objects.filter(id=instance.id).first()
-		if not slug: slug = instance.id
+		# Key the URL on the slug, falling back to the UUID, as Software.get_absolute_url does.
+		verified = VerifiedSoftware.objects.filter(pk=instance.pk).only("slug").first()
+		slug = verified.slug if verified and verified.slug else instance.id
 		data: dict[str, Any] = {
 			"@id": f"https://hssi.hsdcloud.org/api/view/software/{slug}/?view=jsonld",
 			"@type": ["CreativeWork", "dcat:CatalogRecord"],
@@ -300,17 +298,14 @@ class SoftwareSerializer(HssiSerializer):
 		}
 		if instance.license and instance.license.url:
 			data["license"] = instance.license.url
-		# `submission_info` is a RelatedManager, so testing it directly is
-		# always truthy and `.latest()` raised DoesNotExist for a published
-		# software with no dated SubmissionInfo, which 500'd the landing page
-		# and both JSON-LD API endpoints for that record.
 		latest_submission = (
 			instance.submission_info.filter(submission_date__isnull=False)
 				.order_by("submission_date")
 				.last()
 		)
-		if latest_submission:
-			data["dateModified"] = latest_submission.submission_date
+		data["dateModified"] = instance.date_modified or (
+			latest_submission.submission_date if latest_submission else None
+		)
 		return { key: value for key, value in data.items() if value is not None }
 
 	def to_representation_jsonld(self, instance: Software) -> dict[str, Any]:
@@ -396,18 +391,10 @@ class SoftwareSerializer(HssiSerializer):
 				funding_item["identifier"] = award.identifier
 			funding_items.append(funding_item)
 
-		no_funder_listed = not funding_items
-		if no_funder_listed:
-			for item in funding_items:
-				if "funder" in item:
-					no_funder_listed = False
-					break
-		if no_funder_listed:
-			for funder in instance.funder.all():
-				funding_item["@type"] = "MonetaryGrant"
-				funding_item["funder"] = self._organization_jsonld(funder)
-		if not funding_items:
-			funding_items = None
+		# Software funders are independent of recorded awards (schema:CreativeWork).
+		funder_items = [
+			self._organization_jsonld(funder) for funder in instance.funder.all()
+		]
 
 		json_id = instance.persistent_identifier
 		if not json_id:
@@ -490,6 +477,7 @@ class SoftwareSerializer(HssiSerializer):
 			),
 			"datePublished": instance.publication_date,
 			"description": descriptions,
+			"funder": funder_items or None,
 			"funding": funding_items or None,
 			"identifier": json_identifiers,
 			"image": instance.logo,

@@ -33,6 +33,13 @@ jobs:
       - name: Mirror docs/ into wiki checkout
         run: rsync -a --delete --exclude=".git" repo/docs/ wiki/
 
+      # Gollum (the wiki engine) treats a .md-suffixed relative link as a
+      # literal file path and serves the raw source instead of the
+      # rendered page, so links that are correct in docs/ (where GitHub's
+      # repo browser needs the real extension) have to lose it here.
+      - name: Strip .md extensions from internal links
+        run: python3 repo/.github/scripts/strip_md_links.py wiki
+
       - name: Check for changes
         id: diff
         working-directory: wiki

@@ -10,31 +10,30 @@ rooted directly at the domain.
 
 - [Sections](#sections)
 - [Conventions](#conventions)
-  - [camelCase on the wire, snake_case in query params](#camelcase-on-the-wire-snake_case-in-query-params)
+  - [Naming](#camelcase-on-the-wire-snake_case-in-query-params)
   - [Authentication](#authentication)
   - [Error shape](#error-shape)
-  - ["Visible" software only](#visible-software-only)
-  - [Looking records up by slug vs. UUID](#looking-records-up-by-slug-vs-uuid)
+  - [Published software only](#visible-software-only)
+  - [Software Identifiers](#looking-records-up-by-slug-vs-uuid)
 
 ---
 
 ## Sections
 
 - [Software Catalog API](software_catalog_api.md) — read-only endpoints for
-  listing, fetching, and searching published software records (e.g.
-  `GET /api/list/software/` means
-  `GET https://hssi.hsdcloud.org/api/list/software/`).
+  listing and searching software records.
 - [Submission API](submission_api.md) — creating new software submissions
   and updating existing ones.
 - [Utility Endpoints](utility_endpoints.md) — citation formatting, masked
   email lookup, and repo metadata extraction.
 - [Internal Endpoints](internal_endpoints.md) — model-introspection
-  endpoints that back the website's own forms. Not intended for external
-  integrators; documented here for completeness and flagged where unstable.
+  endpoints that provide data for frontend. (unstable - may change frequently)
 
 ## Conventions
 
-### camelCase on the wire, snake_case in query params
+### Naming
+
+**camelCase on the wire, snake_case in query params**
 
 Endpoints built on Django REST Framework (everything under
 `/api/list/software/`, `/api/view/software/`, `/api/data/software/`, and
@@ -93,7 +92,7 @@ HTTP status codes used throughout: `400` (bad input), `403` (missing/invalid
 update token), `404` (record doesn't exist or isn't publicly visible yet),
 `200`/`201` (success).
 
-### "Visible" software only
+### Published software only
 
 Software that hasn't finished verification has no `VerifiedSoftware` row
 yet, and is **invisible to every read endpoint** — `GET` by UUID or slug
@@ -102,7 +101,9 @@ returns `404` for it, and it's excluded from `/api/list/software/` and
 the database. This is intentional: it's how unpublished/in-progress
 submissions stay hidden from the public catalog.
 
-### Looking records up by slug vs. UUID
+### Software Identifiers
+
+**Looking records up by slug vs. UUID**
 
 Every detail endpoint (`/api/view/software/{id}/`,
 `/api/data/software/{id}/`) accepts **either** the record's UUID **or** its

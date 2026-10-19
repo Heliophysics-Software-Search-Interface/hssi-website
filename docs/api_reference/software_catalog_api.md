@@ -11,7 +11,7 @@ authentication required. See [Overview](overview.md) for the camelCase and
 
 - [GET /api/list/software/](#get-apilistsoftware)
 - [GET /api/view/software/{id}/](#get-apiviewsoftwareid)
-- [GET/PATCH /api/data/software/{id}/](#getpatch-apidatasoftwareid)
+- [GET /api/data/software/{id}/](#getpatch-apidatasoftwareid)
 - [GET /api/search/](#get-apisearch)
 
 ---
@@ -175,18 +175,15 @@ curl "https://hssi.hsdcloud.org/api/view/software/1b6ddaa6-6885-46b3-b59a-ea119e
 
 ---
 
-## `GET`/`PATCH /api/data/software/{id}/`
+## `GET /api/data/software/{id}/`
 
 The same underlying record as `/api/view/software/{id}/`, but with a
-different **default** view and an additional **PATCH** method for updates.
+different **default** view.
 
 - `GET` here defaults to `?view=standard` (raw representation) rather than
   `user` — pass `?view=user` or `?view=jsonld` explicitly to get those
   shapes instead. Same `{id}`-by-UUID-or-slug and error behavior as
   `/api/view/software/{id}/`.
-- `PATCH` is documented in full in the [Submission API](submission_api.md)
-  page, since it shares the field list and validation rules with creating a
-  new submission.
 
 ### Simple example
 

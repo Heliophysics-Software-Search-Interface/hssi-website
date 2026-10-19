@@ -12,5 +12,5 @@ wiki are synced back here as a pull request.
 
 ## Sections
 
-- [API Reference](api-reference/Overview.md) — the HTTP API exposed by the
+- [API Reference](api_reference/overview.md) — the HTTP API exposed by the
   HSSI website: software catalog, search, submission, and update endpoints.

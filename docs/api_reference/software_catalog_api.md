@@ -1,10 +1,10 @@
-[← Back to Overview](Overview.md)
+[← Back to Overview](overview.md)
 
 # Software Catalog API
 
 Read-only endpoints for listing, fetching, and searching publicly visible
 software records. All four endpoints below are fully public — no
-authentication required. See [Overview](Overview.md) for the camelCase and
+authentication required. See [Overview](overview.md) for the camelCase and
 "visible software only" conventions that apply throughout.
 
 ## Contents
@@ -90,7 +90,7 @@ curl "https://hssi.hsdcloud.org/api/list/software/?view=jsonld"
 ## `GET /api/view/software/{id}/`
 
 Fetch a single record. `{id}` is either the record's UUID or its slug (not
-its display name — see [Overview](Overview.md)).
+its display name — see [Overview](overview.md)).
 
 Default response (no `?view=`) is the **user-friendly view**: related
 objects (authors, publisher, license, etc.) are resolved into flat nested
@@ -184,7 +184,7 @@ different **default** view and an additional **PATCH** method for updates.
   `user` — pass `?view=user` or `?view=jsonld` explicitly to get those
   shapes instead. Same `{id}`-by-UUID-or-slug and error behavior as
   `/api/view/software/{id}/`.
-- `PATCH` is documented in full in the [Submission API](Submission-API.md)
+- `PATCH` is documented in full in the [Submission API](submission_api.md)
   page, since it shares the field list and validation rules with creating a
   new submission.
 

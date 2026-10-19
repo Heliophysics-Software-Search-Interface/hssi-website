@@ -1,10 +1,10 @@
-[← Back to Overview](Overview.md)
+[← Back to Overview](overview.md)
 
 # Utility Endpoints
 
 Smaller, special-purpose public endpoints that support specific pages/flows
 on the website rather than general catalog access. None of these are run
-through the camelCase renderer (see [Overview](Overview.md)) — they use
+through the camelCase renderer (see [Overview](overview.md)) — they use
 plain `snake_case`/literal key names as shown below.
 
 ## Contents

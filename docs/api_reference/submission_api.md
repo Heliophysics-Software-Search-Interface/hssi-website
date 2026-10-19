@@ -1,10 +1,10 @@
-[← Back to Overview](Overview.md)
+[← Back to Overview](overview.md)
 
 # Submission API
 
 Endpoints for creating new software records and updating existing ones.
 Creating is fully public; updating requires the bearer token described in
-[Overview](Overview.md#authentication).
+[Overview](overview.md#authentication).
 
 ## Contents
 

@@ -1,4 +1,4 @@
-[← Back to Overview](Overview.md)
+[← Back to Overview](overview.md)
 
 # Internal Endpoints
 
@@ -6,8 +6,8 @@ These endpoints back the website's own admin/submission-form UI rather than
 being a general public API. They're documented here for completeness, not
 as a recommendation to build new integrations against them — they have
 looser error handling than the endpoints in
-[Software Catalog API](Software-Catalog-API.md) and
-[Submission API](Submission-API.md), and none of their behavior is covered
+[Software Catalog API](software_catalog_api.md) and
+[Submission API](submission_api.md), and none of their behavior is covered
 by the test suite.
 
 None of these go through the camelCase renderer; keys below are shown

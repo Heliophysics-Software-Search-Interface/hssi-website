@@ -20,15 +20,15 @@ rooted directly at the domain.
 
 ## Sections
 
-- [Software Catalog API](Software-Catalog-API.md) — read-only endpoints for
+- [Software Catalog API](software_catalog_api.md) — read-only endpoints for
   listing, fetching, and searching published software records (e.g.
   `GET /api/list/software/` means
   `GET https://hssi.hsdcloud.org/api/list/software/`).
-- [Submission API](Submission-API.md) — creating new software submissions
+- [Submission API](submission_api.md) — creating new software submissions
   and updating existing ones.
-- [Utility Endpoints](Utility-Endpoints.md) — citation formatting, masked
+- [Utility Endpoints](utility_endpoints.md) — citation formatting, masked
   email lookup, and repo metadata extraction.
-- [Internal Endpoints](Internal-Endpoints.md) — model-introspection
+- [Internal Endpoints](internal_endpoints.md) — model-introspection
   endpoints that back the website's own forms. Not intended for external
   integrators; documented here for completeness and flagged where unstable.
 
@@ -48,8 +48,8 @@ decamelize incoming request bodies before validating them. So:
   keys, not query params.
 
 The handful of plain Django endpoints documented under
-[Utility Endpoints](Utility-Endpoints.md) and
-[Internal Endpoints](Internal-Endpoints.md) (`/api/citation/`,
+[Utility Endpoints](utility_endpoints.md) and
+[Internal Endpoints](internal_endpoints.md) (`/api/citation/`,
 `/api/masked_emails/...`, `/api/describe*`, `/api/models/...`, legacy
 `/api/submit`) are **not** run through the camelCase renderer — their JSON
 uses whatever key names are shown in their examples, as-is.

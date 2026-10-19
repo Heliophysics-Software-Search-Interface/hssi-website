@@ -15,14 +15,53 @@ exactly as the server sends/expects them.
 
 ## Contents
 
+- [Structure](#why-these-are-generic-not-one-per-model)
 - [GET /api/models/structures/](#get-apimodelsstructures)
 - [GET /api/models/{model_name}/choices/](#get-apimodelsmodel_namechoices)
 - [GET /api/models/{model_name}/form/](#get-apimodelsmodel_nameform)
 - [GET /api/models/{model_name}/rows/all/](#get-apimodelsmodel_namerowsall)
 - [GET /api/models/{model_name}/rows/{uid}/](#get-apimodelsmodel_namerowsuid)
-- [GET /api](#get-api)
 
 ---
+
+## Structure
+
+**Why are these generic, not one-per-model?**
+
+Every model in this codebase — `OperatingSystem`, `ProgrammingLanguage`,
+`Keyword`, `SoftwareEditQueue`, and dozens more — inherits from one
+`HssiModel` base class (`website/models/base.py`). That shared base is what
+lets five endpoints cover every model in the app instead of needing one
+bespoke endpoint per model:
+
+- Every model gets a UUID primary key (`id`) the same way.
+- Every model implements `get_choice()`, returning a uniform
+  `(id, name, keywords, tooltip, identifier)` tuple no matter what the
+  model actually represents.
+- Every model declares an `access: AccessLevel` class attribute, so "can
+  this caller read/write this model" is answerable generically too.
+
+Because every model honors that same contract, a single view can take a
+`model_name` from the URL, resolve it with Django's
+`apps.get_model(app_label, model_name)`, and operate on it the same way
+regardless of which specific table it is — the same trick Django's own
+admin site uses to generate a change-list and edit form for any registered
+model without per-model code.
+
+That's the shape behind each endpoint below:
+
+| Endpoint | Mirrors |
+|---|---|
+| `structures/` | Introspecting a model's fields (like `Model._meta.get_fields()`) |
+| `{model_name}/choices/` | A queryset of choices for a dropdown (like populating a `ModelChoiceField`) |
+| `{model_name}/form/` | A generic add/change form (like Django admin's auto-generated form) |
+| `{model_name}/rows/all/` | A generic list view (`Model.objects.all()`, exposed over HTTP) |
+| `{model_name}/rows/{uid}/` | A generic detail view (`Model.objects.get(pk=uid)`) |
+
+This genericness is also why the error handling below is looser than the
+public API's: `{model_name}` is a live lookup against *any* `HssiModel`
+subclass in the app, so there's a much larger space of "what could go
+wrong" than a hand-written endpoint built around one specific resource.
 
 ## `GET /api/models/structures/`
 
@@ -62,15 +101,14 @@ for programmatic use.
 ## `GET /api/models/{model_name}/rows/all/`
 
 Lists rows of an `HssiModel` subclass, gated by an internal role-based
-access-level system unrelated to the `HSSI_UPDATE_TOKEN` used elsewhere in
-this API.
+access-level system.
 
 **Query parameters**
 
 | Param | Description |
 |---|---|
 | `ids` | Comma-separated list of primary keys to restrict to. |
-| `offset`, `limit` | Pagination (both default `0`/`25` if either is present). Non-integer values return `400`. |
+| `offset`, `limit` | Pagination (default `0`/`25` if not present). Non-integer values return `400`. |
 | `columns` | Comma-separated list of fields to include in each row. |
 | `recursive` | `"true"`/`"false"` — whether related objects are serialized recursively. |
 
@@ -105,14 +143,3 @@ curl "https://hssi.hsdcloud.org/api/models/Keyword/rows/9e1a2b3c-.../"
 ```json
 {"id": "9e1a2b3c-...", "name": "magnetosphere"}
 ```
-
-## `GET /api`
-
-**Not currently functional.**
-
-This route is registered (`path('api', ...)`, named `rest_api`) but its
-view function requires a `uid` argument that the URL pattern never
-supplies. As currently wired, a plain request to `/api` fails server-side
-rather than returning data. It's included here for completeness and so it
-isn't mistaken for a working top-level API entry point — don't build
-against it until it's fixed.

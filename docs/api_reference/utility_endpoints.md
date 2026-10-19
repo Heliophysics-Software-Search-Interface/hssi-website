@@ -11,9 +11,8 @@ plain `snake_case`/literal key names as shown below.
 
 - [GET /api/citation/](#get-apicitation)
 - [GET /api/masked_emails/{uid}/](#get-apimasked_emailsuid)
-- [GET /api/describe and GET /api/describe_form](#get-apidescribe-and-get-apidescribe_form)
-  - [GET /api/describe](#get-apidescribe)
-  - [GET /api/describe_form](#get-apidescribe_form)
+- [GET /api/describe](#get-apidescribe)
+- [GET /api/describe_form](#get-apidescribe_form)
 
 ---
 
@@ -91,29 +90,14 @@ curl https://hssi.hsdcloud.org/api/masked_emails/1b6ddaa6-6885-46b3-b59a-ea119e6
 {"emails": ["j***e@example.com"]}
 ```
 
-### Complex example — no submission info on file
-
-```bash
-curl https://hssi.hsdcloud.org/api/masked_emails/00000000-0000-0000-0000-000000000000/
-```
-
-```json
-{"emails": []}
-```
-
 ---
 
-## `GET /api/describe` and `GET /api/describe_form`
+## `GET /api/describe`
 
 **Repo metadata extraction.**
 
-Both shell out to the [SOMEF](https://github.com/KnowledgeCaptureAndDiscovery/somef)
+Shells out to the [SOMEF](https://github.com/KnowledgeCaptureAndDiscovery/somef)
 CLI tool to analyze a code repository and extract CodeMeta-style metadata.
-These back the submission form's "auto-fill from repo URL" feature rather
-than being general-purpose catalog endpoints, and have no automated test
-coverage.
-
-### `GET /api/describe`
 
 | Param | Required | Description |
 |---|---|---|
@@ -130,7 +114,11 @@ curl "https://hssi.hsdcloud.org/api/describe?target=https%3A%2F%2Fgithub.com%2Fs
 {"name": "pymap3d", "description": "...", "license": "...", "...": "raw SOMEF/CodeMeta output"}
 ```
 
-### `GET /api/describe_form`
+## `GET /api/describe_form`
+
+Similar functionality to `/api/describe`. Backs the submission form's 
+"auto-fill from repo URL" feature rather than being a general-purpose 
+catalog endpoint.
 
 Same parameters as `/api/describe`, but maps the SOMEF output onto HSSI's
 own submission-form field names (so the frontend can drop the result

@@ -1,10 +1,22 @@
+[← Back to Overview](Overview.md)
+
 # Submission API
 
 Endpoints for creating new software records and updating existing ones.
 Creating is fully public; updating requires the bearer token described in
 [Overview](Overview.md#authentication).
 
-## `POST /api/submission/` — create one or more records
+## Contents
+
+- [POST /api/submission/](#post-apisubmission)
+- [PATCH /api/data/software/{id}/](#patch-apidatasoftwareid)
+- [POST /api/submit](#post-apisubmit)
+
+---
+
+## `POST /api/submission/`
+
+**Create one or more records.**
 
 **Auth:** none — `AllowAny`.
 
@@ -30,10 +42,15 @@ categories), `relatedRegion`, `relatedPhenomena`, `dataSources`, `keywords`
 `interoperableSoftware`, `funder`, `award`, `version`.
 
 - `submitter` is an array of `{"email": "...", "person": {"givenName": "...", "familyName": "..."}}`.
-- `authors` is an array of `{"givenName": "...", "familyName": "...", "identifier"?: "...", "affiliation"?: "..."}`.
+- `authors` is an array of `{"givenName": "...", "familyName": "...", "identifier"?: "...", "affiliation"?: [{"name": "...", "identifier"?: "..."}]}`
+  — note `affiliation` is itself an array of organization objects, not a string.
 - `version` is an object: `{"number": "...", "releaseDate"?: "...", "versionPid"?: "...", "description"?: "..."}`.
 - Any field expecting a URL is validated as one; an invalid URL is a `400`.
-- Any unrecognized top-level key is a `400` naming that exact key.
+- **Unrecognized top-level keys are silently ignored on create** — unlike
+  PATCH below, there's no whitelist check here. A typo'd field name (e.g.
+  `sofwareName`) won't error; it just won't do anything, and the record
+  will fail the *required*-field check instead if that typo was on a
+  required field.
 
 **Side effects on success:** a 90-day software-edit-queue entry is created
 per record, and the submitter is emailed an edit link.
@@ -46,7 +63,7 @@ per record, and the submitter is emailed an edit link.
 
 **Errors:**
 - `400 {"detail": "Root JSON value must be an array."}` if the body isn't a JSON array.
-- `400 <field validation errors>` — DRF's structured per-field error object, e.g. `{"softwareName": ["This field is required."]}`.
+- `400 <field validation errors>` — one entry per invalid field, e.g. `{"softwareName": "This field is required."}` (a bare string per field, not a list).
 
 ### Simple example — minimal valid submission
 
@@ -114,7 +131,9 @@ response would be a `400` describing only the failing item's errors.
 
 ---
 
-## `PATCH /api/data/software/{id}/` — update an existing record
+## `PATCH /api/data/software/{id}/`
+
+**Update an existing record.**
 
 **Auth:** required. Header:
 
@@ -164,7 +183,7 @@ curl -X PATCH https://hssi.hsdcloud.org/api/data/software/pymap3d/ \
 {"status": "ok", "softwareId": "1b6ddaa6-6885-46b3-b59a-ea119e61bd74", "fieldsUpdated": ["developmentStatus"]}
 ```
 
-### Complex example — multi-field update, replacing keywords and bumping version
+### Complex example — multi-field update, replacing keywords and the version record
 
 ```bash
 curl -X PATCH https://hssi.hsdcloud.org/api/data/software/pymap3d/ \
@@ -186,9 +205,14 @@ curl -X PATCH https://hssi.hsdcloud.org/api/data/software/pymap3d/ \
 }
 ```
 
-Here `relatedSoftware: []` explicitly clears that relation, while
-`keywords` is replaced wholesale with the three values given (not merged
-with whatever keywords existed before).
+Here `relatedSoftware: []` explicitly clears that relation, and `keywords`
+is replaced wholesale with the three values given (not merged with
+whatever keywords existed before). **`version` behaves the same way, more
+destructively than it looks:** including it always creates a brand-new
+version record and replaces the record's *entire* version history with
+that one entry — it does not add a version alongside existing ones. If
+`pymap3d` had five prior versions on file, this PATCH leaves it with just
+the one (`3.0.0`).
 
 ### Error examples
 
@@ -207,7 +231,9 @@ curl -X PATCH https://hssi.hsdcloud.org/api/data/software/pymap3d/ \
 
 ---
 
-## `POST /api/submit` — legacy batch submission endpoint
+## `POST /api/submit`
+
+**Legacy batch submission endpoint.**
 
 This predates `POST /api/submission/` above and is kept for backward
 compatibility. **New integrations should use `POST /api/submission/`
@@ -215,9 +241,14 @@ instead** — it has clearer validation errors and dedicated test coverage,
 while this endpoint has none.
 
 Differences from `POST /api/submission/`:
-- **No DRF, no camelCase conversion.** Field names are the legacy
-  form-field names used by the HTML submission form (e.g.
-  `codeRepositoryURL`, not `code_repository_url` or `codeRepositoryUrl`).
+- **No DRF, no camelCase conversion.** Field names are mostly the same
+  snake_case names as the model/API fields (`software_name`,
+  `code_repository_url`, `description`, `authors`, `development_status`,
+  `version`, with nested `name`/`identifier`/`affiliation` on
+  people/orgs) — **not** camelCase like `POST /api/submission/` uses. A
+  couple of fields break that pattern inconsistently (`publisher.publisherIdentifier`,
+  `license.licenseURI`), which is part of why this endpoint is deprecated
+  in favor of the more consistent one above.
 - **No auth, no permission classes at all** — it's a plain Django view, not
   gated by DRF's `AllowAny`/token system (though in practice it's equally
   open).
@@ -228,8 +259,9 @@ Differences from `POST /api/submission/`:
   {"status": "ok", "count": 1, "results": [{"index": 0, "submissionId": "...", "softwareId": "..."}]}
   ```
 - On any exception while processing an item, the whole batch rolls back and
-  returns `400` with the raw exception message as the body — less
-  structured than `POST /api/submission/`'s per-field errors.
+  returns `400` with the **raw exception message as a plain-text body**
+  (`HttpResponseBadRequest`) — not JSON like every other error in this API,
+  so don't assume `response.json()` will work on a failed call here.
 
 If you're integrating something new, use `POST /api/submission/` and treat
 this one as legacy/undocumented-shape.

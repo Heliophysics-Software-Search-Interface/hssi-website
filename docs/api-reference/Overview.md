@@ -1,14 +1,29 @@
+[← Back to Documentation Home](../Home.md)
+
 # API Reference
 
 This section documents the HTTP API exposed by the HSSI website at
-`https://hssi.hsdcloud.org`. There is no version prefix — every endpoint
-below is rooted directly at the domain (e.g. `GET /api/list/software/` means
-`GET https://hssi.hsdcloud.org/api/list/software/`).
+`https://hssi.hsdcloud.org`. There is no version prefix — every endpoint is
+rooted directly at the domain.
 
-Pages in this section:
+## Contents
+
+- [Sections](#sections)
+- [Conventions](#conventions)
+  - [camelCase on the wire, snake_case in query params](#camelcase-on-the-wire-snake_case-in-query-params)
+  - [Authentication](#authentication)
+  - [Error shape](#error-shape)
+  - ["Visible" software only](#visible-software-only)
+  - [Looking records up by slug vs. UUID](#looking-records-up-by-slug-vs-uuid)
+
+---
+
+## Sections
 
 - [Software Catalog API](Software-Catalog-API.md) — read-only endpoints for
-  listing, fetching, and searching published software records.
+  listing, fetching, and searching published software records (e.g.
+  `GET /api/list/software/` means
+  `GET https://hssi.hsdcloud.org/api/list/software/`).
 - [Submission API](Submission-API.md) — creating new software submissions
   and updating existing ones.
 - [Utility Endpoints](Utility-Endpoints.md) — citation formatting, masked
@@ -17,7 +32,7 @@ Pages in this section:
   endpoints that back the website's own forms. Not intended for external
   integrators; documented here for completeness and flagged where unstable.
 
-## Conventions that apply across all endpoints below
+## Conventions
 
 ### camelCase on the wire, snake_case in query params
 

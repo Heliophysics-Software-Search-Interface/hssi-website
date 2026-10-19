@@ -1,9 +1,20 @@
+[← Back to Overview](Overview.md)
+
 # Software Catalog API
 
 Read-only endpoints for listing, fetching, and searching publicly visible
 software records. All four endpoints below are fully public — no
 authentication required. See [Overview](Overview.md) for the camelCase and
 "visible software only" conventions that apply throughout.
+
+## Contents
+
+- [GET /api/list/software/](#get-apilistsoftware)
+- [GET /api/view/software/{id}/](#get-apiviewsoftwareid)
+- [GET/PATCH /api/data/software/{id}/](#getpatch-apidatasoftwareid)
+- [GET /api/search/](#get-apisearch)
+
+---
 
 ## `GET /api/list/software/`
 

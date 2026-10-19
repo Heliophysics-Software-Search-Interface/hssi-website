@@ -1,3 +1,5 @@
+[← Back to Overview](Overview.md)
+
 # Utility Endpoints
 
 Smaller, special-purpose public endpoints that support specific pages/flows
@@ -5,7 +7,19 @@ on the website rather than general catalog access. None of these are run
 through the camelCase renderer (see [Overview](Overview.md)) — they use
 plain `snake_case`/literal key names as shown below.
 
-## `GET /api/citation/` — format a citation for a DOI
+## Contents
+
+- [GET /api/citation/](#get-apicitation)
+- [GET /api/masked_emails/{uid}/](#get-apimasked_emailsuid)
+- [GET /api/describe and GET /api/describe_form](#get-apidescribe-and-get-apidescribe_form)
+  - [GET /api/describe](#get-apidescribe)
+  - [GET /api/describe_form](#get-apidescribe_form)
+
+---
+
+## `GET /api/citation/`
+
+**Format a citation for a DOI.**
 
 Proxies a DOI to a content-negotiation citation service and caches the
 formatted result for one hour.
@@ -48,7 +62,9 @@ rather than re-querying the upstream citation service.
 
 ---
 
-## `GET /api/masked_emails/{uid}/` — look up masked submitter emails
+## `GET /api/masked_emails/{uid}/`
+
+**Look up masked submitter emails.**
 
 Given a software record's UUID, returns a privacy-preserving masked version
 of each email address on file for it (first/last character of the local
@@ -87,7 +103,9 @@ curl https://hssi.hsdcloud.org/api/masked_emails/00000000-0000-0000-0000-0000000
 
 ---
 
-## `GET /api/describe` and `GET /api/describe_form` — repo metadata extraction
+## `GET /api/describe` and `GET /api/describe_form`
+
+**Repo metadata extraction.**
 
 Both shell out to the [SOMEF](https://github.com/KnowledgeCaptureAndDiscovery/somef)
 CLI tool to analyze a code repository and extract CodeMeta-style metadata.

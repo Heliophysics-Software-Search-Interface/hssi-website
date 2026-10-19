@@ -1,3 +1,5 @@
+[← Back to Overview](Overview.md)
+
 # Internal Endpoints
 
 These endpoints back the website's own admin/submission-form UI rather than
@@ -10,6 +12,17 @@ by the test suite.
 
 None of these go through the camelCase renderer; keys below are shown
 exactly as the server sends/expects them.
+
+## Contents
+
+- [GET /api/models/structures/](#get-apimodelsstructures)
+- [GET /api/models/{model_name}/choices/](#get-apimodelsmodel_namechoices)
+- [GET /api/models/{model_name}/form/](#get-apimodelsmodel_nameform)
+- [GET /api/models/{model_name}/rows/all/](#get-apimodelsmodel_namerowsall)
+- [GET /api/models/{model_name}/rows/{uid}/](#get-apimodelsmodel_namerowsuid)
+- [GET /api](#get-api)
+
+---
 
 ## `GET /api/models/structures/`
 
@@ -93,7 +106,9 @@ curl "https://hssi.hsdcloud.org/api/models/Keyword/rows/9e1a2b3c-.../"
 {"id": "9e1a2b3c-...", "name": "magnetosphere"}
 ```
 
-## `GET /api` — not currently functional
+## `GET /api`
+
+**Not currently functional.**
 
 This route is registered (`path('api', ...)`, named `rest_api`) but its
 view function requires a `uid` argument that the URL pattern never

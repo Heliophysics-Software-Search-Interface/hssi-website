@@ -31,6 +31,12 @@ jobs:
       - name: Mirror wiki into docs/
         run: rsync -a --delete --exclude=".git" wiki/ docs/
 
+      # Undo the extension strip from docs-to-wiki.yml: links need the real
+      # .md extension again now that this content is back in docs/, where
+      # GitHub's repo browser (unlike the wiki) requires it to resolve.
+      - name: Re-add .md extensions to internal links
+        run: python3 .github/scripts/add_md_links.py docs
+
       # Empty diff means the wiki's current content already matches docs/ on
       # main (e.g. because docs-to-wiki.yml just pushed it there) -- this is
       # the loop-breaker against that workflow, and it also means we never

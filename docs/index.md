@@ -1,8 +1,8 @@
 # HSSI Documentation
 
-Documentation for this project now lives here, in `docs/`. This page is
-mirrored to the project wiki automatically, and edits made directly on the
-wiki are synced back here as a pull request.
+Documentation for this project lives in `docs/` and is published to the
+[documentation site](https://heliophysics-software-search-interface.github.io/hssi-website/)
+on every push to `main`. To change it, open a pull request against `docs/`.
 
 ## Contents
 

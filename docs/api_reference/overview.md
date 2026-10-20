@@ -1,4 +1,4 @@
-[← Back to Documentation Home](../Home.md)
+[← Back to Documentation Home](../index.md)
 
 # API Reference
 
@@ -10,11 +10,11 @@ rooted directly at the domain.
 
 - [Sections](#sections)
 - [Conventions](#conventions)
-  - [Naming](#camelcase-on-the-wire-snake_case-in-query-params)
+  - [Naming](#naming)
   - [Authentication](#authentication)
   - [Error shape](#error-shape)
-  - [Published software only](#visible-software-only)
-  - [Software Identifiers](#looking-records-up-by-slug-vs-uuid)
+  - [Published software only](#published-software-only)
+  - [Software Identifiers](#software-identifiers)
 
 ---
 

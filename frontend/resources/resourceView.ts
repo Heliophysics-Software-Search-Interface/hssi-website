@@ -137,7 +137,7 @@ export class ResourceView {
 		history.pushState(null, "", url);
 		this.paginationOffset = 0;
 		this.updateSortControls();
-		if (this.paginatedMode) await this.loadPage(0, false);
+		if (this.paginatedMode) await this.loadPage(0, false, false);
 		else this.refreshItems();
 	}
 
@@ -185,7 +185,7 @@ export class ResourceView {
 		if (push) history.pushState(null, "", newUrl);
 	}
 
-	private async loadPage(offset: number, pushHistory: boolean = true): Promise<void> {
+	private async loadPage(offset: number, pushHistory: boolean = true, scroll: boolean = true): Promise<void> {
 		if (offset < 0 || offset >= this.paginationTotal) return;
 		Spinner.showSpinner("Loading...", this.containerElement);
 		this.paginationOffset = offset;
@@ -196,7 +196,7 @@ export class ResourceView {
 		this.refreshItems();
 		this.updatePaginationControls();
 		if (pushHistory) this.recordPageUrlParam();
-		this.containerElement.scrollIntoView({ behavior: "smooth" });
+		if (scroll) this.containerElement.scrollIntoView({ behavior: "smooth" });
 		Spinner.hideSpinner(this.containerElement);
 	}
 
@@ -213,7 +213,7 @@ export class ResourceView {
 		const page = Math.max(1, parseInt(pageParam || "1", 10));
 		const offset = (page - 1) * this.PAGE_SIZE;
 		if (offset === this.paginationOffset && this.sort === previousSort) return;
-		await this.loadPage(offset, false);
+		await this.loadPage(offset, false, offset !== this.paginationOffset);
 	}
 
 	/** load all software data and exit paginated mode; no-op if already in full mode */

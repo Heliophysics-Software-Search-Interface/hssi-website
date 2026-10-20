@@ -12,5 +12,5 @@ See [Getting Started](./docs/getting_started.md) guide.
 
 ## Documentation
 
-See [github wiki](https://github.com/Heliophysics-Software-Search-Interface/hssi-website/wiki), 
-or [documentation home](./docs/Home.md) page.
+See the [documentation site](https://heliophysics-software-search-interface.github.io/hssi-website/), 
+or the [documentation home](./docs/index.md) page.

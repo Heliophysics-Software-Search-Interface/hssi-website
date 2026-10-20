@@ -15,7 +15,7 @@ exactly as the server sends/expects them.
 
 ## Contents
 
-- [Structure](#why-these-are-generic-not-one-per-model)
+- [Structure](#structure)
 - [GET /api/models/structures/](#get-apimodelsstructures)
 - [GET /api/models/{model_name}/choices/](#get-apimodelsmodel_namechoices)
 - [GET /api/models/{model_name}/form/](#get-apimodelsmodel_nameform)

@@ -11,7 +11,7 @@ authentication required. See [Overview](overview.md) for the camelCase and
 
 - [GET /api/list/software/](#get-apilistsoftware)
 - [GET /api/view/software/{id}/](#get-apiviewsoftwareid)
-- [GET /api/data/software/{id}/](#getpatch-apidatasoftwareid)
+- [GET /api/data/software/{id}/](#get-apidatasoftwareid)
 - [GET /api/search/](#get-apisearch)
 
 ---

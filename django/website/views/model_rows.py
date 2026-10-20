@@ -45,9 +45,7 @@ def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:
 	if model is VerifiedSoftware:
 		sort = request.GET.get("sort")
 		software = Software.objects.filter(pk=OuterRef("pk"))
-		# Equal dates fall back to the name, as resourceView.ts does when it
-		# re-sorts each page, so a run of tied records stays alphabetical
-		# across page boundaries instead of restarting on every page.
+		# Equal dates fall back to the name, matching resourceView.ts's per-page sort.
 		name = Lower(Subquery(software.values("software_name")[:1]))
 		if sort == "date":
 			# Same source as JSON-LD subjectOf.dateModified: the stamped

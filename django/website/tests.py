@@ -152,6 +152,9 @@ class SoftwareDetailJsonLdTests(TestCase):
 			re.DOTALL,
 		)
 
+	def _jsonld(self, software: Software) -> dict:
+		return self.client.get(f"/api/view/software/{software.pk}/?view=jsonld").json()
+
 	def test_software_detail_embeds_jsonld_in_head(self):
 		software = self._publish_software(
 			software_name="Test Software",
@@ -352,13 +355,22 @@ class SoftwareDetailJsonLdTests(TestCase):
 			[grant.get("name") for grant in data[2]["funding"]], ["Research Grant"],
 		)
 
+	def test_same_name_awards_are_ordered_by_award_number(self):
+		software = self._publish_software(software_name="Many Awards")
+		for identifier in ("B-2", "A-1"):
+			software.award.add(Award.objects.create(name="Grant", identifier=identifier))
+		self.assertEqual(
+			[grant["identifier"] for grant in self._jsonld(software)["funding"]],
+			["A-1", "B-2"],
+		)
+
 	def test_software_license_stays_out_of_subject_of(self):
 		"""subjectOf is HSSI's metadata record, which the software's license doesn't cover."""
 		bsd = License.objects.create(
 			name="BSD-3-Clause", url="https://spdx.org/licenses/BSD-3-Clause.html",
 		)
 		software = self._publish_software(software_name="Licensed Software", license=bsd)
-		data = self.client.get(f"/api/view/software/{software.pk}/?view=jsonld").json()
+		data = self._jsonld(software)
 		self.assertEqual(data["license"]["@id"], bsd.url)
 		self.assertNotIn("license", data["subjectOf"])
 

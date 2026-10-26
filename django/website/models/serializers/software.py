@@ -380,7 +380,7 @@ class SoftwareSerializer(HssiSerializer):
 
 		funding_items: list[dict[str, Any]] = []
 		award_funder_ids = set()
-		for award in instance.award.all():
+		for award in instance.award.order_by("name", "identifier"):
 			funding_item: dict[str, Any] = {}
 			funding_item["@type"] = "MonetaryGrant"
 			funding_item["name"] = award.name

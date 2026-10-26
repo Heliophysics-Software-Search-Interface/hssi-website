@@ -138,7 +138,7 @@ endpoint returns. Selected fields (all omitted when empty):
 | `identifier` | `PropertyValue` list, including one pointing back at HSSI's own canonical URL for the record |
 | `keywords` | combined data sources, formats, phenomena, functionality, and free-text keywords, as `DefinedTerm`s |
 | `license`, `programmingLanguage`, `operatingSystem`, `processorRequirements` | environment/requirements metadata |
-| `funder`, `funding` | funder plus `MonetaryGrant` entries built from any recorded award |
+| `funding` | `MonetaryGrant` entries: one per recorded award, plus one holding only the funder for each software funder with no recorded award |
 | `publisher` | only included if it has a doi.org/ror.org/orcid.org/zenodo.org identifier |
 | `softwareVersion` / `version` | from the most recent `SoftwareVersion` by release date |
 | `mentions` | related instruments, observatories, publications, datasets, and related/interoperable software |

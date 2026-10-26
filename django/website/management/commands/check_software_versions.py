@@ -8,7 +8,7 @@ from packaging.version import InvalidVersion, Version
 from website import github
 from website.models import Software, VerifiedSoftware
 
-LABEL = "new release"
+LABEL = "new version"
 
 def parse_version(tag: str) -> Version | None:
 	"""Parse a version, falling back to its digit runs for tags like "MAGE_1.25.1"."""
@@ -27,25 +27,26 @@ def is_newer(tag: str, current: str) -> bool:
 def issue_body(software: Software, release: dict, listed: str) -> str:
 	page = f"{settings.SITE_PROTOCOL}://{settings.SITE_DOMAIN}{software.get_absolute_url()}"
 	return (
-		f"[{software.software_name}]({page}) published [{release['tag_name']}]({release['html_url']}) "
-		f"on GitHub. HSSI lists {listed}.\n\n"
+		f"[{software.software_name}]({page}) has a new version on GitHub: "
+		f"[{release['tag_name']}]({release['html_url']}). HSSI lists {listed}.\n\n"
 		"Run the HSSI Metadata Updater agent on it to bring its HSSI metadata up to date."
 	)
 
 class Command(BaseCommand):
-	help = "List visible software whose latest GitHub release is newer than the version HSSI lists."
+	help = "List visible software with a newer version on GitHub than the version HSSI lists."
 
 	def add_arguments(self, parser):
 		parser.add_argument(
 			"--open-issues",
 			action="store_true",
-			help=f'Open a "{LABEL}" GitHub issue for each new release that has none yet.',
+			help=f'Open a "{LABEL}" GitHub issue for each new version without one, closing the issues it supersedes.',
 		)
 
 	def handle(self, *args, open_issues: bool, **options):
 		if not settings.HSSI_GITHUB_TOKEN:
 			raise CommandError("Set HSSI_GITHUB_TOKEN to read GitHub releases.")
-		existing = github.issue_titles() if open_issues else set()
+		issues = github.issues() if open_issues else []
+		titles = {issue["title"] for issue in issues}
 		software_list = Software.objects.filter(
 			pk__in=VerifiedSoftware.objects.values("id"),
 			code_repository_url__icontains="github.com",
@@ -64,9 +65,14 @@ class Command(BaseCommand):
 				continue
 			newer += 1
 			listed = f"version {current}" if current else "no version"
-			title = f"New release of {software.software_name}: {release['tag_name']}"
+			prefix = f"New version of {software.software_name}: "
+			title = prefix + release["tag_name"]
 			self.stdout.write(f"{title} (HSSI lists {listed})")
-			if open_issues and title not in existing:
-				github.open_issue(title, issue_body(software, release, listed), LABEL)
-				existing.add(title)
-		self.stdout.write(f"{newer} of {len(software_list)} GitHub-hosted visible software have a newer release.")
+			if not open_issues or title in titles:
+				continue
+			opened = github.open_issue(title, issue_body(software, release, listed), LABEL)
+			titles.add(title)
+			for issue in issues:
+				if issue["state"] == "open" and issue["title"].startswith(prefix):
+					github.close_issue(issue["number"], f"Superseded by #{opened['number']}.")
+		self.stdout.write(f"{newer} of {len(software_list)} GitHub-hosted visible software have a newer version.")

@@ -296,8 +296,6 @@ class SoftwareSerializer(HssiSerializer):
 			"encodingFormat": "application/ld+json",
 			"name": "HSSI metadata",
 		}
-		if instance.license and instance.license.url:
-			data["license"] = instance.license.url
 		latest_submission = (
 			instance.submission_info.filter(submission_date__isnull=False)
 				.order_by("submission_date")

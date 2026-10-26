@@ -11,6 +11,7 @@ from .models import (
 	DataInput,
 	FunctionCategory,
 	Keyword,
+	License,
 	Organization,
 	ProgrammingLanguage,
 	Region,
@@ -350,6 +351,16 @@ class SoftwareDetailJsonLdTests(TestCase):
 		self.assertEqual(
 			[grant.get("name") for grant in data[2]["funding"]], ["Research Grant"],
 		)
+
+	def test_software_license_stays_out_of_subject_of(self):
+		"""subjectOf is HSSI's metadata record, which the software's license doesn't cover."""
+		bsd = License.objects.create(
+			name="BSD-3-Clause", url="https://spdx.org/licenses/BSD-3-Clause.html",
+		)
+		software = self._publish_software(software_name="Licensed Software", license=bsd)
+		data = self.client.get(f"/api/view/software/{software.pk}/?view=jsonld").json()
+		self.assertEqual(data["license"]["@id"], bsd.url)
+		self.assertNotIn("license", data["subjectOf"])
 
 
 class SoftwareApiSlugLookupTests(TestCase):

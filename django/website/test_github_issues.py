@@ -1,3 +1,4 @@
+import json
 from io import StringIO
 from unittest import mock
 
@@ -117,4 +118,47 @@ class CheckSoftwareVersionsTests(TestCase):
 		self.assertIn("New release of Stale: v2.0 (HSSI lists version 1.0)", out.getvalue())
 		self.assertIn("New release of Known: 3.1 (HSSI lists version 3.0)", out.getvalue())
 		issue_titles.assert_not_called()
+		open_issue.assert_not_called()
+
+
+@override_settings(HSSI_GITHUB_TOKEN="token")
+@mock.patch("website.github.open_issue")
+class SubmissionIssueTests(TestCase):
+	def _submit(self):
+		form = {
+			"software_name": "Submitted",
+			"codeRepositoryURL": "https://github.com/example/submitted",
+			"submitterName": {"submitterName": "Ada Lovelace", "submitterEmail": "ada@example.com"},
+			"software_functionality": [],
+		}
+		with self.captureOnCommitCallbacks(execute=True):
+			response = self.client.post(
+				"/submit/submit_data/", data=json.dumps(form), content_type="application/json",
+			)
+		self.assertEqual(response.status_code, 302)
+
+	def test_form_submission_opens_an_issue_without_submitter_details(self, open_issue):
+		self._submit()
+
+		title, body, label = open_issue.call_args.args
+		self.assertEqual(title, "New submission: Submitted")
+		self.assertIn('"codeRepositoryUrl": "https://github.com/example/submitted"', body)
+		self.assertNotIn("ada@example.com", body)
+		self.assertNotIn("Lovelace", body)
+		self.assertEqual(label, "new submission")
+
+	def test_github_failure_does_not_fail_the_submission(self, open_issue):
+		open_issue.side_effect = requests.ConnectionError
+		with self.assertLogs("django", "ERROR"):
+			self._submit()
+
+	@mock.patch("website.views.submit.email_existing_edit_link", side_effect=OSError)
+	def test_email_failure_does_not_stop_the_issue(self, email, open_issue):
+		with self.assertRaises(OSError):
+			self._submit()
+		open_issue.assert_called_once()
+
+	@override_settings(HSSI_GITHUB_TOKEN=None)
+	def test_no_issue_without_a_token(self, open_issue):
+		self._submit()
 		open_issue.assert_not_called()

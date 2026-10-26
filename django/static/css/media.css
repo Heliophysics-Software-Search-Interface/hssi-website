@@ -529,6 +529,9 @@
 	.logo-image img {
 		height: 45px;
 	}
+	.footer_logo {
+		text-align: center;
+	}
 	.sub_header-container {
 		justify-content: center;
 	}

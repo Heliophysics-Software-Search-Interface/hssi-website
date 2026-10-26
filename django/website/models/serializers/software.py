@@ -381,19 +381,23 @@ class SoftwareSerializer(HssiSerializer):
 		]
 
 		funding_items: list[dict[str, Any]] = []
+		award_funder_ids = set()
 		for award in instance.award.all():
 			funding_item: dict[str, Any] = {}
 			funding_item["@type"] = "MonetaryGrant"
 			funding_item["name"] = award.name
 			if award.funder:
 				funding_item["funder"] = self._organization_jsonld(award.funder)
+				award_funder_ids.add(award.funder_id)
 			if award.identifier:
 				funding_item["identifier"] = award.identifier
 			funding_items.append(funding_item)
 
-		# Software funders are independent of recorded awards (schema:CreativeWork).
-		funder_items = [
-			self._organization_jsonld(funder) for funder in instance.funder.all()
+		# Funders with no recorded award get a grant that holds only the funder.
+		funding_items += [
+			{"@type": "MonetaryGrant", "funder": self._organization_jsonld(funder)}
+			for funder in instance.funder.all()
+			if funder.pk not in award_funder_ids
 		]
 
 		json_id = instance.persistent_identifier
@@ -477,7 +481,6 @@ class SoftwareSerializer(HssiSerializer):
 			),
 			"datePublished": instance.publication_date,
 			"description": descriptions,
-			"funder": funder_items or None,
 			"funding": funding_items or None,
 			"identifier": json_identifiers,
 			"image": instance.logo,

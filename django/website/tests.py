@@ -223,7 +223,7 @@ class SoftwareDetailJsonLdTests(TestCase):
 		data = json.loads(scripts[0])
 		self.assertEqual(data["description"][-1], description)
 
-	def _assert_funding_jsonld(self, software, *, funders=None, funding=None):
+	def _assert_funding_jsonld(self, software, funding=None):
 		for path in (
 			software.get_absolute_url(),
 			f"/api/view/software/{software.pk}/?view=jsonld",
@@ -241,11 +241,11 @@ class SoftwareDetailJsonLdTests(TestCase):
 					)
 				else:
 					data = response.json()
-				for key, expected in (("funder", funders), ("funding", funding)):
-					if expected is None:
-						self.assertNotIn(key, data)
-					else:
-						self.assertEqual(data[key], expected)
+				self.assertNotIn("funder", data)
+				if funding is None:
+					self.assertNotIn("funding", data)
+				else:
+					self.assertEqual(data["funding"], funding)
 
 	def test_software_detail_with_funders_and_no_awards(self):
 		software = self._publish_software(software_name="Funder Only Software")
@@ -254,15 +254,12 @@ class SoftwareDetailJsonLdTests(TestCase):
 			Organization.objects.create(name="NSF"),
 		)
 
-		self._assert_funding_jsonld(
-			software,
-			funders=[
-				{"@type": "Organization", "name": "NASA"},
-				{"@type": "Organization", "name": "NSF"},
-			],
-		)
+		self._assert_funding_jsonld(software, [
+			{"@type": "MonetaryGrant", "funder": {"@type": "Organization", "name": "NASA"}},
+			{"@type": "MonetaryGrant", "funder": {"@type": "Organization", "name": "NSF"}},
+		])
 
-	def test_software_with_award_includes_all_funders_and_preserves_grant(self):
+	def test_software_with_award_lists_other_funders_as_funder_only_grants(self):
 		software = self._publish_software(software_name="Awarded Software")
 		numfocus = Organization.objects.create(
 			name="NumFOCUS", website="https://numfocus.org/",
@@ -291,23 +288,18 @@ class SoftwareDetailJsonLdTests(TestCase):
 			},
 		}
 
-		self._assert_funding_jsonld(
-			software,
-			funders=[
-				{"@type": "Organization", "name": "European Space Agency"},
-				{"@type": "Organization", "name": "Google"},
-				{"@type": "Organization", "name": "NASA"},
-				numfocus_jsonld,
-			],
-			funding=[
-				{
-					"@type": "MonetaryGrant",
-					"name": "Research Grant",
-					"funder": numfocus_jsonld,
-					"identifier": "GRANT-123",
-				},
-			],
-		)
+		self._assert_funding_jsonld(software, [
+			{
+				"@type": "MonetaryGrant",
+				"name": "Research Grant",
+				"funder": numfocus_jsonld,
+				"identifier": "GRANT-123",
+			},
+			*(
+				{"@type": "MonetaryGrant", "funder": {"@type": "Organization", "name": name}}
+				for name in ("European Space Agency", "Google", "NASA")
+			),
+		])
 
 	def test_software_with_no_funding_omits_funder_and_funding(self):
 		software = self._publish_software(software_name="Unfunded Software")
@@ -327,11 +319,10 @@ class SoftwareDetailJsonLdTests(TestCase):
 		software = self._publish_software(software_name="Unknown Award Funder")
 		software.funder.add(Organization.objects.create(name="NASA"))
 		software.award.add(Award.objects.create(name="Research Grant"))
-		self._assert_funding_jsonld(
-			software,
-			funders=[{"@type": "Organization", "name": "NASA"}],
-			funding=[{"@type": "MonetaryGrant", "name": "Research Grant"}],
-		)
+		self._assert_funding_jsonld(software, [
+			{"@type": "MonetaryGrant", "name": "Research Grant"},
+			{"@type": "MonetaryGrant", "funder": {"@type": "Organization", "name": "NASA"}},
+		])
 
 	def test_software_list_jsonld_includes_entire_catalog_with_funder_only_record(self):
 		"""One funder-only record must not take down the harvesters' full list."""
@@ -353,9 +344,12 @@ class SoftwareDetailJsonLdTests(TestCase):
 			[item["name"] for item in plain_response.json()["data"]],
 		)
 		self.assertEqual(len(data), 3)
-		self.assertEqual(data[1]["funder"], [{"@type": "Organization", "name": "NASA"}])
-		self.assertNotIn("funding", data[1])
-		self.assertEqual(data[2]["funding"][0]["name"], "Research Grant")
+		self.assertEqual(data[1]["funding"], [
+			{"@type": "MonetaryGrant", "funder": {"@type": "Organization", "name": "NASA"}},
+		])
+		self.assertEqual(
+			[grant.get("name") for grant in data[2]["funding"]], ["Research Grant"],
+		)
 
 
 class SoftwareApiSlugLookupTests(TestCase):

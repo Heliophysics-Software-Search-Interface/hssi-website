@@ -1,4 +1,4 @@
-"""Read GitHub releases and open issues in the hssi-website repository."""
+"""Read GitHub releases and manage issues in the hssi-website repository."""
 
 import itertools, re
 
@@ -28,9 +28,9 @@ def latest_release(repo_url: str) -> dict | None:
 	response.raise_for_status()
 	return response.json()
 
-def issue_titles() -> set[str]:
-	"""Titles of every issue in the repository, open or closed."""
-	titles: set[str] = set()
+def issues() -> list[dict]:
+	"""Every issue in the repository, open or closed."""
+	found: list[dict] = []
 	for page in itertools.count(1):
 		response = requests.get(
 			ISSUES,
@@ -39,15 +39,33 @@ def issue_titles() -> set[str]:
 			timeout=TIMEOUT,
 		)
 		response.raise_for_status()
-		titles.update(issue["title"] for issue in response.json())
+		found += response.json()
 		if "next" not in response.links:
-			return titles
+			return found
 
-def open_issue(title: str, body: str, label: str) -> None:
+def open_issue(title: str, body: str, label: str) -> dict:
 	response = requests.post(
 		ISSUES,
 		headers=_headers(),
 		json={"title": title, "body": body, "labels": [label]},
+		timeout=TIMEOUT,
+	)
+	response.raise_for_status()
+	return response.json()
+
+def close_issue(number: int, comment: str) -> None:
+	"""Comment on an issue, then close it as not planned."""
+	response = requests.post(
+		f"{ISSUES}/{number}/comments",
+		headers=_headers(),
+		json={"body": comment},
+		timeout=TIMEOUT,
+	)
+	response.raise_for_status()
+	response = requests.patch(
+		f"{ISSUES}/{number}",
+		headers=_headers(),
+		json={"state": "closed", "state_reason": "not_planned"},
 		timeout=TIMEOUT,
 	)
 	response.raise_for_status()

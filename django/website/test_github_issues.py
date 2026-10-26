@@ -48,17 +48,27 @@ class GitHubClientTests(SimpleTestCase):
 		self.assertIsNone(github.latest_release("https://github.com/example/none"))
 
 	@mock.patch("website.github.requests.get")
-	def test_issue_titles_follow_every_page_of_open_and_closed_issues(self, get):
+	def test_issues_follow_every_page_of_open_and_closed_issues(self, get):
 		first = mock.Mock(links={"next": {"url": "page 2"}})
 		first.json.return_value = [{"title": "First"}]
 		last = mock.Mock(links={})
 		last.json.return_value = [{"title": "Last"}]
 		get.side_effect = [first, last]
 
-		self.assertEqual(github.issue_titles(), {"First", "Last"})
+		self.assertEqual(github.issues(), [{"title": "First"}, {"title": "Last"}])
 		params = [call.kwargs["params"] for call in get.call_args_list]
 		self.assertEqual([p["page"] for p in params], [1, 2])
 		self.assertTrue(all(p["state"] == "all" for p in params))
+
+	@mock.patch("website.github.requests.patch")
+	@mock.patch("website.github.requests.post")
+	def test_close_issue_comments_then_closes_as_not_planned(self, post, patch):
+		github.close_issue(7, "Superseded by #9.")
+
+		self.assertTrue(post.call_args.args[0].endswith("/issues/7/comments"))
+		self.assertEqual(post.call_args.kwargs["json"], {"body": "Superseded by #9."})
+		self.assertTrue(patch.call_args.args[0].endswith("/issues/7"))
+		self.assertEqual(patch.call_args.kwargs["json"], {"state": "closed", "state_reason": "not_planned"})
 
 
 RELEASES = {
@@ -74,9 +84,18 @@ def fake_latest_release(repo_url: str) -> dict | None:
 	return RELEASES.get(repo_url)
 
 
+ISSUES = [
+	{"number": 3, "title": "New version of Stale: v1.2", "state": "closed"},
+	{"number": 5, "title": "New version of Known: 3.1", "state": "closed"},
+	{"number": 7, "title": "New version of Stale: v1.5", "state": "open"},
+	{"number": 8, "title": "New version of Stale Fork: 1.0", "state": "open"},
+]
+
+
 @override_settings(HSSI_GITHUB_TOKEN="token")
-@mock.patch("website.github.open_issue")
-@mock.patch("website.github.issue_titles", return_value={"New release of Known: 3.1"})
+@mock.patch("website.github.close_issue")
+@mock.patch("website.github.open_issue", return_value={"number": 9})
+@mock.patch("website.github.issues", return_value=ISSUES)
 @mock.patch("website.github.latest_release", side_effect=fake_latest_release)
 class CheckSoftwareVersionsTests(TestCase):
 	def setUp(self):
@@ -96,7 +115,9 @@ class CheckSoftwareVersionsTests(TestCase):
 			if visible:
 				VerifiedSoftware.create_verified(software)
 
-	def test_opens_one_issue_per_new_release_without_one(self, latest_release, issue_titles, open_issue):
+	def test_opens_one_issue_per_new_version_and_closes_the_one_it_supersedes(
+		self, latest_release, issues, open_issue, close_issue,
+	):
 		err = StringIO()
 		call_command("check_software_versions", "--open-issues", stdout=StringIO(), stderr=err)
 
@@ -105,16 +126,20 @@ class CheckSoftwareVersionsTests(TestCase):
 		self.assertIn("Broken: unreachable", err.getvalue())
 		open_issue.assert_called_once()
 		title, body, label = open_issue.call_args.args
-		self.assertEqual(title, "New release of Stale: v2.0")
+		self.assertEqual(title, "New version of Stale: v2.0")
 		self.assertIn("HSSI lists version 1.0.", body)
 		self.assertIn("https://github.com/example/stale/releases/tag/v2.0", body)
 		self.assertEqual(label, LABEL)
+		close_issue.assert_called_once_with(7, "Superseded by #9.")
 
-	def test_lists_new_releases_without_opening_issues_by_default(self, latest_release, issue_titles, open_issue):
+	def test_lists_new_versions_without_opening_issues_by_default(
+		self, latest_release, issues, open_issue, close_issue,
+	):
 		out = StringIO()
 		call_command("check_software_versions", stdout=out, stderr=StringIO())
 
-		self.assertIn("New release of Stale: v2.0 (HSSI lists version 1.0)", out.getvalue())
-		self.assertIn("New release of Known: 3.1 (HSSI lists version 3.0)", out.getvalue())
-		issue_titles.assert_not_called()
+		self.assertIn("New version of Stale: v2.0 (HSSI lists version 1.0)", out.getvalue())
+		self.assertIn("New version of Known: 3.1 (HSSI lists version 3.0)", out.getvalue())
+		issues.assert_not_called()
 		open_issue.assert_not_called()
+		close_issue.assert_not_called()

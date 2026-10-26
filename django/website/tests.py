@@ -8,6 +8,7 @@ from django.test import SimpleTestCase, TestCase
 
 from .models import (
 	Award,
+	CpuArchitecture,
 	DataInput,
 	FunctionCategory,
 	Keyword,
@@ -363,6 +364,26 @@ class SoftwareDetailJsonLdTests(TestCase):
 			[grant["identifier"] for grant in self._jsonld(software)["funding"]],
 			["A-1", "B-2"],
 		)
+
+	def test_single_processor_requirement_is_not_a_list(self):
+		software = self._publish_software(software_name="One CPU")
+		software.cpu_architecture.add(CpuArchitecture.objects.create(name="CPU Independent"))
+		self.assertEqual(self._jsonld(software)["processorRequirements"], "CPU Independent")
+
+	def test_keywords_skip_free_text_repeats_of_controlled_terms(self):
+		software = self._publish_software(software_name="Keyworded")
+		software.data_sources.add(DataInput.objects.create(name="HAPI"))
+		software.keywords.add(Keyword.objects.create(name="hapi"), Keyword.objects.create(name="aurora"))
+		keywords = self._jsonld(software)["keywords"]
+		self.assertEqual(
+			[term if isinstance(term, str) else term["name"] for term in keywords],
+			["HAPI", "aurora"],
+		)
+
+	def test_organization_identifier_outside_the_registries_is_plain(self):
+		zenodo = Organization.objects.create(name="Zenodo", identifier="https://zenodo.org")
+		software = self._publish_software(software_name="On Zenodo", publisher=zenodo)
+		self.assertEqual(self._jsonld(software)["publisher"]["identifier"], "https://zenodo.org")
 
 	def test_software_license_stays_out_of_subject_of(self):
 		"""subjectOf is HSSI's metadata record, which the software's license doesn't cover."""

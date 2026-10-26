@@ -131,7 +131,10 @@ class SoftwareSerializer(HssiSerializer):
 		}
 		if org.identifier:
 			data["@id"] = org.identifier
-			data["identifier"] = self._property_value(org.identifier)
+			data["identifier"] = (
+				self._property_value(org.identifier)
+				if self._registry_property_id(org.identifier) else org.identifier
+			)
 		if org.website:
 			data["url"] = org.website
 		data = { key: value for key, value in data.items() if value is not None }
@@ -333,7 +336,11 @@ class SoftwareSerializer(HssiSerializer):
 			self._defined_term(item.get_full_name(), "softwareFunctionality", URL_TERMSET_FUNCTIONCATEGORY)
 			for item in instance.software_functionality.all()
 		]
-		keywords += [self._defined_term(item.name) for item in instance.keywords.all()]
+		controlled_names = {term["name"].lower() for term in keywords}
+		keywords += [
+			self._defined_term(item.name) for item in instance.keywords.all()
+			if item.name.lower() not in controlled_names
+		]
 
 		mentions: list[dict[str, Any]] = []
 		mentions += [
@@ -495,7 +502,7 @@ class SoftwareSerializer(HssiSerializer):
 			"mentions": mentions or None,
 			"name": instance.software_name,
 			"operatingSystem": self._maybe_single(operating_systems),
-			"processorRequirements": processor_requirements or None,
+			"processorRequirements": self._maybe_single(processor_requirements),
 			"programmingLanguage": self._maybe_single(programming_languages),
 			"publisher": json_pub,
 			"softwareVersion": latest_version.number if latest_version else None,

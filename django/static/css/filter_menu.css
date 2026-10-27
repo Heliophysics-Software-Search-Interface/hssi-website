@@ -200,8 +200,9 @@
 	font-weight: normal;
 }
 
-/* Field search help accordion */
-.field-search-help {
+/* Field search help accordion, and the phone Filters bar that matches it */
+.field-search-help,
+.mobile-filter-header {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 16px;
 	font-weight: bold;
@@ -210,7 +211,8 @@
 	margin: 0.6rem;
 }
 
-.field-search-help > summary {
+.field-search-help > summary,
+.mobile-filter-toggle {
 	padding: 6px 10px;
 	cursor: pointer;
 	color: #555;
@@ -218,17 +220,26 @@
 	list-style: none;
 }
 
-.field-search-help > summary::before {
+.field-search-help > summary::before,
+.mobile-filter-toggle::before {
 	content: "▸ ";
 	font-size: 10px;
 }
 
-.field-search-help[open] > summary::before {
+.field-search-help[open] > summary::before,
+.mobile-filter-header.expanded > .mobile-filter-toggle::before {
 	content: "▾ ";
 }
 
-.field-search-help > summary:hover {
+.field-search-help > summary:hover,
+.mobile-filter-toggle:hover {
 	color: #1779ba;
+}
+
+.mobile-filter-toggle {
+	width: 100%;
+	font: inherit;
+	text-align: left;
 }
 
 .field-search-body {
@@ -291,4 +302,22 @@
 .field-search-codes code:hover {
 	background-color: #b7cfe8;
 	color: #1779ba;
+}
+
+/* Foundation's show-for-small-only range, where the Filters bar shows */
+@media screen and (max-width: 39.99875em) {
+	/* the filter menu opens from the Filters bar and scrolls as one panel within the pinned sidebar */
+	.mobile-filter-header:not(.expanded) + .filter_selector {
+		display: none;
+	}
+
+	.filter_selector {
+		width: auto;
+		max-height: 60vh;
+		overflow-y: auto;
+	}
+
+	.filter-menu .tab-content {
+		max-height: none;
+	}
 }

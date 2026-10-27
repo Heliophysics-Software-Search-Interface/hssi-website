@@ -40,6 +40,10 @@ class IsNewerTests(SimpleTestCase):
 			("v2026a_8", "v2026a_6", True),
 			("v2026b_1", "v2026a_8", True),
 			("6_2", "6.1", True),
+			("MAGE_1.5.0", "MAGE_1.25.1", True),
+			("MAGE_1.25.1", "MAGE_1.5.0", False),
+			("MAGE_2.0.0", "MAGE_1.75.0", True),
+			("MAGE_1.5.0", "MAGE_1.5", False),
 		):
 			with self.subTest(tag=tag, current=current):
 				self.assertEqual(is_newer(tag, current), expected)

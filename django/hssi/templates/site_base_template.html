@@ -37,11 +37,11 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 	<link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
 	<link rel="stylesheet" href="{% static 'css/ui.css' %}">
-	<link rel="stylesheet" href="{% static 'css/contents.css' %}?v=2024-10-15" />
+	<link rel="stylesheet" href="{% static 'css/contents.css' %}?v=2026-10-25" />
 	<link rel="stylesheet" href="{% static 'css/elements.css' %}?v=2024-10-15" />
 	<link rel="stylesheet" href="{% static 'css/navigation.css' %}?v=2024-10-15" />
 	<link rel="stylesheet" href="{% static 'css/other_pages.css' %}?v=2024-10-15" />
-	<link rel="stylesheet" href="{% static 'css/media.css' %}?v=2024-10-15" />
+	<link rel="stylesheet" href="{% static 'css/media.css' %}?v=2026-10-25" />
 	
 	<meta name="csrf-token" content="{{ csrf_token }}">
 	
@@ -170,27 +170,28 @@
 	<!-- FOOTER -->
 	<footer>
 		<div class="grid-x footer-section">
-			<div class="small-12 medium-6 large-4">
+			<div class="small-12 large-4 footer-logo">
+				<a href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/">
+					<img src="{% static 'images/logo-image.png' %}" alt="HSSI home" />
+				</a>
 			</div>
 
-			<div class="medium-6 large-8 cell text-right">
+			<div class="large-8 cell text-right">
 				<ul class="align-center navbar-footer menu">
 					<li class="footer_tag">
-						<span>Footer Info 1: </span>
-						<a href="#">Qwerty</a>
+						<span>Principal Investigator: </span>
+						<a href="https://lasp.colorado.edu/people/julie-barnum/">Julie Barnum</a>
 					</li>
 					<li>
-						<span>Footer Info 2: </span>
-						<a href="#">Qwerty</a>
+						<span>Technical Lead: </span>
+						<a href="https://lasp.colorado.edu/people/shawn-polson/">Shawn Polson</a>
 					</li>
 					<li>
-						<a href="#">Footer Info 3</a>
+						<span>Contact: </span>
+						<a href="mailto:hssi-team@googlegroups.com">hssi-team@googlegroups.com</a>
 					</li>
 					<li>
-						<a href="#" id="footer_content">Footer Info 4</a>
-					</li>
-					<li>
-						<a id="last-link" href="#">Footer Info 5</a>
+						<a id="last-link" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/FAQ">FAQ</a>
 					</li>
 				</ul>
 			</div>

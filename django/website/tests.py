@@ -9,9 +9,11 @@ from django.utils import timezone
 
 from .models import (
 	Award,
+	CpuArchitecture,
 	DataInput,
 	FunctionCategory,
 	Keyword,
+	License,
 	Organization,
 	ProgrammingLanguage,
 	Region,
@@ -233,6 +235,9 @@ class SoftwareDetailJsonLdTests(TestCase):
 			re.DOTALL,
 		)
 
+	def _jsonld(self, software: Software) -> dict:
+		return self.client.get(f"/api/view/software/{software.pk}/?view=jsonld").json()
+
 	def test_software_detail_embeds_jsonld_in_head(self):
 		software = self._publish_software(
 			software_name="Test Software",
@@ -305,7 +310,7 @@ class SoftwareDetailJsonLdTests(TestCase):
 		data = json.loads(scripts[0])
 		self.assertEqual(data["description"][-1], description)
 
-	def _assert_funding_jsonld(self, software, *, funders=None, funding=None):
+	def _assert_funding_jsonld(self, software, funding=None):
 		for path in (
 			software.get_absolute_url(),
 			f"/api/view/software/{software.pk}/?view=jsonld",
@@ -323,11 +328,11 @@ class SoftwareDetailJsonLdTests(TestCase):
 					)
 				else:
 					data = response.json()
-				for key, expected in (("funder", funders), ("funding", funding)):
-					if expected is None:
-						self.assertNotIn(key, data)
-					else:
-						self.assertEqual(data[key], expected)
+				self.assertNotIn("funder", data)
+				if funding is None:
+					self.assertNotIn("funding", data)
+				else:
+					self.assertEqual(data["funding"], funding)
 
 	def test_software_detail_with_funders_and_no_awards(self):
 		software = self._publish_software(software_name="Funder Only Software")
@@ -336,15 +341,12 @@ class SoftwareDetailJsonLdTests(TestCase):
 			Organization.objects.create(name="NSF"),
 		)
 
-		self._assert_funding_jsonld(
-			software,
-			funders=[
-				{"@type": "Organization", "name": "NASA"},
-				{"@type": "Organization", "name": "NSF"},
-			],
-		)
+		self._assert_funding_jsonld(software, [
+			{"@type": "MonetaryGrant", "funder": {"@type": "Organization", "name": "NASA"}},
+			{"@type": "MonetaryGrant", "funder": {"@type": "Organization", "name": "NSF"}},
+		])
 
-	def test_software_with_award_includes_all_funders_and_preserves_grant(self):
+	def test_software_with_award_lists_other_funders_as_funder_only_grants(self):
 		software = self._publish_software(software_name="Awarded Software")
 		numfocus = Organization.objects.create(
 			name="NumFOCUS", website="https://numfocus.org/",
@@ -373,23 +375,18 @@ class SoftwareDetailJsonLdTests(TestCase):
 			},
 		}
 
-		self._assert_funding_jsonld(
-			software,
-			funders=[
-				{"@type": "Organization", "name": "European Space Agency"},
-				{"@type": "Organization", "name": "Google"},
-				{"@type": "Organization", "name": "NASA"},
-				numfocus_jsonld,
-			],
-			funding=[
-				{
-					"@type": "MonetaryGrant",
-					"name": "Research Grant",
-					"funder": numfocus_jsonld,
-					"identifier": "GRANT-123",
-				},
-			],
-		)
+		self._assert_funding_jsonld(software, [
+			{
+				"@type": "MonetaryGrant",
+				"name": "Research Grant",
+				"funder": numfocus_jsonld,
+				"identifier": "GRANT-123",
+			},
+			*(
+				{"@type": "MonetaryGrant", "funder": {"@type": "Organization", "name": name}}
+				for name in ("European Space Agency", "Google", "NASA")
+			),
+		])
 
 	def test_software_with_no_funding_omits_funder_and_funding(self):
 		software = self._publish_software(software_name="Unfunded Software")
@@ -409,11 +406,10 @@ class SoftwareDetailJsonLdTests(TestCase):
 		software = self._publish_software(software_name="Unknown Award Funder")
 		software.funder.add(Organization.objects.create(name="NASA"))
 		software.award.add(Award.objects.create(name="Research Grant"))
-		self._assert_funding_jsonld(
-			software,
-			funders=[{"@type": "Organization", "name": "NASA"}],
-			funding=[{"@type": "MonetaryGrant", "name": "Research Grant"}],
-		)
+		self._assert_funding_jsonld(software, [
+			{"@type": "MonetaryGrant", "name": "Research Grant"},
+			{"@type": "MonetaryGrant", "funder": {"@type": "Organization", "name": "NASA"}},
+		])
 
 	def test_software_list_jsonld_includes_entire_catalog_with_funder_only_record(self):
 		"""One funder-only record must not take down the harvesters' full list."""
@@ -435,9 +431,51 @@ class SoftwareDetailJsonLdTests(TestCase):
 			[item["name"] for item in plain_response.json()["data"]],
 		)
 		self.assertEqual(len(data), 3)
-		self.assertEqual(data[1]["funder"], [{"@type": "Organization", "name": "NASA"}])
-		self.assertNotIn("funding", data[1])
-		self.assertEqual(data[2]["funding"][0]["name"], "Research Grant")
+		self.assertEqual(data[1]["funding"], [
+			{"@type": "MonetaryGrant", "funder": {"@type": "Organization", "name": "NASA"}},
+		])
+		self.assertEqual(
+			[grant.get("name") for grant in data[2]["funding"]], ["Research Grant"],
+		)
+
+	def test_same_name_awards_are_ordered_by_award_number(self):
+		software = self._publish_software(software_name="Many Awards")
+		for identifier in ("B-2", "A-1"):
+			software.award.add(Award.objects.create(name="Grant", identifier=identifier))
+		self.assertEqual(
+			[grant["identifier"] for grant in self._jsonld(software)["funding"]],
+			["A-1", "B-2"],
+		)
+
+	def test_single_processor_requirement_is_not_a_list(self):
+		software = self._publish_software(software_name="One CPU")
+		software.cpu_architecture.add(CpuArchitecture.objects.create(name="CPU Independent"))
+		self.assertEqual(self._jsonld(software)["processorRequirements"], "CPU Independent")
+
+	def test_keywords_skip_free_text_repeats_of_controlled_terms(self):
+		software = self._publish_software(software_name="Keyworded")
+		software.data_sources.add(DataInput.objects.create(name="HAPI"))
+		software.keywords.add(Keyword.objects.create(name="hapi"), Keyword.objects.create(name="aurora"))
+		keywords = self._jsonld(software)["keywords"]
+		self.assertEqual(
+			[term if isinstance(term, str) else term["name"] for term in keywords],
+			["HAPI", "aurora"],
+		)
+
+	def test_organization_identifier_outside_the_registries_is_plain(self):
+		zenodo = Organization.objects.create(name="Zenodo", identifier="https://zenodo.org")
+		software = self._publish_software(software_name="On Zenodo", publisher=zenodo)
+		self.assertEqual(self._jsonld(software)["publisher"]["identifier"], "https://zenodo.org")
+
+	def test_software_license_stays_out_of_subject_of(self):
+		"""subjectOf is HSSI's metadata record, which the software's license doesn't cover."""
+		bsd = License.objects.create(
+			name="BSD-3-Clause", url="https://spdx.org/licenses/BSD-3-Clause.html",
+		)
+		software = self._publish_software(software_name="Licensed Software", license=bsd)
+		data = self._jsonld(software)
+		self.assertEqual(data["license"]["@id"], bsd.url)
+		self.assertNotIn("license", data["subjectOf"])
 
 
 class SoftwareApiSlugLookupTests(TestCase):

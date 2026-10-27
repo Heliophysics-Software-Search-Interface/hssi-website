@@ -30,7 +30,10 @@ class PageChanged(Exception):
 	"""A page in PAGES no longer shows a version its pattern matches."""
 
 def parse_version(tag: str) -> Version | None:
-	"""Parse a version, falling back to its digit runs for tags like "MAGE_1.25.1"."""
+	"""Parse a version, falling back to its digit runs for tags like "kaipy-1.1.4"."""
+	if match := re.fullmatch(r"MAGE_(\d+)\.(\d+)(.*)", tag):
+		# Kaiju counts its MAGE releases in quarters: MAGE_1.25.1, then MAGE_1.5.0.
+		tag = f"{match[1]}.{match[2].ljust(4, '0')}{match[3]}"
 	for candidate in (tag, ".".join(re.findall(r"\d+", tag))):
 		try:
 			return Version(candidate)

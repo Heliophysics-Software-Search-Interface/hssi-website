@@ -201,6 +201,9 @@ export class FilterMenu {
 			return;
 		}
 
+		// on phones, close the Filters bar's menu so the new results are in view
+		if(pushHistory) document.querySelector<HTMLElement>(".mobile-filter-header.expanded > .mobile-filter-toggle")?.click();
+
 		// no active filters: go back to paginated mode, clear any uid restriction
 		if (this.activeFilterGroups.length === 0) {
 			await this.targetView.resetToPaginatedMode();

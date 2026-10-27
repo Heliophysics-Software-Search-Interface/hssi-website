@@ -83,6 +83,7 @@ export interface PersonData extends HSSIModelData {
 export interface SoftwareData extends HSSIModelData {
 	programming_language: JSONArray<ControlledListData>,
 	publication_date: string,
+	metadata_modified_date?: string,
 	publisher: OrganizationData,
 	authors: JSONArray<PersonData>,
 	related_instruments: JSONArray<ControlledListData>,

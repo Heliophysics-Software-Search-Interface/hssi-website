@@ -16,15 +16,19 @@ def _headers() -> dict[str, str]:
 		"Authorization": f"Bearer {settings.HSSI_GITHUB_TOKEN}",
 	}
 
-def latest_release(repo_url: str) -> dict | None:
-	"""The release GitHub marks Latest for a github.com repository, or None."""
-	match = REPO_PATH.search(repo_url)
-	if not match:
-		return None
-	repo = f"{match[1]}/{match[2].removesuffix('.git')}"
-	response = requests.get(f"{API}/repos/{repo}/releases/latest", headers=_headers(), timeout=TIMEOUT)
+def repo_path(url: str) -> str | None:
+	"""The "owner/repo" of a github.com URL."""
+	match = REPO_PATH.search(url)
+	return f"{match[1]}/{match[2].removesuffix('.git')}" if match else None
+
+def releases(repo_url: str) -> list[dict]:
+	"""The most recently created releases of a github.com repository."""
+	repo = repo_path(repo_url)
+	if not repo:
+		return []
+	response = requests.get(f"{API}/repos/{repo}/releases", headers=_headers(), timeout=TIMEOUT)
 	if response.status_code == 404:
-		return None
+		return []
 	response.raise_for_status()
 	return response.json()
 

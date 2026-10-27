@@ -26,8 +26,8 @@ SUPERUSER_PWD = None if 'SUPERUSER_PWD' not in os.environ else os.environ.get('S
 # When unset, the update endpoint denies every request.
 HSSI_UPDATE_TOKEN = os.environ.get("HSSI_UPDATE_TOKEN")
 
-# GitHub token used to open issues in the hssi-website repository, e.g. by
-# `manage.py check_software_versions --open-issues`. When unset, none are opened.
+# GitHub token that `manage.py check_software_versions` uses to read releases
+# and open issues in the hssi-website repository. When unset, the command won't run.
 HSSI_GITHUB_TOKEN = os.environ.get("HSSI_GITHUB_TOKEN")
 
 # Google Analytics (GA4) Measurement ID, e.g. "G-XXXXXXXXXX". When unset, the

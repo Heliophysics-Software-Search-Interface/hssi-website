@@ -256,6 +256,16 @@ class Software(HssiModel):
 			)
 		return ordered
 
+	def latest_version(self) -> SoftwareVersion | None:
+		"""The version with the latest release date, or the highest number if none has a date."""
+		versions = list(self.version.all())
+		if not versions:
+			return None
+		with_dates = [v for v in versions if v.release_date]
+		if with_dates:
+			return max(with_dates, key=lambda v: v.release_date)
+		return sorted(versions, key=lambda v: v.number)[-1]
+
 	@property
 	def scix_url(self) -> str | None:
 		return _SCIX_URLS.get(str(self.id))

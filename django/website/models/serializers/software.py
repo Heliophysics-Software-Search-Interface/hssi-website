@@ -9,7 +9,7 @@ from .util import HssiSerializer, serialize_obj_userfriendly
 from ..organizations import Organization
 from ..people import Person
 from ..related import RelatedItem, RelatedItemType
-from ..software import Software, SoftwareVersion, VerifiedSoftware
+from ..software import Software, VerifiedSoftware
 from ..vocab import InstrObsType, InstrumentObservatory
 from ..base import HssiModel
 
@@ -181,15 +181,6 @@ class SoftwareSerializer(HssiSerializer):
 			return None
 		return {"@list": authors}
 
-	def _latest_version(self, instance: Software) -> SoftwareVersion | None:
-		versions = list(instance.version.all())
-		if not versions:
-			return None
-		with_dates = [v for v in versions if v.release_date]
-		if with_dates:
-			return max(with_dates, key=lambda v: v.release_date)
-		return sorted(versions, key=lambda v: v.number)[-1]
-
 	def _functionality_categories(self, instance: Software) -> tuple[list[str], list[str]]:
 		categories: set[str] = set()
 		subcategories: list[str] = []
@@ -313,7 +304,7 @@ class SoftwareSerializer(HssiSerializer):
 
 		authors = self._author_list(instance)
 		categories, subcategories = self._functionality_categories(instance)
-		latest_version = self._latest_version(instance)
+		latest_version = instance.latest_version()
 
 		keywords: list[dict[str, Any]] = []
 		keywords += [

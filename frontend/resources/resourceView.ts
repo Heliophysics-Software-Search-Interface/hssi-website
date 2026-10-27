@@ -35,6 +35,7 @@ export class ResourceView {
 	private paginatedMode: boolean = false;
 	private paginationOffset: number = 0;
 	private paginationTotal: number = 0;
+	private pageRequestId: number = 0;
 	private paginationControlsEl: HTMLDivElement = null;
 	private readonly PAGE_SIZE = 25;
 	private dataLoaded: boolean = false;
@@ -187,9 +188,12 @@ export class ResourceView {
 
 	private async loadPage(offset: number, pushHistory: boolean = true, scroll: boolean = true): Promise<void> {
 		if (offset < 0 || offset >= this.paginationTotal) return;
+		// Only the latest page/sort request may update the view.
+		const requestId = ++this.pageRequestId;
 		Spinner.showSpinner("Loading...", this.containerElement);
 		this.paginationOffset = offset;
 		const { items, total } = await ModelDataCache.fetchPage(softwarModelName, offset, this.PAGE_SIZE, this.sort);
+		if (requestId !== this.pageRequestId) return;
 		this.itemData = items;
 		this.paginationTotal = total;
 		this.specificUids = null;

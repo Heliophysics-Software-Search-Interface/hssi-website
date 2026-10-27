@@ -591,25 +591,10 @@ $(document).ready(function () {
 		}
 	});
 
-	// mobile menu slide toggle
+	// mobile filter menu toggle
 	$('.mobile-filter-toggle').click(function() {
-		var container = $(this).parents(".mobile-filter-header");
-		var mobile_menu_container = container.find(".mobile-menu-container");
-		var trigger = container.find(".category-t");
-
-		mobile_menu_container.slideToggle(200);
-
-		if (trigger.hasClass("category-o")) {
-			trigger.removeClass("category-o");
-		} else {
-			trigger.addClass("category-o");
-		}
-
-		if (container.hasClass("expanded")) {
-			container.removeClass("expanded");
-		} else {
-			container.addClass("expanded");
-		}
+		var expanded = $(this).parents(".mobile-filter-header").toggleClass("expanded").hasClass("expanded");
+		$(this).attr("aria-expanded", expanded);
 	});
 
 	// expand resource info arrow

@@ -889,6 +889,21 @@ class InstrumentObservatoryRowTests(SharedRowTestCase):
 		ace.refresh_from_db()
 		self.assertEqual((mag.abbreviation, ace.abbreviation), ("MAG", "ACE"))
 
+	def test_entry_stored_as_a_page_url_still_binds(self):
+		page = f"{self.ACE}.html"
+		ace = self._entry(page, InstrObsType.OBSERVATORY)
+
+		response = self._patch({"relatedObservatories": [{"name": "ACE", "identifier": page}]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		self.assertEqual(list(self.software.related_observatories.all()), [ace])
+		self.assertEqual(InstrumentObservatory.objects.count(), 1)
+
+		response = self._patch({"relatedInstruments": [{"name": "ACE", "identifier": page}]})
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("identifier", response.data)
+
 	def test_submission_api_matches_spase_urls_exactly(self):
 		mag = self._entry(self.MAG, InstrObsType.INSTRUMENT)
 

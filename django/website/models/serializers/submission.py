@@ -368,9 +368,10 @@ class SubmissionSerializer(HssiSerializer):
 		identifier = data.get("identifier")
 		if identifier:
 			identifier = self._validate_url(self._strip_string(identifier))
-			if updating is not None:
-				identifier = _spase_url(identifier)
 			entry = InstrumentObservatory.objects.filter(identifier=identifier).first()
+			if entry is None and updating is not None:
+				identifier = _spase_url(identifier)
+				entry = InstrumentObservatory.objects.filter(identifier=identifier).first()
 			if entry and entry.type != instr_type:
 				raise serializers.ValidationError({
 					"identifier": f"'{identifier}' is an {entry.get_type_display().lower()}, "

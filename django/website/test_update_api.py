@@ -177,6 +177,99 @@ class SoftwarePartialUpdateTokenUnsetTests(TestCase):
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
+@override_settings(HSSI_UPDATE_TOKEN=UPDATE_TOKEN)
+class SoftwarePartialUpdateSharedRowTests(TestCase):
+	"""Rules for the Person rows that authors resolve to, which other
+	software entries may share."""
+
+	ORCID = "https://orcid.org/0000-0000-0000-0001"
+	OTHER_ORCID = "https://orcid.org/0000-0000-0000-0002"
+
+	@classmethod
+	def setUpTestData(cls):
+		cls.software = Software.objects.create(
+			software_name="Shared Rows",
+			code_repository_url="https://example.com/shared",
+		)
+		VerifiedSoftware.create_verified(cls.software)
+
+	def setUp(self):
+		self.client = APIClient()
+
+	def _patch(self, data):
+		return self.client.patch(
+			f"/api/data/software/{self.software.id}/",
+			data=data,
+			format="json",
+			HTTP_AUTHORIZATION=f"Bearer {UPDATE_TOKEN}",
+		)
+
+	# Identifier attached to an existing author -------------------------------
+
+	def test_identifier_attaches_to_unidentified_current_author(self):
+		for stored, orcid in ((None, self.ORCID), ("", self.OTHER_ORCID)):
+			with self.subTest(stored_identifier=stored):
+				person = Person.objects.create(given_name="Ann", family_name="Lee", identifier=stored)
+				self.software.authors.set([person])
+				people_before = Person.objects.count()
+
+				response = self._patch({"authors": [
+					{"givenName": "Ann", "familyName": "Lee", "identifier": orcid},
+				]})
+
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				person.refresh_from_db()
+				self.assertEqual(person.identifier, orcid)
+				self.assertEqual(list(self.software.authors.all()), [person])
+				self.assertEqual(Person.objects.count(), people_before)
+
+	def test_identifier_attaches_across_a_different_split(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier="")
+		self.software.authors.set([person])
+		people_before = Person.objects.count()
+
+		response = self._patch({"authors": [
+			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.identifier, self.ORCID)
+		self.assertEqual(list(self.software.authors.all()), [person])
+		self.assertEqual(Person.objects.count(), people_before)
+
+	def test_identifier_never_replaces_a_different_identifier(self):
+		person = Person.objects.create(given_name="Ann", family_name="Lee", identifier=self.OTHER_ORCID)
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Ann", "familyName": "Lee", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.identifier, self.OTHER_ORCID)
+		author = self.software.authors.get()
+		self.assertNotEqual(author.pk, person.pk)
+		self.assertEqual(author.identifier, self.ORCID)
+
+	def test_identifier_ignores_namesakes_outside_this_software(self):
+		namesake = Person.objects.create(given_name="Ann", family_name="Lee", identifier="")
+		other = Software.objects.create(software_name="Other")
+		other.authors.set([namesake])
+
+		response = self._patch({"authors": [
+			{"givenName": "Ann", "familyName": "Lee", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		namesake.refresh_from_db()
+		self.assertEqual(namesake.identifier, "")
+		author = self.software.authors.get()
+		self.assertNotEqual(author.pk, namesake.pk)
+		self.assertEqual(author.identifier, self.ORCID)
+
+
 class SoftwareListLookupTests(TestCase):
 	"""GET /api/list/software/ with an optional ?repo_url= filter."""
 

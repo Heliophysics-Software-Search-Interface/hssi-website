@@ -5,6 +5,7 @@ from typing import Any
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from rest_framework import serializers
@@ -173,14 +174,30 @@ class SubmissionSerializer(HssiSerializer):
 			return obj
 		return Keyword.objects.create(name=normalized)
 
-	def _get_or_create_person(self, data: dict[str, Any]) -> Person:
+	def _get_or_create_person(
+		self,
+		data: dict[str, Any],
+		updating: Software | None = None,
+	) -> Person:
+		"""Resolve a person payload to a Person row.
+
+		``updating`` is the Software being updated, if any. Only then does an
+		identifier that matches no Person attach to an unidentified current
+		author of that software with the same full name. Full names compare
+		by their words, so only the split between given and family may differ.
+		"""
 		given_name = self._normalize_term(data.get("given_name"), "givenName")
 		family_name = self._normalize_term(data.get("family_name"), "familyName")
 		identifier = data.get("identifier")
 		if identifier:
 			identifier = self._validate_url(self._strip_string(identifier))
+			name_words = f"{given_name} {family_name}".split()
 			person = Person.objects.filter(identifier=identifier).first()
+			if person is None and updating is not None:
+				unidentified = updating.authors.filter(Q(identifier__isnull=True) | Q(identifier=""))
+				person = next((p for p in unidentified if p.fullName.split() == name_words), None)
 			if person:
+				person.identifier = identifier
 				if not person.given_name:
 					person.given_name = given_name
 				if not person.family_name:
@@ -437,7 +454,10 @@ class SubmissionSerializer(HssiSerializer):
 
 		if "authors" in data:
 			authors_data = data["authors"] or []
-			authors = [self._get_or_create_person(item) for item in authors_data]
+			authors = [
+				self._get_or_create_person(item, updating=self.instance)
+				for item in authors_data
+			]
 			for author, author_data in zip(authors, authors_data, strict=False):
 				affiliations = author_data.get("affiliation") or []
 				if isinstance(affiliations, list):

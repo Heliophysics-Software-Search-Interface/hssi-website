@@ -63,20 +63,20 @@ def submit_data(request: HttpRequest) -> HttpResponse:
 
 		# mark for review edits
 		SoftwareEditQueue.create(software, timezone.now() + datetime.timedelta(days=90))
-		transaction.on_commit(lambda: open_submission_issue(software), robust=True)
+		transaction.on_commit(lambda: open_submission_issue(software, "form"), robust=True)
 		transaction.on_commit(lambda s=software: [
 			email_existing_edit_link(si) for si in s.submission_info.all()
 		])
 
 	return redirect(f"/submit/submitted/?uid={str(software.pk)}")
 
-def open_submission_issue(software: Software) -> None:
+def open_submission_issue(software: Software, through: str) -> None:
 	"""Open a "new submission" GitHub issue that names the software and shows no other submitted values.
-	Only the web form calls this; submissions through the submission API endpoints don't open issues."""
+	`through` is "form" or "API", whichever the software was submitted through."""
 	if not settings.HSSI_GITHUB_TOKEN:
 		return
 	github.open_issue(
 		f"New submission: {software.software_name}",
-		"Submitted through the HSSI submission form. Someone should go review it now.",
+		f"Submitted through the HSSI submission {through}. Someone should go review it now.",
 		"new submission",
 	)

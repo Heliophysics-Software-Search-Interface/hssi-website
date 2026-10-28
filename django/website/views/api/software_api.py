@@ -21,6 +21,7 @@ from ...models.serializers.software import SoftwareSerializer
 from ...models.serializers.submission import SubmissionSerializer
 from ...models.serializers.util import Q_VIEW, SerialView
 from ..edit_submission import email_existing_edit_link
+from ..submit import open_submission_issue
 from .permissions import HasUpdateToken
 
 
@@ -172,6 +173,7 @@ class SubmissionAPI(APIView):
 					serializer._view = SerialView.USER
 					serializer.is_valid(raise_exception=True)
 					software = serializer.save()
+					transaction.on_commit(lambda s=software: open_submission_issue(s, "API"), robust=True)
 					results.append({
 						"index": idx,
 						"softwareId": str(software.id),

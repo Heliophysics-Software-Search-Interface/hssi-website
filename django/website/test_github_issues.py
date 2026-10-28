@@ -331,3 +331,52 @@ class SubmissionIssueTests(TestCase):
 	def test_no_issue_without_a_token(self, open_issue):
 		self._submit()
 		open_issue.assert_not_called()
+
+	API_ITEM = {
+		"submitter": [{"email": "ada@example.com", "person": {"givenName": "Ada", "familyName": "Lovelace"}}],
+		"softwareName": "Via API",
+		"codeRepositoryUrl": "https://github.com/example/via-api",
+		"authors": [{"givenName": "Ada", "familyName": "Lovelace"}],
+		"description": "A description.",
+	}
+	API_BODY = "Submitted through the HSSI submission API. Someone should go review it now."
+
+	def _post(self, path: str, items: list[dict]):
+		with self.captureOnCommitCallbacks(execute=True):
+			return self.client.post(path, data=json.dumps(items), content_type="application/json")
+
+	def test_api_submission_opens_an_issue_per_record(self, open_issue):
+		second = {**self.API_ITEM, "softwareName": "Also via API", "codeRepositoryUrl": "https://github.com/example/also"}
+		response = self._post("/api/submission/", [self.API_ITEM, second])
+
+		self.assertEqual(response.status_code, 201)
+		self.assertEqual(
+			[call.args for call in open_issue.call_args_list],
+			[(f"New submission: {name}", self.API_BODY, "new submission") for name in ("Via API", "Also via API")],
+		)
+
+	def test_legacy_api_submission_opens_an_issue(self, open_issue):
+		item = {
+			"submitter": [{"email": "ada@example.com", "person": {"given_name": "Ada", "family_name": "Lovelace"}}],
+			"software_name": "Via legacy API",
+			"code_repository_url": "https://github.com/example/legacy",
+			"description": "A description.",
+			"authors": [{"given_name": "Ada", "family_name": "Lovelace"}],
+		}
+		response = self._post("/api/submit", [item])
+
+		self.assertEqual(response.status_code, 200, response.content)
+		open_issue.assert_called_once_with("New submission: Via legacy API", self.API_BODY, "new submission")
+
+	def test_rejected_api_batch_opens_no_issue(self, open_issue):
+		response = self._post("/api/submission/", [self.API_ITEM, {"softwareName": "Missing fields"}])
+
+		self.assertEqual(response.status_code, 400)
+		open_issue.assert_not_called()
+
+	def test_github_failure_does_not_fail_an_api_submission(self, open_issue):
+		open_issue.side_effect = requests.ConnectionError
+		with self.assertLogs("django", "ERROR"):
+			response = self._post("/api/submission/", [self.API_ITEM])
+
+		self.assertEqual(response.status_code, 201)

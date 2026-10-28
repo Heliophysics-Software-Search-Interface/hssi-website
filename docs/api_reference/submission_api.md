@@ -6,7 +6,7 @@ Endpoints for creating new software records and updating existing ones.
 Creating is fully public; updating requires the bearer token described in
 [Overview](overview.md#authentication).
 
-Records created through these endpoints don't open a "New submission" issue in the hssi-website GitHub repository. Only the website's submission form does that.
+Each record created through `POST /api/submission/` or `POST /api/submit` opens a "New submission" issue in the hssi-website GitHub repository, as submissions through the website's form do, so the team knows to review it. A batch that fails opens none. Only a server with a GitHub token configured, such as production, opens these issues.
 
 ## Contents
 

@@ -290,3 +290,93 @@ class CheckSoftwareVersionsTests(TestCase):
 		issues.assert_not_called()
 		open_issue.assert_not_called()
 		close_issue.assert_not_called()
+
+
+@override_settings(HSSI_GITHUB_TOKEN="token")
+@mock.patch("website.github.open_issue")
+class SubmissionIssueTests(TestCase):
+	def _submit(self):
+		form = {
+			"software_name": "Submitted",
+			"codeRepositoryURL": "https://github.com/example/submitted",
+			"submitterName": {"submitterName": "Ada Lovelace", "submitterEmail": "ada@example.com"},
+			"software_functionality": [],
+		}
+		with self.captureOnCommitCallbacks(execute=True):
+			response = self.client.post(
+				"/submit/submit_data/", data=json.dumps(form), content_type="application/json",
+			)
+		self.assertEqual(response.status_code, 302)
+
+	def test_form_submission_opens_an_issue_that_shows_only_the_software_name(self, open_issue):
+		self._submit()
+
+		title, body, label = open_issue.call_args.args
+		self.assertEqual(title, "New submission: Submitted")
+		self.assertEqual(body, "Submitted through the HSSI submission form. Someone should go review it now.")
+		self.assertEqual(label, "new submission")
+
+	def test_github_failure_does_not_fail_the_submission(self, open_issue):
+		open_issue.side_effect = requests.ConnectionError
+		with self.assertLogs("django", "ERROR"):
+			self._submit()
+
+	@mock.patch("website.views.submit.email_existing_edit_link", side_effect=OSError)
+	def test_email_failure_does_not_stop_the_issue(self, email, open_issue):
+		with self.assertRaises(OSError):
+			self._submit()
+		open_issue.assert_called_once()
+
+	@override_settings(HSSI_GITHUB_TOKEN=None)
+	def test_no_issue_without_a_token(self, open_issue):
+		self._submit()
+		open_issue.assert_not_called()
+
+	API_ITEM = {
+		"submitter": [{"email": "ada@example.com", "person": {"givenName": "Ada", "familyName": "Lovelace"}}],
+		"softwareName": "Via API",
+		"codeRepositoryUrl": "https://github.com/example/via-api",
+		"authors": [{"givenName": "Ada", "familyName": "Lovelace"}],
+		"description": "A description.",
+	}
+	API_BODY = "Submitted through the HSSI submission API. Someone should go review it now."
+
+	def _post(self, path: str, items: list[dict]):
+		with self.captureOnCommitCallbacks(execute=True):
+			return self.client.post(path, data=json.dumps(items), content_type="application/json")
+
+	def test_api_submission_opens_an_issue_per_record(self, open_issue):
+		second = {**self.API_ITEM, "softwareName": "Also via API", "codeRepositoryUrl": "https://github.com/example/also"}
+		response = self._post("/api/submission/", [self.API_ITEM, second])
+
+		self.assertEqual(response.status_code, 201)
+		self.assertEqual(
+			[call.args for call in open_issue.call_args_list],
+			[(f"New submission: {name}", self.API_BODY, "new submission") for name in ("Via API", "Also via API")],
+		)
+
+	def test_legacy_api_submission_opens_an_issue(self, open_issue):
+		item = {
+			"submitter": [{"email": "ada@example.com", "person": {"given_name": "Ada", "family_name": "Lovelace"}}],
+			"software_name": "Via legacy API",
+			"code_repository_url": "https://github.com/example/legacy",
+			"description": "A description.",
+			"authors": [{"given_name": "Ada", "family_name": "Lovelace"}],
+		}
+		response = self._post("/api/submit", [item])
+
+		self.assertEqual(response.status_code, 200, response.content)
+		open_issue.assert_called_once_with("New submission: Via legacy API", self.API_BODY, "new submission")
+
+	def test_rejected_api_batch_opens_no_issue(self, open_issue):
+		response = self._post("/api/submission/", [self.API_ITEM, {"softwareName": "Missing fields"}])
+
+		self.assertEqual(response.status_code, 400)
+		open_issue.assert_not_called()
+
+	def test_github_failure_does_not_fail_an_api_submission(self, open_issue):
+		open_issue.side_effect = requests.ConnectionError
+		with self.assertLogs("django", "ERROR"):
+			response = self._post("/api/submission/", [self.API_ITEM])
+
+		self.assertEqual(response.status_code, 201)

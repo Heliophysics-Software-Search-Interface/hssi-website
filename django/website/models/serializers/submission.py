@@ -1,6 +1,7 @@
 """Submission API and related logic."""
 
 from typing import Any
+from urllib.parse import urlsplit, urlunsplit
 
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import URLValidator
@@ -112,6 +113,17 @@ _RELATED_ITEM_RELATIONS: tuple[tuple[str, RelatedItemType], ...] = (
 def _name_words(given_name: str, family_name: str) -> list[str]:
 	"""The words of a full name, ignoring case, hyphens and the given/family split."""
 	return f"{given_name} {family_name}".replace("-", " ").casefold().split()
+
+
+def _related_item_url(url: str) -> str:
+	"""``url`` with https for http, doi.org for dx.doi.org, no trailing slash,
+	and a DOI in lowercase. Other paths keep their case."""
+	parts = urlsplit(url)
+	scheme = "https" if parts.scheme == "http" else parts.scheme
+	host, path = parts.netloc, parts.path.rstrip("/")
+	if host.lower() in ("doi.org", "dx.doi.org"):
+		host, path = "doi.org", path.lower()
+	return urlunsplit((scheme, host, path, parts.query, parts.fragment))
 
 
 def _only_linked_as(item: RelatedItem, item_type: RelatedItemType, software: Software) -> bool:
@@ -397,6 +409,13 @@ class SubmissionSerializer(HssiSerializer):
 	) -> RelatedItem:
 		identifier = self._validate_url(self._normalize_term(url, "identifier"))
 		item = RelatedItem.objects.filter(identifier=identifier).first()
+		if item is None and updating is not None:
+			identifier = _related_item_url(identifier)
+			candidates = RelatedItem.objects.filter(identifier__icontains=identifier.split("://", 1)[1])
+			item = next(
+				(c for c in candidates.order_by("pk") if _related_item_url(c.identifier) == identifier),
+				None,
+			)
 		if item:
 			if updating is not None and item.type != item_type and _only_linked_as(item, item_type, updating):
 				item.type = item_type

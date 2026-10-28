@@ -773,6 +773,60 @@ class RelatedItemRowTests(SharedRowTestCase):
 		item.refresh_from_db()
 		self.assertEqual(item.type, RelatedItemType.PUBLICATION)
 
+	def test_url_variants_bind_the_stored_item(self):
+		variants_by_stored_url = {
+			self.URL: [
+				"http://doi.org/10.5281/zenodo.1234567",
+				"https://doi.org/10.5281/zenodo.1234567/",
+				"https://dx.doi.org/10.5281/zenodo.1234567",
+				"https://doi.org/10.5281/ZENODO.1234567",
+			],
+			"http://dx.doi.org/10.5281/ZENODO.7654321/": ["https://doi.org/10.5281/zenodo.7654321"],
+			"https://example.com/Docs/": ["http://example.com/Docs"],
+		}
+		for stored_url, variants in variants_by_stored_url.items():
+			item = RelatedItem.objects.create(
+				name=stored_url, identifier=stored_url, type=RelatedItemType.PUBLICATION,
+			)
+			for variant in variants:
+				with self.subTest(stored=stored_url, sent=variant):
+					response = self._patch({"relatedPublications": [variant]})
+
+					self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+					self.assertEqual(list(self.software.related_publications.all()), [item])
+		self.assertEqual(RelatedItem.objects.count(), len(variants_by_stored_url))
+
+	def test_url_path_outside_doi_org_keeps_its_case(self):
+		item = RelatedItem.objects.create(
+			name="https://example.com/Docs", identifier="https://example.com/Docs",
+			type=RelatedItemType.PUBLICATION,
+		)
+
+		response = self._patch({"relatedPublications": ["https://example.com/docs"]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		linked = self.software.related_publications.get()
+		self.assertNotEqual(linked.pk, item.pk)
+		self.assertEqual(linked.identifier, "https://example.com/docs")
+
+	def test_new_item_stores_the_normalized_url(self):
+		response = self._patch({"relatedPublications": ["http://dx.doi.org/10.5281/ZENODO.42/"]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		linked = self.software.related_publications.get()
+		self.assertEqual(linked.identifier, "https://doi.org/10.5281/zenodo.42")
+
+	def test_submission_api_matches_urls_exactly(self):
+		item = self._item(RelatedItemType.PUBLICATION)
+		variant = "https://dx.doi.org/10.5281/zenodo.1234567"
+
+		response = self._post(relatedPublications=[variant])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		linked = Software.objects.get(software_name="Created via API").related_publications.get()
+		self.assertNotEqual(linked.pk, item.pk)
+		self.assertEqual(linked.identifier, variant)
+
 	def test_submission_api_does_not_retype(self):
 		item = self._item(RelatedItemType.SOFTWARE)
 

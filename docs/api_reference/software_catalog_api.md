@@ -138,11 +138,11 @@ endpoint returns. Selected fields (all omitted when empty):
 | `identifier` | `PropertyValue` list, including one pointing back at HSSI's own canonical URL for the record |
 | `keywords` | combined data sources, formats, phenomena, functionality, and free-text keywords, as `DefinedTerm`s |
 | `license`, `programmingLanguage`, `operatingSystem`, `processorRequirements` | environment/requirements metadata |
-| `funder`, `funding` | funder plus `MonetaryGrant` entries built from any recorded award |
+| `funding` | `MonetaryGrant` entries: one per recorded award, plus one holding only the funder for each software funder with no recorded award |
 | `publisher` | only included if it has a doi.org/ror.org/orcid.org/zenodo.org identifier |
 | `softwareVersion` / `version` | from the most recent `SoftwareVersion` by release date |
 | `mentions` | related instruments, observatories, publications, datasets, and related/interoperable software |
-| `subjectOf` | a `dcat:CatalogRecord` describing the HSSI metadata record itself — `@id` is this endpoint's own JSON-LD URL, `dateModified` is the record's last-modified date (or earliest submission date if never modified) |
+| `subjectOf` | a `dcat:CatalogRecord` describing the HSSI metadata record itself — `@id` is this endpoint's own JSON-LD URL, `dateModified` is the record's last-modified date (or newest submission date if never modified) |
 | `offers` | static `{"@type": "Offer", "price": 0, "priceCurrency": "USD"}` |
 
 ```bash

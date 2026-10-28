@@ -71,7 +71,8 @@ def submit_data(request: HttpRequest) -> HttpResponse:
 	return redirect(f"/submit/submitted/?uid={str(software.pk)}")
 
 def open_submission_issue(software: Software) -> None:
-	"""Open a "new submission" GitHub issue that names the software and shows no other submitted values."""
+	"""Open a "new submission" GitHub issue that names the software and shows no other submitted values.
+	Only the web form calls this; submissions through the submission API endpoints don't open issues."""
 	if not settings.HSSI_GITHUB_TOKEN:
 		return
 	github.open_issue(

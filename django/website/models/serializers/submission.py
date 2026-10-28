@@ -189,6 +189,10 @@ class SubmissionSerializer(HssiSerializer):
 		the sent split of the same full name. Full names compare by their
 		words, so only the split between given and family may differ.
 		"""
+		if "person_id" in data:
+			if updating is None:
+				raise serializers.ValidationError({"personId": "Only supported on PATCH authors."})
+			return self._get_selected_person(data)
 		if updating is not None and not self._strip_string(data.get("given_name")):
 			return self._get_blank_given_author(data, updating)
 		given_name = self._normalize_term(data.get("given_name"), "givenName")
@@ -234,6 +238,38 @@ class SubmissionSerializer(HssiSerializer):
 			given_name=given_name,
 			family_name=family_name,
 		)
+
+	def _get_selected_person(self, data: dict[str, Any]) -> Person:
+		"""Bind an explicitly selected PATCH author without name-based fallback."""
+		selector = data["person_id"]
+		if not isinstance(selector, str):
+			raise serializers.ValidationError({"personId": "Expected a non-empty UUID string."})
+		try:
+			person_id = serializers.UUIDField().run_validation(selector)
+		except serializers.ValidationError:
+			raise serializers.ValidationError({"personId": "Expected a non-empty UUID string."})
+		person = Person.objects.filter(pk=person_id).first()
+		if person is None:
+			raise serializers.ValidationError({"personId": "No Person exists with this UUID."})
+
+		given_name = self._strip_string(data.get("given_name")) or ""
+		if given_name or person.given_name:
+			given_name = self._normalize_term(given_name, "givenName")
+		family_name = self._normalize_term(data.get("family_name"), "familyName")
+		if person.fullName.split() != f"{given_name} {family_name}".split():
+			raise serializers.ValidationError({"personId": "Submitted full name must match the selected Person."})
+
+		identifier = self._validate_url(self._strip_string(data.get("identifier")))
+		if identifier:
+			if person.identifier and person.identifier != identifier:
+				raise serializers.ValidationError({"identifier": "Cannot replace the selected Person's identifier."})
+			if Person.objects.filter(identifier=identifier).exclude(pk=person.pk).exists():
+				raise serializers.ValidationError({"identifier": "Identifier belongs to another Person."})
+			person.identifier = identifier
+		person.given_name = given_name
+		person.family_name = family_name
+		person.save()
+		return person
 
 	def _get_blank_given_author(self, data: dict[str, Any], software: Software) -> Person:
 		"""Resolve an author sent without a given name to the one current

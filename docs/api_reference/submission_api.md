@@ -44,7 +44,7 @@ categories), `relatedRegion`, `relatedPhenomena`, `dataSources`, `keywords`
 `interoperableSoftware`, `funder`, `award`, `version`.
 
 - `submitter` is an array of `{"email": "...", "person": {"givenName": "...", "familyName": "..."}}`.
-- `authors` is an array of `{"givenName": "...", "familyName": "...", "identifier"?: "...", "affiliation"?: [{"name": "...", "identifier"?: "..."}]}`
+- `authors` is an array of `{"givenName": "...", "familyName": "...", "identifier"?: "...", "affiliation"?: [{"name": "...", "identifier"?: "..."}]}`. The `personId` selector described under PATCH is explicitly rejected on POST with `400`, even when empty or null.
   — note `affiliation` is itself an array of organization objects, not a string.
 - `version` is an object: `{"number": "...", "releaseDate"?: "...", "versionPid"?: "...", "description"?: "..."}`.
 - `award` is an array of `{"name": "...", "identifier"?: "...", "funder"?: {"name": "...", "identifier"?: "..."}}`. An award whose `identifier` (or, without one, `name`) matches an existing award reuses that record as it is, since other software may share it, so `funder` only applies to a new award. A PATCH can also fill in the funder of an existing award that has none, but never replaces one. A `name` over 128 characters is a `400`.
@@ -162,10 +162,15 @@ lookup rules as the read endpoints). Unknown/unpublished `{id}` →
   non-empty list replaces the whole set (it does not append).
 - Unrecognized keys are rejected individually:
   `400 {"<key>": "Unknown field."}`.
-- `authors` entries resolve to person records that other software may share. A person matched by `identifier` keeps its stored names (only empty ones are filled). On updates only, where "the same full name" means the same words, with the same capitalization and in the same order, however `givenName` and `familyName` split them:
+- `authors` entries resolve to person records that other software may share. Without `personId`, a person matched by `identifier` keeps its stored names (only empty ones are filled). On updates only, where "the same full name" means the same words, with the same capitalization and in the same order, however `givenName` and `familyName` split them:
   - An `identifier` that matches no person is attached to this record's current author with the same full name and no identifier, instead of creating a new person. Authors of other records, and authors with a different identifier, are never matched. If more than one current author has that full name and no identifier, it's a `400`.
   - A person resolved by `identifier` with the same full name takes the sent split (stored `Maria de` / `Souza`, sent `Maria` / `de Souza`), so one PATCH can attach an ORCID and correct the split together. A different full name is not applied.
   - An author sent with an empty or missing `givenName` resolves to this record's one current author stored without a given name under the same family name, so records with such authors stay patchable. That person is left as it is, apart from an `identifier` filling an empty one when no other person holds it. Any other blank given name is a `400`, and a person without a given name is never created.
+- **Optional `authors[].personId` (authenticated PATCH only)** selects an existing Person by UUID, including one associated only with other software. It takes precedence over name and identifier lookup and never falls back to another row or creates a Person. The rules above remain unchanged when it is omitted.
+  - The selector must be a non-empty UUID string naming an existing Person. Malformed, empty, null, non-string, and nonexistent selectors return `400` with a `personId` error.
+  - The submitted full name must match the selected row using the same comparison above; a different name returns `400`. A matching name may be re-split, even without an identifier. `familyName` must be non-empty; empty or missing `givenName` is accepted only when the selected row already has an empty given name and the family name matches.
+  - A supplied identifier must be a valid URL. It may fill an empty identifier or match the selected row's existing one. Replacing a different stored identifier or supplying one held by another Person returns `400`. Omitting the identifier preserves it; null or blank also leaves it unchanged.
+  - The caller must verify the selected person's identity. A name match alone does not enable automatic catalogue-wide ORCID attachment.
 
 **Side effects on success:** `dateModified` is updated to now, and if the
 record has submission history, the most recent entry's modification
@@ -176,6 +181,33 @@ description is stamped with the list of changed fields.
 ```json
 {"status": "ok", "softwareId": "<uuid>", "fieldsUpdated": ["developmentStatus"]}
 ```
+
+### Select and enrich an existing author in one PATCH
+
+For example, DKIST User Tools can add Thomas Robitaille by selecting his
+existing identifier-less Person row associated with SunPy and supplying his
+verified ORCID in the same request. Include this item in the **complete**
+`authors` array, along with every author to retain, in the intended order:
+
+```json
+{
+  "personId": "<existing Person UUID>",
+  "givenName": "Thomas",
+  "familyName": "Robitaille",
+  "identifier": "https://orcid.org/0000-0002-8642-1329"
+}
+```
+
+Replace the placeholder with the verified Person UUID. This binds that exact
+row, attaches the ORCID, and preserves its existing software associations.
+**Enrichment changes a shared Person row:** the identifier and any permitted
+name re-split are visible on every software using that Person. Existing
+affiliations remain; supplied affiliations are added as before. Author order
+and complete-list replacement semantics are unchanged.
+
+Binding and enrichment run within the existing atomic PATCH transaction.
+Any validation failure rolls back the entire request, including other fields,
+Person changes, affiliations, author links, and modification timestamps.
 
 ### Simple example — update a single field
 

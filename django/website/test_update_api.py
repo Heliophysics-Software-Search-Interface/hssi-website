@@ -421,6 +421,15 @@ class AwardRowTests(SharedRowTestCase):
 		award.refresh_from_db()
 		self.assertEqual(award.funder, other)
 
+	def test_award_name_over_128_characters_rejected(self):
+		awards = [{"name": "x" * 129, "identifier": "80NSSC21K0306"}]
+		for request in (lambda: self._patch({"award": awards}), lambda: self._post(award=awards)):
+			response = request()
+
+			self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+			self.assertIn("award.name", response.data)
+		self.assertFalse(Award.objects.exists())
+
 	def test_award_funder_must_be_an_object(self):
 		response = self._patch({"award": [
 			{"name": "HSR grant", "identifier": "80NSSC21K0306", "funder": "NASA"},

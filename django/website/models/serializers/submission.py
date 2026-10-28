@@ -368,11 +368,16 @@ class SubmissionSerializer(HssiSerializer):
 		if "publisher" in data and data["publisher"] is not None and not isinstance(data["publisher"], dict):
 			raise serializers.ValidationError({"publisher": "Expected an object."})
 
+		award_name_length = Award._meta.get_field("name").max_length
 		for award in data.get("award") or []:
 			if not isinstance(award, dict):
 				raise serializers.ValidationError({"award": "Expected an object."})
 			if award.get("funder") is not None and not isinstance(award["funder"], dict):
 				raise serializers.ValidationError({"award.funder": "Expected an object."})
+			if isinstance(award.get("name"), str) and len(award["name"].strip()) > award_name_length:
+				raise serializers.ValidationError(
+					{"award.name": f"Must be {award_name_length} characters or fewer."}
+				)
 
 		if "code_repository_url" in data:
 			self._validate_url(self._strip_string(data.get("code_repository_url")))

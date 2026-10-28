@@ -160,7 +160,7 @@ lookup rules as the read endpoints). Unknown/unpublished `{id}` →
   non-empty list replaces the whole set (it does not append).
 - Unrecognized keys are rejected individually:
   `400 {"<key>": "Unknown field."}`.
-- `authors` entries resolve to person records that other software may share. A person matched by `identifier` keeps its stored names (only empty ones are filled). On updates only, where "the same full name" means the same words in the same order however `givenName` and `familyName` split them:
+- `authors` entries resolve to person records that other software may share. A person matched by `identifier` keeps its stored names (only empty ones are filled). On updates only, where "the same full name" means the same words, with the same capitalization and in the same order, however `givenName` and `familyName` split them:
   - An `identifier` that matches no person is attached to this record's current author with the same full name and no identifier, instead of creating a new person. Authors of other records, and authors with a different identifier, are never matched.
   - A person resolved by `identifier` with the same full name takes the sent split (stored `Maria de` / `Souza`, sent `Maria` / `de Souza`), so one PATCH can attach an ORCID and correct the split together. A different full name is not applied.
 

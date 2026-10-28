@@ -304,7 +304,16 @@ class SubmissionSerializer(HssiSerializer):
 			return entry
 		return InstrumentObservatory.objects.create(name=name, type=instr_type)
 
-	def _get_or_create_award(self, data: dict[str, Any]) -> Award:
+	def _get_or_create_award(
+		self,
+		data: dict[str, Any],
+		updating: Software | None = None,
+	) -> Award:
+		"""Resolve an award payload to an Award row.
+
+		``updating`` is the Software being updated, if any. A create reuses an
+		existing award as it is, so only an update can give one a funder.
+		"""
 		name = self._normalize_term(data.get("name"), "name")
 		identifier = data.get("identifier")
 		if identifier:
@@ -314,6 +323,8 @@ class SubmissionSerializer(HssiSerializer):
 			award = Award.objects.filter(name__iexact=name).first()
 		if award is None:
 			award = Award(name=name, identifier=identifier or None)
+		elif updating is None:
+			return award
 		if data.get("funder") and award.funder_id is None:
 			award.funder = self._get_or_create_org(data["funder"])
 		award.save()
@@ -634,7 +645,7 @@ class SubmissionSerializer(HssiSerializer):
 
 		if "award" in data:
 			items = [
-				self._get_or_create_award(item)
+				self._get_or_create_award(item, updating=self.instance)
 				for item in (data["award"] or [])
 			]
 			software.award.set(items)

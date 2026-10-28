@@ -445,6 +445,23 @@ class AwardRowTests(SharedRowTestCase):
 		created = Software.objects.get(software_name="Created via API")
 		self.assertEqual(created.award.get().funder.identifier, self.NASA["identifier"])
 
+	def test_submission_api_leaves_existing_awards_unchanged(self):
+		by_number = Award.objects.create(name="HSR grant", identifier="80NSSC21K0306")
+		by_name = Award.objects.create(name="HTM grant")
+		self.software.award.set([by_number, by_name])
+
+		response = self._post(award=[
+			{"name": "HSR grant", "identifier": "80NSSC21K0306", "funder": self.NASA},
+			{"name": "htm grant", "funder": self.NASA},
+		])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		for award in (by_number, by_name):
+			award.refresh_from_db()
+			self.assertIsNone(award.funder)
+		created = Software.objects.get(software_name="Created via API")
+		self.assertEqual(set(created.award.all()), {by_number, by_name})
+
 
 class SoftwareListLookupTests(TestCase):
 	"""GET /api/list/software/ with an optional ?repo_url= filter."""

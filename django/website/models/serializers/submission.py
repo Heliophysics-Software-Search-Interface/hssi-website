@@ -98,10 +98,31 @@ _USER_LIST_FIELDS: tuple[str, ...] = (
 # Rows with no identifier, which is stored as either NULL or "".
 _UNIDENTIFIED = Q(identifier__isnull=True) | Q(identifier="")
 
+# Each relation from Software to RelatedItem, by its name on RelatedItem, with
+# the item type that relation implies.
+_RELATED_ITEM_RELATIONS: tuple[tuple[str, RelatedItemType], ...] = (
+	("softwares_published", RelatedItemType.PUBLICATION),
+	("softwares_referenced", RelatedItemType.PUBLICATION),
+	("softwares_data", RelatedItemType.DATASET),
+	("softwares_related", RelatedItemType.SOFTWARE),
+	("softwares_interoperable", RelatedItemType.SOFTWARE),
+)
+
 
 def _name_words(given_name: str, family_name: str) -> list[str]:
 	"""The words of a full name, ignoring case, hyphens and the given/family split."""
 	return f"{given_name} {family_name}".replace("-", " ").casefold().split()
+
+
+def _only_linked_as(item: RelatedItem, item_type: RelatedItemType, software: Software) -> bool:
+	"""Whether every link to ``item`` is one of ``software``'s relations of ``item_type``."""
+	for relation, relation_type in _RELATED_ITEM_RELATIONS:
+		linked = getattr(item, relation).all()
+		if relation_type == item_type:
+			linked = linked.exclude(pk=software.pk)
+		if linked.exists():
+			return False
+	return True
 
 
 class SubmissionSerializer(HssiSerializer):
@@ -368,10 +389,18 @@ class SubmissionSerializer(HssiSerializer):
 		award.save()
 		return award
 
-	def _get_or_create_related(self, url: str, item_type: RelatedItemType) -> RelatedItem:
+	def _get_or_create_related(
+		self,
+		url: str,
+		item_type: RelatedItemType,
+		updating: Software | None = None,
+	) -> RelatedItem:
 		identifier = self._validate_url(self._normalize_term(url, "identifier"))
 		item = RelatedItem.objects.filter(identifier=identifier).first()
 		if item:
+			if updating is not None and item.type != item_type and _only_linked_as(item, item_type, updating):
+				item.type = item_type
+				item.save()
 			return item
 		return RelatedItem.objects.create(
 			name=identifier,
@@ -543,7 +572,7 @@ class SubmissionSerializer(HssiSerializer):
 				software.reference_publication = None
 			else:
 				software.reference_publication = self._get_or_create_related(
-					reference, RelatedItemType.PUBLICATION
+					reference, RelatedItemType.PUBLICATION, updating
 				)
 
 		# Persist scalars and FKs before touching M2M relations — a new
@@ -654,28 +683,28 @@ class SubmissionSerializer(HssiSerializer):
 
 		if "related_publications" in data:
 			items = [
-				self._get_or_create_related(url, RelatedItemType.PUBLICATION)
+				self._get_or_create_related(url, RelatedItemType.PUBLICATION, updating)
 				for url in (data["related_publications"] or [])
 			]
 			software.related_publications.set(items)
 
 		if "related_datasets" in data:
 			items = [
-				self._get_or_create_related(url, RelatedItemType.DATASET)
+				self._get_or_create_related(url, RelatedItemType.DATASET, updating)
 				for url in (data["related_datasets"] or [])
 			]
 			software.related_datasets.set(items)
 
 		if "related_software" in data:
 			items = [
-				self._get_or_create_related(url, RelatedItemType.SOFTWARE)
+				self._get_or_create_related(url, RelatedItemType.SOFTWARE, updating)
 				for url in (data["related_software"] or [])
 			]
 			software.related_software.set(items)
 
 		if "interoperable_software" in data:
 			items = [
-				self._get_or_create_related(url, RelatedItemType.SOFTWARE)
+				self._get_or_create_related(url, RelatedItemType.SOFTWARE, updating)
 				for url in (data["interoperable_software"] or [])
 			]
 			software.interoperable_software.set(items)

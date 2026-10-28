@@ -21,6 +21,8 @@ from .models import (
 	License,
 	Organization,
 	Person,
+	RelatedItem,
+	RelatedItemType,
 	RepoStatus,
 	Software,
 	SoftwareEditQueue,
@@ -721,6 +723,64 @@ class AwardRowTests(SharedRowTestCase):
 			self.assertIsNone(award.funder)
 		created = Software.objects.get(software_name="Created via API")
 		self.assertEqual(set(created.award.all()), {by_number, by_name})
+
+
+class RelatedItemRowTests(SharedRowTestCase):
+	"""How publication, dataset and software links resolve to RelatedItem rows."""
+
+	URL = "https://doi.org/10.5281/zenodo.1234567"
+
+	def _item(self, item_type: RelatedItemType) -> RelatedItem:
+		return RelatedItem.objects.create(name=self.URL, identifier=self.URL, type=item_type)
+
+	def test_item_linked_only_here_takes_the_fields_type(self):
+		item = self._item(RelatedItemType.PUBLICATION)
+		self.software.related_datasets.set([item])
+
+		response = self._patch({"relatedDatasets": [self.URL]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		item.refresh_from_db()
+		self.assertEqual(item.type, RelatedItemType.DATASET)
+
+	def test_unlinked_item_takes_the_fields_type(self):
+		item = self._item(RelatedItemType.SOFTWARE)
+
+		response = self._patch({"relatedPublications": [self.URL]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		item.refresh_from_db()
+		self.assertEqual(item.type, RelatedItemType.PUBLICATION)
+		self.assertEqual(list(self.software.related_publications.all()), [item])
+
+	def test_item_linked_by_another_record_keeps_its_type(self):
+		item = self._item(RelatedItemType.PUBLICATION)
+		Software.objects.create(software_name="Other").related_publications.set([item])
+
+		response = self._patch({"relatedDatasets": [self.URL]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		item.refresh_from_db()
+		self.assertEqual(item.type, RelatedItemType.PUBLICATION)
+
+	def test_item_this_record_links_as_another_type_keeps_its_type(self):
+		item = self._item(RelatedItemType.PUBLICATION)
+		self.software.related_publications.set([item])
+
+		response = self._patch({"relatedDatasets": [self.URL]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		item.refresh_from_db()
+		self.assertEqual(item.type, RelatedItemType.PUBLICATION)
+
+	def test_submission_api_does_not_retype(self):
+		item = self._item(RelatedItemType.SOFTWARE)
+
+		response = self._post(relatedPublications=[self.URL])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		item.refresh_from_db()
+		self.assertEqual(item.type, RelatedItemType.SOFTWARE)
 
 
 class SoftwareListLookupTests(TestCase):

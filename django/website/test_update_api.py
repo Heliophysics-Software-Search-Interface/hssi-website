@@ -15,8 +15,10 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from .models import (
+	Award,
 	Keyword,
 	License,
+	Organization,
 	Person,
 	RepoStatus,
 	Software,
@@ -179,11 +181,12 @@ class SoftwarePartialUpdateTokenUnsetTests(TestCase):
 
 @override_settings(HSSI_UPDATE_TOKEN=UPDATE_TOKEN)
 class SoftwarePartialUpdateSharedRowTests(TestCase):
-	"""Rules for the Person rows that authors resolve to, which other
-	software entries may share."""
+	"""Rules for the Person and Award rows that authors and awards resolve
+	to, which other software entries may share."""
 
 	ORCID = "https://orcid.org/0000-0000-0000-0001"
 	OTHER_ORCID = "https://orcid.org/0000-0000-0000-0002"
+	NASA = {"name": "NASA", "identifier": "https://ror.org/027ka1x80"}
 
 	@classmethod
 	def setUpTestData(cls):
@@ -203,6 +206,16 @@ class SoftwarePartialUpdateSharedRowTests(TestCase):
 			format="json",
 			HTTP_AUTHORIZATION=f"Bearer {UPDATE_TOKEN}",
 		)
+
+	def _post(self, **fields):
+		return self.client.post("/api/submission/", data=[{
+			"submitter": [{"email": "ada@example.com", "person": {"givenName": "Ada", "familyName": "Lovelace"}}],
+			"softwareName": "Created via API",
+			"codeRepositoryUrl": "https://github.com/example/created",
+			"authors": [{"givenName": "Ada", "familyName": "Lovelace"}],
+			"description": "A description.",
+			**fields,
+		}], format="json")
 
 	# Identifier attached to an existing author -------------------------------
 
@@ -268,6 +281,57 @@ class SoftwarePartialUpdateSharedRowTests(TestCase):
 		author = self.software.authors.get()
 		self.assertNotEqual(author.pk, namesake.pk)
 		self.assertEqual(author.identifier, self.ORCID)
+
+	# Award funder ------------------------------------------------------------
+
+	def test_award_funder_set_on_new_award(self):
+		response = self._patch({"award": [
+			{"name": "HSR grant", "identifier": "80NSSC21K0306", "funder": self.NASA},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		award = self.software.award.get()
+		self.assertEqual(award.identifier, "80NSSC21K0306")
+		self.assertEqual(award.funder.identifier, self.NASA["identifier"])
+
+	def test_award_funder_fills_existing_award_without_one(self):
+		award = Award.objects.create(name="HSR grant", identifier="80NSSC21K0306")
+
+		response = self._patch({"award": [
+			{"name": "HSR grant", "identifier": "80NSSC21K0306", "funder": self.NASA},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		award.refresh_from_db()
+		self.assertEqual(award.funder.identifier, self.NASA["identifier"])
+		self.assertEqual(list(self.software.award.all()), [award])
+
+	def test_award_funder_never_replaces_a_different_funder(self):
+		other = Organization.objects.create(name="Other Agency")
+		award = Award.objects.create(name="HSR grant", identifier="80NSSC21K0306", funder=other)
+
+		response = self._patch({"award": [
+			{"name": "HSR grant", "identifier": "80NSSC21K0306", "funder": self.NASA},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		award.refresh_from_db()
+		self.assertEqual(award.funder, other)
+
+	def test_award_funder_must_be_an_object(self):
+		response = self._patch({"award": [
+			{"name": "HSR grant", "identifier": "80NSSC21K0306", "funder": "NASA"},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("award.funder", response.data)
+
+	def test_submission_api_accepts_award_funder(self):
+		response = self._post(award=[{"name": "HSR grant", "funder": self.NASA}])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		created = Software.objects.get(software_name="Created via API")
+		self.assertEqual(created.award.get().funder.identifier, self.NASA["identifier"])
 
 
 class SoftwareListLookupTests(TestCase):

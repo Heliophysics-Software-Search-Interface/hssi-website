@@ -278,13 +278,14 @@ class SubmissionSerializer(HssiSerializer):
 		if identifier:
 			identifier = self._normalize_term(identifier, "identifier")
 			award = Award.objects.filter(identifier=identifier).first()
-			if award:
-				return award
-			return Award.objects.create(name=name, identifier=identifier)
-		award = Award.objects.filter(name__iexact=name).first()
-		if award:
-			return award
-		return Award.objects.create(name=name)
+		else:
+			award = Award.objects.filter(name__iexact=name).first()
+		if award is None:
+			award = Award(name=name, identifier=identifier or None)
+		if data.get("funder") and award.funder_id is None:
+			award.funder = self._get_or_create_org(data["funder"])
+		award.save()
+		return award
 
 	def _get_or_create_related(self, url: str, item_type: RelatedItemType) -> RelatedItem:
 		identifier = self._validate_url(self._normalize_term(url, "identifier"))
@@ -334,6 +335,12 @@ class SubmissionSerializer(HssiSerializer):
 
 		if "publisher" in data and data["publisher"] is not None and not isinstance(data["publisher"], dict):
 			raise serializers.ValidationError({"publisher": "Expected an object."})
+
+		for award in data.get("award") or []:
+			if not isinstance(award, dict):
+				raise serializers.ValidationError({"award": "Expected an object."})
+			if award.get("funder") is not None and not isinstance(award["funder"], dict):
+				raise serializers.ValidationError({"award.funder": "Expected an object."})
 
 		if "code_repository_url" in data:
 			self._validate_url(self._strip_string(data.get("code_repository_url")))

@@ -308,14 +308,12 @@ class SubmissionIssueTests(TestCase):
 			)
 		self.assertEqual(response.status_code, 302)
 
-	def test_form_submission_opens_an_issue_without_submitter_details(self, open_issue):
+	def test_form_submission_opens_an_issue_that_shows_only_the_software_name(self, open_issue):
 		self._submit()
 
 		title, body, label = open_issue.call_args.args
 		self.assertEqual(title, "New submission: Submitted")
-		self.assertIn('"codeRepositoryUrl": "https://github.com/example/submitted"', body)
-		self.assertNotIn("ada@example.com", body)
-		self.assertNotIn("Lovelace", body)
+		self.assertEqual(body, "Submitted through the HSSI submission form. Someone should go review it now.")
 		self.assertEqual(label, "new submission")
 
 	def test_github_failure_does_not_fail_the_submission(self, open_issue):

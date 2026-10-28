@@ -10,16 +10,12 @@ from django.http import (
 	JsonResponse, HttpResponseRedirect, HttpResponseServerError,
 )
 
-from hssi.camel_case_renderer import CamelCaseJSONRenderer
-
 from ..forms import (
 	SUBMISSION_FORM_FIELDS_1,
 	SUBMISSION_FORM_FIELDS_2,
 	SUBMISSION_FORM_FIELDS_3
 )
 from ..models import *
-from ..models.serializers.software import SoftwareSerializer
-from ..models.serializers.util import SerialView
 from ..forms.names import *
 from ..util import *
 from ..data_parser import handle_submission_data
@@ -75,18 +71,11 @@ def submit_data(request: HttpRequest) -> HttpResponse:
 	return redirect(f"/submit/submitted/?uid={str(software.pk)}")
 
 def open_submission_issue(software: Software) -> None:
-	"""Open a "new submission" GitHub issue listing the software's metadata, which has no submitter details."""
+	"""Open a "new submission" GitHub issue that names the software and shows no other submitted values."""
 	if not settings.HSSI_GITHUB_TOKEN:
 		return
-	serializer = SoftwareSerializer(software)
-	serializer._view = SerialView.USER
-	metadata = CamelCaseJSONRenderer().render(serializer.data, renderer_context={"indent": 2}).decode()
-	metadata = metadata[:60000]  # GitHub rejects issue bodies over 65,536 characters
 	github.open_issue(
 		f"New submission: {software.software_name}",
-		"Submitted through the HSSI submission form. If we accept it, run the HSSI Metadata "
-		"Updater agent on it to fill in and check its metadata.\n\n"
-		"<details><summary>Submitted metadata</summary>\n\n"
-		f"```json\n{metadata}\n```\n\n</details>",
+		"Submitted through the HSSI submission form. Someone should go review it now.",
 		"new submission",
 	)

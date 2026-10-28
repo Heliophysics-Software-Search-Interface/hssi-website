@@ -252,6 +252,20 @@ class PersonRowTests(SharedRowTestCase):
 		self.assertEqual(list(self.software.authors.all()), [person])
 		self.assertEqual(Person.objects.count(), people_before)
 
+	def test_identifier_attaches_ignoring_case(self):
+		person = Person.objects.create(given_name="Darren de", family_name="Zeeuw", identifier="")
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Darren", "familyName": "De Zeeuw", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.identifier, self.ORCID)
+		self.assertEqual((person.given_name, person.family_name), ("Darren", "De Zeeuw"))
+		self.assertEqual(list(self.software.authors.all()), [person])
+
 	def test_identifier_never_replaces_a_different_identifier(self):
 		person = Person.objects.create(given_name="Ann", family_name="Lee", identifier=self.OTHER_ORCID)
 		self.software.authors.set([person])
@@ -320,6 +334,29 @@ class PersonRowTests(SharedRowTestCase):
 		person.refresh_from_db()
 		self.assertEqual((person.given_name, person.family_name), ("Maria", "de Souza"))
 		self.assertEqual(list(self.software.authors.all()), [person])
+
+	def test_same_full_name_ignores_case_and_hyphens(self):
+		renames = [
+			(("Darren de", "Zeeuw"), ("Darren", "De Zeeuw"), "https://orcid.org/0000-0000-0000-0011"),
+			(("Ana Pires De", "Lima"), ("Ana", "Pires de Lima"), "https://orcid.org/0000-0000-0000-0012"),
+			(("Lea", "Barrous Dume"), ("Lea", "Barrous-Dume"), "https://orcid.org/0000-0000-0000-0013"),
+		]
+		people = [
+			Person.objects.create(given_name=given, family_name=family, identifier=orcid)
+			for (given, family), _, orcid in renames
+		]
+		Software.objects.create(software_name="Other").authors.set(people)
+		self.software.authors.set(people)
+
+		response = self._patch({"authors": [
+			{"givenName": given, "familyName": family, "identifier": orcid}
+			for _, (given, family), orcid in renames
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		for person, (_, sent, _) in zip(people, renames):
+			person.refresh_from_db()
+			self.assertEqual((person.given_name, person.family_name), sent)
 
 	def test_unidentified_author_takes_identifier_and_resplit_together(self):
 		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier="")

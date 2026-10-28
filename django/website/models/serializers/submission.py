@@ -95,6 +95,11 @@ _USER_LIST_FIELDS: tuple[str, ...] = (
 )
 
 
+def _name_words(given_name: str, family_name: str) -> list[str]:
+	"""The words of a full name, ignoring case, hyphens and the given/family split."""
+	return f"{given_name} {family_name}".replace("-", " ").casefold().split()
+
+
 class SubmissionSerializer(HssiSerializer):
 	"""Serializer and parser for submission data."""
 
@@ -186,8 +191,8 @@ class SubmissionSerializer(HssiSerializer):
 		``_get_blank_given_author``, an identifier that matches no Person
 		attach to the one unidentified current author of that software with
 		the same full name (several are a 400), and the resolved Person take
-		the sent split of the same full name. Full names compare by their
-		words, so only the split between given and family may differ.
+		the sent names when they spell the same full name, as ``_name_words``
+		compares them.
 		"""
 		if updating is not None and not self._strip_string(data.get("given_name")):
 			return self._get_blank_given_author(data, updating)
@@ -196,11 +201,11 @@ class SubmissionSerializer(HssiSerializer):
 		identifier = data.get("identifier")
 		if identifier:
 			identifier = self._validate_url(self._strip_string(identifier))
-			name_words = f"{given_name} {family_name}".split()
+			name_words = _name_words(given_name, family_name)
 			person = Person.objects.filter(identifier=identifier).first()
 			if person is None and updating is not None:
 				unidentified = updating.authors.filter(Q(identifier__isnull=True) | Q(identifier=""))
-				matches = [p for p in unidentified if p.fullName.split() == name_words]
+				matches = [p for p in unidentified if _name_words(p.given_name, p.family_name) == name_words]
 				if len(matches) > 1:
 					raise serializers.ValidationError({
 						"identifier": f"Several current authors named '{given_name} {family_name}' "
@@ -209,7 +214,7 @@ class SubmissionSerializer(HssiSerializer):
 				person = matches[0] if matches else None
 			if person:
 				person.identifier = identifier
-				if updating is not None and person.fullName.split() == name_words:
+				if updating is not None and _name_words(person.given_name, person.family_name) == name_words:
 					person.given_name = given_name
 					person.family_name = family_name
 				if not person.given_name:
@@ -242,10 +247,10 @@ class SubmissionSerializer(HssiSerializer):
 		The row is returned unchanged, except that an identifier no Person
 		holds fills an empty one. No blank-given Person is ever created.
 		"""
-		family_words = self._normalize_term(data.get("family_name"), "familyName").split()
+		family_words = _name_words("", self._normalize_term(data.get("family_name"), "familyName"))
 		matches = [
 			author for author in software.authors.filter(given_name="")
-			if author.family_name.split() == family_words
+			if _name_words("", author.family_name) == family_words
 		]
 		if len(matches) != 1:
 			raise serializers.ValidationError({

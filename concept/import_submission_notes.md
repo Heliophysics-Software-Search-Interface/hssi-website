@@ -61,6 +61,7 @@ valid, and will not be accepted.
 	"codeRepositoryUrl": "https://repo.example.org/example",
 	```
 * `authors` *required* - array of [`Person`](#person) objects
+	* each person must be listed only once; two entries with the same `identifier`, or without one the same `givenName` and `familyName`, are rejected
 	```
 	"authors": [
 		{
@@ -383,7 +384,9 @@ submission fields
 
 ### Instrument
 
-References `InstrumentObservatory` table in database, hard match on `identifier`
+References `InstrumentObservatory` table in database, hard match on `identifier`.
+An `identifier` that matches an entry of the other type (an observatory in
+`relatedInstruments`, or an instrument in `relatedObservatories`) is rejected.
 
 #### Subfields
 * `name` *required* - text

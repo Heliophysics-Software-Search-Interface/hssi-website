@@ -45,7 +45,7 @@ categories), `relatedRegion`, `relatedPhenomena`, `dataSources`, `keywords`
 
 - `submitter` is an array of `{"email": "...", "person": {"givenName": "...", "familyName": "..."}}`.
 - `authors` is an array of `{"givenName": "...", "familyName": "...", "identifier"?: "...", "affiliation"?: [{"name": "...", "identifier"?: "..."}]}`
-  — note `affiliation` is itself an array of organization objects, not a string.
+  — note `affiliation` is itself an array of organization objects, not a string. Listing the same person twice, by the same `identifier` or the same name, is a `400`.
 - `version` is an object: `{"number": "...", "releaseDate"?: "...", "versionPid"?: "...", "description"?: "..."}`.
 - `award` is an array of `{"name": "...", "identifier"?: "...", "funder"?: {"name": "...", "identifier"?: "..."}}`. An award whose `identifier` (or, without one, `name`) matches an existing award reuses that record as it is, since other software may share it, so `funder` only applies to a new award. A PATCH can also fill in the funder of an existing award that has none, but never replaces one. A `name` over 128 characters is a `400`.
 - Any field expecting a URL is validated as one; an invalid URL is a `400`.

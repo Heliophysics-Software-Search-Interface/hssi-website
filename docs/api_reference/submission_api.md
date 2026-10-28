@@ -166,7 +166,9 @@ lookup rules as the read endpoints). Unknown/unpublished `{id}` →
 **Shared records:** the people, organizations, awards, related items, instruments and observatories that a record links to may be linked by other records too. Matching works as for `POST /api/submission/` above, which never changes an existing record beyond filling in an empty name. PATCH can also repair them, within these guards:
 - **Authors.** Two people have the same full name when their given and family names hold the same words in the same order, ignoring capitalization and hyphens.
   - An `identifier` that matches no person is attached to this record's current author with the same full name and no identifier, instead of creating a new person. Authors of other records, and authors with a different identifier, are never matched. If more than one current author has that full name and no identifier, it's a `400`.
-  - A person resolved by `identifier` with the same full name takes the sent names (stored `Maria de` / `Souza`, sent `Maria` / `De Souza`), so one PATCH can attach an ORCID and correct the split together. Other name changes are ignored, apart from filling in an empty name.
+  - A person resolved by `identifier` with the same full name takes the sent names (stored `Maria de` / `Souza`, sent `Maria` / `De Souza`), so one PATCH can attach an ORCID and correct the split together.
+  - A person resolved by `identifier` whom no other record lists as an author, and who is neither a submitter nor a curator, takes any sent names, so a typo or a GitHub handle can be corrected.
+  - Other name changes are ignored, apart from filling in an empty name.
   - An author sent with an empty or missing `givenName` resolves to this record's one current author stored without a given name under the same family name, so records with such authors stay patchable. That person is left as it is, apart from an `identifier` filling an empty one when no other person holds it. Any other blank given name is a `400`, and a person without a given name is never created.
 
 **Side effects on success:** `dateModified` is updated to now, and if the

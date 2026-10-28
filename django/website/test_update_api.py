@@ -16,6 +16,7 @@ from rest_framework.test import APIClient
 
 from .models import (
 	Award,
+	Curator,
 	Keyword,
 	License,
 	Organization,
@@ -25,6 +26,7 @@ from .models import (
 	SoftwareEditQueue,
 	SoftwareVersion,
 	SubmissionInfo,
+	Submitter,
 	VerifiedSoftware,
 )
 
@@ -373,6 +375,7 @@ class PersonRowTests(SharedRowTestCase):
 
 	def test_identified_author_keeps_names_when_full_name_differs(self):
 		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
+		Software.objects.create(software_name="Other").authors.set([person])
 		self.software.authors.set([person])
 
 		response = self._patch({"authors": [
@@ -382,6 +385,36 @@ class PersonRowTests(SharedRowTestCase):
 		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 		person.refresh_from_db()
 		self.assertEqual((person.given_name, person.family_name), ("Maria de", "Souza"))
+
+	def test_exclusive_identified_author_takes_a_rename(self):
+		person = Person.objects.create(given_name="Petr", family_name="Shumate", identifier=self.ORCID)
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Peter", "familyName": "Shumate", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Peter", "Shumate"))
+
+	def test_identified_author_keeps_names_while_a_submitter_or_curator(self):
+		submitter = Person.objects.create(given_name="Petr", family_name="Shumate", identifier=self.ORCID)
+		Submitter.objects.create(email="petr@example.com", person=submitter)
+		curator = Person.objects.create(given_name="Ann", family_name="Le", identifier=self.OTHER_ORCID)
+		Curator.objects.create(email="ann@example.com", person=curator)
+		self.software.authors.set([submitter, curator])
+
+		response = self._patch({"authors": [
+			{"givenName": "Peter", "familyName": "Shumate", "identifier": self.ORCID},
+			{"givenName": "Ann", "familyName": "Lee", "identifier": self.OTHER_ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		submitter.refresh_from_db()
+		curator.refresh_from_db()
+		self.assertEqual((submitter.given_name, submitter.family_name), ("Petr", "Shumate"))
+		self.assertEqual((curator.given_name, curator.family_name), ("Ann", "Le"))
 
 	def test_blank_given_name_resolves_to_that_current_author(self):
 		tiger = Person.objects.create(given_name="", family_name="Tiger")

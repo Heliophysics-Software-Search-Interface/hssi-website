@@ -191,8 +191,9 @@ class SubmissionSerializer(HssiSerializer):
 		``_get_blank_given_author``, an identifier that matches no Person
 		attach to the one unidentified current author of that software with
 		the same full name (several are a 400), and the resolved Person take
-		the sent names when they spell the same full name, as ``_name_words``
-		compares them.
+		the sent names when they spell the same full name (as ``_name_words``
+		compares them) or when no other software, submitter or curator uses
+		that Person.
 		"""
 		if updating is not None and not self._strip_string(data.get("given_name")):
 			return self._get_blank_given_author(data, updating)
@@ -214,7 +215,10 @@ class SubmissionSerializer(HssiSerializer):
 				person = matches[0] if matches else None
 			if person:
 				person.identifier = identifier
-				if updating is not None and _name_words(person.given_name, person.family_name) == name_words:
+				if updating is not None and (
+					_name_words(person.given_name, person.family_name) == name_words
+					or person.is_exclusive_to(updating)
+				):
 					person.given_name = given_name
 					person.family_name = family_name
 				if not person.given_name:

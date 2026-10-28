@@ -182,11 +182,15 @@ class SubmissionSerializer(HssiSerializer):
 		"""Resolve a person payload to a Person row.
 
 		``updating`` is the Software being updated, if any. Only then does an
-		identifier that matches no Person attach to an unidentified current
-		author of that software with the same full name, and the resolved
-		Person take the sent split of the same full name. Full names compare
-		by their words, so only the split between given and family may differ.
+		author sent without a given name resolve through
+		``_get_blank_given_author``, an identifier that matches no Person
+		attach to an unidentified current author of that software with the
+		same full name, and the resolved Person take the sent split of the
+		same full name. Full names compare by their words, so only the split
+		between given and family may differ.
 		"""
+		if updating is not None and not self._strip_string(data.get("given_name")):
+			return self._get_blank_given_author(data, updating)
 		given_name = self._normalize_term(data.get("given_name"), "givenName")
 		family_name = self._normalize_term(data.get("family_name"), "familyName")
 		identifier = data.get("identifier")
@@ -224,6 +228,30 @@ class SubmissionSerializer(HssiSerializer):
 			given_name=given_name,
 			family_name=family_name,
 		)
+
+	def _get_blank_given_author(self, data: dict[str, Any], software: Software) -> Person:
+		"""Resolve an author sent without a given name to the one current
+		author of ``software`` stored without one under the same family name.
+
+		The row is returned unchanged, except that an identifier no Person
+		holds fills an empty one. No blank-given Person is ever created.
+		"""
+		family_words = self._normalize_term(data.get("family_name"), "familyName").split()
+		matches = [
+			author for author in software.authors.filter(given_name="")
+			if author.family_name.split() == family_words
+		]
+		if len(matches) != 1:
+			raise serializers.ValidationError({
+				"givenName": "Value cannot be empty unless exactly one current author "
+				"has an empty given name and this family name.",
+			})
+		person = matches[0]
+		identifier = self._validate_url(self._strip_string(data.get("identifier")))
+		if identifier and not person.identifier and not Person.objects.filter(identifier=identifier).exists():
+			person.identifier = identifier
+			person.save()
+		return person
 
 	def _get_or_create_org(self, data: dict[str, Any]) -> Organization:
 		name = self._normalize_term(data.get("name"), "name")

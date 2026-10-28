@@ -321,6 +321,57 @@ class PersonRowTests(SharedRowTestCase):
 		person.refresh_from_db()
 		self.assertEqual((person.given_name, person.family_name), ("Maria de", "Souza"))
 
+	def test_blank_given_name_resolves_to_that_current_author(self):
+		tiger = Person.objects.create(given_name="", family_name="Tiger")
+		self.software.authors.set([tiger])
+
+		response = self._patch({"authors": [
+			{"givenName": "", "familyName": "Tiger"},
+			{"givenName": "Ann", "familyName": "Lee"},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		names = [(p.pk == tiger.pk, p.family_name) for p in self.software.authors.all()]
+		self.assertEqual(names, [(True, "Tiger"), (False, "Lee")])
+
+	def test_blank_given_name_fills_an_unheld_identifier(self):
+		tiger = Person.objects.create(given_name="", family_name="Tiger")
+		lion = Person.objects.create(given_name="", family_name="Lion")
+		Person.objects.create(given_name="Ann", family_name="Lee", identifier=self.OTHER_ORCID)
+		self.software.authors.set([tiger, lion])
+
+		response = self._patch({"authors": [
+			{"familyName": "Tiger", "identifier": self.ORCID},
+			{"familyName": "Lion", "identifier": self.OTHER_ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		tiger.refresh_from_db()
+		lion.refresh_from_db()
+		self.assertEqual(tiger.identifier, self.ORCID)
+		self.assertIsNone(lion.identifier)
+
+	def test_blank_given_name_rejected_unless_one_current_author_matches(self):
+		Person.objects.create(given_name="", family_name="Tiger")
+		twins = [Person.objects.create(given_name="", family_name="Lion") for _ in range(2)]
+		self.software.authors.set(twins)
+		people_before = Person.objects.count()
+
+		for family in ("Tiger", "Lion"):
+			with self.subTest(family=family):
+				response = self._patch({"authors": [{"givenName": "", "familyName": family}]})
+
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+				self.assertIn("givenName", response.data)
+		self.assertEqual(Person.objects.count(), people_before)
+		self.assertEqual(list(self.software.authors.all()), twins)
+
+	def test_submission_api_rejects_blank_given_name(self):
+		response = self._post(authors=[{"givenName": "", "familyName": "Tiger"}])
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("givenName", response.data)
+
 	def test_submission_api_does_not_resplit(self):
 		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
 

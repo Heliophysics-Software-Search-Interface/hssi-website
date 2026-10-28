@@ -360,6 +360,8 @@ class SubmissionSerializer(HssiSerializer):
 			award = Award(name=name, identifier=identifier or None)
 		elif updating is None:
 			return award
+		elif award.name != name and (not award.name or award.is_exclusive_to(updating)):
+			award.name = name
 		if data.get("funder") and award.funder_id is None:
 			scope = updating.funder.all() if updating is not None else None
 			award.funder = self._get_or_create_org(data["funder"], scope)

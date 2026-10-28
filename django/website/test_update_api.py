@@ -631,6 +631,41 @@ class AwardRowTests(SharedRowTestCase):
 		award.refresh_from_db()
 		self.assertEqual(award.funder, other)
 
+	def test_exclusive_award_takes_the_sent_name(self):
+		award = Award.objects.create(name="Grant", identifier="80NSSC21K0306")
+		self.software.award.set([award])
+
+		response = self._patch({"award": [{"name": "HSR grant", "identifier": "80NSSC21K0306"}]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		award.refresh_from_db()
+		self.assertEqual(award.name, "HSR grant")
+
+	def test_shared_award_keeps_its_name_unless_empty(self):
+		titled = Award.objects.create(name="Grant", identifier="80NSSC21K0306")
+		untitled = Award.objects.create(name="", identifier="24-HTM24-0022")
+		Software.objects.create(software_name="Other").award.set([titled, untitled])
+		self.software.award.set([titled, untitled])
+
+		response = self._patch({"award": [
+			{"name": "HSR grant", "identifier": "80NSSC21K0306"},
+			{"name": "HTM grant", "identifier": "24-HTM24-0022"},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		titled.refresh_from_db()
+		untitled.refresh_from_db()
+		self.assertEqual((titled.name, untitled.name), ("Grant", "HTM grant"))
+
+	def test_submission_api_does_not_rename_awards(self):
+		award = Award.objects.create(name="Grant", identifier="80NSSC21K0306")
+
+		response = self._post(award=[{"name": "HSR grant", "identifier": "80NSSC21K0306"}])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		award.refresh_from_db()
+		self.assertEqual(award.name, "Grant")
+
 	def test_award_name_over_128_characters_rejected(self):
 		awards = [{"name": "x" * 129, "identifier": "80NSSC21K0306"}]
 		for request in (lambda: self._patch({"award": awards}), lambda: self._post(award=awards)):

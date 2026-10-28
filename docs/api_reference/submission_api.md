@@ -170,6 +170,7 @@ lookup rules as the read endpoints). Unknown/unpublished `{id}` →
   - A person resolved by `identifier` whom no other record lists as an author, and who is neither a submitter nor a curator, takes any sent names, so a typo or a GitHub handle can be corrected.
   - Other name changes are ignored, apart from filling in an empty name.
   - An author sent with an empty or missing `givenName` resolves to this record's one current author stored without a given name under the same family name, so records with such authors stay patchable. That person is left as it is, apart from an `identifier` filling an empty one when no other person holds it. Any other blank given name is a `400`, and a person without a given name is never created.
+- **Organizations** (an author's `affiliation`, `funder`, `publisher`, and an award's `funder`). An `identifier` that matches no organization is attached to the one organization already linked where it's sent that has the same name (ignoring capitalization) and no identifier: that author's affiliations, this record's funders (also for an award's funder), or this record's publisher. With none, or more than one, a new organization is created as before. Organization names are never changed.
 
 **Side effects on success:** `dateModified` is updated to now, and if the
 record has submission history, the most recent entry's modification

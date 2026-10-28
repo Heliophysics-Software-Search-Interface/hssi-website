@@ -5,7 +5,7 @@ from typing import Any
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from rest_framework import serializers
@@ -93,6 +93,10 @@ _USER_LIST_FIELDS: tuple[str, ...] = (
 	"funder",
 	"award",
 )
+
+
+# Rows with no identifier, which is stored as either NULL or "".
+_UNIDENTIFIED = Q(identifier__isnull=True) | Q(identifier="")
 
 
 def _name_words(given_name: str, family_name: str) -> list[str]:
@@ -205,7 +209,7 @@ class SubmissionSerializer(HssiSerializer):
 			name_words = _name_words(given_name, family_name)
 			person = Person.objects.filter(identifier=identifier).first()
 			if person is None and updating is not None:
-				unidentified = updating.authors.filter(Q(identifier__isnull=True) | Q(identifier=""))
+				unidentified = updating.authors.filter(_UNIDENTIFIED)
 				matches = [p for p in unidentified if _name_words(p.given_name, p.family_name) == name_words]
 				if len(matches) > 1:
 					raise serializers.ValidationError({
@@ -268,12 +272,28 @@ class SubmissionSerializer(HssiSerializer):
 			person.save()
 		return person
 
-	def _get_or_create_org(self, data: dict[str, Any]) -> Organization:
+	def _get_or_create_org(
+		self,
+		data: dict[str, Any],
+		scope: QuerySet[Organization] | None = None,
+	) -> Organization:
+		"""Resolve an organization payload to an Organization row.
+
+		``scope`` holds the organizations already linked where this one is
+		sent, given only when updating. An identifier that matches no
+		Organization fills the one row in ``scope`` with the same name and no
+		identifier, if there is exactly one.
+		"""
 		name = self._normalize_term(data.get("name"), "name")
 		identifier = data.get("identifier")
 		if identifier:
 			identifier = self._validate_url(self._strip_string(identifier))
 			org = Organization.objects.filter(identifier=identifier).first()
+			if org is None and scope is not None:
+				candidates = list(scope.filter(_UNIDENTIFIED, name__iexact=name)[:2])
+				if len(candidates) == 1:
+					org = candidates[0]
+					org.identifier = identifier
 			if org:
 				if not org.name:
 					org.name = name
@@ -341,7 +361,8 @@ class SubmissionSerializer(HssiSerializer):
 		elif updating is None:
 			return award
 		if data.get("funder") and award.funder_id is None:
-			award.funder = self._get_or_create_org(data["funder"])
+			scope = updating.funder.all() if updating is not None else None
+			award.funder = self._get_or_create_org(data["funder"], scope)
 		award.save()
 		return award
 
@@ -451,6 +472,10 @@ class SubmissionSerializer(HssiSerializer):
 		ensuring required fields are present — that check lives in
 		``to_internal_value_user`` and only runs for non-partial input.
 		"""
+		# The record being updated, or None on create. The _get_or_create_*
+		# helpers repair shared rows only when it is set.
+		updating = self.instance
+
 		if "software_name" in data:
 			software.software_name = self._normalize_term(
 				data["software_name"], "softwareName"
@@ -485,7 +510,8 @@ class SubmissionSerializer(HssiSerializer):
 			if publisher is None:
 				software.publisher = None
 			else:
-				software.publisher = self._get_or_create_org(publisher)
+				scope = Organization.objects.filter(pk=software.publisher_id) if updating is not None else None
+				software.publisher = self._get_or_create_org(publisher, scope)
 
 		if "license" in data:
 			license_name = data["license"]
@@ -525,18 +551,19 @@ class SubmissionSerializer(HssiSerializer):
 		if "authors" in data:
 			authors_data = data["authors"] or []
 			authors = [
-				self._get_or_create_person(item, updating=self.instance)
+				self._get_or_create_person(item, updating)
 				for item in authors_data
 			]
 			for author, author_data in zip(authors, authors_data, strict=False):
 				affiliations = author_data.get("affiliation") or []
+				scope = author.affiliation.all() if updating is not None else None
 				if isinstance(affiliations, list):
 					for org_data in affiliations:
 						if not isinstance(org_data, dict):
 							raise serializers.ValidationError(
 								{"affiliation": "Expected an object."}
 							)
-						author.affiliation.add(self._get_or_create_org(org_data))
+						author.affiliation.add(self._get_or_create_org(org_data, scope))
 			software.authors.set(authors)
 
 		if "programming_language" in data:
@@ -652,15 +679,16 @@ class SubmissionSerializer(HssiSerializer):
 			software.interoperable_software.set(items)
 
 		if "funder" in data:
+			scope = software.funder.all() if updating is not None else None
 			items = [
-				self._get_or_create_org(item)
+				self._get_or_create_org(item, scope)
 				for item in (data["funder"] or [])
 			]
 			software.funder.set(items)
 
 		if "award" in data:
 			items = [
-				self._get_or_create_award(item, updating=self.instance)
+				self._get_or_create_award(item, updating)
 				for item in (data["award"] or [])
 			]
 			software.award.set(items)

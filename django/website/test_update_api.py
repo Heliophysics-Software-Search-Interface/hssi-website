@@ -479,6 +479,121 @@ class PersonRowTests(SharedRowTestCase):
 		self.assertEqual((person.given_name, person.family_name), ("Maria de", "Souza"))
 
 
+class OrganizationRowTests(SharedRowTestCase):
+	"""How affiliations, funders and publishers resolve to Organization rows."""
+
+	ROR = "https://ror.org/00example"
+
+	def test_identifier_fills_the_authors_same_name_affiliation(self):
+		org = Organization.objects.create(name="Example Observatory")
+		author = Person.objects.create(given_name="Ann", family_name="Lee")
+		author.affiliation.add(org)
+		self.software.authors.set([author])
+		orgs_before = Organization.objects.count()
+
+		response = self._patch({"authors": [{
+			"givenName": "Ann",
+			"familyName": "Lee",
+			"affiliation": [{"name": "example observatory", "identifier": self.ROR}],
+		}]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		org.refresh_from_db()
+		self.assertEqual((org.name, org.identifier), ("Example Observatory", self.ROR))
+		self.assertEqual(list(author.affiliation.all()), [org])
+		self.assertEqual(Organization.objects.count(), orgs_before)
+
+	def test_identifier_fills_this_records_same_name_funder(self):
+		nasa = Organization.objects.create(name="NASA")
+		self.software.funder.set([nasa])
+
+		response = self._patch({"funder": [self.NASA]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		nasa.refresh_from_db()
+		self.assertEqual(nasa.identifier, self.NASA["identifier"])
+		self.assertEqual(list(self.software.funder.all()), [nasa])
+
+	def test_identifier_fills_this_records_same_name_publisher(self):
+		zenodo = Organization.objects.create(name="Zenodo")
+		self.software.publisher = zenodo
+		self.software.save()
+
+		response = self._patch({"publisher": {"name": "Zenodo", "identifier": self.ROR}})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		zenodo.refresh_from_db()
+		self.software.refresh_from_db()
+		self.assertEqual(zenodo.identifier, self.ROR)
+		self.assertEqual(self.software.publisher, zenodo)
+
+	def test_identifier_never_replaces_a_different_identifier(self):
+		nasa = Organization.objects.create(name="NASA", identifier=self.ROR)
+		self.software.funder.set([nasa])
+
+		response = self._patch({"funder": [self.NASA]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		nasa.refresh_from_db()
+		self.assertEqual(nasa.identifier, self.ROR)
+		self.assertEqual(self.software.funder.get().identifier, self.NASA["identifier"])
+
+	def test_identifier_ignores_same_name_organizations_not_linked_here(self):
+		nasa = Organization.objects.create(name="NASA")
+
+		response = self._patch({"funder": [self.NASA]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		nasa.refresh_from_db()
+		self.assertIsNone(nasa.identifier)
+		funder = self.software.funder.get()
+		self.assertNotEqual(funder.pk, nasa.pk)
+		self.assertEqual(funder.identifier, self.NASA["identifier"])
+
+	def test_identifier_held_elsewhere_binds_that_organization(self):
+		held = Organization.objects.create(
+			name="National Aeronautics and Space Administration",
+			identifier=self.NASA["identifier"],
+		)
+		nasa = Organization.objects.create(name="NASA")
+		self.software.funder.set([nasa])
+
+		response = self._patch({"funder": [self.NASA]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		nasa.refresh_from_db()
+		self.assertIsNone(nasa.identifier)
+		self.assertEqual(list(self.software.funder.all()), [held])
+
+	def test_identifier_fills_nothing_when_two_organizations_match(self):
+		twins = [Organization.objects.create(name="NASA"), Organization.objects.create(name="nasa")]
+		self.software.funder.set(twins)
+
+		response = self._patch({"funder": [self.NASA]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		for twin in twins:
+			twin.refresh_from_db()
+			self.assertIsNone(twin.identifier)
+		funder = self.software.funder.get()
+		self.assertNotIn(funder, twins)
+		self.assertEqual(funder.identifier, self.NASA["identifier"])
+
+	def test_submission_api_does_not_fill_affiliations(self):
+		org = Organization.objects.create(name="Example Observatory")
+		Person.objects.create(given_name="Ada", family_name="Lovelace").affiliation.add(org)
+
+		response = self._post(authors=[{
+			"givenName": "Ada",
+			"familyName": "Lovelace",
+			"affiliation": [{"name": "Example Observatory", "identifier": self.ROR}],
+		}])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		org.refresh_from_db()
+		self.assertIsNone(org.identifier)
+
+
 class AwardRowTests(SharedRowTestCase):
 	"""How award items resolve to Award rows."""
 
@@ -524,6 +639,21 @@ class AwardRowTests(SharedRowTestCase):
 			self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 			self.assertIn("award.name", response.data)
 		self.assertFalse(Award.objects.exists())
+
+	def test_award_funder_fills_this_records_same_name_funder(self):
+		nasa = Organization.objects.create(name="NASA")
+		self.software.funder.set([nasa])
+		orgs_before = Organization.objects.count()
+
+		response = self._patch({"award": [
+			{"name": "HSR grant", "identifier": "80NSSC21K0306", "funder": self.NASA},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		nasa.refresh_from_db()
+		self.assertEqual(nasa.identifier, self.NASA["identifier"])
+		self.assertEqual(self.software.award.get().funder, nasa)
+		self.assertEqual(Organization.objects.count(), orgs_before)
 
 	def test_award_funder_must_be_an_object(self):
 		response = self._patch({"award": [

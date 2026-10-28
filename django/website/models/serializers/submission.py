@@ -99,14 +99,14 @@ _USER_LIST_FIELDS: tuple[str, ...] = (
 # Rows with no identifier, which is stored as either NULL or "".
 _UNIDENTIFIED = Q(identifier__isnull=True) | Q(identifier="")
 
-# Each relation from Software to RelatedItem, by its name on RelatedItem, with
-# the item type that relation implies.
-_RELATED_ITEM_RELATIONS: tuple[tuple[str, RelatedItemType], ...] = (
-	("softwares_published", RelatedItemType.PUBLICATION),
-	("softwares_referenced", RelatedItemType.PUBLICATION),
-	("softwares_data", RelatedItemType.DATASET),
-	("softwares_related", RelatedItemType.SOFTWARE),
-	("softwares_interoperable", RelatedItemType.SOFTWARE),
+# Each Software field that links to RelatedItem, the field's name on
+# RelatedItem, and the item type the field implies.
+_RELATED_ITEM_FIELDS: tuple[tuple[str, str, RelatedItemType], ...] = (
+	("reference_publication", "softwares_published", RelatedItemType.PUBLICATION),
+	("related_publications", "softwares_referenced", RelatedItemType.PUBLICATION),
+	("related_datasets", "softwares_data", RelatedItemType.DATASET),
+	("related_software", "softwares_related", RelatedItemType.SOFTWARE),
+	("interoperable_software", "softwares_interoperable", RelatedItemType.SOFTWARE),
 )
 
 
@@ -135,7 +135,7 @@ def _spase_url(url: str) -> str:
 
 def _only_linked_as(item: RelatedItem, item_type: RelatedItemType, software: Software) -> bool:
 	"""Whether every link to ``item`` is one of ``software``'s relations of ``item_type``."""
-	for relation, relation_type in _RELATED_ITEM_RELATIONS:
+	for _, relation, relation_type in _RELATED_ITEM_FIELDS:
 		linked = getattr(item, relation).all()
 		if relation_type == item_type:
 			linked = linked.exclude(pk=software.pk)
@@ -436,15 +436,25 @@ class SubmissionSerializer(HssiSerializer):
 				None,
 			)
 		if item:
-			if updating is not None and item.type != item_type and _only_linked_as(item, item_type, updating):
-				item.type = item_type
-				item.save()
 			return item
 		return RelatedItem.objects.create(
 			name=identifier,
 			identifier=identifier,
 			type=item_type,
 		)
+
+	def _retype_related_items(self, software: Software, data: dict[str, Any]):
+		"""Give each related item sent in ``data`` the type of the field it was
+		sent in, when every link to it is one of ``software``'s links of that
+		type. It runs once every related-item field is set, so an item moved
+		between fields in one request is judged by where it ends up."""
+		for field, relation, item_type in _RELATED_ITEM_FIELDS:
+			if not data.get(field):
+				continue
+			for item in RelatedItem.objects.filter(**{relation: software}).exclude(type=item_type):
+				if _only_linked_as(item, item_type, software):
+					item.type = item_type
+					item.save()
 
 	def to_internal_value_user(self, data: dict[str, Any]):
 		if not isinstance(data, dict):
@@ -746,6 +756,9 @@ class SubmissionSerializer(HssiSerializer):
 				for url in (data["interoperable_software"] or [])
 			]
 			software.interoperable_software.set(items)
+
+		if updating is not None:
+			self._retype_related_items(software, data)
 
 		if "funder" in data:
 			scope = software.funder.all() if updating is not None else None

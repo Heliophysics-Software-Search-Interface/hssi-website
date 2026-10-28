@@ -775,6 +775,31 @@ class RelatedItemRowTests(SharedRowTestCase):
 		item.refresh_from_db()
 		self.assertEqual(item.type, RelatedItemType.PUBLICATION)
 
+	def test_items_moved_between_fields_in_one_request_take_their_new_types(self):
+		other_url = "https://doi.org/10.5281/zenodo.7654321"
+		to_publication = self._item(RelatedItemType.DATASET)
+		to_dataset = RelatedItem.objects.create(name=other_url, identifier=other_url, type=RelatedItemType.PUBLICATION)
+		self.software.related_datasets.set([to_publication])
+		self.software.related_publications.set([to_dataset])
+
+		response = self._patch({"relatedPublications": [self.URL], "relatedDatasets": [other_url]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		to_publication.refresh_from_db()
+		to_dataset.refresh_from_db()
+		self.assertEqual(to_publication.type, RelatedItemType.PUBLICATION)
+		self.assertEqual(to_dataset.type, RelatedItemType.DATASET)
+
+	def test_items_in_fields_not_sent_keep_their_types(self):
+		item = self._item(RelatedItemType.PUBLICATION)
+		self.software.related_datasets.set([item])
+
+		response = self._patch({"description": "Updated."})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		item.refresh_from_db()
+		self.assertEqual(item.type, RelatedItemType.PUBLICATION)
+
 	def test_url_variants_bind_the_stored_item(self):
 		variants_by_stored_url = {
 			self.URL: [

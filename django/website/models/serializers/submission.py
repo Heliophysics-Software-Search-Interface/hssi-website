@@ -5,6 +5,7 @@ from typing import Any
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from rest_framework import serializers
@@ -173,14 +174,44 @@ class SubmissionSerializer(HssiSerializer):
 			return obj
 		return Keyword.objects.create(name=normalized)
 
-	def _get_or_create_person(self, data: dict[str, Any]) -> Person:
+	def _get_or_create_person(
+		self,
+		data: dict[str, Any],
+		updating: Software | None = None,
+	) -> Person:
+		"""Resolve a person payload to a Person row.
+
+		``updating`` is the Software being updated, if any. Only then does an
+		author sent without a given name resolve through
+		``_get_blank_given_author``, an identifier that matches no Person
+		attach to the one unidentified current author of that software with
+		the same full name (several are a 400), and the resolved Person take
+		the sent split of the same full name. Full names compare by their
+		words, so only the split between given and family may differ.
+		"""
+		if updating is not None and not self._strip_string(data.get("given_name")):
+			return self._get_blank_given_author(data, updating)
 		given_name = self._normalize_term(data.get("given_name"), "givenName")
 		family_name = self._normalize_term(data.get("family_name"), "familyName")
 		identifier = data.get("identifier")
 		if identifier:
 			identifier = self._validate_url(self._strip_string(identifier))
+			name_words = f"{given_name} {family_name}".split()
 			person = Person.objects.filter(identifier=identifier).first()
+			if person is None and updating is not None:
+				unidentified = updating.authors.filter(Q(identifier__isnull=True) | Q(identifier=""))
+				matches = [p for p in unidentified if p.fullName.split() == name_words]
+				if len(matches) > 1:
+					raise serializers.ValidationError({
+						"identifier": f"Several current authors named '{given_name} {family_name}' "
+						"have no identifier, so it can't be attached to one of them.",
+					})
+				person = matches[0] if matches else None
 			if person:
+				person.identifier = identifier
+				if updating is not None and person.fullName.split() == name_words:
+					person.given_name = given_name
+					person.family_name = family_name
 				if not person.given_name:
 					person.given_name = given_name
 				if not person.family_name:
@@ -203,6 +234,30 @@ class SubmissionSerializer(HssiSerializer):
 			given_name=given_name,
 			family_name=family_name,
 		)
+
+	def _get_blank_given_author(self, data: dict[str, Any], software: Software) -> Person:
+		"""Resolve an author sent without a given name to the one current
+		author of ``software`` stored without one under the same family name.
+
+		The row is returned unchanged, except that an identifier no Person
+		holds fills an empty one. No blank-given Person is ever created.
+		"""
+		family_words = self._normalize_term(data.get("family_name"), "familyName").split()
+		matches = [
+			author for author in software.authors.filter(given_name="")
+			if author.family_name.split() == family_words
+		]
+		if len(matches) != 1:
+			raise serializers.ValidationError({
+				"givenName": "Value cannot be empty unless exactly one current author "
+				"has an empty given name and this family name.",
+			})
+		person = matches[0]
+		identifier = self._validate_url(self._strip_string(data.get("identifier")))
+		if identifier and not person.identifier and not Person.objects.filter(identifier=identifier).exists():
+			person.identifier = identifier
+			person.save()
+		return person
 
 	def _get_or_create_org(self, data: dict[str, Any]) -> Organization:
 		name = self._normalize_term(data.get("name"), "name")
@@ -255,19 +310,31 @@ class SubmissionSerializer(HssiSerializer):
 			return entry
 		return InstrumentObservatory.objects.create(name=name, type=instr_type)
 
-	def _get_or_create_award(self, data: dict[str, Any]) -> Award:
+	def _get_or_create_award(
+		self,
+		data: dict[str, Any],
+		updating: Software | None = None,
+	) -> Award:
+		"""Resolve an award payload to an Award row.
+
+		``updating`` is the Software being updated, if any. A create reuses an
+		existing award as it is, so only an update can give one a funder.
+		"""
 		name = self._normalize_term(data.get("name"), "name")
 		identifier = data.get("identifier")
 		if identifier:
 			identifier = self._normalize_term(identifier, "identifier")
 			award = Award.objects.filter(identifier=identifier).first()
-			if award:
-				return award
-			return Award.objects.create(name=name, identifier=identifier)
-		award = Award.objects.filter(name__iexact=name).first()
-		if award:
+		else:
+			award = Award.objects.filter(name__iexact=name).first()
+		if award is None:
+			award = Award(name=name, identifier=identifier or None)
+		elif updating is None:
 			return award
-		return Award.objects.create(name=name)
+		if data.get("funder") and award.funder_id is None:
+			award.funder = self._get_or_create_org(data["funder"])
+		award.save()
+		return award
 
 	def _get_or_create_related(self, url: str, item_type: RelatedItemType) -> RelatedItem:
 		identifier = self._validate_url(self._normalize_term(url, "identifier"))
@@ -317,6 +384,17 @@ class SubmissionSerializer(HssiSerializer):
 
 		if "publisher" in data and data["publisher"] is not None and not isinstance(data["publisher"], dict):
 			raise serializers.ValidationError({"publisher": "Expected an object."})
+
+		award_name_length = Award._meta.get_field("name").max_length
+		for award in data.get("award") or []:
+			if not isinstance(award, dict):
+				raise serializers.ValidationError({"award": "Expected an object."})
+			if award.get("funder") is not None and not isinstance(award["funder"], dict):
+				raise serializers.ValidationError({"award.funder": "Expected an object."})
+			if isinstance(award.get("name"), str) and len(award["name"].strip()) > award_name_length:
+				raise serializers.ValidationError(
+					{"award.name": f"Must be {award_name_length} characters or fewer."}
+				)
 
 		if "code_repository_url" in data:
 			self._validate_url(self._strip_string(data.get("code_repository_url")))
@@ -437,7 +515,10 @@ class SubmissionSerializer(HssiSerializer):
 
 		if "authors" in data:
 			authors_data = data["authors"] or []
-			authors = [self._get_or_create_person(item) for item in authors_data]
+			authors = [
+				self._get_or_create_person(item, updating=self.instance)
+				for item in authors_data
+			]
 			for author, author_data in zip(authors, authors_data, strict=False):
 				affiliations = author_data.get("affiliation") or []
 				if isinstance(affiliations, list):
@@ -570,7 +651,7 @@ class SubmissionSerializer(HssiSerializer):
 
 		if "award" in data:
 			items = [
-				self._get_or_create_award(item)
+				self._get_or_create_award(item, updating=self.instance)
 				for item in (data["award"] or [])
 			]
 			software.award.set(items)

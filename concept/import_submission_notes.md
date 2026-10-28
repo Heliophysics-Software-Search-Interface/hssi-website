@@ -306,8 +306,10 @@ however they may not be applicable to some submissions.
 	```
 * `award` - array of objects
 	* subfields:
-		* `name` - string
+		* `name` - string, 128 characters or less
 		* `identifier` - string
+		* `funder` - [`Organization`](#organization) object
+	* hard match on `identifier`, soft match on `name` if identifier is not provided. A matched award is used as it is, so `funder` only applies to a new award.
 	```
 	"award": [
 		{

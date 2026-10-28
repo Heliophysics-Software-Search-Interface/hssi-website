@@ -184,10 +184,10 @@ class SubmissionSerializer(HssiSerializer):
 		``updating`` is the Software being updated, if any. Only then does an
 		author sent without a given name resolve through
 		``_get_blank_given_author``, an identifier that matches no Person
-		attach to an unidentified current author of that software with the
-		same full name, and the resolved Person take the sent split of the
-		same full name. Full names compare by their words, so only the split
-		between given and family may differ.
+		attach to the one unidentified current author of that software with
+		the same full name (several are a 400), and the resolved Person take
+		the sent split of the same full name. Full names compare by their
+		words, so only the split between given and family may differ.
 		"""
 		if updating is not None and not self._strip_string(data.get("given_name")):
 			return self._get_blank_given_author(data, updating)
@@ -200,7 +200,13 @@ class SubmissionSerializer(HssiSerializer):
 			person = Person.objects.filter(identifier=identifier).first()
 			if person is None and updating is not None:
 				unidentified = updating.authors.filter(Q(identifier__isnull=True) | Q(identifier=""))
-				person = next((p for p in unidentified if p.fullName.split() == name_words), None)
+				matches = [p for p in unidentified if p.fullName.split() == name_words]
+				if len(matches) > 1:
+					raise serializers.ValidationError({
+						"identifier": f"Several current authors named '{given_name} {family_name}' "
+						"have no identifier, so it can't be attached to one of them.",
+					})
+				person = matches[0] if matches else None
 			if person:
 				person.identifier = identifier
 				if updating is not None and person.fullName.split() == name_words:

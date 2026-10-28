@@ -283,6 +283,31 @@ class PersonRowTests(SharedRowTestCase):
 		self.assertNotEqual(author.pk, namesake.pk)
 		self.assertEqual(author.identifier, self.ORCID)
 
+	def test_identifier_rejected_when_several_current_authors_match(self):
+		split_one = Person.objects.create(given_name="Maria de", family_name="Souza", identifier="")
+		split_two = Person.objects.create(given_name="Maria", family_name="de Souza", identifier="")
+		self.software.authors.set([split_one, split_two])
+		people_before = Person.objects.count()
+
+		payloads = (
+			[{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID}],
+			[
+				{"givenName": "Maria de", "familyName": "Souza"},
+				{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+			],
+		)
+		for authors in payloads:
+			with self.subTest(authors=len(authors)):
+				response = self._patch({"authors": authors})
+
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+				self.assertIn("identifier", response.data)
+		for person in (split_one, split_two):
+			person.refresh_from_db()
+			self.assertEqual(person.identifier, "")
+		self.assertEqual(Person.objects.count(), people_before)
+		self.assertEqual(list(self.software.authors.all()), [split_one, split_two])
+
 	def test_identified_author_takes_resplit_of_same_full_name(self):
 		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
 		self.software.authors.set([person])

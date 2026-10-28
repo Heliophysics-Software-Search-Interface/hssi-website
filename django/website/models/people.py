@@ -50,6 +50,15 @@ class Person(HssiModel):
 			pers.save()
 		return pers
 
+	def is_exclusive_to(self, software: 'Software') -> bool:
+		"""Whether no other software lists this person as an author, and no
+		submitter or curator is this person."""
+		return not (
+			self.softwares.exclude(pk=software.pk).exists()
+			or self.submitter.exists()
+			or Curator.objects.filter(person=self).exists()
+		)
+
 	# meta info that allows data in this model to be serialized to allow for user discovery
 	def get_search_terms(self) -> list[str]:
 		terms = super().get_search_terms()

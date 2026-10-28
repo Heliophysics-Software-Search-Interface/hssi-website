@@ -16,15 +16,21 @@ from rest_framework.test import APIClient
 
 from .models import (
 	Award,
+	Curator,
+	InstrObsType,
+	InstrumentObservatory,
 	Keyword,
 	License,
 	Organization,
 	Person,
+	RelatedItem,
+	RelatedItemType,
 	RepoStatus,
 	Software,
 	SoftwareEditQueue,
 	SoftwareVersion,
 	SubmissionInfo,
+	Submitter,
 	VerifiedSoftware,
 )
 
@@ -252,6 +258,20 @@ class PersonRowTests(SharedRowTestCase):
 		self.assertEqual(list(self.software.authors.all()), [person])
 		self.assertEqual(Person.objects.count(), people_before)
 
+	def test_identifier_attaches_ignoring_case(self):
+		person = Person.objects.create(given_name="Darren de", family_name="Zeeuw", identifier="")
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Darren", "familyName": "De Zeeuw", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.identifier, self.ORCID)
+		self.assertEqual((person.given_name, person.family_name), ("Darren", "De Zeeuw"))
+		self.assertEqual(list(self.software.authors.all()), [person])
+
 	def test_identifier_never_replaces_a_different_identifier(self):
 		person = Person.objects.create(given_name="Ann", family_name="Lee", identifier=self.OTHER_ORCID)
 		self.software.authors.set([person])
@@ -321,6 +341,29 @@ class PersonRowTests(SharedRowTestCase):
 		self.assertEqual((person.given_name, person.family_name), ("Maria", "de Souza"))
 		self.assertEqual(list(self.software.authors.all()), [person])
 
+	def test_same_full_name_ignores_case_and_hyphens(self):
+		renames = [
+			(("Darren de", "Zeeuw"), ("Darren", "De Zeeuw"), "https://orcid.org/0000-0000-0000-0011"),
+			(("Ana Pires De", "Lima"), ("Ana", "Pires de Lima"), "https://orcid.org/0000-0000-0000-0012"),
+			(("Lea", "Barrous Dume"), ("Lea", "Barrous-Dume"), "https://orcid.org/0000-0000-0000-0013"),
+		]
+		people = [
+			Person.objects.create(given_name=given, family_name=family, identifier=orcid)
+			for (given, family), _, orcid in renames
+		]
+		Software.objects.create(software_name="Other").authors.set(people)
+		self.software.authors.set(people)
+
+		response = self._patch({"authors": [
+			{"givenName": given, "familyName": family, "identifier": orcid}
+			for _, (given, family), orcid in renames
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		for person, (_, sent, _) in zip(people, renames):
+			person.refresh_from_db()
+			self.assertEqual((person.given_name, person.family_name), sent)
+
 	def test_unidentified_author_takes_identifier_and_resplit_together(self):
 		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier="")
 		self.software.authors.set([person])
@@ -336,6 +379,7 @@ class PersonRowTests(SharedRowTestCase):
 
 	def test_identified_author_keeps_names_when_full_name_differs(self):
 		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
+		Software.objects.create(software_name="Other").authors.set([person])
 		self.software.authors.set([person])
 
 		response = self._patch({"authors": [
@@ -345,6 +389,36 @@ class PersonRowTests(SharedRowTestCase):
 		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 		person.refresh_from_db()
 		self.assertEqual((person.given_name, person.family_name), ("Maria de", "Souza"))
+
+	def test_exclusive_identified_author_takes_a_rename(self):
+		person = Person.objects.create(given_name="Petr", family_name="Shumate", identifier=self.ORCID)
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Peter", "familyName": "Shumate", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Peter", "Shumate"))
+
+	def test_identified_author_keeps_names_while_a_submitter_or_curator(self):
+		submitter = Person.objects.create(given_name="Petr", family_name="Shumate", identifier=self.ORCID)
+		Submitter.objects.create(email="petr@example.com", person=submitter)
+		curator = Person.objects.create(given_name="Ann", family_name="Le", identifier=self.OTHER_ORCID)
+		Curator.objects.create(email="ann@example.com", person=curator)
+		self.software.authors.set([submitter, curator])
+
+		response = self._patch({"authors": [
+			{"givenName": "Peter", "familyName": "Shumate", "identifier": self.ORCID},
+			{"givenName": "Ann", "familyName": "Lee", "identifier": self.OTHER_ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		submitter.refresh_from_db()
+		curator.refresh_from_db()
+		self.assertEqual((submitter.given_name, submitter.family_name), ("Petr", "Shumate"))
+		self.assertEqual((curator.given_name, curator.family_name), ("Ann", "Le"))
 
 	def test_blank_given_name_resolves_to_that_current_author(self):
 		tiger = Person.objects.create(given_name="", family_name="Tiger")
@@ -397,6 +471,29 @@ class PersonRowTests(SharedRowTestCase):
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 		self.assertIn("givenName", response.data)
 
+	def test_same_person_listed_twice_rejected(self):
+		person = Person.objects.create(given_name="Ann", family_name="Lee", identifier=self.ORCID)
+		self.software.authors.set([person])
+		same_identifier = [
+			{"givenName": "Ann", "familyName": "Lee", "identifier": self.ORCID},
+			{"givenName": "A.", "familyName": "Lee", "identifier": self.ORCID},
+		]
+		same_name = [{"givenName": "Ben", "familyName": "Ng"}, {"givenName": "Ben", "familyName": "Ng"}]
+
+		for request in (
+			lambda: self._patch({"authors": same_identifier}),
+			lambda: self._patch({"authors": same_name}),
+			lambda: self._post(authors=same_identifier),
+		):
+			response = request()
+
+			self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+			self.assertIn("authors", response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Ann", "Lee"))
+		self.assertEqual(list(self.software.authors.all()), [person])
+		self.assertFalse(Person.objects.filter(family_name="Ng").exists())
+
 	def test_submission_api_does_not_resplit(self):
 		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
 
@@ -407,6 +504,121 @@ class PersonRowTests(SharedRowTestCase):
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 		person.refresh_from_db()
 		self.assertEqual((person.given_name, person.family_name), ("Maria de", "Souza"))
+
+
+class OrganizationRowTests(SharedRowTestCase):
+	"""How affiliations, funders and publishers resolve to Organization rows."""
+
+	ROR = "https://ror.org/00example"
+
+	def test_identifier_fills_the_authors_same_name_affiliation(self):
+		org = Organization.objects.create(name="Example Observatory")
+		author = Person.objects.create(given_name="Ann", family_name="Lee")
+		author.affiliation.add(org)
+		self.software.authors.set([author])
+		orgs_before = Organization.objects.count()
+
+		response = self._patch({"authors": [{
+			"givenName": "Ann",
+			"familyName": "Lee",
+			"affiliation": [{"name": "example observatory", "identifier": self.ROR}],
+		}]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		org.refresh_from_db()
+		self.assertEqual((org.name, org.identifier), ("Example Observatory", self.ROR))
+		self.assertEqual(list(author.affiliation.all()), [org])
+		self.assertEqual(Organization.objects.count(), orgs_before)
+
+	def test_identifier_fills_this_records_same_name_funder(self):
+		nasa = Organization.objects.create(name="NASA")
+		self.software.funder.set([nasa])
+
+		response = self._patch({"funder": [self.NASA]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		nasa.refresh_from_db()
+		self.assertEqual(nasa.identifier, self.NASA["identifier"])
+		self.assertEqual(list(self.software.funder.all()), [nasa])
+
+	def test_identifier_fills_this_records_same_name_publisher(self):
+		zenodo = Organization.objects.create(name="Zenodo")
+		self.software.publisher = zenodo
+		self.software.save()
+
+		response = self._patch({"publisher": {"name": "Zenodo", "identifier": self.ROR}})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		zenodo.refresh_from_db()
+		self.software.refresh_from_db()
+		self.assertEqual(zenodo.identifier, self.ROR)
+		self.assertEqual(self.software.publisher, zenodo)
+
+	def test_identifier_never_replaces_a_different_identifier(self):
+		nasa = Organization.objects.create(name="NASA", identifier=self.ROR)
+		self.software.funder.set([nasa])
+
+		response = self._patch({"funder": [self.NASA]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		nasa.refresh_from_db()
+		self.assertEqual(nasa.identifier, self.ROR)
+		self.assertEqual(self.software.funder.get().identifier, self.NASA["identifier"])
+
+	def test_identifier_ignores_same_name_organizations_not_linked_here(self):
+		nasa = Organization.objects.create(name="NASA")
+
+		response = self._patch({"funder": [self.NASA]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		nasa.refresh_from_db()
+		self.assertIsNone(nasa.identifier)
+		funder = self.software.funder.get()
+		self.assertNotEqual(funder.pk, nasa.pk)
+		self.assertEqual(funder.identifier, self.NASA["identifier"])
+
+	def test_identifier_held_elsewhere_binds_that_organization(self):
+		held = Organization.objects.create(
+			name="National Aeronautics and Space Administration",
+			identifier=self.NASA["identifier"],
+		)
+		nasa = Organization.objects.create(name="NASA")
+		self.software.funder.set([nasa])
+
+		response = self._patch({"funder": [self.NASA]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		nasa.refresh_from_db()
+		self.assertIsNone(nasa.identifier)
+		self.assertEqual(list(self.software.funder.all()), [held])
+
+	def test_identifier_fills_nothing_when_two_organizations_match(self):
+		twins = [Organization.objects.create(name="NASA"), Organization.objects.create(name="nasa")]
+		self.software.funder.set(twins)
+
+		response = self._patch({"funder": [self.NASA]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		for twin in twins:
+			twin.refresh_from_db()
+			self.assertIsNone(twin.identifier)
+		funder = self.software.funder.get()
+		self.assertNotIn(funder, twins)
+		self.assertEqual(funder.identifier, self.NASA["identifier"])
+
+	def test_submission_api_does_not_fill_affiliations(self):
+		org = Organization.objects.create(name="Example Observatory")
+		Person.objects.create(given_name="Ada", family_name="Lovelace").affiliation.add(org)
+
+		response = self._post(authors=[{
+			"givenName": "Ada",
+			"familyName": "Lovelace",
+			"affiliation": [{"name": "Example Observatory", "identifier": self.ROR}],
+		}])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		org.refresh_from_db()
+		self.assertIsNone(org.identifier)
 
 
 class AwardRowTests(SharedRowTestCase):
@@ -446,6 +658,41 @@ class AwardRowTests(SharedRowTestCase):
 		award.refresh_from_db()
 		self.assertEqual(award.funder, other)
 
+	def test_exclusive_award_takes_the_sent_name(self):
+		award = Award.objects.create(name="Grant", identifier="80NSSC21K0306")
+		self.software.award.set([award])
+
+		response = self._patch({"award": [{"name": "HSR grant", "identifier": "80NSSC21K0306"}]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		award.refresh_from_db()
+		self.assertEqual(award.name, "HSR grant")
+
+	def test_shared_award_keeps_its_name_unless_empty(self):
+		titled = Award.objects.create(name="Grant", identifier="80NSSC21K0306")
+		untitled = Award.objects.create(name="", identifier="24-HTM24-0022")
+		Software.objects.create(software_name="Other").award.set([titled, untitled])
+		self.software.award.set([titled, untitled])
+
+		response = self._patch({"award": [
+			{"name": "HSR grant", "identifier": "80NSSC21K0306"},
+			{"name": "HTM grant", "identifier": "24-HTM24-0022"},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		titled.refresh_from_db()
+		untitled.refresh_from_db()
+		self.assertEqual((titled.name, untitled.name), ("Grant", "HTM grant"))
+
+	def test_submission_api_does_not_rename_awards(self):
+		award = Award.objects.create(name="Grant", identifier="80NSSC21K0306")
+
+		response = self._post(award=[{"name": "HSR grant", "identifier": "80NSSC21K0306"}])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		award.refresh_from_db()
+		self.assertEqual(award.name, "Grant")
+
 	def test_award_name_over_128_characters_rejected(self):
 		awards = [{"name": "x" * 129, "identifier": "80NSSC21K0306"}]
 		for request in (lambda: self._patch({"award": awards}), lambda: self._post(award=awards)):
@@ -454,6 +701,21 @@ class AwardRowTests(SharedRowTestCase):
 			self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 			self.assertIn("award.name", response.data)
 		self.assertFalse(Award.objects.exists())
+
+	def test_award_funder_fills_this_records_same_name_funder(self):
+		nasa = Organization.objects.create(name="NASA")
+		self.software.funder.set([nasa])
+		orgs_before = Organization.objects.count()
+
+		response = self._patch({"award": [
+			{"name": "HSR grant", "identifier": "80NSSC21K0306", "funder": self.NASA},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		nasa.refresh_from_db()
+		self.assertEqual(nasa.identifier, self.NASA["identifier"])
+		self.assertEqual(self.software.award.get().funder, nasa)
+		self.assertEqual(Organization.objects.count(), orgs_before)
 
 	def test_award_funder_must_be_an_object(self):
 		response = self._patch({"award": [
@@ -486,6 +748,219 @@ class AwardRowTests(SharedRowTestCase):
 			self.assertIsNone(award.funder)
 		created = Software.objects.get(software_name="Created via API")
 		self.assertEqual(set(created.award.all()), {by_number, by_name})
+
+
+class RelatedItemRowTests(SharedRowTestCase):
+	"""How publication, dataset and software links resolve to RelatedItem rows."""
+
+	URL = "https://doi.org/10.5281/zenodo.1234567"
+
+	def _item(self, item_type: RelatedItemType) -> RelatedItem:
+		return RelatedItem.objects.create(name=self.URL, identifier=self.URL, type=item_type)
+
+	def test_item_linked_only_here_takes_the_fields_type(self):
+		item = self._item(RelatedItemType.PUBLICATION)
+		self.software.related_datasets.set([item])
+
+		response = self._patch({"relatedDatasets": [self.URL]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		item.refresh_from_db()
+		self.assertEqual(item.type, RelatedItemType.DATASET)
+
+	def test_unlinked_item_takes_the_fields_type(self):
+		item = self._item(RelatedItemType.SOFTWARE)
+
+		response = self._patch({"relatedPublications": [self.URL]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		item.refresh_from_db()
+		self.assertEqual(item.type, RelatedItemType.PUBLICATION)
+		self.assertEqual(list(self.software.related_publications.all()), [item])
+
+	def test_item_linked_by_another_record_keeps_its_type(self):
+		item = self._item(RelatedItemType.PUBLICATION)
+		Software.objects.create(software_name="Other").related_publications.set([item])
+
+		response = self._patch({"relatedDatasets": [self.URL]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		item.refresh_from_db()
+		self.assertEqual(item.type, RelatedItemType.PUBLICATION)
+
+	def test_item_this_record_links_as_another_type_keeps_its_type(self):
+		item = self._item(RelatedItemType.PUBLICATION)
+		self.software.related_publications.set([item])
+
+		response = self._patch({"relatedDatasets": [self.URL]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		item.refresh_from_db()
+		self.assertEqual(item.type, RelatedItemType.PUBLICATION)
+
+	def test_items_moved_between_fields_in_one_request_take_their_new_types(self):
+		other_url = "https://doi.org/10.5281/zenodo.7654321"
+		to_publication = self._item(RelatedItemType.DATASET)
+		to_dataset = RelatedItem.objects.create(name=other_url, identifier=other_url, type=RelatedItemType.PUBLICATION)
+		self.software.related_datasets.set([to_publication])
+		self.software.related_publications.set([to_dataset])
+
+		response = self._patch({"relatedPublications": [self.URL], "relatedDatasets": [other_url]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		to_publication.refresh_from_db()
+		to_dataset.refresh_from_db()
+		self.assertEqual(to_publication.type, RelatedItemType.PUBLICATION)
+		self.assertEqual(to_dataset.type, RelatedItemType.DATASET)
+
+	def test_items_in_fields_not_sent_keep_their_types(self):
+		item = self._item(RelatedItemType.PUBLICATION)
+		self.software.related_datasets.set([item])
+
+		response = self._patch({"description": "Updated."})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		item.refresh_from_db()
+		self.assertEqual(item.type, RelatedItemType.PUBLICATION)
+
+	def test_url_variants_bind_the_stored_item(self):
+		variants_by_stored_url = {
+			self.URL: [
+				"http://doi.org/10.5281/zenodo.1234567",
+				"https://doi.org/10.5281/zenodo.1234567/",
+				"https://dx.doi.org/10.5281/zenodo.1234567",
+				"https://doi.org/10.5281/ZENODO.1234567",
+			],
+			"http://dx.doi.org/10.5281/ZENODO.7654321/": ["https://doi.org/10.5281/zenodo.7654321"],
+			"https://example.com/Docs/": ["http://example.com/Docs"],
+		}
+		for stored_url, variants in variants_by_stored_url.items():
+			item = RelatedItem.objects.create(
+				name=stored_url, identifier=stored_url, type=RelatedItemType.PUBLICATION,
+			)
+			for variant in variants:
+				with self.subTest(stored=stored_url, sent=variant):
+					response = self._patch({"relatedPublications": [variant]})
+
+					self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+					self.assertEqual(list(self.software.related_publications.all()), [item])
+		self.assertEqual(RelatedItem.objects.count(), len(variants_by_stored_url))
+
+	def test_url_path_outside_doi_org_keeps_its_case(self):
+		item = RelatedItem.objects.create(
+			name="https://example.com/Docs", identifier="https://example.com/Docs",
+			type=RelatedItemType.PUBLICATION,
+		)
+
+		response = self._patch({"relatedPublications": ["https://example.com/docs"]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		linked = self.software.related_publications.get()
+		self.assertNotEqual(linked.pk, item.pk)
+		self.assertEqual(linked.identifier, "https://example.com/docs")
+
+	def test_new_item_stores_the_normalized_url(self):
+		response = self._patch({"relatedPublications": ["http://dx.doi.org/10.5281/ZENODO.42/"]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		linked = self.software.related_publications.get()
+		self.assertEqual(linked.identifier, "https://doi.org/10.5281/zenodo.42")
+
+	def test_submission_api_matches_urls_exactly(self):
+		item = self._item(RelatedItemType.PUBLICATION)
+		variant = "https://dx.doi.org/10.5281/zenodo.1234567"
+
+		response = self._post(relatedPublications=[variant])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		linked = Software.objects.get(software_name="Created via API").related_publications.get()
+		self.assertNotEqual(linked.pk, item.pk)
+		self.assertEqual(linked.identifier, variant)
+
+	def test_submission_api_does_not_retype(self):
+		item = self._item(RelatedItemType.SOFTWARE)
+
+		response = self._post(relatedPublications=[self.URL])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		item.refresh_from_db()
+		self.assertEqual(item.type, RelatedItemType.SOFTWARE)
+
+
+class InstrumentObservatoryRowTests(SharedRowTestCase):
+	"""How related instruments and observatories resolve to InstrumentObservatory rows."""
+
+	MAG = "https://spase-metadata.org/NASA/Instrument/ACE/MAG"
+	ACE = "https://spase-metadata.org/NASA/Observatory/ACE"
+
+	def _entry(self, identifier: str, instr_type: InstrObsType, abbreviation=None) -> InstrumentObservatory:
+		return InstrumentObservatory.objects.create(
+			name=identifier.rsplit("/", 1)[1], identifier=identifier, type=instr_type, abbreviation=abbreviation,
+		)
+
+	def test_spase_page_url_binds_the_stored_entry(self):
+		mag = self._entry(self.MAG, InstrObsType.INSTRUMENT)
+
+		for sent in (f"{self.MAG}.html", f"{self.MAG}/"):
+			with self.subTest(sent=sent):
+				response = self._patch({"relatedInstruments": [{"name": "MAG", "identifier": sent}]})
+
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				self.assertEqual(list(self.software.related_instruments.all()), [mag])
+		self.assertEqual(InstrumentObservatory.objects.count(), 1)
+
+	def test_entry_of_the_other_type_rejected(self):
+		self._entry(self.ACE, InstrObsType.OBSERVATORY)
+		instruments = [{"name": "ACE", "identifier": self.ACE}]
+
+		for request in (
+			lambda: self._patch({"relatedInstruments": instruments}),
+			lambda: self._post(relatedInstruments=instruments),
+		):
+			response = request()
+
+			self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+			self.assertIn("identifier", response.data)
+		self.assertFalse(self.software.related_instruments.exists())
+
+	def test_abbreviation_fills_only_an_empty_one(self):
+		mag = self._entry(self.MAG, InstrObsType.INSTRUMENT)
+		ace = self._entry(self.ACE, InstrObsType.OBSERVATORY, abbreviation="ACE")
+
+		response = self._patch({
+			"relatedInstruments": [{"name": "MAG", "identifier": self.MAG, "abbreviation": "MAG"}],
+			"relatedObservatories": [{"name": "ACE", "identifier": self.ACE, "abbreviation": "Advanced Composition Explorer"}],
+		})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		mag.refresh_from_db()
+		ace.refresh_from_db()
+		self.assertEqual((mag.abbreviation, ace.abbreviation), ("MAG", "ACE"))
+
+	def test_entry_stored_as_a_page_url_still_binds(self):
+		page = f"{self.ACE}.html"
+		ace = self._entry(page, InstrObsType.OBSERVATORY)
+
+		response = self._patch({"relatedObservatories": [{"name": "ACE", "identifier": page}]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		self.assertEqual(list(self.software.related_observatories.all()), [ace])
+		self.assertEqual(InstrumentObservatory.objects.count(), 1)
+
+		response = self._patch({"relatedInstruments": [{"name": "ACE", "identifier": page}]})
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("identifier", response.data)
+
+	def test_submission_api_matches_spase_urls_exactly(self):
+		mag = self._entry(self.MAG, InstrObsType.INSTRUMENT)
+
+		response = self._post(relatedInstruments=[{"name": "MAG", "identifier": f"{self.MAG}.html", "abbreviation": "MAG"}])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		linked = Software.objects.get(software_name="Created via API").related_instruments.get()
+		self.assertNotEqual(linked.pk, mag.pk)
+		self.assertIsNone(linked.abbreviation)
 
 
 class SoftwareListLookupTests(TestCase):

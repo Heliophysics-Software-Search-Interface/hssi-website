@@ -55,8 +55,15 @@ class Award(HssiModel):
 		related_name='awards'
 	)
 
+	# specified for intellisense, defined in other models
+	softwares: models.Manager['Software']
+
 	@classmethod
 	def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
+
+	def is_exclusive_to(self, software: 'Software') -> bool:
+		"""Whether no other software lists this award."""
+		return not self.softwares.exclude(pk=software.pk).exists()
 
 	def __str__(self): return self.name
 	class Meta: ordering = ['name']

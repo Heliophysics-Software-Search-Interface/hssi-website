@@ -45,7 +45,7 @@ categories), `relatedRegion`, `relatedPhenomena`, `dataSources`, `keywords`
 
 - `submitter` is an array of `{"email": "...", "person": {"givenName": "...", "familyName": "..."}}`.
 - `authors` is an array of `{"givenName": "...", "familyName": "...", "identifier"?: "...", "affiliation"?: [{"name": "...", "identifier"?: "..."}]}`
-  — note `affiliation` is itself an array of organization objects, not a string.
+  — note `affiliation` is itself an array of organization objects, not a string. Listing the same person twice, by the same `identifier` or the same name, is a `400`.
 - `version` is an object: `{"number": "...", "releaseDate"?: "...", "versionPid"?: "...", "description"?: "..."}`.
 - `award` is an array of `{"name": "...", "identifier"?: "...", "funder"?: {"name": "...", "identifier"?: "..."}}`. An award whose `identifier` (or, without one, `name`) matches an existing award reuses that record as it is, since other software may share it, so `funder` only applies to a new award. A PATCH can also fill in the funder of an existing award that has none, but never replaces one. A `name` over 128 characters is a `400`.
 - Any field expecting a URL is validated as one; an invalid URL is a `400`.
@@ -162,10 +162,18 @@ lookup rules as the read endpoints). Unknown/unpublished `{id}` →
   non-empty list replaces the whole set (it does not append).
 - Unrecognized keys are rejected individually:
   `400 {"<key>": "Unknown field."}`.
-- `authors` entries resolve to person records that other software may share. A person matched by `identifier` keeps its stored names (only empty ones are filled). On updates only, where "the same full name" means the same words, with the same capitalization and in the same order, however `givenName` and `familyName` split them:
+
+**Shared records:** the people, organizations, awards, related items, instruments and observatories that a record links to may be linked by other records too. Matching works as for `POST /api/submission/` above, which never changes an existing record beyond filling in an empty name. PATCH can also repair them, within these guards:
+- **Authors.** Two people have the same full name when their given and family names hold the same words in the same order, ignoring capitalization and hyphens.
   - An `identifier` that matches no person is attached to this record's current author with the same full name and no identifier, instead of creating a new person. Authors of other records, and authors with a different identifier, are never matched. If more than one current author has that full name and no identifier, it's a `400`.
-  - A person resolved by `identifier` with the same full name takes the sent split (stored `Maria de` / `Souza`, sent `Maria` / `de Souza`), so one PATCH can attach an ORCID and correct the split together. A different full name is not applied.
+  - A person resolved by `identifier` with the same full name takes the sent names (stored `Maria de` / `Souza`, sent `Maria` / `De Souza`), so one PATCH can attach an ORCID and correct the split together.
+  - A person resolved by `identifier` whom no other record lists as an author, and who is neither a submitter nor a curator, takes any sent names, so a typo or a GitHub handle can be corrected.
+  - Other name changes are ignored, apart from filling in an empty name.
   - An author sent with an empty or missing `givenName` resolves to this record's one current author stored without a given name under the same family name, so records with such authors stay patchable. That person is left as it is, apart from an `identifier` filling an empty one when no other person holds it. Any other blank given name is a `400`, and a person without a given name is never created.
+- **Organizations** (an author's `affiliation`, `funder`, `publisher`, and an award's `funder`). An `identifier` that matches no organization is attached to the one organization already linked where it's sent that has the same name (ignoring capitalization) and no identifier: that author's affiliations, this record's funders (also for an award's funder), or this record's publisher. With none, or more than one, a new organization is created as before. Organization names are never changed.
+- **Awards.** A matched award takes the sent `name` when its stored name is empty, or when no other record lists it; an award shared with other records keeps its name. A `funder` fills a matched award that has none, and never replaces one.
+- **Related items** (`referencePublication`, `relatedPublications`, `relatedDatasets`, `relatedSoftware`, `interoperableSoftware`). A matched item stored as another type (publication, dataset or software) takes the type of the field it's sent in, provided that, once the whole request is applied, no other record links it and this record doesn't link it from a field of another type. One PATCH can therefore move an item between fields. A URL that matches no item exactly binds the item whose URL differs from it only by `http` versus `https`, `dx.doi.org` versus `doi.org`, a trailing slash, or the capitalization of a DOI, and a new item stores the URL in that normalized form. Paths outside `doi.org` keep their capitalization.
+- **Instruments and observatories** (`relatedInstruments`, `relatedObservatories`). A spase-metadata.org `identifier` that matches no entry as sent is matched again without a trailing `.html` or slash, and an `abbreviation` fills a matched entry's empty one. On create and update alike, an `identifier` that belongs to an observatory sent as an instrument, or the reverse, is a `400`.
 
 **Side effects on success:** `dateModified` is updated to now, and if the
 record has submission history, the most recent entry's modification

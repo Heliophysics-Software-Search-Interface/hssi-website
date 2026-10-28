@@ -1,11 +1,12 @@
 """Submission API and related logic."""
 
 from typing import Any
+from urllib.parse import urlsplit, urlunsplit
 
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from rest_framework import serializers
@@ -93,6 +94,54 @@ _USER_LIST_FIELDS: tuple[str, ...] = (
 	"funder",
 	"award",
 )
+
+
+# Rows with no identifier, which is stored as either NULL or "".
+_UNIDENTIFIED = Q(identifier__isnull=True) | Q(identifier="")
+
+# Each Software field that links to RelatedItem, the field's name on
+# RelatedItem, and the item type the field implies.
+_RELATED_ITEM_FIELDS: tuple[tuple[str, str, RelatedItemType], ...] = (
+	("reference_publication", "softwares_published", RelatedItemType.PUBLICATION),
+	("related_publications", "softwares_referenced", RelatedItemType.PUBLICATION),
+	("related_datasets", "softwares_data", RelatedItemType.DATASET),
+	("related_software", "softwares_related", RelatedItemType.SOFTWARE),
+	("interoperable_software", "softwares_interoperable", RelatedItemType.SOFTWARE),
+)
+
+
+def _name_words(given_name: str, family_name: str) -> list[str]:
+	"""The words of a full name, ignoring case, hyphens and the given/family split."""
+	return f"{given_name} {family_name}".replace("-", " ").casefold().split()
+
+
+def _related_item_url(url: str) -> str:
+	"""``url`` with https for http, doi.org for dx.doi.org, no trailing slash,
+	and a DOI in lowercase. Other paths keep their case."""
+	parts = urlsplit(url)
+	scheme = "https" if parts.scheme == "http" else parts.scheme
+	host, path = parts.netloc, parts.path.rstrip("/")
+	if host.lower() in ("doi.org", "dx.doi.org"):
+		host, path = "doi.org", path.lower()
+	return urlunsplit((scheme, host, path, parts.query, parts.fragment))
+
+
+def _spase_url(url: str) -> str:
+	"""``url`` without a trailing ``.html`` or slash, when it's on spase-metadata.org."""
+	if urlsplit(url).netloc.lower() != "spase-metadata.org":
+		return url
+	return url.rstrip("/").removesuffix(".html")
+
+
+def _only_linked_as(item: RelatedItem, item_type: RelatedItemType, software: Software) -> bool:
+	"""Whether every link to ``item`` is one of ``software``'s relations of ``item_type``."""
+	for _, relation, relation_type in _RELATED_ITEM_FIELDS:
+		linked = getattr(item, relation).all()
+		if relation_type == item_type:
+			linked = linked.exclude(pk=software.pk)
+		if linked.exists():
+			return False
+	return True
 
 
 class SubmissionSerializer(HssiSerializer):
@@ -186,8 +235,9 @@ class SubmissionSerializer(HssiSerializer):
 		``_get_blank_given_author``, an identifier that matches no Person
 		attach to the one unidentified current author of that software with
 		the same full name (several are a 400), and the resolved Person take
-		the sent split of the same full name. Full names compare by their
-		words, so only the split between given and family may differ.
+		the sent names when they spell the same full name (as ``_name_words``
+		compares them) or when no other software, submitter or curator uses
+		that Person.
 		"""
 		if updating is not None and not self._strip_string(data.get("given_name")):
 			return self._get_blank_given_author(data, updating)
@@ -196,11 +246,11 @@ class SubmissionSerializer(HssiSerializer):
 		identifier = data.get("identifier")
 		if identifier:
 			identifier = self._validate_url(self._strip_string(identifier))
-			name_words = f"{given_name} {family_name}".split()
+			name_words = _name_words(given_name, family_name)
 			person = Person.objects.filter(identifier=identifier).first()
 			if person is None and updating is not None:
-				unidentified = updating.authors.filter(Q(identifier__isnull=True) | Q(identifier=""))
-				matches = [p for p in unidentified if p.fullName.split() == name_words]
+				unidentified = updating.authors.filter(_UNIDENTIFIED)
+				matches = [p for p in unidentified if _name_words(p.given_name, p.family_name) == name_words]
 				if len(matches) > 1:
 					raise serializers.ValidationError({
 						"identifier": f"Several current authors named '{given_name} {family_name}' "
@@ -209,7 +259,10 @@ class SubmissionSerializer(HssiSerializer):
 				person = matches[0] if matches else None
 			if person:
 				person.identifier = identifier
-				if updating is not None and person.fullName.split() == name_words:
+				if updating is not None and (
+					_name_words(person.given_name, person.family_name) == name_words
+					or person.is_exclusive_to(updating)
+				):
 					person.given_name = given_name
 					person.family_name = family_name
 				if not person.given_name:
@@ -242,10 +295,10 @@ class SubmissionSerializer(HssiSerializer):
 		The row is returned unchanged, except that an identifier no Person
 		holds fills an empty one. No blank-given Person is ever created.
 		"""
-		family_words = self._normalize_term(data.get("family_name"), "familyName").split()
+		family_words = _name_words("", self._normalize_term(data.get("family_name"), "familyName"))
 		matches = [
 			author for author in software.authors.filter(given_name="")
-			if author.family_name.split() == family_words
+			if _name_words("", author.family_name) == family_words
 		]
 		if len(matches) != 1:
 			raise serializers.ValidationError({
@@ -259,12 +312,28 @@ class SubmissionSerializer(HssiSerializer):
 			person.save()
 		return person
 
-	def _get_or_create_org(self, data: dict[str, Any]) -> Organization:
+	def _get_or_create_org(
+		self,
+		data: dict[str, Any],
+		scope: QuerySet[Organization] | None = None,
+	) -> Organization:
+		"""Resolve an organization payload to an Organization row.
+
+		``scope`` holds the organizations already linked where this one is
+		sent, given only when updating. An identifier that matches no
+		Organization fills the one row in ``scope`` with the same name and no
+		identifier, if there is exactly one.
+		"""
 		name = self._normalize_term(data.get("name"), "name")
 		identifier = data.get("identifier")
 		if identifier:
 			identifier = self._validate_url(self._strip_string(identifier))
 			org = Organization.objects.filter(identifier=identifier).first()
+			if org is None and scope is not None:
+				candidates = list(scope.filter(_UNIDENTIFIED, name__iexact=name)[:2])
+				if len(candidates) == 1:
+					org = candidates[0]
+					org.identifier = identifier
 			if org:
 				if not org.name:
 					org.name = name
@@ -289,26 +358,38 @@ class SubmissionSerializer(HssiSerializer):
 		return Submitter.objects.create(email=email, person=person)
 
 	def _get_or_create_observatory(
-		self, 
-		data: dict[str, Any], 
-		instr_type: InstrObsType
+		self,
+		data: dict[str, Any],
+		instr_type: InstrObsType,
+		updating: Software | None = None,
 	) -> InstrumentObservatory:
 		name = self._normalize_term(data.get("name"), "name")
+		abbreviation = self._strip_string(data.get("abbreviation")) if updating is not None else None
 		identifier = data.get("identifier")
 		if identifier:
 			identifier = self._validate_url(self._strip_string(identifier))
 			entry = InstrumentObservatory.objects.filter(identifier=identifier).first()
-			if entry:
-				return entry
+			if entry is None and updating is not None:
+				identifier = _spase_url(identifier)
+				entry = InstrumentObservatory.objects.filter(identifier=identifier).first()
+			if entry and entry.type != instr_type:
+				raise serializers.ValidationError({
+					"identifier": f"'{identifier}' is an {entry.get_type_display().lower()}, "
+					f"not an {instr_type.label.lower()}.",
+				})
+		else:
+			entry = InstrumentObservatory.objects.filter(name=name, type=instr_type).first()
+		if entry is None:
 			return InstrumentObservatory.objects.create(
 				name=name,
-				identifier=identifier,
+				identifier=identifier or None,
 				type=instr_type,
+				abbreviation=abbreviation or None,
 			)
-		entry = InstrumentObservatory.objects.filter(name=name, type=instr_type).first()
-		if entry:
-			return entry
-		return InstrumentObservatory.objects.create(name=name, type=instr_type)
+		if abbreviation and not entry.abbreviation:
+			entry.abbreviation = abbreviation
+			entry.save()
+		return entry
 
 	def _get_or_create_award(
 		self,
@@ -331,14 +412,29 @@ class SubmissionSerializer(HssiSerializer):
 			award = Award(name=name, identifier=identifier or None)
 		elif updating is None:
 			return award
+		elif award.name != name and (not award.name or award.is_exclusive_to(updating)):
+			award.name = name
 		if data.get("funder") and award.funder_id is None:
-			award.funder = self._get_or_create_org(data["funder"])
+			scope = updating.funder.all() if updating is not None else None
+			award.funder = self._get_or_create_org(data["funder"], scope)
 		award.save()
 		return award
 
-	def _get_or_create_related(self, url: str, item_type: RelatedItemType) -> RelatedItem:
+	def _get_or_create_related(
+		self,
+		url: str,
+		item_type: RelatedItemType,
+		updating: Software | None = None,
+	) -> RelatedItem:
 		identifier = self._validate_url(self._normalize_term(url, "identifier"))
 		item = RelatedItem.objects.filter(identifier=identifier).first()
+		if item is None and updating is not None:
+			identifier = _related_item_url(identifier)
+			candidates = RelatedItem.objects.filter(identifier__icontains=identifier.split("://", 1)[1])
+			item = next(
+				(c for c in candidates.order_by("pk") if _related_item_url(c.identifier) == identifier),
+				None,
+			)
 		if item:
 			return item
 		return RelatedItem.objects.create(
@@ -346,6 +442,19 @@ class SubmissionSerializer(HssiSerializer):
 			identifier=identifier,
 			type=item_type,
 		)
+
+	def _retype_related_items(self, software: Software, data: dict[str, Any]):
+		"""Give each related item sent in ``data`` the type of the field it was
+		sent in, when every link to it is one of ``software``'s links of that
+		type. It runs once every related-item field is set, so an item moved
+		between fields in one request is judged by where it ends up."""
+		for field, relation, item_type in _RELATED_ITEM_FIELDS:
+			if not data.get(field):
+				continue
+			for item in RelatedItem.objects.filter(**{relation: software}).exclude(type=item_type):
+				if _only_linked_as(item, item_type, software):
+					item.type = item_type
+					item.save()
 
 	def to_internal_value_user(self, data: dict[str, Any]):
 		if not isinstance(data, dict):
@@ -442,6 +551,10 @@ class SubmissionSerializer(HssiSerializer):
 		ensuring required fields are present — that check lives in
 		``to_internal_value_user`` and only runs for non-partial input.
 		"""
+		# The record being updated, or None on create. The _get_or_create_*
+		# helpers repair shared rows only when it is set.
+		updating = self.instance
+
 		if "software_name" in data:
 			software.software_name = self._normalize_term(
 				data["software_name"], "softwareName"
@@ -476,7 +589,8 @@ class SubmissionSerializer(HssiSerializer):
 			if publisher is None:
 				software.publisher = None
 			else:
-				software.publisher = self._get_or_create_org(publisher)
+				scope = Organization.objects.filter(pk=software.publisher_id) if updating is not None else None
+				software.publisher = self._get_or_create_org(publisher, scope)
 
 		if "license" in data:
 			license_name = data["license"]
@@ -506,7 +620,7 @@ class SubmissionSerializer(HssiSerializer):
 				software.reference_publication = None
 			else:
 				software.reference_publication = self._get_or_create_related(
-					reference, RelatedItemType.PUBLICATION
+					reference, RelatedItemType.PUBLICATION, updating
 				)
 
 		# Persist scalars and FKs before touching M2M relations — a new
@@ -516,18 +630,24 @@ class SubmissionSerializer(HssiSerializer):
 		if "authors" in data:
 			authors_data = data["authors"] or []
 			authors = [
-				self._get_or_create_person(item, updating=self.instance)
+				self._get_or_create_person(item, updating)
 				for item in authors_data
 			]
+			repeated = next((a for i, a in enumerate(authors) if a in authors[:i]), None)
+			if repeated is not None:
+				raise serializers.ValidationError(
+					{"authors": f"{str(repeated).strip()} is listed more than once."}
+				)
 			for author, author_data in zip(authors, authors_data, strict=False):
 				affiliations = author_data.get("affiliation") or []
+				scope = author.affiliation.all() if updating is not None else None
 				if isinstance(affiliations, list):
 					for org_data in affiliations:
 						if not isinstance(org_data, dict):
 							raise serializers.ValidationError(
 								{"affiliation": "Expected an object."}
 							)
-						author.affiliation.add(self._get_or_create_org(org_data))
+						author.affiliation.add(self._get_or_create_org(org_data, scope))
 			software.authors.set(authors)
 
 		if "programming_language" in data:
@@ -602,56 +722,60 @@ class SubmissionSerializer(HssiSerializer):
 
 		if "related_instruments" in data:
 			items = [
-				self._get_or_create_observatory(item, InstrObsType.INSTRUMENT)
+				self._get_or_create_observatory(item, InstrObsType.INSTRUMENT, updating)
 				for item in (data["related_instruments"] or [])
 			]
 			software.related_instruments.set(items)
 
 		if "related_observatories" in data:
 			items = [
-				self._get_or_create_observatory(item, InstrObsType.OBSERVATORY)
+				self._get_or_create_observatory(item, InstrObsType.OBSERVATORY, updating)
 				for item in (data["related_observatories"] or [])
 			]
 			software.related_observatories.set(items)
 
 		if "related_publications" in data:
 			items = [
-				self._get_or_create_related(url, RelatedItemType.PUBLICATION)
+				self._get_or_create_related(url, RelatedItemType.PUBLICATION, updating)
 				for url in (data["related_publications"] or [])
 			]
 			software.related_publications.set(items)
 
 		if "related_datasets" in data:
 			items = [
-				self._get_or_create_related(url, RelatedItemType.DATASET)
+				self._get_or_create_related(url, RelatedItemType.DATASET, updating)
 				for url in (data["related_datasets"] or [])
 			]
 			software.related_datasets.set(items)
 
 		if "related_software" in data:
 			items = [
-				self._get_or_create_related(url, RelatedItemType.SOFTWARE)
+				self._get_or_create_related(url, RelatedItemType.SOFTWARE, updating)
 				for url in (data["related_software"] or [])
 			]
 			software.related_software.set(items)
 
 		if "interoperable_software" in data:
 			items = [
-				self._get_or_create_related(url, RelatedItemType.SOFTWARE)
+				self._get_or_create_related(url, RelatedItemType.SOFTWARE, updating)
 				for url in (data["interoperable_software"] or [])
 			]
 			software.interoperable_software.set(items)
 
+		if updating is not None:
+			self._retype_related_items(software, data)
+
 		if "funder" in data:
+			scope = software.funder.all() if updating is not None else None
 			items = [
-				self._get_or_create_org(item)
+				self._get_or_create_org(item, scope)
 				for item in (data["funder"] or [])
 			]
 			software.funder.set(items)
 
 		if "award" in data:
 			items = [
-				self._get_or_create_award(item, updating=self.instance)
+				self._get_or_create_award(item, updating)
 				for item in (data["award"] or [])
 			]
 			software.award.set(items)

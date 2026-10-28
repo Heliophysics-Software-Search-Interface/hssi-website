@@ -180,9 +180,8 @@ class SoftwarePartialUpdateTokenUnsetTests(TestCase):
 
 
 @override_settings(HSSI_UPDATE_TOKEN=UPDATE_TOKEN)
-class SoftwarePartialUpdateSharedRowTests(TestCase):
-	"""Rules for the Person and Award rows that authors and awards resolve
-	to, which other software entries may share."""
+class SharedRowTestCase(TestCase):
+	"""Base for tests of rows that other software entries may share."""
 
 	ORCID = "https://orcid.org/0000-0000-0000-0001"
 	OTHER_ORCID = "https://orcid.org/0000-0000-0000-0002"
@@ -217,7 +216,9 @@ class SoftwarePartialUpdateSharedRowTests(TestCase):
 			**fields,
 		}], format="json")
 
-	# Identifier attached to an existing author -------------------------------
+
+class PersonRowTests(SharedRowTestCase):
+	"""How authors resolve to Person rows."""
 
 	def test_identifier_attaches_to_unidentified_current_author(self):
 		for stored, orcid in ((None, self.ORCID), ("", self.OTHER_ORCID)):
@@ -282,7 +283,58 @@ class SoftwarePartialUpdateSharedRowTests(TestCase):
 		self.assertNotEqual(author.pk, namesake.pk)
 		self.assertEqual(author.identifier, self.ORCID)
 
-	# Award funder ------------------------------------------------------------
+	def test_identified_author_takes_resplit_of_same_full_name(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Maria", "de Souza"))
+		self.assertEqual(list(self.software.authors.all()), [person])
+
+	def test_unidentified_author_takes_identifier_and_resplit_together(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier="")
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.identifier, self.ORCID)
+		self.assertEqual((person.given_name, person.family_name), ("Maria", "de Souza"))
+
+	def test_identified_author_keeps_names_when_full_name_differs(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Mary", "familyName": "de Souza", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Maria de", "Souza"))
+
+	def test_submission_api_does_not_resplit(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
+
+		response = self._post(authors=[
+			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+		])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Maria de", "Souza"))
+
+
+class AwardRowTests(SharedRowTestCase):
+	"""How award items resolve to Award rows."""
 
 	def test_award_funder_set_on_new_award(self):
 		response = self._patch({"award": [
@@ -332,57 +384,6 @@ class SoftwarePartialUpdateSharedRowTests(TestCase):
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 		created = Software.objects.get(software_name="Created via API")
 		self.assertEqual(created.award.get().funder.identifier, self.NASA["identifier"])
-
-	# Re-split of a stored name -----------------------------------------------
-
-	def test_identified_author_takes_resplit_of_same_full_name(self):
-		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
-		self.software.authors.set([person])
-
-		response = self._patch({"authors": [
-			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
-		]})
-
-		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
-		person.refresh_from_db()
-		self.assertEqual((person.given_name, person.family_name), ("Maria", "de Souza"))
-		self.assertEqual(list(self.software.authors.all()), [person])
-
-	def test_unidentified_author_takes_identifier_and_resplit_together(self):
-		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier="")
-		self.software.authors.set([person])
-
-		response = self._patch({"authors": [
-			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
-		]})
-
-		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
-		person.refresh_from_db()
-		self.assertEqual(person.identifier, self.ORCID)
-		self.assertEqual((person.given_name, person.family_name), ("Maria", "de Souza"))
-
-	def test_identified_author_keeps_names_when_full_name_differs(self):
-		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
-		self.software.authors.set([person])
-
-		response = self._patch({"authors": [
-			{"givenName": "Mary", "familyName": "de Souza", "identifier": self.ORCID},
-		]})
-
-		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
-		person.refresh_from_db()
-		self.assertEqual((person.given_name, person.family_name), ("Maria de", "Souza"))
-
-	def test_submission_api_does_not_resplit(self):
-		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
-
-		response = self._post(authors=[
-			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
-		])
-
-		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
-		person.refresh_from_db()
-		self.assertEqual((person.given_name, person.family_name), ("Maria de", "Souza"))
 
 
 class SoftwareListLookupTests(TestCase):

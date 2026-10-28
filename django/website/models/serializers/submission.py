@@ -183,7 +183,8 @@ class SubmissionSerializer(HssiSerializer):
 
 		``updating`` is the Software being updated, if any. Only then does an
 		identifier that matches no Person attach to an unidentified current
-		author of that software with the same full name. Full names compare
+		author of that software with the same full name, and the resolved
+		Person take the sent split of the same full name. Full names compare
 		by their words, so only the split between given and family may differ.
 		"""
 		given_name = self._normalize_term(data.get("given_name"), "givenName")
@@ -198,6 +199,9 @@ class SubmissionSerializer(HssiSerializer):
 				person = next((p for p in unidentified if p.fullName.split() == name_words), None)
 			if person:
 				person.identifier = identifier
+				if updating is not None and person.fullName.split() == name_words:
+					person.given_name = given_name
+					person.family_name = family_name
 				if not person.given_name:
 					person.given_name = given_name
 				if not person.family_name:

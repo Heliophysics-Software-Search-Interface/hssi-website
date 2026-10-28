@@ -333,6 +333,57 @@ class SoftwarePartialUpdateSharedRowTests(TestCase):
 		created = Software.objects.get(software_name="Created via API")
 		self.assertEqual(created.award.get().funder.identifier, self.NASA["identifier"])
 
+	# Re-split of a stored name -----------------------------------------------
+
+	def test_identified_author_takes_resplit_of_same_full_name(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Maria", "de Souza"))
+		self.assertEqual(list(self.software.authors.all()), [person])
+
+	def test_unidentified_author_takes_identifier_and_resplit_together(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier="")
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.identifier, self.ORCID)
+		self.assertEqual((person.given_name, person.family_name), ("Maria", "de Souza"))
+
+	def test_identified_author_keeps_names_when_full_name_differs(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Mary", "familyName": "de Souza", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Maria de", "Souza"))
+
+	def test_submission_api_does_not_resplit(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
+
+		response = self._post(authors=[
+			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+		])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Maria de", "Souza"))
+
 
 class SoftwareListLookupTests(TestCase):
 	"""GET /api/list/software/ with an optional ?repo_url= filter."""

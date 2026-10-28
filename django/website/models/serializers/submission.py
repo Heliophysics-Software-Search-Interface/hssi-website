@@ -126,6 +126,13 @@ def _related_item_url(url: str) -> str:
 	return urlunsplit((scheme, host, path, parts.query, parts.fragment))
 
 
+def _spase_url(url: str) -> str:
+	"""``url`` without a trailing ``.html`` or slash, when it's on spase-metadata.org."""
+	if urlsplit(url).netloc.lower() != "spase-metadata.org":
+		return url
+	return url.rstrip("/").removesuffix(".html")
+
+
 def _only_linked_as(item: RelatedItem, item_type: RelatedItemType, software: Software) -> bool:
 	"""Whether every link to ``item`` is one of ``software``'s relations of ``item_type``."""
 	for relation, relation_type in _RELATED_ITEM_RELATIONS:
@@ -351,26 +358,37 @@ class SubmissionSerializer(HssiSerializer):
 		return Submitter.objects.create(email=email, person=person)
 
 	def _get_or_create_observatory(
-		self, 
-		data: dict[str, Any], 
-		instr_type: InstrObsType
+		self,
+		data: dict[str, Any],
+		instr_type: InstrObsType,
+		updating: Software | None = None,
 	) -> InstrumentObservatory:
 		name = self._normalize_term(data.get("name"), "name")
+		abbreviation = self._strip_string(data.get("abbreviation")) if updating is not None else None
 		identifier = data.get("identifier")
 		if identifier:
 			identifier = self._validate_url(self._strip_string(identifier))
+			if updating is not None:
+				identifier = _spase_url(identifier)
 			entry = InstrumentObservatory.objects.filter(identifier=identifier).first()
-			if entry:
-				return entry
+			if entry and entry.type != instr_type:
+				raise serializers.ValidationError({
+					"identifier": f"'{identifier}' is an {entry.get_type_display().lower()}, "
+					f"not an {instr_type.label.lower()}.",
+				})
+		else:
+			entry = InstrumentObservatory.objects.filter(name=name, type=instr_type).first()
+		if entry is None:
 			return InstrumentObservatory.objects.create(
 				name=name,
-				identifier=identifier,
+				identifier=identifier or None,
 				type=instr_type,
+				abbreviation=abbreviation or None,
 			)
-		entry = InstrumentObservatory.objects.filter(name=name, type=instr_type).first()
-		if entry:
-			return entry
-		return InstrumentObservatory.objects.create(name=name, type=instr_type)
+		if abbreviation and not entry.abbreviation:
+			entry.abbreviation = abbreviation
+			entry.save()
+		return entry
 
 	def _get_or_create_award(
 		self,
@@ -688,14 +706,14 @@ class SubmissionSerializer(HssiSerializer):
 
 		if "related_instruments" in data:
 			items = [
-				self._get_or_create_observatory(item, InstrObsType.INSTRUMENT)
+				self._get_or_create_observatory(item, InstrObsType.INSTRUMENT, updating)
 				for item in (data["related_instruments"] or [])
 			]
 			software.related_instruments.set(items)
 
 		if "related_observatories" in data:
 			items = [
-				self._get_or_create_observatory(item, InstrObsType.OBSERVATORY)
+				self._get_or_create_observatory(item, InstrObsType.OBSERVATORY, updating)
 				for item in (data["related_observatories"] or [])
 			]
 			software.related_observatories.set(items)

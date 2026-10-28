@@ -17,6 +17,8 @@ from rest_framework.test import APIClient
 from .models import (
 	Award,
 	Curator,
+	InstrObsType,
+	InstrumentObservatory,
 	Keyword,
 	License,
 	Organization,
@@ -835,6 +837,67 @@ class RelatedItemRowTests(SharedRowTestCase):
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
 		item.refresh_from_db()
 		self.assertEqual(item.type, RelatedItemType.SOFTWARE)
+
+
+class InstrumentObservatoryRowTests(SharedRowTestCase):
+	"""How related instruments and observatories resolve to InstrumentObservatory rows."""
+
+	MAG = "https://spase-metadata.org/NASA/Instrument/ACE/MAG"
+	ACE = "https://spase-metadata.org/NASA/Observatory/ACE"
+
+	def _entry(self, identifier: str, instr_type: InstrObsType, abbreviation=None) -> InstrumentObservatory:
+		return InstrumentObservatory.objects.create(
+			name=identifier.rsplit("/", 1)[1], identifier=identifier, type=instr_type, abbreviation=abbreviation,
+		)
+
+	def test_spase_page_url_binds_the_stored_entry(self):
+		mag = self._entry(self.MAG, InstrObsType.INSTRUMENT)
+
+		for sent in (f"{self.MAG}.html", f"{self.MAG}/"):
+			with self.subTest(sent=sent):
+				response = self._patch({"relatedInstruments": [{"name": "MAG", "identifier": sent}]})
+
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				self.assertEqual(list(self.software.related_instruments.all()), [mag])
+		self.assertEqual(InstrumentObservatory.objects.count(), 1)
+
+	def test_entry_of_the_other_type_rejected(self):
+		self._entry(self.ACE, InstrObsType.OBSERVATORY)
+		instruments = [{"name": "ACE", "identifier": self.ACE}]
+
+		for request in (
+			lambda: self._patch({"relatedInstruments": instruments}),
+			lambda: self._post(relatedInstruments=instruments),
+		):
+			response = request()
+
+			self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+			self.assertIn("identifier", response.data)
+		self.assertFalse(self.software.related_instruments.exists())
+
+	def test_abbreviation_fills_only_an_empty_one(self):
+		mag = self._entry(self.MAG, InstrObsType.INSTRUMENT)
+		ace = self._entry(self.ACE, InstrObsType.OBSERVATORY, abbreviation="ACE")
+
+		response = self._patch({
+			"relatedInstruments": [{"name": "MAG", "identifier": self.MAG, "abbreviation": "MAG"}],
+			"relatedObservatories": [{"name": "ACE", "identifier": self.ACE, "abbreviation": "Advanced Composition Explorer"}],
+		})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		mag.refresh_from_db()
+		ace.refresh_from_db()
+		self.assertEqual((mag.abbreviation, ace.abbreviation), ("MAG", "ACE"))
+
+	def test_submission_api_matches_spase_urls_exactly(self):
+		mag = self._entry(self.MAG, InstrObsType.INSTRUMENT)
+
+		response = self._post(relatedInstruments=[{"name": "MAG", "identifier": f"{self.MAG}.html", "abbreviation": "MAG"}])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		linked = Software.objects.get(software_name="Created via API").related_instruments.get()
+		self.assertNotEqual(linked.pk, mag.pk)
+		self.assertIsNone(linked.abbreviation)
 
 
 class SoftwareListLookupTests(TestCase):

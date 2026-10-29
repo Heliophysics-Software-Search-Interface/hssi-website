@@ -583,7 +583,7 @@ class PersonSelectorTests(SharedRowTestCase):
 			with self.subTest(given=given, family=family):
 				response = self._patch({"authors": [self._author(givenName=given, familyName=family)]})
 				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
-				self.assertIn("personId", response.data)
+				self.assertIn("stored as 'Maria de Souza'", response.data["personId"])
 				self.assertEqual(self._snapshot(), before)
 
 	def test_case_and_hyphen_differences_take_the_sent_names(self):

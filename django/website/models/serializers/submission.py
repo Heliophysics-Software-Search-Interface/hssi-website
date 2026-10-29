@@ -187,12 +187,13 @@ class SubmissionSerializer(HssiSerializer):
 		"""Resolve a person payload to a Person row.
 
 		``updating`` is the Software being updated, if any. Only then does an
-		author sent without a given name resolve through
-		``_get_blank_given_author``, an identifier that matches no Person
-		attach to the one unidentified current author of that software with
-		the same full name (several are a 400), and the resolved Person take
-		the sent names when they spell the same full name, as ``_name_words``
-		compares them.
+		author sent with a ``person_id`` (a 400 otherwise) resolve through
+		``_get_selected_person``, an author sent without a given name resolve
+		through ``_get_blank_given_author``, an identifier that matches no
+		Person attach to the one unidentified current author of that software
+		with the same full name (several are a 400), and the resolved Person
+		take the sent names when they spell the same full name, as
+		``_name_words`` compares them.
 		"""
 		if "person_id" in data:
 			if updating is None:
@@ -262,7 +263,9 @@ class SubmissionSerializer(HssiSerializer):
 			given_name = self._normalize_term(given_name, "givenName")
 		family_name = self._normalize_term(data.get("family_name"), "familyName")
 		if _name_words(person.given_name, person.family_name) != _name_words(given_name, family_name):
-			raise serializers.ValidationError({"personId": "Submitted full name must match the selected Person."})
+			raise serializers.ValidationError({
+				"personId": f"Submitted full name must match the selected Person, stored as '{person.fullName.strip()}'.",
+			})
 
 		identifier = self._validate_url(self._strip_string(data.get("identifier")))
 		if identifier:

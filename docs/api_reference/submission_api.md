@@ -45,7 +45,7 @@ categories), `relatedRegion`, `relatedPhenomena`, `dataSources`, `keywords`
 
 - `submitter` is an array of `{"email": "...", "person": {"givenName": "...", "familyName": "..."}}`.
 - `authors` is an array of `{"givenName": "...", "familyName": "...", "identifier"?: "...", "affiliation"?: [{"name": "...", "identifier"?: "..."}]}`
-  — note `affiliation` is itself an array of organization objects, not a string.
+  — note `affiliation` is itself an array of organization objects, not a string. Two entries that resolve to the same person, such as two with the same `identifier` or the same name, are a `400`. So is `personId`, which only PATCH accepts, even when it's empty or `null`.
 - `version` is an object: `{"number": "...", "releaseDate"?: "...", "versionPid"?: "...", "description"?: "..."}`.
 - `award` is an array of `{"name": "...", "identifier"?: "...", "funder"?: {"name": "...", "identifier"?: "..."}}`. An award whose `identifier` (or, without one, `name`) matches an existing award reuses that record as it is, since other software may share it, so `funder` only applies to a new award. A PATCH can also fill in the funder of an existing award that has none, but never replaces one. A `name` over 128 characters is a `400`.
 - Any field expecting a URL is validated as one; an invalid URL is a `400`.
@@ -162,10 +162,17 @@ lookup rules as the read endpoints). Unknown/unpublished `{id}` →
   non-empty list replaces the whole set (it does not append).
 - Unrecognized keys are rejected individually:
   `400 {"<key>": "Unknown field."}`.
-- `authors` entries resolve to person records that other software may share. A person matched by `identifier` keeps its stored names (only empty ones are filled). On updates only, where "the same full name" means the same words, with the same capitalization and in the same order, however `givenName` and `familyName` split them:
+- `authors` entries resolve to person records that other software may share. Without `personId`, a person matched by `identifier` keeps its stored names (only empty ones are filled). On updates only, where "the same" name means the same words in the same order, ignoring capitalization, accents and hyphens, however `givenName` and `familyName` split them:
   - An `identifier` that matches no person is attached to this record's current author with the same full name and no identifier, instead of creating a new person. Authors of other records, and authors with a different identifier, are never matched. If more than one current author has that full name and no identifier, it's a `400`.
-  - A person resolved by `identifier` with the same full name takes the sent split (stored `Maria de` / `Souza`, sent `Maria` / `de Souza`), so one PATCH can attach an ORCID and correct the split together. A different full name is not applied.
+  - A person resolved by `identifier` with the same full name takes the sent names (stored `Maria de` / `Souza`, sent `Maria` / `De Souza`), so one PATCH can attach an ORCID and correct the split, capitalization, accents or hyphens together. Sent names with fewer accents than the stored ones are not applied, so a source that drops accents can't remove them. A different full name is not applied.
   - An author sent with an empty or missing `givenName` resolves to this record's one current author stored without a given name under the same family name, so records with such authors stay patchable. That person is left as it is, apart from an `identifier` filling an empty one when no other person holds it. Any other blank given name is a `400`, and a person without a given name is never created.
+- `personId` (PATCH only) selects an existing person by UUID, including one linked only to other records, so one request can add that person here and fill in their `identifier`. The UUID is the person's `id` in the `authors` of `GET /api/view/software/{id-or-slug}/`. A `personId` replaces the lookups above: it never falls back to another person or creates one.
+  - It must be a UUID string naming an existing person; anything else, including empty or `null`, is a `400`.
+  - The sent name must be the same full name as the person's, or it's a `400` that says how the person is stored. The person then takes the sent names, as above. An empty or missing `givenName` is accepted only when the person has none.
+  - An `identifier` must be a URL. It may fill an empty identifier or repeat the stored one; a different stored identifier, or one another person holds, is a `400`. Omitting it, or sending it empty, leaves the stored identifier unchanged.
+  - The changes show on every record that lists the person, so confirm the UUID is the right person before sending it.
+
+A PATCH is all or nothing: if it fails, the record and any people or other shared records it would have changed are left as they were.
 
 **Side effects on success:** `dateModified` is updated to now, and if the
 record has submission history, the most recent entry's modification
@@ -220,6 +227,28 @@ version record and replaces the record's *entire* version history with
 that one entry — it does not add a version alongside existing ones. If
 `pymap3d` had five prior versions on file, this PATCH leaves it with just
 the one (`3.0.0`).
+
+### Example — add a person from another record and attach their ORCID
+
+`authors` replaces the whole list, so the request lists every author to keep, in order. The second author is a person already linked to another record, selected by the `id` that record's `GET /api/view/software/{id-or-slug}/` response gives them:
+
+```bash
+curl -X PATCH https://hssi.hsdcloud.org/api/data/software/pymap3d/ \
+  -H "Authorization: Bearer $HSSI_UPDATE_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "authors": [
+      {"givenName": "Michael", "familyName": "Hirsch"},
+      {"personId": "<person id>", "givenName": "Jane", "familyName": "Doe", "identifier": "https://orcid.org/0000-0000-0000-0000"}
+    ]
+  }'
+```
+
+```json
+{"status": "ok", "softwareId": "1b6ddaa6-6885-46b3-b59a-ea119e61bd74", "fieldsUpdated": ["authors"]}
+```
+
+The person stays on their other records, which now show the ORCID too.
 
 ### Error examples
 

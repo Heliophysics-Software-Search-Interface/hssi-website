@@ -61,6 +61,7 @@ valid, and will not be accepted.
 	"codeRepositoryUrl": "https://repo.example.org/example",
 	```
 * `authors` *required* - array of [`Person`](#person) objects
+	* each person must be listed only once; two entries with the same `identifier`, or without one the same `givenName` and `familyName`, are rejected
 	```
 	"authors": [
 		{

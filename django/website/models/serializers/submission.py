@@ -1,5 +1,7 @@
 """Submission API and related logic."""
 
+import re
+import unicodedata
 from typing import Any
 
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -95,9 +97,26 @@ _USER_LIST_FIELDS: tuple[str, ...] = (
 )
 
 
+# Accent marks, once Unicode's NFD form has split them from their letters.
+_ACCENTS = re.compile(r"[\u0300-\u036f]")
+
+
 def _name_words(given_name: str, family_name: str) -> list[str]:
-	"""The words of a full name, ignoring case, hyphens and the given/family split."""
-	return f"{given_name} {family_name}".replace("-", " ").casefold().split()
+	"""The words of a full name, ignoring case, accents, hyphens and the given/family split."""
+	name = _ACCENTS.sub("", unicodedata.normalize("NFD", f"{given_name} {family_name}"))
+	return name.replace("-", " ").casefold().split()
+
+
+def _accent_count(given_name: str, family_name: str) -> int:
+	"""How many accent marks a full name carries."""
+	return len(_ACCENTS.findall(unicodedata.normalize("NFD", given_name + family_name)))
+
+
+def _take_sent_names(person: Person, given_name: str, family_name: str) -> None:
+	"""Give ``person`` the sent names, unless they carry fewer accents than its own."""
+	if _accent_count(given_name, family_name) >= _accent_count(person.given_name, person.family_name):
+		person.given_name = given_name
+		person.family_name = family_name
 
 
 class SubmissionSerializer(HssiSerializer):
@@ -193,7 +212,8 @@ class SubmissionSerializer(HssiSerializer):
 		Person attach to the one unidentified current author of that software
 		with the same full name (several are a 400), and the resolved Person
 		take the sent names when they spell the same full name, as
-		``_name_words`` compares them.
+		``_name_words`` compares them, and keep its accents
+		(``_take_sent_names``).
 		"""
 		if "person_id" in data:
 			if updating is None:
@@ -220,8 +240,7 @@ class SubmissionSerializer(HssiSerializer):
 			if person:
 				person.identifier = identifier
 				if updating is not None and _name_words(person.given_name, person.family_name) == name_words:
-					person.given_name = given_name
-					person.family_name = family_name
+					_take_sent_names(person, given_name, family_name)
 				if not person.given_name:
 					person.given_name = given_name
 				if not person.family_name:
@@ -274,8 +293,7 @@ class SubmissionSerializer(HssiSerializer):
 			if Person.objects.filter(identifier=identifier).exclude(pk=person.pk).exists():
 				raise serializers.ValidationError({"identifier": "Identifier belongs to another Person."})
 			person.identifier = identifier
-		person.given_name = given_name
-		person.family_name = family_name
+		_take_sent_names(person, given_name, family_name)
 		person.save()
 		return person
 

@@ -358,6 +358,53 @@ class PersonRowTests(SharedRowTestCase):
 			person.refresh_from_db()
 			self.assertEqual((person.given_name, person.family_name), sent)
 
+	def test_identifier_attaches_ignoring_accents(self):
+		person = Person.objects.create(given_name="Jose", family_name="Garcia", identifier="")
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "José", "familyName": "García", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.identifier, self.ORCID)
+		self.assertEqual((person.given_name, person.family_name), ("José", "García"))
+		self.assertEqual(list(self.software.authors.all()), [person])
+
+	def test_same_full_name_ignores_accents_and_their_encoding(self):
+		# The stored é is "e" plus a combining accent; the sent é is one character.
+		person = Person.objects.create(given_name="Rene\u0301", family_name="Dupont", identifier=self.ORCID)
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Ren\u00e9", "familyName": "Dupont", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.given_name, "Ren\u00e9")
+
+	def test_sent_names_with_fewer_accents_are_not_applied(self):
+		unidentified = Person.objects.create(given_name="José", family_name="García", identifier="")
+		identified = Person.objects.create(given_name="Zoë", family_name="Brontë", identifier=self.OTHER_ORCID)
+		self.software.authors.set([unidentified, identified])
+
+		response = self._patch({"authors": [
+			{"givenName": "Jose", "familyName": "Garcia", "identifier": self.ORCID},
+			{"givenName": "Zoë", "familyName": "Bronte", "identifier": self.OTHER_ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		unidentified.refresh_from_db()
+		identified.refresh_from_db()
+		self.assertEqual(
+			(unidentified.given_name, unidentified.family_name, unidentified.identifier),
+			("José", "García", self.ORCID),
+		)
+		self.assertEqual((identified.given_name, identified.family_name), ("Zoë", "Brontë"))
+		self.assertEqual(list(self.software.authors.all()), [unidentified, identified])
+
 	def test_unidentified_author_takes_identifier_and_resplit_together(self):
 		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier="")
 		self.software.authors.set([person])
@@ -586,13 +633,22 @@ class PersonSelectorTests(SharedRowTestCase):
 				self.assertIn("stored as 'Maria de Souza'", response.data["personId"])
 				self.assertEqual(self._snapshot(), before)
 
-	def test_case_and_hyphen_differences_take_the_sent_names(self):
-		for given, family in (("Maria", "De Souza"), ("Maria", "de-Souza")):
+	def test_spelling_differences_take_the_sent_names(self):
+		for given, family in (("Maria", "De Souza"), ("Maria", "de-Souza"), ("María", "de Souza")):
 			with self.subTest(given=given, family=family):
 				response = self._patch({"authors": [self._author(givenName=given, familyName=family)]})
 				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 				self.person.refresh_from_db()
 				self.assertEqual((self.person.given_name, self.person.family_name), (given, family))
+
+	def test_sent_names_with_fewer_accents_are_not_applied(self):
+		person = Person.objects.create(given_name="José", family_name="García")
+		response = self._patch({"authors": [
+			{"personId": str(person.pk), "givenName": "Jose", "familyName": "Garcia", "identifier": self.ORCID},
+		]})
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name, person.identifier), ("José", "García", self.ORCID))
 
 	def test_name_and_identifier_validation_still_applies(self):
 		before = self._snapshot()

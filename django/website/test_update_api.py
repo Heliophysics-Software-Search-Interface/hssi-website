@@ -434,6 +434,29 @@ class PersonRowTests(SharedRowTestCase):
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 		self.assertIn("givenName", response.data)
 
+	def test_same_person_listed_twice_rejected(self):
+		person = Person.objects.create(given_name="Ann", family_name="Lee", identifier=self.ORCID)
+		self.software.authors.set([person])
+		same_identifier = [
+			{"givenName": "Ann", "familyName": "Lee", "identifier": self.ORCID},
+			{"givenName": "A.", "familyName": "Lee", "identifier": self.ORCID},
+		]
+		same_name = [{"givenName": "Ben", "familyName": "Ng"}, {"givenName": "Ben", "familyName": "Ng"}]
+
+		for request in (
+			lambda: self._patch({"authors": same_identifier}),
+			lambda: self._patch({"authors": same_name}),
+			lambda: self._post(authors=same_identifier),
+		):
+			response = request()
+
+			self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+			self.assertIn("authors", response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Ann", "Lee"))
+		self.assertEqual(list(self.software.authors.all()), [person])
+		self.assertFalse(Person.objects.filter(family_name="Ng").exists())
+
 	def test_submission_api_does_not_resplit(self):
 		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
 
@@ -646,6 +669,19 @@ class PersonSelectorTests(SharedRowTestCase):
 					payload["authors"].append(self._author(personId=str(self.existing.pk)))
 				response = self._patch(payload)
 				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertEqual(self._snapshot(), before)
+
+	def test_selected_person_listed_twice_rejected(self):
+		before = self._snapshot()
+		for second in (
+			self._author(),
+			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+			{"givenName": "Maria", "familyName": "de Souza"},
+		):
+			with self.subTest(second=second):
+				response = self._patch({"authors": [self._author(), second]})
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertIn("authors", response.data)
 				self.assertEqual(self._snapshot(), before)
 
 

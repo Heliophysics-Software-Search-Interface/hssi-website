@@ -560,6 +560,11 @@ class SubmissionSerializer(HssiSerializer):
 				self._get_or_create_person(item, updating=self.instance)
 				for item in authors_data
 			]
+			repeated = next((a for i, a in enumerate(authors) if a in authors[:i]), None)
+			if repeated is not None:
+				raise serializers.ValidationError(
+					{"authors": f"{str(repeated).strip()} is listed more than once."}
+				)
 			for author, author_data in zip(authors, authors_data, strict=False):
 				affiliations = author_data.get("affiliation") or []
 				if isinstance(affiliations, list):

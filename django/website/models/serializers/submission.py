@@ -13,7 +13,6 @@ from django.utils import timezone
 from django.utils.dateparse import parse_date
 from rest_framework import serializers
 
-from ... import orcid
 from ..base import ControlledList, ControlledGraphList
 from ..license import License
 from ..organizations import Organization, Award
@@ -121,17 +120,6 @@ def _take_sent_names(person: Person, given_name: str, family_name: str) -> None:
 	if _accent_count(given_name, family_name) >= _accent_count(person.given_name, person.family_name):
 		person.given_name = given_name
 		person.family_name = family_name
-
-
-def _orcid_confirms(identifier: str | None, given_name: str, family_name: str) -> bool:
-	"""Whether the public ORCID record that ``identifier`` names gives the sent
-	full name, as ``_name_words`` compares them, without dropping its accents."""
-	name = orcid.public_name(identifier)
-	return (
-		name is not None
-		and _name_words(*name) == _name_words(given_name, family_name)
-		and _accent_count(given_name, family_name) >= _accent_count(*name)
-	)
 
 
 class SubmissionSerializer(HssiSerializer):
@@ -283,9 +271,7 @@ class SubmissionSerializer(HssiSerializer):
 		"""Bind an explicitly selected PATCH author without name-based fallback.
 
 		A sent name with other words than the stored one renames the person,
-		on every record that lists them, only when the entry sets ``rename``
-		and the person is stored with an ORCID iD whose public record gives
-		that name (``_orcid_confirms``).
+		on every record that lists them, only when the entry sets ``rename``.
 		"""
 		selector = data["person_id"]
 		if not isinstance(selector, str):
@@ -303,10 +289,10 @@ class SubmissionSerializer(HssiSerializer):
 			given_name = self._normalize_term(given_name, "givenName")
 		family_name = self._normalize_term(data.get("family_name"), "familyName")
 		renamed = _name_words(person.given_name, person.family_name) != _name_words(given_name, family_name)
-		if renamed and not (data.get("rename") is True and _orcid_confirms(person.identifier, given_name, family_name)):
+		if renamed and data.get("rename") is not True:
 			raise serializers.ValidationError({
 				"personId": "Submitted full name must match the selected Person, stored as "
-				f"'{person.fullName.strip()}', unless rename is true and it's the name on the person's ORCID record.",
+				f"'{person.fullName.strip()}'. Send rename: true to change it on every record that lists them.",
 			})
 
 		identifier = self._validate_url(self._strip_string(data.get("identifier")))
@@ -318,8 +304,8 @@ class SubmissionSerializer(HssiSerializer):
 			person.identifier = identifier
 		if renamed:
 			logger.info(
-				"PATCH of Software %s renamed Person %s from '%s' to '%s %s', as ORCID record %s gives it.",
-				self.instance.pk, person.pk, person.fullName.strip(), given_name, family_name, person.identifier,
+				"PATCH of Software %s renamed Person %s from '%s' to '%s %s'.",
+				self.instance.pk, person.pk, person.fullName.strip(), given_name, family_name,
 			)
 			person.given_name = given_name
 			person.family_name = family_name

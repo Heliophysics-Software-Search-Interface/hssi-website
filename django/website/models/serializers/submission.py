@@ -213,8 +213,10 @@ class SubmissionSerializer(HssiSerializer):
 		with the same full name (several are a 400), and the resolved Person
 		take the sent names when they spell the same full name, as
 		``_name_words`` compares them, and keep its accents
-		(``_take_sent_names``).
+		(``_take_sent_names``). ``rename`` needs a ``person_id``.
 		"""
+		if "rename" in data and "person_id" not in data:
+			raise serializers.ValidationError({"rename": "Only supported with personId."})
 		if "person_id" in data:
 			if updating is None:
 				raise serializers.ValidationError({"personId": "Only supported on PATCH authors."})
@@ -265,7 +267,13 @@ class SubmissionSerializer(HssiSerializer):
 		)
 
 	def _get_selected_person(self, data: dict[str, Any]) -> Person:
-		"""Bind an explicitly selected PATCH author without name-based fallback."""
+		"""Bind an explicitly selected PATCH author without name-based fallback.
+
+		A sent name with other words than the stored one renames the person,
+		on every record that lists them, only when the entry sets ``rename``,
+		and is then stored exactly as sent. The placeholder Person that
+		``Person.get_default_person`` returns can't be selected.
+		"""
 		selector = data["person_id"]
 		if not isinstance(selector, str):
 			raise serializers.ValidationError({"personId": "Expected a non-empty UUID string."})
@@ -276,14 +284,22 @@ class SubmissionSerializer(HssiSerializer):
 		person = Person.objects.filter(pk=person_id).first()
 		if person is None:
 			raise serializers.ValidationError({"personId": "No Person exists with this UUID."})
+		if person.given_name == "UNKNOWN":
+			raise serializers.ValidationError({"personId": "The UNKNOWN placeholder Person can't be selected."})
+		rename = data.get("rename", False)
+		if not isinstance(rename, bool):
+			raise serializers.ValidationError({"rename": "Expected true or false."})
 
 		given_name = self._strip_string(data.get("given_name")) or ""
 		if given_name or person.given_name:
 			given_name = self._normalize_term(given_name, "givenName")
 		family_name = self._normalize_term(data.get("family_name"), "familyName")
-		if _name_words(person.given_name, person.family_name) != _name_words(given_name, family_name):
+		renamed = _name_words(person.given_name, person.family_name) != _name_words(given_name, family_name)
+		if renamed and not rename:
 			raise serializers.ValidationError({
-				"personId": f"Submitted full name must match the selected Person, stored as '{person.fullName.strip()}'.",
+				"personId": "Submitted full name must match the selected Person, stored as "
+				f"'{person.fullName.strip()}'. Send \"rename\": true with personId to apply the new name "
+				"on every record that lists this person.",
 			})
 
 		identifier = self._validate_url(self._strip_string(data.get("identifier")))
@@ -293,7 +309,11 @@ class SubmissionSerializer(HssiSerializer):
 			if Person.objects.filter(identifier=identifier).exclude(pk=person.pk).exists():
 				raise serializers.ValidationError({"identifier": "Identifier belongs to another Person."})
 			person.identifier = identifier
-		_take_sent_names(person, given_name, family_name)
+		if renamed:
+			person.given_name = given_name
+			person.family_name = family_name
+		else:
+			_take_sent_names(person, given_name, family_name)
 		person.save()
 		return person
 

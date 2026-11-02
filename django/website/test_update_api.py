@@ -740,6 +740,111 @@ class PersonSelectorTests(SharedRowTestCase):
 				self.assertIn("authors", response.data)
 				self.assertEqual(self._snapshot(), before)
 
+	def _misspelled(self) -> Person:
+		"""A person another record lists, stored without an identifier and with a misspelled given name."""
+		person = Person.objects.create(given_name="Jeffery", family_name="Garretson")
+		self.other.authors.add(person)
+		return person
+
+	def _rename(self, person: Person, **fields) -> dict:
+		return {"personId": str(person.pk), "givenName": "Jeffrey", "familyName": "Garretson", "rename": True, **fields}
+
+	def test_rename_changes_a_shared_persons_name(self):
+		person = self._misspelled()
+		people_before = Person.objects.count()
+
+		response = self._patch({"authors": [self._rename(person)]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name, person.identifier), ("Jeffrey", "Garretson", None))
+		self.assertEqual(list(self.software.authors.all()), [person])
+		self.assertEqual(list(self.other.authors.all()), [self.person, person])
+		self.assertEqual(Person.objects.count(), people_before)
+
+	def test_other_words_need_rename_true(self):
+		person = self._misspelled()
+		before = self._snapshot()
+		for fields in ({}, {"rename": False}):
+			with self.subTest(fields=fields):
+				author = {"personId": str(person.pk), "givenName": "Jeffrey", "familyName": "Garretson", **fields}
+				response = self._patch({"authors": [author]})
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertIn("stored as 'Jeffery Garretson'", response.data["personId"])
+				self.assertEqual(self._snapshot(), before)
+
+	def test_rename_must_be_a_boolean(self):
+		person = self._misspelled()
+		before = self._snapshot()
+		for given in ("Jeffery", "Jeffrey"):
+			for rename in (None, "true", "false", 1, 0, [], {}):
+				with self.subTest(given=given, rename=rename):
+					response = self._patch({"authors": [self._rename(person, givenName=given, rename=rename)]})
+					self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+					self.assertIn("rename", response.data)
+					self.assertEqual(self._snapshot(), before)
+
+	def test_rename_needs_person_id(self):
+		person = self._misspelled()
+		before = self._snapshot()
+		author = {"givenName": "Jeffrey", "familyName": "Garretson", "rename": True}
+		for request in (lambda: self._patch({"authors": [author]}), lambda: self._post(authors=[author])):
+			response = request()
+			self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+			self.assertEqual(response.data["rename"], "Only supported with personId.")
+			self.assertEqual(self._snapshot(), before)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Jeffery", "Garretson"))
+
+	def test_rename_takes_the_sent_spelling_but_the_same_words_keep_stored_accents(self):
+		for stored, expected in (
+			# Other words: the sent spelling exactly, accents included.
+			(("José", "Garcai"), ("Jose", "Garcia")),
+			# The same words: the stored accents stay, as without rename.
+			(("José", "García"), ("José", "García")),
+		):
+			with self.subTest(stored=stored):
+				person = Person.objects.create(given_name=stored[0], family_name=stored[1])
+				response = self._patch({"authors": [
+					{"personId": str(person.pk), "givenName": "Jose", "familyName": "Garcia", "rename": True},
+				]})
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				person.refresh_from_db()
+				self.assertEqual((person.given_name, person.family_name), expected)
+
+	def test_placeholder_person_cannot_be_selected(self):
+		placeholder = Person.objects.create(given_name="UNKNOWN", family_name="UNKNOWN")
+		before = self._snapshot()
+		for author in (
+			{"personId": str(placeholder.pk), "givenName": "UNKNOWN", "familyName": "UNKNOWN", "identifier": self.ORCID},
+			{"personId": str(placeholder.pk), "givenName": "Jane", "familyName": "Doe", "rename": True},
+		):
+			with self.subTest(author=author):
+				response = self._patch({"authors": [author]})
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertIn("personId", response.data)
+				placeholder.refresh_from_db()
+				self.assertEqual(
+					(placeholder.given_name, placeholder.family_name, placeholder.identifier),
+					("UNKNOWN", "UNKNOWN", None),
+				)
+				self.assertEqual(self._snapshot(), before)
+
+	def test_failed_patch_rolls_back_a_rename(self):
+		person = self._misspelled()
+		before = self._snapshot()
+		unknown = {"personId": str(uuid.uuid4()), "givenName": "Ann", "familyName": "Lee"}
+		for payload in (
+			{"authors": [self._rename(person)], "programmingLanguage": ["Unknown language"]},
+			{"authors": [self._rename(person), unknown]},
+		):
+			with self.subTest(payload=payload):
+				response = self._patch(payload)
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				person.refresh_from_db()
+				self.assertEqual((person.given_name, person.family_name), ("Jeffery", "Garretson"))
+				self.assertEqual(self._snapshot(), before)
+
 
 class AwardRowTests(SharedRowTestCase):
 	"""How award items resolve to Award rows."""

@@ -358,6 +358,18 @@ otherwise fall back to matching on a combination of `givenName` + `familyName`
 * `identifier` - url
 * `affiliation` - array of [`Organization`](#organization) objects
 
+Two more fields are rejected here. Only an update's authors accept them, with
+`PATCH /api/data/software/{id}/` (see the
+[Submission API reference](../docs/api_reference/submission_api.md#patch-apidatasoftwareid)):
+
+* `personId` - UUID string selecting an existing person, other than the
+  placeholder person stored with the given name `UNKNOWN`, which is rejected
+* `rename` - boolean, only with `personId`. Any other value is rejected, even
+  when the names match. With `true`, a selected person whose stored name has
+  other words takes the sent names on every record that lists them, spelled
+  exactly as sent, accents included. Without it, other words are rejected.
+  Names with the same words keep the stored accents either way.
+
 ### Submitter
 
 References `Submitter` table in database, hard match on `email`

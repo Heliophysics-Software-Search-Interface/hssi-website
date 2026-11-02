@@ -53,7 +53,8 @@ categories), `relatedRegion`, `relatedPhenomena`, `dataSources`, `keywords`
   PATCH below, there's no whitelist check here. A typo'd field name (e.g.
   `sofwareName`) won't error; it just won't do anything, and the record
   will fail the *required*-field check instead if that typo was on a
-  required field.
+  required field. The same goes for unrecognized keys inside `authors`
+  entries and their `affiliation` objects.
 
 **Side effects on success:** a 90-day software-edit-queue entry is created
 per record, and the submitter is emailed an edit link.
@@ -162,6 +163,17 @@ lookup rules as the read endpoints). Unknown/unpublished `{id}` →
   non-empty list replaces the whole set (it does not append).
 - Unrecognized keys are rejected individually:
   `400 {"<key>": "Unknown field."}`.
+- So are unrecognized keys inside `authors` entries, keyed by their path. An
+  entry may carry only `givenName`, `familyName`, `identifier`, `affiliation`,
+  `personId` and `rename`, and an `affiliation` object only `name` and
+  `identifier`, so a typo such as `"renmae"` is
+  `400 {"authors[0].renmae": "Unknown field."}` instead of being ignored. The
+  `id` that `GET /api/view/software/{id-or-slug}/` gives an author isn't
+  accepted either: send it as `personId`.
+- `authors` must be an array of objects, and an `affiliation` an array of
+  objects or `null`. Anything else is a `400` keyed by its path, such as
+  `{"authors[1]": "Expected an object."}` or
+  `{"authors[0].affiliation": "Expected an array."}`.
 - `authors` entries resolve to person records that other software may share. Without `personId`, a person matched by `identifier` keeps its stored names (only empty ones are filled). On updates only, where "the same" name means the same words in the same order, ignoring capitalization, accents and hyphens, however `givenName` and `familyName` split them:
   - An `identifier` that matches no person is attached to this record's current author with the same full name and no identifier, instead of creating a new person. Authors of other records, and authors with a different identifier, are never matched. If more than one current author has that full name and no identifier, it's a `400`.
   - A person resolved by `identifier` with the same full name takes the sent names (stored `Maria de` / `Souza`, sent `Maria` / `De Souza`), so one PATCH can attach an ORCID and correct the split, capitalization, accents or hyphens together. Sent names with fewer accents than the stored ones are not applied, so a source that drops accents can't remove them. A different full name is not applied.

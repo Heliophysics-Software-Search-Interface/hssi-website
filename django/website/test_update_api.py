@@ -850,6 +850,107 @@ class PersonSelectorTests(SharedRowTestCase):
 				self.assertEqual(self._snapshot(), before)
 
 
+class AuthorEntryKeyTests(SharedRowTestCase):
+	"""A PATCH accepts only known keys, in the right shapes, inside author entries."""
+
+	@classmethod
+	def setUpTestData(cls):
+		super().setUpTestData()
+		cls.ann = Person.objects.create(given_name="Ann", family_name="Lee")
+		cls.software.authors.set([cls.ann])
+
+	def _ann(self, **fields):
+		return {"givenName": "Ann", "familyName": "Lee", **fields}
+
+	def _snapshot(self):
+		return {
+			model.__name__: list(model.objects.order_by("pk").values())
+			for model in (Software, Person, Organization, Software.authors.through, Person.affiliation.through)
+		}
+
+	def _rejected(self, authors) -> dict:
+		"""PATCH ``authors``, check it's a 400 that changes nothing, and return the error as rendered."""
+		before = self._snapshot()
+		response = self._patch({"authors": authors})
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+		self.assertEqual(self._snapshot(), before)
+		return json.loads(response.content)
+
+	def test_unknown_author_keys_are_rejected_by_path(self):
+		error = self._rejected([
+			self._ann(),
+			{"givenName": "Ben", "familyName": "Ng", "identifer": self.ORCID, "orcidId": self.ORCID},
+		])
+		self.assertEqual(error, {"authors[1].identifer": "Unknown field.", "authors[1].orcidId": "Unknown field."})
+
+	def test_unknown_affiliation_keys_are_rejected_by_path(self):
+		error = self._rejected([
+			self._ann(),
+			{"givenName": "Ben", "familyName": "Ng", "affiliation": [
+				{"name": "Example Lab", "identifier": "https://ror.org/00example"},
+				{"name": "Example University", "identifer": "https://ror.org/00example2"},
+			]},
+		])
+		self.assertEqual(error, {"authors[1].affiliation[1].identifer": "Unknown field."})
+
+	def test_an_id_copied_from_a_get_is_rejected_with_a_hint(self):
+		error = self._rejected([self._ann(id=str(self.ann.pk))])
+		self.assertEqual(error, {"authors[0].id": "Unknown field. Send a person's id as personId."})
+
+	def test_misspelled_rename_is_rejected(self):
+		for given in ("Ann", "Anne"):
+			with self.subTest(given=given):
+				error = self._rejected([{"personId": str(self.ann.pk), "givenName": given, "familyName": "Lee", "renmae": True}])
+				self.assertEqual(error, {"authors[0].renmae": "Unknown field."})
+
+	def test_wrong_shapes_are_rejected_by_path(self):
+		for authors, expected in (
+			("Ann Lee", {"authors": "Expected an array."}),
+			(None, {"authors": "Expected an array."}),
+			(["Ann Lee"], {"authors[0]": "Expected an object."}),
+			([self._ann(), 5], {"authors[1]": "Expected an object."}),
+			([self._ann(affiliation="Example Lab")], {"authors[0].affiliation": "Expected an array."}),
+			([self._ann(affiliation=["Example Lab"])], {"authors[0].affiliation[0]": "Expected an object."}),
+		):
+			with self.subTest(authors=authors):
+				self.assertEqual(self._rejected(authors), expected)
+
+	def test_documented_author_keys_still_pass(self):
+		jane = Person.objects.create(given_name="Jnae", family_name="Doe")
+		for authors in (
+			# The API reference's examples: add a person from another record, then correct their name.
+			[{"givenName": "Michael", "familyName": "Hirsch"},
+				{"personId": str(jane.pk), "givenName": "Jnae", "familyName": "Doe", "identifier": "https://orcid.org/0000-0000-0000-0000"}],
+			[{"givenName": "Michael", "familyName": "Hirsch"},
+				{"personId": str(jane.pk), "givenName": "Jane", "familyName": "Doe", "rename": True}],
+			# Every other key, and an affiliation of null.
+			[self._ann(identifier=self.ORCID, affiliation=[{"name": "Example Lab", "identifier": "https://ror.org/00example"}]),
+				{"personId": str(jane.pk), "givenName": "Jane", "familyName": "Doe", "rename": False, "affiliation": None}],
+		):
+			with self.subTest(authors=authors):
+				response = self._patch({"authors": authors})
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		jane.refresh_from_db()
+		self.assertEqual((jane.given_name, jane.family_name), ("Jane", "Doe"))
+
+	def test_post_is_unchanged(self):
+		for authors, expected, key in (
+			# Unknown keys, and an affiliation that isn't an array, are still ignored.
+			([self._ann(identifer=self.ORCID, affiliation="Example Lab")], status.HTTP_201_CREATED, None),
+			([self._ann(affiliation=[{"name": "Example Lab", "identifer": "https://ror.org/00example"}])],
+				status.HTTP_201_CREATED, None),
+			# The 400s POST already returns keep their keys.
+			([self._ann(affiliation=["Example Lab"])], status.HTTP_400_BAD_REQUEST, "affiliation"),
+			([self._ann(personId=str(self.ann.pk))], status.HTTP_400_BAD_REQUEST, "personId"),
+			([self._ann(rename=True)], status.HTTP_400_BAD_REQUEST, "rename"),
+		):
+			with self.subTest(authors=authors):
+				response = self._post(authors=authors)
+				self.assertEqual(response.status_code, expected, response.data)
+				if key:
+					self.assertEqual(list(json.loads(response.content)), [key])
+
+
 class AwardRowTests(SharedRowTestCase):
 	"""How award items resolve to Award rows."""
 

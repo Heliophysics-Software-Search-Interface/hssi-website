@@ -643,12 +643,14 @@ class PersonSelectorTests(SharedRowTestCase):
 
 	def test_sent_names_with_fewer_accents_are_not_applied(self):
 		person = Person.objects.create(given_name="José", family_name="García")
-		response = self._patch({"authors": [
-			{"personId": str(person.pk), "givenName": "Jose", "familyName": "Garcia", "identifier": self.ORCID},
-		]})
-		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
-		person.refresh_from_db()
-		self.assertEqual((person.given_name, person.family_name, person.identifier), ("José", "García", self.ORCID))
+		for fields in ({}, {"rename": False}):
+			with self.subTest(fields=fields):
+				response = self._patch({"authors": [
+					{"personId": str(person.pk), "givenName": "Jose", "familyName": "Garcia", "identifier": self.ORCID, **fields},
+				]})
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				person.refresh_from_db()
+				self.assertEqual((person.given_name, person.family_name, person.identifier), ("José", "García", self.ORCID))
 
 	def test_name_and_identifier_validation_still_applies(self):
 		before = self._snapshot()
@@ -796,21 +798,23 @@ class PersonSelectorTests(SharedRowTestCase):
 		person.refresh_from_db()
 		self.assertEqual((person.given_name, person.family_name), ("Jeffery", "Garretson"))
 
-	def test_rename_takes_the_sent_spelling_but_the_same_words_keep_stored_accents(self):
-		for stored, expected in (
-			# Other words: the sent spelling exactly, accents included.
+	def test_rename_takes_the_sent_names_even_with_the_same_words(self):
+		for stored, sent in (
+			# Other words.
 			(("José", "Garcai"), ("Jose", "Garcia")),
-			# The same words: the stored accents stay, as without rename.
-			(("José", "García"), ("José", "García")),
+			# The same words, with a wrong accent removed.
+			(("Josè", "Garcia"), ("Jose", "Garcia")),
+			# The same words, trimmed.
+			(("José", "García"), (" Jose ", " Garcia ")),
 		):
-			with self.subTest(stored=stored):
+			with self.subTest(stored=stored, sent=sent):
 				person = Person.objects.create(given_name=stored[0], family_name=stored[1])
 				response = self._patch({"authors": [
-					{"personId": str(person.pk), "givenName": "Jose", "familyName": "Garcia", "rename": True},
+					{"personId": str(person.pk), "givenName": sent[0], "familyName": sent[1], "rename": True},
 				]})
 				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 				person.refresh_from_db()
-				self.assertEqual((person.given_name, person.family_name), expected)
+				self.assertEqual((person.given_name, person.family_name), ("Jose", "Garcia"))
 
 	def test_placeholder_person_cannot_be_selected(self):
 		placeholder = Person.objects.create(given_name="UNKNOWN", family_name="UNKNOWN")

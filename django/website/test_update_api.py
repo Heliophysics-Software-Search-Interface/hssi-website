@@ -7,13 +7,16 @@ available (Django creates one automatically via ``manage.py test``).
 """
 
 import datetime, json, uuid
+from unittest import mock
 from urllib.parse import urlsplit
 
-from django.test import TestCase, override_settings
+import requests
+from django.test import SimpleTestCase, TestCase, override_settings
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from . import orcid
 from .models import (
 	Award,
 	Keyword,
@@ -739,6 +742,145 @@ class PersonSelectorTests(SharedRowTestCase):
 				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
 				self.assertIn("authors", response.data)
 				self.assertEqual(self._snapshot(), before)
+
+	def _misspelled(self) -> Person:
+		"""A person another record lists, stored with an ORCID iD and a misspelled given name."""
+		person = Person.objects.create(given_name="Jeffery", family_name="Garretson", identifier=self.ORCID)
+		self.other.authors.add(person)
+		return person
+
+	@mock.patch("website.orcid.public_name", return_value=("Jeffrey", "Garretson"))
+	def test_name_on_the_orcid_record_renames_a_shared_person(self, public_name):
+		person = self._misspelled()
+		people_before = Person.objects.count()
+
+		with self.assertLogs("website.models.serializers.submission", "INFO") as logs:
+			response = self._patch({"authors": [{
+				"personId": str(person.pk), "givenName": "Jeffrey", "familyName": "Garretson",
+				"identifier": self.ORCID, "rename": True,
+			}]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		public_name.assert_called_once_with(self.ORCID)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name, person.identifier), ("Jeffrey", "Garretson", self.ORCID))
+		self.assertEqual(list(self.software.authors.all()), [person])
+		self.assertEqual(list(self.other.authors.all()), [self.person, person])
+		self.assertEqual(Person.objects.count(), people_before)
+		self.assertIn("from 'Jeffery Garretson' to 'Jeffrey Garretson'", logs.output[0])
+
+	def test_rename_rejected_unless_the_orcid_record_gives_that_name(self):
+		person = self._misspelled()
+		before = self._snapshot()
+		# None stands for a record that hides its name or can't be read.
+		for orcid_name in (("Jeffery", "Garretson"), ("Geoffrey", "Garretson"), None):
+			with self.subTest(orcid_name=orcid_name), mock.patch("website.orcid.public_name", return_value=orcid_name):
+				response = self._patch({"authors": [
+					{"personId": str(person.pk), "givenName": "Jeffrey", "familyName": "Garretson", "rename": True},
+				]})
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertIn("stored as 'Jeffery Garretson'", response.data["personId"])
+				self.assertEqual(self._snapshot(), before)
+
+	@mock.patch("website.orcid.requests.get")
+	def test_rename_needs_an_orcid_stored_before_the_request(self, get):
+		# The request's own identifier, which would fill the empty one, doesn't count.
+		for stored in ("", "https://github.com/example"):
+			with self.subTest(stored=stored):
+				Person.objects.filter(pk=self.person.pk).update(identifier=stored)
+				before = self._snapshot()
+				response = self._patch({"authors": [self._author(givenName="Mary", rename=True)]})
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertIn("personId", response.data)
+				self.assertEqual(self._snapshot(), before)
+		get.assert_not_called()
+
+	def test_rename_keeps_the_orcid_records_accents(self):
+		person = Person.objects.create(given_name="Jose", family_name="Garsia", identifier=self.ORCID)
+		with mock.patch("website.orcid.public_name", return_value=("José", "García")):
+			dropped = self._patch({"authors": [
+				{"personId": str(person.pk), "givenName": "Jose", "familyName": "Garcia", "rename": True},
+			]})
+			kept = self._patch({"authors": [
+				{"personId": str(person.pk), "givenName": "José", "familyName": "García", "rename": True},
+			]})
+
+		self.assertEqual(dropped.status_code, status.HTTP_400_BAD_REQUEST, dropped.data)
+		self.assertEqual(kept.status_code, status.HTTP_200_OK, kept.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("José", "García"))
+
+	@mock.patch("website.orcid.requests.get")
+	def test_only_a_requested_rename_reads_orcid(self, get):
+		person = self._misspelled()
+		for author, expected in (
+			# The same words, so nothing to rename.
+			({"personId": str(person.pk), "givenName": "Jeffery", "familyName": "Garretson", "rename": True},
+				status.HTTP_200_OK),
+			# Other words without rename stay a 400.
+			({"personId": str(person.pk), "givenName": "Jeffrey", "familyName": "Garretson"},
+				status.HTTP_400_BAD_REQUEST),
+			# Without personId, other words are ignored as before.
+			({"givenName": "Jeffrey", "familyName": "Garretson", "identifier": self.ORCID, "rename": True},
+				status.HTTP_200_OK),
+		):
+			with self.subTest(author=author):
+				response = self._patch({"authors": [author]})
+				self.assertEqual(response.status_code, expected, response.data)
+		get.assert_not_called()
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Jeffery", "Garretson"))
+
+
+class OrcidClientTests(SimpleTestCase):
+	"""Reading the public name on an ORCID record."""
+
+	ORCID = "https://orcid.org/0000-0000-0000-0001"
+
+	def _response(self, status_code: int = 200, content: bytes = b"{}") -> requests.Response:
+		fake = requests.Response()
+		fake.status_code = status_code
+		fake._content = content
+		return fake
+
+	@mock.patch("website.orcid.requests.get")
+	def test_reads_the_given_and_family_names(self, get):
+		get.return_value = self._response(content=json.dumps({"name": {
+			"given-names": {"value": "Jeffrey"},
+			"family-name": {"value": "Garretson"},
+			"credit-name": None,
+		}}).encode())
+
+		self.assertEqual(orcid.public_name(self.ORCID), ("Jeffrey", "Garretson"))
+		get.assert_called_once_with(
+			"https://pub.orcid.org/v3.0/0000-0000-0000-0001/personal-details",
+			headers={"Accept": "application/json"},
+			timeout=orcid.TIMEOUT,
+		)
+
+	@mock.patch("website.orcid.requests.get")
+	def test_no_name_when_the_record_hides_it_or_cant_be_read(self, get):
+		for response in (
+			self._response(content=b'{"name": null}'),
+			self._response(content=b'{"name": {"given-names": null, "family-name": null}}'),
+			self._response(content=b"<html></html>"),
+			self._response(404),
+			self._response(503),
+		):
+			with self.subTest(status=response.status_code, content=response.content):
+				get.return_value = response
+				self.assertIsNone(orcid.public_name(self.ORCID))
+		for error in (requests.Timeout(), requests.ConnectionError()):
+			with self.subTest(error=error):
+				get.side_effect = error
+				self.assertIsNone(orcid.public_name(self.ORCID))
+
+	@mock.patch("website.orcid.requests.get")
+	def test_reads_only_orcid_ids(self, get):
+		for identifier in (None, "", "https://github.com/example", "https://orcid.org/0000-0000-0000-000"):
+			with self.subTest(identifier=identifier):
+				self.assertIsNone(orcid.public_name(identifier))
+		get.assert_not_called()
 
 
 class AwardRowTests(SharedRowTestCase):

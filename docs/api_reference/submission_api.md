@@ -169,6 +169,7 @@ lookup rules as the read endpoints). Unknown/unpublished `{id}` →
 - `personId` (PATCH only) selects an existing person by UUID, including one linked only to other records, so one request can add that person here and fill in their `identifier`. The UUID is the person's `id` in the `authors` of `GET /api/view/software/{id-or-slug}/`. A `personId` replaces the lookups above: it never falls back to another person or creates one.
   - It must be a UUID string naming an existing person; anything else, including empty or `null`, is a `400`.
   - The sent name must be the same full name as the person's, or it's a `400` that says how the person is stored. The person then takes the sent names, as above. An empty or missing `givenName` is accepted only when the person has none.
+  - One exception corrects a misspelled name. With `"rename": true` in the same entry, a person already stored with an ORCID iD takes sent names with other words when they're the same full name as the given and family names on that person's public ORCID record, with at least the record's accents. Only such a request makes the server read the record, from `pub.orcid.org`. If the person has no ORCID iD, or the record gives another name, hides it or can't be read, it's the `400` above and nothing changes. An ORCID iD that the same request fills in doesn't count. Without `"rename": true`, other words are always the `400`.
   - An `identifier` must be a URL. It may fill an empty identifier or repeat the stored one; a different stored identifier, or one another person holds, is a `400`. Omitting it, or sending it empty, leaves the stored identifier unchanged.
   - The changes show on every record that lists the person, so confirm the UUID is the right person before sending it.
 
@@ -249,6 +250,24 @@ curl -X PATCH https://hssi.hsdcloud.org/api/data/software/pymap3d/ \
 ```
 
 The person stays on their other records, which now show the ORCID too.
+
+### Example — correct a misspelled name
+
+The second author is stored as "Jnae Doe" with an ORCID iD whose public record gives "Jane Doe":
+
+```bash
+curl -X PATCH https://hssi.hsdcloud.org/api/data/software/pymap3d/ \
+  -H "Authorization: Bearer $HSSI_UPDATE_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "authors": [
+      {"givenName": "Michael", "familyName": "Hirsch"},
+      {"personId": "<person id>", "givenName": "Jane", "familyName": "Doe", "rename": true}
+    ]
+  }'
+```
+
+Every record that lists the person now shows "Jane Doe".
 
 ### Error examples
 

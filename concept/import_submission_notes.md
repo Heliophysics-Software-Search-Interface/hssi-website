@@ -365,10 +365,10 @@ Two more fields are rejected here. Only an update's authors accept them, with
 * `personId` - UUID string selecting an existing person, other than the
   placeholder person stored with the given name `UNKNOWN`, which is rejected
 * `rename` - boolean, only with `personId`. Any other value is rejected, even
-  when the names match. With `true`, a selected person whose stored name has
-  other words takes the sent names on every record that lists them, spelled
-  exactly as sent, accents included. Without it, other words are rejected.
-  Names with the same words keep the stored accents either way.
+  when the names match. With `true`, the selected person takes the sent names
+  on every record that lists them, spelled exactly as sent, accents included,
+  whether or not their words differ. Without it, other words are rejected, and
+  names with the same words keep the stored accents.
 
 ### Submitter
 

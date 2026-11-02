@@ -269,9 +269,10 @@ class SubmissionSerializer(HssiSerializer):
 	def _get_selected_person(self, data: dict[str, Any]) -> Person:
 		"""Bind an explicitly selected PATCH author without name-based fallback.
 
-		A sent name with other words than the stored one renames the person,
-		on every record that lists them, only when the entry sets ``rename``,
-		and is then stored exactly as sent. The placeholder Person that
+		With ``rename``, the person takes the sent names exactly as sent, on
+		every record that lists them, whether or not their words differ.
+		Without it, other words are a 400 and the same words keep the stored
+		accents (``_take_sent_names``). The placeholder Person that
 		``Person.get_default_person`` returns can't be selected.
 		"""
 		selector = data["person_id"]
@@ -309,7 +310,7 @@ class SubmissionSerializer(HssiSerializer):
 			if Person.objects.filter(identifier=identifier).exclude(pk=person.pk).exists():
 				raise serializers.ValidationError({"identifier": "Identifier belongs to another Person."})
 			person.identifier = identifier
-		if renamed:
+		if rename:
 			person.given_name = given_name
 			person.family_name = family_name
 		else:

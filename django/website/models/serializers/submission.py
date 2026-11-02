@@ -96,6 +96,43 @@ _USER_LIST_FIELDS: tuple[str, ...] = (
 	"award",
 )
 
+# Every snake-case key a PATCH accepts in an ``authors`` entry, and in each
+# object of its ``affiliation``.
+_AUTHOR_FIELDS: frozenset[str] = frozenset({
+	"given_name",
+	"family_name",
+	"identifier",
+	"affiliation",
+	"person_id",
+	"rename",
+})
+_AFFILIATION_FIELDS: frozenset[str] = frozenset({"name", "identifier"})
+
+
+def _author_entry_errors(authors: list[Any]) -> dict[str, str]:
+	"""Errors for ``authors`` entries, or their ``affiliation`` objects, that
+	aren't objects or carry unknown keys, keyed by path such as
+	``authors[1].affiliation[0].identifer``."""
+	errors: dict[str, str] = {}
+	for i, author in enumerate(authors):
+		path = f"authors[{i}]"
+		if not isinstance(author, dict):
+			errors[path] = "Expected an object."
+			continue
+		for key in sorted(author.keys() - _AUTHOR_FIELDS):
+			errors[f"{path}.{key}"] = "Unknown field. Send a person's id as personId." if key == "id" else "Unknown field."
+		affiliations = author.get("affiliation")
+		if affiliations is not None and not isinstance(affiliations, list):
+			errors[f"{path}.affiliation"] = "Expected an array."
+			continue
+		for j, org in enumerate(affiliations or []):
+			if not isinstance(org, dict):
+				errors[f"{path}.affiliation[{j}]"] = "Expected an object."
+				continue
+			for key in sorted(org.keys() - _AFFILIATION_FIELDS):
+				errors[f"{path}.affiliation[{j}].{key}"] = "Unknown field."
+	return errors
+
 
 # Accent marks, once Unicode's NFD form has split them from their letters.
 _ACCENTS = re.compile(r"[\u0300-\u036f]")
@@ -463,6 +500,11 @@ class SubmissionSerializer(HssiSerializer):
 			raise serializers.ValidationError({"submitter": "Expected an array."})
 		if "authors" in data and not isinstance(data["authors"], list):
 			raise serializers.ValidationError({"authors": "Expected an array."})
+		# A PATCH also rejects unknown keys and wrong shapes inside authors.
+		if self.partial and "authors" in data:
+			author_errors = _author_entry_errors(data["authors"])
+			if author_errors:
+				raise serializers.ValidationError(author_errors)
 
 		for field in _USER_LIST_FIELDS:
 			if field in data and data[field] is not None and not isinstance(data[field], list):
@@ -612,6 +654,8 @@ class SubmissionSerializer(HssiSerializer):
 				)
 			for author, author_data in zip(authors, authors_data, strict=False):
 				affiliations = author_data.get("affiliation") or []
+				# These two shape checks only matter on a POST. A PATCH has
+				# already rejected the same shapes (_author_entry_errors).
 				if isinstance(affiliations, list):
 					for org_data in affiliations:
 						if not isinstance(org_data, dict):

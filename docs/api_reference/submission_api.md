@@ -169,7 +169,10 @@ lookup rules as the read endpoints). Unknown/unpublished `{id}` →
   `identifier`, so a typo such as `"renmae"` is
   `400 {"authors[0].renmae": "Unknown field."}` instead of being ignored. The
   `id` that `GET /api/view/software/{id-or-slug}/` gives an author isn't
-  accepted either: send it as `personId`.
+  accepted either: send it as `personId`. Keys inside the other objects
+  (`publisher`, `funder`, `award`, `version`, `relatedInstruments` and
+  `relatedObservatories`) aren't checked yet, so unrecognized ones there are
+  still ignored.
 - `authors` must be an array of objects, and an `affiliation` an array of
   objects or `null`. Anything else is a `400` keyed by its path, such as
   `{"authors[1]": "Expected an object."}` or

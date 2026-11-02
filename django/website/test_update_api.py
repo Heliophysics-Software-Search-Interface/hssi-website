@@ -216,6 +216,16 @@ class SharedRowTestCase(TestCase):
 			**fields,
 		}], format="json")
 
+	def _snapshot(self):
+		"""The rows these tests' PATCHes can change, to check that a failed one changed nothing."""
+		return {
+			model.__name__: list(model.objects.order_by("pk").values())
+			for model in (
+				Software, Person, Organization, SubmissionInfo,
+				Software.authors.through, Person.affiliation.through,
+			)
+		}
+
 
 class PersonRowTests(SharedRowTestCase):
 	"""How authors resolve to Person rows."""
@@ -541,15 +551,6 @@ class PersonSelectorTests(SharedRowTestCase):
 			**fields,
 		}
 
-	def _snapshot(self):
-		return {
-			model.__name__: list(model.objects.order_by("pk").values())
-			for model in (
-				Software, Person, Organization, SubmissionInfo,
-				Software.authors.through, Person.affiliation.through,
-			)
-		}
-
 	def test_adds_and_enriches_shared_person_in_one_patch(self):
 		people_before = Person.objects.count()
 		response = self._patch({"authors": [
@@ -862,12 +863,6 @@ class AuthorEntryKeyTests(SharedRowTestCase):
 	def _ann(self, **fields):
 		return {"givenName": "Ann", "familyName": "Lee", **fields}
 
-	def _snapshot(self):
-		return {
-			model.__name__: list(model.objects.order_by("pk").values())
-			for model in (Software, Person, Organization, Software.authors.through, Person.affiliation.through)
-		}
-
 	def _rejected(self, authors) -> dict:
 		"""PATCH ``authors``, check it's a 400 that changes nothing, and return the error as rendered."""
 		before = self._snapshot()
@@ -916,22 +911,23 @@ class AuthorEntryKeyTests(SharedRowTestCase):
 				self.assertEqual(self._rejected(authors), expected)
 
 	def test_documented_author_keys_still_pass(self):
-		jane = Person.objects.create(given_name="Jnae", family_name="Doe")
-		for authors in (
-			# The API reference's examples: add a person from another record, then correct their name.
-			[{"givenName": "Michael", "familyName": "Hirsch"},
-				{"personId": str(jane.pk), "givenName": "Jnae", "familyName": "Doe", "identifier": "https://orcid.org/0000-0000-0000-0000"}],
-			[{"givenName": "Michael", "familyName": "Hirsch"},
-				{"personId": str(jane.pk), "givenName": "Jane", "familyName": "Doe", "rename": True}],
+		michael = {"givenName": "Michael", "familyName": "Hirsch"}
+		ann = self._ann(identifier=self.ORCID, affiliation=[{"name": "Example Lab", "identifier": "https://ror.org/00example"}])
+		for other, selected in (
+			# The API reference's examples: add a person from another record, and correct their name.
+			(michael, {"givenName": "Jnae", "familyName": "Doe", "identifier": "https://orcid.org/0000-0000-0000-0000"}),
+			(michael, {"givenName": "Jane", "familyName": "Doe", "rename": True}),
 			# Every other key, and an affiliation of null.
-			[self._ann(identifier=self.ORCID, affiliation=[{"name": "Example Lab", "identifier": "https://ror.org/00example"}]),
-				{"personId": str(jane.pk), "givenName": "Jane", "familyName": "Doe", "rename": False, "affiliation": None}],
+			(ann, {"givenName": "Jnae", "familyName": "Doe", "rename": False, "affiliation": None}),
 		):
-			with self.subTest(authors=authors):
-				response = self._patch({"authors": authors})
+			with self.subTest(selected=selected):
+				# A fresh person and author list, so no subtest depends on another.
+				self.software.authors.set([self.ann])
+				jane = Person.objects.create(given_name="Jnae", family_name="Doe")
+				response = self._patch({"authors": [other, {"personId": str(jane.pk), **selected}]})
 				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
-		jane.refresh_from_db()
-		self.assertEqual((jane.given_name, jane.family_name), ("Jane", "Doe"))
+				jane.refresh_from_db()
+				self.assertEqual((jane.given_name, jane.family_name), (selected["givenName"], "Doe"))
 
 	def test_post_is_unchanged(self):
 		for authors, expected, key in (

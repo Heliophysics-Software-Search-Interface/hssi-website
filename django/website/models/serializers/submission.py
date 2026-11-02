@@ -654,6 +654,8 @@ class SubmissionSerializer(HssiSerializer):
 				)
 			for author, author_data in zip(authors, authors_data, strict=False):
 				affiliations = author_data.get("affiliation") or []
+				# These two shape checks only matter on a POST. A PATCH has
+				# already rejected the same shapes (_author_entry_errors).
 				if isinstance(affiliations, list):
 					for org_data in affiliations:
 						if not isinstance(org_data, dict):

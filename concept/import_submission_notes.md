@@ -376,7 +376,10 @@ update's author entries are stricter: one may carry only the fields above
 (`givenName`, `familyName`, `identifier`, `affiliation`, `personId` and
 `rename`), and an `affiliation` object only `name` and `identifier`. Any other
 key, including the `id` a read gives an author, is rejected with a 400 that
-names its path, such as `authors[1].affiliation[0].identifer`.
+names its path, such as `authors[1].affiliation[0].identifer`. Keys inside an
+update's other objects (`publisher`, `funder`, `award`, `version`,
+`relatedInstruments` and `relatedObservatories`) aren't checked yet, so
+unrecognized ones there are still ignored.
 
 ### Submitter
 

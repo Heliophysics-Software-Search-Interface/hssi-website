@@ -643,12 +643,14 @@ class PersonSelectorTests(SharedRowTestCase):
 
 	def test_sent_names_with_fewer_accents_are_not_applied(self):
 		person = Person.objects.create(given_name="José", family_name="García")
-		response = self._patch({"authors": [
-			{"personId": str(person.pk), "givenName": "Jose", "familyName": "Garcia", "identifier": self.ORCID},
-		]})
-		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
-		person.refresh_from_db()
-		self.assertEqual((person.given_name, person.family_name, person.identifier), ("José", "García", self.ORCID))
+		for fields in ({}, {"rename": False}):
+			with self.subTest(fields=fields):
+				response = self._patch({"authors": [
+					{"personId": str(person.pk), "givenName": "Jose", "familyName": "Garcia", "identifier": self.ORCID, **fields},
+				]})
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				person.refresh_from_db()
+				self.assertEqual((person.given_name, person.family_name, person.identifier), ("José", "García", self.ORCID))
 
 	def test_name_and_identifier_validation_still_applies(self):
 		before = self._snapshot()
@@ -813,17 +815,6 @@ class PersonSelectorTests(SharedRowTestCase):
 				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 				person.refresh_from_db()
 				self.assertEqual((person.given_name, person.family_name), ("Jose", "Garcia"))
-
-	def test_same_words_without_rename_keep_stored_accents(self):
-		person = Person.objects.create(given_name="Josè", family_name="Garcia")
-		for fields in ({}, {"rename": False}):
-			with self.subTest(fields=fields):
-				response = self._patch({"authors": [
-					{"personId": str(person.pk), "givenName": "Jose", "familyName": "Garcia", **fields},
-				]})
-				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
-				person.refresh_from_db()
-				self.assertEqual((person.given_name, person.family_name), ("Josè", "Garcia"))
 
 	def test_placeholder_person_cannot_be_selected(self):
 		placeholder = Person.objects.create(given_name="UNKNOWN", family_name="UNKNOWN")

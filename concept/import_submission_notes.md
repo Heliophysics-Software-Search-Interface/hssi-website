@@ -368,7 +368,8 @@ Two more fields are rejected here. Only an update's authors accept them, with
   when the names match. With `true`, the selected person takes the sent names
   on every record that lists them, spelled exactly as sent, accents included,
   whether or not their words differ. Without it, other words are rejected, and
-  names with the same words keep the stored accents.
+  names with the same words are applied only when they carry at least as many
+  accents as the stored names.
 
 ### Submitter
 

@@ -212,8 +212,10 @@ class SubmissionSerializer(HssiSerializer):
 		Person attach to the one unidentified current author of that software
 		with the same full name (several are a 400), and the resolved Person
 		take the sent names when they spell the same full name, as
-		``_name_words`` compares them, and keep its accents
-		(``_take_sent_names``). ``rename`` needs a ``person_id``.
+		``_name_words`` compares them, unless they carry fewer accents
+		(``_take_sent_names``). A ``person_id`` entry with ``rename`` takes
+		the sent names as sent instead (``_get_selected_person``). ``rename``
+		needs a ``person_id``.
 		"""
 		if "rename" in data and "person_id" not in data:
 			raise serializers.ValidationError({"rename": "Only supported with personId."})
@@ -271,9 +273,10 @@ class SubmissionSerializer(HssiSerializer):
 
 		With ``rename``, the person takes the sent names exactly as sent, on
 		every record that lists them, whether or not their words differ.
-		Without it, other words are a 400 and the same words keep the stored
-		accents (``_take_sent_names``). The placeholder Person that
-		``Person.get_default_person`` returns can't be selected.
+		Without it, other words are a 400, and the same words are applied
+		unless they carry fewer accents (``_take_sent_names``). The
+		placeholder Person that ``Person.get_default_person`` returns can't be
+		selected.
 		"""
 		selector = data["person_id"]
 		if not isinstance(selector, str):
@@ -295,8 +298,8 @@ class SubmissionSerializer(HssiSerializer):
 		if given_name or person.given_name:
 			given_name = self._normalize_term(given_name, "givenName")
 		family_name = self._normalize_term(data.get("family_name"), "familyName")
-		renamed = _name_words(person.given_name, person.family_name) != _name_words(given_name, family_name)
-		if renamed and not rename:
+		other_words = _name_words(person.given_name, person.family_name) != _name_words(given_name, family_name)
+		if other_words and not rename:
 			raise serializers.ValidationError({
 				"personId": "Submitted full name must match the selected Person, stored as "
 				f"'{person.fullName.strip()}'. Send \"rename\": true with personId to apply the new name "

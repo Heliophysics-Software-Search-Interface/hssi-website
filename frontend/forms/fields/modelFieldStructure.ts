@@ -1,3 +1,12 @@
+/**
+ * Parses the serialized model structures from the backend into a registry of
+ * field types, each naming its widget and its layout of subfields. Touch this
+ * when changing how structure data is parsed or how a field's widget type is
+ * resolved.
+ *
+ * @module
+ */
+
 import { 
 	RequirementLevel, Widget, ModelSubfield, deepMerge,
 	type WidgetType

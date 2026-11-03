@@ -1,3 +1,10 @@
+"""
+Shared helpers used across the backend: access and requirement levels, homepage
+filter/search URL encoding, and finding or replacing database references to an
+object. Touch this when changing access rules or building links into the
+homepage filters.
+"""
+
 import base64, re, typing, uuid
 from urllib.parse import urlencode
 

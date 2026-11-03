@@ -1,4 +1,10 @@
-/** */
+/**
+ * Requirement levels for form fields and the logic that highlights a field and
+ * shows a note under it when it is invalid or left empty. Touch this when
+ * changing how required, recommended, or invalid fields are flagged.
+ *
+ * @module
+ */
 
 import { 
 	ModelBox,
@@ -249,6 +255,7 @@ export class FieldRequirement {
 
 	/// Static methods ---------------------------------------------------------
 
+	/** Runs `applyRequirementWarningStyles` on every registered requirement. */
 	public static applyStylesForAll(): void {
 		for(const req of FieldRequirement.all) {
 			req.applyRequirementWarningStyles();

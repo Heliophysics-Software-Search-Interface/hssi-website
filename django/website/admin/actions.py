@@ -1,6 +1,11 @@
 """
-define actions for use in the adminisatration page by admin users to allow for 
+define actions for use in the adminisatration page by admin users to allow for
 bulk database interactions, third party api interaction, and other uses
+
+Includes the custom HSSI admin site and its extra admin views for exporting and
+importing the database as CSV, fetching repository metadata, and refreshing
+controlled vocabularies. Touch this when adding a custom admin page or bulk
+database operation.
 """
 
 from django.apps import apps
@@ -31,8 +36,8 @@ class HssiAdminSite(admin.AdminSite):
 	index_title = 'HSSI administration'
 	index_template = 'admin/index.html'
 
-	# override get_urls to add custom views
 	def get_urls(self: 'HssiAdminSite'):
+		"""Override get_urls to add custom views."""
 
 		# here we need to insert our custom urls after all of the default 
 		# patterns EXCEPT FOR the last one. Which is the catch-all pattern 
@@ -52,6 +57,10 @@ class HssiAdminSite(admin.AdminSite):
 ## HSSI Admin Views
 
 def view_get_metadata(request: HttpRequest) -> HttpResponse:
+	"""
+	Returns JSON metadata extracted from the `repo_url` GET parameter's
+	repository; 400 if no URL is given.
+	"""
 	
 	# get the repo url from the request
 	url = request.GET.get("repo_url")

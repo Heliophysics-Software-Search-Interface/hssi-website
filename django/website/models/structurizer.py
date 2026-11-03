@@ -3,6 +3,9 @@ This module handles translating the django model structure into serializable
 data structures that can be passed to the website frontend modules in
 /frontend/forms and be used to generate forms on the clientside that represent
 the exposed django model structure
+
+Touch this when changing how model fields map to form widgets or how form data
+is serialized.
 """
 
 import json
@@ -56,6 +59,7 @@ class ModelSubfield:
 	"""
 
 	name: str = ""
+	"""Field name."""
 	row_name: str = ""
 	"""Alternate name used to look up the field's value on a model object."""
 	type: str = ""
@@ -149,6 +153,7 @@ class ModelStructure:
 	"""
 
 	target_model: type['HssiModel'] = None
+	"""The `HssiModel` this structure describes."""
 	type_name: str = ""
 	"""Name of the structure, used as its type on the frontend."""
 	top_field: ModelSubfield | None = None

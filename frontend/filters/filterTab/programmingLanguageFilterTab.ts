@@ -1,3 +1,11 @@
+/**
+ * The "Prog. Language" tab, filtering `programming_language` by
+ * `ProgrammingLanguage`. Touch this when changing which model or software field
+ * the tab filters.
+ *
+ * @module
+ */
+
 import { 
 	ControlledListFilterTab, 
 	ControlledListItem, 

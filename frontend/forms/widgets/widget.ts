@@ -1,5 +1,11 @@
 /**
  * Module that handles definition of base class for all widgets
+ *
+ * Also defines the widget registry and the `data-hssi-*` attribute names that
+ * tie widgets to their HTML elements. Touch this when writing a new widget type
+ * or changing how widgets are found and initialized.
+ *
+ * @module
  */
 
 import { 
@@ -9,9 +15,14 @@ import {
 } from "../../loader";
 
 // names of values in data attributes
+/**
+ * `"json-properties"`: the attribute (and JSON `<script>` marker) holding a
+ * widget's configuration properties.
+ */
 export const propertiesDataValue = "json-properties";
 
 // names of attributes on html element that specify widget information
+/** `"data-hssi-uid"`: attribute holding a widget element's UID. */
 export const uidAttribute = "data-hssi-uid";
 /**
  * `"data-hssi-widget"`: attribute naming the widget class an element belongs
@@ -80,6 +91,10 @@ export abstract class Widget {
 
 	/// Initialization ---------------------------------------------------------
 	
+	/**
+	 * Binds the widget to its root element and field, applies default
+	 * properties, then any from the element's `json-properties` attribute.
+	 */
 	public constructor(elem: HTMLElement, parentField: ModelSubfield) {
 			this.element = elem;
 			this.element.setAttribute(widgetAttribute, (this as any).constructor.name)
@@ -146,6 +161,10 @@ export abstract class Widget {
 
 	/// Restricted functionality -----------------------------------------------
 
+	/**
+	 * Milliseconds to wait after input before treating a value as entered: 500
+	 * for text-like inputs, 50 otherwise.
+	 */
 	protected getValueEntryDelay(): number {
 		let delay = 50;
 		const inputElem = this.getInputElement();
@@ -196,6 +215,10 @@ export abstract class Widget {
 
 	/// Public functionality ---------------------------------------------------
 
+	/**
+	 * Sets the input value, and by default notifies the parent field that it
+	 * changed.
+	 */
 	public setValue(value: string, notify: boolean = true): void{
 		this.getInputElement().value = value;
 		if(notify && this.parentField) this.parentField.onValueChanged.triggerEvent();

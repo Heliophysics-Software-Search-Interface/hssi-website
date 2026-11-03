@@ -1,3 +1,12 @@
+/**
+ * The filter menu shown above the resource list: its tabs, the filter group
+ * maker, the active filter group chips, and syncing active filters with the
+ * `filt` URL parameter. Touch this when adding a filter tab to the page or
+ * changing how filters are applied to a resource view.
+ *
+ * @module
+ */
+
 import { 
 	FilterTab, CategoryFilterTab, FilterMenuItem, FilterGroupMaker,
 	ProgrammingLanguageFilterTab, DataSourcesFilterTab, PhenomenaFilterTab,

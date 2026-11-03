@@ -1,3 +1,11 @@
+/**
+ * TypeScript types for the model names and JSON data shapes returned by the
+ * backend model API. Touch this when a backend model or one of its serialized
+ * fields is added or renamed.
+ *
+ * @module
+ */
+
 import {
 	type JSONArray,
 	type JSONObject

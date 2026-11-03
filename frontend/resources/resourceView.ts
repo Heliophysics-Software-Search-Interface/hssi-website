@@ -1,3 +1,14 @@
+/**
+ * The list of software entries on the search page. With no search or filter in
+ * the URL it shows pages of 25 entries (tracked in the `page` URL parameter);
+ * searching or filtering loads all entries and shows the matching ones. Entries
+ * are ordered by the sort buttons (last modified, created, or name), tracked in
+ * the `sort` URL parameter. Touch this when changing how results are loaded,
+ * sorted, paginated or displayed as a list.
+ *
+ * @module
+ */
+
 import { 
 	apiModel, apiSlugRowsAll, extractDoi, fetchTimeout, HssiModelDataAsync, isUuid4, modelApiUrl, ModelData, ModelDataCache, ResourceItem, 
 	SimpleEvent, 

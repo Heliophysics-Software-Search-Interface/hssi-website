@@ -1,3 +1,11 @@
+/**
+ * The "Functionality" tab, filtering `software_functionality` by
+ * `FunctionCategory`. Touch this when changing which model or software field
+ * the tab filters.
+ *
+ * @module
+ */
+
 import { 
 	ControlledListFilterTab, 
 	CategoryItem, 

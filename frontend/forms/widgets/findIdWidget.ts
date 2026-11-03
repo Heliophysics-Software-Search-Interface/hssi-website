@@ -1,3 +1,11 @@
+/**
+ * URL inputs for persistent identifiers (ROR, ORCID, DataCite DOI) with a
+ * "find" button that opens a search popup. Touch this when adding an identifier
+ * type or changing how identifier lookups fill the form.
+ *
+ * @module
+ */
+
 import {
 	OrcidFinder, PopupDialogue, RorFinder, DoiDataciteFinder, 
 	UrlWidget, faMagicIcon, propResultFilters,

@@ -1,3 +1,9 @@
+"""
+JSON views that serialize model rows for the frontend, filtered by the
+requesting user's access level, plus a user-friendly view of one software entry.
+Touch this when changing how model data is fetched by the frontend.
+"""
+
 import json, uuid, enum
 
 import django.apps

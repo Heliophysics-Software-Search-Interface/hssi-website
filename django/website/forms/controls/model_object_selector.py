@@ -1,3 +1,9 @@
+"""
+A Django form widget that lets users pick one or more existing objects of a
+model through an autocomplete text box or dropdown. Touch this when changing how
+a model-backed selector is configured or which choices it renders.
+"""
+
 import json
 from django import forms
 
@@ -24,6 +30,7 @@ class ModelObjectSelector(forms.TextInput):
 	"""
 	
 	attrs: dict | None
+	"""HTML attributes of the widget."""
 	template_name: str = 'widgets/model_object_selector.html'
 	model: Type[HssiModel] | None = None
 	"""The `HssiModel` whose objects are offered as choices."""

@@ -1,3 +1,10 @@
+"""
+String constants shared by the submission form definitions: form property keys,
+widget type names, form field names, model row names, and the tooltip text shown
+for each field. Touch this when adding or renaming a submission form field or
+editing its help text.
+"""
+
 from ..models import *
 
 PROP_LABEL = "label"
@@ -314,3 +321,7 @@ MODEL_FIELD_MAP = {
 	FIELD_CURATORNAME: "curator",
 	FIELD_CURATOREMAIL: "email",
 }
+"""
+Maps each `FIELD_*` name to the model attribute it is stored in, or `"NONE"` if
+it isn't stored; sent to the frontend by the exposed models view.
+"""

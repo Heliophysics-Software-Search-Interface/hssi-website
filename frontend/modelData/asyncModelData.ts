@@ -1,3 +1,12 @@
+/**
+ * Lazy references to model objects: related objects inside software and person
+ * data are stored as `HssiDataAsync` handles holding only a model name and
+ * UUID, whose full data is fetched through `ModelDataCache` on demand. Touch
+ * this when a software or person field is added or changes its related model.
+ *
+ * @module
+ */
+
 import { 
 	type ModelName, 
 	type JSONObject,

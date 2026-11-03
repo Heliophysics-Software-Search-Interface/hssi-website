@@ -1,3 +1,12 @@
+/**
+ * The selectable items listed in a filter tab, including the subclasses for
+ * controlled-list, graph-list and category models. Items can have one level of
+ * child items, each separately selectable. Touch this when changing how a
+ * filter item is displayed or adding an item type for a new filter tab.
+ *
+ * @module
+ */
+
 import {
 	SimpleEvent, FilterTab, FilterMenu,
 	ModelData,

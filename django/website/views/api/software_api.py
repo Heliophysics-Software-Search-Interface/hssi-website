@@ -1,4 +1,10 @@
-"""API views for Software JSON responses and optional relation expansion."""
+"""
+API views for Software JSON responses and optional relation expansion.
+
+Covers reading and token-gated partial updates of a single published entry,
+listing entries, and bulk submission. Touch this when changing the public
+software API or how external tools update entries.
+"""
 
 from typing import Any
 import datetime
@@ -125,6 +131,7 @@ class SoftwareListAPI(APIView):
 	"""
 
 	authentication_classes = []
+	"""Empty: no session or token authentication."""
 	permission_classes = [AllowAny]
 
 	def get(self, request: HttpRequest) -> Response:
@@ -170,6 +177,7 @@ class SubmissionAPI(APIView):
 	"""Allow submission POST requests with valid JSON data."""
 
 	authentication_classes = []
+	"""Empty: no session or token authentication."""
 	permission_classes = [AllowAny]
 
 	def post(self, request: HttpRequest) -> Response:

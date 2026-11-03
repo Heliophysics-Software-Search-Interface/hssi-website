@@ -1,3 +1,13 @@
+/**
+ * The card for a single software entry in the resource list: title link,
+ * authors, description, logo, link buttons (code, docs, publication, DOI,
+ * SciX), and category and tag chips, with an expanded view showing the full
+ * description, all authors and labelled name tags. Touch this when changing
+ * what a software entry shows in the search results.
+ *
+ * @module
+ */
+
 import { 
 	appendPromisedElement,
 	softwareFieldToModelName,

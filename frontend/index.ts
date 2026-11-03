@@ -1,5 +1,9 @@
 /**
  * entry point module for the website frontend logic
+ *
+ * Touch this when registering a new client-side widget or dialogue.
+ *
+ * @module
  */
 
 import {

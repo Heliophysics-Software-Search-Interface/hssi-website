@@ -1,3 +1,12 @@
+/**
+ * The form-side representation of a single model field: it builds the field's
+ * label, widget, and lazily-built subfields, and reads and fills its data.
+ * Touch this when changing how a form field renders, validates, or serializes
+ * its value.
+ *
+ * @module
+ */
+
 import {
 	deepMerge, formRowStyle, ModelFieldStructure, RequirementLevel, 
 	Widget, ModelMultiSubfield, FieldRequirement,
@@ -87,6 +96,10 @@ export class ModelSubfield {
 
 	/// Initialization ---------------------------------------------------------
 
+	/**
+	 * Stores the field's definition and forwards value-change events up to the
+	 * parent field.
+	 */
 	protected constructor(
 		name: string,
 		rowName: string,
@@ -248,6 +261,10 @@ export class ModelSubfield {
 
 	/// Public functionality ---------------------------------------------------
 
+	/**
+	 * Applies requirement warning styles to the field and its built subfields,
+	 * recursively.
+	 */
 	public applyValidityStyles(): void {
 		if(this.requirement == null) return;
 		this.requirement.applyRequirementWarningStyles();

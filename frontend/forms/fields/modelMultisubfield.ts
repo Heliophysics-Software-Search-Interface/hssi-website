@@ -1,3 +1,11 @@
+/**
+ * A field that lets users add and remove any number of entries of the same
+ * type, such as a list of authors or keywords. Touch this when changing how
+ * multi-entry fields render, collapse, or collect their data.
+ *
+ * @module
+ */
+
 import {
 	FieldRequirement, ModelSubfield,
 	RequirementLevel,
@@ -206,6 +214,11 @@ export class ModelMultiSubfield extends ModelSubfield {
 
 	/// Overriden funcitonality ------------------------------------------------
 
+	/**
+	 * Builds the label, entry container, one initial entry, the "+ add" button
+	 * (unless read-only) and the hide/show button. Overrides
+	 * `ModelSubfield.buildInterface`.
+	 */
 	public override buildInterface(
 		targetDiv: HTMLDivElement, 
 		buildFieldInfo: boolean = true,

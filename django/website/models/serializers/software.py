@@ -1,4 +1,10 @@
-"""Serializers for Software-related models."""
+"""
+Serializers for Software-related models.
+
+Includes the REST serializer for `Software`, with its user-friendly view and its
+schema.org JSON-LD view. Touch this when changing what the software API or the
+detail page's JSON-LD metadata outputs.
+"""
 
 from typing import Any, Iterable
 

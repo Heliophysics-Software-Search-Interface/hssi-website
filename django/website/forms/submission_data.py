@@ -1,3 +1,11 @@
+"""
+Defines the `ModelStructure`s that describe the software submission form: the
+top-level form, its three page sections, and the nested sub-forms for authors,
+organizations, versions, related items and so on. All structures are registered
+on import. Touch this when adding, removing, reordering or reconfiguring a field
+on the submission form.
+"""
+
 from ..models.structurizer import *
 from ..util import RequirementLevel
 from .names import *
@@ -1086,6 +1094,10 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+"""
+The full `Software` submission form, in display order, using the sub-forms above
+for nested fields.
+"""
 
  # Split the subission form into 3 different sections:
 

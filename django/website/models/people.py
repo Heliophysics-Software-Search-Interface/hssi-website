@@ -1,5 +1,9 @@
-""" 
+"""
+
 Module which defines models related to people (authors, users) and their roles.
+
+Covers authors and contacts (`Person`), curators, and submitters. Touch this
+when changing how people are stored, displayed, or searched for in forms.
 """
 
 import json
@@ -46,6 +50,7 @@ class Person(HssiModel):
 
 	# specified for intellisense, defined in other models
 	softwares: models.Manager['Software']
+	"""Reverse relation to `Software` entries."""
 	submission_info: models.Manager['SubmissionInfo']
 	"""Reverse relation to `SubmissionInfo` entries."""
 	curator: models.Manager['Curator']
@@ -62,8 +67,11 @@ class Person(HssiModel):
 			pers.save()
 		return pers
 
-	# meta info that allows data in this model to be serialized to allow for user discovery
 	def get_search_terms(self) -> list[str]:
+		"""
+		Meta info that allows data in this model to be serialized to allow for
+		user discovery.
+		"""
 		terms = super().get_search_terms()
 		if self.identifier:
 			terms.append(self.identifier)
@@ -116,6 +124,9 @@ class Curator(HssiModel):
 
 	# specified for intellisense, defined in other models
 	submission_infos: models.Manager['SubmissionInfo']
+	"""
+	Reverse relation to `SubmissionInfo` entries the curator is assigned to.
+	"""
 	submission_infos_led: models.Manager['SubmissionInfo']
 	"""Reverse relation to `SubmissionInfo` entries the curator leads."""
 
@@ -146,6 +157,7 @@ class Submitter(HssiModel):
 
 	# specified for intellisense, defined in other models
 	submission_infos: models.Manager['SubmissionInfo']
+	"""Reverse relation to `SubmissionInfo` entries."""
 
 	@property
 	def fullName(self) -> str:

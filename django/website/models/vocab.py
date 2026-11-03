@@ -1,4 +1,10 @@
-""" Contains controlled metadata models which categorize software entries. """
+"""
+Contains controlled metadata models which categorize software entries.
+
+These include keywords, programming languages, file formats, regions and
+function categories. Touch this when adding a vocabulary, a field on a
+vocabulary term, or changing post-fetch processing of a vocabulary.
+"""
 
 import colorsys, re
 from re import Match
@@ -39,6 +45,7 @@ class InstrObsType(models.IntegerChoices):
 ## Models ----------------------------------------------------------------------
 
 class Keyword(HssiModel):
+	"""A free-form keyword attached to software entries."""
 	access = AccessLevel.PUBLIC
 	name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
 	"""The keyword text."""
@@ -110,6 +117,10 @@ class FileFormat(ControlledList):
 
 	# specified for intellisense, defined in other models
 	softwares_to: models.Manager['Software']
+	"""
+	Editor hint for a reverse relation to `Software`; the actual reverse
+	relations are `softwares_in` and `softwares_out`.
+	"""
 	softwares_from: models.Manager['Software']
 	"""
 	Editor hint for a reverse relation to `Software`; the actual reverse
@@ -126,10 +137,12 @@ class InstrumentObservatory(ControlledList):
 	abbreviation = models.CharField(max_length=LEN_NAME, null=True, blank=True)
 	"""Short abbreviation, shown after the name."""
 
-	# User-friendly landing page (e.g. a HelioData mission/instrument page) preferred
-	# for outbound links over the canonical SPASE persistent identifier. Server-derived
-	# during vocab fetch; falls back to `identifier` when empty.
 	landing_url = models.URLField(blank=True, null=True)
+	"""
+	User-friendly landing page (e.g. a HelioData mission/instrument page)
+	preferred for outbound links over the canonical SPASE persistent identifier.
+	Server-derived during vocab fetch; falls back to `identifier` when empty.
+	"""
 
 	def get_search_terms(self) -> list[str]:
 		"""
@@ -177,6 +190,7 @@ class FunctionCategory(ControlledGraphList):
 
 	# specified for intellisense, defined in other models
 	parent_nodes: models.Manager['FunctionCategory']
+	"""Reverse relation to parent categories."""
 
 	def get_choice(self) -> ModelObjectChoice:
 		"""The category as a `ModelObjectChoice`, named by its full name."""

@@ -1,3 +1,12 @@
+/**
+ * The abstract base for popups that search an external API (ORCID, ROR,
+ * DataCite) and let the user pick a result to fill into a form field. Touch
+ * this when writing a new external-lookup popup or changing how results are
+ * listed, filtered or selected.
+ *
+ * @module
+ */
+
 import { 
 	PopupDialogue, ModelSubfield, Spinner, ModelMultiSubfield,
 	type JSONValue,
@@ -219,6 +228,10 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 
 	/// filtering results ------------------------------------------------------
 
+	/**
+	 * Applies each filter in `filters` by calling the matching
+	 * `resultsFiltered_<name>` method.
+	 */
 	protected filterResults(results_in: JSONArray): JSONArray{
 		console.log(`Filtering ${results_in.length} results...`);
 		let results = results_in;

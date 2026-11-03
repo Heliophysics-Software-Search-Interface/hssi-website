@@ -1,3 +1,12 @@
+/**
+ * The client-side cache of model data fetched from `/api/models/`. There is one
+ * cache per model; single-object requests are batched into chunked `?ids=`
+ * requests, and software and person data are stored in their async form. Touch
+ * this when changing how the frontend fetches or caches model data.
+ *
+ * @module
+ */
+
 import { 
 	type PersonDataAsync, 
 	type SoftwareDataAsync,

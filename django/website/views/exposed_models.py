@@ -1,3 +1,9 @@
+"""
+Views that expose the form structures and model choices the frontend form system
+needs, plus the generic single-model form page. Touch this when the frontend
+needs new form structure data or choice lists.
+"""
+
 import ast, json
 
 from django.apps import apps

@@ -1,3 +1,11 @@
+/**
+ * A DOI widget that offers to autofill the whole form from DataCite and Zenodo
+ * metadata, then from the code repository if one is found. Touch this when
+ * changing how DOI metadata maps onto form fields.
+ *
+ * @module
+ */
+
 import {
 	AutofillSomefWidget, describeApiEndpoint, ConfirmDialogue,
 	DataciteDoiWidget, extractDoi, faMagicIcon, fetchTimeout, 
@@ -36,6 +44,10 @@ const resTypeGensDataset = [
 // TODO implement proper json-ld parsing through:
 // https://github.com/digitalbazaar/jsonld.js/tree/main
 
+/**
+ * DOI input that, once a valid DOI is entered and focus leaves the field, asks
+ * to autofill the form from it.
+ */
 export class AutofillDataciteWidget extends DataciteDoiWidget {
 
 	/** Unused; never assigned. */
@@ -138,6 +150,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 
 	/// Static -----------------------------------------------------------------
 
+	/** Fetches the DataCite record for a DOI or DOI URL. */
 	public static async getApiDataFromDoi(doiUrl: string): Promise<DataciteItem> {
 		
 		const doi = extractDoi(doiUrl);

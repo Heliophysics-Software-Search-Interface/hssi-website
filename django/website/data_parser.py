@@ -1,3 +1,10 @@
+"""
+Turns submission form data into database objects: resolves or creates the
+referenced people, organizations and vocabulary terms, and writes them onto a
+`Software` entry. Touch this when changing how a submitted field is stored, or
+how the REST API submission schema maps onto the form data.
+"""
+
 import uuid, datetime, json
 from uuid import UUID
 from datetime import date

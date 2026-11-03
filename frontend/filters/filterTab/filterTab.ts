@@ -1,3 +1,12 @@
+/**
+ * The tabs of the filter menu. `FilterTab` fetches every row of one model,
+ * turns them into filter items and builds the tab's header and item list; each
+ * small subclass binds a tab to a specific model and software field. Touch this
+ * when adding a new filter tab or changing how a tab's items are built.
+ *
+ * @module
+ */
+
 import {
 	SimpleEvent, 
 	fetchTimeout, 

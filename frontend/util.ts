@@ -1,3 +1,12 @@
+/**
+ * Shared helpers used across the frontend: JSON types, API URLs, timed fetch,
+ * identifier parsing, software/edit data fetching, the edit-link request flow,
+ * and Google Analytics events. Touch this when adding a general-purpose helper
+ * or changing one of the API URLs it holds.
+ *
+ * @module
+ */
+
 import { ConfirmDialogue, FormGenerator, PopupDialogue, TextInputDialogue, type VersionData } from "./loader";
 
 /** Case-insensitive regex matching a UUIDv4 string. */

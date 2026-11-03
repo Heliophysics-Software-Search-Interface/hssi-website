@@ -1,3 +1,12 @@
+/**
+ * Filter groups and the "group maker" that builds them: the user collects
+ * filter items as chips, chooses AND/OR mode, inverts individual chips to
+ * exclude them, and applies the result as a `FilterGroup`. Touch this when
+ * changing how a group decides whether a software entry passes.
+ *
+ * @module
+ */
+
 import { 
 	faCloseIcon,
 	filterGroupToUrlVal,

@@ -1,3 +1,9 @@
+"""
+Views and helpers for editing an existing submission through an emailed edit
+link: requesting a link, loading the submission's data, and saving edits. Touch
+this when changing the edit-link flow or the emails it sends.
+"""
+
 import json, uuid, enum
 
 from django.core.mail import send_mail

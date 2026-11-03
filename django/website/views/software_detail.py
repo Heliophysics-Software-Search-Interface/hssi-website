@@ -1,4 +1,9 @@
-"""Views for Software detail pages."""
+"""
+Views for Software detail pages.
+
+Touch this when changing how a software detail page is looked up or what data
+its template receives.
+"""
 
 import json
 from typing import Any, Optional

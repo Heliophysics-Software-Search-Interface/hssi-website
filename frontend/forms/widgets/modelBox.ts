@@ -1,3 +1,12 @@
+/**
+ * A text input with a filterable dropdown of choices, either embedded in the
+ * page or fetched from a backend model; selecting a choice fills the parent
+ * field's subfields from that model row. Touch this when changing
+ * controlled-vocabulary or related-model inputs on the form.
+ *
+ * @module
+ */
+
 import { 
 	Widget, widgetDataAttribute,
 	type AnyInputElement,
@@ -52,6 +61,10 @@ interface Option extends JSONObject {
 
 /// Main defintion -------------------------------------------------------------
 
+/**
+ * Widget with a text input and a shared, keyboard-navigable dropdown of options
+ * filtered by keyword as the user types.
+ */
 export class ModelBox extends Widget {
 	
 	private optionListElement: HTMLUListElement = null;
@@ -534,6 +547,11 @@ export class ModelBox extends Widget {
 
 	/// Public functionality ---------------------------------------------------
 
+	/**
+	 * Sets the input to the best-matching option by keyword or name similarity;
+	 * with no match, keeps the raw value only if `allowNewEntries`. Loads
+	 * options first if needed. Overrides `Widget.setValue`.
+	 */
 	public override setValue(value: string, notify: boolean = true): void {
 		if(!this.options) {
 			super.setValue(value, notify);
@@ -597,6 +615,7 @@ export class ModelBox extends Widget {
 
 	/// Dropdown and tooltip elements ------------------------------------------
 
+	/** Cache of fetched options by model name (and filter). */
 	protected static optionMap: Map<string, Option[]> = new Map();
 	private static dropdownElement: HTMLDivElement = null;
 	private static tooltipElement: HTMLDivElement = null;

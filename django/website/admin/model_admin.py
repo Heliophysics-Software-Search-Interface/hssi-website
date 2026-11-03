@@ -1,3 +1,9 @@
+"""
+Django admin classes for every HSSI model: a shared base admin with cleanup
+actions, plus an import/export `Resource` and an admin class per model. Touch
+this when adding a model to the admin site or adding an admin action.
+"""
+
 import uuid, datetime
 
 from import_export import resources
@@ -24,6 +30,10 @@ from ..util import *
 # Abstract definitions for model admins ----------------------------------------
 
 class HSSIModelAdmin(ImportExportModelAdmin):
+	"""
+	Base admin for HSSI models, with CSV import/export and actions for repairing
+	and merging entries.
+	"""
 
 	@action(description="Fix Improper Toplevel UUID")
 	def fix_uuid_chains(self, request: HttpRequest, queryset: QuerySet):
@@ -115,8 +125,8 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 	# actions need to be specified
 	actions = [fix_uuid_chains, collapse_model_entries]
 
-	# columns to display in the model admin page
 	list_display = ('str_display', 'id')
+	"""Columns to display in the model admin page."""
 
 	def str_display(self, obj: Model):
 		"""List column showing `str(obj)`."""
@@ -289,6 +299,7 @@ class SoftwareVersionAdmin(HSSIModelAdmin): resource_class = SoftwareVersionReso
 # Admin definitions for software module ----------------------------------------
 
 class SoftwareResource(resources.ModelResource):
+	"""`Software`; used by `SoftwareAdmin`."""
 	class Meta: model = Software
 class SoftwareAdmin(HSSIModelAdmin):
 	"""
@@ -393,6 +404,7 @@ class SoftwareEditQueueAdmin(ImportExportModelAdmin):
 # Admin definitions for submission_info module ---------------------------------
 
 class SubmissionInfoResource(resources.ModelResource):
+	"""`SubmissionInfo`; used by `SubmissionInfoAdmin`."""
 	class Meta: model = SubmissionInfo
 class SubmissionInfoAdmin(HSSIModelAdmin): 
 	"""

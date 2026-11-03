@@ -1,7 +1,11 @@
 """
-Functionality for retrieving json-ld data from our 
-maintained HSSI vocabulary repository at 
+Functionality for retrieving json-ld data from our
+maintained HSSI vocabulary repository at
 https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/
+
+Also fetches instrument and observatory terms from the heliophysics.net API, and
+turns fetched terms into model entries. Touch this when a vocabulary source URL
+changes or a new vocabulary is added.
 """
 
 from __future__ import annotations
@@ -71,12 +75,14 @@ SPASE_URL = "https://spase-metadata.org/"
 """Base URL used to build SPASE identifier URLs."""
 HELIODATA_MISSION_URL = "https://helio.data.nasa.gov/mission/"
 """Base URL of HelioData mission landing pages."""
-# Backend JSON endpoint behind the HelioData mission SPA. The SPA route
-# (HELIODATA_MISSION_URL) returns HTTP 200 for every path, so it can't be used
-# to detect whether HelioData has useful mission data for a page. This backend
-# route returns mission JSON including datasetCount, or 404
-# {"Error": "region missing"} when the page is absent.
 HELIODATA_LOAD_MISSION_URL = "https://helio.data.nasa.gov/heliodata/app/load_mission_page/"
+"""
+Backend JSON endpoint behind the HelioData mission SPA. The SPA route
+(HELIODATA_MISSION_URL) returns HTTP 200 for every path, so it can't be used to
+detect whether HelioData has useful mission data for a page. This backend route
+returns mission JSON including datasetCount, or 404 {"Error": "region missing"}
+when the page is absent.
+"""
 HELIOPHYS_API_URL = "https://api.heliophysics.net/api/"
 """Base URL of the heliophysics.net API."""
 HELIOPHYS_PROP_NAME = "long_name"

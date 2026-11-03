@@ -1,6 +1,11 @@
 """
 Include base models which all models used by HSSI should inherit from, also
 pcontains utility types and constants.
+
+The constants include shared field length limits, and the types include the
+choice tuple used by autocomplete form widgets. Touch this when changing
+behavior common to all models, such as serialization, search terms, or
+controlled-vocabulary handling.
 """
 
 import uuid, json
@@ -15,6 +20,10 @@ from ..util import *
 ## Utility Constants & Types ---------------------------------------------------
 
 FIELD_FUNCTIONCATEGORY_FULLNAME = "fullname"
+"""
+`"fullname"`: pseudo-field name that makes `FunctionCategory` serialization
+include the category's full name.
+"""
 FIELD_HAS_FOREIGN_KEY = (
 	models.ForeignKey | models.ManyToManyField | models.OneToOneField
 )
@@ -25,6 +34,7 @@ reference another model.
 
 # Character length limits
 LEN_LONGNAME = 512
+"""`512`: max length for long name fields."""
 LEN_NAME = 128
 """`128`: max length for name fields."""
 LEN_SHORTNAME = 16
@@ -292,6 +302,7 @@ class HssiSet(HssiModel):
 class ControlledList(HssiModel):
 	"""Base class for all controlled lists in the HSSI project"""
 	name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
+	"""Name of the term."""
 	identifier = models.URLField(blank=True, null=True)
 	"""Identifier URL of the term."""
 	definition = models.TextField(blank=True, null=True)
@@ -363,6 +374,7 @@ class ControlledGraphList(ControlledList):
 	# these are just editor hints, we still need to define child as a 
 	# ManyToManyField in any subclasses and set related='parent_nodes'
 	children: models.Manager['ControlledGraphList']
+	"""Child terms (declared here as an editor hint; defined by subclasses)."""
 	parent_nodes: models.Manager['ControlledGraphList']
 	"""Reverse relation to parent terms."""
 

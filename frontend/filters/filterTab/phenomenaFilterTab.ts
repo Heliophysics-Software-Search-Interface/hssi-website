@@ -1,3 +1,11 @@
+/**
+ * The "Phenomena" tab, filtering `related_phenomena` by `Phenomena`. Not
+ * currently added to the filter menu. Touch this when changing which model or
+ * software field the tab filters.
+ *
+ * @module
+ */
+
 import { 
 	ControlledListFilterTab,
 	FilterMenu,

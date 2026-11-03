@@ -1,3 +1,9 @@
+"""
+The search endpoint for published software: parses `field:"value"` filters, then
+ranks plain-text matches in tiers by which fields they hit. Touch this when
+adding a search field alias or changing search ranking.
+"""
+
 import re
 import time
 

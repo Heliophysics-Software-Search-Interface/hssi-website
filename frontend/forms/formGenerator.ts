@@ -1,3 +1,11 @@
+/**
+ * Builds the submission/edit form from the backend's model field structures,
+ * validates it, and posts its data as JSON. Touch this when changing how the
+ * form is laid out, validated, autofilled, or submitted.
+ *
+ * @module
+ */
+
 import { 
 	typeAttribute, ModelFieldStructure, ModelSubfield, widgetDataAttribute,
 	RequirementLevel, ConfirmDialogue, fetchTimeout, labelStyle,

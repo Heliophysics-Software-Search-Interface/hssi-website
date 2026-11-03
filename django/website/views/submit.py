@@ -1,3 +1,9 @@
+"""
+Views for the public software submission form: the form page, the confirmation
+page, and the endpoint that saves a new submission. Touch this when changing
+what happens when someone submits a new software entry.
+"""
+
 import json, uuid, datetime
 from uuid import UUID
 

@@ -1,3 +1,9 @@
+"""
+Exports every HSSI model to CSV files and imports them back, including the
+ordering tables of sorted many-to-many fields. Touch this when adding a model
+that must be included in database export/import, or changing import order.
+"""
+
 import os, re, traceback
 import tablib
 
@@ -12,10 +18,15 @@ if TYPE_CHECKING:
 # Setup ------------------------------------------------------------------------
 
 DEFAULT_DB_EXPORT_PATH = '/django/website/config/db/'
+"""
+`'/django/website/config/db/'`: directory the CSV files are written to and read
+from.
+"""
 
 # Utility ----------------------------------------------------------------------
 
 def camel_to_snake(name: str) -> str:
+	"""Converts a `CamelCase` name to `snake_case`."""
 	s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
 	return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
@@ -34,6 +45,7 @@ def model_csv_filepath(
 # Module functionality ---------------------------------------------------------
 
 def remove_all_model_entries():
+	"""Deletes every row of every HSSI model, in reverse dependency order."""
 	authors_field: SortedManyToManyField = Software._meta.get_field('authors').remote_field
 	models: list[Model] = [
 		Organization,

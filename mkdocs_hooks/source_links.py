@@ -43,4 +43,10 @@ def on_page_markdown(markdown, page, config, **kwargs):
             return m.group(0)
         return f"]({blob_base}{rel}{anchor})"
 
+    # Generated reference pages name their source file in front matter;
+    # point "Edit this page" there instead of at the generated Markdown.
+    source = page.meta.get("source")
+    if source:
+        page.edit_url = config.repo_url.rstrip("/") + f"/edit/{BRANCH}/{source}"
+
     return LINK_RE.sub(repl, markdown)

@@ -1,3 +1,9 @@
+"""
+JSON views that serialize model rows for the frontend, filtered by the
+requesting user's access level, plus a user-friendly view of one software entry.
+Touch this when changing how model data is fetched by the frontend.
+"""
+
 import json, uuid, enum
 
 import django.apps
@@ -10,6 +16,10 @@ from ..models import *
 from ..forms.submission_data import *
 
 def get_fields_param(get: QueryDict) -> list[str] | None:
+	"""
+	The comma-separated `columns` query parameter as a list of field names, or
+	`None`.
+	"""
 	fields: list[str] | None = None
 	fields_param: str = get.get("columns")
 	if fields_param:
@@ -17,6 +27,7 @@ def get_fields_param(get: QueryDict) -> list[str] | None:
 	return fields
 
 def get_recursive_param(get: QueryDict) -> bool:
+	"""Whether the `recursive` query parameter is `"true"`."""
 	return get.get("recursive", "false").lower() == "true"
 
 def get_model_rows_all(request: HttpRequest, model_name: str) -> JsonResponse:

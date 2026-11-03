@@ -1,0 +1,25 @@
+{
+	"$schema": "https://typedoc-plugin-markdown.org/schema.json",
+	"entryPoints": [
+		"frontend"
+	],
+	"entryPointStrategy": "expand",
+	"tsconfig": "tsconfig.json",
+	"skipErrorChecking": true,
+	"excludePrivate": true,
+	"excludeExternals": true,
+	"plugin": [
+		"typedoc-plugin-markdown"
+	],
+	"out": "build/typedoc-md",
+	"router": "module",
+	"entryFileName": "modules.md",
+	"readme": "none",
+	"hidePageHeader": true,
+	"hideBreadcrumbs": true,
+	"useCodeBlocks": true,
+	"parametersFormat": "table",
+	"classPropertiesFormat": "table",
+	"name": "Frontend",
+	"useHTMLAnchors": true
+}

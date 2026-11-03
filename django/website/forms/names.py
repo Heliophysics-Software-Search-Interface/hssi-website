@@ -1,10 +1,28 @@
+"""
+String constants shared by the submission form definitions: form property keys,
+widget type names, form field names, model row names, and the tooltip text shown
+for each field. Touch this when adding or renaming a submission form field or
+editing its help text.
+"""
+
 from ..models import *
 
 PROP_LABEL = "label"
+"""`"label"`: form field property key for the field's label."""
 PROP_TT_EXPL = "tooltipExplanation"
+"""
+`"tooltipExplanation"`: form field property key for the explanation tooltip.
+"""
 PROP_TT_BEST = "tooltipBestPractise"
+"""
+`"tooltipBestPractise"`: form field property key for the best-practice tooltip.
+"""
 PROP_WIDGET_PROPS = "widgetProperties"
+"""
+`"widgetProperties"`: form field property key for the widget's own properties.
+"""
 PROP_TOPFIELD = "topField"
+"""`"topField"`: form field property key marking the top field."""
 
 WPROP_MAXLENGTH = "maxLength"
 WPROP_TARGETMODEL = "targetModel"
@@ -303,3 +321,7 @@ MODEL_FIELD_MAP = {
 	FIELD_CURATORNAME: "curator",
 	FIELD_CURATOREMAIL: "email",
 }
+"""
+Maps each `FIELD_*` name to the model attribute it is stored in, or `"NONE"` if
+it isn't stored; sent to the frontend by the exposed models view.
+"""

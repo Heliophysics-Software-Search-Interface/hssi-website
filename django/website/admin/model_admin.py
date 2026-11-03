@@ -1,3 +1,9 @@
+"""
+Django admin classes for every HSSI model: a shared base admin with cleanup
+actions, plus an import/export `Resource` and an admin class per model. Touch
+this when adding a model to the admin site or adding an admin action.
+"""
+
 import uuid, datetime
 
 from import_export import resources
@@ -24,6 +30,10 @@ from ..util import *
 # Abstract definitions for model admins ----------------------------------------
 
 class HSSIModelAdmin(ImportExportModelAdmin):
+	"""
+	Base admin for HSSI models, with CSV import/export and actions for repairing
+	and merging entries.
+	"""
 
 	@action(description="Fix Improper Toplevel UUID")
 	def fix_uuid_chains(self, request: HttpRequest, queryset: QuerySet):
@@ -115,10 +125,12 @@ class HSSIModelAdmin(ImportExportModelAdmin):
 	# actions need to be specified
 	actions = [fix_uuid_chains, collapse_model_entries]
 
-	# columns to display in the model admin page
 	list_display = ('str_display', 'id')
+	"""Columns to display in the model admin page."""
 
-	def str_display(self, obj: Model): return str(obj)
+	def str_display(self, obj: Model):
+		"""List column showing `str(obj)`."""
+		return str(obj)
 
 # Admin definitions for roots module -------------------------------------------
 
@@ -135,18 +147,31 @@ class PhenomenaTypeResource(resources.ModelResource):
 class PhenomenaTypeAdmin(HSSIModelAdmin): resource_class = PhenomenaTypeResource
 
 class KeywordResource(resources.ModelResource):
+	"""`Keyword`; used by `KeywordAdmin`."""
 	class Meta: model = Keyword
 class KeywordAdmin(HSSIModelAdmin): 
+	"""
+	Admin for `Keyword`, with keyword-specific merge and name formatting
+	actions.
+	"""
 	resource_class = KeywordResource
 
 	@action(description="Collapse to Single")
 	def collapse_keyword_entries(self, request: HttpRequest, queryset: QuerySet[Keyword]):
+		"""
+		Admin action "Collapse to Single": merges the selected keywords and
+		normalizes the result's name.
+		"""
 		colkeyword = Keyword.collapse_objects(queryset)
 		colkeyword.name = SPACE_REPLACE.sub(' ', colkeyword.name).lower()
 		colkeyword.save()
 	
 	@action(description="Format Names")
 	def format_names(self, req: HttpRequest, query: QuerySet[Keyword]):
+		"""
+		Admin action "Format Names": replaces `_`, `-` and `.` with spaces and
+		lowercases each selected keyword's name.
+		"""
 		for obj in query:
 			obj.name = SPACE_REPLACE.sub(' ', obj.name).lower()
 			obj.save()
@@ -156,13 +181,17 @@ class KeywordAdmin(HSSIModelAdmin):
 		collapse_keyword_entries,
 		format_names,
 	]
+	"""`fix_uuid_chains`, `collapse_keyword_entries`, `format_names`."""
 
 class RegionResource(resources.ModelResource):
+	"""`Region`; used by `RegionAdmin`."""
 	class Meta: model = Region
 class RegionAdmin(HSSIModelAdmin): 
+	"""Admin for `Region` that also lists each region's full name."""
 	resource_class = RegionResource
 
 	def full_name(self, obj: Region) -> str:
+		"""List column showing the region's full name."""
 		return obj.get_full_name()
 	
 	list_display = ("name", "full_name", "id")
@@ -180,11 +209,14 @@ class FunctionCategoryResource(resources.ModelResource):
 class FunctionCategoryAdmin(HSSIModelAdmin): resource_class = FunctionCategoryResource
 
 class InstrumentObservatoryResource(resources.ModelResource):
+	"""`InstrumentObservatory`; used by `InstrumentObservatoryAdmin`."""
 	class Meta: model = InstrumentObservatory
 class InstrumentObservatoryAdmin(HSSIModelAdmin): 
+	"""Admin for `InstrumentObservatory` that shows each entry's identifier."""
 	resource_class = InstrumentObservatoryResource
 
 	def str_display(self, obj):
+		"""`str(obj)`, plus the identifier in parentheses if set."""
 		disp = super().str_display(obj)
 		if isinstance(obj, InstrumentObservatory):
 			if obj.identifier:
@@ -192,22 +224,28 @@ class InstrumentObservatoryAdmin(HSSIModelAdmin):
 		return disp
 
 class LicenseResource(resources.ModelResource):
+	"""`License`; used by `LicenseAdmin`."""
 	class Meta: model = License
 class LicenseAdmin(HSSIModelAdmin): 
+	"""Admin for `License` that shows the URL of "Other" licenses."""
 	resource_class = LicenseResource
 
 	def str_display(self, obj: Model): 
+		"""`str(obj)`, plus the URL for a license named "Other"."""
 		disp = super().str_display(obj)
 		if isinstance(obj, License):
 			if obj.name == "Other" and obj.url: disp += " - " + obj.url
 		return disp
 
 class OrganizationResource(resources.ModelResource):
+	"""`Organization`; used by `OrganizationAdmin`."""
 	class Meta: model = Organization
 class OrganizationAdmin(HSSIModelAdmin): 
+	"""Admin for `Organization` that shows each organization's ROR ID."""
 	resource_class = OrganizationResource
 
 	def str_display(self, obj):
+		"""`str(obj)`, plus the identifier with any `ror.org` prefix removed."""
 		disp = super().str_display(obj)
 		if isinstance(obj, Organization):
 			if obj.identifier: 
@@ -238,6 +276,9 @@ class CuratorResource(resources.ModelResource):
 class CuratorAdmin(HSSIModelAdmin): resource_class = CuratorResource
 
 class SubmitterResource(resources.ModelResource):
+	"""
+	Submitters; note the resource's `Meta.model` is `Person`, not `Submitter`.
+	"""
 	class Meta: model = Person
 class SubmitterAdmin(HSSIModelAdmin): resource_class = SubmitterResource
 
@@ -258,8 +299,12 @@ class SoftwareVersionAdmin(HSSIModelAdmin): resource_class = SoftwareVersionReso
 # Admin definitions for software module ----------------------------------------
 
 class SoftwareResource(resources.ModelResource):
+	"""`Software`; used by `SoftwareAdmin`."""
 	class Meta: model = Software
 class SoftwareAdmin(HSSIModelAdmin):
+	"""
+	Admin for `Software`, with actions to publish entries and create edit links.
+	"""
 	resource_class = SoftwareResource
 
 	@action(description="Publish to Visible Software")
@@ -267,6 +312,10 @@ class SoftwareAdmin(HSSIModelAdmin):
 		request: HttpRequest, 
 		queryset: QuerySet[Software]
 	):
+		"""
+		Admin action "Publish to Visible Software": publishes each selected
+		software that isn't already published.
+		"""
 		for soft in queryset:
 			exists = not not VerifiedSoftware.objects.filter(pk=soft.pk).first()
 			if exists: continue
@@ -274,6 +323,10 @@ class SoftwareAdmin(HSSIModelAdmin):
 
 	@action(description="Add to Edit Queue")
 	def add_edit_queue(self, request: HttpRequest, queryset: QuerySet[Software]):
+		"""
+		Admin action "Add to Edit Queue": creates a 31-day edit link for each
+		selected software.
+		"""
 		for soft in queryset: 
 			SoftwareEditQueue.create(
 				soft, 
@@ -286,8 +339,15 @@ class SoftwareAdmin(HSSIModelAdmin):
 		HSSIModelAdmin.fix_uuid_chains, 
 		HSSIModelAdmin.collapse_model_entries,
 	]
+	"""
+	`mark_visible`, `add_edit_queue`, `fix_uuid_chains`,
+	`collapse_model_entries`.
+	"""
 
 	def save_related(self, request, form, formsets, change):
+		"""
+		Saves related objects, then stamps `date_modified` if any field changed.
+		"""
 		super().save_related(request, form, formsets, change)
 		# After super() the M2Ms are written too. `changed_data` covers scalar
 		# and M2M fields (sortedm2m reports reorders), so a Save with no edits
@@ -297,20 +357,31 @@ class SoftwareAdmin(HSSIModelAdmin):
 			form.instance.save(update_fields=["date_modified"])
 
 class VerifiedSoftwareResource(resources.ModelResource):
+	"""`VerifiedSoftware`; used by `VerifiedSoftwareAdmin`."""
 	class Meta: model = VerifiedSoftware
 class VerifiedSoftwareAdmin(HSSIModelAdmin): 
+	"""Admin for `VerifiedSoftware` that also lists each entry's slug."""
 	list_display = ("str_display", "slug")
 	resource_class = VerifiedSoftwareResource
 
 class SoftwareEditQueueResource(resources.ModelResource):
+	"""
+	For `SoftwareEditQueue`, used by `SoftwareEditQueueAdmin`; its `Meta` sets
+	`Model` (capitalized), so `Meta.model` is not actually set.
+	"""
 	class Meta: Model = SoftwareEditQueue
 class SoftwareEditQueueAdmin(ImportExportModelAdmin):
+	"""Admin for `SoftwareEditQueue` edit links."""
 	resource_class = SoftwareEditQueueResource
 
 	list_display = ('target_name', 'created', 'id')
 
 	@action(description="Prune expired items")
 	def remove_selected(self, request: HttpRequest, query: QuerySet[SoftwareEditQueue]):
+		"""
+		Admin action "Prune expired items": deletes the selected links older
+		than `default_expire_delta`.
+		"""
 		to_remove: list[SoftwareEditQueue] = []
 
 		for item in query:
@@ -322,6 +393,7 @@ class SoftwareEditQueueAdmin(ImportExportModelAdmin):
 		for item in to_remove: item.delete()
 
 	def target_name(self, obj: 'SoftwareEditQueue') -> str:
+		"""List column showing the linked software's name, or `"None"`."""
 		if obj.target_software: return obj.target_software.software_name
 		return "None"
 	
@@ -332,13 +404,22 @@ class SoftwareEditQueueAdmin(ImportExportModelAdmin):
 # Admin definitions for submission_info module ---------------------------------
 
 class SubmissionInfoResource(resources.ModelResource):
+	"""`SubmissionInfo`; used by `SubmissionInfoAdmin`."""
 	class Meta: model = SubmissionInfo
 class SubmissionInfoAdmin(HSSIModelAdmin): 
+	"""
+	Admin for `SubmissionInfo`, newest first, with an action to email edit
+	links.
+	"""
 	resource_class = SubmissionInfoResource
 	ordering = ("-submission_date",)
 
 	@action(description="Email edit submission link (90 days)")
 	def email_edit_link(self, request: HttpRequest, query: QuerySet[SubmissionInfo]):
+		"""
+		Admin action "Email edit submission link (90 days)": creates and emails
+		a 90-day edit link for each selected submission.
+		"""
 		for info in query: v_email_edit_link(info, datetime.timedelta(days=90))
 
 	actions = [
@@ -346,13 +427,18 @@ class SubmissionInfoAdmin(HSSIModelAdmin):
 		HSSIModelAdmin.fix_uuid_chains,
 		HSSIModelAdmin.collapse_model_entries,
 	]
+	"""`email_edit_link`, `fix_uuid_chains`, `collapse_model_entries`."""
 
 	def submission_name(self, obj: SubmissionInfo):
+		"""List column showing the software's name, or `"<None>"`."""
 		if not obj or not obj.software:
 			return "<None>"
 		return obj.software.software_name
 
 	def submitter_name(self, obj: SubmissionInfo):
+		"""
+		List column showing the first submitter's full name, or `"<None>"`.
+		"""
 		if obj.submitter.first(): return obj.submitter.first().fullName
 		return "<None>"
 	

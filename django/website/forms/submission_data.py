@@ -1,3 +1,11 @@
+"""
+Defines the `ModelStructure`s that describe the software submission form: the
+top-level form, its three page sections, and the nested sub-forms for authors,
+organizations, versions, related items and so on. All structures are registered
+on import. Touch this when adding, removing, reordering or reconfiguring a field
+on the submission form.
+"""
+
 from ..models.structurizer import *
 from ..util import RequirementLevel
 from .names import *
@@ -36,6 +44,9 @@ SUBMISSION_FORM_AUTHOR_AFFILIATION: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+"""
+`Organization` sub-form for an author's affiliation: name and ROR identifier.
+"""
 
 SUBMISSION_FORM_CONTRIBUTOR_AFFILIATION: ModelStructure = ModelStructure.define(
 	Organization,
@@ -71,6 +82,10 @@ SUBMISSION_FORM_CONTRIBUTOR_AFFILIATION: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+"""
+`Organization` sub-form for a contributor's affiliation: name and ROR
+identifier.
+"""
 
 SUBMISSION_FORM_PUBLISHER: ModelStructure = ModelStructure.define(
 	Organization,
@@ -106,6 +121,7 @@ SUBMISSION_FORM_PUBLISHER: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+"""`Organization` sub-form for the publisher: name and ROR identifier."""
 
 SUBMISSION_FORM_FUNDER: ModelStructure = ModelStructure.define(
 	Organization,
@@ -141,6 +157,7 @@ SUBMISSION_FORM_FUNDER: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+"""`Organization` sub-form for a funder: name and ROR identifier."""
 
 SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
 	Submitter,
@@ -170,6 +187,7 @@ SUBMISSION_FORM_SUBMITTER: ModelStructure = ModelStructure.define(
 		multi=True
 	),
 )
+"""`Submitter` sub-form: name and email."""
 
 SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 	Person,
@@ -218,6 +236,9 @@ SUBMISSION_FORM_AUTHOR: ModelStructure = ModelStructure.define(
 		multi=True,
 	),
 )
+"""
+`Person` sub-form for an author: name, identifier, and nested affiliations.
+"""
 
 SUBMISSION_FORM_CONTRIBUTOR: ModelStructure = ModelStructure.define(
 	Person,
@@ -266,6 +287,7 @@ SUBMISSION_FORM_CONTRIBUTOR: ModelStructure = ModelStructure.define(
 		multi=True,
 	),
 )
+"""`Person` sub-form for a contributor: name, ORCID, and nested affiliations."""
 
 SUBMISSION_FORM_VERSION: ModelStructure = ModelStructure.define(
 	SoftwareVersion,
@@ -320,6 +342,7 @@ SUBMISSION_FORM_VERSION: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+"""`SoftwareVersion` sub-form: number, date, description and DOI."""
 
 SUBMISSION_FORM_PUBLICATION: ModelStructure = ModelStructure.define(
 	RelatedItem,
@@ -338,6 +361,7 @@ SUBMISSION_FORM_PUBLICATION: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+"""`RelatedItem` sub-form for a publication DOI."""
 
 SUBMISSION_FORM_REL_SOFTWARE: ModelStructure = ModelStructure.define(
 	RelatedItem,
@@ -355,6 +379,7 @@ SUBMISSION_FORM_REL_SOFTWARE: ModelStructure = ModelStructure.define(
 	),
 	
 )
+"""`RelatedItem` sub-form for a related or interoperable software DOI."""
 
 SUBMISSION_FORM_INSTRUMENT: ModelStructure = ModelStructure.define(
 	InstrumentObservatory,
@@ -389,6 +414,10 @@ SUBMISSION_FORM_INSTRUMENT: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+"""
+`InstrumentObservatory` sub-form for a related instrument: name and identifier
+URL.
+"""
 
 SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
 	InstrumentObservatory,
@@ -423,6 +452,10 @@ SUBMISSION_FORM_OBSERVATORY: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+"""
+`InstrumentObservatory` sub-form for a related observatory: name and identifier
+URL.
+"""
 
 SUBMISSION_FORM_DATASET: ModelStructure = ModelStructure.define(
 	RelatedItem,
@@ -444,6 +477,7 @@ SUBMISSION_FORM_DATASET: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+"""`RelatedItem` sub-form for a related dataset DOI."""
 
 SUBMISSION_FORM_LICENSE: ModelStructure = ModelStructure.define(
 	License,
@@ -477,6 +511,7 @@ SUBMISSION_FORM_LICENSE: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+"""`License` sub-form: name and URL."""
 
 SUBMISSION_FORM_AWARD: ModelStructure = ModelStructure.define(
 	Award,
@@ -509,6 +544,7 @@ SUBMISSION_FORM_AWARD: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+"""`Award` sub-form: title and number."""
 
 ## FORM FIELD STRUCTURE DATA ---------------------------------------------------
 
@@ -1058,6 +1094,10 @@ SUBMISSION_FORM_FIELDS: ModelStructure = ModelStructure.define(
 		multi=False,
 	),
 )
+"""
+The full `Software` submission form, in display order, using the sub-forms above
+for nested fields.
+"""
 
  # Split the subission form into 3 different sections:
 

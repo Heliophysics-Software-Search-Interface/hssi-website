@@ -1,3 +1,13 @@
+/**
+ * The search bar: runs queries against `/api/search/`, shows matching results
+ * (limited to those passing the active filters) in the main resource view, and
+ * keeps the query in the `q` URL parameter. On page load it wires up the search
+ * bar, the search button and the field-search help chips. Touch this when
+ * changing search behavior or the search API call.
+ *
+ * @module
+ */
+
 import { 
 	type SoftwareDataAsync,
 	ApiQueryPopup,
@@ -10,9 +20,13 @@ import {
 	trackEvent,
 } from "../loader";
 
+/** `"searchbar"`: ID of the search input element. */
 export const idSearchbar = "searchbar";
+/** `"searchbar-btn"`: ID of the search button. */
 export const idSearchButton = "searchbar-btn";
+/** `"q"`: URL parameter holding the search query. */
 export const searchParamQuery = "q";
+/** `"mode"`: search API parameter selecting the result format. */
 export const searchModeQuery = "mode";
 const searchApiUrl = "/api/search/";
 
@@ -99,6 +113,11 @@ export async function applyEnteredQuery(){
 	parseUrlParams();
 }
 
+/**
+ * Searches for the query, shows the matching filtered results in the main view,
+ * and by default records the query in browser history and reports it to
+ * analytics.
+ */
 export async function searchForQuery(
 	query: string, 
 	pushHistory: boolean = true

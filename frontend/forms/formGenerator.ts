@@ -1,3 +1,11 @@
+/**
+ * Builds the submission/edit form from the backend's model field structures,
+ * validates it, and posts its data as JSON. Touch this when changing how the
+ * form is laid out, validated, autofilled, or submitted.
+ *
+ * @module
+ */
+
 import { 
 	typeAttribute, ModelFieldStructure, ModelSubfield, widgetDataAttribute,
 	RequirementLevel, ConfirmDialogue, fetchTimeout, labelStyle,
@@ -17,7 +25,9 @@ const csrfTokenName = "csrfmiddlewaretoken"
 
 const modelStructureUrl = "/api/models/structures/";
 
+/** `"form-row"`: CSS class for the container of each form field row. */
 export const formRowStyle = "form-row";
+/** `"form-separator"`: CSS class for a (collapsible) section of fields. */
 export const formSeparatorStyle = "form-separator"
 
 type ModelStructureData = {
@@ -25,6 +35,10 @@ type ModelStructureData = {
 	fieldMap: JSONObject,
 }
 
+/**
+ * Singleton that generates the form on the page and handles its submission; the
+ * class itself is exposed on `window` as `FormGenerator`.
+ */
 export class FormGenerator {
 
 	private formElement: HTMLFormElement = null;
@@ -36,7 +50,15 @@ export class FormGenerator {
 	private agreementElement: HTMLInputElement = null;
 	private isEditForm: boolean = false;
 
+	/**
+	 * Whether the form has already been autofilled from DataCite; set on edit
+	 * forms to suppress the autofill prompt.
+	 */
 	public autofilledFromDatacite: boolean = false;
+	/**
+	 * Whether the form has already been autofilled from the code repository;
+	 * set on edit forms to suppress the autofill prompt.
+	 */
 	public autofilledFromRepo: boolean = false;
 
 	private buildForm(): void {
@@ -386,6 +408,7 @@ export class FormGenerator {
 		}
 	}
 
+	/** The form's data as a JSON object keyed by root field name. */
 	public getJsonData(): JSONValue{
 
 		// get all subfields into a flat array
@@ -409,6 +432,10 @@ export class FormGenerator {
 
 	private static instance: FormGenerator = null;
 	private static structureData: ModelStructureData = null;
+	/**
+	 * Map from form field names to model field names, loaded with the structure
+	 * data from `/api/models/structures/`.
+	 */
 	public static fieldMap: JSONObject = null;
 
 	/** 
@@ -538,10 +565,14 @@ export class FormGenerator {
 		this.instance.openFieldSections();
 	}
 
+	/** The loaded model structure data. */
 	public static getStructureData(): ModelStructureData{
 		return this.structureData;
 	}
 
+	/**
+	 * Clears every field, collapses the form and resets both autofilled flags.
+	 */
 	public static clearForm(): void {
 		const fields = this.instance.getRootFields();
 		for(const field of fields) {
@@ -552,6 +583,10 @@ export class FormGenerator {
 		this.instance.autofilledFromRepo = false;
 	}
 
+	/**
+	 * Collapses every field's subfields and closes the form sections. Exposed
+	 * on `window` as `collapseGeneratedForm`.
+	 */
 	public static collapseFormFields(): void {
 		for(const field of this.instance.getRootFields()){
 			field.collapseSubfields();
@@ -559,6 +594,10 @@ export class FormGenerator {
 		this.instance.closeFieldSections();
 	}
 
+	/**
+	 * Opens the form sections and expands every field's subfields. Exposed on
+	 * `window` as `expandGeneratedForm`.
+	 */
 	public static expandFormFields(): void {
 		this.instance.openFieldSections();
 		for(const field of this.instance.getRootFields()){
@@ -566,6 +605,10 @@ export class FormGenerator {
 		}
 	}
 
+	/**
+	 * Asks the user for confirmation, then clears the form. Exposed on `window`
+	 * as `clearGeneratedForm`.
+	 */
 	public static async clearFormConfirm(): Promise<void> {
 		if(await ConfirmDialogue.getConfirmation()){
 			this.clearForm();
@@ -574,22 +617,30 @@ export class FormGenerator {
 		else console.log("Form clear cancelled");
 	}
 
+	/** Sets `autofilledFromDatacite` on the form. */
 	public static markAutofilledDatacite(): void { 
 		this.instance.autofilledFromDatacite = true;
 	}
 
+	/** Sets `autofilledFromRepo` on the form. */
 	public static markAutofilledRepo(): void {
 		this.instance.autofilledFromRepo = true;
 	}
 	
+	/** Whether the form has been autofilled from DataCite. */
 	public static isAutofilledDatacite(): boolean { 
 		return this.instance.autofilledFromDatacite; 
 	}
 	
+	/** Whether the form has been autofilled from the code repository. */
 	public static isAutofilledRepo(): boolean { 
 		return this.instance.autofilledFromRepo; 
 	}
 
+	/**
+	 * Fills every field and subfield with test values (two entries per multi-
+	 * field). Exposed on `window` as `debugAutofill`.
+	 */
 	public static debugAutofill(): void {
 		let iter = 0;
 		for(const outerField of this.instance.getRootFields()){
@@ -617,6 +668,10 @@ export class FormGenerator {
 		}
 	}
 
+	/**
+	 * Resolves once the form has been generated, polling every 100 ms. Exposed
+	 * on `window` as `awaitFormGeneration`.
+	 */
 	public static async awaitFormGeneration(): Promise<void> {
 		while(this.instance == null) await new Promise(x => setTimeout(x, 100));
 	}

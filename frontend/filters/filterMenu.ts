@@ -1,3 +1,12 @@
+/**
+ * The filter menu shown above the resource list: its tabs, the filter group
+ * maker, the active filter group chips, and syncing active filters with the
+ * `filt` URL parameter. Touch this when adding a filter tab to the page or
+ * changing how filters are applied to a resource view.
+ *
+ * @module
+ */
+
 import { 
 	FilterTab, CategoryFilterTab, FilterMenuItem, FilterGroupMaker,
 	ProgrammingLanguageFilterTab, DataSourcesFilterTab, PhenomenaFilterTab,
@@ -13,7 +22,9 @@ import {
 	applyEnteredQuery,
 } from "../loader";
 
+/** `"hidden"`: CSS class used to hide filter elements. */
 export const styleHidden = "hidden";
+/** `"selected"`: CSS class marking a selected tab, item or mode button. */
 export const styleSelected = "selected";
 const styleFilterMenu = "filter-menu";
 const styleTabContainer = "tab-container";
@@ -21,9 +32,14 @@ const styleFilterGroupContainer = "active-filters";
 const urlSymGroupDelimiter = "..";
 const searchParamFilter = "filt";
 
+/**
+ * The filter menu that holds the filter tabs and applies active filter groups
+ * to a resource view. Exposed on `window`.
+ */
 export class FilterMenu {
 	
 	private static mainInstance: FilterMenu = null;
+	/** The first `FilterMenu` created on the page. */
 	public static get main(): FilterMenu { return this.mainInstance; }
 
 	private activeGroupsContainerElement: HTMLDivElement = null;
@@ -35,7 +51,9 @@ export class FilterMenu {
 
 	/** contains all elements for menu */
 	public containerElement: HTMLDivElement = null;
+	/** Container for the tab header elements. */
 	public tabHeadersElement: HTMLDivElement = null;
+	/** Container for the tab content elements. */
 	public tabContentsElement: HTMLDivElement = null;
 
 	/** all filter tabs that are selectable in the menu */
@@ -49,6 +67,10 @@ export class FilterMenu {
 		return this.view || ResourceView.main;
 	}
 
+	/**
+	 * Creates the container element and, for the first menu created, registers
+	 * it as `main` and re-parses the URL on `popstate`.
+	 */
 	public constructor(view: ResourceView = null) {
 		this.containerElement = document.createElement("div");
 		this.containerElement.classList.add(styleFilterMenu);
@@ -189,6 +211,7 @@ export class FilterMenu {
 		return this.tabs.find(tab => tab.targetField == field);
 	}
 
+	/** Adds a filter group to the active filter groups without applying it. */
 	public addFilterGroup(group: FilterGroup): void {
 		this.activeFilterGroups.push(group);
 	}
@@ -281,6 +304,11 @@ export class FilterMenu {
 	}
 }
 
+/**
+ * Creates a `FilterMenu` with the category, programming language, region and
+ * data sources tabs, appends it next to the current `<script>` element, and
+ * builds it. Exposed on `window`.
+ */
 export function makeFilterMenuElement(targetView: ResourceView = null): void {
 	const filterMenu = new FilterMenu(targetView);
 	filterMenu.tabs.push(new CategoryFilterTab(filterMenu));

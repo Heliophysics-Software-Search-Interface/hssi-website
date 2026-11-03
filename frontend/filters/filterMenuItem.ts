@@ -1,3 +1,12 @@
+/**
+ * The selectable items listed in a filter tab, including the subclasses for
+ * controlled-list, graph-list and category models. Items can have one level of
+ * child items, each separately selectable. Touch this when changing how a
+ * filter item is displayed or adding an item type for a new filter tab.
+ *
+ * @module
+ */
+
 import {
 	SimpleEvent, FilterTab, FilterMenu,
 	ModelData,
@@ -26,17 +35,22 @@ const styleSubchip = "subchip";
  */
 export class FilterMenuItem {
 
+	/** The `FilterTab` the item belongs to. */
 	protected parentTab: FilterTab = null;
+	/** The item's JSON data. */
 	protected data: JSONValue = null;
 	private expandButton: HTMLButtonElement = null;
 	private parentItem: FilterMenuItem = null;
 
+	/** The parent item if this is a child item, else `null`. */
 	public get parentFilterItem(): FilterMenuItem { return this.parentItem; }
 
+	/** The software field the parent tab filters. */
 	public get targetSoftwareField(): keyof SoftwareDataAsync { 
 		return this.parentTab.targetField; 
 	}
 
+	/** The model name of the parent tab. */
 	public get targetModel(): ModelName { return this.parentTab?.targetModel; }
 	
 	/** html element that contains all other elements of the item */
@@ -71,6 +85,10 @@ export class FilterMenuItem {
 		return (this.subContainerElement?.style?.display ?? "none") != "none"; 
 	}
 
+	/**
+	 * Stores the parent tab and the item's data and creates its `<li>`
+	 * container.
+	 */
 	public constructor(parent: FilterTab, data: JSONValue) {
 		this.parentTab = parent;
 		this.containerElement = document.createElement("li");
@@ -168,6 +186,7 @@ export class FilterMenuItem {
 		this.containerElement.remove();
 	}
 
+	/** Shows or hides the child items and updates the expand button. */
 	public setSubitemsExpanded(expand: boolean): void {
 		if(this.isExpanded === expand) return;
 		const text = expand ? textCollapse : textExpand;
@@ -181,22 +200,34 @@ export class FilterMenuItem {
  * and setters for the abstract django model 'ControlledList'
  */
 export class ControlledListItem extends FilterMenuItem {
+	/** The item's data as a JSON object. */
 	public get objectData(): JSONObject { return this.data as JSONObject; }
+	/** Get/set the `name` field of the data. */
 	public get name(): string { return this.objectData.name as any; }
+	/** Get/set the `abbreviation` field of the data. */
 	public get abbreviation(): string { return this.objectData.abbreviation as any; }
+	/** Get/set the `identifier` field of the data. */
 	public get identifier(): string { return this.objectData.identifier as any; }
+	/** Overrides to return `name`. */
 	public get labelString(): string { return this.name; }
 	
 	public set name(val: string) { this.objectData.name = val; }
 	public set abbreviation(val: string) { this.objectData.abbreviation = val; }
 	public set identifier(val: string) { this.objectData.identifier = val; }
 
+	/**
+	 * Overrides to also set the checkbox's `value` and `id` to the item's ID.
+	 */
 	public override async build(): Promise<void> {
 		await super.build();
 		this.checkboxElement.value = this.id;
 		this.checkboxElement.id = this.id;
 	}
 
+	/**
+	 * Overrides so an item without an ID gets a chip based on its first child,
+	 * showing the abbreviation with the name as the title.
+	 */
 	public override async createChip(): Promise<HTMLSpanElement> {
 		if(this.id) return await super.createChip();
 		const chip = await ModelData.createChip(this.parentTab.targetModel, this.subItems[0].id)
@@ -211,9 +242,11 @@ export class ControlledListItem extends FilterMenuItem {
  * the django model 'ControlledGraphList'
  */
 export class GraphListItem extends ControlledListItem {
+	/** The `children` array of the data. */
 	public get childData(): JSONArray<JSONObject> { 
 		return this.objectData.children as any; 
 	}
+	/** The `parents` array of the data. */
 	public get parentData(): JSONArray<JSONObject> {
 		return this.objectData.parents as any;
 	}
@@ -221,11 +254,18 @@ export class GraphListItem extends ControlledListItem {
 
 /** Menu item type used in the {@link CategoryFilterTab} */
 export class CategoryItem extends GraphListItem {
+	/** The category's `backgroundColor`. */
 	public get bgColor(): string { return this.objectData.backgroundColor as any; }
+	/** The category's `textColor`. */
 	public get textColor(): string { return this.objectData.textColor as any; }
+	/** `subItems` typed as `CategoryItem`s. */
 	public get children(): CategoryItem[] { return this.subItems as any; }
+	/** Overrides to return the category's `name`. */
 	public get labelString(): string { return this.objectData.name as any; }
 
+	/**
+	 * Overrides to also add the abbreviation as a CSS class on the checkbox.
+	 */
 	public override async build(): Promise<void> {
 		await super.build();
 		this.checkboxElement.value = this.id;

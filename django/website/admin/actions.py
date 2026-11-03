@@ -1,6 +1,11 @@
 """
-define actions for use in the adminisatration page by admin users to allow for 
+define actions for use in the adminisatration page by admin users to allow for
 bulk database interactions, third party api interaction, and other uses
+
+Includes the custom HSSI admin site and its extra admin views for exporting and
+importing the database as CSV, fetching repository metadata, and refreshing
+controlled vocabularies. Touch this when adding a custom admin page or bulk
+database operation.
 """
 
 from django.apps import apps
@@ -23,13 +28,16 @@ from django.contrib import admin
 from django.urls import path
 
 class HssiAdminSite(admin.AdminSite):
+	"""
+	The HSSI admin site, with custom titles, index template, and extra URLs.
+	"""
 	site_title = 'HSSI admin'
 	site_header = 'HSSI administration'
 	index_title = 'HSSI administration'
 	index_template = 'admin/index.html'
 
-	# override get_urls to add custom views
 	def get_urls(self: 'HssiAdminSite'):
+		"""Override get_urls to add custom views."""
 
 		# here we need to insert our custom urls after all of the default 
 		# patterns EXCEPT FOR the last one. Which is the catch-all pattern 
@@ -49,6 +57,10 @@ class HssiAdminSite(admin.AdminSite):
 ## HSSI Admin Views
 
 def view_get_metadata(request: HttpRequest) -> HttpResponse:
+	"""
+	Returns JSON metadata extracted from the `repo_url` GET parameter's
+	repository; 400 if no URL is given.
+	"""
 	
 	# get the repo url from the request
 	url = request.GET.get("repo_url")
@@ -60,6 +72,10 @@ def view_get_metadata(request: HttpRequest) -> HttpResponse:
 	return HttpResponse(json.dumps(data.__dict__), content_type="application/json")
 
 def view_export_db_new(request: HttpRequest) -> HttpResponse:
+	"""
+	On POST from a superuser, exports the database to CSV files; always
+	redirects to the admin index.
+	"""
 
 	# only allow post requests from super user to export the database
 	if request.method == 'POST' and request.user.is_superuser:
@@ -70,6 +86,10 @@ def view_export_db_new(request: HttpRequest) -> HttpResponse:
 	return redirect('admin:index')
 
 def view_import_db_new(request: HttpRequest) -> HttpResponse:
+	"""
+	On POST from a superuser, deletes all HSSI model data and reimports it from
+	CSV files; always redirects to the admin index.
+	"""
 
 	# only allow post requests from super user to reimport the database
 	if request.method == 'POST' and request.user.is_superuser:
@@ -83,6 +103,12 @@ def view_import_db_new(request: HttpRequest) -> HttpResponse:
 	return redirect('admin:index')
 
 def fetch_vocab(request: HttpRequest) -> HttpResponse:
+	"""
+	Superuser only: refreshes every controlled vocabulary from its source URL,
+	repointing references from matching old terms to the new ones and appending
+	" (OUTDATED)" to unmatched old names, then reloads function categories from
+	TTL; redirects to the admin index.
+	"""
 	if not request.user.is_superuser: return
 
 	app_label = ControlledList._meta.app_label
@@ -177,6 +203,10 @@ def fetch_vocab(request: HttpRequest) -> HttpResponse:
 	return redirect('admin:index')
 
 def fetch_heliophysics_api(request: HttpRequest) -> HttpResponse:
+	"""
+	Fetches observatories and instruments from the heliophysics.net API into
+	`InstrumentObservatory`; returns an empty response.
+	"""
 	fetch_heliophysnet_vocab(InstrumentObservatory, "observatories")
 	fetch_heliophysnet_vocab(InstrumentObservatory, "instruments")
 	return HttpResponse()

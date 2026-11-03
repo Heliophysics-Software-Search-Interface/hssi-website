@@ -1,0 +1,64 @@
+site_name: HSSI Documentation
+site_url: https://heliophysics-software-search-interface.github.io/hssi-website/
+repo_url: https://github.com/Heliophysics-Software-Search-Interface/hssi-website
+repo_name: hssi-website
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.indexes
+    - content.action.edit
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+nav:
+  - Home: index.md
+  - Getting Started: getting_started.md
+  - Architecture: architecture.md
+  - Glossary: glossary.md
+  - API Reference:
+      - api_reference/overview.md
+      - Software Catalog API: api_reference/software_catalog_api.md
+      - Submission API: api_reference/submission_api.md
+      - Utility Endpoints: api_reference/utility_endpoints.md
+      - Internal Endpoints: api_reference/internal_endpoints.md
+  - Code Reference:
+      - code_reference/overview.md
+      - Data Model: code_reference/data_model.md
+      - Submission Workflow: code_reference/submission_workflow.md
+      - Frontend Architecture: code_reference/frontend_architecture.md
+      - Admin & Curation: code_reference/admin_and_curation.md
+      - Deployment Reference: code_reference/deployment_reference.md
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - attr_list
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+# Report broken internal links and anchors; `mkdocs build --strict` in CI
+# turns these warnings into a failed build.
+validation:
+  links:
+    not_found: warn
+    anchors: warn
+    unrecognized_links: warn

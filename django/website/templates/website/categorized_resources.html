@@ -24,16 +24,16 @@
 
 	{% include "website/social_preview.html" %}
 
-	<link rel="stylesheet" href="{% static 'css/categories.css' %}?v=2024-10-15" />
-	<link rel="stylesheet" href="{% static 'css/resources.css' %}?v=2026-09-22" />
+	<link rel="stylesheet" href="{% static 'css/categories.css' %}?v=2026-10-27" />
+	<link rel="stylesheet" href="{% static 'css/resources.css' %}?v=2026-10-08" />
 	<link rel="stylesheet" href="{% static 'css/media.css' %}?v=2024-10-15" />
 	<link rel="stylesheet" href="{% static 'css/app.css' %}?v=2024-10-15" />
-	<link rel="stylesheet" href="{% static 'css/filter_menu.css' %}" />
-	<link rel="stylesheet" href="{% static 'css/resource_softwares.css' %}" />
+	<link rel="stylesheet" href="{% static 'css/filter_menu.css' %}?v=2026-10-27" />
+	<link rel="stylesheet" href="{% static 'css/resource_softwares.css' %}?v=2026-10-26" />
 
 	{% include "website/category_styling.html" %}
 
-	<script type="text/javascript" src="{% static 'js/homePage.js' %}?v=2024-10-15"></script>
+	<script type="text/javascript" src="{% static 'js/homePage.js' %}?v=2026-10-27.2"></script>
 	<script type="text/javascript" src="{% static 'js/spin.js' %}"></script>
 
 {% endblock %}
@@ -141,8 +141,10 @@
 
 			<!-- CATEGORY SELECTOR -->
 			<div class="category_list">
-				<!-- CATEGORY SELECTOR FOR MEDIUM DISPLAY -->
-				<div class="filter-sidebar hide-for-small-only">
+				<div class="filter-sidebar">
+					<div class="mobile-filter-header show-for-small-only">
+						<button class="mobile-filter-toggle" type="button" aria-expanded="false">Filters</button>
+					</div>
 					<div class="filter_selector">
 						<div class="filter-menus">
 							<div class="filter-section-body open">
@@ -151,7 +153,6 @@
 						</div>
 					</div>
 				</div>
-				<!-- END CATEGORY SELECTOR FOR MEDIUM DISPLAY -->
 			</div>
 		</div>
 
@@ -163,6 +164,12 @@
 
 			<div class="resource-content-header">
 				<div id="result-count" role="status" aria-live="polite"></div>
+				<div id="sort_menu" role="group" aria-label="Sort resources">
+					<span class="sort-label">Sort by:</span>
+					<button type="button" class="button sort-button active-sort" data-sort="date" aria-pressed="true">Last Modified Date</button>
+					<button type="button" class="button sort-button" data-sort="create" aria-pressed="false">Created Date</button>
+					<button type="button" class="button sort-button" data-sort="name" aria-pressed="false">Name</button>
+				</div>
 			</div>
 
 			<!-- RESOURCE CONTENT -->

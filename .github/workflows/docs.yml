@@ -1,0 +1,61 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+    paths: ["docs/**", "mkdocs.yml", ".github/workflows/docs.yml"]
+  pull_request:
+    paths: ["docs/**", "mkdocs.yml", ".github/workflows/docs.yml"]
+  workflow_dispatch:
+
+concurrency:
+  # Never cancel mid-deploy: let a running Pages deploy finish and queue
+  # the next one behind it. Keyed by ref so PR builds don't queue behind
+  # (or displace) deploys from main.
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install MkDocs
+        run: pip install mkdocs-material==9.7.7
+
+      # --strict fails the build on any warning, including broken internal
+      # links and anchors (see `validation` in mkdocs.yml), so PRs that
+      # break the docs are caught before they reach main.
+      - name: Build site
+        run: mkdocs build --strict
+
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

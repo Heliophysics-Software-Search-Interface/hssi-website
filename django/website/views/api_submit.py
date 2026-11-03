@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from ..models import SubmissionInfo, SoftwareEditQueue
 from ..data_parser import handle_submission_data, api_submission_to_formdict
 from .edit_submission import email_existing_edit_link
+from .submit import open_submission_issue
 
 @csrf_exempt
 def api_submit(request: HttpRequest):
@@ -34,6 +35,7 @@ def api_submit(request: HttpRequest):
 				submission_id = handle_submission_data(form_data)
 				software = SubmissionInfo.objects.get(pk=submission_id).software
 				SoftwareEditQueue.create(software, timezone.now() + datetime.timedelta(days=90))
+				transaction.on_commit(lambda s=software: open_submission_issue(s, "API"), robust=True)
 				transaction.on_commit(lambda s=software: [
 					email_existing_edit_link(si) for si in s.submission_info.all()
 				])

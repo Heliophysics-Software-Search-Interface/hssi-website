@@ -33,3 +33,5 @@ package-lock.json
 pnpm-lock.json
 bun.lock
 bun.lockb
+# MkDocs build output
+site/

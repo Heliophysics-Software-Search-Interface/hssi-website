@@ -1,10 +1,13 @@
 """Submission API and related logic."""
 
+import re
+import unicodedata
 from typing import Any
 
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from rest_framework import serializers
@@ -93,6 +96,65 @@ _USER_LIST_FIELDS: tuple[str, ...] = (
 	"award",
 )
 
+# Every snake-case key a PATCH accepts in an ``authors`` entry, and in each
+# object of its ``affiliation``.
+_AUTHOR_FIELDS: frozenset[str] = frozenset({
+	"given_name",
+	"family_name",
+	"identifier",
+	"affiliation",
+	"person_id",
+	"rename",
+})
+_AFFILIATION_FIELDS: frozenset[str] = frozenset({"name", "identifier"})
+
+
+def _author_entry_errors(authors: list[Any]) -> dict[str, str]:
+	"""Errors for ``authors`` entries, or their ``affiliation`` objects, that
+	aren't objects or carry unknown keys, keyed by path such as
+	``authors[1].affiliation[0].identifer``."""
+	errors: dict[str, str] = {}
+	for i, author in enumerate(authors):
+		path = f"authors[{i}]"
+		if not isinstance(author, dict):
+			errors[path] = "Expected an object."
+			continue
+		for key in sorted(author.keys() - _AUTHOR_FIELDS):
+			errors[f"{path}.{key}"] = "Unknown field. Send a person's id as personId." if key == "id" else "Unknown field."
+		affiliations = author.get("affiliation")
+		if affiliations is not None and not isinstance(affiliations, list):
+			errors[f"{path}.affiliation"] = "Expected an array."
+			continue
+		for j, org in enumerate(affiliations or []):
+			if not isinstance(org, dict):
+				errors[f"{path}.affiliation[{j}]"] = "Expected an object."
+				continue
+			for key in sorted(org.keys() - _AFFILIATION_FIELDS):
+				errors[f"{path}.affiliation[{j}].{key}"] = "Unknown field."
+	return errors
+
+
+# Accent marks, once Unicode's NFD form has split them from their letters.
+_ACCENTS = re.compile(r"[\u0300-\u036f]")
+
+
+def _name_words(given_name: str, family_name: str) -> list[str]:
+	"""The words of a full name, ignoring case, accents, hyphens and the given/family split."""
+	name = _ACCENTS.sub("", unicodedata.normalize("NFD", f"{given_name} {family_name}"))
+	return name.replace("-", " ").casefold().split()
+
+
+def _accent_count(given_name: str, family_name: str) -> int:
+	"""How many accent marks a full name carries."""
+	return len(_ACCENTS.findall(unicodedata.normalize("NFD", given_name + family_name)))
+
+
+def _take_sent_names(person: Person, given_name: str, family_name: str) -> None:
+	"""Give ``person`` the sent names, unless they carry fewer accents than its own."""
+	if _accent_count(given_name, family_name) >= _accent_count(person.given_name, person.family_name):
+		person.given_name = given_name
+		person.family_name = family_name
+
 
 class SubmissionSerializer(HssiSerializer):
 	"""Serializer and parser for submission data."""
@@ -173,14 +235,53 @@ class SubmissionSerializer(HssiSerializer):
 			return obj
 		return Keyword.objects.create(name=normalized)
 
-	def _get_or_create_person(self, data: dict[str, Any]) -> Person:
+	def _get_or_create_person(
+		self,
+		data: dict[str, Any],
+		updating: Software | None = None,
+	) -> Person:
+		"""Resolve a person payload to a Person row.
+
+		``updating`` is the Software being updated, if any. Only then does an
+		author sent with a ``person_id`` (a 400 otherwise) resolve through
+		``_get_selected_person``, an author sent without a given name resolve
+		through ``_get_blank_given_author``, an identifier that matches no
+		Person attach to the one unidentified current author of that software
+		with the same full name (several are a 400), and the resolved Person
+		take the sent names when they spell the same full name, as
+		``_name_words`` compares them, unless they carry fewer accents
+		(``_take_sent_names``). A ``person_id`` entry with ``rename`` takes
+		the sent names as sent instead (``_get_selected_person``). ``rename``
+		needs a ``person_id``.
+		"""
+		if "rename" in data and "person_id" not in data:
+			raise serializers.ValidationError({"rename": "Only supported with personId."})
+		if "person_id" in data:
+			if updating is None:
+				raise serializers.ValidationError({"personId": "Only supported on PATCH authors."})
+			return self._get_selected_person(data)
+		if updating is not None and not self._strip_string(data.get("given_name")):
+			return self._get_blank_given_author(data, updating)
 		given_name = self._normalize_term(data.get("given_name"), "givenName")
 		family_name = self._normalize_term(data.get("family_name"), "familyName")
 		identifier = data.get("identifier")
 		if identifier:
 			identifier = self._validate_url(self._strip_string(identifier))
+			name_words = _name_words(given_name, family_name)
 			person = Person.objects.filter(identifier=identifier).first()
+			if person is None and updating is not None:
+				unidentified = updating.authors.filter(Q(identifier__isnull=True) | Q(identifier=""))
+				matches = [p for p in unidentified if _name_words(p.given_name, p.family_name) == name_words]
+				if len(matches) > 1:
+					raise serializers.ValidationError({
+						"identifier": f"Several current authors named '{given_name} {family_name}' "
+						"have no identifier, so it can't be attached to one of them.",
+					})
+				person = matches[0] if matches else None
 			if person:
+				person.identifier = identifier
+				if updating is not None and _name_words(person.given_name, person.family_name) == name_words:
+					_take_sent_names(person, given_name, family_name)
 				if not person.given_name:
 					person.given_name = given_name
 				if not person.family_name:
@@ -203,6 +304,83 @@ class SubmissionSerializer(HssiSerializer):
 			given_name=given_name,
 			family_name=family_name,
 		)
+
+	def _get_selected_person(self, data: dict[str, Any]) -> Person:
+		"""Bind an explicitly selected PATCH author without name-based fallback.
+
+		With ``rename``, the person takes the sent names exactly as sent, on
+		every record that lists them, whether or not their words differ.
+		Without it, other words are a 400, and the same words are applied
+		unless they carry fewer accents (``_take_sent_names``). The
+		placeholder Person that ``Person.get_default_person`` returns can't be
+		selected.
+		"""
+		selector = data["person_id"]
+		if not isinstance(selector, str):
+			raise serializers.ValidationError({"personId": "Expected a non-empty UUID string."})
+		try:
+			person_id = serializers.UUIDField().run_validation(selector)
+		except serializers.ValidationError:
+			raise serializers.ValidationError({"personId": "Expected a non-empty UUID string."})
+		person = Person.objects.filter(pk=person_id).first()
+		if person is None:
+			raise serializers.ValidationError({"personId": "No Person exists with this UUID."})
+		if person.given_name == "UNKNOWN":
+			raise serializers.ValidationError({"personId": "The UNKNOWN placeholder Person can't be selected."})
+		rename = data.get("rename", False)
+		if not isinstance(rename, bool):
+			raise serializers.ValidationError({"rename": "Expected true or false."})
+
+		given_name = self._strip_string(data.get("given_name")) or ""
+		if given_name or person.given_name:
+			given_name = self._normalize_term(given_name, "givenName")
+		family_name = self._normalize_term(data.get("family_name"), "familyName")
+		other_words = _name_words(person.given_name, person.family_name) != _name_words(given_name, family_name)
+		if other_words and not rename:
+			raise serializers.ValidationError({
+				"personId": "Submitted full name must match the selected Person, stored as "
+				f"'{person.fullName.strip()}'. Send \"rename\": true with personId to apply the new name "
+				"on every record that lists this person.",
+			})
+
+		identifier = self._validate_url(self._strip_string(data.get("identifier")))
+		if identifier:
+			if person.identifier and person.identifier != identifier:
+				raise serializers.ValidationError({"identifier": "Cannot replace the selected Person's identifier."})
+			if Person.objects.filter(identifier=identifier).exclude(pk=person.pk).exists():
+				raise serializers.ValidationError({"identifier": "Identifier belongs to another Person."})
+			person.identifier = identifier
+		if rename:
+			person.given_name = given_name
+			person.family_name = family_name
+		else:
+			_take_sent_names(person, given_name, family_name)
+		person.save()
+		return person
+
+	def _get_blank_given_author(self, data: dict[str, Any], software: Software) -> Person:
+		"""Resolve an author sent without a given name to the one current
+		author of ``software`` stored without one under the same family name.
+
+		The row is returned unchanged, except that an identifier no Person
+		holds fills an empty one. No blank-given Person is ever created.
+		"""
+		family_words = _name_words("", self._normalize_term(data.get("family_name"), "familyName"))
+		matches = [
+			author for author in software.authors.filter(given_name="")
+			if _name_words("", author.family_name) == family_words
+		]
+		if len(matches) != 1:
+			raise serializers.ValidationError({
+				"givenName": "Value cannot be empty unless exactly one current author "
+				"has an empty given name and this family name.",
+			})
+		person = matches[0]
+		identifier = self._validate_url(self._strip_string(data.get("identifier")))
+		if identifier and not person.identifier and not Person.objects.filter(identifier=identifier).exists():
+			person.identifier = identifier
+			person.save()
+		return person
 
 	def _get_or_create_org(self, data: dict[str, Any]) -> Organization:
 		name = self._normalize_term(data.get("name"), "name")
@@ -255,19 +433,31 @@ class SubmissionSerializer(HssiSerializer):
 			return entry
 		return InstrumentObservatory.objects.create(name=name, type=instr_type)
 
-	def _get_or_create_award(self, data: dict[str, Any]) -> Award:
+	def _get_or_create_award(
+		self,
+		data: dict[str, Any],
+		updating: Software | None = None,
+	) -> Award:
+		"""Resolve an award payload to an Award row.
+
+		``updating`` is the Software being updated, if any. A create reuses an
+		existing award as it is, so only an update can give one a funder.
+		"""
 		name = self._normalize_term(data.get("name"), "name")
 		identifier = data.get("identifier")
 		if identifier:
 			identifier = self._normalize_term(identifier, "identifier")
 			award = Award.objects.filter(identifier=identifier).first()
-			if award:
-				return award
-			return Award.objects.create(name=name, identifier=identifier)
-		award = Award.objects.filter(name__iexact=name).first()
-		if award:
+		else:
+			award = Award.objects.filter(name__iexact=name).first()
+		if award is None:
+			award = Award(name=name, identifier=identifier or None)
+		elif updating is None:
 			return award
-		return Award.objects.create(name=name)
+		if data.get("funder") and award.funder_id is None:
+			award.funder = self._get_or_create_org(data["funder"])
+		award.save()
+		return award
 
 	def _get_or_create_related(self, url: str, item_type: RelatedItemType) -> RelatedItem:
 		identifier = self._validate_url(self._normalize_term(url, "identifier"))
@@ -310,6 +500,11 @@ class SubmissionSerializer(HssiSerializer):
 			raise serializers.ValidationError({"submitter": "Expected an array."})
 		if "authors" in data and not isinstance(data["authors"], list):
 			raise serializers.ValidationError({"authors": "Expected an array."})
+		# A PATCH also rejects unknown keys and wrong shapes inside authors.
+		if self.partial and "authors" in data:
+			author_errors = _author_entry_errors(data["authors"])
+			if author_errors:
+				raise serializers.ValidationError(author_errors)
 
 		for field in _USER_LIST_FIELDS:
 			if field in data and data[field] is not None and not isinstance(data[field], list):
@@ -317,6 +512,17 @@ class SubmissionSerializer(HssiSerializer):
 
 		if "publisher" in data and data["publisher"] is not None and not isinstance(data["publisher"], dict):
 			raise serializers.ValidationError({"publisher": "Expected an object."})
+
+		award_name_length = Award._meta.get_field("name").max_length
+		for award in data.get("award") or []:
+			if not isinstance(award, dict):
+				raise serializers.ValidationError({"award": "Expected an object."})
+			if award.get("funder") is not None and not isinstance(award["funder"], dict):
+				raise serializers.ValidationError({"award.funder": "Expected an object."})
+			if isinstance(award.get("name"), str) and len(award["name"].strip()) > award_name_length:
+				raise serializers.ValidationError(
+					{"award.name": f"Must be {award_name_length} characters or fewer."}
+				)
 
 		if "code_repository_url" in data:
 			self._validate_url(self._strip_string(data.get("code_repository_url")))
@@ -437,9 +643,19 @@ class SubmissionSerializer(HssiSerializer):
 
 		if "authors" in data:
 			authors_data = data["authors"] or []
-			authors = [self._get_or_create_person(item) for item in authors_data]
+			authors = [
+				self._get_or_create_person(item, updating=self.instance)
+				for item in authors_data
+			]
+			repeated = next((a for i, a in enumerate(authors) if a in authors[:i]), None)
+			if repeated is not None:
+				raise serializers.ValidationError(
+					{"authors": f"{str(repeated).strip()} is listed more than once."}
+				)
 			for author, author_data in zip(authors, authors_data, strict=False):
 				affiliations = author_data.get("affiliation") or []
+				# These two shape checks only matter on a POST. A PATCH has
+				# already rejected the same shapes (_author_entry_errors).
 				if isinstance(affiliations, list):
 					for org_data in affiliations:
 						if not isinstance(org_data, dict):
@@ -570,7 +786,7 @@ class SubmissionSerializer(HssiSerializer):
 
 		if "award" in data:
 			items = [
-				self._get_or_create_award(item)
+				self._get_or_create_award(item, updating=self.instance)
 				for item in (data["award"] or [])
 			]
 			software.award.set(items)

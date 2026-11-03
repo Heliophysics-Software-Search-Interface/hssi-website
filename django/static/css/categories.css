@@ -280,18 +280,6 @@ label > input.label {
 	cursor: pointer;
 }
 
-.mobile-filter-header {
-	font-weight: 500;
-	background-color: #ECECEC;
-}
-
-.mobile-filter-toggle {
-	cursor: pointer;
-	display: block;
-	padding: 10px;
-	font-size: 15px;
-}
-
 .expanded {
 	transition: all .3s ease-in-out;
 }

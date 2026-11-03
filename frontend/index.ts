@@ -14,6 +14,12 @@ import {
 	ConfirmDialogue, TextInputDialogue,
 } from "./loader";
 
+/**
+ * Registers the widget types that can be generated client-side (basic input
+ * widgets, `RorWidget`, `OrcidWidget`, `DataciteDoiWidget`,
+ * `AuthorIdentifierWidget`, `ModelBox` and the autofill widgets), then
+ * generates the form. Exposed on `window`.
+ */
 function initForms() {
 	
 	// register widgets that can be generated on clientside
@@ -38,6 +44,10 @@ function initForms() {
 	FormGenerator.generateForm(null);
 }
 
+/**
+ * Creates the shared dialogue instances: confirm, autofill and text input
+ * dialogues, and the ROR, ORCID and DataCite DOI finders. Exposed on `window`.
+ */
 function initDialogue() {
 	ConfirmDialogue.validateInstance();
 	AutofillDialoge.validateInstance();

@@ -23,6 +23,10 @@ from .. import github
 from .edit_submission import email_existing_edit_link
 
 def view_form(request: HttpRequest) -> HttpResponse:
+	"""
+	Renders the submission form page with the names of the three submission form
+	structures.
+	"""
 	return render(
 		request, 
 		"pages/submit.html", 
@@ -36,6 +40,9 @@ def view_form(request: HttpRequest) -> HttpResponse:
 	)
 
 def view_confirmation(request: HttpRequest) -> HttpResponse:
+	"""
+	GET only: renders the submission confirmation page; 400 for other methods.
+	"""
 	if request.method != "GET":
 		return HttpResponseBadRequest("GET expected")
 	
@@ -46,6 +53,12 @@ def view_confirmation(request: HttpRequest) -> HttpResponse:
 	)
 
 def submit_data(request: HttpRequest) -> HttpResponse:
+	"""
+	POST only: saves the JSON form data as a new submission in one transaction,
+	creates a 90-day edit link, and on commit opens a "new submission" GitHub
+	issue and emails the edit link to the submitters, then redirects to the
+	confirmation page.
+	"""
 	if request.method != "POST":
 		return HttpResponseBadRequest("POST expected")
 	

@@ -25,6 +25,7 @@ function resourceSortFromUrl(): ResourceSort {
 export class ResourceView {
 
 	private static mainInstance: ResourceView = null;
+	/** Fires when the first (main) view is created. */
 	public static onMainViewCreated: SimpleEvent = new SimpleEvent();
 
 	private noResourcesElem: HTMLDivElement = null;
@@ -41,6 +42,7 @@ export class ResourceView {
 	private dataLoaded: boolean = false;
 	private sort: ResourceSort = resourceSortFromUrl();
 
+	/** Fires when the view's initial data has been fetched. */
 	public onReady: SimpleEvent = null;
 
 	private static resourceViewMap: Map<HTMLElement, ResourceView> = new Map();
@@ -58,6 +60,10 @@ export class ResourceView {
 		return ResourceView.resourceViewMap.get(element)
 	}
 
+	/**
+	 * Sets the element the view is attached to, for lookup by
+	 * `getViewInElement`.
+	 */
 	public setParentElement(element: HTMLElement) {
 		if(this.parentElement) ResourceView.resourceViewMap.delete(this.parentElement);
 		if(element) ResourceView.resourceViewMap.set(element, this);
@@ -67,6 +73,10 @@ export class ResourceView {
 	/** the html element that contains all the html content for this view */
 	public containerElement: HTMLDivElement = null;
 
+	/**
+	 * Creates the container, "no results" message and pagination controls,
+	 * registering the view as `main` if it is the first.
+	 */
 	public constructor() {
 		if(!ResourceView.mainInstance) {
 			ResourceView.mainInstance = this;
@@ -106,6 +116,10 @@ export class ResourceView {
 		});
 	}
 
+	/**
+	 * Updates the result count and the sort buttons, which are hidden during a
+	 * search or when there are no results.
+	 */
 	public updateResultHeader(): void {
 		const count = this.paginatedMode ? this.paginationTotal : this.items.length;
 		const label = document.getElementById("result-count");
@@ -354,6 +368,11 @@ export class ResourceView {
 	}
 }
 
+/**
+ * Creates a `ResourceView`, optionally restricted to the given UIDs, attaches
+ * it to the current `<script>` element's parent, fetches its data, and handles
+ * `popstate`. Not exported; exposed on `window`.
+ */
 function makeResourceView(uids: string[]) {
 	const node = document.currentScript.parentNode as HTMLElement;
 	const view = new ResourceView();

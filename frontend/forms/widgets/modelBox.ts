@@ -25,6 +25,11 @@ const modelRowSlug = "/rows/";
 
 type ChoicesJsonStructure = { data: [string, string, string[], string?, string?][] }
 
+/**
+ * `BaseProperties` plus `targetModel` (model to load choices from),
+ * `modelFilter` (query string for the choices request), `dropdownButton`,
+ * `allowNewEntries` and `licenseModelbox`.
+ */
 export interface ModelBoxProperties extends BaseProperties {
 	targetModel?: ModelName,
 	modelFilter?: string,
@@ -55,6 +60,10 @@ export class ModelBox extends Widget {
 	private inputContainerRowElement: HTMLElement = null;
 	private dropdownButtonElement: HTMLButtonElement = null;
 	
+	/**
+	 * The available options (`id`, `name`, `keywords`, optional `tooltip` and
+	 * `identifier`), or `null` until loaded.
+	 */
 	public options: Option[] = null;
 	private allOptionLIs: OptionLi[] = [];
 	private filteredOptionLIs: OptionLi[] = [];
@@ -63,7 +72,9 @@ export class ModelBox extends Widget {
 	private listenerUnset: (x: any) => any = null;
 	private listenerUnsetChild: (x: any) => any = null;
 
+	/** The widget's `ModelBoxProperties`. Overrides `Widget.properties`. */
 	public properties: ModelBoxProperties = {};
+	/** Abort controller for the in-flight model row fetch, or `null`. */
 	public rowFetchAbort: AbortController = null;
 	
 	/// Restricted functionality -----------------------------------------------
@@ -183,6 +194,10 @@ export class ModelBox extends Widget {
 		}
 	}
 
+	/**
+	 * Fetches a row of `targetModel` and fills the parent field's subfields
+	 * from it, matched via `FormGenerator.fieldMap`; aborts any previous fetch.
+	 */
 	protected fetchModelRow(uid: string): void {
 		this.rowFetchAbort?.abort();
 		this.rowFetchAbort = null;
@@ -222,6 +237,11 @@ export class ModelBox extends Widget {
 		promise.catch(err => console.error(err));
 	}
 
+	/**
+	 * Puts the option (default: the highlighted one) in the input, stores it as
+	 * the input's data and fetches its model row; `null` clears the stored
+	 * option.
+	 */
 	public selectOption(option: Option = this.selectedOptionLI?.data): void {
 		this.rowFetchAbort?.abort();
 		this.rowFetchAbort = null;
@@ -238,6 +258,7 @@ export class ModelBox extends Widget {
 		this.updateValidModelStyle();
 	}
 
+	/** Highlights an option in the dropdown and scrolls it into view. */
 	protected setSelectedOptionLI(option: OptionLi): void {
 		
 		// remove the previously selected class from the selected li if 
@@ -535,6 +556,10 @@ export class ModelBox extends Widget {
 		}
 	}
 
+	/**
+	 * Shows the shared dropdown under this input with this widget's options,
+	 * filtered by the input value unless `filter` is false.
+	 */
 	public showDropdown(filter: boolean = true): void {
 		this.setSelectedOptionLI(null);
 		if(filter) this.filterOptionVisibility();
@@ -543,8 +568,13 @@ export class ModelBox extends Widget {
 		ModelBox.showDropdown(this.inputContainerElement);
 	}
 
+	/** The text input. Overrides `Widget.getInputElement`. */
 	public getInputElement(): AnyInputElement { return this.inputElement; }
 
+	/**
+	 * The selected option's ID if one is selected, otherwise the trimmed text.
+	 * Overrides `Widget.getInputValue`.
+	 */
 	override getInputValue(): string {
 		const inputElem = this.getInputElement();
 		if(inputElem?.data?.id){
@@ -553,6 +583,10 @@ export class ModelBox extends Widget {
 		return super.getInputValue();
 	}
 
+	/**
+	 * Also removes its listeners from the parent field. Overrides
+	 * `Widget.destroy`.
+	 */
 	override destroy(): void {
 		if(this.parentField){
 			this.parentField.onValueChanged.removeListener(this.listenerUnset);
@@ -568,11 +602,13 @@ export class ModelBox extends Widget {
 	private static tooltipElement: HTMLDivElement = null;
 	private static repositionDropdownInterval: number = 0;
 
+	/** The shared dropdown element, created on first use. */
 	protected static getDropdownElement(): HTMLDivElement {
 		if(this.dropdownElement == null) this.createDropdownElement();
 		return this.dropdownElement;
 	}
 
+	/** The shared tooltip element, created on first use. */
 	protected static getTooltipElement(): HTMLDivElement {
 		if(this.tooltipElement == null) this.createTooltipElement();
 		return this.tooltipElement;
@@ -655,6 +691,7 @@ export class ModelBox extends Widget {
 		// TODO
 	}
 
+	/** Hides the shared dropdown and stops repositioning it. */
 	public static hideDropdown(): void {
 		this.getDropdownElement().style.display = "none";
 		if(this.repositionDropdownInterval){

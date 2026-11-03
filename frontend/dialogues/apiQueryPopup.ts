@@ -13,9 +13,15 @@ import {
 const styleResultBox = "hssi-query-results";
 const styleRow = "row";
 const styleColumn = "column";
+/** Font Awesome search icon HTML. */
 export const faSearchIcon = "<i class='fa fa-search'></i>";
+/**
+ * `"resultFilters"`: widget property naming the result filters to pass to
+ * `withFilters`.
+ */
 export const propResultFilters = "resultFilters";
 
+/** One search result: its JSON data, a display element, and its ID URL. */
 export type ApiQueryResult = {
 	jsonData: JSONObject;
 	textContent: HTMLDivElement;
@@ -28,24 +34,39 @@ export type ApiQueryResult = {
  */
 export abstract class ApiQueryPopup extends PopupDialogue {
 	
+	/** The `ModelSubfield` or input element a selected result is written to. */
 	protected targetField: ModelSubfield | AnyInputElement = null;
+	/** The query form. */
 	protected formElement: HTMLFormElement = null;
+	/** The query text input. */
 	protected queryInputElement: HTMLInputElement = null;
+	/** Container for the result rows. */
 	protected resultBox: HTMLDivElement = null;
+	/** Names of the result filters to apply; cleared when the popup hides. */
 	protected filters: string[] = [];
 	private isBusy: boolean = false;
 	
+	/** Optional text shown above the form; empty by default. */
 	protected get description(): string { return "" };
+	/** Request `Content-Type`; `"application/json"` by default. */
 	protected get contentType(): string { return "application/json" };
 
+	/** The API endpoint. */
 	protected abstract get endpoint(): string;
 
+	/** Calls the `PopupDialogue` constructor. */
 	protected constructor() { super(); }
 
+	/** Overrides to return `"Find Item"`. */
 	public override get title(): string {
 		return "Find Item";
 	}
 
+	/**
+	 * Overrides to add the description, query form and result box, focusing the
+	 * input and clearing results on show and resetting the query and filters on
+	 * hide.
+	 */
 	protected override createContent(): void {
 		super.createContent();
 		if(this.description){
@@ -83,6 +104,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 		this.contentElement.appendChild(this.formElement);
 	}
 
+	/** Creates the query text input. */
 	protected createQueryInput(): void {
 		this.queryInputElement = document.createElement("input") as HTMLInputElement;
 		this.queryInputElement.type = "text";
@@ -90,18 +112,25 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 		this.formElement.appendChild(this.queryInputElement);
 	}
 
+	/** Creates the result container. */
 	protected createResultBox(): void {
 		this.resultBox = document.createElement("div") as HTMLDivElement;
 		this.resultBox.classList.add(styleResultBox);
 		this.contentElement.appendChild(this.resultBox);
 	}
 
+	/** The request URL for a query. */
 	protected abstract getQueryUrl(query: string): string;
 
+	/** Request headers; sets `Content-Type` from `contentType`. */
 	protected getRequestHeaders(): Record<string, string> {
 		return { "Content-Type": this.contentType };
 	}
 
+	/**
+	 * Fetches the query URL and returns the JSON response; throws if a request
+	 * is already in progress or the response is not OK.
+	 */
 	protected async getQueryResults(query: string): Promise<JSONValue> {
 		if(this.isBusy){
 			throw new Error("Busy - Cannot send requests right now!");
@@ -127,8 +156,13 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 		}
 	}
 
+	/** Turns the API response into result rows. */
 	protected abstract handleQueryResults(results: JSONValue): void;
 
+	/**
+	 * Adds a result row with a link and a Select button that writes the result
+	 * to the target field and closes the popup.
+	 */
 	protected addResultRow(result: ApiQueryResult): void {
 		const row = document.createElement("div") as HTMLDivElement;
 		row.classList.add(styleRow);
@@ -200,6 +234,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 		return results;
 	}
 
+	/** Keeps DataCite results of type `Software`. */
 	protected resultsFiltered_software(
 		results_in: JSONArray<DataciteItem>
 	): JSONArray<DataciteItem>{
@@ -208,6 +243,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 		});
 	}
 
+	/** Removes DataCite results of type `Software`. */
 	protected resultsFiltered_notsoftware(
 		results_in: JSONArray<DataciteItem>
 	): JSONArray<DataciteItem>{
@@ -216,6 +252,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 		});
 	}
 
+	/** Keeps DataCite results of type `Dataset`. */
 	protected resultsFiltered_dataset(
 		results_in: JSONArray<DataciteItem>
 	): JSONArray<DataciteItem>{
@@ -225,6 +262,7 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 	}
 
 
+	/** Removes DataCite results of type `Dataset`. */
 	protected resultsFiltered_notdataset(
 		results_in: JSONArray<DataciteItem>
 	): JSONArray<DataciteItem>{
@@ -233,6 +271,10 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 		});
 	}
 
+	/**
+	 * Removes DataCite results that are a version of another record
+	 * (`IsVersionOf`), keeping concept records.
+	 */
 	protected resultsFiltered_concept(
 		results_in: JSONArray<DataciteItem>
 	): JSONArray<DataciteItem> {
@@ -268,6 +310,10 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 		}
 	}
 
+	/**
+	 * Sets the field a selected result is written to; by default also searches
+	 * the parent field's current value. Returns the popup.
+	 */
 	public setTarget(
 		field: ModelSubfield | AnyInputElement, 
 		useParentField: boolean = true
@@ -279,12 +325,20 @@ export abstract class ApiQueryPopup extends PopupDialogue {
 		return this;
 	}
 
+	/**
+	 * Puts the query in the input and searches it if non-empty. Returns the
+	 * popup.
+	 */
 	public withQuery(query: string): ApiQueryPopup {
 		this.queryInputElement.value = query;
 		if(query) this.submitQuery(query);
 		return this;
 	}
 
+	/**
+	 * Adds result filters by name (e.g. `software`, `concept`). Returns the
+	 * popup.
+	 */
 	public withFilters(filters: string[]): ApiQueryPopup {
 		if(filters) this.filters.push(...filters);
 		return this;

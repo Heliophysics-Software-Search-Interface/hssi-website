@@ -13,12 +13,15 @@ import {
 	ModelDataCache,
 } from "../../loader";
 
+/** `"custom-label"`: CSS class for a field's label. */
 export const labelStyle = "custom-label";
 const tooltipWrapperStyle = "tooltip-wrapper";
 const tooltipIconStyle = "tooltip-icon";
 const tooltipTextStyle = "tooltip-text";
+/** `"explanation-text"`: CSS class for the help text shown below a label. */
 export const explanationTextStyle = "explanation-text";
 const subfieldContainerStyle = "subfield-container";
+/** `"required-indicator"`: CSS class for the `*` shown on mandatory fields. */
 export const requiredIndicatorStyle = "required-indicator";
 const indentStyle = "indent";
 
@@ -30,29 +33,56 @@ const faInfoCircle = "<i class='fa fa-info-circle'></i>";
  */
 export class ModelSubfield {
 
+	/** The field's name, used as its key in submitted data. */
 	public name: string = "";
+	/** Alternative name the field also matches when filling data. */
 	public rowName: string = "";
+	/**
+	 * The `ModelFieldStructure` describing the field's widget and subfields.
+	 */
 	public type: ModelFieldStructure = null;
+	/**
+	 * The field's `PropertyContainer` (label, tooltips, requirement level,
+	 * widget properties, …).
+	 */
 	public properties: PropertyContainer = {};
+	/** The field's `Widget`, once built. */
 	public widget: Widget = null;
+	/** Root element of the field's interface. */
 	public containerElement: HTMLDivElement = null;
+	/** The field's `FieldRequirement`, once built. */
 	public requirement: FieldRequirement = null;
 
+	/** Element holding the widget and subfield container. */
 	protected controlContainerElement: HTMLDivElement = null;
+	/** The field's label element. */
 	protected labelElement: HTMLLabelElement = null;
 	private explanationElement: HTMLDivElement = null;
 
+	/** Whether the field was built read-only. */
 	protected readOnly: boolean = false;
+	/** Whether the field was built condensed; passed on to subfields. */
 	protected condensed: boolean = false;
 	
 	private subfieldContainer: HTMLDetailsElement = null;
 	private subfields: ModelSubfield[] = [];
+	/** The field this one is a subfield of, or `null`. */
 	protected parentField: ModelSubfield = null;
 
+	/** The parent field, or `null`. */
 	public get parent(): ModelSubfield { return this.parentField; }
+	/** Whether this is a multi-entry field; `false` here. */
 	public get multi(): boolean { return false; }
 
+	/**
+	 * Fires when the field's value changes; also triggers the parent's
+	 * `onChildValueChanged`.
+	 */
 	public onValueChanged: SimpleEvent = new SimpleEvent();
+	/**
+	 * Fires when a descendant field's value changes; propagates up the parent
+	 * chain.
+	 */
 	public onChildValueChanged: SimpleEvent = new SimpleEvent();
 
 	/// Initialization ---------------------------------------------------------
@@ -115,6 +145,7 @@ export class ModelSubfield {
 		if(!this.subfieldsAreBuilt()) this.buildSubFields();
 	}
 
+	/** Builds the label, required indicator, info tooltip and help text. */
 	protected buildFieldInfo(): void {
 
 		// create the label text
@@ -157,6 +188,10 @@ export class ModelSubfield {
 		}
 	}
 
+	/**
+	 * Creates the widget for the field's type, merges in `widgetProperties`,
+	 * and initializes it.
+	 */
 	protected buildWidget(readOnly: boolean): void {
 		if(!this.type){
 			console.error("Undefined subfield type!", this);
@@ -221,6 +256,10 @@ export class ModelSubfield {
 		}
 	}
 
+	/**
+	 * Clears the value, clears and collapses all subfields, and removes warning
+	 * styles.
+	 */
 	public clearField(): void {
 		
 		// clear input value
@@ -237,6 +276,10 @@ export class ModelSubfield {
 		this.requirement.removeStyles();
 	}
 
+	/**
+	 * Fills the field from a value, nested object, array (multi-fields only),
+	 * or option ID; a UUID on a `ModelBox` field fetches that row's data first.
+	 */
 	public fillField(
 		data: JSONValue, 
 		notify: boolean = true, 
@@ -325,6 +368,7 @@ export class ModelSubfield {
 		}
 	}
 
+	/** True if the field is optional or has valid input. */
 	public meetsRequirementLevel(): boolean {
 		if(
 			this.requirement == null || 
@@ -335,6 +379,10 @@ export class ModelSubfield {
 		return this.hasValidInput();
 	}
 
+	/**
+	 * True if the field has a value that passes the input's validity check; a
+	 * `ModelBox` that disallows new entries also needs a selected option.
+	 */
 	public hasValidInput(): boolean {
 		if(this.widget instanceof ModelBox){
 			if(!this.widget.properties.allowNewEntries){
@@ -353,6 +401,10 @@ export class ModelSubfield {
 		return true;
 	}
 
+	/**
+	 * True if the input element's value passes its validity check, empty or
+	 * not.
+	 */
 	public hasValidFormatValue(): boolean {
 		const inputElem = this.getInputElement();
 		if(inputElem) return inputElem.checkValidity();
@@ -369,6 +421,7 @@ export class ModelSubfield {
 		this.subfieldContainer.setAttribute("open", "");
 	}
 
+	/** Closes the subfield container. */
 	public collapseSubfields(): void {
 		if(!this.subfieldsExpanded() || this.subfieldsHidden()) return;
 		this.subfieldContainer.removeAttribute("open");
@@ -426,6 +479,7 @@ export class ModelSubfield {
 		return this.subfieldContainer.hasAttribute("open");
 	}
 
+	/** True if there is no subfield container or it's hidden. */
 	public subfieldsHidden(): boolean {
 		return(
 			this.subfieldContainer == null || 
@@ -433,15 +487,18 @@ export class ModelSubfield {
 		);
 	}
 
+	/** The field's subfields, building them first if needed. */
 	public getSubfields(): ModelSubfield[] {
 		if(!this.subfieldsAreBuilt()) this.buildSubFields();
 		return this.subfields;
 	}
 
+	/** The widget's input element, or `null`. */
 	public getInputElement(): AnyInputElement {
 		return this.widget?.getInputElement() ?? null;
 	}
 
+	/** Sets the widget's value. */
 	public setValue(value: string, notify: boolean = true): void {
 		this.widget?.setValue(value, notify);
 	}

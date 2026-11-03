@@ -23,6 +23,10 @@ REGION_MAPPING_TTL: dict[str, str] = {
 	"Earth Magnetosphere": "Magnetosphere",
 	"Solar Environment": "Solar Atmosphere"
 }
+"""
+Maps old region full names to their replacements in the current region
+vocabulary.
+"""
 
 ## -----------------------------------------------------------------------------
 
@@ -37,11 +41,14 @@ class InstrObsType(models.IntegerChoices):
 class Keyword(HssiModel):
 	access = AccessLevel.PUBLIC
 	name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
+	"""The keyword text."""
 
 	def __str__(self) -> str: return self.name.title()
 
 	@classmethod
-	def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
+	def get_top_field(cls) -> models.Field:
+		"""Returns the `name` field as the model's display field."""
+		return cls._meta.get_field("name")
 
 	def get_homepage_filter_url(self) -> str:
 		"""
@@ -73,6 +80,7 @@ class RepoStatus(ControlledList):
 	"""
 	access = AccessLevel.PUBLIC
 	image = models.URLField(blank=True, null=True)
+	"""URL of the status badge image."""
 	
 	class Meta: verbose_name_plural = "Repo Statuses"
 
@@ -81,6 +89,7 @@ class ProgrammingLanguage(ControlledList):
 	access = AccessLevel.PUBLIC
 	homepage_filter_field = "programming_language"
 	version = models.CharField(max_length=LEN_NAME, blank=True, null=True)
+	"""Language version, appended to the name when displayed."""
 
 	def __str__(self): return self.name + (f" {self.version}" if self.version else "")
 
@@ -89,6 +98,7 @@ class DataInput(ControlledList):
 	access = AccessLevel.PUBLIC
 	homepage_filter_field = "data_sources"
 	abbreviation = models.CharField(max_length=LEN_ABBREVIATION, blank=True, null=True)
+	"""Short abbreviation of the term."""
 
 	def __str__(self): return self.name
 
@@ -96,10 +106,15 @@ class FileFormat(ControlledList):
 	"""File formats that are supported as input or output types by the software"""
 	access = AccessLevel.PUBLIC
 	extension = models.CharField(max_length=25, blank=False, null=False)
+	"""File extension, shown after the name."""
 
 	# specified for intellisense, defined in other models
 	softwares_to: models.Manager['Software']
 	softwares_from: models.Manager['Software']
+	"""
+	Editor hint for a reverse relation to `Software`; the actual reverse
+	relations are `softwares_in` and `softwares_out`.
+	"""
 
 	def __str__(self): return self.name + (f" ({self.extension})" if self.extension else "")
 
@@ -107,7 +122,9 @@ class InstrumentObservatory(ControlledList):
 	"""An observatory or scientific research instrument"""
 	access = AccessLevel.PUBLIC
 	type = models.IntegerField(choices=InstrObsType.choices, default=InstrObsType.UNKNOWN)
+	"""Whether this is an instrument or observatory, an `InstrObsType`."""
 	abbreviation = models.CharField(max_length=LEN_NAME, null=True, blank=True)
+	"""Short abbreviation, shown after the name."""
 
 	# User-friendly landing page (e.g. a HelioData mission/instrument page) preferred
 	# for outbound links over the canonical SPASE persistent identifier. Server-derived
@@ -115,15 +132,22 @@ class InstrumentObservatory(ControlledList):
 	landing_url = models.URLField(blank=True, null=True)
 
 	def get_search_terms(self) -> list[str]:
+		"""
+		Search terms from `ControlledList`, plus the abbreviation and the name's
+		words.
+		"""
 		terms = super().get_search_terms()
 		if self.abbreviation:
 			terms.append(self.abbreviation)
 		terms.extend(self.name.split(' '))
 		return terms
 
-	def get_identifier_url(self) -> str | None: return self.identifier or None
+	def get_identifier_url(self) -> str | None:
+		"""The `identifier`, or `None` if empty."""
+		return self.identifier or None
 
 	def get_landing_url(self) -> str | None:
+		"""The `landing_url`, falling back to `identifier`, or `None`."""
 		return self.landing_url or self.identifier or None
 
 	class Meta: ordering = ['name']
@@ -131,11 +155,17 @@ class InstrumentObservatory(ControlledList):
 		return f"{self.name} ({self.abbreviation})" if self.abbreviation else self.name
 
 class FunctionCategory(ControlledGraphList):
+	"""
+	A software functionality category, arranged as a parent/child hierarchy.
+	"""
 	access = AccessLevel.PUBLIC
 	homepage_filter_field = "software_functionality"
 	abbreviation = models.CharField(max_length=5, null=True, blank=True)
+	"""Short abbreviation of the category."""
 	backgroundColor = RGBColorField("Background Color", default="#FFFFFF", blank=True, null=True)
+	"""Background color of the category's tag."""
 	textColor = RGBColorField("Text Color", default="#000000", blank=True, null=True)
+	"""Text color of the category's tag."""
 
 	children = models.ManyToManyField(
 		'self',
@@ -143,11 +173,13 @@ class FunctionCategory(ControlledGraphList):
 		related_name='parent_nodes',
 		symmetrical=False,
 	)
+	"""Child categories."""
 
 	# specified for intellisense, defined in other models
 	parent_nodes: models.Manager['FunctionCategory']
 
 	def get_choice(self) -> ModelObjectChoice:
+		"""The category as a `ModelObjectChoice`, named by its full name."""
 		return ModelObjectChoice(
 			str(self.id), 
 			self.get_full_name(),
@@ -157,6 +189,10 @@ class FunctionCategory(ControlledGraphList):
 
 	@classmethod
 	def post_fetch(cls):
+		"""
+		Fills in missing abbreviations and assigns each parent group a distinct
+		hue, with lighter shades for children and contrasting text colors.
+		"""
 		super().post_fetch()
 
 		# create appropriate abbreviations for all items
@@ -188,6 +224,9 @@ class FunctionCategory(ControlledGraphList):
 		cls.objects.bulk_update(all_objs, ['backgroundColor', 'textColor'])
 
 	def get_search_terms(self):
+		"""
+		Search terms from `ControlledList`, plus each part of the full name.
+		"""
 		arr = super().get_search_terms()
 		arr.extend(self.get_full_name().split(": "))
 		return arr
@@ -199,6 +238,10 @@ class FunctionCategory(ControlledGraphList):
 		access_ovr=AccessLevel.PUBLIC, 
 		fields=None
 	):
+		"""
+		Serialized data from `ControlledGraphList`, plus the full name if
+		`fields` includes `FIELD_FUNCTIONCATEGORY_FULLNAME`.
+		"""
 		include_fullname = (fields and FIELD_FUNCTIONCATEGORY_FULLNAME in fields)
 		if include_fullname: 
 			fields = list(filter(lambda x: x != FIELD_FUNCTIONCATEGORY_FULLNAME, fields))
@@ -223,9 +266,11 @@ class Region(ControlledGraphList):
 		related_name='parent_nodes',
 		symmetrical=False,
 	)
+	"""Child regions."""
 
 	@classmethod
 	def post_fetch(cls):
+		"""Clears any `identifier` that isn't a valid URL."""
 
 		url_validator = URLValidator()
 
@@ -263,6 +308,7 @@ class Phenomena(ControlledGraphList):
 		related_name='parent_nodes',
 		symmetrical=False,
 	)
+	"""Child phenomena."""
 
 	class Meta: ordering = ['name']
 	def __str__(self): return self.get_full_name()

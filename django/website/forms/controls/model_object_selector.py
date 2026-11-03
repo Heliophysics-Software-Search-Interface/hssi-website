@@ -8,6 +8,10 @@ from ...util import RequirementLevel, REQ_LVL_ATTR
 from ...models import HssiModel
 
 class ModelObjectChoice(NamedTuple):
+	"""
+	Named tuple describing one selectable object: `id`, `name`, `keywords` and
+	`tooltip`.
+	"""
 	id: str
 	name: str
 	keywords: list[str]
@@ -22,23 +26,41 @@ class ModelObjectSelector(forms.TextInput):
 	attrs: dict | None
 	template_name: str = 'widgets/model_object_selector.html'
 	model: Type[HssiModel] | None = None
+	"""The `HssiModel` whose objects are offered as choices."""
 	filter: dict = {}
+	"""Queryset filter keyword arguments applied to the choices."""
 
 	case_sensitive_filtering: bool = False
+	"""
+	Whether filtering is case sensitive; the constructor never overrides the
+	default `False`.
+	"""
 	multi_select: bool = False
+	"""Whether multiple objects can be selected."""
 	filter_on_focus: bool = True
+	"""Whether choices are filtered when the input gains focus."""
 	dropdown_button: bool = False
+	"""Whether a dropdown button is shown."""
 	dropdown_on_focus: bool = True
+	"""Whether the dropdown opens when the input gains focus."""
 	dropdown_on_blank: bool = True
+	"""Whether the dropdown opens when the input is empty."""
 	option_tooltips: bool = True
+	"""Whether choices show tooltips."""
 	new_object_field: str | None = None
+	"""Name of a field used to create new objects, or `None`."""
 	requirement_level: RequirementLevel = RequirementLevel.RECOMMENDED
+	"""`RequirementLevel` of the field; `RECOMMENDED` by default."""
 
 	def __init__(
 		self, model: Type[HssiModel], 
 		requirement: RequirementLevel = RequirementLevel.RECOMMENDED, 
 		attrs: dict = {}
 	):
+		"""
+		Sets the target model and requirement level, and reads the selector
+		options from `attrs`.
+		"""
 		attrs[REQ_LVL_ATTR] = requirement
 		super().__init__(attrs)
 		self.case_sensitive_filtering = getattr(
@@ -87,6 +109,7 @@ class ModelObjectSelector(forms.TextInput):
 		requirement: RequirementLevel = RequirementLevel.RECOMMENDED, 
 		attrs: dict = {}
 	) -> 'ModelObjectSelector':
+		"""Creates a selector with default options."""
 		return cls(
 			model, 
 			requirement=requirement, 
@@ -94,6 +117,10 @@ class ModelObjectSelector(forms.TextInput):
 		)
 
 	def get_context(self, name, value, attrs) -> dict:
+		"""
+		Template context with the selector's properties and its choices, both
+		also as JSON.
+		"""
 		attrs[REQ_LVL_ATTR] = self.requirement_level.value
 		context = super().get_context(name, value, attrs)
 

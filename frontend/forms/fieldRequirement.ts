@@ -6,13 +6,30 @@ import {
 	type ModelSubfield,
 } from "../loader";
 
+/** `"data-hssi-required"`: attribute holding an element's requirement level. */
 export const requirementAttribute = "data-hssi-required";
+/**
+ * `"data-hssi-required-container"`: attribute a widget's element gets holding
+ * its requirement level.
+ */
 export const requirementAttributeContainer = "data-hssi-required-container";
 
+/**
+ * `"invalid-recommended"`: CSS class for an empty or invalid recommended field.
+ */
 export const invalidRecStyle = "invalid-recommended";
+/**
+ * `"invalid-mandatory"`: CSS class for an empty mandatory field, or any field
+ * with an invalid value.
+ */
 export const invalidManStyle = "invalid-mandatory";
+/** `"note"`: CSS class for the warning note shown under a field. */
 export const noteStyle = "note"
 
+/**
+ * Enum of how required a field is: `OPTIONAL` (0), `RECOMMENDED` (1),
+ * `MANDATORY` (2, blocks submission).
+ */
 export enum RequirementLevel {
 	/** its optional - unnecessary if not relevant */
 	OPTIONAL = 0,
@@ -22,6 +39,10 @@ export enum RequirementLevel {
 	MANDATORY = 2,
 }
 
+/**
+ * Tracks a field's requirement level and applies or removes its warning styles
+ * and note as focus leaves or enters the field.
+ */
 export class FieldRequirement {
 
 	private _focusEnterListener: Function = null;
@@ -29,11 +50,19 @@ export class FieldRequirement {
 	private _mouseupListener: Function = null;
 	private _eventTarget: HTMLElement = null;
 
+	/** The `ModelSubfield` this requirement applies to. */
 	public field: ModelSubfield = null;
+	/** Element that receives the warning styles and focus listeners. */
 	public containerElement: HTMLElement = null;
+	/** The warning note element placed after the styled element. */
 	public noteElement: HTMLDivElement = null;
+	/** The field's `RequirementLevel`. */
 	public level: RequirementLevel = RequirementLevel.OPTIONAL;
 	
+	/**
+	 * Binds to the field's container, creates the hidden note element, and adds
+	 * focus listeners.
+	 */
 	public constructor(
 		field: ModelSubfield,
 		requirementLevel: RequirementLevel,
@@ -112,6 +141,7 @@ export class FieldRequirement {
 		return note;
 	}
 
+	/** Removes the warning styles and hides the note. */
 	public removeStyles(): void {
 		let elem = this.getStyledElement();
 		for(const stylename of [invalidRecStyle, invalidManStyle]){

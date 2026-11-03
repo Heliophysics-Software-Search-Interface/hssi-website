@@ -53,24 +53,24 @@ permenant, so should probably change in the future).
 
 ### Object Relational Mapping (ORM) Design
 
-Every model inherits from [HssiModel](../django/website/models/base.py#L54), 
+Every model inherits from [HssiModel](../django/website/models/base.py#L65), 
 which homogenizes a default interface
 to allow for highly generic and reusable functionality. This base class 
 provides a consistent way to form unique identifiers for database entries, and
 sets up a model-wide access level and serialization methods that can be 
 overriden for quick but extensible additions or modifications to models.
 
-The [ControlledList](../django/website/models/base.py#L255) defines a generic 
+The [ControlledList](../django/website/models/base.py#L292) defines a generic 
 shape for a data list. This structure allows for consistent implementation of 
 searching and filtering for software entries in the database among a diverse 
 set of subfields. Also, because the data list's shape is known, functionality 
 exists to easily implement fetching data from an external source, examples of 
 which can be seen with these controlled vocabularies:
 
-* [Region](../django/website/admin/fetch_vocab.py#L47)
-* [ProgrammingLanguages](../django/website/admin/fetch_vocab.py#L44)
-* [RepoStatus](../django/website/admin/fetch_vocab.py#L46)
-* [InstrumentObservatory](../django/website/admin/fetch_vocab.py#L240)
+* [Region](../django/website/admin/fetch_vocab.py#L63)
+* [ProgrammingLanguages](../django/website/admin/fetch_vocab.py#L60)
+* [RepoStatus](../django/website/admin/fetch_vocab.py#L62)
+* [InstrumentObservatory](../django/website/admin/fetch_vocab.py#L300)
 
 The [Structurizer](../django/website/models/structurizer.py) module allows 
 these models to be described as data, which then allows forms to be generated 
@@ -88,14 +88,14 @@ interested in. This is an overview of how that's supposed to work:
 
 1. A software maintainer navigates to the submission page, fills out the 
 relevant form fields, and submits it.  
-2. The data in the form is serialized and sent to the HSSI [Software](../django/website/models/software.py#L71) 
+2. The data in the form is serialized and sent to the HSSI [Software](../django/website/models/software.py#L81) 
 model in our database. A confirmation email is sent to the email address the
 maintainer entered, and a "new submission" GitHub issue is opened to notify
 curators.
 3. A curator reviews the data in the software entry and reaches out to the 
 submitter email if any modifications need to be made.
 4. After all data is verified, and no more modifications are needed, a curator
-'verifies' the software entry. Its UUID is added to the [VerifiedSoftware](../django/website/models/software.py#L351) 
+'verifies' the software entry. Its UUID is added to the [VerifiedSoftware](../django/website/models/software.py#L429) 
 model and, as a result, it becomes visible on the HSSI website.
 5. If an author needs to make a correction after it has been verified, they 
 can select an option on the software's landing page, which prompts them to
@@ -107,7 +107,7 @@ need for a software submitter to create an account.
 
 **Caveats**:
 
-* There is an [internal status field](../django/website/models/software.py#L320) 
+* There is an [internal status field](../django/website/models/software.py#L389) 
 in each software entry, but it is currently unused as we have no way to 
 consistently track progress for each entry.
 * Limited access curator roles do not currently exist, despite some of the 

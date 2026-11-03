@@ -69,6 +69,9 @@ const styleDropdown = "dropdown";
 const styleAccordionMenu = "accordion-menu";
 const styleMobileMenuContainer = "mobile-menu-container";
 
+/**
+ * A tab in the filter menu that lists the rows of one model as filter items.
+ */
 export class FilterTab {
 
 	/** the selectable header for the tab */
@@ -95,7 +98,9 @@ export class FilterTab {
 	/** the menu that this tab belongs to */
 	public parentMenu: FilterMenu = null;
 
+	/** Whether the item list gets the dropdown styles. */
 	protected isDropdown: boolean = false;
+	/** The fetched model rows. */
 	protected modelData: JSONArray = [];
 
 	/** event is fired when html elements are built and ready for display */
@@ -104,6 +109,10 @@ export class FilterTab {
 	/** text that is shown for the tab header */
 	public get headerText(): string { return this.targetModel; }
 
+	/**
+	 * Creates the header and content container elements and stores the parent
+	 * menu.
+	 */
 	public constructor(parentMenu: FilterMenu){
 		this.contentContainerElement = document.createElement("div");
 		this.contentContainerElement.classList.add(styleTabContent);
@@ -206,12 +215,15 @@ export class FilterTab {
 		}
 	}
 
+	/** Loads all rows of `targetModel` from `ModelDataCache`. */
 	protected async fetchModelData(): Promise<void> {
 		this.modelData = [... await ModelDataCache.getModelDataAll(this.targetModel)];
 	}
 }
 
+/** A filter tab for a `ControlledList` model. */
 export class ControlledListFilterTab extends FilterTab {
+	/** Overrides to sort the rows by name. */
 	protected override async fetchModelData(): Promise<void> {
 		await super.fetchModelData();
 		this.modelData.sort((a,b) => {
@@ -221,6 +233,7 @@ export class ControlledListFilterTab extends FilterTab {
 		});
 	}
 
+	/** Overrides to create `ControlledListItem`s. */
 	protected override createItem(itemData: JSONValue): FilterMenuItem {
 		const item = new ControlledListItem(this, itemData);
 		return item;

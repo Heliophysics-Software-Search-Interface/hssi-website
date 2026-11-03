@@ -12,17 +12,29 @@ if typing.TYPE_CHECKING:
 	from django.db.models.manager import ManyToManyRelatedManager, RelatedManager
 
 SOFTWARE_FUNCAT_FILEPATH = "./software_funcat_map.csv"
+"""
+`"./software_funcat_map.csv"`: file used to export and import software
+functionality assignments.
+"""
 SPACE_REPLACE = re.compile(r'[_\-.]')
+"""Regex matching `_`, `-` and `.`, for replacing with spaces."""
 PARENTHESIS_MATCH = re.compile(r"\(([^)]*)\)")
+"""Regex matching a parenthesized group and capturing its contents."""
 FILTER_URL_UID_ENCODE_LENGTH = 7
+"""`7`: number of base64 characters of a UUID kept in a filter URL value."""
 SOFTWARE_FILTER_FIELD_PARAM_MAP = {
 	"data_sources": "ds",
 	"programming_language": "p",
 	"related_region": "r",
 	"software_functionality": "f",
 }
+"""Software field name to the suffix used in encoded filter URL values."""
 
 class RequirementLevel(IntEnum):
+	"""
+	Integer enum of form field requirement levels: `OPTIONAL`, `RECOMMENDED`,
+	`MANDATORY`.
+	"""
 	OPTIONAL = 0
 	RECOMMENDED = 1
 	MANDATORY = 2
@@ -30,6 +42,11 @@ class RequirementLevel(IntEnum):
 	def __str__(self) -> str: return str(self.value)
 
 class AccessLevel(IntEnum):
+	"""
+	Integer enum of user access levels, from `PUBLIC` (0) to `ADMIN` (4);
+	`from_user(user)` gives a user's level from their superuser, staff and login
+	status.
+	"""
 	PUBLIC = 0
 	SUBMITTER = 1
 	CURATOR = 2
@@ -48,8 +65,12 @@ class AccessLevel(IntEnum):
 		return access
 
 REQ_LVL_ATTR = "data-hssi-required"
+"""
+`"data-hssi-required"`: HTML attribute holding a field's requirement level.
+"""
 
 def name_to_abbreviation(name: str) -> str:
+	"""Builds a four-character abbreviation from a name's words."""
 	splname = name.replace('-', ' ').split()
 	match len(splname):
 		case 0: return "????"
@@ -111,6 +132,11 @@ def find_database_references(object: Model) -> list[tuple[Model, Field]]:
 
 @transaction.atomic
 def replace_database_references(old_object: Model, new_object: Model, unique_mapping: bool = True):
+	"""
+	Repoints every reference to the old object at the new one in a transaction,
+	preserving sorted many-to-many order; with `unique_mapping` off, avoids
+	duplicate many-to-many links.
+	"""
 
 	oldrefs = find_database_references(old_object)
 	print(f"replacing {len(oldrefs)} '{old_object}' references..")
@@ -173,6 +199,10 @@ def replace_database_references(old_object: Model, new_object: Model, unique_map
 		print(f"updated field '{refobj}->{field.name}'")
 
 def export_software_functioncategory_names() -> str:
+	"""
+	Writes each software's functionality categories to
+	`SOFTWARE_FUNCAT_FILEPATH` and returns the text.
+	"""
 	from .models import Software, FunctionCategory
 
 	# find the appropriate field name for different versions of this codebase
@@ -212,6 +242,11 @@ def export_software_functioncategory_names() -> str:
 
 @transaction.atomic
 def import_software_functioncategory_names(data: str = None):
+	"""
+	Adds functionality categories to software from the given text or
+	`SOFTWARE_FUNCAT_FILEPATH`, in a transaction; raises if a category isn't
+	found.
+	"""
 	from .models import Software, FunctionCategory
 
 	if data is None:

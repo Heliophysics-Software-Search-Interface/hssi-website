@@ -258,6 +258,10 @@ def parse_person(
 	name_field: str, ident_field: str, 
 	affil_field: str, affil_ident_field: str
 ) -> Person:
+	"""
+	Resolves a `Person` from form data by UUID or identifier, otherwise creates
+	one from the name, then adds any affiliations.
+	"""
 	
 	person: Person = None
 	person_match: Person = None
@@ -313,6 +317,10 @@ def parse_controlled_list(
 		allow_creation: bool = False,
 		name_match_fallback: bool = True,
 	) -> ControlledList:
+	"""
+	Resolves a controlled-list term by UUID, identifier, then name, creating one
+	if allowed; raises if nothing matches.
+	"""
 
 	# see if the name field is acting as a uuid reference, and return referenced object if so
 	try:

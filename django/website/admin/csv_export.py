@@ -20,6 +20,7 @@ def camel_to_snake(name: str) -> str:
 	return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
 
 def snake_to_camel(name: str) -> str:
+	"""Converts a `snake_case` name to `CamelCase`."""
 	parts = name.split('_')
 	return ''.join(word.capitalize() for word in parts)
 
@@ -27,6 +28,7 @@ def model_csv_filepath(
 	model: 'Type[models.Model]', 
 	directory: os.PathLike = DEFAULT_DB_EXPORT_PATH
 ) -> str:
+	"""CSV file path for a model: its snake-case name in the directory."""
 	return directory + camel_to_snake(model.__name__) + '.csv'
 
 # Module functionality ---------------------------------------------------------
@@ -63,6 +65,9 @@ def remove_all_model_entries():
 	for model in models: model.objects.all().delete()
 
 def export_model_csv(model: 'Type[models.Model]', directory: str = DEFAULT_DB_EXPORT_PATH):
+	"""
+	Exports all rows of a model to its CSV file, replacing any existing file.
+	"""
 	filepath: str = model_csv_filepath(model, directory)
 	print(f'Exporting {model.__name__} to ' + filepath + ' ...')
 
@@ -74,6 +79,10 @@ def export_model_csv(model: 'Type[models.Model]', directory: str = DEFAULT_DB_EX
 		dataset_file.write(dataset.csv)
 
 def export_db_csv():
+	"""
+	Exports every HSSI model plus the sorted many-to-many ordering tables of
+	`Software` to CSV.
+	"""
 	export_model_csv(Organization)
 	export_model_csv(Person)
 	export_model_csv(Curator)
@@ -116,6 +125,11 @@ def import_model_csv(
 	exclude_fields: list[str] = [],
 	two_passes: bool = False,
 ):
+	"""
+	Imports a model's CSV file in a transaction, skipping excluded fields;
+	optionally imports twice to resolve self-references. Raises on import
+	errors; skips missing files.
+	"""
 	if filepath is None: filepath = model_csv_filepath(model)
 	print(f"Importing {filepath} ...")
 
@@ -161,6 +175,10 @@ def import_model_csv(
 	else: print(filepath + " does not exist, skipping")
 
 def import_db_csv():
+	"""
+	Imports every HSSI model and the `Software` ordering tables from CSV, in
+	dependency order.
+	"""
 	# import order matters
 	import_model_csv(Organization)
 	import_model_csv(Person)

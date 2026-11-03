@@ -3,10 +3,13 @@ import {
 	FilterMenu,
 } from "../../loader";
 
+/** The "Region" tab, filtering `related_region` by `Region`. */
 export class RegionFilterTab extends ControlledListFilterTab {
 
+	/** Overrides to return `"Region"`. */
 	public get headerText(): string { return "Region"; }
 
+	/** Sets the target model and field. */
 	public constructor(parentMenu: FilterMenu) {
 		super(parentMenu);
 		this.targetModel = "Region";

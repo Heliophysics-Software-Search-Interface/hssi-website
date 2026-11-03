@@ -21,13 +21,27 @@ if TYPE_CHECKING:
 	from .base import HssiModel
 
 FORM_CONFIG_ATTR = "form_config"
+"""
+`"form_config"`: attribute name on a model field holding custom widget
+properties.
+"""
 
 registered_structures: dict[str, 'ModelStructure'] = {}
+"""
+Registry of `ModelStructure`s keyed by type name, used to serialize nested
+objects.
+"""
 
 def register_structure(*structure: 'ModelStructure'):
+	"""Adds structures to `registered_structures` by type name."""
 	for struct in structure: registered_structures[struct.type_name] = struct
 
 class WidgetPrimitiveName(StrEnum):
+	"""
+	String enum of the frontend widget class names for primitive fields:
+	`CharWidget`, `NumberWidget`, `TextAreaWidget`, `UrlWidget`, `EmailWidget`,
+	`DateWidget`, `CheckboxWidget`.
+	"""
 	char = "CharWidget"
 	number = "NumberWidget"
 	textArea = "TextAreaWidget"
@@ -43,10 +57,15 @@ class ModelSubfield:
 
 	name: str = ""
 	row_name: str = ""
+	"""Alternate name used to look up the field's value on a model object."""
 	type: str = ""
+	"""Widget type name, or the related model's name for relation fields."""
 	requirement: RequirementLevel = RequirementLevel.OPTIONAL.value
+	"""`RequirementLevel` of the field; optional by default."""
 	properties: dict = {}
+	"""Widget configuration properties."""
 	multi: bool = False
+	"""Whether the field holds multiple values."""
 
 	def serialized(self) -> dict:
 		"""
@@ -63,6 +82,10 @@ class ModelSubfield:
 		}
 	
 	def to_json(self) -> str:
+		"""
+		Intended to return the subfield as JSON; passes the `serialized` method
+		itself to `json.dumps` rather than calling it.
+		"""
 		return json.dumps(self.serialized)
 
 	@classmethod
@@ -109,6 +132,7 @@ class ModelSubfield:
 		cls, name: str, type: str, requirement: int, properties: dict, multi: bool, 
 		row_name: str = ""
 	) -> 'ModelSubfield':
+		"""Builds a subfield from explicit values."""
 
 		sf = ModelSubfield()
 		sf.name = name
@@ -126,8 +150,11 @@ class ModelStructure:
 
 	target_model: type['HssiModel'] = None
 	type_name: str = ""
+	"""Name of the structure, used as its type on the frontend."""
 	top_field: ModelSubfield | None = None
+	"""The structure's main `ModelSubfield`."""
 	subfields: list[ModelSubfield] = []
+	"""The remaining `ModelSubfield`s."""
 
 	# TODO remove this or implement another form of autogeneration through 
 	# in-place definitions (maybe in Serializers when DRF is implemented?)
@@ -152,6 +179,10 @@ class ModelStructure:
 		name: str, 
 		*fields: ModelSubfield
 	) -> 'ModelStructure':
+		"""
+		Builds a structure from explicit subfields; the first becomes the top
+		field.
+		"""
 
 		fields_list = list(fields)
 
@@ -250,6 +281,10 @@ class ModelStructure:
 		return data
 			
 	def serialized(self) -> dict:
+		"""
+		The structure as a serializable dictionary with `targetModel`,
+		`typeName` and `subfields`; warns if there is no top field.
+		"""
 		if self.top_field is None:
 			warnings.warn(
 				f"Serializing model structure {self.type_name} without top_field", 
@@ -266,7 +301,9 @@ class ModelStructure:
 		}
 		return serialized
 	
-	def to_json(self) -> str: return json.dumps(self.serialized())
+	def to_json(self) -> str:
+		"""The serialized structure as a JSON string."""
+		return json.dumps(self.serialized())
 
 	def __iter__(self):
 		yield self.top_field

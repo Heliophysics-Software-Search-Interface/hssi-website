@@ -36,6 +36,10 @@ _SCIX_URLS: dict[str, str] = {
 }
 
 class SubmissionStatusCode(models.IntegerChoices):
+	"""
+	Integer choices for a submission's internal curation state, from
+	`PROPOSED_RESOURCE` (1) through `SPAM` (10).
+	"""
 	PROPOSED_RESOURCE = 1, "Proposed Resource"
 	READY_FOR_CONTACT = 2, "Ready for Contact"
 	CONTACTED = 3, "Contacted"
@@ -51,15 +55,21 @@ class SoftwareVersion(HssiModel):
 	"""A snapshot of the software metadata whenever it's updated to a new version"""
 	access = AccessLevel.PUBLIC
 	number = models.CharField(max_length=LEN_NAME)
+	"""Version number string."""
 	release_date = models.DateField(blank=True, null=True)
+	"""Date the version was released."""
 	description = models.TextField(blank=True, null=True)
+	"""Release notes or description of the version."""
 	version_pid = models.URLField(blank=True, null=True)
+	"""Persistent identifier URL for this version."""
 	
 	# specified for intellisense, defined in Software model
 	software: models.Manager['Software']
 
 	@classmethod
-	def get_top_field(cls) -> models.Field: return cls._meta.get_field("number")
+	def get_top_field(cls) -> models.Field:
+		"""Returns the `number` field as the model's display field."""
+		return cls._meta.get_field("number")
 
 	def __str__(self):
 		if self.software.first():
@@ -69,13 +79,18 @@ class SoftwareVersion(HssiModel):
 	class Meta: ordering = ['number']
 
 class Software(HssiModel):
+	"""
+	A software entry in the catalog, holding all of its submitted metadata.
+	"""
 	access = AccessLevel.CURATOR
 	programming_language: Manager[ProgrammingLanguage] = models.ManyToManyField(
 		ProgrammingLanguage,
 		blank=True, 
 		related_name='softwares'
 	)
+	"""`ProgrammingLanguage`s the software is written in."""
 	publication_date = models.DateField(blank=True, null=True)
+	"""Date the software was published."""
 	publisher = models.ForeignKey(
 		Organization,
 		on_delete=models.SET_NULL, 
@@ -83,117 +98,146 @@ class Software(HssiModel):
 		blank=True, 
 		related_name='softwares_published'
 	)
+	"""Publishing `Organization`."""
 	authors: Manager[Person] = SortedManyToManyField(Person, related_name='softwares')
+	"""Ordered list of author `Person`s."""
 	related_instruments: Manager[InstrumentObservatory] = models.ManyToManyField(
 		InstrumentObservatory,
 		blank=True, 
 		related_name='softwares'
 	)
+	"""Related instruments (`InstrumentObservatory`)."""
 	related_observatories: Manager[InstrumentObservatory] = models.ManyToManyField(
 		InstrumentObservatory,
 		blank=True, 
 		related_name='observatories'
 	)
+	"""Related observatories (`InstrumentObservatory`)."""
 	software_name = models.CharField(max_length=LEN_NAME)
+	"""Name of the software."""
 	version: Manager[SoftwareVersion] = models.ManyToManyField(
 		SoftwareVersion,
 		blank=True,
 		related_name='software'
 	)
+	"""`SoftwareVersion`s of this software."""
 	persistent_identifier = models.URLField(blank=True, null=True)
+	"""Persistent identifier URL (e.g. DOI)."""
 	reference_publication = models.ForeignKey(
 		RelatedItem,
 		on_delete=models.SET_NULL,
 		blank=True, null=True,
 		related_name="softwares_published"
 	)
+	"""The `RelatedItem` to cite as the software's reference publication."""
 	description = models.TextField(blank=True, null=True)
+	"""Full description."""
 	concise_description = models.TextField(max_length=200, blank=True, null=True)
+	"""Short description, max 200 characters."""
 	software_functionality: Manager[FunctionCategory] = SortedManyToManyField(
 		FunctionCategory, 
 		blank=True, 
 		related_name='softwares'
 	)
+	"""Ordered `FunctionCategory` tags."""
 	documentation = models.URLField(blank=True, null=True)
+	"""Documentation URL."""
 	data_sources: Manager[DataInput] = models.ManyToManyField(
 		DataInput, 
 		blank=True,
 		related_name='softwares'
 	)
+	"""`DataInput` vocabulary terms."""
 	input_formats: Manager[FileFormat] = models.ManyToManyField(
 		FileFormat, 
 		blank=True, 
 		related_name='softwares_in'
 	)
+	"""Supported input `FileFormat`s."""
 	output_formats: Manager[FileFormat] = models.ManyToManyField(
 		FileFormat, 
 		blank=True, 
 		related_name='softwares_out'
 	)
+	"""Supported output `FileFormat`s."""
 	cpu_architecture: Manager[CpuArchitecture] = models.ManyToManyField(
 		CpuArchitecture,
 		blank=True,
 		related_name='softwares'
 	)
+	"""Supported `CpuArchitecture`s."""
 	related_publications: Manager[RelatedItem] = models.ManyToManyField(
 		RelatedItem,
 		blank=True,
 		related_name='softwares_referenced'
 	)
+	"""Related publications (`RelatedItem`)."""
 	related_datasets: Manager[RelatedItem] = models.ManyToManyField(
 		RelatedItem,
 		blank=True,
 		related_name='softwares_data'
 	)
+	"""Related datasets (`RelatedItem`)."""
 	development_status = models.ForeignKey(
 		RepoStatus,
 		on_delete=models.SET_NULL,
 		null=True, blank=True,
 		related_name='softwares'
 	)
+	"""`RepoStatus` term describing development status."""
 	operating_system: Manager[OperatingSystem] = models.ManyToManyField(
 		OperatingSystem, 
 		blank=True, 
 		related_name='softwares'
 	)
+	"""Supported `OperatingSystem`s."""
 	license = models.ForeignKey(
 		License,
 		on_delete=models.SET_NULL, 
 		null=True, blank=True, 
 		related_name='softwares_license'
 	)
+	"""The software's `License`."""
 	related_region: Manager[Region] = SortedManyToManyField(
 		Region, 
 		blank=True, 
 		related_name='softwares_region'
 	)
+	"""Ordered `Region` terms."""
 	keywords: Manager[Keyword] = models.ManyToManyField(
 		Keyword, 
 		blank=True, 
 		related_name='softwares'
 	)
+	"""`Keyword` terms."""
 	related_software: Manager[RelatedItem] = models.ManyToManyField(
 		RelatedItem,
 		blank=True,
 		related_name='softwares_related'
 	)
+	"""Related software (`RelatedItem`)."""
 	interoperable_software: Manager[RelatedItem] = models.ManyToManyField(
 		RelatedItem,
 		blank=True,
 		related_name='softwares_interoperable'
 	)
+	"""Software this interoperates with (`RelatedItem`)."""
 	funder: Manager[Organization] = models.ManyToManyField(
 		Organization,
 		blank=True,
 		related_name="softwares_funded"
 	)
+	"""Funding `Organization`s."""
 	award: Manager[Award] = models.ManyToManyField(
 		Award,
 		blank=True, 
 		related_name='softwares'
 	)
+	"""Funding `Award`s."""
 	code_repository_url = models.URLField(blank=True, null=True)
+	"""Source repository URL."""
 	logo = models.URLField(blank=True, null=True)
+	"""Logo image URL."""
 	# Last change to this record's metadata through the supported write paths:
 	# the admin change form (only when the form reports changed fields), the
 	# submission serializer's create/update (POST /api/submission/ and PATCH),
@@ -210,10 +254,14 @@ class Software(HssiModel):
 		blank=True,
 		related_name='softwares'
 	)
+	"""Ordered `Phenomena` terms."""
 
 	# specified for intellisense, defined in other model
 	submission_info: Manager[SubmissionInfo]
 	visible: models.Manager[VerifiedSoftware]
+	"""
+	Reverse relation to its `VerifiedSoftware` row, present only if published.
+	"""
 
 	# autogenerated django integer choice string getter
 	get_development_status_display: Callable[[], str]
@@ -223,10 +271,13 @@ class Software(HssiModel):
 		verbose_name_plural = '  Software'
 
 	@classmethod
-	def get_top_field(cls) -> models.Field: return cls._meta.get_field("software_name")
+	def get_top_field(cls) -> models.Field:
+		"""Returns the `software_name` field as the model's display field."""
+		return cls._meta.get_field("software_name")
 
 	@classmethod
 	def get_subfields(cls):
+		"""The model's subfields, excluding `submission_info`."""
 		subfields = super().get_subfields()
 		for i, field in enumerate(subfields):
 			if field.name == cls.submission_info.name:
@@ -268,9 +319,14 @@ class Software(HssiModel):
 
 	@property
 	def scix_url(self) -> str | None:
+		"""
+		SciX abstract URL for this software, from a small hardcoded list; `None`
+		for most entries.
+		"""
 		return _SCIX_URLS.get(str(self.id))
 
 	def get_serialized_data(self, *args, **kwargs):
+		"""Serialized data from `HssiModel`, plus `scix_url`."""
 		data = super().get_serialized_data(*args, **kwargs)
 		data["scix_url"] = self.scix_url
 		return data
@@ -278,6 +334,10 @@ class Software(HssiModel):
 	def __str__(self): return self.software_name
 
 	def get_absolute_url(self):
+		"""
+		URL of the software's detail page, by slug if published, otherwise by
+		UUID.
+		"""
 		from django.urls import reverse
 		verified = VerifiedSoftware.objects.filter(pk=self.pk).only("slug").first()
 		if verified and verified.slug:
@@ -301,43 +361,61 @@ class SubmissionInfo(HssiModel):
 		blank=True, null=True,
 		related_name='submission_info'
 	)
+	"""The `Software` this submission is for."""
 	date_modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+	"""Last time this submission info was saved."""
 	modification_description = models.TextField(blank=True, null=True)
+	"""Note describing the latest modification."""
 	metadata_version_number = models.CharField(max_length=50, blank=True, null=True)
+	"""Version of the metadata schema used."""
 	submitter = models.ManyToManyField(
 		Submitter,
 		default=Submitter.get_default_submitter,
 		blank=True,
 		related_name='submission_infos'
 	)
+	"""
+	`Submitter`s of the entry; defaults to the placeholder "UNKNOWN" submitter.
+	"""
 	curator = models.ForeignKey(
 		Curator,
 		on_delete=models.SET_NULL, 
 		null=True, blank=True, 
 		related_name='submission_infos'
 	)
+	"""Assigned `Curator`."""
 	submission_date = models.DateTimeField(blank=True, null=True)
+	"""When the entry was submitted."""
 	internal_status_code = models.IntegerField(
 		choices=SubmissionStatusCode.choices, 
 		default=SubmissionStatusCode.PROPOSED_RESOURCE
 	)
+	"""Curation state, a `SubmissionStatusCode`."""
 	internal_status_note = models.TextField(blank=True, null=True)
+	"""Curator notes on the status."""
 	lead_curator = models.ForeignKey(
 		Curator,
 		on_delete=models.SET_NULL, 
 		null=True, blank=True, 
 		related_name='submission_infos_led'
 	)
+	"""Lead `Curator`."""
 	last_contact_date = models.DateField(blank=True, null=True)
+	"""Date the submitter was last contacted."""
 	contact_count = models.IntegerField(default=0)
+	"""Number of times the submitter has been contacted."""
 	curator_lock = models.BooleanField(default=False)
+	"""Flag marking the entry as locked by a curator."""
 	out_of_sync = models.BooleanField(default=False)
+	"""Flag marking the entry as out of sync with its source metadata."""
 
 	# autogenerated django integer choice string getter
 	get_internal_status_code_display: Callable[[], str]
 
 	@classmethod
-	def get_top_field(cls) -> models.Field: return cls._meta.get_field("submitter")
+	def get_top_field(cls) -> models.Field:
+		"""Returns the `submitter` field as the model's display field."""
+		return cls._meta.get_field("submitter")
 
 	class Meta: 
 		ordering = ['date_modified']
@@ -353,9 +431,14 @@ class VerifiedSoftware(HssiSet):
 	access = AccessLevel.PUBLIC
 	target_model = Software
 	slug = models.CharField(max_length=LEN_NAME, unique=True, null=True)
+	"""Unique URL slug for the software's detail page."""
 
 	@classmethod
 	def create_verified(cls, software: Software) -> 'VerifiedSoftware':
+		"""
+		Publishes a software with a new unique slug; returns `None` if it's
+		already published.
+		"""
 		if cls.objects.filter(pk=software.pk).first():
 			return None
 		obj = VerifiedSoftware.objects.create(
@@ -367,6 +450,9 @@ class VerifiedSoftware(HssiSet):
 	
 	@classmethod
 	def get_unique_slug(cls, name: str) -> str:
+		"""
+		Builds a slug from a name, appending `-2`, `-3`, … until it's unique.
+		"""
 		slug_orig = slugify(name.lower().replace("/","-").replace(".","-"))
 		slug = slug_orig[:LEN_NAME]
 
@@ -398,13 +484,16 @@ class SoftwareEditQueue(HssiModel):
 
 	access = AccessLevel.PUBLIC
 	created = models.DateTimeField(null=True, blank=True)
+	"""When the link was created."""
 	expiration = models.DateTimeField(null=True, blank=True)
+	"""When the link expires."""
 	target_software = models.ForeignKey(
 		Software, 
 		on_delete=models.CASCADE,
 		null=True, blank=True,
 		related_name="submission_edit_queue"
 	)
+	"""The `Software` the link edits."""
 
 	def is_expired(self) -> bool:
 		"""
@@ -429,6 +518,10 @@ class SoftwareEditQueue(HssiModel):
 
 	@classmethod
 	def create(cls, target: Software, expiration: datetime.datetime = None) -> 'SoftwareEditQueue':
+		"""
+		Creates and saves a link for a software, expiring after
+		`default_expire_delta` unless given.
+		"""
 		queue_item = cls()
 		queue_item.created = timezone.now()
 		queue_item.target_software = target

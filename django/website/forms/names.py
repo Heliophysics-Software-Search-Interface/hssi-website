@@ -1,10 +1,21 @@
 from ..models import *
 
 PROP_LABEL = "label"
+"""`"label"`: form field property key for the field's label."""
 PROP_TT_EXPL = "tooltipExplanation"
+"""
+`"tooltipExplanation"`: form field property key for the explanation tooltip.
+"""
 PROP_TT_BEST = "tooltipBestPractise"
+"""
+`"tooltipBestPractise"`: form field property key for the best-practice tooltip.
+"""
 PROP_WIDGET_PROPS = "widgetProperties"
+"""
+`"widgetProperties"`: form field property key for the widget's own properties.
+"""
 PROP_TOPFIELD = "topField"
+"""`"topField"`: form field property key marking the top field."""
 
 WPROP_MAXLENGTH = "maxLength"
 WPROP_TARGETMODEL = "targetModel"

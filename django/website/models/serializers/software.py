@@ -14,11 +14,27 @@ from ..vocab import InstrObsType, InstrumentObservatory
 from ..base import HssiModel
 
 URL_TERMSET_DATASOURCE = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/jsonld/DataSources.json"
+"""
+URL of the data sources term set, used as `inDefinedTermSet` for data source
+keywords.
+"""
 URL_TERMSET_FILEFORMAT = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/jsonld/InputFileFormats.json"
+"""
+URL of the file formats term set, used for input and output format keywords.
+"""
 URL_TERMSET_PHENOMENA = "https://github.com/rmcgranaghan/Helio-KNOW/blob/main/data-models/hk_phenomenon.ttl"
+"""URL of the phenomena term set, used for related phenomena keywords."""
 URL_TERMSET_FUNCTIONCATEGORY = "https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/blob/main/ttl/softwareFunctionality-v0.3.ttl"
+"""
+URL of the software functionality term set, used for functionality keywords.
+"""
 URL_TERMSET_REGIONS = "https://api.heliophysics.net/api/regions/"
+"""URL of the regions API."""
 NAME_UNKOWN = "UNKNOWN"
+"""
+`"UNKNOWN"`: placeholder name; related items with this name and no identifier
+are left out of JSON-LD `mentions`.
+"""
 
 def serialize_with_relations(obj: Model) -> dict[str, Any]:
 	"""Serialize a model instance with FK/M2M expanded via serializers or str()."""
@@ -301,6 +317,14 @@ class SoftwareSerializer(HssiSerializer):
 		return { key: value for key, value in data.items() if value is not None }
 
 	def to_representation_jsonld(self, instance: Software) -> dict[str, Any]:
+		"""
+		The software as a schema.org `SoftwareSourceCode`/`SoftwareApplication`
+		JSON-LD document, with authors, keywords, mentions, funding, license,
+		identifiers and a `subjectOf` catalog record; empty values are dropped.
+		Funders without a recorded award appear as funder-only grants under
+		`funding`, and free-text keywords that duplicate a controlled term are
+		left out.
+		"""
 
 		authors = self._author_list(instance)
 		categories, subcategories = self._functionality_categories(instance)

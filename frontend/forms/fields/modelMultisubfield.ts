@@ -6,6 +6,7 @@ import {
 	type JSONValue,
 } from "../../loader";
 
+/** Font Awesome close icon HTML, used on each entry's remove button. */
 export const faCloseIcon = "<i class='fa fa-close'></i>";
 const multiFieldRowStyle = "multi-field-row";
 const multiFieldPartStyle = "multi-field-part";
@@ -24,10 +25,13 @@ export class ModelMultiSubfield extends ModelSubfield {
 	private hideButton: HTMLButtonElement = null;
 	private hiddenText: HTMLDivElement = null;
 	private isCollapsed: boolean = false;
+	/** The field's current entries. */
 	public multiFields: MultiField[] = [];
 
+	/** `true`. Overrides `ModelSubfield.multi`. */
 	public get multi(): boolean { return true; }
 
+	/** The element entry rows are added to, building it if needed. */
 	protected getRowContainer(): HTMLDivElement {
 		if(this.multiFieldContainerElement == null) this.buildMultiFieldContainer();
 		return this.multiFieldContainerElement;
@@ -114,6 +118,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.buildNewMultifield();
 	}
 
+	/** Replaces all entries with one per array item. */
 	public fillMultiFields(data: JSONArray, notify: boolean = true): void {
 		this.clearMultifields();
 		for(let i = 0; i < data.length; i++){
@@ -122,6 +127,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		}
 	}
 
+	/** Removes all entries. */
 	public clearMultifields(): void {
 		for(const field of this.multiFields.toReversed()){
 			field.destroyRow(false);
@@ -129,6 +135,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.multiFields.length = 0;
 	}
 
+	/** Expands each entry's subfields and un-collapses the field. */
 	public expandMultiFields(): void {
 		for(const field of this.multiFields){
 			field.expandSubfields();
@@ -136,18 +143,21 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.expandField();
 	}
 
+	/** Collapses each entry's subfields. */
 	public collapseMultiFields(): void {
 		for(const field of this.multiFields){
 			field.collapseSubfields();
 		}
 	}
 
+	/** Adds an entry filled with the value and returns it. */
 	public addNewMultifieldWithValue(value: JSONValue, notify: boolean = false): ModelSubfield {
 		const field = this.buildNewMultifield();
 		field.fillField(value, notify);
 		return field;
 	}
 
+	/** Hides the entry list and add button, showing "-- hidden --" instead. */
 	public collapseField() {
 		if(this.isCollapsed) return;
 		this.collapseMultiFields();
@@ -161,6 +171,7 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.isCollapsed = true;
 	}
 
+	/** Shows the entry list and add button again. */
 	public expandField(){
 		if(!this.isCollapsed) return;
 
@@ -222,6 +233,10 @@ export class ModelMultiSubfield extends ModelSubfield {
 		}
 	}
 
+	/**
+	 * Applies warning styles to the field and to every entry's subfields.
+	 * Overrides `ModelSubfield.applyValidityStyles`.
+	 */
 	public override applyValidityStyles(): void {
 		if(this.requirement == null) return;
 		this.requirement.applyRequirementWarningStyles();
@@ -232,16 +247,24 @@ export class ModelMultiSubfield extends ModelSubfield {
 		}
 	}
 
+	/** Also expands every entry. Overrides `ModelSubfield.expandSubfields`. */
 	public override expandSubfields(): void {
 		super.expandSubfields();
 		this.expandMultiFields();
 	}
 
+	/**
+	 * Also collapses every entry. Overrides `ModelSubfield.collapseSubfields`.
+	 */
 	public override collapseSubfields(): void {
 		super.collapseSubfields();
 		this.collapseMultiFields();
 	}
 
+	/**
+	 * Also drops the entry list and its elements. Overrides
+	 * `ModelSubfield.destroy`.
+	 */
 	public override destroy(): void {
 		super.destroy();
 		this.multiFields.length = 0;
@@ -249,11 +272,19 @@ export class ModelMultiSubfield extends ModelSubfield {
 		this.newItemButton = null;
 	}
 
+	/**
+	 * Removes all entries and warning styles. Overrides
+	 * `ModelSubfield.clearField`.
+	 */
 	public override clearField(): void {
 		this.clearMultifields();
 		this.requirement.removeStyles();
 	}
 
+	/**
+	 * True if there is at least one entry and every entry has valid input.
+	 * Overrides `ModelSubfield.hasValidInput`.
+	 */
 	public override hasValidInput(): boolean {
 		let hasAnyInput = false;
 		for(const field of this.multiFields){
@@ -263,6 +294,10 @@ export class ModelMultiSubfield extends ModelSubfield {
 		return hasAnyInput;
 	}
 
+	/**
+	 * Array of each non-empty entry's data. Overrides
+	 * `ModelSubfield.getFieldData`.
+	 */
 	public override getFieldData(): { [key: string]: any; } | string | any[] {
 		const arr: any[] = [];
 		for(const field of this.multiFields) {
@@ -272,6 +307,10 @@ export class ModelMultiSubfield extends ModelSubfield {
 		return arr;
 	}
 	
+	/**
+	 * The first entry input with a validation message, else the first entry
+	 * input, or `null`. Overrides `ModelSubfield.getInputElement`.
+	 */
 	public override getInputElement(): AnyInputElement {
 		for(let i = 1; i >= 0; i--) {
 			for(const field of this.multiFields) {

@@ -50,12 +50,20 @@ interface AsyncModelTypeMap {
 	"Curator" : HSSIModelData,
 }
 
+/**
+ * A per-model cache of fetched model object data, keyed by UUID. Exposed on
+ * `window`.
+ */
 export class ModelDataCache<T extends HSSIModelData>{
 
 	private static caches: Partial<{
 		[M in ModelName]: ModelDataCache<AsyncModelTypeMap[M]>
 	}> = {};
 
+	/**
+	 * The cache for a model, created on first use; `"Software"` shares the
+	 * `"VerifiedSoftware"` cache.
+	 */
 	public static getCache<M extends ModelName>(
 		model: M
 	): ModelDataCache<AsyncModelTypeMap[M]> {
@@ -72,6 +80,7 @@ export class ModelDataCache<T extends HSSIModelData>{
 		return this.caches[model] as ModelDataCache<AsyncModelTypeMap[M]>;
 	}
 
+	/** All objects of a model, fetching them all first if not already done. */
 	public static async getModelDataAll<M extends ModelName>(
 		model: M
 	): Promise<Iterable<AsyncModelTypeMap[M]>> {
@@ -80,6 +89,7 @@ export class ModelDataCache<T extends HSSIModelData>{
 		return cache.dataMap.values();
 	}
 
+	/** The object, or array of objects, with the given UUID(s). */
 	public static async getModelData<M extends ModelName>(
 		model: M, uid: string | string[]
 	): Promise<AsyncModelTypeMap[M] | AsyncModelTypeMap[M][]> {
@@ -88,6 +98,10 @@ export class ModelDataCache<T extends HSSIModelData>{
 		else return await cache.getData(uid);
 	}
 
+	/**
+	 * Fetches one page of a model's objects and the total count from the
+	 * server, optionally in a `sort` order.
+	 */
 	public static async fetchPage<M extends ModelName>(
 		model: M,
 		offset: number,
@@ -116,8 +130,10 @@ export class ModelDataCache<T extends HSSIModelData>{
 	private batchPromise: Promise<void> | null = null;
 	private batchResolve: (() => void) | null = null;
 
+	/** Whether all of the model's objects have been fetched. */
 	public get hasFetchedAllData(): boolean { return this.allDataFetched; }
 
+	/** The model the cache holds. */
 	public get model(): ModelName { return this.targetModel; }
 
 	private storeModelObjectData(obj: T): void {
@@ -206,6 +222,9 @@ export class ModelDataCache<T extends HSSIModelData>{
 		await this.promiseAll;
 	}
 
+	/**
+	 * The objects with the given UUIDs; throws if any is not a valid UUIDv4.
+	 */
 	public async getMultiData(uids: string[]): Promise<T[]> {
 		for(const uid of uids){
 			if (!isUuid4(uid)) throw new Error(`${uid} is not a valid uuidv4`);
@@ -214,6 +233,11 @@ export class ModelDataCache<T extends HSSIModelData>{
 		return await Promise.all(promise);
 	}
 
+	/**
+	 * The object with the given UUID; uncached requests are queued and fetched
+	 * together after a 100 ms delay in chunks of 50. Throws if the UUID is not
+	 * a valid UUIDv4.
+	 */
 	public async getData(uid: string): Promise<T> {
 
 		if(!isUuid4(uid)) throw new Error(`${uid} is not properly formatted as uuid v4`);

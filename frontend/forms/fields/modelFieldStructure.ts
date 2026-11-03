@@ -3,6 +3,11 @@ import {
 	type WidgetType
 } from "../../loader";
 
+/**
+ * A field's display and behavior properties: `label`, `tooltipExplanation`
+ * (hover tooltip text), `tooltipBestPractise` (help text below the label),
+ * `requirementLevel`, `topField`, plus any other keys.
+ */
 export type PropertyContainer = {
 	/** the title that will be shown above the field, if not specified field name will be used */
 	label?: string,
@@ -25,6 +30,10 @@ type ModelFieldStructureInstance = {
 	subFields: ModelSubfield[],
 }
 
+/**
+ * A subfield as sent by the backend: `name`, `rowName`, `type` (name or
+ * resolved `ModelFieldStructure`), `multi`, `requirement` and `properties`.
+ */
 export type SerializedSubfield = {
 	name: string,
 	rowName: string,
@@ -43,11 +52,14 @@ export class ModelFieldStructure {
 	/** arbitrary attributes */
 	[key: string]: any;
 
+	/** The widget class, or its registered name until resolved. */
 	public widgetType: string | WidgetType = "";
 
 	/** The type name to use to refer to this field structure layout */
 	public typeName: string = "";
+	/** The structure's first subfield, which provides its top-level value. */
 	public topField: SerializedSubfield = null;
+	/** The remaining subfields. */
 	public subfields: SerializedSubfield[] = [];
 
 	private constructor() { }
@@ -101,6 +113,7 @@ export class ModelFieldStructure {
 	
 	private static fieldStructureMap: Map<string, ModelFieldStructure> = new Map();
 
+	/** A registered structure by type name. */
 	public static getFieldStructure(fieldType: string): ModelFieldStructure {
 		return this.fieldStructureMap.get(fieldType);
 	}

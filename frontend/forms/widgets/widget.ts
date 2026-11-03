@@ -13,22 +13,40 @@ export const propertiesDataValue = "json-properties";
 
 // names of attributes on html element that specify widget information
 export const uidAttribute = "data-hssi-uid";
+/**
+ * `"data-hssi-widget"`: attribute naming the widget class an element belongs
+ * to.
+ */
 export const widgetAttribute = "data-hssi-widget";
+/**
+ * `"data-hssi-data"`: attribute marking a JSON `<script>` element with widget
+ * data.
+ */
 export const widgetDataAttribute = "data-hssi-data";
+/** `"data-hssi-type"`: attribute holding a widget element's type. */
 export const typeAttribute = "data-hssi-type";
 
+/**
+ * Configuration properties shared by all widgets: `requirementLevel`,
+ * `maxLength`, `autofillSiblings`. Subclasses extend it with their own.
+ */
 export interface BaseProperties extends Record<string, any> {
 	requirementLevel?: RequirementLevel;
 	maxLength?: number;
 	autofillSiblings?: boolean;
 }
 
+/**
+ * An `<input>`, `<textarea>` or `<select>` element, optionally carrying a
+ * `data` JSON object.
+ */
 export type AnyInputElement = (
 	HTMLInputElement |
 	HTMLTextAreaElement |
 	HTMLSelectElement
 ) & { data?: JSONObject }
 
+/** Constructor type of a widget class: `new (elem, field) => Widget`. */
 export type WidgetType = new (elem: HTMLElement, field: ModelSubfield) => Widget;
 
 /** Base class for all widgets */
@@ -36,6 +54,7 @@ export abstract class Widget {
 
 	private lastValue: string = "";
 	private parentFieldsExpanded: boolean = false;
+	/** Timer ID of the pending value-entered callback. */
 	protected inputEntryCallbackID: number = 0;
 
 	/** 
@@ -43,12 +62,20 @@ export abstract class Widget {
 	 * be contained within this element 
 	 */
 	public element: HTMLElement = null;
+	/** The `ModelSubfield` this widget belongs to, or `null`. */
 	public parentField: ModelSubfield = null;
+	/**
+	 * Fires with the input value once the user stops typing (after the entry
+	 * delay).
+	 */
 	public onEnterValue: SimpleEvent<string> = new SimpleEvent();
 
 	/** holds congfiguration properties for the widget */
 	public properties: BaseProperties = {};
 	
+	/**
+	 * Change event for subclasses to fire; the base class never triggers it.
+	 */
 	public onValueChanged: SimpleEvent = new SimpleEvent();
 
 	/// Initialization ---------------------------------------------------------
@@ -70,6 +97,10 @@ export abstract class Widget {
 			}
 	}
 
+	/**
+	 * Attaches input listeners, polling every second until the input element
+	 * exists.
+	 */
 	protected checkForInputElementEventInit(): void {
 		const inputElem = this.getInputElement();
 
@@ -127,6 +158,10 @@ export abstract class Widget {
 		return delay;
 	}
 
+	/**
+	 * Fires `onEnterValue` and expands the parent field's subfields the first
+	 * time a value is entered.
+	 */
 	protected triggerValueEntered(): void{
 		const inputValue: string = this.getInputValue();
 		this.onEnterValue.triggerEvent(inputValue);
@@ -138,6 +173,10 @@ export abstract class Widget {
 		}
 	}
 
+	/**
+	 * Input handler: schedules `triggerValueEntered` after the entry delay and
+	 * notifies the parent field.
+	 */
 	protected onInputChange(event: Event): void {
 
 		// cancel previous callback if it exists
@@ -168,6 +207,7 @@ export abstract class Widget {
 	/** returns the value that a user has input into the widget */
 	public getInputValue(): string { return this.getInputElement().value.trim(); }
 
+	/** Removes the widget's element from the page. */
 	public destroy(): void {
 		this.element.remove();
 	}
@@ -243,6 +283,7 @@ export abstract class Widget {
 		return null;
 	}
 
+	/** All registered widget types. */
 	public static getAllRegisteredWidgets(): WidgetType[] {
 		const widgets: WidgetType[] = [];
 		for(const widget of this.registeredWidgets.values()) {

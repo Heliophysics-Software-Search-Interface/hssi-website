@@ -42,6 +42,10 @@ nav:
       - Admin & Curation: code_reference/admin_and_curation.md
       - Deployment Reference: code_reference/deployment_reference.md
 
+# Rewrites relative links to source files outside docs/ into GitHub URLs.
+hooks:
+  - mkdocs_hooks/source_links.py
+
 markdown_extensions:
   - toc:
       permalink: true

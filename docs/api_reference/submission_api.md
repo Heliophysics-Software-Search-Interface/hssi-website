@@ -6,6 +6,8 @@ Endpoints for creating new software records and updating existing ones.
 Creating is fully public; updating requires the bearer token described in
 [Overview](overview.md#authentication).
 
+Each record created through `POST /api/submission/` or `POST /api/submit` opens a "New submission" issue in the hssi-website GitHub repository, as submissions through the website's form do, so the team knows to review it. A batch that fails opens none. Only a server with a GitHub token configured, such as production, opens these issues.
+
 ## Contents
 
 - [POST /api/submission/](#post-apisubmission)
@@ -43,14 +45,16 @@ categories), `relatedRegion`, `relatedPhenomena`, `dataSources`, `keywords`
 
 - `submitter` is an array of `{"email": "...", "person": {"givenName": "...", "familyName": "..."}}`.
 - `authors` is an array of `{"givenName": "...", "familyName": "...", "identifier"?: "...", "affiliation"?: [{"name": "...", "identifier"?: "..."}]}`
-  — note `affiliation` is itself an array of organization objects, not a string.
+  — note `affiliation` is itself an array of organization objects, not a string. Two entries that resolve to the same person, such as two with the same `identifier` or the same name, are a `400`. So is `personId`, which only PATCH accepts, even when it's empty or `null`, and so is `rename`, which needs `personId`.
 - `version` is an object: `{"number": "...", "releaseDate"?: "...", "versionPid"?: "...", "description"?: "..."}`.
+- `award` is an array of `{"name": "...", "identifier"?: "...", "funder"?: {"name": "...", "identifier"?: "..."}}`. An award whose `identifier` (or, without one, `name`) matches an existing award reuses that record as it is, since other software may share it, so `funder` only applies to a new award. A PATCH can also fill in the funder of an existing award that has none, but never replaces one. A `name` over 128 characters is a `400`.
 - Any field expecting a URL is validated as one; an invalid URL is a `400`.
 - **Unrecognized top-level keys are silently ignored on create** — unlike
   PATCH below, there's no whitelist check here. A typo'd field name (e.g.
   `sofwareName`) won't error; it just won't do anything, and the record
   will fail the *required*-field check instead if that typo was on a
-  required field.
+  required field. The same goes for unrecognized keys inside `authors`
+  entries and their `affiliation` objects.
 
 **Side effects on success:** a 90-day software-edit-queue entry is created
 per record, and the submitter is emailed an edit link.
@@ -159,6 +163,33 @@ lookup rules as the read endpoints). Unknown/unpublished `{id}` →
   non-empty list replaces the whole set (it does not append).
 - Unrecognized keys are rejected individually:
   `400 {"<key>": "Unknown field."}`.
+- So are unrecognized keys inside `authors` entries, keyed by their path. An
+  entry may carry only `givenName`, `familyName`, `identifier`, `affiliation`,
+  `personId` and `rename`, and an `affiliation` object only `name` and
+  `identifier`, so a typo such as `"renmae"` is
+  `400 {"authors[0].renmae": "Unknown field."}` instead of being ignored. The
+  `id` that `GET /api/view/software/{id-or-slug}/` gives an author isn't
+  accepted either: send it as `personId`. Keys inside the other objects
+  (`publisher`, `funder`, `award`, `version`, `relatedInstruments` and
+  `relatedObservatories`) aren't checked yet, so unrecognized ones there are
+  still ignored.
+- `authors` must be an array of objects, and an `affiliation` an array of
+  objects or `null`. Anything else is a `400` keyed by its path, such as
+  `{"authors[1]": "Expected an object."}` or
+  `{"authors[0].affiliation": "Expected an array."}`.
+- `authors` entries resolve to person records that other software may share. Without `personId`, a person matched by `identifier` keeps its stored names (only empty ones are filled). On updates only, where "the same" name means the same words in the same order, ignoring capitalization, accents and hyphens, however `givenName` and `familyName` split them:
+  - An `identifier` that matches no person is attached to this record's current author with the same full name and no identifier, instead of creating a new person. Authors of other records, and authors with a different identifier, are never matched. If more than one current author has that full name and no identifier, it's a `400`.
+  - A person resolved by `identifier` with the same full name takes the sent names (stored `Maria de` / `Souza`, sent `Maria` / `De Souza`), so one PATCH can attach an ORCID and correct the split, capitalization, accents or hyphens together. Sent names with fewer accents than the stored ones are not applied, so a source that drops accents can't remove them. A different full name is not applied.
+  - An author sent with an empty or missing `givenName` resolves to this record's one current author stored without a given name under the same family name, so records with such authors stay patchable. That person is left as it is, apart from an `identifier` filling an empty one when no other person holds it. Any other blank given name is a `400`, and a person without a given name is never created.
+- `personId` (PATCH only) selects an existing person by UUID, including one linked only to other records, so one request can add that person here and fill in their `identifier`. The UUID is the person's `id` in the `authors` of `GET /api/view/software/{id-or-slug}/`. A `personId` replaces the lookups above: it never falls back to another person or creates one.
+  - It must be a UUID string naming an existing person; anything else, including empty or `null`, is a `400`. So is the placeholder person stored with the given name `UNKNOWN`, which can't be selected at all.
+  - The sent name must be the same full name as the person's, or it's a `400` that says how the person is stored. The person then takes the sent names, as above. An empty or missing `givenName` is accepted only when the person has none.
+  - One exception corrects a misspelled name, and lets a respelling remove accents: with `"rename": true` in the same entry, the person takes the sent names exactly as sent, accents included, whether or not their words differ. Without it, other words are always the `400`, and sent names with the same words are handled as above: applied unless they carry fewer accents than the stored names.
+  - `rename` must be `true` or `false`; any other value, including `null`, is a `400`, even when the names match. So is `rename` on an entry without `personId`.
+  - An `identifier` must be a URL. It may fill an empty identifier or repeat the stored one; a different stored identifier, or one another person holds, is a `400`. Omitting it, or sending it empty, leaves the stored identifier unchanged.
+  - The changes show on every record that lists the person, so confirm the UUID is the right person before sending it.
+
+A PATCH is all or nothing: if it fails, the record and any people or other shared records it would have changed are left as they were.
 
 **Side effects on success:** `dateModified` is updated to now, and if the
 record has submission history, the most recent entry's modification
@@ -213,6 +244,46 @@ version record and replaces the record's *entire* version history with
 that one entry — it does not add a version alongside existing ones. If
 `pymap3d` had five prior versions on file, this PATCH leaves it with just
 the one (`3.0.0`).
+
+### Example — add a person from another record and attach their ORCID
+
+`authors` replaces the whole list, so the request lists every author to keep, in order. The second author is a person already linked to another record, selected by the `id` that record's `GET /api/view/software/{id-or-slug}/` response gives them:
+
+```bash
+curl -X PATCH https://hssi.hsdcloud.org/api/data/software/pymap3d/ \
+  -H "Authorization: Bearer $HSSI_UPDATE_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "authors": [
+      {"givenName": "Michael", "familyName": "Hirsch"},
+      {"personId": "<person id>", "givenName": "Jane", "familyName": "Doe", "identifier": "https://orcid.org/0000-0000-0000-0000"}
+    ]
+  }'
+```
+
+```json
+{"status": "ok", "softwareId": "1b6ddaa6-6885-46b3-b59a-ea119e61bd74", "fieldsUpdated": ["authors"]}
+```
+
+The person stays on their other records, which now show the ORCID too.
+
+### Example — correct a misspelled name
+
+The second author is stored as "Jnae Doe":
+
+```bash
+curl -X PATCH https://hssi.hsdcloud.org/api/data/software/pymap3d/ \
+  -H "Authorization: Bearer $HSSI_UPDATE_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "authors": [
+      {"givenName": "Michael", "familyName": "Hirsch"},
+      {"personId": "<person id>", "givenName": "Jane", "familyName": "Doe", "rename": true}
+    ]
+  }'
+```
+
+Every record that lists the person now shows "Jane Doe".
 
 ### Error examples
 

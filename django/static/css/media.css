@@ -768,10 +768,6 @@
 	 padding: 10px 0px;
  }
 
- #footer_content {
-	padding-left: 64px;
-}
-
 .curve {
 	display: inline-block;
 	vertical-align: top;
@@ -1174,5 +1170,15 @@ table {
 @media screen and (min-width: 640px) and (max-width: 768px) {
 	img.resource_logo {
 		max-width: 75px;
+	}
+}
+
+/* below the large breakpoint the footer stacks, with its links clear of the scroll buttons */
+@media screen and (max-width: 63.9375em) {
+	.footer-logo {
+		text-align: center;
+	}
+	.navbar-footer {
+		padding-right: 3.5rem;
 	}
 }

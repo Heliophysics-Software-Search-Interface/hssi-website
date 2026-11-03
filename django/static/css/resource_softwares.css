@@ -18,6 +18,7 @@
 	border-radius: 5px;
 	padding: 20px;
 	margin-bottom: 15px;
+	container-type: inline-size;
 }
 
 .item-flex:not(.hidden) {
@@ -86,6 +87,7 @@
 
 .resource-item .resource-header {
 	display: flex;
+	flex-wrap: wrap;
 	font-size: 13px;
 	margin-bottom: 10px;
 }
@@ -109,11 +111,12 @@
 	display: inline-block;
 }
 
+/* drops below the title and authors when a row of six chips won't fit beside them */
 .resource-header .header-chips {
 	vertical-align: top;
 	text-align: right;
 	min-width: 0;
-	flex: 1;
+	flex: 1 0 270px;
 }
 
 .chip-container .item-chip,
@@ -232,4 +235,33 @@
 
 .page-controls button:disabled {
 	outline: 1px solid #bcbcbd;
+}
+
+/* max-width 40em is the show-for-small-only/hide-for-small-only breakpoint */
+@media screen and (max-width: 40em) {
+	.resource-header .header-chips {
+		flex-basis: 100%;
+		text-align: left;
+	}
+
+	.header-chips .item-chip {
+		margin-left: 0;
+		margin-right: 5px;
+	}
+}
+
+/* the expanded item's tag column moves under the description when the item is too narrow for both */
+@container (max-width: 500px) {
+	.item-flex:not(.hidden) {
+		flex-direction: column;
+	}
+
+	.header-nametags {
+		max-width: none;
+		border-left: none;
+		border-top: 1px solid #bcbcbd;
+		padding-left: 0;
+		margin-left: 0;
+		margin-top: 15px;
+	}
 }

@@ -15,8 +15,10 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from .models import (
+	Award,
 	Keyword,
 	License,
+	Organization,
 	Person,
 	RepoStatus,
 	Software,
@@ -175,6 +177,853 @@ class SoftwarePartialUpdateTokenUnsetTests(TestCase):
 			HTTP_AUTHORIZATION="Bearer anything",
 		)
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+@override_settings(HSSI_UPDATE_TOKEN=UPDATE_TOKEN)
+class SharedRowTestCase(TestCase):
+	"""Base for tests of rows that other software entries may share."""
+
+	ORCID = "https://orcid.org/0000-0000-0000-0001"
+	OTHER_ORCID = "https://orcid.org/0000-0000-0000-0002"
+	NASA = {"name": "NASA", "identifier": "https://ror.org/027ka1x80"}
+
+	@classmethod
+	def setUpTestData(cls):
+		cls.software = Software.objects.create(
+			software_name="Shared Rows",
+			code_repository_url="https://example.com/shared",
+		)
+		VerifiedSoftware.create_verified(cls.software)
+
+	def setUp(self):
+		self.client = APIClient()
+
+	def _patch(self, data):
+		return self.client.patch(
+			f"/api/data/software/{self.software.id}/",
+			data=data,
+			format="json",
+			HTTP_AUTHORIZATION=f"Bearer {UPDATE_TOKEN}",
+		)
+
+	def _post(self, **fields):
+		return self.client.post("/api/submission/", data=[{
+			"submitter": [{"email": "ada@example.com", "person": {"givenName": "Ada", "familyName": "Lovelace"}}],
+			"softwareName": "Created via API",
+			"codeRepositoryUrl": "https://github.com/example/created",
+			"authors": [{"givenName": "Ada", "familyName": "Lovelace"}],
+			"description": "A description.",
+			**fields,
+		}], format="json")
+
+	def _snapshot(self):
+		"""The rows these tests' PATCHes can change, to check that a failed one changed nothing."""
+		return {
+			model.__name__: list(model.objects.order_by("pk").values())
+			for model in (
+				Software, Person, Organization, SubmissionInfo,
+				Software.authors.through, Person.affiliation.through,
+			)
+		}
+
+
+class PersonRowTests(SharedRowTestCase):
+	"""How authors resolve to Person rows."""
+
+	def test_identifier_attaches_to_unidentified_current_author(self):
+		for stored, orcid in ((None, self.ORCID), ("", self.OTHER_ORCID)):
+			with self.subTest(stored_identifier=stored):
+				person = Person.objects.create(given_name="Ann", family_name="Lee", identifier=stored)
+				self.software.authors.set([person])
+				people_before = Person.objects.count()
+
+				response = self._patch({"authors": [
+					{"givenName": "Ann", "familyName": "Lee", "identifier": orcid},
+				]})
+
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				person.refresh_from_db()
+				self.assertEqual(person.identifier, orcid)
+				self.assertEqual(list(self.software.authors.all()), [person])
+				self.assertEqual(Person.objects.count(), people_before)
+
+	def test_identifier_attaches_across_a_different_split(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier="")
+		self.software.authors.set([person])
+		people_before = Person.objects.count()
+
+		response = self._patch({"authors": [
+			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.identifier, self.ORCID)
+		self.assertEqual(list(self.software.authors.all()), [person])
+		self.assertEqual(Person.objects.count(), people_before)
+
+	def test_identifier_attaches_ignoring_case(self):
+		person = Person.objects.create(given_name="Darren de", family_name="Zeeuw", identifier="")
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Darren", "familyName": "De Zeeuw", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.identifier, self.ORCID)
+		self.assertEqual((person.given_name, person.family_name), ("Darren", "De Zeeuw"))
+		self.assertEqual(list(self.software.authors.all()), [person])
+
+	def test_identifier_never_replaces_a_different_identifier(self):
+		person = Person.objects.create(given_name="Ann", family_name="Lee", identifier=self.OTHER_ORCID)
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Ann", "familyName": "Lee", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.identifier, self.OTHER_ORCID)
+		author = self.software.authors.get()
+		self.assertNotEqual(author.pk, person.pk)
+		self.assertEqual(author.identifier, self.ORCID)
+
+	def test_identifier_ignores_namesakes_outside_this_software(self):
+		namesake = Person.objects.create(given_name="Ann", family_name="Lee", identifier="")
+		other = Software.objects.create(software_name="Other")
+		other.authors.set([namesake])
+
+		response = self._patch({"authors": [
+			{"givenName": "Ann", "familyName": "Lee", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		namesake.refresh_from_db()
+		self.assertEqual(namesake.identifier, "")
+		author = self.software.authors.get()
+		self.assertNotEqual(author.pk, namesake.pk)
+		self.assertEqual(author.identifier, self.ORCID)
+
+	def test_identifier_rejected_when_several_current_authors_match(self):
+		split_one = Person.objects.create(given_name="Maria de", family_name="Souza", identifier="")
+		split_two = Person.objects.create(given_name="Maria", family_name="de Souza", identifier="")
+		self.software.authors.set([split_one, split_two])
+		people_before = Person.objects.count()
+
+		payloads = (
+			[{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID}],
+			[
+				{"givenName": "Maria de", "familyName": "Souza"},
+				{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+			],
+		)
+		for authors in payloads:
+			with self.subTest(authors=len(authors)):
+				response = self._patch({"authors": authors})
+
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+				self.assertIn("identifier", response.data)
+		for person in (split_one, split_two):
+			person.refresh_from_db()
+			self.assertEqual(person.identifier, "")
+		self.assertEqual(Person.objects.count(), people_before)
+		self.assertEqual(list(self.software.authors.all()), [split_one, split_two])
+
+	def test_identified_author_takes_resplit_of_same_full_name(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Maria", "de Souza"))
+		self.assertEqual(list(self.software.authors.all()), [person])
+
+	def test_same_full_name_ignores_case_and_hyphens(self):
+		renames = [
+			(("Darren de", "Zeeuw"), ("Darren", "De Zeeuw"), "https://orcid.org/0000-0000-0000-0011"),
+			(("Ana Pires De", "Lima"), ("Ana", "Pires de Lima"), "https://orcid.org/0000-0000-0000-0012"),
+			(("Lea", "Barrous Dume"), ("Lea", "Barrous-Dume"), "https://orcid.org/0000-0000-0000-0013"),
+		]
+		people = [
+			Person.objects.create(given_name=given, family_name=family, identifier=orcid)
+			for (given, family), _, orcid in renames
+		]
+		Software.objects.create(software_name="Other").authors.set(people)
+		self.software.authors.set(people)
+
+		response = self._patch({"authors": [
+			{"givenName": given, "familyName": family, "identifier": orcid}
+			for _, (given, family), orcid in renames
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		for person, (_, sent, _) in zip(people, renames):
+			person.refresh_from_db()
+			self.assertEqual((person.given_name, person.family_name), sent)
+
+	def test_identifier_attaches_ignoring_accents(self):
+		person = Person.objects.create(given_name="Jose", family_name="Garcia", identifier="")
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "José", "familyName": "García", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.identifier, self.ORCID)
+		self.assertEqual((person.given_name, person.family_name), ("José", "García"))
+		self.assertEqual(list(self.software.authors.all()), [person])
+
+	def test_same_full_name_ignores_accents_and_their_encoding(self):
+		# The stored é is "e" plus a combining accent; the sent é is one character.
+		person = Person.objects.create(given_name="Rene\u0301", family_name="Dupont", identifier=self.ORCID)
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Ren\u00e9", "familyName": "Dupont", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.given_name, "Ren\u00e9")
+
+	def test_sent_names_with_fewer_accents_are_not_applied(self):
+		unidentified = Person.objects.create(given_name="José", family_name="García", identifier="")
+		identified = Person.objects.create(given_name="Zoë", family_name="Brontë", identifier=self.OTHER_ORCID)
+		self.software.authors.set([unidentified, identified])
+
+		response = self._patch({"authors": [
+			{"givenName": "Jose", "familyName": "Garcia", "identifier": self.ORCID},
+			{"givenName": "Zoë", "familyName": "Bronte", "identifier": self.OTHER_ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		unidentified.refresh_from_db()
+		identified.refresh_from_db()
+		self.assertEqual(
+			(unidentified.given_name, unidentified.family_name, unidentified.identifier),
+			("José", "García", self.ORCID),
+		)
+		self.assertEqual((identified.given_name, identified.family_name), ("Zoë", "Brontë"))
+		self.assertEqual(list(self.software.authors.all()), [unidentified, identified])
+
+	def test_unidentified_author_takes_identifier_and_resplit_together(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier="")
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual(person.identifier, self.ORCID)
+		self.assertEqual((person.given_name, person.family_name), ("Maria", "de Souza"))
+
+	def test_identified_author_keeps_names_when_full_name_differs(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
+		self.software.authors.set([person])
+
+		response = self._patch({"authors": [
+			{"givenName": "Mary", "familyName": "de Souza", "identifier": self.ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Maria de", "Souza"))
+
+	def test_blank_given_name_resolves_to_that_current_author(self):
+		tiger = Person.objects.create(given_name="", family_name="Tiger")
+		self.software.authors.set([tiger])
+
+		response = self._patch({"authors": [
+			{"givenName": "", "familyName": "Tiger"},
+			{"givenName": "Ann", "familyName": "Lee"},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		names = [(p.pk == tiger.pk, p.family_name) for p in self.software.authors.all()]
+		self.assertEqual(names, [(True, "Tiger"), (False, "Lee")])
+
+	def test_blank_given_name_fills_an_unheld_identifier(self):
+		tiger = Person.objects.create(given_name="", family_name="Tiger")
+		lion = Person.objects.create(given_name="", family_name="Lion")
+		Person.objects.create(given_name="Ann", family_name="Lee", identifier=self.OTHER_ORCID)
+		self.software.authors.set([tiger, lion])
+
+		response = self._patch({"authors": [
+			{"familyName": "Tiger", "identifier": self.ORCID},
+			{"familyName": "Lion", "identifier": self.OTHER_ORCID},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		tiger.refresh_from_db()
+		lion.refresh_from_db()
+		self.assertEqual(tiger.identifier, self.ORCID)
+		self.assertIsNone(lion.identifier)
+
+	def test_blank_given_name_rejected_unless_one_current_author_matches(self):
+		Person.objects.create(given_name="", family_name="Tiger")
+		twins = [Person.objects.create(given_name="", family_name="Lion") for _ in range(2)]
+		self.software.authors.set(twins)
+		people_before = Person.objects.count()
+
+		for family in ("Tiger", "Lion"):
+			with self.subTest(family=family):
+				response = self._patch({"authors": [{"givenName": "", "familyName": family}]})
+
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+				self.assertIn("givenName", response.data)
+		self.assertEqual(Person.objects.count(), people_before)
+		self.assertEqual(list(self.software.authors.all()), twins)
+
+	def test_submission_api_rejects_blank_given_name(self):
+		response = self._post(authors=[{"givenName": "", "familyName": "Tiger"}])
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("givenName", response.data)
+
+	def test_same_person_listed_twice_rejected(self):
+		person = Person.objects.create(given_name="Ann", family_name="Lee", identifier=self.ORCID)
+		self.software.authors.set([person])
+		same_identifier = [
+			{"givenName": "Ann", "familyName": "Lee", "identifier": self.ORCID},
+			{"givenName": "A.", "familyName": "Lee", "identifier": self.ORCID},
+		]
+		same_name = [{"givenName": "Ben", "familyName": "Ng"}, {"givenName": "Ben", "familyName": "Ng"}]
+
+		for request in (
+			lambda: self._patch({"authors": same_identifier}),
+			lambda: self._patch({"authors": same_name}),
+			lambda: self._post(authors=same_identifier),
+		):
+			response = request()
+
+			self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+			self.assertIn("authors", response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Ann", "Lee"))
+		self.assertEqual(list(self.software.authors.all()), [person])
+		self.assertFalse(Person.objects.filter(family_name="Ng").exists())
+
+	def test_submission_api_does_not_resplit(self):
+		person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier=self.ORCID)
+
+		response = self._post(authors=[
+			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+		])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Maria de", "Souza"))
+
+
+class PersonSelectorTests(SharedRowTestCase):
+	"""Explicit PATCH selection may enrich a shared author in one request."""
+
+	@classmethod
+	def setUpTestData(cls):
+		super().setUpTestData()
+		cls.person = Person.objects.create(given_name="Maria de", family_name="Souza", identifier="")
+		cls.other = Software.objects.create(software_name="Other Software")
+		cls.other.authors.set([cls.person])
+		cls.existing = Person.objects.create(given_name="Ann", family_name="Lee")
+		cls.removed = Person.objects.create(given_name="Pat", family_name="Smith")
+		cls.software.authors.set([cls.existing, cls.removed])
+		cls.affiliation = Organization.objects.create(name="Original Institute")
+		cls.person.affiliation.add(cls.affiliation)
+		cls.history = SubmissionInfo.objects.create(software=cls.software, submission_date=timezone.now())
+
+	def _author(self, **fields):
+		return {
+			"personId": str(self.person.pk),
+			"givenName": "Maria",
+			"familyName": "de Souza",
+			"identifier": self.ORCID,
+			**fields,
+		}
+
+	def test_adds_and_enriches_shared_person_in_one_patch(self):
+		people_before = Person.objects.count()
+		response = self._patch({"authors": [
+			self._author(affiliation=[{"name": "Added Institute"}]),
+			{"givenName": "Ann", "familyName": "Lee"},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		self.person.refresh_from_db()
+		self.assertEqual(self.person.identifier, self.ORCID)
+		self.assertEqual((self.person.given_name, self.person.family_name), ("Maria", "de Souza"))
+		self.assertEqual(list(self.software.authors.all()), [self.person, self.existing])
+		self.assertEqual(list(self.other.authors.all()), [self.person])
+		self.assertEqual(Person.objects.count(), people_before)
+		self.assertEqual(set(self.person.affiliation.values_list("name", flat=True)),
+			{"Original Institute", "Added Institute"})
+
+	def test_namesakes_do_not_interfere_with_selection(self):
+		namesakes = [Person.objects.create(given_name="Maria", family_name="de Souza", identifier="") for _ in range(2)]
+		self.software.authors.set(namesakes)
+		people_before = Person.objects.count()
+
+		response = self._patch({"authors": [self._author()]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		self.assertEqual(list(self.software.authors.all()), [self.person])
+		self.assertEqual(Person.objects.count(), people_before)
+		for namesake in namesakes:
+			namesake.refresh_from_db()
+			self.assertEqual(namesake.identifier, "")
+
+	def test_empty_stored_identifiers_can_be_filled(self):
+		for identifier in (None, ""):
+			with self.subTest(identifier=identifier):
+				Person.objects.filter(pk=self.person.pk).update(identifier=identifier)
+				response = self._patch({"authors": [self._author()]})
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				self.person.refresh_from_db()
+				self.assertEqual(self.person.identifier, self.ORCID)
+
+	def test_same_identifier_and_omitted_identifier_preserve_selected_row(self):
+		Person.objects.filter(pk=self.person.pk).update(identifier=self.ORCID)
+		for include_identifier in (True, False):
+			with self.subTest(include_identifier=include_identifier):
+				author = self._author()
+				if not include_identifier:
+					del author["identifier"]
+				response = self._patch({"authors": [author]})
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				self.person.refresh_from_db()
+				self.assertEqual(self.person.identifier, self.ORCID)
+				self.assertEqual(list(self.software.authors.all()), [self.person])
+				self.assertEqual(list(self.person.affiliation.all()), [self.affiliation])
+
+	def test_resplit_without_identifier(self):
+		author = self._author()
+		del author["identifier"]
+		response = self._patch({"authors": [author]})
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		self.person.refresh_from_db()
+		self.assertEqual((self.person.given_name, self.person.family_name), ("Maria", "de Souza"))
+		self.assertEqual(self.person.identifier, "")
+
+	def test_invalid_selectors_never_fall_back_or_create(self):
+		# A current name match must not rescue a bad explicit selector.
+		self.software.authors.set([self.person])
+		before = self._snapshot()
+		for selector in (None, "", " ", "not-a-uuid", str(uuid.uuid4()), 1, True, {}, []):
+			with self.subTest(selector=selector):
+				response = self._patch({"authors": [self._author(personId=selector)]})
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertIn("personId", response.data)
+				self.assertEqual(self._snapshot(), before)
+
+	def test_full_name_must_be_the_same_words_in_order(self):
+		before = self._snapshot()
+		for given, family in (("Mary", "de Souza"), ("Souza", "Maria de"), ("Maria", "de Sousa")):
+			with self.subTest(given=given, family=family):
+				response = self._patch({"authors": [self._author(givenName=given, familyName=family)]})
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertIn("stored as 'Maria de Souza'", response.data["personId"])
+				self.assertEqual(self._snapshot(), before)
+
+	def test_spelling_differences_take_the_sent_names(self):
+		for given, family in (("Maria", "De Souza"), ("Maria", "de-Souza"), ("María", "de Souza")):
+			with self.subTest(given=given, family=family):
+				response = self._patch({"authors": [self._author(givenName=given, familyName=family)]})
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				self.person.refresh_from_db()
+				self.assertEqual((self.person.given_name, self.person.family_name), (given, family))
+
+	def test_sent_names_with_fewer_accents_are_not_applied(self):
+		person = Person.objects.create(given_name="José", family_name="García")
+		for fields in ({}, {"rename": False}):
+			with self.subTest(fields=fields):
+				response = self._patch({"authors": [
+					{"personId": str(person.pk), "givenName": "Jose", "familyName": "Garcia", "identifier": self.ORCID, **fields},
+				]})
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				person.refresh_from_db()
+				self.assertEqual((person.given_name, person.family_name, person.identifier), ("José", "García", self.ORCID))
+
+	def test_name_and_identifier_validation_still_applies(self):
+		before = self._snapshot()
+		for fields in ({"givenName": "", "familyName": "Maria de Souza"}, {"givenName": None},
+			{"givenName": []}, {"familyName": ""}, {"familyName": None},
+			{"identifier": "not-a-url"}, {"identifier": 1}):
+			with self.subTest(fields=fields):
+				response = self._patch({"authors": [self._author(**fields)]})
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertEqual(self._snapshot(), before)
+
+	def test_selected_blank_given_name_can_be_reused(self):
+		person = Person.objects.create(given_name="", family_name="Tiger")
+		for include_given in (True, False):
+			with self.subTest(include_given=include_given):
+				author = {"personId": str(person.pk), "familyName": "Tiger", "identifier": self.ORCID}
+				if include_given:
+					author["givenName"] = ""
+				response = self._patch({"authors": [author]})
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				self.assertEqual(list(self.software.authors.all()), [person])
+				person.refresh_from_db()
+				self.assertEqual(person.given_name, "")
+				self.assertEqual(person.identifier, self.ORCID)
+
+	def test_different_stored_identifier_is_rejected(self):
+		Person.objects.filter(pk=self.person.pk).update(identifier=self.OTHER_ORCID)
+		before = self._snapshot()
+		response = self._patch({"authors": [self._author()]})
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+		self.assertIn("identifier", response.data)
+		self.assertEqual(self._snapshot(), before)
+
+	def test_identifier_held_by_another_person_is_rejected(self):
+		Person.objects.create(given_name="Maria", family_name="de Souza", identifier=self.ORCID)
+		# Also reject an identifier duplicated in pre-existing rows.
+		for stored in ("", self.ORCID):
+			with self.subTest(stored=stored):
+				Person.objects.filter(pk=self.person.pk).update(identifier=stored)
+				before = self._snapshot()
+				response = self._patch({"authors": [self._author()]})
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertIn("identifier", response.data)
+				self.assertEqual(self._snapshot(), before)
+
+	def test_post_rejects_selector_including_empty_values(self):
+		before = self._snapshot()
+		for selector in (str(self.person.pk), None, ""):
+			with self.subTest(selector=selector):
+				response = self._post(authors=[self._author(personId=selector)])
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertIn("personId", response.data)
+				self.assertEqual(self._snapshot(), before)
+
+	def test_selector_does_not_bypass_patch_authentication(self):
+		before = self._snapshot()
+		response = self.client.patch(f"/api/data/software/{self.software.pk}/",
+			data={"authors": [self._author()]}, format="json")
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+		self.assertEqual(self._snapshot(), before)
+
+	def test_failure_rolls_back_enrichment_relations_scalars_and_history(self):
+		before = self._snapshot()
+		for fail_later_field in (False, True):
+			with self.subTest(fail_later_field=fail_later_field):
+				payload = {
+					"description": "Changed description",
+					"publisher": {"name": "New Publisher"},
+					"authors": [self._author(affiliation=[{"name": "New Institute"}])],
+				}
+				if fail_later_field:
+					payload["programmingLanguage"] = ["Unknown language"]
+				else:
+					payload["authors"].append(self._author(personId=str(self.existing.pk)))
+				response = self._patch(payload)
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertEqual(self._snapshot(), before)
+
+	def test_selected_person_listed_twice_rejected(self):
+		before = self._snapshot()
+		for second in (
+			self._author(),
+			{"givenName": "Maria", "familyName": "de Souza", "identifier": self.ORCID},
+			{"givenName": "Maria", "familyName": "de Souza"},
+		):
+			with self.subTest(second=second):
+				response = self._patch({"authors": [self._author(), second]})
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertIn("authors", response.data)
+				self.assertEqual(self._snapshot(), before)
+
+	def _misspelled(self) -> Person:
+		"""A person another record lists, stored without an identifier and with a misspelled given name."""
+		person = Person.objects.create(given_name="Jeffery", family_name="Garretson")
+		self.other.authors.add(person)
+		return person
+
+	def _rename(self, person: Person, **fields) -> dict:
+		return {"personId": str(person.pk), "givenName": "Jeffrey", "familyName": "Garretson", "rename": True, **fields}
+
+	def test_rename_changes_a_shared_persons_name(self):
+		person = self._misspelled()
+		people_before = Person.objects.count()
+
+		response = self._patch({"authors": [self._rename(person)]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name, person.identifier), ("Jeffrey", "Garretson", None))
+		self.assertEqual(list(self.software.authors.all()), [person])
+		self.assertEqual(list(self.other.authors.all()), [self.person, person])
+		self.assertEqual(Person.objects.count(), people_before)
+
+	def test_other_words_need_rename_true(self):
+		person = self._misspelled()
+		before = self._snapshot()
+		for fields in ({}, {"rename": False}):
+			with self.subTest(fields=fields):
+				author = {"personId": str(person.pk), "givenName": "Jeffrey", "familyName": "Garretson", **fields}
+				response = self._patch({"authors": [author]})
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertIn("stored as 'Jeffery Garretson'", response.data["personId"])
+				self.assertEqual(self._snapshot(), before)
+
+	def test_rename_must_be_a_boolean(self):
+		person = self._misspelled()
+		before = self._snapshot()
+		for given in ("Jeffery", "Jeffrey"):
+			for rename in (None, "true", "false", 1, 0, [], {}):
+				with self.subTest(given=given, rename=rename):
+					response = self._patch({"authors": [self._rename(person, givenName=given, rename=rename)]})
+					self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+					self.assertIn("rename", response.data)
+					self.assertEqual(self._snapshot(), before)
+
+	def test_rename_needs_person_id(self):
+		person = self._misspelled()
+		before = self._snapshot()
+		author = {"givenName": "Jeffrey", "familyName": "Garretson", "rename": True}
+		for request in (lambda: self._patch({"authors": [author]}), lambda: self._post(authors=[author])):
+			response = request()
+			self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+			self.assertEqual(response.data["rename"], "Only supported with personId.")
+			self.assertEqual(self._snapshot(), before)
+		person.refresh_from_db()
+		self.assertEqual((person.given_name, person.family_name), ("Jeffery", "Garretson"))
+
+	def test_rename_takes_the_sent_names_even_with_the_same_words(self):
+		for stored, sent in (
+			# Other words.
+			(("José", "Garcai"), ("Jose", "Garcia")),
+			# The same words, with a wrong accent removed.
+			(("Josè", "Garcia"), ("Jose", "Garcia")),
+			# The same words, trimmed.
+			(("José", "García"), (" Jose ", " Garcia ")),
+		):
+			with self.subTest(stored=stored, sent=sent):
+				person = Person.objects.create(given_name=stored[0], family_name=stored[1])
+				response = self._patch({"authors": [
+					{"personId": str(person.pk), "givenName": sent[0], "familyName": sent[1], "rename": True},
+				]})
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				person.refresh_from_db()
+				self.assertEqual((person.given_name, person.family_name), ("Jose", "Garcia"))
+
+	def test_placeholder_person_cannot_be_selected(self):
+		placeholder = Person.objects.create(given_name="UNKNOWN", family_name="UNKNOWN")
+		before = self._snapshot()
+		for author in (
+			{"personId": str(placeholder.pk), "givenName": "UNKNOWN", "familyName": "UNKNOWN", "identifier": self.ORCID},
+			{"personId": str(placeholder.pk), "givenName": "Jane", "familyName": "Doe", "rename": True},
+		):
+			with self.subTest(author=author):
+				response = self._patch({"authors": [author]})
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				self.assertIn("personId", response.data)
+				placeholder.refresh_from_db()
+				self.assertEqual(
+					(placeholder.given_name, placeholder.family_name, placeholder.identifier),
+					("UNKNOWN", "UNKNOWN", None),
+				)
+				self.assertEqual(self._snapshot(), before)
+
+	def test_failed_patch_rolls_back_a_rename(self):
+		person = self._misspelled()
+		before = self._snapshot()
+		unknown = {"personId": str(uuid.uuid4()), "givenName": "Ann", "familyName": "Lee"}
+		for payload in (
+			{"authors": [self._rename(person)], "programmingLanguage": ["Unknown language"]},
+			{"authors": [self._rename(person), unknown]},
+		):
+			with self.subTest(payload=payload):
+				response = self._patch(payload)
+				self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+				person.refresh_from_db()
+				self.assertEqual((person.given_name, person.family_name), ("Jeffery", "Garretson"))
+				self.assertEqual(self._snapshot(), before)
+
+
+class AuthorEntryKeyTests(SharedRowTestCase):
+	"""A PATCH accepts only known keys, in the right shapes, inside author entries."""
+
+	@classmethod
+	def setUpTestData(cls):
+		super().setUpTestData()
+		cls.ann = Person.objects.create(given_name="Ann", family_name="Lee")
+		cls.software.authors.set([cls.ann])
+
+	def _ann(self, **fields):
+		return {"givenName": "Ann", "familyName": "Lee", **fields}
+
+	def _rejected(self, authors) -> dict:
+		"""PATCH ``authors``, check it's a 400 that changes nothing, and return the error as rendered."""
+		before = self._snapshot()
+		response = self._patch({"authors": authors})
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST, response.data)
+		self.assertEqual(self._snapshot(), before)
+		return json.loads(response.content)
+
+	def test_unknown_author_keys_are_rejected_by_path(self):
+		error = self._rejected([
+			self._ann(),
+			{"givenName": "Ben", "familyName": "Ng", "identifer": self.ORCID, "orcidId": self.ORCID},
+		])
+		self.assertEqual(error, {"authors[1].identifer": "Unknown field.", "authors[1].orcidId": "Unknown field."})
+
+	def test_unknown_affiliation_keys_are_rejected_by_path(self):
+		error = self._rejected([
+			self._ann(),
+			{"givenName": "Ben", "familyName": "Ng", "affiliation": [
+				{"name": "Example Lab", "identifier": "https://ror.org/00example"},
+				{"name": "Example University", "identifer": "https://ror.org/00example2"},
+			]},
+		])
+		self.assertEqual(error, {"authors[1].affiliation[1].identifer": "Unknown field."})
+
+	def test_an_id_copied_from_a_get_is_rejected_with_a_hint(self):
+		error = self._rejected([self._ann(id=str(self.ann.pk))])
+		self.assertEqual(error, {"authors[0].id": "Unknown field. Send a person's id as personId."})
+
+	def test_misspelled_rename_is_rejected(self):
+		for given in ("Ann", "Anne"):
+			with self.subTest(given=given):
+				error = self._rejected([{"personId": str(self.ann.pk), "givenName": given, "familyName": "Lee", "renmae": True}])
+				self.assertEqual(error, {"authors[0].renmae": "Unknown field."})
+
+	def test_wrong_shapes_are_rejected_by_path(self):
+		for authors, expected in (
+			("Ann Lee", {"authors": "Expected an array."}),
+			(None, {"authors": "Expected an array."}),
+			(["Ann Lee"], {"authors[0]": "Expected an object."}),
+			([self._ann(), 5], {"authors[1]": "Expected an object."}),
+			([self._ann(affiliation="Example Lab")], {"authors[0].affiliation": "Expected an array."}),
+			([self._ann(affiliation=["Example Lab"])], {"authors[0].affiliation[0]": "Expected an object."}),
+		):
+			with self.subTest(authors=authors):
+				self.assertEqual(self._rejected(authors), expected)
+
+	def test_documented_author_keys_still_pass(self):
+		michael = {"givenName": "Michael", "familyName": "Hirsch"}
+		ann = self._ann(identifier=self.ORCID, affiliation=[{"name": "Example Lab", "identifier": "https://ror.org/00example"}])
+		for other, selected in (
+			# The API reference's examples: add a person from another record, and correct their name.
+			(michael, {"givenName": "Jnae", "familyName": "Doe", "identifier": "https://orcid.org/0000-0000-0000-0000"}),
+			(michael, {"givenName": "Jane", "familyName": "Doe", "rename": True}),
+			# Every other key, and an affiliation of null.
+			(ann, {"givenName": "Jnae", "familyName": "Doe", "rename": False, "affiliation": None}),
+		):
+			with self.subTest(selected=selected):
+				# A fresh person and author list, so no subtest depends on another.
+				self.software.authors.set([self.ann])
+				jane = Person.objects.create(given_name="Jnae", family_name="Doe")
+				response = self._patch({"authors": [other, {"personId": str(jane.pk), **selected}]})
+				self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+				jane.refresh_from_db()
+				self.assertEqual((jane.given_name, jane.family_name), (selected["givenName"], "Doe"))
+
+	def test_post_is_unchanged(self):
+		for authors, expected, key in (
+			# Unknown keys, and an affiliation that isn't an array, are still ignored.
+			([self._ann(identifer=self.ORCID, affiliation="Example Lab")], status.HTTP_201_CREATED, None),
+			([self._ann(affiliation=[{"name": "Example Lab", "identifer": "https://ror.org/00example"}])],
+				status.HTTP_201_CREATED, None),
+			# The 400s POST already returns keep their keys.
+			([self._ann(affiliation=["Example Lab"])], status.HTTP_400_BAD_REQUEST, "affiliation"),
+			([self._ann(personId=str(self.ann.pk))], status.HTTP_400_BAD_REQUEST, "personId"),
+			([self._ann(rename=True)], status.HTTP_400_BAD_REQUEST, "rename"),
+		):
+			with self.subTest(authors=authors):
+				response = self._post(authors=authors)
+				self.assertEqual(response.status_code, expected, response.data)
+				if key:
+					self.assertEqual(list(json.loads(response.content)), [key])
+
+
+class AwardRowTests(SharedRowTestCase):
+	"""How award items resolve to Award rows."""
+
+	def test_award_funder_set_on_new_award(self):
+		response = self._patch({"award": [
+			{"name": "HSR grant", "identifier": "80NSSC21K0306", "funder": self.NASA},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		award = self.software.award.get()
+		self.assertEqual(award.identifier, "80NSSC21K0306")
+		self.assertEqual(award.funder.identifier, self.NASA["identifier"])
+
+	def test_award_funder_fills_existing_award_without_one(self):
+		award = Award.objects.create(name="HSR grant", identifier="80NSSC21K0306")
+
+		response = self._patch({"award": [
+			{"name": "HSR grant", "identifier": "80NSSC21K0306", "funder": self.NASA},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		award.refresh_from_db()
+		self.assertEqual(award.funder.identifier, self.NASA["identifier"])
+		self.assertEqual(list(self.software.award.all()), [award])
+
+	def test_award_funder_never_replaces_a_different_funder(self):
+		other = Organization.objects.create(name="Other Agency")
+		award = Award.objects.create(name="HSR grant", identifier="80NSSC21K0306", funder=other)
+
+		response = self._patch({"award": [
+			{"name": "HSR grant", "identifier": "80NSSC21K0306", "funder": self.NASA},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+		award.refresh_from_db()
+		self.assertEqual(award.funder, other)
+
+	def test_award_name_over_128_characters_rejected(self):
+		awards = [{"name": "x" * 129, "identifier": "80NSSC21K0306"}]
+		for request in (lambda: self._patch({"award": awards}), lambda: self._post(award=awards)):
+			response = request()
+
+			self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+			self.assertIn("award.name", response.data)
+		self.assertFalse(Award.objects.exists())
+
+	def test_award_funder_must_be_an_object(self):
+		response = self._patch({"award": [
+			{"name": "HSR grant", "identifier": "80NSSC21K0306", "funder": "NASA"},
+		]})
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("award.funder", response.data)
+
+	def test_submission_api_accepts_award_funder(self):
+		response = self._post(award=[{"name": "HSR grant", "funder": self.NASA}])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		created = Software.objects.get(software_name="Created via API")
+		self.assertEqual(created.award.get().funder.identifier, self.NASA["identifier"])
+
+	def test_submission_api_leaves_existing_awards_unchanged(self):
+		by_number = Award.objects.create(name="HSR grant", identifier="80NSSC21K0306")
+		by_name = Award.objects.create(name="HTM grant")
+		self.software.award.set([by_number, by_name])
+
+		response = self._post(award=[
+			{"name": "HSR grant", "identifier": "80NSSC21K0306", "funder": self.NASA},
+			{"name": "htm grant", "funder": self.NASA},
+		])
+
+		self.assertEqual(response.status_code, status.HTTP_201_CREATED, response.data)
+		for award in (by_number, by_name):
+			award.refresh_from_db()
+			self.assertIsNone(award.funder)
+		created = Software.objects.get(software_name="Created via API")
+		self.assertEqual(set(created.award.all()), {by_number, by_name})
 
 
 class SoftwareListLookupTests(TestCase):

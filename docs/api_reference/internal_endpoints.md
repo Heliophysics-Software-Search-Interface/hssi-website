@@ -111,6 +111,7 @@ access-level system.
 | `offset`, `limit` | Pagination (default `0`/`25` if not present). Non-integer values return `400`. |
 | `columns` | Comma-separated list of fields to include in each row. |
 | `recursive` | `"true"`/`"false"` — whether related objects are serialized recursively. |
+| `sort` | `VerifiedSoftware` only. Orders the whole list before pagination, as the homepage's sort buttons do: `date` puts the most recently modified metadata first (see `metadata_modified_date` below), `create` puts the newest Publication Date first, and `name` sorts A–Z ignoring case. Rows without a date come last, and equal dates fall back to name order. Without `sort`, or with any other value, rows come back in no particular order. |
 
 ```bash
 curl "https://hssi.hsdcloud.org/api/models/Keyword/rows/all/?limit=5&columns=id,name"
@@ -119,6 +120,8 @@ curl "https://hssi.hsdcloud.org/api/models/Keyword/rows/all/?limit=5&columns=id,
 ```json
 {"data": [{"id": "...", "name": "magnetosphere"}], "total": 42}
 ```
+
+Each `VerifiedSoftware` row also includes `metadata_modified_date`: an ISO 8601 timestamp of the software's last metadata change, from `Software.date_modified` or, failing that, its newest submission date, and `null` when neither exists. It's the same date the JSON-LD reports as `subjectOf.dateModified`, and the one the `date` sort uses.
 
 > Insufficient access on this particular endpoint surfaces as an unhandled
 > server error rather than a clean `403` — a known inconsistency versus

@@ -61,6 +61,7 @@ valid, and will not be accepted.
 	"codeRepositoryUrl": "https://repo.example.org/example",
 	```
 * `authors` *required* - array of [`Person`](#person) objects
+	* each person must be listed only once; two entries with the same `identifier`, or without one the same `givenName` and `familyName`, are rejected
 	```
 	"authors": [
 		{
@@ -306,8 +307,10 @@ however they may not be applicable to some submissions.
 	```
 * `award` - array of objects
 	* subfields:
-		* `name` - string
+		* `name` - string, 128 characters or less
 		* `identifier` - string
+		* `funder` - [`Organization`](#organization) object
+	* hard match on `identifier`, soft match on `name` if identifier is not provided. A matched award is used as it is, so `funder` only applies to a new award.
 	```
 	"award": [
 		{
@@ -354,6 +357,29 @@ otherwise fall back to matching on a combination of `givenName` + `familyName`
 * `familyName` *required* - string
 * `identifier` - url
 * `affiliation` - array of [`Organization`](#organization) objects
+
+Two more fields are rejected here. Only an update's authors accept them, with
+`PATCH /api/data/software/{id}/` (see the
+[Submission API reference](../docs/api_reference/submission_api.md#patch-apidatasoftwareid)):
+
+* `personId` - UUID string selecting an existing person, other than the
+  placeholder person stored with the given name `UNKNOWN`, which is rejected
+* `rename` - boolean, only with `personId`. Any other value is rejected, even
+  when the names match. With `true`, the selected person takes the sent names
+  on every record that lists them, spelled exactly as sent, accents included,
+  whether or not their words differ. Without it, other words are rejected, and
+  names with the same words are applied only when they carry at least as many
+  accents as the stored names.
+
+A submission ignores any other key in a person or organization object. An
+update's author entries are stricter: one may carry only the fields above
+(`givenName`, `familyName`, `identifier`, `affiliation`, `personId` and
+`rename`), and an `affiliation` object only `name` and `identifier`. Any other
+key, including the `id` a read gives an author, is rejected with a 400 that
+names its path, such as `authors[1].affiliation[0].identifer`. Keys inside an
+update's other objects (`publisher`, `funder`, `award`, `version`,
+`relatedInstruments` and `relatedObservatories`) aren't checked yet, so
+unrecognized ones there are still ignored.
 
 ### Submitter
 

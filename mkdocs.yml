@@ -27,7 +27,6 @@ nav:
   - Home: index.md
   - Getting Started: getting_started.md
   - Architecture: architecture.md
-  - Glossary: glossary.md
   - API Reference:
       - api_reference/overview.md
       - Software Catalog API: api_reference/software_catalog_api.md
@@ -41,6 +40,54 @@ nav:
       - Frontend Architecture: code_reference/frontend_architecture.md
       - Admin & Curation: code_reference/admin_and_curation.md
       - Deployment Reference: code_reference/deployment_reference.md
+      - Backend:
+          - code_reference/backend/index.md
+          - "models/base.py": code_reference/backend/models.base.md
+          - "models/people.py": code_reference/backend/models.people.md
+          - "models/serializers/software.py": code_reference/backend/models.serializers.software.md
+          - "models/software.py": code_reference/backend/models.software.md
+          - "models/structurizer.py": code_reference/backend/models.structurizer.md
+          - "models/vocab.py": code_reference/backend/models.vocab.md
+          - "forms/controls/model_object_selector.py": code_reference/backend/forms.controls.model_object_selector.md
+          - "forms/names.py": code_reference/backend/forms.names.md
+          - "forms/submission_data.py": code_reference/backend/forms.submission_data.md
+          - "views/api/software_api.py": code_reference/backend/views.api.software_api.md
+          - "views/edit_submission.py": code_reference/backend/views.edit_submission.md
+          - "views/exposed_models.py": code_reference/backend/views.exposed_models.md
+          - "views/model_rows.py": code_reference/backend/views.model_rows.md
+          - "views/search.py": code_reference/backend/views.search.md
+          - "views/software_detail.py": code_reference/backend/views.software_detail.md
+          - "views/submit.py": code_reference/backend/views.submit.md
+          - "admin/actions.py": code_reference/backend/admin.actions.md
+          - "admin/csv_export.py": code_reference/backend/admin.csv_export.md
+          - "admin/fetch_vocab.py": code_reference/backend/admin.fetch_vocab.md
+          - "admin/model_admin.py": code_reference/backend/admin.model_admin.md
+          - "data_parser.py": code_reference/backend/data_parser.md
+          - "util.py": code_reference/backend/util.md
+      - Frontend:
+          - code_reference/frontend/index.md
+          - "index.ts and loader.ts": code_reference/frontend/loader.md
+          - "util.ts": code_reference/frontend/util.md
+          - "forms/formGenerator.ts": code_reference/frontend/forms.formGenerator.md
+          - "forms/fieldRequirement.ts": code_reference/frontend/forms.fieldRequirement.md
+          - "forms/fields/modelFieldStructure.ts": code_reference/frontend/forms.fields.modelFieldStructure.md
+          - "forms/fields/modelSubfield.ts": code_reference/frontend/forms.fields.modelSubfield.md
+          - "forms/fields/modelMultisubfield.ts": code_reference/frontend/forms.fields.modelMultisubfield.md
+          - "forms/widgets/widget.ts": code_reference/frontend/forms.widgets.widget.md
+          - "forms/widgets/modelBox.ts": code_reference/frontend/forms.widgets.modelBox.md
+          - "forms/widgets/autofillDatacite.ts": code_reference/frontend/forms.widgets.autofillDatacite.md
+          - "forms/widgets/findIdWidget.ts": code_reference/frontend/forms.widgets.findIdWidget.md
+          - "filters/filterMenu.ts": code_reference/frontend/filters.filterMenu.md
+          - "filters/filterMenuItem.ts": code_reference/frontend/filters.filterMenuItem.md
+          - "filters/filterGroup.ts": code_reference/frontend/filters.filterGroup.md
+          - "filters/filterTab/": code_reference/frontend/filters.filterTab.md
+          - "filters/search.ts": code_reference/frontend/filters.search.md
+          - "modelData/asyncModelData.ts": code_reference/frontend/modelData.asyncModelData.md
+          - "modelData/modelDataCache.ts": code_reference/frontend/modelData.modelDataCache.md
+          - "modelData/modelStructure.ts": code_reference/frontend/modelData.modelStructure.md
+          - "resources/resourceItem.ts": code_reference/frontend/resources.resourceItem.md
+          - "resources/resourceView.ts": code_reference/frontend/resources.resourceView.md
+          - "dialogues/apiQueryPopup.ts": code_reference/frontend/dialogues.apiQueryPopup.md
 
 # Rewrites relative links to source files outside docs/ into GitHub URLs.
 hooks:

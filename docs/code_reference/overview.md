@@ -16,6 +16,10 @@ here when you need the specifics of a particular part.
 
 ## Sections
 
+- [Backend](backend/index.md) — per-module API reference for the Django
+  app: public classes, methods, and functions of the commonly edited modules.
+- [Frontend](frontend/index.md) — per-module API reference for the
+  TypeScript frontend.
 - [Data Model](data_model.md) — the model layer: `HssiModel`/`HssiBase`,
   `ControlledList`/`ControlledGraphList`, and the core software/people/
   organization/vocabulary models.

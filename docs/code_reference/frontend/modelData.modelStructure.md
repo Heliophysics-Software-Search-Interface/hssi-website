@@ -27,4 +27,4 @@ fields is added or renamed.
 | `VersionData` | Software version data: `number` and `release_date`. |
 | `OrganizationData` | Organization data: `name` and optional ROR `identifier`. |
 | `PersonData` | Person data: `given_name`, `family_name`, optional ORCID `identifier`, and `affiliation` organizations. |
-| `SoftwareData` | Full software entry data with related objects nested as their data types. |
+| `SoftwareData` | Full software entry data with related objects nested as their data types, plus an optional `metadata_modified_date` used for sorting. |

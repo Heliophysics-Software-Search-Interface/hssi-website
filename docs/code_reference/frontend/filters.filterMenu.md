@@ -45,7 +45,7 @@ The filter menu that holds the filter tabs and applies active filter groups to a
 | `setItemSelected(item, selected)` | method | Marks a filter item as selected or not, adding it to or removing it from the filter group maker. |
 | `getTabForField(field)` | method | The tab that filters the given software field. |
 | `addFilterGroup(group)` | method | Adds a filter group to the active filter groups without applying it. |
-| `applyFilters(pushHistory)` | method | Applies all active filter groups to the target view, renders their chips, records them in the URL, and reapplies the search query. |
+| `applyFilters(pushHistory)` | method | Applies all active filter groups to the target view, renders their chips, records them in the URL, and reapplies the search query. On phones, also closes the expanded Filters bar. |
 
 ## Functions
 

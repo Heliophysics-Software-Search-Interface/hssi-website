@@ -90,11 +90,12 @@ interested in. This is an overview of how that's supposed to work:
 relevant form fields, and submits it.  
 2. The data in the form is serialized and sent to the HSSI [Software](../django/website/models/software.py#L71) 
 model in our database. A confirmation email is sent to the email address the
-maintainer entered.
+maintainer entered, and a "new submission" GitHub issue is opened to notify
+curators.
 3. A curator reviews the data in the software entry and reaches out to the 
 submitter email if any modifications need to be made.
 4. After all data is verified, and no more modifications are needed, a curator
-'verifies' the software entry. Its UUID is added to the [VerifiedSoftware](../django/website/models/software.py#L341) 
+'verifies' the software entry. Its UUID is added to the [VerifiedSoftware](../django/website/models/software.py#L351) 
 model and, as a result, it becomes visible on the HSSI website.
 5. If an author needs to make a correction after it has been verified, they 
 can select an option on the software's landing page, which prompts them to
@@ -106,7 +107,7 @@ need for a software submitter to create an account.
 
 **Caveats**:
 
-* There is an [internal status field](../django/website/models/software.py#L310) 
+* There is an [internal status field](../django/website/models/software.py#L320) 
 in each software entry, but it is currently unused as we have no way to 
 consistently track progress for each entry.
 * Limited access curator roles do not currently exist, despite some of the 

@@ -85,6 +85,7 @@ A software entry in the catalog, holding all of its submitted metadata. **Extend
 | `get_top_field()` | class method | Returns the `software_name` field as the model's display field. |
 | `get_subfields()` | class method | The model's subfields, excluding `submission_info`. |
 | `get_ordered_software_functionality()` | method | Functionality tags with each parent/child group kept together. |
+| `latest_version()` | method | The version with the latest release date, or the highest number if none has a date; `None` if there are no versions. |
 | `get_serialized_data(*args, **kwargs)` | method | Serialized data from `HssiModel`, plus `scix_url`. |
 | `get_absolute_url()` | method | URL of the software's detail page, by slug if published, otherwise by UUID. |
 | `is_visible()` | method | Whether the software is published on the website. |

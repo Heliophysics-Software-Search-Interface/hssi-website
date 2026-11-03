@@ -36,7 +36,7 @@ Serializer for `Software` model data, with standard, user and JSON-LD views. **E
 | Member | Kind | Description |
 |---|---|---|
 | `to_representation_user(instance)` | method | User-friendly view: all non-empty fields, with related objects resolved to user-friendly values. |
-| `to_representation_jsonld(instance)` | method | The software as a schema.org `SoftwareSourceCode`/`SoftwareApplication` JSON-LD document, with authors, keywords, mentions, funding, license, identifiers and a `subjectOf` catalog record; empty values are dropped. |
+| `to_representation_jsonld(instance)` | method | The software as a schema.org `SoftwareSourceCode`/`SoftwareApplication` JSON-LD document, with authors, keywords, mentions, funding, license, identifiers and a `subjectOf` catalog record; empty values are dropped. Funders without a recorded award appear as funder-only grants under `funding`, and free-text keywords that duplicate a controlled term are left out. |
 
 ## Functions
 

@@ -26,7 +26,7 @@ A per-model cache of fetched model object data, keyed by UUID. Exposed on `windo
 | `getCache(model)` | static method | The cache for a model, created on first use; `"Software"` shares the `"VerifiedSoftware"` cache. |
 | `getModelDataAll(model)` | static method | All objects of a model, fetching them all first if not already done. |
 | `getModelData(model, uid)` | static method | The object, or array of objects, with the given UUID(s). |
-| `fetchPage(model, offset, limit)` | static method | One page of a model's objects and the total count, served from the cache if all data is already loaded. |
+| `fetchPage(model, offset, limit, sort)` | static method | Fetches one page of a model's objects and the total count from the server, optionally in a `sort` order. |
 | `hasFetchedAllData` | property | Whether all of the model's objects have been fetched. |
 | `model` | property | The model the cache holds. |
 | `fetchAllData()` | method | Fetches all objects of the model, sharing any fetch already in progress. |

@@ -64,4 +64,4 @@ Accepts new software submissions as a JSON array; CSRF-exempt. **Extends:** `API
 |---|---|---|
 | `authentication_classes` | class attribute | Empty: no session or token authentication. |
 | `permission_classes` | class attribute | `[AllowAny]`. |
-| `post(request)` | method | POST: validates and saves every item in one transaction (400 with errors if any fail), then creates a 90-day edit link for each and emails it; returns 201 with the new software IDs. |
+| `post(request)` | method | POST: validates and saves every item in one transaction (400 with errors if any fail), then creates a 90-day edit link for each and emails it, and opens a "new submission" GitHub issue for each on commit; returns 201 with the new software IDs. |

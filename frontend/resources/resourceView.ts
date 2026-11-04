@@ -260,6 +260,8 @@ export class ResourceView {
 		this.paginatedMode = true;
 		this.paginationOffset = 0;
 		const { items, total } = await ModelDataCache.fetchPage(softwarModelName, 0, this.PAGE_SIZE, this.sort);
+		// awaitAllItems() can switch to the full catalog while this page loads
+		if (!this.paginatedMode) return;
 		this.itemData = items;
 		this.paginationTotal = total;
 		this.updatePaginationControls();

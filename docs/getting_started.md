@@ -119,6 +119,14 @@ docker exec -w /django HSSI python manage.py test website
 (`docker-compose.yml` pins the container name to `HSSI`, so this should
 work as-is; confirm with `docker ps` if it doesn't.)
 
+The frontend has its own tests in `tests/`. They load the TypeScript sources with esbuild and run on Node's built-in test runner, so they need Node.js as well as the `bun install` from [Build the Frontend](#build-the-frontend). From the repo root:
+
+```bash
+node --test tests/*.test.mjs
+```
+
+CI runs both suites on every pull request.
+
 ## Troubleshooting
 
 - **Static files 403/404 after first launch.** The container writes to the

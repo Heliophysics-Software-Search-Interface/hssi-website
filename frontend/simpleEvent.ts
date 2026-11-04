@@ -1,4 +1,14 @@
 /**
+ * A small typed event that frontend classes expose for others to listen to:
+ * listeners subscribe with `addListener`, `triggerEvent` calls them, and
+ * `wait()` returns a promise for the next trigger. `ResourceView.onReady`,
+ * `FilterTab.onReady` and the form fields' `onValueChanged` are all
+ * `SimpleEvent`s. Touch this when changing how events reach their listeners.
+ *
+ * @module
+ */
+
+/**
  * T - input type for listeners
  * R - return type for listeners
  */
@@ -52,16 +62,18 @@ export class SimpleEvent<T = undefined, R = void>{
 		this.listeners.splice(0, this.listeners.length);
 	}
 
-	/** 
-	 * fire off all the listeners with the specified parameter and returns an 
-	 * array of all the results from each event call
+	/**
+	 * fire off all the listeners with the specified parameter and returns an
+	 * array of all the results from each event call. Listeners run from a copy
+	 * of the list taken when the event fires, so adding or removing listeners
+	 * during the call (as each {@link SimpleEvent.wait} callback does when it
+	 * removes itself) only affects later triggers.
 	 * @param argument the argument that will be passed to the listeners
 	 */
 	public triggerEvent(argument: T = undefined): Array<R>{
 
 		const val: Array<R> = []
 
-		// iterate a copy, since listeners like wait()'s remove themselves when fired
 		for(const listener of [...this.listeners]){
 			val.push(listener(argument));
 		}

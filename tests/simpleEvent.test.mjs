@@ -7,6 +7,7 @@ import { transformSync } from 'esbuild';
 const source = readFileSync(new URL('../frontend/simpleEvent.ts', import.meta.url), 'utf8');
 const { code } = transformSync(source, { loader: 'ts', format: 'cjs', target: 'es2022' });
 
+// Exercise the real SimpleEvent class, which has no imports to mock.
 function createEvent() {
 	const context = { module: { exports: {} } };
 	runInNewContext(code, context);

@@ -61,7 +61,8 @@ export class SimpleEvent<T = undefined, R = void>{
 
 		const val: Array<R> = []
 
-		for(const listener of this.listeners){
+		// iterate a copy, since listeners like wait()'s remove themselves when fired
+		for(const listener of [...this.listeners]){
 			val.push(listener(argument));
 		}
 

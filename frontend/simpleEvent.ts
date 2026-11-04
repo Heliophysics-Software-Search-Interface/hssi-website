@@ -67,7 +67,7 @@ export class SimpleEvent<T = undefined, R = void>{
 	 * array of all the results from each event call. Listeners run from a copy
 	 * of the list taken when the event fires, so adding or removing listeners
 	 * during the call (as each {@link SimpleEvent.wait} callback does when it
-	 * removes itself) only affects later triggers.
+	 * removes itself) doesn't change which listeners this call runs.
 	 * @param argument the argument that will be passed to the listeners
 	 */
 	public triggerEvent(argument: T = undefined): Array<R>{

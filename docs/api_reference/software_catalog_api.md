@@ -134,7 +134,7 @@ endpoint returns. Selected fields (all omitted when empty):
 |---|---|
 | `@id`, `@type`, `@context` | `["SoftwareSourceCode", "SoftwareApplication"]`, schema.org + codemeta/prov/sosa/dcat contexts |
 | `name`, `description`, `url`, `codeRepository` | core identity fields |
-| `author` | `{"@list": [...]}` of Person/Organization JSON-LD |
+| `author` | `{"@list": [...]}` of Person/Organization JSON-LD; an author marked as an organization, or with a ROR identifier, is an `Organization` with `name` and `parentOrganization` instead of `givenName`, `familyName` and `affiliation` |
 | `identifier` | `PropertyValue` list, including one pointing back at HSSI's own canonical URL for the record |
 | `keywords` | combined data sources, formats, phenomena, functionality, and free-text keywords, as `DefinedTerm`s |
 | `license`, `programmingLanguage`, `operatingSystem`, `processorRequirements` | environment/requirements metadata |

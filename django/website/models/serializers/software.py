@@ -163,7 +163,7 @@ class SoftwareSerializer(HssiSerializer):
 		return data
 
 	def _person_is_org(self, person: Person) -> bool:
-		return bool(person.identifier and "ror.org" in person.identifier)
+		return person.is_organization or bool(person.identifier and "ror.org" in person.identifier)
 
 	def _person_jsonld(self, person: Person) -> dict[str, Any]:
 		affiliations = self._as_list(

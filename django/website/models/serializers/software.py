@@ -462,6 +462,8 @@ class SoftwareSerializer(HssiSerializer):
 			),
 		)
 		if json_identifier:
+			# No @id here: the record's own @id already holds this identifier.
+			del json_identifier["@id"]
 			json_identifiers.append(json_identifier)
 		json_identifiers.append({
 			"@type": "PropertyValue",

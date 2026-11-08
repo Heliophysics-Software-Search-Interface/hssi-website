@@ -486,7 +486,11 @@ class SoftwareDetailJsonLdTests(TestCase):
 		amgeo = Person.objects.create(given_name="AMGeO", family_name="Collaboration", is_organization=True)
 		amgeo.affiliation.add(boulder)
 		software = self._publish_software(software_name="AMGeO")
-		software.authors.add(amgeo, Person.objects.create(given_name="Ada", family_name="Lovelace"))
+		software.authors.add(
+			amgeo,
+			Person.objects.create(given_name="Ada", family_name="Lovelace"),
+			Person.objects.create(given_name="National", family_name="Solar Observatory", identifier="https://ror.org/00b9pg524"),
+		)
 		authors = self._jsonld(software)["author"]["@list"]
 		self.assertEqual(authors[0], {
 			"@type": "Organization",
@@ -505,6 +509,7 @@ class SoftwareDetailJsonLdTests(TestCase):
 			},
 		})
 		self.assertEqual(authors[1], {"@type": "Person", "givenName": "Ada", "familyName": "Lovelace"})
+		self.assertEqual([authors[2]["@type"], authors[2]["name"]], ["Organization", "National Solar Observatory"])
 
 
 class SoftwareApiSlugLookupTests(TestCase):

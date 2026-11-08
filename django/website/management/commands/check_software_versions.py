@@ -25,8 +25,11 @@ PAGES = {
 # Software published on PyPI under a name unlike both its HSSI name and its repository's name,
 # by HSSI name: the PyPI project.
 PYPI_NAMES = {
+	"Digital Meridian Spectrometer": "dmsp",
+	"HAPI Client": "hapiclient",
 	"HelioAI": "helioai-agent",
 	"irispy": "irispy-lmsal",
+	"PyTplot": "pytplot-mpl-temp",
 	"The CCMC Kamodo Analysis Suite": "kamodo-ccmc",
 }
 

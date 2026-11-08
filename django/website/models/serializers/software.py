@@ -173,7 +173,7 @@ class SoftwareSerializer(HssiSerializer):
 			data: dict[str, Any] = {
 				"@id": None,
 				"@type": "Organization",
-				"name": person.fullName,
+				"name": person.fullName.strip(),
 			}
 			if person.identifier:
 				data["@id"] = person.identifier

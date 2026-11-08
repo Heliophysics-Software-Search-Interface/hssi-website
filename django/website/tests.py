@@ -484,6 +484,14 @@ class SoftwareDetailJsonLdTests(TestCase):
 		})
 		self.assertEqual(data["author"]["@list"][0]["identifier"]["@id"], orcid)
 
+	def test_organization_author_without_given_name_has_no_leading_space(self):
+		hao = Person.objects.create(
+			family_name="NCAR High Altitude Observatory", identifier="https://ror.org/03773p874",
+		)
+		software = self._publish_software(software_name="TIEGCM")
+		software.authors.add(hao)
+		self.assertEqual(self._jsonld(software)["author"]["@list"][0]["name"], "NCAR High Altitude Observatory")
+
 	def test_software_license_stays_out_of_subject_of(self):
 		"""subjectOf is HSSI's metadata record, which the software's license doesn't cover."""
 		bsd = License.objects.create(

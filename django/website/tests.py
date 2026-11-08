@@ -15,6 +15,7 @@ from .models import (
 	Keyword,
 	License,
 	Organization,
+	Person,
 	ProgrammingLanguage,
 	Region,
 	Software,
@@ -476,6 +477,34 @@ class SoftwareDetailJsonLdTests(TestCase):
 		data = self._jsonld(software)
 		self.assertEqual(data["license"]["@id"], bsd.url)
 		self.assertNotIn("license", data["subjectOf"])
+
+	def test_author_marked_as_organization_is_an_organization(self):
+		"""Rebecca's AMGeO example: the collaboration has no ROR ID, so only the flag marks it."""
+		boulder = Organization.objects.create(
+			name="University of Colorado Boulder", identifier="https://ror.org/02ttsq026",
+		)
+		amgeo = Person.objects.create(given_name="AMGeO", family_name="Collaboration", is_organization=True)
+		amgeo.affiliation.add(boulder)
+		software = self._publish_software(software_name="AMGeO")
+		software.authors.add(amgeo, Person.objects.create(given_name="Ada", family_name="Lovelace"))
+		authors = self._jsonld(software)["author"]["@list"]
+		self.assertEqual(authors[0], {
+			"@type": "Organization",
+			"name": "AMGeO Collaboration",
+			"parentOrganization": {
+				"@id": "https://ror.org/02ttsq026",
+				"@type": "Organization",
+				"name": "University of Colorado Boulder",
+				"identifier": {
+					"@id": "https://ror.org/02ttsq026",
+					"@type": "PropertyValue",
+					"url": "https://ror.org/02ttsq026",
+					"propertyID": "https://registry.identifiers.org/registry/ror",
+					"value": "ror:02ttsq026",
+				},
+			},
+		})
+		self.assertEqual(authors[1], {"@type": "Person", "givenName": "Ada", "familyName": "Lovelace"})
 
 
 class SoftwareApiSlugLookupTests(TestCase):

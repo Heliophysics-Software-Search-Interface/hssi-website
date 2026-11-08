@@ -28,6 +28,11 @@ class Person(HssiModel):
 	"""Family (last) name."""
 	identifier = models.URLField(blank=True, null=True)
 	"""Identifier URL, typically an ORCID."""
+	is_organization = models.BooleanField(default=False)
+	"""
+	Whether the author is an organization, such as a collaboration or team,
+	rather than a person.
+	"""
 	affiliation: Manager[Organization] = models.ManyToManyField(
 		Organization, 
 		blank=True, 

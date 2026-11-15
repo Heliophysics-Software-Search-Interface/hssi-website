@@ -58,8 +58,7 @@ class ModelObjectChoice(NamedTuple):
 class HssiBase(models.base.ModelBase):
 	"""
 	Used to hook into class generation for models to set name attributes for 
-	model fields. Stupid fucking hacky ass way to do it becuase django and 
-	python are inflexible. The things I do just to avoid hardcoding strings...
+	model fields.
 	"""
 	def __new__(cls: type['HssiModel'], name, bases, attrs: dict[str, Any], **kwargs):
 		new_cls = super().__new__(cls, name, bases, attrs, **kwargs)

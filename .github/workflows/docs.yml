@@ -69,6 +69,10 @@ jobs:
       # links and anchors (see `validation` in mkdocs.yml), so PRs that
       # break the docs are caught before they reach main.
       - name: Build site
+        # Silences the MkDocs 2.0 / ProperDocs notice that a plugin prints on
+        # every build; it's informational and doesn't affect the build.
+        env:
+          DISABLE_MKDOCS_2_WARNING: "true"
         run: mkdocs build --strict
 
       - name: Upload Pages artifact

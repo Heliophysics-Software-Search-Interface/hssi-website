@@ -24,6 +24,8 @@ import {
 export const idSearchbar = "searchbar";
 /** `"searchbar-btn"`: ID of the search button. */
 export const idSearchButton = "searchbar-btn";
+/** `"searchbar-clear"`: ID of the button that clears the search. */
+export const idSearchClearButton = "searchbar-clear";
 /** `"q"`: URL parameter holding the search query. */
 export const searchParamQuery = "q";
 /** `"mode"`: search API parameter selecting the result format. */
@@ -41,13 +43,36 @@ function initializeSearch(): void {
 	searchbar.addEventListener("keydown", e => {
 		if(e.key == "Enter") onEnterSearch();
 	});
+	searchbar.addEventListener("input", updateClearButton);
 
 	const searchButton = document.getElementById(idSearchButton) as HTMLButtonElement;
 	searchButton.addEventListener("click", onEnterSearch);
 
+	const clearButton = document.getElementById(idSearchClearButton);
+	clearButton?.addEventListener("click", onClearSearch);
+
 	window.addEventListener("popstate", _ => { parseUrlParams(); });
 
 	parseUrlParams();
+}
+
+/** shows the clear button only while the search bar has text */
+function updateClearButton(): void {
+	const searchbar = document.getElementById(idSearchbar) as HTMLInputElement;
+	const clearButton = document.getElementById(idSearchClearButton);
+	if (searchbar && clearButton) clearButton.hidden = !searchbar.value;
+}
+
+/** empties the search bar and shows the unsearched results */
+function onClearSearch(): void {
+	const searchbar = document.getElementById(idSearchbar) as HTMLInputElement;
+	searchbar.value = "";
+	updateClearButton();
+
+	// only add a history entry if there was a search in the URL to remove
+	const hadQuery = new URLSearchParams(window.location.search).has(searchParamQuery);
+	searchForQuery("", hadQuery);
+	searchbar.focus();
 }
 
 function updateTitleToSearch() {
@@ -80,6 +105,7 @@ function parseUrlParams() {
 
 	const searchbar = document.getElementById(idSearchbar) as HTMLInputElement;
 	if(searchbar) searchbar.value = searchVal || "";
+	updateClearButton();
 }
 
 function recordHistory(query: string){
@@ -208,6 +234,7 @@ function initializeFieldSearchHelp(): void {
 			const current = searchbar.value;
 			const prefix = current && !current.endsWith(" ") ? current + " " : current;
 			searchbar.value = prefix + token;
+			updateClearButton();
 			// place cursor between the quotes
 			const pos = searchbar.value.length - 1;
 			searchbar.focus();

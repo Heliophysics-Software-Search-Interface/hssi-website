@@ -24,7 +24,7 @@
 
 	{% include "website/social_preview.html" %}
 
-	<link rel="stylesheet" href="{% static 'css/categories.css' %}?v=2026-10-27" />
+	<link rel="stylesheet" href="{% static 'css/categories.css' %}?v=2026-11-15" />
 	<link rel="stylesheet" href="{% static 'css/resources.css' %}?v=2026-10-08" />
 	<link rel="stylesheet" href="{% static 'css/media.css' %}?v=2024-10-15" />
 	<link rel="stylesheet" href="{% static 'css/app.css' %}?v=2024-10-15" />
@@ -57,6 +57,14 @@
 							value="{{request.GET.q}}"
 							placeholder="Search"
 						>
+						<button
+							type="button"
+							id="searchbar-clear"
+							class="search-clear-button"
+							aria-label="Clear search"
+							title="Clear search"
+							hidden
+						>&times;</button>
 						<button type="button" class="search-button">
 							<img
 								id="searchbar-btn"

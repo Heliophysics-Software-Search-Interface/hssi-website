@@ -1,6 +1,7 @@
 {% extends 'site_base_template.html' %}
 
 {% load static %}
+{% load obfuscated_email %}
 
 {% block head %}
 	<link rel="stylesheet" href="{% static 'css/FAQ.css' %}?v=2024-10-15" />
@@ -98,7 +99,7 @@
 				</div>
 				<div class="faq-answer">
 					<p>
-						Please contact the HSSI team at <a href="mailto:hssi-team@googlegroups.com">hssi-team@googlegroups.com</a> to request edit access.
+						Please contact the HSSI team at {% obfuscated_email "hssi-team@googlegroups.com" %} to request edit access.
 					</p>
 				</div>
 			</div>
@@ -120,7 +121,7 @@
 						sent out to the submitter email provided with an edit link.
 						This link will expire after a few months (date indicated in
 						the email). If you need to edit after that time period, please
-						reach out to <a href="mailto:hssi-team@googlegroups.com">hssi-team@googlegroups.com</a>
+						reach out to {% obfuscated_email "hssi-team@googlegroups.com" %}
 					</p>
 				</div>
 			</div>
@@ -157,7 +158,7 @@
 				</div>
 				<div class="faq-answer">
 					<p>
-						Please contact the HSSI team at <a href="mailto:hssi-team@googlegroups.com">hssi-team@googlegroups.com</a> and provide the questions with context.
+						Please contact the HSSI team at {% obfuscated_email "hssi-team@googlegroups.com" %} and provide the questions with context.
 					</p>
 				</div>
 			</div>

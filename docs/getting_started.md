@@ -105,8 +105,8 @@ Visit `http://localhost/admin/` and log in with the `SUPERUSER_NAME` /
 **The catalog starts completely empty.** There's no seed-data import that
 runs automatically — populating the controlled vocabulary (operating
 systems, programming languages, instruments, etc.) and any software
-records is a manual admin action. See [Code Reference → Admin & Curation](code_reference/admin_and_curation.md); 
-for now, expect an empty site immediately after first launch, not a bug.
+records is a manual admin action, so expect an empty site immediately after
+first launch. That's not a bug.
 
 ## Run the Tests
 

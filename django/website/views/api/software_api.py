@@ -1,4 +1,10 @@
-"""API views for Software JSON responses and optional relation expansion."""
+"""
+API views for Software JSON responses and optional relation expansion.
+
+Covers reading and token-gated partial updates of a single published entry,
+listing entries, and bulk submission. Touch this when changing the public
+software API or how external tools update entries.
+"""
 
 from typing import Any
 import datetime
@@ -26,8 +32,10 @@ from .permissions import HasUpdateToken
 
 
 class HSSIGenericAPIView(GenericAPIView):
+	"""Base generic API view for the project's API views."""
 	
 	def get_serializer(self, *args, **kwargs) -> serializers.Serializer:
+		"""Same as the base method, typed to return a `Serializer`."""
 		return super().get_serializer(*args, **kwargs)
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -42,14 +50,18 @@ class SoftwareDetailAPI(HSSIGenericAPIView):
 
 	serializer_class = SoftwareSerializer
 	default_view: SerialView = SerialView.STANDARD
+	"""Serializer view used for GET, `SerialView.STANDARD`."""
 	authentication_classes = []
+	"""Empty: no session or token authentication."""
 
 	def get_permissions(self):
+		"""`HasUpdateToken` for PATCH, `AllowAny` otherwise."""
 		if self.request.method == "PATCH":
 			return [HasUpdateToken()]
 		return [AllowAny()]
 
 	def get_serializer_class(self):
+		"""`SubmissionSerializer` for PATCH, `SoftwareSerializer` otherwise."""
 		if self.request.method == "PATCH":
 			return SubmissionSerializer
 		return SoftwareSerializer
@@ -64,6 +76,7 @@ class SoftwareDetailAPI(HSSIGenericAPIView):
 		return Software.objects.filter(pk=uid_or_slug, pk__in=visible_ids).first()
 
 	def get(self, request: HttpRequest, uid: str | uuid.UUID) -> Response:
+		"""GET: returns the software serialized in `default_view`, or 404."""
 		software = self._get_visible_software(uid)
 		if software is None:
 			return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -72,6 +85,11 @@ class SoftwareDetailAPI(HSSIGenericAPIView):
 		return Response(serializer.data)
 
 	def patch(self, request: HttpRequest, uid: str | uuid.UUID) -> Response:
+		"""
+		PATCH: validates and saves a partial metadata update via
+		`SubmissionSerializer` in USER view; returns the software ID and the
+		updated field names, or 404.
+		"""
 		software = self._get_visible_software(uid)
 		if software is None:
 			return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -92,6 +110,7 @@ class SoftwareDetailAPI(HSSIGenericAPIView):
 		})
 
 class SoftwareViewAPI(SoftwareDetailAPI):
+	"""Same as `SoftwareDetailAPI`, but GET renders in the USER view."""
 	default_view: SerialView = SerialView.USER
 
 class SoftwareListAPI(APIView):
@@ -112,9 +131,15 @@ class SoftwareListAPI(APIView):
 	"""
 
 	authentication_classes = []
+	"""Empty: no session or token authentication."""
 	permission_classes = [AllowAny]
 
 	def get(self, request: HttpRequest) -> Response:
+		"""
+		GET: returns the list, optionally filtered by exact `repo_url`;
+		`?view=jsonld` returns full JSON-LD records instead, and any other
+		`view` is a 400.
+		"""
 		slugs = dict(VerifiedSoftware.objects.values_list("id", "slug"))
 		queryset = Software.objects.filter(pk__in=slugs.keys())
 
@@ -152,9 +177,16 @@ class SubmissionAPI(APIView):
 	"""Allow submission POST requests with valid JSON data."""
 
 	authentication_classes = []
+	"""Empty: no session or token authentication."""
 	permission_classes = [AllowAny]
 
 	def post(self, request: HttpRequest) -> Response:
+		"""
+		POST: validates and saves every item in one transaction (400 with errors
+		if any fail), then creates a 90-day edit link for each and emails it,
+		and opens a "new submission" GitHub issue for each on commit; returns
+		201 with the new software IDs.
+		"""
 		if not isinstance(request.data, list):
 			return Response(
 				{"detail": "Root JSON value must be an array."},

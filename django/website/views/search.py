@@ -1,3 +1,9 @@
+"""
+The search endpoint for published software: parses `field:"value"` filters, then
+ranks plain-text matches in tiers by which fields they hit. Touch this when
+adding a search field alias or changing search ranking.
+"""
+
 import re
 import time
 
@@ -107,6 +113,10 @@ def build_field_query(query: str, tokens: list[str], fields: list[str]) -> Q:
 
 
 def serialize_results(result_ids: list[str], mode: str, request: HttpRequest) -> JsonResponse:
+    """
+    Returns JSON results as plain IDs (`mode` `"id"`) or as JSON-LD
+    serializations in the given order.
+    """
     if mode == "id":
         return JsonResponse({"results": result_ids})
     software_map = {

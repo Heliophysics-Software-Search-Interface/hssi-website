@@ -1,4 +1,9 @@
-"""Views for Software detail pages."""
+"""
+Views for Software detail pages.
+
+Touch this when changing how a software detail page is looked up or what data
+its template receives.
+"""
 
 import json
 from typing import Any, Optional
@@ -25,6 +30,10 @@ class SoftwareDetailView(generic.DetailView):
     context_object_name = 'software'
 
     def get(self, request, *args, **kwargs):
+        """
+        GET handler: redirects a UUID URL of a published software to its slug
+        URL with a 302, otherwise renders the page.
+        """
         if 'pk' in self.kwargs:
             pk = self.kwargs.get('pk')
             software = VerifiedSoftware.objects.filter(pk=pk).first()
@@ -42,6 +51,10 @@ class SoftwareDetailView(generic.DetailView):
         return Software.objects.filter(pk__in=visible_ids)
 
     def get_object(self, queryset = None):
+        """
+        The software for the URL's `pk`, or for its `slug`; 404 if no published
+        software has that slug.
+        """
         if not queryset:
             queryset = self.get_queryset()
         if 'pk' in self.kwargs:

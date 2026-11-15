@@ -1,3 +1,11 @@
+/**
+ * URL inputs for persistent identifiers (ROR, ORCID, DataCite DOI) with a
+ * "find" button that opens a search popup. Touch this when adding an identifier
+ * type or changing how identifier lookups fill the form.
+ *
+ * @module
+ */
+
 import {
 	OrcidFinder, PopupDialogue, RorFinder, DoiDataciteFinder, 
 	UrlWidget, faMagicIcon, propResultFilters,
@@ -6,19 +14,40 @@ import {
 	ModelMultiSubfield
 } from "../../loader"
 
+/** `"button-find"`: CSS class for the find button. */
 export const findButtonStyle = "button-find";
+/**
+ * `"emphasis-anim"`: CSS class that animates the find button to draw attention
+ * to it.
+ */
 export const styleEmphasisAnimation = "emphasis-anim";
 
+/**
+ * Base class for URL inputs with a "find" button that opens an identifier
+ * search popup.
+ */
 export abstract class FindIdWidget extends UrlWidget {
 
 	private emphasized: boolean = false;
+	/** The find button. */
 	protected findButton: HTMLButtonElement = null;
+	/** Find button label; `"find"`. */
 	protected get findButtonText(): string { return "find"; }
+	/** Example identifier shown in the input placeholder; empty by default. */
 	protected get placeholderExample(): string { return ""; }
 
+	/** Called when the find button is clicked; opens the search popup. */
 	protected abstract onFindButtonPressed(): void;
+	/**
+	 * Called with the selected result's data when the user picks one in the
+	 * search popup; does nothing by default.
+	 */
 	public onDataSelected(data: JSONObject): void { }
 
+	/**
+	 * Builds the find button beside the input; it animates the first time the
+	 * empty input is focused.
+	 */
 	protected buildFindButton(): void {
 		
 		let rowContainer = document.createElement("div");
@@ -51,6 +80,10 @@ export abstract class FindIdWidget extends UrlWidget {
 		}, {once: true});
 	}
 
+	/**
+	 * Also builds the find button (unless read-only) and sets the placeholder.
+	 * Overrides `Widget.initialize`.
+	 */
 	override initialize(readOnly: boolean = false): void {
 		super.initialize(readOnly);
 		if(!readOnly) this.buildFindButton();
@@ -61,10 +94,19 @@ export abstract class FindIdWidget extends UrlWidget {
 	}
 }
 
+/** Input for a ROR organization identifier. */
 export class RorWidget extends FindIdWidget {
+	/**
+	 * `"https://ror.org/00000xxxx"`. Overrides
+	 * `FindIdWidget.placeholderExample`.
+	 */
 	protected get placeholderExample(): string { 
 		return "https://ror.org/00000xxxx";
 	}
+	/**
+	 * Opens the `RorFinder` popup for this field. Overrides
+	 * `FindIdWidget.onFindButtonPressed`.
+	 */
 	protected override onFindButtonPressed(): void {
 		const rorPopup = RorFinder.getInstance()
 			.setTarget(this.parentField)
@@ -73,10 +115,19 @@ export class RorWidget extends FindIdWidget {
 	}
 }
 
+/** Input for an ORCID person identifier. */
 export class OrcidWidget extends FindIdWidget {
+	/**
+	 * `"https://orcid.org/0000-0000-0000-0000"`. Overrides
+	 * `FindIdWidget.placeholderExample`.
+	 */
 	protected get placeholderExample(): string { 
 		return "https://orcid.org/0000-0000-0000-0000"; 
 	}
+	/**
+	 * Opens the `OrcidFinder` popup for this field. Overrides
+	 * `FindIdWidget.onFindButtonPressed`.
+	 */
 	protected override onFindButtonPressed(): void {
 		const orcidPopup = OrcidFinder.getInstance()
 			.setTarget(this.parentField)
@@ -84,6 +135,11 @@ export class OrcidWidget extends FindIdWidget {
 		PopupDialogue.showPopup(orcidPopup);
 	}
 
+	/**
+	 * Fills the last sibling multi-field (assumed to be affiliations) with the
+	 * ORCID record's institutions, unless it already has valid input. Overrides
+	 * `FindIdWidget.onDataSelected`.
+	 */
 	override onDataSelected(data: JSONObject): void {
 		super.onDataSelected(data);
 
@@ -115,10 +171,19 @@ export class OrcidWidget extends FindIdWidget {
 	}
 }
 
+/** Input for a DataCite DOI. */
 export class DataciteDoiWidget extends FindIdWidget {
+	/**
+	 * `"https://doi.org/10.5281/zenodo.00000000"`. Overrides
+	 * `FindIdWidget.placeholderExample`.
+	 */
 	protected get placeholderExample(): string {
 		return "https://doi.org/10.5281/zenodo.00000000";
 	}
+	/**
+	 * Opens the `DoiDataciteFinder` popup for this field. Overrides
+	 * `FindIdWidget.onFindButtonPressed`.
+	 */
 	protected override onFindButtonPressed(): void {
 		const popup = DoiDataciteFinder.getInstance()
 			.setTarget(this.parentField)
@@ -127,6 +192,10 @@ export class DataciteDoiWidget extends FindIdWidget {
 	}
 }
 
+/**
+ * Author identifier input with an "Is Organization" checkbox that switches
+ * between ORCID and ROR mode.
+ */
 export class AuthorIdentifierWidget extends FindIdWidget {
 
 	private isOrgCheckbox: HTMLInputElement = null;
@@ -144,12 +213,20 @@ export class AuthorIdentifierWidget extends FindIdWidget {
 		return AuthorIdentifierWidget.ORCID_PATTERN.test(url);
 	}
 
+	/**
+	 * ROR example in organization mode, ORCID example otherwise. Overrides
+	 * `FindIdWidget.placeholderExample`.
+	 */
 	protected override get placeholderExample(): string {
 		return this.isOrgMode
 			? "https://ror.org/00000xxxx"
 			: "https://orcid.org/0000-0000-0000-0000";
 	}
 
+	/**
+	 * Opens the `RorFinder` popup in organization mode, otherwise the
+	 * `OrcidFinder` popup. Overrides `FindIdWidget.onFindButtonPressed`.
+	 */
 	protected override onFindButtonPressed(): void {
 		if (this.isOrgMode) {
 			const rorPopup = RorFinder.getInstance()
@@ -164,6 +241,11 @@ export class AuthorIdentifierWidget extends FindIdWidget {
 		}
 	}
 
+	/**
+	 * In ORCID mode, fills the last sibling multi-field (assumed to be
+	 * affiliations) with the record's institutions unless it already has valid
+	 * input. Overrides `FindIdWidget.onDataSelected`.
+	 */
 	override onDataSelected(data: JSONObject): void {
 		super.onDataSelected(data);
 		if (this.isOrgMode) return;
@@ -248,6 +330,10 @@ export class AuthorIdentifierWidget extends FindIdWidget {
 		}
 	}
 
+	/**
+	 * Also switches to ROR or ORCID mode to match a ROR or ORCID URL. Overrides
+	 * `Widget.setValue`.
+	 */
 	override setValue(value: string, notify: boolean = true): void {
 		super.setValue(value, notify);
 		if (!this.isOrgCheckbox) return;
@@ -255,6 +341,11 @@ export class AuthorIdentifierWidget extends FindIdWidget {
 		else if (this.isOrcidUrl(value)) this.switchToOrcidMode();
 	}
 
+	/**
+	 * Also builds the checkbox and switches mode as the user types a ROR or
+	 * ORCID URL; in organization mode, non-ROR values are marked invalid.
+	 * Overrides `Widget.initialize`.
+	 */
 	override initialize(readOnly: boolean = false): void {
 		this.buildCheckbox(readOnly);
 		super.initialize(readOnly);

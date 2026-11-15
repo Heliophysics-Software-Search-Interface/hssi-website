@@ -3,9 +3,31 @@ name: Docs
 on:
   push:
     branches: [main]
-    paths: ["docs/**", "mkdocs.yml", ".github/workflows/docs.yml"]
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "mkdocs_hooks/**"
+      - "scripts/gen_code_reference.py"
+      - "requirements-docs.txt"
+      # the code reference is generated from source comments
+      - "django/website/**"
+      - "frontend/**"
+      - "typedoc.json"
+      - "package.json"
+      - ".github/workflows/docs.yml"
   pull_request:
-    paths: ["docs/**", "mkdocs.yml", ".github/workflows/docs.yml"]
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
+      - "mkdocs_hooks/**"
+      - "scripts/gen_code_reference.py"
+      - "requirements-docs.txt"
+      # the code reference is generated from source comments
+      - "django/website/**"
+      - "frontend/**"
+      - "typedoc.json"
+      - "package.json"
+      - ".github/workflows/docs.yml"
   workflow_dispatch:
 
 concurrency:
@@ -31,7 +53,17 @@ jobs:
           python-version: "3.13"
 
       - name: Install MkDocs
-        run: pip install mkdocs-material==9.7.7
+        run: pip install -r requirements-docs.txt
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      # Writes docs/code_reference/backend and frontend from the source
+      # docstrings/JSDoc (the frontend part runs TypeDoc via bun).
+      - name: Generate code reference
+        run: |
+          bun install
+          python scripts/gen_code_reference.py
 
       # --strict fails the build on any warning, including broken internal
       # links and anchors (see `validation` in mkdocs.yml), so PRs that

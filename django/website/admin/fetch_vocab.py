@@ -1,7 +1,11 @@
 """
-Functionality for retrieving json-ld data from our 
-maintained HSSI vocabulary repository at 
+Functionality for retrieving json-ld data from our
+maintained HSSI vocabulary repository at
 https://github.com/Heliophysics-Software-Search-Interface/HSSI-vocab/
+
+Also fetches instrument and observatory terms from the heliophysics.net API, and
+turns fetched terms into model entries. Touch this when a vocabulary source URL
+changes or a new vocabulary is added.
 """
 
 from __future__ import annotations
@@ -18,23 +22,39 @@ from ..models import (
 from typing import Type, Any
 
 URL_REPOSTATUS = "https://www.repostatus.org/badges/latest/ontology.jsonld"
+"""JSON-LD ontology URL for repostatus.org development statuses."""
 URL_HSSIBASE = "https://raw.githubusercontent.com/Heliophysics-Software-Search-Interface/HSSI-vocab/main/"
+"""Base raw-file URL of the HSSI-vocab GitHub repository."""
 URL_JSONBASE = URL_HSSIBASE + "jsonld/"
+"""`jsonld/` folder of the HSSI-vocab repository."""
 URL_TTLBASE = URL_HSSIBASE + "ttl/"
+"""`ttl/` folder of the HSSI-vocab repository."""
 URL_CPUARCHITECTURES = URL_JSONBASE + "CPUArchitectures.json"
+"""CPU architecture vocabulary URL."""
 URL_DATAINPUTS = URL_JSONBASE + "DataSources.json"
+"""Data source vocabulary URL."""
 URL_LICENSES = URL_JSONBASE + "Licenses.json"
+"""License vocabulary URL."""
 URL_OPERATINGSYSTEMS = URL_JSONBASE + "OperatingSystems.json"
+"""Operating system vocabulary URL."""
 URL_SUPPORTEDFILEFORMATS = URL_JSONBASE + "OutputFileFormats.json"
+"""File format vocabulary URL."""
 URL_PROGRAMMINGLANGUAGES = URL_JSONBASE + "ProgrammingLanguages.json"
+"""Programming language vocabulary URL."""
 URL_FUNCTIONCATEGORIES = URL_TTLBASE + "softwareFunctionality-v0.3.ttl"
+"""Software functionality TTL URL (v0.3)."""
 
 URL_HELIOPHYSICS_API = "https://api.heliophysics.net/api/"
+"""Base URL of the heliophysics.net API."""
 URL_REGIONS_JSON = URL_HELIOPHYSICS_API + "regions/"
+"""Regions endpoint of the heliophysics.net API."""
 
 URL_HELIOKNOWBASE = "https://raw.githubusercontent.com/rmcgranaghan/Helio-KNOW/refs/heads/main/data-models/"
+"""Base URL of the Helio-KNOW data models."""
 URL_REGIONS_TTL = URL_HELIOKNOWBASE + "hk_region.ttl"
+"""Helio-KNOW region TTL URL (no longer used for fetching)."""
 URL_PHENOMENA = URL_HELIOKNOWBASE + "hk_phenomenon.ttl"
+"""Helio-KNOW phenomenon TTL URL (not yet used)."""
 
 MODEL_URL_MAP={
 	DataInput.__name__: URL_DATAINPUTS,
@@ -46,22 +66,39 @@ MODEL_URL_MAP={
 	RepoStatus.__name__: URL_REPOSTATUS,
 	Region.__name__: URL_REGIONS_JSON,
 }
+"""
+Model class name to vocabulary URL, for the vocabularies `fetch_vocab`
+refreshes.
+"""
 
 SPASE_URL = "https://spase-metadata.org/"
+"""Base URL used to build SPASE identifier URLs."""
 HELIODATA_MISSION_URL = "https://helio.data.nasa.gov/mission/"
-# Backend JSON endpoint behind the HelioData mission SPA. The SPA route
-# (HELIODATA_MISSION_URL) returns HTTP 200 for every path, so it can't be used
-# to detect whether HelioData has useful mission data for a page. This backend
-# route returns mission JSON including datasetCount, or 404
-# {"Error": "region missing"} when the page is absent.
+"""Base URL of HelioData mission landing pages."""
 HELIODATA_LOAD_MISSION_URL = "https://helio.data.nasa.gov/heliodata/app/load_mission_page/"
+"""
+Backend JSON endpoint behind the HelioData mission SPA. The SPA route
+(HELIODATA_MISSION_URL) returns HTTP 200 for every path, so it can't be used to
+detect whether HelioData has useful mission data for a page. This backend route
+returns mission JSON including datasetCount, or 404 {"Error": "region missing"}
+when the page is absent.
+"""
 HELIOPHYS_API_URL = "https://api.heliophysics.net/api/"
+"""Base URL of the heliophysics.net API."""
 HELIOPHYS_PROP_NAME = "long_name"
+"""`"long_name"`: API property for an item's long name."""
 HELIOPHYS_PROP_NAME_2 = "short_name"
+"""`"short_name"`: API property for an item's short name."""
 HELIOPHYS_PROP_DEFINITION = "description"
+"""`"description"`: API property for an item's description."""
 HELIOPHYS_PROP_SPASEID = "spase_id"
+"""`"spase_id"`: API property for an item's SPASE ID."""
 
 def get_data(url: str) -> dict | list:
+	"""
+	Fetches JSON from a URL, replacing curly quotes and retrying if it doesn't
+	parse.
+	"""
 	req = requests.get(url)
 	try:
 		return req.json()
@@ -127,6 +164,10 @@ def get_concepts_generalized(
 	key_ident: str = "@id", 
 	key_definition: str = "definition"
 ) -> list[DataListConcept]:
+	"""
+	Builds `DataListConcept`s from a list of dicts using the given keys for
+	name, identifier and definition.
+	"""
 	concepts: list[DataListConcept] = []
 	for item in data:
 		preflabel = item.get(key_preflabel)
@@ -141,6 +182,10 @@ def get_concepts_generalized(
 	return concepts
 
 def get_concepts(data: dict | list[dict]) -> list[dict]:
+	"""
+	The `Concept`-typed items of JSON-LD data, looking inside `@graph` if
+	present.
+	"""
 	if isinstance(data, dict):
 		if '@graph' in data:
 			return get_concepts(data['@graph'])
@@ -153,20 +198,31 @@ def get_concepts(data: dict | list[dict]) -> list[dict]:
 		return vals
 
 def parse_jsonld(target_type: Type[ControlledList], data: dict):
+	"""Creates and saves an empty-named entry of the model; ignores `data`."""
 	obj = target_type()
 	obj.name = ""
 	obj.save()
 
 class DataListConcept:
+	"""
+	A vocabulary term parsed from fetched data, before it becomes a model entry.
+	"""
 	pref_label: str = ""
+	"""The term's name."""
 	definition: str = ""
+	"""The term's definition (a URL for licenses)."""
 	identifier: str = ""
+	"""The term's identifier URL."""
 
 	def __init__(self):
 		self.pref_label = ""
 		self.definition = ""
 
 	def to_model_entry(self, model: Type[ControlledList]) -> ControlledList:
+		"""
+		Creates and saves an entry of the model from this term; for `License`
+		the definition is saved as the URL.
+		"""
 		obj = model()
 		setattr(obj, model.get_top_field().name, self.pref_label)
 		if isinstance(obj, ControlledList):
@@ -180,6 +236,10 @@ class DataListConcept:
 	
 	@classmethod
 	def from_concept_serialized(cls, concepts: list[dict[str, Any]]) -> list['DataListConcept']:
+		"""
+		Builds terms from JSON-LD concept dicts (`prefLabel`, `definition` or
+		`licenseUrl`, `@id`), skipping empty ones.
+		"""
 		vals = []
 		for concept in concepts:
 			label = concept.get('prefLabel')
@@ -207,6 +267,10 @@ def link_concept_children(
 	concept_data: list[dict[str, Any]], 
 	parent_field_name: str = "broader"
 ):
+	"""
+	Links each entry of a graph model as a child of the entries listed in its
+	concept's parent field (`broader` by default).
+	"""
 	print(f"Linking {model.__name__} children with '{parent_field_name}' field")
 	objs = model.objects.all()
 	for obj in objs:
@@ -226,12 +290,14 @@ def link_concept_children(
 	for obj in objs: obj.save()
 
 def fetch_heliophysnet_list(api_slug: str) -> list[dict[str, Any]]:
+	"""Fetches a list endpoint of the heliophysics.net API."""
 	url = HELIOPHYS_API_URL + api_slug + "/"
 	print(f"fetching heliophysics data list '{api_slug}' from '{url}'")
 	data = get_data(url)
 	return data
 
 def fetch_heliophysnet_detail(api_slug: str, uid: str) -> dict[str, Any]:
+	"""Fetches one item from the heliophysics.net API."""
 	url = HELIOPHYS_API_URL + f"{api_slug}/{uid}/"
 	print(f"fetching heliophysics item '{uid}' from '{url}'")
 	data = get_data(url)

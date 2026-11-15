@@ -1,3 +1,12 @@
+/**
+ * Lazy references to model objects: related objects inside software and person
+ * data are stored as `HssiDataAsync` handles holding only a model name and
+ * UUID, whose full data is fetched through `ModelDataCache` on demand. Touch
+ * this when a software or person field is added or changes its related model.
+ *
+ * @module
+ */
+
 import { 
 	type ModelName, 
 	type JSONObject,
@@ -15,9 +24,15 @@ import {
 	ModelDataCache,
 } from "../loader";
 
+/** `"/api/models/"`: base URL of the model data API. */
 export const apiModel = "/api/models/";
+/** `"/rows/all/"`: URL suffix for fetching all rows of a model. */
 export const apiSlugRowsAll = "/rows/all/";
 
+/**
+ * A handle to a model object (`id`, `model`) whose data can be fetched with
+ * `getData()`, with `hasData` and `loadedData` for already-loaded data.
+ */
 export interface HssiDataAsync<T extends HSSIModelData> {
 	get id(): string;
 	get model(): ModelName;
@@ -26,6 +41,10 @@ export interface HssiDataAsync<T extends HSSIModelData> {
 	getData(): Promise<T>;
 }
 
+/**
+ * The `HssiDataAsync` implementation: a model name and object UUID whose data
+ * is fetched on request.
+ */
 export class HssiModelDataAsync<T extends HSSIModelData> 
 	implements HSSIModelData, HssiDataAsync<T> 
 {
@@ -51,11 +70,13 @@ export class HssiModelDataAsync<T extends HSSIModelData>
 	/** whether or not the data for the object has been loaded yet */
 	public get hasData(): boolean { return !!this.data; }
 	
+	/** Stores the model name and object UUID. */
 	public constructor(model: ModelName, id: string){
 		this.model = model;
 		this.objId = id;
 	}
 
+	/** Not implemented; logs an error. */
 	public setData(data: JSONObject) {
 		// TODO set modelData to each key in data
 		console.error("Not Implemented!");
@@ -70,6 +91,7 @@ export class HssiModelDataAsync<T extends HSSIModelData>
 	}
 }
 
+/** Person data with `affiliation` as async organization handles. */
 export interface PersonDataAsync extends HSSIModelData {
 	given_name: string,
 	family_name: string,
@@ -78,6 +100,10 @@ export interface PersonDataAsync extends HSSIModelData {
 	affiliation: Array<HssiDataAsync<OrganizationData>>,
 }
 
+/**
+ * Software data with every related-object field (authors, publisher, controlled
+ * list terms, version, etc.) as async handles.
+ */
 export interface SoftwareDataAsync extends HSSIModelData {
 	programming_language: Array<HssiDataAsync<ControlledListData>>,
 	publication_date: string,
@@ -160,6 +186,10 @@ function asyncify<T extends HSSIModelData>(
 	else return asyncifyUid<T>(obj, targetModel);
 }
 
+/**
+ * Converts `SoftwareData` to `SoftwareDataAsync`, replacing each related object
+ * (or UUID) with an `HssiModelDataAsync` for its model.
+ */
 export function createAsyncSoftwareData(data: SoftwareData): SoftwareDataAsync{
 	return {
 		id: data.id,
@@ -201,6 +231,10 @@ export function createAsyncSoftwareData(data: SoftwareData): SoftwareDataAsync{
 	};
 }
 
+/**
+ * Converts `PersonData` to `PersonDataAsync`, replacing affiliations with
+ * `HssiModelDataAsync` handles.
+ */
 export function createAsyncPersonData(data: PersonData): PersonDataAsync{
 	return {
 		id: data.id,

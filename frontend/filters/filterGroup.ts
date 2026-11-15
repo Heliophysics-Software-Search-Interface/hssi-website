@@ -1,3 +1,12 @@
+/**
+ * Filter groups and the "group maker" that builds them: the user collects
+ * filter items as chips, chooses AND/OR mode, inverts individual chips to
+ * exclude them, and applies the result as a `FilterGroup`. Touch this when
+ * changing how a group decides whether a software entry passes.
+ *
+ * @module
+ */
+
 import { 
 	faCloseIcon,
 	filterGroupToUrlVal,
@@ -20,11 +29,16 @@ const styleGroupClear = "group-clear";
 const styleGroupCreate = "group-create";
 const styleGroupMode = "group-mode";
 
+/** Enum for how included items combine: `Or` (0) or `And` (1). */
 export enum FilterGroupMode {
 	Or = 0,
 	And = 1,
 }
 
+/**
+ * The control where selected filter items are collected as chips and turned
+ * into a `FilterGroup`.
+ */
 export class FilterGroupMaker {
 
 	private parentMenu: FilterMenu = null;
@@ -39,6 +53,7 @@ export class FilterGroupMaker {
 	/** the html element that acts as a container for all display elements */
 	public containerElement: HTMLDivElement = null;
 
+	/** Stores the parent `FilterMenu` and creates the container element. */
 	public constructor(menu: FilterMenu){
 		this.parentMenu = menu;
 		this.containerElement = document.createElement("div");
@@ -180,6 +195,10 @@ export class FilterGroupMaker {
 	}
 }
 
+/**
+ * A set of included and excluded filter items that software entries are tested
+ * against.
+ */
 export class FilterGroup {
 	
 	/** items that are to be included in the query results */
@@ -188,6 +207,7 @@ export class FilterGroup {
 	/** items that are to be excluded from the query results */
 	public excludedItems: FilterMenuItem[] = [];
 
+	/** Whether a result must match any (`Or`) or all (`And`) included items. */
 	public mode: FilterGroupMode = FilterGroupMode.Or;
 
 	/** create a small display element that represents the whole filter group */

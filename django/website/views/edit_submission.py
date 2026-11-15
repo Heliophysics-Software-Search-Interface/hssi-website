@@ -1,3 +1,9 @@
+"""
+Views and helpers for editing an existing submission through an emailed edit
+link: requesting a link, loading the submission's data, and saving edits. Touch
+this when changing the edit-link flow or the emails it sends.
+"""
+
 import json, uuid, enum
 
 from django.core.mail import send_mail
@@ -67,6 +73,10 @@ def request_edit_link(request: HttpRequest, uid: str) -> HttpResponse:
 		return HttpResponseServerError()
 
 def get_submission_data(request: HttpRequest, uid: str) -> HttpResponse:
+	"""
+	Returns JSON of the software and first submitter for an edit link UID; 400
+	if the link is invalid or expired.
+	"""
 	queue_item: SoftwareEditQueue = None
 
 	try:
@@ -88,6 +98,10 @@ def get_submission_data(request: HttpRequest, uid: str) -> HttpResponse:
 	return JsonResponse(data)
 
 def edit_submission(request: HttpRequest) -> HttpResponse:
+	"""
+	Renders the edit submission page with the names of the three submission form
+	structures.
+	"""
 	return render(
 		request, 
 		"pages/edit_submission.html", 
@@ -101,6 +115,11 @@ def edit_submission(request: HttpRequest) -> HttpResponse:
 	)
 
 def submit_edits(request: HttpRequest, uid: str) -> HttpResponse:
+	"""
+	Saves the JSON request body as edits to the edit link's software in one
+	transaction and returns 204; 400 if the link is invalid or expired, 500 on
+	failure.
+	"""
 	queue_item: SoftwareEditQueue = None
 
 	try:

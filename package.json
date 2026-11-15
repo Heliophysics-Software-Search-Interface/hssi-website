@@ -5,10 +5,14 @@
 	"private": true,
 	"sideEffects": true,
 	"devDependencies": {
-		"esbuild": "^0.25.4"
+		"esbuild": "^0.25.4",
+		"typedoc": "0.28.20",
+		"typedoc-plugin-markdown": "4.14.1",
+		"typescript": "6.0.3"
 	},
 	"peerDependencies": {},
 	"scripts": {
-		"build": "esbuild frontend/index.ts --outfile=django/static/js/compiled/hssi-frontend.js --bundle --sourcemap --keep-names"
+		"build": "esbuild frontend/index.ts --outfile=django/static/js/compiled/hssi-frontend.js --bundle --sourcemap --keep-names",
+		"docs:ts": "typedoc"
 	}
 }

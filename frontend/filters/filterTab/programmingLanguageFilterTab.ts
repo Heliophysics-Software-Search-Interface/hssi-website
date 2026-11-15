@@ -1,19 +1,37 @@
+/**
+ * The "Prog. Language" tab, filtering `programming_language` by
+ * `ProgrammingLanguage`. Touch this when changing which model or software field
+ * the tab filters.
+ *
+ * @module
+ */
+
 import { 
 	ControlledListFilterTab, 
 	ControlledListItem, 
 	FilterMenu,
 } from "../../loader";
 
+/**
+ * The "Prog. Language" tab, filtering `programming_language` by
+ * `ProgrammingLanguage`.
+ */
 export class ProgrammingLanguageFilterTab extends ControlledListFilterTab {
 	
+	/** Overrides to return `"Prog. Language"`. */
 	public get headerText(): string { return "Prog. Language"; }
 
+	/** Sets the target model and field. */
 	public constructor(parentMenu: FilterMenu) {
 		super(parentMenu);
 		this.targetModel = "ProgrammingLanguage";
 		this.targetField = "programming_language";
 	}
 
+	/**
+	 * Overrides to group all Python and all Fortran variants under a single
+	 * "Python" and "Fortran" parent item each.
+	 */
 	public override refreshItems(): void {
 		super.refreshItems();
 		

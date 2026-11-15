@@ -21,8 +21,6 @@ on every push to `main`. To change it, open a pull request against `docs/`.
 
 - [Architecture](architecture.md) — the system's shape and the design
   rationale behind its non-obvious patterns.
-- [Glossary](glossary.md) — domain and project-specific terminology used
-  throughout this codebase and its docs.
 
 ## Reference
 

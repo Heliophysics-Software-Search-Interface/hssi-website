@@ -1,6 +1,11 @@
 """
 Include base models which all models used by HSSI should inherit from, also
 pcontains utility types and constants.
+
+The constants include shared field length limits, and the types include the
+choice tuple used by autocomplete form widgets. Touch this when changing
+behavior common to all models, such as serialization, search terms, or
+controlled-vocabulary handling.
 """
 
 import uuid, json
@@ -15,17 +20,33 @@ from ..util import *
 ## Utility Constants & Types ---------------------------------------------------
 
 FIELD_FUNCTIONCATEGORY_FULLNAME = "fullname"
+"""
+`"fullname"`: pseudo-field name that makes `FunctionCategory` serialization
+include the category's full name.
+"""
 FIELD_HAS_FOREIGN_KEY = (
 	models.ForeignKey | models.ManyToManyField | models.OneToOneField
 )
+"""
+Union of `ForeignKey | ManyToManyField | OneToOneField`, the field types that
+reference another model.
+"""
 
 # Character length limits
 LEN_LONGNAME = 512
+"""`512`: max length for long name fields."""
 LEN_NAME = 128
+"""`128`: max length for name fields."""
 LEN_SHORTNAME = 16
+"""`16`: max length for short name fields."""
 LEN_ABBREVIATION = 5
+"""`5`: max length for abbreviation fields."""
 
 class ModelObjectChoice(NamedTuple):
+	"""
+	Named tuple describing one autocomplete choice for a model object: `id`,
+	`name`, `keywords`, `tooltip` and optional `identifier`.
+	"""
 	id: str
 	name: str
 	keywords: list[str]
@@ -55,6 +76,7 @@ class HssiModel(models.Model, metaclass=HssiBase):
 	"""Base class for all models in the HSSI project"""
 	access: AccessLevel = AccessLevel.ADMIN
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	"""UUID primary key, generated automatically."""
 
 	def get_search_terms(self) -> list[str]: 
 		"""
@@ -64,6 +86,7 @@ class HssiModel(models.Model, metaclass=HssiBase):
 		return str(self).split()
 
 	def get_choice(self) -> ModelObjectChoice:
+		"""The object as a `ModelObjectChoice` for autocomplete widgets."""
 		return ModelObjectChoice(
 			str(self.id),
 			str(self),
@@ -72,9 +95,13 @@ class HssiModel(models.Model, metaclass=HssiBase):
 			self.get_identifier_url(),
 		)
 
-	def get_tooltip(self) -> str: return ''
+	def get_tooltip(self) -> str:
+		"""Tooltip text for the object's choice; empty by default."""
+		return ''
 
-	def get_identifier_url(self) -> str | None: return None
+	def get_identifier_url(self) -> str | None:
+		"""Identifier URL for the object's choice; `None` by default."""
+		return None
 	
 	@staticmethod
 	def collapse_objects(queryset: QuerySet['HssiModel']) -> 'HssiModel':
@@ -131,14 +158,20 @@ class HssiModel(models.Model, metaclass=HssiBase):
 
 	@classmethod
 	def get_top_field(cls) -> models.Field:
+		"""The model's display field; `None` by default."""
 		return None
 	
 	@classmethod
 	def get_second_top_field(cls) -> models.Field:
+		"""The model's secondary display field; `None` by default."""
 		return None
 	
 	@classmethod
 	def get_subfields(cls) -> list[models.Field]:
+		"""
+		The model's concrete, editable fields, excluding the top field and auto-
+		created fields.
+		"""
 		subfields = []
 
 		# get top field since we want to skip it
@@ -210,21 +243,31 @@ class HssiModel(models.Model, metaclass=HssiBase):
 		return data
 	
 	def to_user_str(self) -> str:
+		"""User-facing string for the object; `str(self)` by default."""
 		return str(self)
 
 	class Meta:
 		abstract = True
 
 class HssiSet(HssiModel):
+	"""
+	Base for models whose rows flag objects of another model, sharing their
+	UUID; reads are forwarded to the matching `target_model` object.
+	"""
 	access: AccessLevel = AccessLevel.ADMIN
 	target_model: type[HssiModel] = None
+	"""The model whose objects this set references; set by subclasses."""
 	id = models.UUIDField(primary_key=True)
+	"""UUID primary key, equal to the target object's UUID."""
 
 	def get_search_terms(self):
+		"""The target object's search terms."""
 		return self.target_model.objects.get(pk=self.pk).get_search_terms()
 	def get_choice(self):
+		"""The target object's choice."""
 		return self.target_model.objects.get(pk=self.pk).get_choice()
 	def get_tooltip(self):
+		"""The target object's tooltip."""
 		return self.target_model.objects.get(pk=self.pk).get_tooltip()
 	def get_serialized_data(
 		self, 
@@ -233,6 +276,10 @@ class HssiSet(HssiModel):
 		accessOverride = AccessLevel.PUBLIC,
 		fields = None,
 	):
+		"""
+		The target object's serialized data, checked against this set's
+		`access`.
+		"""
 		if access < self.access and accessOverride < self.access:
 			raise Exception(f"Unauthorized access, {access} < {self.access}")
 		return self.target_model.objects.get(pk=self.pk).get_serialized_data(
@@ -255,19 +302,34 @@ class HssiSet(HssiModel):
 class ControlledList(HssiModel):
 	"""Base class for all controlled lists in the HSSI project"""
 	name = models.CharField(max_length=LEN_NAME, blank=False, null=False)
+	"""Name of the term."""
 	identifier = models.URLField(blank=True, null=True)
+	"""Identifier URL of the term."""
 	definition = models.TextField(blank=True, null=True)
+	"""Definition of the term, used as its tooltip."""
 
 	def __str__(self) -> str: return self.name
 
 	@classmethod
-	def get_top_field(cls) -> models.Field: return cls._meta.get_field("name")
+	def get_top_field(cls) -> models.Field:
+		"""Returns the `name` field as the model's display field."""
+		return cls._meta.get_field("name")
 
-	def get_tooltip(self): return self.definition
+	def get_tooltip(self):
+		"""The term's `definition`."""
+		return self.definition
 
 	homepage_filter_field: str | None = None
+	"""
+	Software filter field that links this vocabulary to a homepage filter, or
+	`None`.
+	"""
 
 	def get_homepage_filter_url(self) -> str | None:
+		"""
+		URL of the published resources page filtered by this term, or `None` if
+		`homepage_filter_field` is unset.
+		"""
 		if self.homepage_filter_field is None:
 			return None
 		from django.urls import reverse
@@ -278,6 +340,9 @@ class ControlledList(HssiModel):
 		)
 
 	def get_search_terms(self) -> list[str]:
+		"""
+		Words of the name split on spaces and punctuation, plus the identifier.
+		"""
 		return [
 			*self.name
 				.replace(',',' ')
@@ -288,21 +353,37 @@ class ControlledList(HssiModel):
 		]
 
 	@classmethod
-	def post_fetch(cls): pass
+	def post_fetch(cls):
+		"""
+		Hook run after the vocabulary is fetched from its source; does nothing
+		by default.
+		"""
+		pass
 
 	class Meta:
 		ordering = ['name']
 		abstract = True
 
 class ControlledGraphList(ControlledList):
+	"""
+	Base class for controlled lists whose terms form a parent/child hierarchy.
+	Subclasses must define a `children` many-to-many field with
+	`related_name='parent_nodes'`.
+	"""
 	
 	# these are just editor hints, we still need to define child as a 
 	# ManyToManyField in any subclasses and set related='parent_nodes'
 	children: models.Manager['ControlledGraphList']
+	"""Child terms (declared here as an editor hint; defined by subclasses)."""
 	parent_nodes: models.Manager['ControlledGraphList']
+	"""Reverse relation to parent terms."""
 
 	@classmethod
 	def apply_old_to_new_mapping(cls, mapping: dict[str, str]):
+		"""
+		Repoints references from old terms to new terms by full name and deletes
+		the old terms; does nothing if any old name is not found.
+		"""
 
 		# early return if region mapping is already done
 		for key, _ in mapping.items():
@@ -337,6 +418,10 @@ class ControlledGraphList(ControlledList):
 	
 	@classmethod
 	def get_object_with_full_name(cls, full_name: str) -> 'ControlledGraphList':
+		"""
+		Finds a term by its `"Parent: Child"` full name path; raises if the path
+		doesn't resolve.
+		"""
 
 		split_name = full_name.split(": ")
 
@@ -381,6 +466,10 @@ class ControlledGraphList(ControlledList):
 		access_ovr = AccessLevel.PUBLIC, 
 		fields = None
 	) -> dict[str, Any]:
+		"""
+		Serialized data from `HssiModel`, plus `children` and `parents` ID lists
+		unless `fields` excludes them.
+		"""
 		data = super().get_serialized_data(access, recursive, access_ovr, fields)
 
 		if not hasattr(data, "children") and (fields is None or "children" in fields): 

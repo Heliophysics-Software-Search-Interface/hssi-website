@@ -1,3 +1,11 @@
+/**
+ * A DOI widget that offers to autofill the whole form from DataCite and Zenodo
+ * metadata, then from the code repository if one is found. Touch this when
+ * changing how DOI metadata maps onto form fields.
+ *
+ * @module
+ */
+
 import {
 	AutofillSomefWidget, describeApiEndpoint, ConfirmDialogue,
 	DataciteDoiWidget, extractDoi, faMagicIcon, fetchTimeout, 
@@ -36,8 +44,13 @@ const resTypeGensDataset = [
 // TODO implement proper json-ld parsing through:
 // https://github.com/digitalbazaar/jsonld.js/tree/main
 
+/**
+ * DOI input that, once a valid DOI is entered and focus leaves the field, asks
+ * to autofill the form from it.
+ */
 export class AutofillDataciteWidget extends DataciteDoiWidget {
 
+	/** Unused; never assigned. */
 	protected autofillButton: HTMLButtonElement = null;
 	
 	private getDoi(): string {
@@ -111,6 +124,10 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		}
 	}
 
+	/**
+	 * Also adds the focus-out listener that prompts for autofill if the form
+	 * hasn't been autofilled from DataCite yet. Overrides `Widget.initialize`.
+	 */
 	override initialize(readOnly: boolean = false): void {
 		super.initialize(readOnly);
 		if(readOnly) return;
@@ -133,6 +150,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 
 	/// Static -----------------------------------------------------------------
 
+	/** Fetches the DataCite record for a DOI or DOI URL. */
 	public static async getApiDataFromDoi(doiUrl: string): Promise<DataciteItem> {
 		
 		const doi = extractDoi(doiUrl);
@@ -147,6 +165,7 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		return data;
 	}
 
+	/** Fetches the Zenodo record for a Zenodo DOI. */
 	public static async getZenodoApiDataFromDoi(
 		doiUrl: string
 	): Promise<ZenodoApiItem> {
@@ -156,6 +175,11 @@ export class AutofillDataciteWidget extends DataciteDoiWidget {
 		return zenodoData;
 	}
 
+	/**
+	 * Maps DataCite and Zenodo data to `SubmissionFormData` and returns it.
+	 * Also fills the form (overwriting values) and marks it autofilled from
+	 * DataCite.
+	 */
 	public static autofillFromApiData(
 		data: DataciteItem, 
 		zenodoData: ZenodoApiItem = {} as any,

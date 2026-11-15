@@ -1,16 +1,45 @@
+/**
+ * Shared helpers used across the frontend: JSON types, API URLs, timed fetch,
+ * identifier parsing, software/edit data fetching, the edit-link request flow,
+ * and Google Analytics events. Touch this when adding a general-purpose helper
+ * or changing one of the API URLs it holds.
+ *
+ * @module
+ */
+
 import { ConfirmDialogue, FormGenerator, PopupDialogue, TextInputDialogue, type VersionData } from "./loader";
 
+/** Case-insensitive regex matching a UUIDv4 string. */
 export const uuid4Regex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+/**
+ * `"/api/models/Software/rows/"`: URL prefix for fetching one software entry's
+ * data.
+ */
 export const softwareApiUrl = "/api/models/Software/rows/";
+/** `"/api/view/"`: URL prefix for a software entry's API view JSON. */
 export const modelApiUrl = "/api/view/"
+/**
+ * `"/sapi/software_edit_data/"`: URL prefix for a submission's edit data,
+ * including submitter data.
+ */
 export const editApiUrl = "/sapi/software_edit_data/";
+/** `"/request_edit/"`: URL prefix for requesting an edit-link email. */
 export const requestEditUrl = "/request_edit/";
+/**
+ * `"/api/masked_emails/"`: URL prefix for a submission's masked submitter
+ * emails.
+ */
 export const maskedEmailsApiUrl = "/api/masked_emails/";
+/** `"csrf-token"`: name of the `<meta>` tag holding the CSRF token. */
 export const csrfTokenName = "csrf-token";
 
+/** Any JSON value (typed loosely, includes `any`). */
 export type JSONValue = string | number | boolean | null | JSONObject | JSONArray | any;
+/** A JSON object with string keys. */
 export interface JSONObject { [key: string]: JSONValue }
+/** A JSON array, optionally typed by element. */
 export interface JSONArray<T = JSONValue> extends Array<T> { }
+/** A JSON object with a `data` array, as returned by the model rows API. */
 export interface JSONArrayData extends JSONObject {
 	data: JSONArray,
 }
@@ -24,6 +53,7 @@ export type NestedKeys<T, Prefix extends string = ""> = {
 	: `${Prefix}${K & string}`;
 }[keyof T];
 
+/** The page's CSRF token from its `csrf-token` `<meta>` tag. */
 export function getCsrfTokenValue(): string {
 	return (
 		document.head.querySelector(`meta[name=${csrfTokenName}]`) as any
@@ -341,6 +371,10 @@ export function appendPromisedElement(parentElem: HTMLElement, childPromise: Pro
 		.catch(e => console.error(e));
 }
 
+/**
+ * Fetches the edit data for the `uid` URL parameter and fills the form with it,
+ * redirecting home if the link is invalid. Not exported; exposed on `window`.
+ */
 async function curateEditFormInit() {
 	let uid = new URLSearchParams(window.location.search).get("uid");
 	

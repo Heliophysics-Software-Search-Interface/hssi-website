@@ -22,6 +22,17 @@ PAGES = {
 	"SPEDAS (Space Physics Environment Data Analysis System)": ("https://spedas.org/downloads/", r"spedas_(\d+_\d+)\.zip"),
 }
 
+# Software published on PyPI under a name unlike both its HSSI name and its repository's name,
+# by HSSI name: the PyPI project.
+PYPI_NAMES = {
+	"Digital Meridian Spectrometer": "dmsp",
+	"HAPI Client": "hapiclient",
+	"HelioAI": "helioai-agent",
+	"irispy": "irispy-lmsal",
+	"PyTplot": "pytplot-mpl-temp",
+	"The CCMC Kamodo Analysis Suite": "kamodo-ccmc",
+}
+
 class Release(NamedTuple):
 	version: str
 	url: str
@@ -62,13 +73,15 @@ def github_release(software: Software) -> Release | None:
 	return Release(tag, urls[tag]) if tag else None
 
 def pypi_release(software: Software) -> Release | None:
-	"""The highest stable release of a PyPI project named like the software or its repository,
+	"""The highest stable release of a PyPI project named in PYPI_NAMES or like the software or its repository,
 	if the project links that repository or has published the version HSSI lists."""
 	repo = github.repo_path(software.code_repository_url or "") or ""
 	version = software.latest_version()
 	listed = parse_version(version.number) if version else None
 	names = {re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-") for name in (software.software_name, repo.partition("/")[2])}
-	for name in sorted(names - {""}):
+	# The PYPI_NAMES project goes first, because a namesake may also have published the version HSSI lists.
+	first = [PYPI_NAMES[software.software_name]] if software.software_name in PYPI_NAMES else []
+	for name in first + sorted(names - {""}):
 		response = requests.get(f"https://pypi.org/pypi/{name}/json", timeout=TIMEOUT)
 		if response.status_code == 404:
 			continue
@@ -125,7 +138,7 @@ class Command(BaseCommand):
 			"--open-issues",
 			action="store_true",
 			help=f'Open a "{LABEL}" GitHub issue for each new version without one, closing the issues it supersedes, '
-			'and a "bug" issue for each entry in PAGES that stops working.',
+			'and a "bug" issue for each entry in PAGES or PYPI_NAMES that stops working.',
 		)
 
 	def handle(self, *args, open_issues: bool, **options):
@@ -146,8 +159,10 @@ class Command(BaseCommand):
 			self.stdout.write(f"New version of {software.software_name}: {release.version} (HSSI lists {listed})")
 			if self.issues is not None:
 				self.open_version_issue(software, release, listed)
-		for name in PAGES.keys() - {software.software_name for software in software_list}:
-			self.report_broken_page(name, PageChanged("No visible software has this name."))
+		visible = {software.software_name for software in software_list}
+		for table, entries in (("PAGES", PAGES), ("PYPI_NAMES", PYPI_NAMES)):
+			for name in entries.keys() - visible:
+				self.report_broken_page(name, PageChanged("No visible software has this name."), table)
 		self.stdout.write(f"{newer} of {len(software_list)} visible software have a newer version.")
 
 	def newest_release(self, software: Software) -> Release | None:
@@ -178,14 +193,14 @@ class Command(BaseCommand):
 				github.close_issue(issue["number"], f"Superseded by #{newest['number']}.")
 				issue["state"] = "closed"
 
-	def report_broken_page(self, name: str, error: PageChanged) -> None:
-		"""Print why a PAGES entry failed and, with --open-issues, open a "bug" issue for it unless one is open."""
+	def report_broken_page(self, name: str, error: PageChanged, table: str = "PAGES") -> None:
+		"""Print why an entry in PAGES or PYPI_NAMES failed and, with --open-issues, open a "bug" issue for it unless one is open."""
 		self.stderr.write(f"{name}: {error}")
 		title = f"Can't read the version of {name}"
 		if self.issues is None or any(issue["state"] == "open" and issue["title"] == title for issue in self.issues):
 			return
 		body = (
 			f"The version check couldn't read {name}'s version: {error}\n\n"
-			"Update its entry in `PAGES` in `django/website/management/commands/check_software_versions.py`."
+			f"Update its entry in `{table}` in `django/website/management/commands/check_software_versions.py`."
 		)
 		self.issues.append(github.open_issue(title, body, "bug"))

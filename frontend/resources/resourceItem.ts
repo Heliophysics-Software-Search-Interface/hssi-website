@@ -1,3 +1,13 @@
+/**
+ * The card for a single software entry in the resource list: title link,
+ * authors, description, logo, link buttons (code, docs, publication, DOI,
+ * SciX), and category and tag chips, with an expanded view showing the full
+ * description, all authors and labelled name tags. Touch this when changing
+ * what a software entry shows in the search results.
+ *
+ * @module
+ */
+
 import { 
 	appendPromisedElement,
 	softwareFieldToModelName,
@@ -71,6 +81,7 @@ export class ResourceItem{
 	private chipContainerElement: HTMLDivElement = null;
 	private nameTagContainerElement: HTMLDivElement = null;
 
+	/** The software data the item displays. */
 	public get softwareData(): SoftwareDataAsync {
 		return this.data;
 	}
@@ -80,6 +91,10 @@ export class ResourceItem{
 	private flexSubContainer: HTMLDivElement = null;
 	private mainContentContainer: HTMLDivElement = null;
 
+	/**
+	 * Creates the empty container element; use `createFromData` to build a
+	 * populated item.
+	 */
 	public constructor(){
 		this.containerElement = document.createElement("div");
 		this.containerElement.classList.add(styleResourceItem);
@@ -394,6 +409,10 @@ export class ResourceItem{
 		this.setExpanded(false);
 	}
 
+	/**
+	 * Switches between the compact view and the expanded view, building the
+	 * name tags the first time it expands.
+	 */
 	public setExpanded(expand: boolean): void {
 		if(expand){
 			this.expandedContent.style.display = "block";

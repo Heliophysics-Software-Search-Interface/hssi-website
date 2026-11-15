@@ -1,8 +1,13 @@
 /**
- * Handles loading modules in the correct order and funnelling them out, 
+ * Handles loading modules in the correct order and funnelling them out,
  * preventing circular dependencies and clearly defining the depedency tree.
- * All modules should be imported from this module, instead of from the file 
+ * All modules should be imported from this module, instead of from the file
  * where they are defined.
+ *
+ * The order of its `export *` lines is the load order. Touch this when adding a
+ * module, placing it after everything it depends on.
+ *
+ * @module
  */
 
 export * from "./util";

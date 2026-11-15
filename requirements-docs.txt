@@ -1,0 +1,6 @@
+# Docs site build dependencies (MkDocs + plugins). Docs-only; not installed
+# with the app. Used by .github/workflows/docs.yml and gen-code-reference.sh.
+mkdocs-material==9.7.7
+mkdocs-literate-nav==0.6.3
+# reads the Python source for scripts/gen_code_reference.py
+griffe==2.4.1

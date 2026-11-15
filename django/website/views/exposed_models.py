@@ -1,3 +1,9 @@
+"""
+Views that expose the form structures and model choices the frontend form system
+needs, plus the generic single-model form page. Touch this when the frontend
+needs new form structure data or choice lists.
+"""
+
 import ast, json
 
 from django.apps import apps
@@ -7,6 +13,10 @@ from ..forms import *
 from ..models import HssiModel, Software
 
 def get_model_structure(request: HttpRequest) -> JsonResponse:
+	"""
+	Returns JSON of every registered form structure, serialized, plus the model
+	field map.
+	"""
 	structures = { "data": [
 		*[x.serialized() for x in registered_structures.values()],
 	], "fieldMap": MODEL_FIELD_MAP }
@@ -16,6 +26,11 @@ def get_model_choices(
 		request: HttpRequest, 
 		model_name: str
 	) -> JsonResponse | HttpResponseBadRequest:
+	"""
+	Returns JSON of the choices for every object of an `HssiModel`, filtered by
+	the GET parameters (evaluated as Python literals); 400 if the model is not
+	an `HssiModel`.
+	"""
 
 	filter_dict = request.GET.dict()
 	for key, val in filter_dict.items():
@@ -41,6 +56,7 @@ def get_model_choices(
 	)
 
 def model_form(request: HttpRequest, model_name: str) -> HttpResponse:
+	"""Renders the model form page for the named form structure."""
 	return render(
 		request, 
 		"pages/model_form.html", 

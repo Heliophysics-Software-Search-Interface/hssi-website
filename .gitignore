@@ -35,3 +35,8 @@ bun.lock
 bun.lockb
 # MkDocs build output
 site/
+
+# TypeDoc markdown output (input to the MkDocs build)
+build/
+docs/code_reference/backend/
+docs/code_reference/frontend/

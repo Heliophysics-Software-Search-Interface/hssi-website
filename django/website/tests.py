@@ -15,6 +15,7 @@ from .models import (
 	Keyword,
 	License,
 	Organization,
+	Person,
 	ProgrammingLanguage,
 	Region,
 	Software,
@@ -466,6 +467,30 @@ class SoftwareDetailJsonLdTests(TestCase):
 		zenodo = Organization.objects.create(name="Zenodo", identifier="https://zenodo.org")
 		software = self._publish_software(software_name="On Zenodo", publisher=zenodo)
 		self.assertEqual(self._jsonld(software)["publisher"]["identifier"], "https://zenodo.org")
+
+	def test_top_level_identifier_has_no_id_but_nested_identifiers_keep_theirs(self):
+		"""With an @id, the DOI entry would be the same JSON-LD node as the record itself."""
+		doi = "https://doi.org/10.5281/zenodo.5377318"
+		orcid = "https://orcid.org/0000-0002-1825-0097"
+		software = self._publish_software(software_name="GeospaceLAB", persistent_identifier=doi)
+		software.authors.add(Person.objects.create(given_name="Ada", family_name="Lovelace", identifier=orcid))
+		data = self._jsonld(software)
+		self.assertEqual(data["@id"], doi)
+		self.assertEqual(data["identifier"][0], {
+			"@type": "PropertyValue",
+			"url": doi,
+			"propertyID": "https://registry.identifiers.org/registry/doi",
+			"value": "doi:10.5281/zenodo.5377318",
+		})
+		self.assertEqual(data["author"]["@list"][0]["identifier"]["@id"], orcid)
+
+	def test_organization_author_without_given_name_has_no_leading_space(self):
+		hao = Person.objects.create(
+			family_name="NCAR High Altitude Observatory", identifier="https://ror.org/03773p874",
+		)
+		software = self._publish_software(software_name="TIEGCM")
+		software.authors.add(hao)
+		self.assertEqual(self._jsonld(software)["author"]["@list"][0]["name"], "NCAR High Altitude Observatory")
 
 	def test_software_license_stays_out_of_subject_of(self):
 		"""subjectOf is HSSI's metadata record, which the software's license doesn't cover."""

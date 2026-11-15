@@ -38,6 +38,7 @@ function createView() {
 				fetchPage(_model, offset, _limit, sort) {
 					return new Promise(resolve => requests.push({ offset, sort, resolve }));
 				},
+				getModelDataAll: async () => [{ software_name: 'Full catalog' }],
 			},
 		}),
 	};
@@ -110,4 +111,16 @@ test('a superseded page request cannot change history or scroll after a sort', a
 	assert.equal(location.search, '?sort=name');
 	assert.equal(state.historyWrites, 1);
 	assert.equal(state.scrolls, 0);
+});
+
+// On a homepage load with ?q=, the page-load search loads the full catalog while the filter menu's reset is still fetching page one (#167).
+test('a page reset still loading cannot replace the full catalog', async () => {
+	const { view, requests } = createView();
+	view.paginatedMode = false;
+	const reset = view.resetToPaginatedMode();
+	await view.awaitAllItems();
+	respond(requests[0], 'First page');
+	await reset;
+	assert.equal(view.paginatedMode, false);
+	assert.equal(view.getAllItems()[0].software_name, 'Full catalog');
 });

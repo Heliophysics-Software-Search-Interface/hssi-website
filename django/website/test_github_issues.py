@@ -148,6 +148,32 @@ class SourceTests(TestCase):
 				software = make_software(name, version, code_repository_url=f"https://github.com/{repo}")
 				self.assertEqual(pypi_release(software), expected)
 
+	@mock.patch.dict(f"{COMMAND}.PYPI_NAMES", {"The CCMC Kamodo Analysis Suite": "kamodo-ccmc"}, clear=True)
+	@mock.patch(f"{COMMAND}.requests.get")
+	def test_pypi_release_tries_the_project_in_pypi_names_first(self, get):
+		projects = {
+			"kamodo": {
+				"info": {"home_page": "https://github.com/ensemblegov/kamodo-core", "project_urls": None},
+				"releases": {"22.6.0": ["sdist"], "23.3.0": ["sdist"]},
+			},
+			"kamodo-ccmc": {
+				"info": {"home_page": None, "project_urls": {"Repository": "https://github.com/nasa/Kamodo"}},
+				"releases": {"23.3.0": ["sdist"], "26.10.1": ["sdist"], "26.11.1": ["sdist"]},
+			},
+		}
+		get.side_effect = lambda url, **kwargs: (
+			response(data=projects[url.split("/")[4]]) if url.split("/")[4] in projects else response(404)
+		)
+		newest = Release("26.11.1", "https://pypi.org/project/kamodo-ccmc/26.11.1/")
+		software = make_software("The CCMC Kamodo Analysis Suite", "26.10.1", code_repository_url="https://github.com/nasa/Kamodo")
+		self.assertEqual(pypi_release(software), newest)
+		with mock.patch.dict(f"{COMMAND}.PYPI_NAMES", clear=True):
+			self.assertIsNone(pypi_release(software))
+
+		# The namesake kamodo has published 23.3.0 too, but the project in PYPI_NAMES still wins.
+		software = make_software("The CCMC Kamodo Analysis Suite", "23.3.0", code_repository_url="https://github.com/nasa/Kamodo")
+		self.assertEqual(pypi_release(software), newest)
+
 	@mock.patch(f"{COMMAND}.time.sleep")
 	@mock.patch(f"{COMMAND}.requests.get")
 	def test_zenodo_release_is_the_version_of_the_newest_record(self, get, sleep):
@@ -223,6 +249,7 @@ ISSUES = [
 
 @override_settings(HSSI_GITHUB_TOKEN="token")
 @mock.patch.dict(f"{COMMAND}.PAGES", {"Paged": ("https://example.org/", "x"), "Renamed": ("https://example.org/", "x")}, clear=True)
+@mock.patch.dict(f"{COMMAND}.PYPI_NAMES", {"Known": "known-py", "Repackaged": "repackaged-py"}, clear=True)
 @mock.patch(f"{COMMAND}.SOURCES", (fake_github, fake_pypi, fake_page))
 @mock.patch("website.github.close_issue")
 @mock.patch("website.github.open_issue", side_effect=lambda title, body, label: {"number": 9, "title": title, "state": "open"})
@@ -253,10 +280,12 @@ class CheckSoftwareVersionsTests(TestCase):
 		self.assertIn("Broken: 'releases'", err.getvalue())
 		self.assertIn("Paged: https://example.org/", err.getvalue())
 		self.assertIn("Renamed: No visible software has this name.", err.getvalue())
-		self.assertEqual(open_issue.call_count, 3)
+		self.assertIn("Repackaged: No visible software has this name.", err.getvalue())
+		self.assertEqual(open_issue.call_count, 4)
 		opened = {call.args[0]: call.args[1:] for call in open_issue.call_args_list}
 		self.assertEqual(opened.keys(), {
 			"New version of Stale: v2.0", "Can't read the version of Paged", "Can't read the version of Renamed",
+			"Can't read the version of Repackaged",
 		})
 		body, label = opened["New version of Stale: v2.0"]
 		self.assertIn("new version on github.com", body)
@@ -265,6 +294,9 @@ class CheckSoftwareVersionsTests(TestCase):
 		self.assertEqual(label, LABEL)
 		body, label = opened["Can't read the version of Paged"]
 		self.assertIn("`PAGES`", body)
+		self.assertEqual(label, "bug")
+		body, label = opened["Can't read the version of Repackaged"]
+		self.assertIn("`PYPI_NAMES`", body)
 		self.assertEqual(label, "bug")
 		self.assertCountEqual(
 			[call.args for call in close_issue.call_args_list],

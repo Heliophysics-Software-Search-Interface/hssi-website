@@ -254,12 +254,17 @@ export class ResourceView {
 		this.updatePaginationControls();
 	}
 
-	/** return to page 0 of paginated mode; no-op if already paginated */
+	/**
+	 * return to page 0 of paginated mode; no-op if already paginated. If
+	 * {@link ResourceView.awaitAllItems} switches the view to the full catalog
+	 * before page 0 arrives, the page is dropped and the full catalog stays.
+	 */
 	public async resetToPaginatedMode(): Promise<void> {
 		if (this.paginatedMode) return;
 		this.paginatedMode = true;
 		this.paginationOffset = 0;
 		const { items, total } = await ModelDataCache.fetchPage(softwarModelName, 0, this.PAGE_SIZE, this.sort);
+		if (!this.paginatedMode) return;
 		this.itemData = items;
 		this.paginationTotal = total;
 		this.updatePaginationControls();

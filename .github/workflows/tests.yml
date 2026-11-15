@@ -45,3 +45,19 @@ jobs:
       - name: Run Django test suite
         working-directory: django
         run: python manage.py test website
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      # Bun is the project's package manager (see docs/getting_started.md),
+      # and docs.yml installs with it too. This brings in esbuild, which the
+      # tests use to load the TypeScript sources.
+      - uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: bun install
+      - name: Run frontend test suite
+        run: node --test tests/*.test.mjs

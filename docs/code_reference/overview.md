@@ -15,11 +15,7 @@ here when you need the specifics of a particular part.
 ---
 
 ## Sections
-
-- [Backend](backend/index.md) — per-module API reference for the Django
-  app: public classes, methods, and functions of the commonly edited modules.
-- [Frontend](frontend/index.md) — per-module API reference for the
-  TypeScript frontend.
+ 
 - [Data Model](data_model.md) — the model layer: `HssiModel`/`HssiBase`,
   `ControlledList`/`ControlledGraphList`, and the core software/people/
   organization/vocabulary models.
@@ -27,7 +23,5 @@ here when you need the specifics of a particular part.
   from intake through curation to publication.
 - [Frontend Architecture](frontend_architecture.md) — the TypeScript
   frontend's module structure and how it talks to the backend.
-- [Admin & Curation](admin_and_curation.md) — the custom Django admin site
-  and curator tooling.
 - [Deployment Reference](deployment_reference.md) — exhaustive reference
   for the Docker/nginx/gunicorn deployment configuration.

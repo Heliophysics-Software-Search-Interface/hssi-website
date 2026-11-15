@@ -276,8 +276,47 @@ label > input.label {
 
 .search-button {
 	position: absolute;
+	top: 0;
 	right: 0;
 	cursor: pointer;
+}
+
+/* keep typed text clear of the clear and search buttons */
+.search-container .search-form {
+	padding-right: 72px;
+}
+
+/* sits just left of the 39px search button */
+.search-clear-button {
+	position: absolute;
+	top: 0;
+	right: 42px;
+	height: 39px;
+	width: 26px;
+	padding: 0;
+	border: none;
+	background: transparent;
+	color: #777;
+	font-size: 22px;
+	line-height: 39px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.search-clear-button:hover,
+.search-clear-button:focus-visible {
+	color: #10beea;
+}
+
+.search-clear-button[hidden] {
+	display: none;
+}
+
+/* the browser's own clear button only empties the text, not the results */
+#searchbar::-webkit-search-cancel-button {
+	-webkit-appearance: none;
+	appearance: none;
+	display: none;
 }
 
 .expanded {

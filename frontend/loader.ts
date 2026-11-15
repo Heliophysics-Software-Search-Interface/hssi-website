@@ -12,6 +12,7 @@
 
 export * from "./util";
 export * from "./simpleEvent";
+export * from "./obfuscatedEmail";
 export * from "./modelData/modelStructure";
 
 export * from "./modelData/asyncModelData";

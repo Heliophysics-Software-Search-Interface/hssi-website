@@ -1,4 +1,5 @@
 {% load static %}
+{% load obfuscated_email %}
 
 <!doctype html>
 <!-- overflow: inherit used to adjust pop-up behavior -->
@@ -62,7 +63,7 @@
 	{% endcomment %}
 
 	<script type="text/javascript" src="{% static 'js/mathjax-config.js' %}?v=2024-10-15"></script>
-	<script type="text/javascript" src="{% static 'js/compiled/hssi-frontend.js' %}?v=2026-11-03"></script>
+	<script type="text/javascript" src="{% static 'js/compiled/hssi-frontend.js' %}?v=2026-11-15"></script>
 	<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 	<script>
 		// set up HSSI namespace
@@ -188,7 +189,7 @@
 					</li>
 					<li>
 						<span>Contact: </span>
-						<a href="mailto:hssi-team@googlegroups.com">hssi-team@googlegroups.com</a>
+						{% obfuscated_email "hssi-team@googlegroups.com" %}
 					</li>
 					<li>
 						<a id="last-link" href="{{SITE_PROTOCOL}}://{{SITE_DOMAIN}}/FAQ">FAQ</a>
